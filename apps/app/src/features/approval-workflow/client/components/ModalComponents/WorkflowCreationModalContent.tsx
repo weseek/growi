@@ -1,5 +1,5 @@
 // TODO: https://redmine.weseek.co.jp/issues/130338
-import React, { useCallback, useState } from 'react';
+import React, { FC, useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
@@ -9,6 +9,26 @@ import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
 import { ApproverGroupCard } from './ApproverGroupCard';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
+
+
+type EditableApproverGroupCardProps = {
+  onClickAddApproverGroupCard: () => void
+}
+
+const EditableApproverGroupCard = (props: EditableApproverGroupCardProps): JSX.Element => {
+  const { onClickAddApproverGroupCard } = props;
+
+  return (
+    <div className="mt-4">
+      <ApproverGroupCard />
+
+      <div className="text-center mt-2">
+        <button type="button" onClick={() => onClickAddApproverGroupCard()}>フローを追加</button>
+      </div>
+    </div>
+  );
+};
+
 
 type Props = {
   pageId: string,
@@ -37,7 +57,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
 
   const [workflowName, setWorkflowName] = useState<string | undefined>();
   const [workflowDescription, setWorkflowDescription] = useState<string | undefined>();
-  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[] | undefined>(approverGroupsDummyData);
+  const [approverGroups, setApproverGroups] = useState<IWorkflowApproverGroupReq[]>(approverGroupsDummyData);
 
   const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, approverGroups, workflowName, workflowDescription);
 
@@ -48,6 +68,14 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setWorkflowDescription(event.target.value);
   }, []);
+
+  // const approverGroupChangeHandler = useCallback(() => {
+
+  // }, []);
+
+  const addApproverGroupCardButtonClickHandler = () => {
+    setApproverGroups([...approverGroups, [] as any]);
+  };
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
     if (approverGroups == null) {
@@ -113,7 +141,13 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
           </div>
         </div>
 
-        <ApproverGroupCard />
+        {/* <ApproverGroupCard /> */}
+
+
+        {approverGroups?.map((data, index) => (
+          <EditableApproverGroupCard onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler} />
+        ))}
+
 
       </ModalBody>
 
