@@ -4,24 +4,29 @@ import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
 } from '@growi/core';
 import {
+  getIdForRef,
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleLike, toggleSubscribe,
+  toggleLike, toggleSubscribe, useUpdateStateAfterSave,
 } from '~/client/services/page-operation';
+import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useIsAbleToShowTagLabel, EditorMode, useEditorMode } from '~/stores/ui';
 
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
+import { PageTagsSkeleton } from '../PageTags';
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
@@ -30,6 +35,56 @@ import SubscribeButton from './SubscribeButton';
 
 
 import styles from './PageControls.module.scss';
+
+
+const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), {
+  ssr: false,
+  loading: PageTagsSkeleton,
+});
+
+type TagsProps = {
+  pageId: string,
+  revisionId: string,
+}
+
+const Tags = (props: TagsProps): JSX.Element => {
+  const { pageId, revisionId } = props;
+
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+
+  const { data: showTagLabel } = useIsAbleToShowTagLabel();
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+
+  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
+    try {
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+
+      updateStateAfterSave?.();
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [pageId, revisionId, updateStateAfterSave]);
+
+  if (!showTagLabel) {
+    return <></>;
+  }
+
+  const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
+
+  return (
+    <div className="grw-taglabels-container d-flex align-items-center">
+      { tagsInfoData?.tags != null
+        ? <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        : <PageTagsSkeleton />
+      }
+    </div>
+  );
+};
 
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
@@ -96,6 +151,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: editorMode } = useEditorMode();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -214,8 +270,16 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     MenuItemType.REVERT,
   ];
 
+  const isViewMode = editorMode === EditorMode.View;
+
   return (
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
+      {revisionId != null && !isViewMode && (
+        <Tags
+          pageId={pageId}
+          revisionId={getIdForRef(revisionId)}
+        />
+      )}
       {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
