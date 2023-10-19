@@ -25,7 +25,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 import {
-  useIsEditable, useIsReadOnlyUser, useIsNotFound,
+  useIsEditable, useIsReadOnlyUser, useIsNotFound, useIsExecutePageCreation,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { useStaticSWR } from './use-static-swr';
@@ -475,5 +475,19 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, pagePath, isNotFound],
     () => isPageExist && !isUsersTopPagePath,
+  );
+};
+
+export const useIsAbleToShowCreateButton = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowCreateButton';
+  const { data: isEditable } = useIsEditable();
+  const { data: isExecutePageCreation } = useIsExecutePageCreation();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [isEditable, isExecutePageCreation, isSharedUser].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : [key, isEditable, isExecutePageCreation, isSharedUser],
+    () => !isEditable && !!isExecutePageCreation && !isSharedUser,
   );
 };
