@@ -6,21 +6,11 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores/context';
 
-import { IWorkflowApproverGroupReqForRenderList } from '../../../interfaces/workflow';
+import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
 import { ApproverGroupCards } from './ApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
-
-// see: https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318
-// When rendering with maps, without a unique key, unintended behavior can occur.
-const createInitialApproverGroup = (): IWorkflowApproverGroupReqForRenderList => {
-  return {
-    approvalType: 'AND',
-    approvers: [],
-    uuidForRenderList: crypto.randomUUID(),
-  };
-};
 
 type Props = {
   pageId: string,
@@ -31,12 +21,14 @@ type Props = {
 export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
+  const {
+    editingApproverGroups, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+  } = useEditingApproverGroups();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>();
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>();
-  const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReqForRenderList[]>([createInitialApproverGroup()]);
 
   const { trigger: createWorkflow } = useSWRMUTxCreateWorkflow(pageId, editingApproverGroups, editingWorkflowName, editingWorkflowDescription);
 
@@ -47,25 +39,6 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditingWorkflowDescription(event.target.value);
   }, []);
-
-  const approverGroupsChangeHandler = useCallback((groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => {
-    const clonedApproverGroups = [...editingApproverGroups];
-    clonedApproverGroups[groupIndex] = updateApproverGroupData;
-    setEditingApproverGroups(clonedApproverGroups);
-  }, [editingApproverGroups]);
-
-  const addApproverGroupCardButtonClickHandler = useCallback((groupIndex: number) => {
-    const clonedApproverGroups = [...editingApproverGroups];
-    clonedApproverGroups.splice(groupIndex, 0, createInitialApproverGroup());
-    setEditingApproverGroups(clonedApproverGroups);
-  }, [editingApproverGroups]);
-
-  const deleteApproverGroupHandler = useCallback((groupIndex: number) => {
-    const clonedApproverGroups = [...editingApproverGroups];
-    clonedApproverGroups.splice(groupIndex, 1);
-    setEditingApproverGroups(clonedApproverGroups);
-  }, [editingApproverGroups]);
-
 
   const createWorkflowButtonClickHandler = useCallback(async() => {
     if (editingApproverGroups == null) {
@@ -135,9 +108,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         <ApproverGroupCards
           creatorId={currentUser?._id}
           editingApproverGroups={editingApproverGroups}
-          onUpdateApproverGroups={approverGroupsChangeHandler}
-          onClickAddApproverGroupCard={addApproverGroupCardButtonClickHandler}
-          onClickRemoveApproverGroupCard={deleteApproverGroupHandler}
+          onUpdateApproverGroups={updateApproverGroupHandler}
+          onClickAddApproverGroupCard={addApproverGroupHandler}
+          onClickRemoveApproverGroupCard={removeApproverGroupHandler}
         />
       </ModalBody>
 
