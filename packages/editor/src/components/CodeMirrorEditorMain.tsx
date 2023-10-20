@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
@@ -18,15 +18,17 @@ type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
+  acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, indentSize,
+    onSave, onChange, onUpload, acceptedFileType, indentSize,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -63,6 +65,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
       onUpload={onUpload}
+      acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
     />
   );
