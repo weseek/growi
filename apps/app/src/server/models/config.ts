@@ -147,6 +147,8 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'external-user-group:ldap:groupMembershipAttributeType': 'DN',
   'external-user-group:ldap:autoGenerateUserOnGroupSync': false,
   'external-user-group:ldap:preserveDeletedGroups': false,
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync': false,
+  'external-user-group:keycloak:preserveDeletedGroups': false,
   /* eslint-enable key-spacing */
 };
 
