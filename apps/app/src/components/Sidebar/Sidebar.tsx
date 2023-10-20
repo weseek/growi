@@ -22,8 +22,8 @@ import styles from './Sidebar.module.scss';
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
 
-const resizableAreaMinWidth = 300;
-const resizableAreaCollapsedWidth = 0;
+const resizableAreaMinWidth = 348;
+const resizableAreaCollapsedWidth = 48;
 
 
 export const SidebarSubstance = memo((): JSX.Element => {
@@ -66,9 +66,8 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutateCollapsedMode(true);
     mutateCollapsedContentsOpened(false);
-    mutateProductNavWidth(sidebarMinWidth, false);
-    scheduleToPut({ preferCollapsedModeByUser: true, currentProductNavWidth: sidebarMinWidth });
-  }, [mutateCollapsedContentsOpened, mutateCollapsedMode, mutateProductNavWidth]);
+    scheduleToPut({ preferCollapsedModeByUser: true });
+  }, [mutateCollapsedContentsOpened, mutateCollapsedMode]);
 
   useEffect(() => {
     toggleDrawerMode(isDrawerMode);
@@ -91,21 +90,22 @@ export const SidebarSubstance = memo((): JSX.Element => {
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
 
   return (
-    <div className="grw-sidebar-inner d-flex flex-row h-100">
-      <SidebarNav />
-      <div className="sidebar-contents-container flex-grow-1">
-        <ResizableArea
-          width={resizableAreaWidth}
-          minWidth={resizableAreaMinWidth}
-          disabled={disableResizing}
-          onResize={resizeHandler}
-          onResizeDone={resizeDoneHandler}
-          onCollapsed={collapsedByResizableAreaHandler}
-        >
+    <ResizableArea
+      width={resizableAreaWidth}
+      minWidth={resizableAreaMinWidth}
+      disabled={disableResizing}
+      onResize={resizeHandler}
+      onResizeDone={resizeDoneHandler}
+      onCollapsed={collapsedByResizableAreaHandler}
+    >
+      <SidebarHead />
+      <div className="grw-sidebar-inner d-flex flex-row h-100">
+        <SidebarNav />
+        <div className="sidebar-contents-container flex-grow-1 overflow-y-auto">
           <SidebarContents />
-        </ResizableArea>
+        </div>
       </div>
-    </div>
+    </ResizableArea>
   );
 
 });
@@ -122,7 +122,6 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} vh-100`} data-testid="grw-sidebar">
-      <SidebarHead />
       <SidebarSubstance />
     </div>
   );

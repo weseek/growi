@@ -4,9 +4,6 @@ import React, { memo, useCallback, useRef } from 'react';
 import styles from './ResizableArea.module.scss';
 
 
-const sidebarNavWidth = 48;
-
-
 type Props = {
   width?: number,
   minWidth?: number,
@@ -29,7 +26,7 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
   const draggableAreaMoveHandler = useCallback((event: MouseEvent) => {
     event.preventDefault();
 
-    const widthByMousePos = event.pageX - sidebarNavWidth;
+    const widthByMousePos = event.pageX;
 
     const newWidth = Math.max(widthByMousePos, minWidth);
     onResize?.(newWidth);
@@ -41,7 +38,7 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
       return;
     }
 
-    const widthByMousePos = event.pageX - sidebarNavWidth;
+    const widthByMousePos = event.pageX;
 
     if (widthByMousePos < minWidth / 2) {
       // force collapsed
@@ -79,12 +76,10 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
     <>
       <div
         ref={resizableContainer}
-        className={`grw-contextual-navigation ${styles['grw-contextual-navigation']} h-100`}
+        className={`${styles['grw-resizable-area']} h-100 overflow-hidden`}
         style={{ width }}
       >
-        <div className={`grw-contextual-navigation-child h-100 ${width === 0 ? 'd-none' : ''}`} data-testid="grw-contextual-navigation-child">
-          {children}
-        </div>
+        {children}
       </div>
       <div className={styles['grw-navigation-draggable']}>
         { !disabled && (

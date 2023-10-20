@@ -1,13 +1,9 @@
-.grw-contextual-navigation :global {
+.grw-resizable-area :global {
   position: relative;
   will-change: width;
-
-  .grw-contextual-navigation-child {
-    overflow-x: hidden;
-  }
 }
 
-.grw-contextual-navigation:not(:global .dragging) {
+.grw-resizable-area:not(:global .dragging) {
   transition: width 100ms cubic-bezier(0.2, 0, 0, 1) 0s;
 }
 
