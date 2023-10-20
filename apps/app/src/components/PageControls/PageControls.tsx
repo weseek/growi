@@ -18,7 +18,7 @@ import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
-import { useIsAbleToShowTagLabel, EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
@@ -52,7 +52,6 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
-  const { data: showTagLabel } = useIsAbleToShowTagLabel();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
@@ -70,10 +69,6 @@ const Tags = (props: TagsProps): JSX.Element => {
     }
 
   }, [pageId, revisionId, updateStateAfterSave]);
-
-  if (!showTagLabel) {
-    return <></>;
-  }
 
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
