@@ -2,8 +2,16 @@ import React, { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
+import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
+import { useSWRxCurrentPage } from '~/stores/page';
+import loggerFactory from '~/utils/logger';
+
+const logger = loggerFactory('growi:cli:PageCreateButton');
+
 export const PageCreateButton = React.memo((): JSX.Element => {
   const router = useRouter();
+  const { data: currentPage, isLoading } = useSWRxCurrentPage();
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -15,13 +23,29 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     setIsHovered(false);
   };
 
-  const iconName = 'create';
-  const isSelected = true;
-  // TODO: create page directly
-  // TODO: https://redmine.weseek.co.jp/issues/132680s
-  const onCreateNewPageButtonHandler = useCallback(() => {
-    // router.push(`${router.pathname}#edit`);
-  }, [router]);
+  const onCreateNewPageButtonHandler = useCallback(async() => {
+    if (isLoading) return;
+
+    try {
+      const parentPath = currentPage?.path || '/';
+
+      const response = await apiv3Get('/pages/unique-path', { parentPath });
+
+      await apiv3Post('/pages/', {
+        path: response.data.uniquePath,
+        body: undefined,
+        grant: currentPage?.grant || 1,
+        grantUserGroupId: currentPage?.grantedGroup || null,
+      });
+
+      router.push(`${response.data.uniquePath}#edit`);
+    }
+    catch (err) {
+      logger.warn(err);
+      toastError(err);
+    }
+  }, [currentPage, isLoading, router]);
+
   const onCreateTodaysButtonHandler = useCallback(() => {
     // router.push(`${router.pathname}#edit`);
   }, [router]);
@@ -44,12 +68,12 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     >
       <div className="btn-group">
         <button
-          className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
+          className="d-block btn btn-primary"
           onClick={onCreateNewPageButtonHandler}
           type="button"
           data-testid="grw-sidebar-nav-page-create-button"
         >
-          <i className="material-icons">{iconName}</i>
+          <i className="material-icons">create</i>
         </button>
       </div>
       {isHovered && (
