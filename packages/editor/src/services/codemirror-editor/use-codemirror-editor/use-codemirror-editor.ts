@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 
-import type { CompletionContext } from '@codemirror/autocomplete';
+import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { syntaxTree } from '@codemirror/language';
@@ -68,7 +68,7 @@ const getEmojiDataArray = (): string[] => {
 const emojiDataArray = getEmojiDataArray();
 
 const emojiOptions = emojiDataArray.map(
-  tag => ({ label: `:${tag}:`, type: 'keyword' }),
+  tag => ({ label: `:${tag}:`, type: tag }),
 );
 
 const completeEmojiInput = (context: CompletionContext) => {
@@ -85,8 +85,18 @@ const completeEmojiInput = (context: CompletionContext) => {
   };
 };
 
-const emojiCompletion = markdownLanguage.data.of({
-  autocomplete: completeEmojiInput,
+const emojiIcon = autocompletion({
+  addToOptions: [{
+    render: (completion: Completion, state: EditorState) => {
+      const emojiName = completion.type ?? '';
+      const element = document.createElement('span');
+      element.innerText = emojiName;
+      return element;
+    },
+    position: 20,
+  }],
+  icons: false,
+  override: [completeEmojiInput],
 });
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
@@ -97,7 +107,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       {
         extensions: [
           defaultExtensions,
-          emojiCompletion,
+          emojiIcon,
         ],
         // Reset settings of react-codemirror.
         // The extension defined first will be used, so it must be disabled here.
