@@ -26,8 +26,8 @@ export const SidebarHead: FC = memo(() => {
         <div className="grw-app-title text-truncate">
           <span className="fs-4">GROWI</span>
         </div>
-        <button type="button" className="btn btn-secondary btn-lg">
-          <span className="material-icons">first_page</span>
+        <button type="button" className="btn btn-primary btn-toggle-collapse p-2">
+          <span className="material-icons fs-2">first_page</span>
         </button>
       </div>
     </div>

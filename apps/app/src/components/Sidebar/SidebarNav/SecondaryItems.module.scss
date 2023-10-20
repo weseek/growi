@@ -1,10 +1,14 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use './button-styles';
+@use '../button-styles';
+
+@use './variables' as sidebarNavVar;
 
 .grw-secondary-items :global {
   .btn {
     @extend %btn-primary-basis;
+
+    height: sidebarNavVar.$grw-sidebar-primary-button-height;
 
     i {
       opacity: 0.6;
