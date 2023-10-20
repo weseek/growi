@@ -51,9 +51,8 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const onChangeHandler = useCallback((usernames: string[]) => {
     setSelectedUsernames(usernames);
 
-    const userIds = getUserIdsByUsernames(dumyUserData, usernames);
-
     if (onChange != null) {
+      const userIds = getUserIdsByUsernames(dumyUserData, usernames);
       onChange(userIds);
     }
   }, [onChange]);
