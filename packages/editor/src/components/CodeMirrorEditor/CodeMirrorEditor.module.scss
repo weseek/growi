@@ -65,6 +65,7 @@ $secondary: $gray-600 !default;
   }
 }
 
+
 .codemirror-editor :global {
 
   // overlay in .codemirror-editor
@@ -84,10 +85,10 @@ $secondary: $gray-600 !default;
   .dropzone {
     position: relative; // against .overlay position: absolute
 
+
     @include overlay-processing-style(overlay-dropzone-active, 2.5em, 0.5em);
 
     // unuploadable or rejected
-    &.dropzone-unuploadable,
     &.dropzone-rejected {
       .overlay.overlay-dropzone-active {
         background: rgba(200, 200, 200, 0.8);
@@ -153,23 +154,7 @@ $secondary: $gray-600 !default;
       }
     }
 
-    // multiple files
-    &.dropzone-accepted.dropzone-rejected {
-      .overlay.overlay-dropzone-active {
-        .overlay-content {
-          // insert content
-          @include insertSimpleLineIcons('\e617'); // icon-exclamation
-
-          &:after {
-            content: 'Only 1 file is allowed';
-          }
-        }
-      }
-    }
-    // }
-
     /* end of.dropzone */
   }
-
-
 }
+

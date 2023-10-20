@@ -100,12 +100,17 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const {
     getRootProps,
+    isDragActive,
     isDragAccept,
+    isUploading,
     isDragReject,
     open,
   } = useFileDropzone({ onUpload });
 
   const dropzoneClassName = useMemo(() => {
+    if (isUploading) {
+      return 'dropzone-uploading';
+    }
     if (isDragAccept) {
       return 'dropzone-accepted';
     }
@@ -113,19 +118,22 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return 'dropzone-regected';
     }
     return '';
-  }, [isDragAccept, isDragReject]);
+  }, [isDragAccept, isDragReject, isUploading]);
 
   return (
-    // <div className={`${style['codemirror-editor']}`}>
-    <div>
-      <div {...getRootProps()} className={`dropzone dropzone-uploadable ${dropzoneClassName} flex-expand-vert`}>
-        <div className="overlay overlay-dropzone-active">
-          <span className="overlay-content"></span>
-        </div>
+    <div className={`${style['codemirror-editor']} flex-expand-vert`}>
+      <div {...getRootProps()} className={`dropzone ${dropzoneClassName} flex-expand-vert`}>
+        {isDragActive
+        && (
+          <div className="overlay overlay-dropzone-active">
+            <span className="overlay-content">
+            </span>
+          </div>
+        )
+        }
         <CodeMirrorEditorContainer ref={containerRef} />
         <Toolbar onFileOpen={open} />
       </div>
     </div>
-
   );
 };
