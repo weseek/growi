@@ -21,20 +21,18 @@ export const SidebarHead: FC = memo(() => {
 
   const { data: isDefaultLogo } = useIsDefaultLogo();
 
+  const popoutClass = isCollapsedMode ? 'popout' : '';
+
   return (
     <div className={`${styles['grw-sidebar-head']} d-flex w-100`}>
       {/* Brand Logo  */}
-      { !isCollapsedMode && (
-        <Link href="/" className="grw-logo d-block">
-          <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
-        </Link>
-      ) }
+      <Link href="/" className={`grw-logo d-block ${popoutClass}`}>
+        <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
+      </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
-        { !isCollapsedMode && (
-          <div className="grw-app-title text-truncate">
-            <span className="fs-4">GROWI</span>
-          </div>
-        ) }
+        <div className={`grw-app-title text-truncate ${popoutClass}`}>
+          <span className="fs-4">GROWI</span>
+        </div>
         <ToggleCollapseButton />
       </div>
     </div>

@@ -23,6 +23,22 @@
   }
 }
 
+// Popout for the collapsed mode
+.grw-sidebar-head :global {
+  .popout {
+    position: absolute;
+
+    &.grw-logo {
+      left: var.$grw-sidebar-nav-width;
+    }
+
+    &.grw-app-title {
+      left: var.$grw-sidebar-nav-width * 2;
+    }
+  }
+}
+
+
 
 // == Colors
 .grw-sidebar-head :global {

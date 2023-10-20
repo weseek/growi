@@ -76,7 +76,7 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
     <>
       <div
         ref={resizableContainer}
-        className={`${styles['grw-resizable-area']} h-100 overflow-hidden`}
+        className={`${styles['grw-resizable-area']} h-100`}
         style={{ width }}
       >
         {children}
