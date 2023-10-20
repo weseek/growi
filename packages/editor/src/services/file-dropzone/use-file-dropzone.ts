@@ -24,7 +24,7 @@ export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
   const accept: Accept = {};
   accept[(acceptedFileType)] = [];
 
-  const disabled = acceptedFileType == acceptedFileType.NONE;
+  const disabled = acceptedFileType === AcceptedUploadFileType.NONE;
 
   return useDropzone({
     noKeyboard: true,
