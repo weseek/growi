@@ -21,8 +21,9 @@ export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
     onUpload(acceptedFiles);
   }, [onUpload]);
 
-  const accept: Accept = {};
-  accept[(acceptedFileType)] = [];
+  const accept: Accept = {
+    acceptedFileType: [],
+  };
 
   const disabled = acceptedFileType === AcceptedUploadFileType.NONE;
 
