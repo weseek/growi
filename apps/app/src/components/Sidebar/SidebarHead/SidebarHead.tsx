@@ -1,24 +1,30 @@
 import React, {
-  FC, memo,
+  type FC, memo,
 } from 'react';
 
 import Link from 'next/link';
 
 import { useIsDefaultLogo } from '~/stores/context';
+import { useCollapsedContentsOpened, useCollapsedMode } from '~/stores/ui';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
+import { ToggleCollapseButton } from './ToggleCollapseButton';
 
 import styles from './SidebarHead.module.scss';
 
 
 export const SidebarHead: FC = memo(() => {
 
+  const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
+  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+
   const { data: isDefaultLogo } = useIsDefaultLogo();
 
   return (
     <div className={`${styles['grw-sidebar-head']} d-flex w-100`}>
       {/* Brand Logo  */}
+      <ToggleCollapseButton />
       <Link href="/" className="grw-logo d-block">
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
       </Link>
@@ -26,9 +32,7 @@ export const SidebarHead: FC = memo(() => {
         <div className="grw-app-title text-truncate">
           <span className="fs-4">GROWI</span>
         </div>
-        <button type="button" className="btn btn-primary btn-toggle-collapse p-2">
-          <span className="material-icons fs-2">first_page</span>
-        </button>
+        <ToggleCollapseButton />
       </div>
     </div>
   );
