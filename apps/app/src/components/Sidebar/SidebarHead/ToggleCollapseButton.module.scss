@@ -10,6 +10,18 @@
   height: $height;
 }
 
+// icon
+.btn-toggle-collapse :global {
+  .material-icons {
+    transition: transform 0.25s;
+
+    // rotation
+    &.rotate180 {
+      transform: rotate(180deg);
+    }
+  }
+}
+
 // == Colors
 .btn-toggle-collapse {
   &:global {
