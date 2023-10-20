@@ -242,8 +242,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { isLinkSharingDisabled } = props;
 
-  const onPressEnterForCreateHandler = async() => {
-    if (path == null || currentPage == null) {
+  const onCreateButtonClickHandler = async() => {
+    if (path == null) {
       return;
     }
 
@@ -253,14 +253,15 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       await apiv3Post('/pages/', {
         path,
         body: undefined,
-        grant: currentPage.grant,
-        grantUserGroupId: currentPage.grantedGroup,
+        // TODO: get parent page grant status
+        // grant: currentPage.grant,
+        // grantUserGroupId: currentPage.grantedGroup,
       });
 
+      // TODO: check mutate
       // mutate editor mode
       // mutate view
       // mutate when delete page
-      // TODO: check mutate
       await mutateIsNotFound(false);
       await router.push(`${path}#edit`);
       toastSuccess(t('successfully_saved_the_page'));
@@ -401,7 +402,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           <button
             type="button"
             className="btn btn-outline-primary"
-            onClick={onPressEnterForCreateHandler}
+            onClick={onCreateButtonClickHandler}
             disabled={isCreating}
           >
             <span className="me-1"><i className={isCreating ? 'fa fa-spinner fa-pulse' : 'icon-control-play'} /></span>
