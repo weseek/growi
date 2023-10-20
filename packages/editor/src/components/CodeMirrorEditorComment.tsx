@@ -26,6 +26,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
+  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -61,7 +62,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
       onChange={onChange}
-      acceptedFileType={acceptedFileType}
+      acceptedFileType={acceptedFileTypeNoOpt}
     />
   );
 };

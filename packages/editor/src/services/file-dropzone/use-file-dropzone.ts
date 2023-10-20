@@ -7,7 +7,7 @@ import { AcceptedUploadFileType } from 'src/consts';
 
 type DropzoneEditor = {
   onUpload?: (files: File[]) => void,
-  acceptedFileType?: AcceptedUploadFileType,
+  acceptedFileType: AcceptedUploadFileType,
 }
 
 export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
@@ -22,9 +22,9 @@ export const useFileDropzone = (props: DropzoneEditor): DropzoneState => {
   }, [onUpload]);
 
   const accept: Accept = {};
-  accept[(acceptedFileType ?? '')] = [];
+  accept[(acceptedFileType)] = [];
 
-  const disabled = acceptedFileType == null;
+  const disabled = acceptedFileType == acceptedFileType.NONE;
 
   return useDropzone({
     noKeyboard: true,

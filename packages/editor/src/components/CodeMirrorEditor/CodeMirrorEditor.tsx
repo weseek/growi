@@ -22,18 +22,18 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
-  acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
+    acceptedFileType,
     onChange,
     onUpload,
-    acceptedFileType,
     indentSize,
   } = props;
 

@@ -12,7 +12,7 @@ import { AttachmentsButton } from './AttachmentsButton';
 
 type Props = {
   onFileOpen: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
+  acceptedFileType: AcceptedUploadFileType,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {

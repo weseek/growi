@@ -1,6 +1,6 @@
 export const AcceptedUploadFileType = {
   ALL: '*',
   IMAGE: 'image/*',
-  NONE: null,
+  NONE: '',
 } as const;
 export type AcceptedUploadFileType = typeof AcceptedUploadFileType[keyof typeof AcceptedUploadFileType];

@@ -13,7 +13,7 @@ import styles from './Toolbar.module.scss';
 
 type Props = {
   onFileOpen: () => void,
-  acceptedFileType?: AcceptedUploadFileType
+  acceptedFileType: AcceptedUploadFileType
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {

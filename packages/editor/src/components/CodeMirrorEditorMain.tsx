@@ -28,6 +28,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -64,7 +65,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
       onUpload={onUpload}
-      acceptedFileType={acceptedFileType}
+      acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
     />
   );

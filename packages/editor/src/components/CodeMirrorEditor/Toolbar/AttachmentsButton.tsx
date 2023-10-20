@@ -6,7 +6,7 @@ import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-typ
 
 type Props = {
   onFileOpen: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
+  acceptedFileType: AcceptedUploadFileType,
 }
 
 export const AttachmentsButton = (props: Props): JSX.Element => {
