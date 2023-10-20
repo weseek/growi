@@ -18,7 +18,7 @@ const createInitialApproverGroup = (): IWorkflowApproverGroupReqForRenderList =>
   return {
     approvalType: 'AND',
     approvers: [],
-    uuidForRenderList: crypto.randomUUID(), // When rendering with a map, if you don't have a unique key, it will cause problems
+    uuidForRenderList: crypto.randomUUID(),
   };
 };
 
