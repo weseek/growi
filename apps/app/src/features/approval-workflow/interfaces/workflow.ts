@@ -31,7 +31,7 @@ export const WorkflowApprovalTypes = Object.values(WorkflowApprovalType);
 
 type WorkflowStatus = typeof WorkflowStatus[keyof typeof WorkflowStatus];
 type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof WorkflowApproverStatus];
-type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
+export type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
 
 
 export type IWorkflowApprover = {
@@ -59,6 +59,8 @@ export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & 
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
 export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
   & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
+
+export type IWorkflowApproverGroupReqForRenderList = IWorkflowApproverGroupReq & { uuidForRenderList: string };
 
 // TODO: If you don't need it, delete it
 export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
