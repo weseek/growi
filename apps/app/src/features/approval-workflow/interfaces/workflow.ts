@@ -60,6 +60,8 @@ export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved
 export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
   & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
 
+export type IWorkflowApproverGroupReqForRenderList = IWorkflowApproverGroupReq & { uuidForRenderList: string };
+
 // TODO: If you don't need it, delete it
 export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
 export type IWorkflowApproverGroupHasId = Omit<IWorkflowApproverGroup, 'approvers'> & { approvers: IWorkflowApproverHasId[] } & HasObjectId;

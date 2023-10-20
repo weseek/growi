@@ -2,20 +2,21 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { WorkflowApprovalType, IWorkflowApproverGroupReq } from '../../../interfaces/workflow';
+import { WorkflowApprovalType, IWorkflowApproverGroupReqForRenderList } from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
 type Props = {
   creatorId?: string
-  editingApproverGroups: IWorkflowApproverGroupReq[]
-  onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReq) => void
+  editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
+  onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
+  onClickRemoveApproverGroupCard?: (groupIndex: number) => void
 }
 
 const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
-    creatorId, groupIndex, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard,
+    creatorId, groupIndex, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard, onClickRemoveApproverGroupCard,
   } = props;
 
   const { t } = useTranslation();
@@ -44,6 +45,8 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
+  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
+
   const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
 
   const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
@@ -59,7 +62,13 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
       <div className="card rounded">
         <div className="card-body">
 
-          <SearchUserTypeahead onChange={updateApproversHandler} />
+          <div className="d-flex justify-content-center align-items-center">
+            <SearchUserTypeahead onChange={updateApproversHandler} />
+
+            { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
+              <button type="button" className="btn-close" aria-label="Close" onClick={() => { onClickRemoveApproverGroupCard(groupIndex) }}></button>
+            )}
+          </div>
 
           <div className="d-flex justify-content-center align-items-center mt-3">
 
@@ -98,10 +107,9 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 export const ApproverGroupCards = (props: Props): JSX.Element => {
   return (
     <>
-      {props.editingApproverGroups?.map((_, index) => (
+      {props.editingApproverGroups?.map((data, index) => (
         <ApproverGroupCard
-          // eslint-disable-next-line react/no-array-index-key
-          key={index}
+          key={data.uuidForRenderList}
           groupIndex={index}
           {...props}
         />
