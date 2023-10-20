@@ -12,10 +12,12 @@ import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid, useIsNotFound,
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
@@ -180,6 +182,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { currentPage } = props;
 
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { data: shareLinkId } = useShareLinkId();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
@@ -197,6 +200,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
+  const { mutate: mutateIsNotFound } = useIsNotFound();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
@@ -234,8 +238,41 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const { isLinkSharingDisabled } = props;
+
+  const onPressEnterForCreateHandler = async() => {
+    if (path == null || currentPage == null) {
+      return;
+    }
+
+    try {
+      setIsCreating(true);
+
+      await apiv3Post('/pages/', {
+        path,
+        body: undefined,
+        grant: currentPage.grant,
+        grantUserGroupId: currentPage.grantedGroup,
+      });
+
+      // mutate editor mode
+      // mutate view
+      // mutate when delete page
+      // TODO: check mutate
+      await mutateIsNotFound(false);
+      await router.push(`${path}#edit`);
+      toastSuccess(t('successfully_saved_the_page'));
+    }
+    catch (err) {
+      mutateIsNotFound(true);
+      toastError(err);
+    }
+    finally {
+      setIsCreating(false);
+    }
+  };
 
 
   // TODO: implement tags for editor
@@ -364,9 +401,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           <button
             type="button"
             className="btn btn-outline-primary"
-            onClick={() => {}}
+            onClick={onPressEnterForCreateHandler}
+            disabled={isCreating}
           >
-            <span className="me-1"><i className="icon-control-play" /></span>
+            <span className="me-1"><i className={isCreating ? 'fa fa-spinner fa-pulse' : 'icon-control-play'} /></span>
             <span>Create</span>
           </button>
         )}
