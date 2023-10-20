@@ -218,6 +218,9 @@ module.exports = (crowi) => {
     convertPagesByPath: [
       body('convertPath').optional().isString().withMessage('convertPath must be a string'),
     ],
+    uniquePath: [
+      query('parentPath').isString().withMessage('parentPath must be a string'),
+    ],
   };
 
   async function createPageAction({
@@ -998,6 +1001,42 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Failed to obtain migration status'));
     }
   });
+
+  router.get(
+    '/unique-path',
+    accessTokenParser,
+    loginRequiredStrictly,
+    excludeReadOnlyUser,
+    validator.uniquePath,
+    apiV3FormValidator,
+    async(req, res) => {
+      const { parentPath } = req.query;
+
+      const checkIsPathExists = async(path) => {
+        const Page = mongoose.model('Page');
+        const response = await Page.findByPath(path);
+        return response !== null;
+      };
+
+      const generateUniquePath = async(basePath, index = 1) => {
+        const path = `${basePath}${index}`;
+        const isPathExists = await checkIsPathExists(path);
+        if (isPathExists) {
+          return generateUniquePath(basePath, index + 1);
+        }
+        return path;
+      };
+
+      try {
+        const basePath = parentPath === '/' ? '/Untitled' : `${parentPath}/Untitled`;
+        const uniquePath = await generateUniquePath(basePath);
+        return res.apiv3({ uniquePath });
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
+      }
+    },
+  );
 
   return router;
 };
