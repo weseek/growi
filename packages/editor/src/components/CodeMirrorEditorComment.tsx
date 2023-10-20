@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
@@ -17,11 +17,12 @@ const additionalExtensions: Extension[] = [
 type Props = {
   onChange?: (value: string) => void,
   onComment?: () => void,
+  acceptedFileType?: AcceptedUploadFileType,
 }
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    onComment, onChange,
+    onComment, onChange, acceptedFileType,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
@@ -60,6 +61,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
       onChange={onChange}
+      acceptedFileType={acceptedFileType}
     />
   );
 };
