@@ -68,10 +68,19 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
+  const isDisappear = false;
+
   return (
     <div className="grw-taglabels-container">
       { tagsInfoData?.tags != null
-        ? <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        ? (
+          <PageTags
+            tags={tagsInfoData.tags}
+            isTagLabelsDisabled={isTagLabelsDisabled ?? false}
+            isDisappear={isDisappear}
+            tagsUpdateInvoked={tagsUpdatedHandler}
+          />
+        )
         : <PageTagsSkeleton />
       }
     </div>

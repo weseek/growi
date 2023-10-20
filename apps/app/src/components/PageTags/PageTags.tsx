@@ -10,6 +10,7 @@ import styles from './TagLabels.module.scss';
 type Props = {
   tags?: string[],
   isTagLabelsDisabled: boolean,
+  isDisappear: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
 }
 
@@ -18,7 +19,9 @@ export const PageTagsSkeleton = (): JSX.Element => {
 };
 
 export const PageTags:FC<Props> = (props: Props) => {
-  const { tags, isTagLabelsDisabled, tagsUpdateInvoked } = props;
+  const {
+    tags, isTagLabelsDisabled, isDisappear, tagsUpdateInvoked,
+  } = props;
 
   const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
 
@@ -41,6 +44,7 @@ export const PageTags:FC<Props> = (props: Props) => {
           tags={tags}
           openEditorModal={openEditorModal}
           isTagLabelsDisabled={isTagLabelsDisabled}
+          isDisappear={isDisappear}
         />
       </div>
       <TagEditModal

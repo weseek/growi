@@ -10,11 +10,14 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
+  isDisappear: boolean,
   openEditorModal?: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
-  const { tags, isTagLabelsDisabled, openEditorModal } = props;
+  const {
+    tags, isTagLabelsDisabled, isDisappear, openEditorModal,
+  } = props;
   const { t } = useTranslation();
 
   const { pushState } = useKeywordManager();
@@ -30,27 +33,39 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
 
   return (
     <>
-      {tags.map((tag) => {
-        return (
-          <a
-            key={tag}
-            type="button"
-            className="grw-tag-label badge bg-primary me-2"
-            onClick={() => pushState(`tag:${tag}`)}
-          >
-            {tag}
-          </a>
-        );
-      })}
+      {!isDisappear && tags.map(tag => (
+        <a
+          key={tag}
+          type="button"
+          className="grw-tag-label badge bg-primary me-2"
+          onClick={() => pushState(`tag:${tag}`)}
+        >
+          {tag}
+        </a>
+      ))}
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
           <div id="edit-tags-btn-wrapper-for-tooltip">
             <a
-              className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isTagLabelsDisabled && 'disabled'}`}
+              className={
+                `btn btn-link btn-edit-tags text-muted d-flex align-items-center
+                ${isTagsEmpty && 'no-tags'}
+                ${isTagLabelsDisabled && 'disabled'}
+                ${isDisappear && 'border border-secondary p-1'}`
+              }
               onClick={openEditorHandler}
             >
-              { isTagsEmpty && <>{ t('Add tags for this page') }</>}
-              <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
+              {isDisappear ? (
+                <>
+                  <i className={`icon-tag me-2 ${isTagsEmpty && 'ms-1'}`} />
+                  Tags
+                </>
+              ) : (
+                <>
+                  {isTagsEmpty && <> {t('Add tags for this page')}</>}
+                  <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
+                </>
+              )}
             </a>
           </div>
         </NotAvailableForReadOnlyUser>

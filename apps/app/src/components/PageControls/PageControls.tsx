@@ -15,7 +15,7 @@ import {
   toggleLike, toggleSubscribe, useUpdateStateAfterSave,
 } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
-import { toastError } from '~/client/util/toastr';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import type { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useIsAbleToShowTagLabel, EditorMode, useEditorMode } from '~/stores/ui';
@@ -63,6 +63,7 @@ const Tags = (props: TagsProps): JSX.Element => {
       await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
 
       updateStateAfterSave?.();
+      toastSuccess('updated tags successfully');
     }
     catch (err) {
       toastError(err);
@@ -76,10 +77,19 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
+  const isDisappear = true;
+
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
       { tagsInfoData?.tags != null
-        ? <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        ? (
+          <PageTags
+            tags={tagsInfoData.tags}
+            isTagLabelsDisabled={isTagLabelsDisabled ?? false}
+            isDisappear={isDisappear}
+            tagsUpdateInvoked={tagsUpdatedHandler}
+          />
+        )
         : <PageTagsSkeleton />
       }
     </div>
