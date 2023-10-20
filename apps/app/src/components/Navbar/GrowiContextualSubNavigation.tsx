@@ -14,7 +14,7 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
-  useCurrentPathname, useIsExecutePageCreation,
+  useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid,
 } from '~/stores/context';
 import {
@@ -197,7 +197,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
-  const { data: isExecutePageCreation } = useIsExecutePageCreation();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
