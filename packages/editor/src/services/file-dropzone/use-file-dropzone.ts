@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useDropzone, Accept } from 'react-dropzone';
 import type { DropzoneState } from 'react-dropzone';
 
-import { AcceptedUploadFileType } from 'src/consts';
+import { AcceptedUploadFileType } from '../../consts';
 
 type DropzoneEditor = {
   onUpload?: (files: File[]) => void,
