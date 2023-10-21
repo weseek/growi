@@ -1090,7 +1090,8 @@
       "name_mapper_detail": "Attribute to map as group name",
       "updated_group_sync_settings": "Updated LDAP group sync settings",
       "password": "Password",
-      "password_detail": "Login password is necessary because Bind type is set to User Bind"
+      "password_detail": "Login password is necessary because Bind type is set to User Bind",
+      "auth_not_set": "Enable and configure LDAP auth in security settings before sync"
     },
     "keycloak": {
       "group_sync_settings": "Keycloak Group Sync Settings",
@@ -1106,7 +1107,7 @@
       "group_sync_client_secret_detail": "Id of the secret used to authenticate to request to Keycloak admin API",
       "updated_group_sync_settings": "Updated Keycloak group sync settings",
       "preserve_deleted_keycloak_groups": "Preserve Deleted Keycloak Groups",
-      "auth_not_set": "Please set up and enable OIDC or SAML with Keycloak in security settings before sync"
+      "auth_not_set": "Enable and configure OIDC or SAML with Keycloak in security settings before sync"
     },
     "auto_generate_user_on_sync": "Auto Generate User on Sync",
     "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync."
