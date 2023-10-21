@@ -323,16 +323,17 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
-      // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-      crowi.ldapUserGroupSyncService?.syncExternalUserGroups();
-
-      return res.apiv3({}, 202);
     }
     catch (e) {
       return res.apiv3Err(
         new ErrorV3('LDAP group sync failed', 'external_user_group.sync_failed'), 500,
       );
     }
+
+    // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
+    crowi.ldapUserGroupSyncService?.syncExternalUserGroups();
+
+    return res.apiv3({}, 202);
   });
 
   router.put('/keycloak/sync', loginRequiredStrictly, adminRequired, async(req: AuthorizedRequest, res: ApiV3Response) => {
