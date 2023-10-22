@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
@@ -38,6 +39,7 @@ export const SyncExecution = ({
     total: 0,
     current: 0,
   });
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
 
   useEffect(() => {
     if (socket == null) return;
@@ -71,8 +73,13 @@ export const SyncExecution = ({
     };
   }, [socket, mutateExternalUserGroups, t, provider]);
 
-  const onSyncBtnClick = useCallback(async(e) => {
+  const onSyncBtnClick = (e) => {
     e.preventDefault();
+    setIsAlertModalOpen(true);
+  };
+
+  const onSyncExecConfirmBtnClick = useCallback(async(e) => {
+    setIsAlertModalOpen(false);
     try {
       await requestSyncAPI(e);
       setProgress({ total: 0, current: 0 });
@@ -122,6 +129,25 @@ export const SyncExecution = ({
           <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_user_group.sync')}</button></div>
         </div>
       </form>
+
+      <Modal
+        className="select-grant-group"
+        isOpen={isAlertModalOpen}
+        toggle={() => setIsAlertModalOpen(false)}
+      >
+        <ModalHeader tag="h4" toggle={() => setIsAlertModalOpen(false)} className="bg-purple text-light">
+          {t('external_user_group.confirmation_before_sync')}
+        </ModalHeader>
+        <ModalBody>
+          <ul>
+            <li>{t('external_user_group.execution_time_warning')}</li>
+            <li>{t('external_user_group.parallel_sync_forbidden')}</li>
+          </ul>
+          <div className="text-center">
+            <button className="btn btn-primary" type="button" onClick={onSyncExecConfirmBtnClick}>{t('external_user_group.sync')}</button>
+          </div>
+        </ModalBody>
+      </Modal>
     </>
   );
 };
