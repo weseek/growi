@@ -15,7 +15,7 @@ import { useSWRxExternalUserGroupList } from '../../stores/external-user-group';
 
 type SyncExecutionProps = {
   provider: ExternalGroupProviderType
-  requestSyncAPI: (e) => Promise<void>
+  requestSyncAPI: (e?: React.FormEvent<HTMLFormElement>) => Promise<void>
   AdditionalForm?: FC
 }
 
@@ -40,6 +40,8 @@ export const SyncExecution = ({
     current: 0,
   });
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  // value to propagate the submit event of form to submit confirm modal
+  const [currentSubmitEvent, setCurrentSubmitEvent] = useState<React.FormEvent<HTMLFormElement>>();
 
   useEffect(() => {
     if (socket == null) return;
@@ -73,22 +75,23 @@ export const SyncExecution = ({
     };
   }, [socket, mutateExternalUserGroups, t, provider]);
 
-  const onSyncBtnClick = (e) => {
+  const onSyncBtnClick = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setCurrentSubmitEvent(e);
     setIsAlertModalOpen(true);
   };
 
-  const onSyncExecConfirmBtnClick = useCallback(async(e) => {
+  const onSyncExecConfirmBtnClick = useCallback(async() => {
     setIsAlertModalOpen(false);
     try {
-      await requestSyncAPI(e);
+      await requestSyncAPI(currentSubmitEvent);
       setProgress({ total: 0, current: 0 });
       setSyncStatus(SyncStatus.syncExecuting);
     }
     catch (errs) {
       toastError(t(errs[0]?.code));
     }
-  }, [t, requestSyncAPI]);
+  }, [t, requestSyncAPI, currentSubmitEvent]);
 
   const renderProgressBar = () => {
     if (syncStatus === SyncStatus.beforeSync) return null;
@@ -112,6 +115,8 @@ export const SyncExecution = ({
       />
     );
   };
+
+  window.addEventListener('customSubmitEvent', onSyncExecConfirmBtnClick);
 
   return (
     <>
