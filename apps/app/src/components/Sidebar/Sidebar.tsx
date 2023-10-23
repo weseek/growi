@@ -108,6 +108,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
   }, [currentProductNavWidth, isCollapsedMode, isDrawerMode]);
 
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
+  const collapsibleContentsWidth = isCollapsedMode ? currentProductNavWidth : undefined;
 
   return (
     <ResizableArea
@@ -122,7 +123,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
       <SidebarHead />
       <div className="grw-sidebar-inner flex-expand-horiz" onMouseLeave={mouseLeaveHandler}>
         <SidebarNav onPrimaryItemHover={primaryItemHoverHandler} />
-        <div className="sidebar-contents-container flex-grow-1 overflow-y-auto">
+        <div className="sidebar-contents-container flex-grow-1 overflow-y-auto" style={{ width: collapsibleContentsWidth }}>
           <SidebarContents />
         </div>
       </div>

@@ -43,6 +43,7 @@
         .sidebar-contents-container {
           position: absolute;
           left: var.$grw-sidebar-nav-width;
+          min-height: 50vh;
           max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
         }
       }
