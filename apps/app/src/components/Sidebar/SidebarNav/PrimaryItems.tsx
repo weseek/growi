@@ -4,13 +4,27 @@ import dynamic from 'next/dynamic';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import { useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
+import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
 
 
 const InAppNotificationDropdown = dynamic(() => import('../../InAppNotification/InAppNotificationDropdown')
   .then(mod => mod.InAppNotificationDropdown), { ssr: false });
+
+
+/**
+ * @returns String for className to switch the indicator is active or not
+ */
+const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => {
+  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
+
+  if (sidebarMode === SidebarMode.COLLAPSED && !isCollapsedContentsOpened) {
+    return '';
+  }
+
+  return isSelected ? 'active' : '';
+};
 
 
 type PrimaryItemProps = {
@@ -29,7 +43,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
 
   const { data: currentContents, mutate: mutateContents } = useCurrentSidebarContents();
 
-  const isSelected = contents === currentContents;
+  const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
 
   const selectThisItem = useCallback(() => {
     mutateContents(contents, false);
@@ -62,7 +76,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     <button
       type="button"
       data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
-      className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
+      className={`d-block btn btn-primary ${indicatorClass}`}
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
     >
