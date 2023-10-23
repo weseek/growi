@@ -132,15 +132,17 @@ type EditorModeUtils = {
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
+  const { data: isNotFound } = useIsNotFound();
 
   const editorModeByHash = determineEditorModeByHash();
 
   const isLoading = _isEditable === undefined;
   const isEditable = !isLoading && _isEditable;
-  const initialData = isEditable ? editorModeByHash : EditorMode.View;
+  const preventModeEditor = !isEditable || isNotFound === undefined || isNotFound === true;
+  const initialData = preventModeEditor ? EditorMode.View : editorModeByHash;
 
   const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditable],
+    isLoading ? null : ['editorMode', isEditable, preventModeEditor],
     null,
     { fallbackData: initialData },
   );
@@ -148,12 +150,12 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   // construct overriding mutate method
   const mutateOriginal = swrResponse.mutate;
   const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (!isEditable) {
+    if (preventModeEditor) {
       return Promise.resolve(EditorMode.View); // fixed if not editable
     }
     updateHashByEditorMode(editorMode);
     return mutateOriginal(editorMode, shouldRevalidate);
-  }, [isEditable, mutateOriginal]);
+  }, [preventModeEditor, mutateOriginal]);
 
   const getClassNames = useCallback(() => {
     return getClassNamesByEditorMode(swrResponse.data);
