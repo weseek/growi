@@ -175,6 +175,7 @@ module.exports = (crowi) => {
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+      body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -238,6 +239,21 @@ module.exports = (crowi) => {
     return [];
   }
 
+  async function checkIsPathExists(path) {
+    const Page = mongoose.model('Page');
+    const response = await Page.findByPath(path);
+    return response != null;
+  }
+
+  async function generateUniquePath(basePath, index = 1) {
+    const path = basePath + index;
+    const isPathExists = await checkIsPathExists(path);
+    if (isPathExists) {
+      return generateUniquePath(basePath, index + 1);
+    }
+    return path;
+  }
+
   /**
    * @swagger
    *
@@ -266,9 +282,9 @@ module.exports = (crowi) => {
    *                    type: array
    *                    items:
    *                      $ref: '#/components/schemas/Tag'
-   *                  createFromPageTree:
+   *                  shouldGeneratePath:
    *                    type: boolean
-   *                    description: Whether the page was created from the page tree or not
+   *                    description: Determine whether a new path should be generated
    *                required:
    *                  - body
    *                  - path
@@ -295,13 +311,25 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
     } = req.body;
 
     let { path } = req.body;
 
     // check whether path starts slash
     path = addHeadingSlash(path);
+
+    if (shouldGeneratePath) {
+      try {
+        const rootPath = '/';
+        const defaultTitle = '/Untitled';
+        const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
+        path = await generateUniquePath(basePath);
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
+      }
+    }
 
     if (!isCreatablePage(path)) {
       return res.apiv3Err(`Could not use the path '${path}'`);
