@@ -20,12 +20,12 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
+  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId, useIsEditablePage,
 } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useIsEditable, useIsReadOnlyUser,
+  useIsReadOnlyUser, useIsExecutePageCreation,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { useStaticSWR } from './use-static-swr';
@@ -131,16 +131,16 @@ type EditorModeUtils = {
 }
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
-  const { data: _isEditable } = useIsEditable();
+  const { data: _isEditablePage } = useIsEditablePage();
 
   const editorModeByHash = determineEditorModeByHash();
 
-  const isLoading = _isEditable === undefined;
-  const isEditable = !isLoading && _isEditable;
-  const initialData = isEditable ? editorModeByHash : EditorMode.View;
+  const isLoading = _isEditablePage === undefined;
+  const isEditablePage = !isLoading && _isEditablePage;
+  const initialData = isEditablePage ? editorModeByHash : EditorMode.View;
 
   const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditable],
+    isLoading ? null : ['editorMode', isEditablePage],
     null,
     { fallbackData: initialData },
   );
@@ -148,12 +148,12 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   // construct overriding mutate method
   const mutateOriginal = swrResponse.mutate;
   const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (!isEditable) {
+    if (!isEditablePage) {
       return Promise.resolve(EditorMode.View); // fixed if not editable
     }
     updateHashByEditorMode(editorMode);
     return mutateOriginal(editorMode, shouldRevalidate);
-  }, [isEditable, mutateOriginal]);
+  }, [isEditablePage, mutateOriginal]);
 
   const getClassNames = useCallback(() => {
     return getClassNamesByEditorMode(swrResponse.data);
@@ -451,14 +451,14 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToChangeEditorMode';
-  const { data: isEditable } = useIsEditable();
+  const { data: isEditablePage } = useIsEditablePage();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isEditablePage, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, isEditable, isSharedUser],
-    () => !!isEditable && !isSharedUser,
+    includesUndefined ? null : [key, isEditablePage, isSharedUser],
+    () => !!isEditablePage && !isSharedUser,
   );
 };
 
@@ -475,5 +475,19 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, pagePath, isNotFound],
     () => isPageExist && !isUsersTopPagePath,
+  );
+};
+
+export const useIsAbleToShowCreateButton = (): SWRResponse<boolean, Error> => {
+  const key = 'isAbleToShowCreateButton';
+  const { data: isEditablePage } = useIsEditablePage();
+  const { data: isExecutePageCreation } = useIsExecutePageCreation();
+  const { data: isSharedUser } = useIsSharedUser();
+
+  const includesUndefined = [isEditablePage, isExecutePageCreation, isSharedUser].some(v => v === undefined);
+
+  return useSWRImmutable(
+    includesUndefined ? null : [key, isEditablePage, isExecutePageCreation, isSharedUser],
+    () => !isEditablePage && !!isExecutePageCreation && !isSharedUser,
   );
 };
