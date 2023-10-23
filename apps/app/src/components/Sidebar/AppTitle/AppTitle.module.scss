@@ -41,6 +41,29 @@
 }
 
 
+// == Interaction
+@keyframes bounce-to-right {
+  10% { transform:translateX(3px); }
+  20% { transform:translateX(0%); }
+  25% { transform:translateX(2px); }
+  27% { transform:translateX(0%); }
+}
+
+.on-subnavigation {
+  animation: bounce-to-right 1s ease;
+}
+
+@keyframes bounce-to-left {
+  0% { transform:translateX(48px); }
+  100% { transform:translateX(0%); }
+}
+
+.on-sidebar-head {
+  animation: bounce-to-left 0.2s ease;
+}
+
+
+
 // == Colors
 .grw-app-title :global {
   .grw-logo {

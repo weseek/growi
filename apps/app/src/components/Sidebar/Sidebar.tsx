@@ -188,10 +188,10 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      { isCollapsedMode() && <AppTitleOnSubnavigation /> }
+      { sidebarMode != null && isCollapsedMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
-          { !isCollapsedMode() && <AppTitleOnSidebarHead /> }
+          { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
