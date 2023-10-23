@@ -24,7 +24,7 @@ import type { AxiosResponse } from '~/utils/axios';
 import type { IPageTagsInfo } from '../interfaces/tag';
 
 import {
-  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser, useIsExecutePageCreation,
+  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
 
 
@@ -290,17 +290,5 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
     ([, pagePath]) => pagePathUtils.isTrashPage(pagePath),
     // TODO: set fallbackData
     // { fallbackData:  }
-  );
-};
-
-export const useIsEditablePage = (): SWRResponse<boolean, Error> => {
-  const { data: isExecutePageCreation } = useIsExecutePageCreation();
-  const { data: isNotFound } = useIsNotFound();
-
-  return useSWRImmutable(
-    ['isEditablePage', isExecutePageCreation, isNotFound],
-    ([, isExecutePageCreation, isNotFound]) => {
-      return (!!isExecutePageCreation && !isNotFound);
-    },
   );
 };

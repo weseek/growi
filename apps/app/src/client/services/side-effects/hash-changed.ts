@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { useIsEditablePage } from '~/stores/page';
+import { useIsEditable } from '~/stores/context';
 import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 
 /**
@@ -11,7 +11,7 @@ import { useEditorMode, determineEditorModeByHash } from '~/stores/ui';
 export const useHashChangedEffect = (): void => {
   const router = useRouter();
 
-  const { data: isEditablePage } = useIsEditablePage();
+  const { data: isEditable } = useIsEditable();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
 
   const hashchangeHandler = useCallback(() => {
@@ -24,7 +24,7 @@ export const useHashChangedEffect = (): void => {
 
   // setup effect
   useEffect(() => {
-    if (!isEditablePage) {
+    if (!isEditable) {
       return;
     }
 
@@ -35,7 +35,7 @@ export const useHashChangedEffect = (): void => {
       window.removeEventListener('hashchange', hashchangeHandler);
     };
 
-  }, [hashchangeHandler, isEditablePage]);
+  }, [hashchangeHandler, isEditable]);
 
   /*
   * Route changes by Next Router

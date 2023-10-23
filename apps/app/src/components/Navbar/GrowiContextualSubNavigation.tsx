@@ -27,7 +27,7 @@ import {
 import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
-  useIsAbleToChangeEditorMode, useIsAbleToShowCreateButton,
+  useIsAbleToChangeEditorMode,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -200,7 +200,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
-  const { data: isAbleToShowCreateButton } = useIsAbleToShowCreateButton();
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125
@@ -358,16 +357,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
             onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
           />
-        )}
-        {isAbleToShowCreateButton && (
-          <button
-            type="button"
-            className="btn btn-outline-primary"
-            onClick={() => {}}
-          >
-            <span className="me-1"><i className="icon-control-play" /></span>
-            <span>Create</span>
-          </button>
         )}
       </div>
 

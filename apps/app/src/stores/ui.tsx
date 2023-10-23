@@ -20,12 +20,12 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { SidebarContentsType } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
-  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId, useIsEditablePage,
+  useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import {
-  useIsReadOnlyUser, useIsExecutePageCreation,
+  useIsEditable, useIsReadOnlyUser,
   useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
 } from './context';
 import { useStaticSWR } from './use-static-swr';
@@ -131,16 +131,18 @@ type EditorModeUtils = {
 }
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
-  const { data: _isEditablePage } = useIsEditablePage();
+  const { data: _isEditable } = useIsEditable();
+  const { data: isNotFound } = useIsNotFound();
 
   const editorModeByHash = determineEditorModeByHash();
 
-  const isLoading = _isEditablePage === undefined;
-  const isEditablePage = !isLoading && _isEditablePage;
-  const initialData = isEditablePage ? editorModeByHash : EditorMode.View;
+  const isLoading = _isEditable === undefined;
+  const isEditable = !isLoading && _isEditable;
+  const preventModeEditor = !isEditable || isNotFound === undefined || isNotFound === true;
+  const initialData = preventModeEditor ? EditorMode.View : editorModeByHash;
 
   const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditablePage],
+    isLoading ? null : ['editorMode', isEditable, preventModeEditor],
     null,
     { fallbackData: initialData },
   );
@@ -148,12 +150,12 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   // construct overriding mutate method
   const mutateOriginal = swrResponse.mutate;
   const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (!isEditablePage) {
+    if (preventModeEditor) {
       return Promise.resolve(EditorMode.View); // fixed if not editable
     }
     updateHashByEditorMode(editorMode);
     return mutateOriginal(editorMode, shouldRevalidate);
-  }, [isEditablePage, mutateOriginal]);
+  }, [preventModeEditor, mutateOriginal]);
 
   const getClassNames = useCallback(() => {
     return getClassNamesByEditorMode(swrResponse.data);
@@ -451,14 +453,14 @@ export const useIsAbleToShowTagLabel = (): SWRResponse<boolean, Error> => {
 
 export const useIsAbleToChangeEditorMode = (): SWRResponse<boolean, Error> => {
   const key = 'isAbleToChangeEditorMode';
-  const { data: isEditablePage } = useIsEditablePage();
+  const { data: isEditable } = useIsEditable();
   const { data: isSharedUser } = useIsSharedUser();
 
-  const includesUndefined = [isEditablePage, isSharedUser].some(v => v === undefined);
+  const includesUndefined = [isEditable, isSharedUser].some(v => v === undefined);
 
   return useSWRImmutable(
-    includesUndefined ? null : [key, isEditablePage, isSharedUser],
-    () => !!isEditablePage && !isSharedUser,
+    includesUndefined ? null : [key, isEditable, isSharedUser],
+    () => !!isEditable && !isSharedUser,
   );
 };
 
@@ -475,19 +477,5 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
   return useSWRImmutable(
     includesUndefined ? null : [key, pageId, pagePath, isNotFound],
     () => isPageExist && !isUsersTopPagePath,
-  );
-};
-
-export const useIsAbleToShowCreateButton = (): SWRResponse<boolean, Error> => {
-  const key = 'isAbleToShowCreateButton';
-  const { data: isEditablePage } = useIsEditablePage();
-  const { data: isExecutePageCreation } = useIsExecutePageCreation();
-  const { data: isSharedUser } = useIsSharedUser();
-
-  const includesUndefined = [isEditablePage, isExecutePageCreation, isSharedUser].some(v => v === undefined);
-
-  return useSWRImmutable(
-    includesUndefined ? null : [key, isEditablePage, isExecutePageCreation, isSharedUser],
-    () => !isEditablePage && !!isExecutePageCreation && !isSharedUser,
   );
 };
