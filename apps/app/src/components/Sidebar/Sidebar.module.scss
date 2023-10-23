@@ -6,23 +6,21 @@
 
 .grw-sidebar :global {
   top: 0;
-  border-right : 1px solid var(--bs-border-color);
-
-  .grw-sidebar-inner {
-    border-top : 1px solid var(--bs-border-color);
-  }
-
-  .grw-sidebar-content-header {
-    .grw-btn-reload {
-      font-size: 18px;
-    }
-  }
 
   .sidebar-contents-container {
     backdrop-filter: blur(20px);
   }
 }
 
+
+// TODO: commonize reload button style
+.grw-sidebar :global {
+  .grw-sidebar-content-header {
+    .grw-btn-reload {
+      font-size: 18px;
+    }
+  }
+}
 
 // Dock Mode
 .grw-sidebar {
@@ -45,13 +43,12 @@
         border-width : 1px 1px 1px 0;
       }
 
-      &.open {
-        .sidebar-contents-container {
-          position: absolute;
-          left: var.$grw-sidebar-nav-width;
-          min-height: 50vh;
-          max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
-        }
+      // open
+      .sidebar-contents-container.open {
+        position: absolute;
+        left: var.$grw-sidebar-nav-width;
+        min-height: 50vh;
+        max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
       }
     }
   }

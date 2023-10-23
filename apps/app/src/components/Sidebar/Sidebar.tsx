@@ -1,4 +1,5 @@
 import React, {
+  type FC,
   memo, useCallback, useEffect, useState,
 } from 'react';
 
@@ -14,7 +15,7 @@ import {
 
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
-import { SidebarNav } from './SidebarNav';
+import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
 
@@ -26,7 +27,13 @@ const resizableAreaMinWidth = 348;
 const resizableAreaCollapsedWidth = 48;
 
 
-export const SidebarSubstance = memo((): JSX.Element => {
+type ResizabeSidebarProps = {
+  children?: React.ReactNode,
+}
+
+const ResizableSidebar = memo((props: ResizabeSidebarProps): JSX.Element => {
+
+  const { children } = props;
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
@@ -69,25 +76,6 @@ export const SidebarSubstance = memo((): JSX.Element => {
     scheduleToPut({ preferCollapsedModeByUser: true });
   }, [mutateCollapsedContentsOpened, mutateCollapsedMode]);
 
-  // open menu when collapsed mode
-  const primaryItemHoverHandler = useCallback(() => {
-    // reject other than collapsed mode
-    if (!isCollapsedMode) {
-      return;
-    }
-
-    mutateCollapsedContentsOpened(true);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
-
-  // close menu when collapsed mode
-  const mouseLeaveHandler = useCallback(() => {
-    // reject other than collapsed mode
-    if (!isCollapsedMode) {
-      return;
-    }
-
-    mutateCollapsedContentsOpened(false);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
 
   useEffect(() => {
     toggleDrawerMode(isDrawerMode);
@@ -108,7 +96,6 @@ export const SidebarSubstance = memo((): JSX.Element => {
   }, [currentProductNavWidth, isCollapsedMode, isDrawerMode]);
 
   const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
-  const collapsibleContentsWidth = isCollapsedMode ? currentProductNavWidth : undefined;
 
   return (
     <ResizableArea
@@ -120,24 +107,88 @@ export const SidebarSubstance = memo((): JSX.Element => {
       onResizeDone={resizeDoneHandler}
       onCollapsed={collapsedByResizableAreaHandler}
     >
-      <SidebarHead />
-      <div className="grw-sidebar-inner flex-expand-horiz" onMouseLeave={mouseLeaveHandler}>
-        <SidebarNav onPrimaryItemHover={primaryItemHoverHandler} />
-        <div className="sidebar-contents-container flex-grow-1 overflow-y-auto" style={{ width: collapsibleContentsWidth }}>
-          <SidebarContents />
-        </div>
-      </div>
+      {children}
     </ResizableArea>
   );
 
 });
 
+
+type CollapsibleSidebarProps = {
+  Nav: FC<SidebarNavProps>,
+  className?: string,
+  children?: React.ReactNode,
+}
+
+const CollapsibleSidebar = memo((props: CollapsibleSidebarProps): JSX.Element => {
+
+  const { Nav, className, children } = props;
+
+  const { data: currentProductNavWidth } = useCurrentProductNavWidth();
+  const { data: isCollapsedMode } = useCollapsedMode();
+  const { data: isCollapsedContentsOpened, mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+
+
+  // open menu when collapsed mode
+  const primaryItemHoverHandler = useCallback(() => {
+    // reject other than collapsed mode
+    if (!isCollapsedMode) {
+      return;
+    }
+
+    mutateCollapsedContentsOpened(true);
+  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+
+  // close menu when collapsed mode
+  const mouseLeaveHandler = useCallback(() => {
+    // reject other than collapsed mode
+    if (!isCollapsedMode) {
+      return;
+    }
+
+    mutateCollapsedContentsOpened(false);
+  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+
+  const openClass = `${isCollapsedContentsOpened ? 'open' : ''}`;
+  const collapsibleContentsWidth = isCollapsedMode ? currentProductNavWidth : undefined;
+
+  return (
+    <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
+      <Nav onPrimaryItemHover={primaryItemHoverHandler} />
+      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+        {children}
+      </div>
+    </div>
+  );
+
+});
+
+
+type DrawableSidebarProps = {
+  className?: string,
+  children?: React.ReactNode,
+}
+
+const DrawableSidebar = memo((props: DrawableSidebarProps): JSX.Element => {
+
+  const { className, children } = props;
+
+  const { data: isDrawerOpened } = useDrawerOpened();
+
+  const openClass = `${isDrawerOpened ? 'open' : ''}`;
+
+  return (
+    <div className={`${className} ${openClass}`}>
+      {children}
+    </div>
+  );
+});
+
+
 export const Sidebar = (): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
-  const { data: isDrawerOpened } = useDrawerOpened();
   const { data: isCollapsedMode } = useCollapsedMode();
-  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -147,11 +198,15 @@ export const Sidebar = (): JSX.Element => {
     : isCollapsedMode
       ? 'grw-sidebar-collapsed'
       : 'grw-sidebar-dock';
-  const openClass = `${isDrawerOpened || isCollapsedContentsOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${grwSidebarClass} ${modeClass} ${openClass} vh-100`} data-testid="grw-sidebar">
-      <SidebarSubstance />
-    </div>
+    <DrawableSidebar className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
+      <ResizableSidebar>
+        <SidebarHead />
+        <CollapsibleSidebar Nav={SidebarNav} className="border-top">
+          <SidebarContents />
+        </CollapsibleSidebar>
+      </ResizableSidebar>
+    </DrawableSidebar>
   );
 };

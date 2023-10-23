@@ -9,11 +9,11 @@ import { SecondaryItems } from './SecondaryItems';
 
 import styles from './SidebarNav.module.scss';
 
-type Props = {
+export type SidebarNavProps = {
   onPrimaryItemHover?: (contents: SidebarContentsType) => void,
 }
 
-export const SidebarNav = memo((props: Props) => {
+export const SidebarNav = memo((props: SidebarNavProps) => {
   const { onPrimaryItemHover } = props;
 
   return (
