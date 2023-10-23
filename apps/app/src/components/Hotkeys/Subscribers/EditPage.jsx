@@ -2,16 +2,16 @@ import { useEffect } from 'react';
 
 import PropTypes from 'prop-types';
 
-import { useIsEditable } from '~/stores/context';
+import { useIsEditablePage } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 const EditPage = (props) => {
-  const { data: isEditable } = useIsEditable();
+  const { data: isEditablePage } = useIsEditablePage();
   const { mutate: mutateEditorMode } = useEditorMode();
 
   // setup effect
   useEffect(() => {
-    if (!isEditable) {
+    if (!isEditablePage) {
       return;
     }
 
@@ -24,7 +24,7 @@ const EditPage = (props) => {
 
     // remove this
     props.onDeleteRender(this);
-  }, [isEditable, mutateEditorMode, props]);
+  }, [isEditablePage, mutateEditorMode, props]);
 
   return null;
 };

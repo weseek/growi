@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 
-import { useIsEditable } from '~/stores/context';
+import { useIsEditablePage } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
 const FocusToGlobalSearch = (props) => {
-  const { data: isEditable } = useIsEditable();
+  const { data: isEditablePage } = useIsEditablePage();
   const { data: globalSearchFormRef } = useGlobalSearchFormRef();
 
   // setup effect
   useEffect(() => {
-    if (!isEditable) {
+    if (!isEditablePage) {
       return;
     }
 
@@ -22,7 +22,7 @@ const FocusToGlobalSearch = (props) => {
 
     // remove this
     props.onDeleteRender();
-  }, [globalSearchFormRef, isEditable, props]);
+  }, [globalSearchFormRef, isEditablePage, props]);
 
   return null;
 };
