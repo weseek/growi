@@ -246,7 +246,7 @@ export const useIsAdmin = (): SWRResponse<boolean, Error> => {
   );
 };
 
-export const useIsEditable = (): SWRResponse<boolean, Error> => {
+export const useIsExecutePageCreation = (): SWRResponse<boolean, Error> => {
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isForbidden } = useIsForbidden();
@@ -254,7 +254,7 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
   const { data: isIdenticalPath } = useIsIdenticalPath();
 
   return useSWRImmutable(
-    ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
+    ['isExecutePageCreation', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
     ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
     },
