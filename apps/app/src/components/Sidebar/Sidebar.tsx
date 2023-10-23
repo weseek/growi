@@ -69,6 +69,26 @@ export const SidebarSubstance = memo((): JSX.Element => {
     scheduleToPut({ preferCollapsedModeByUser: true });
   }, [mutateCollapsedContentsOpened, mutateCollapsedMode]);
 
+  // open menu when collapsed mode
+  const primaryItemHoverHandler = useCallback(() => {
+    // reject other than collapsed mode
+    if (!isCollapsedMode) {
+      return;
+    }
+
+    mutateCollapsedContentsOpened(true);
+  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+
+  // close menu when collapsed mode
+  const mouseLeaveHandler = useCallback(() => {
+    // reject other than collapsed mode
+    if (!isCollapsedMode) {
+      return;
+    }
+
+    mutateCollapsedContentsOpened(false);
+  }, [isCollapsedMode, mutateCollapsedContentsOpened]);
+
   useEffect(() => {
     toggleDrawerMode(isDrawerMode);
   }, [isDrawerMode, toggleDrawerMode]);
@@ -100,8 +120,8 @@ export const SidebarSubstance = memo((): JSX.Element => {
       onCollapsed={collapsedByResizableAreaHandler}
     >
       <SidebarHead />
-      <div className="grw-sidebar-inner flex-expand-horiz">
-        <SidebarNav />
+      <div className="grw-sidebar-inner flex-expand-horiz" onMouseLeave={mouseLeaveHandler}>
+        <SidebarNav onPrimaryItemHover={primaryItemHoverHandler} />
         <div className="sidebar-contents-container flex-grow-1 overflow-y-auto">
           <SidebarContents />
         </div>
@@ -115,14 +135,21 @@ export const Sidebar = (): JSX.Element => {
 
   const { data: isDrawerMode } = useDrawerMode();
   const { data: isDrawerOpened } = useDrawerOpened();
+  const { data: isCollapsedMode } = useCollapsedMode();
+  const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   // css styles
-  const grwSidebarClass = `grw-sidebar ${styles['grw-sidebar']}`;
-  const sidebarModeClass = `${isDrawerMode ? 'grw-sidebar-drawer' : 'grw-sidebar-dock'}`;
-  const isOpenClass = `${isDrawerOpened ? 'open' : ''}`;
+  const grwSidebarClass = styles['grw-sidebar'];
+  // eslint-disable-next-line no-nested-ternary
+  const modeClass = isDrawerMode
+    ? 'grw-sidebar-drawer'
+    : isCollapsedMode
+      ? 'grw-sidebar-collapsed'
+      : 'grw-sidebar-dock';
+  const openClass = `${isDrawerOpened || isCollapsedContentsOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${grwSidebarClass} ${sidebarModeClass} ${isOpenClass} vh-100`} data-testid="grw-sidebar">
+    <div className={`${grwSidebarClass} ${modeClass} ${openClass} vh-100`} data-testid="grw-sidebar">
       <SidebarSubstance />
     </div>
   );

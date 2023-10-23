@@ -2,6 +2,7 @@
 
 @use '~/styles/mixins';
 
+@use './variables' as var;
 
 .grw-sidebar :global {
   top: 0;
@@ -16,44 +17,57 @@
       font-size: 18px;
     }
   }
-}
-
-
-// Dock Mode
-@mixin dock() {
-  // sticky
-  position: sticky;
-}
-
-// Drawer Mode
-@mixin drawer() {
-  position: fixed;
-  z-index: bs.$zindex-fixed + 2;
-  width: 348px;
-
-  // apply transition
-  transition-property: transform;
-  @include mixins.apply-navigation-transition();
-
-  &:not(.open) {
-    transform: translateX(-100%);
-  }
-  &.open {
-    transform: translateX(0);
-  }
 
   .sidebar-contents-container {
     backdrop-filter: blur(20px);
   }
 }
 
+
+// Dock Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-dock {
+      position: sticky;
+    }
+  }
+}
+
+// Collapsed Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-collapsed {
+      position: sticky;
+
+      &.open {
+        .sidebar-contents-container {
+          position: absolute;
+          left: var.$grw-sidebar-nav-width;
+          max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
+        }
+      }
+    }
+  }
+}
+
+// Drawer Mode
 .grw-sidebar {
   &:global {
     &.grw-sidebar-drawer {
-      @include drawer();
-    }
-    &.grw-sidebar-dock {
-      @include dock();
+      position: fixed;
+      z-index: bs.$zindex-fixed + 2;
+      width: 348px;
+
+      // apply transition
+      transition-property: transform;
+      @include mixins.apply-navigation-transition();
+
+      &:not(.open) {
+        transform: translateX(-100%);
+      }
+      &.open {
+        transform: translateX(0);
+      }
     }
   }
 }

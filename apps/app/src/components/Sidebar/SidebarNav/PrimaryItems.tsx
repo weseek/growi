@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import {
-  useCurrentSidebarContents, useCollapsedMode, useDrawerMode, useCollapsedContentsOpened,
+  useCurrentSidebarContents, useCollapsedMode, useDrawerMode,
 } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
@@ -20,15 +20,16 @@ type PrimaryItemProps = {
   label: string,
   iconName: string,
   sidebarMode: SidebarMode,
+  onHover?: (contents: SidebarContentsType) => void,
 }
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
     contents, label, iconName, sidebarMode,
+    onHover,
   } = props;
 
   const { data: currentContents, mutate: mutateContents } = useCurrentSidebarContents();
-  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const isSelected = contents === currentContents;
 
@@ -47,23 +48,14 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   }, [selectThisItem, sidebarMode]);
 
   const mouseEnteredHandler = useCallback(() => {
-    // do nothing BUT the collapsed mode
+    // ignore other than collapsed mode
     if (sidebarMode !== SidebarMode.COLLAPSED) {
       return;
     }
 
     selectThisItem();
-    mutateCollapsedContentsOpened(true);
-  }, [mutateCollapsedContentsOpened, selectThisItem, sidebarMode]);
-
-  const mouseLeavedHandler = useCallback(() => {
-    // do nothing BUT the collapsed mode
-    if (sidebarMode !== SidebarMode.COLLAPSED) {
-      return;
-    }
-
-    mutateCollapsedContentsOpened(false);
-  }, [mutateCollapsedContentsOpened, sidebarMode]);
+    onHover?.(contents);
+  }, [contents, onHover, selectThisItem, sidebarMode]);
 
 
   const labelForTestId = label.toLowerCase().replace(' ', '-');
@@ -75,14 +67,20 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
       className={`d-block btn btn-primary ${isSelected ? 'active' : ''}`}
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
-      onMouseLeave={mouseLeavedHandler}
     >
       <i className="material-icons">{iconName}</i>
     </button>
   );
 };
 
-export const PrimaryItems: FC = memo(() => {
+
+type Props = {
+  onItemHover?: (contents: SidebarContentsType) => void,
+}
+
+export const PrimaryItems = memo((props: Props) => {
+  const { onItemHover } = props;
+
   const { data: isCollapsedMode } = useCollapsedMode();
   const { data: isDrawerMode } = useDrawerMode();
 
@@ -93,11 +91,11 @@ export const PrimaryItems: FC = memo(() => {
 
   return (
     <div className={styles['grw-primary-items']}>
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" />
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" />
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" />
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" />
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onHover={onItemHover} />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onHover={onItemHover} />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onHover={onItemHover} />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
       <InAppNotificationDropdown />
     </div>
   );
