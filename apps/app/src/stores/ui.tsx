@@ -1,4 +1,6 @@
-import { type RefObject, useCallback, useEffect } from 'react';
+import {
+  type RefObject, useCallback, useEffect,
+} from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
 import { type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
@@ -279,15 +281,18 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
 
   const condition = isDrawerMode != null && isCollapsedModeUnderDockMode != null;
 
+  const fetcher = useCallback(([, isDrawerMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined]) => {
+    if (isDrawerMode) {
+      return SidebarMode.DRAWER;
+    }
+    return isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+  }, []);
+
   const swrResponse = useSWRImmutable(
     condition ? ['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode] : null,
     // calcDrawerMode,
-    ([, isDrawerMode, isCollapsedModeUnderDockMode]) => {
-      if (isDrawerMode) {
-        return SidebarMode.DRAWER;
-      }
-      return isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
-    },
+    fetcher,
+    { fallbackData: fetcher(['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode]) },
   );
 
   const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);
