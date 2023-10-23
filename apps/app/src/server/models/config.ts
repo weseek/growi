@@ -133,8 +133,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
   'customize:isEnabledMarp': false,
-  'customize:isSidebarDrawerMode': false,
-  'customize:isSidebarClosedAtDockMode': false,
+  'customize:isSidebarCollapsedMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,

@@ -4,14 +4,14 @@ import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSWRxSidebarConfig } from '~/stores/ui';
+import { useSWRxSidebarConfig } from '~/stores/admin/sidebar-config';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
 
   const {
-    update, isSidebarDrawerMode, isSidebarClosedAtDockMode, setIsSidebarDrawerMode, setIsSidebarClosedAtDockMode,
+    update, isSidebarCollapsedMode, setIsSidebarCollapsedMode,
   } = useSWRxSidebarConfig();
 
   const { resolvedTheme } = useNextThemes();
@@ -45,8 +45,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             <div id="layoutOptions" className="row row-cols-2">
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${isSidebarDrawerMode ? 'border-active' : ''}`}
-                  onClick={() => setIsSidebarDrawerMode(true)}
+                  className={`card customize-layout-card ${isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarCollapsedMode(true)}
                   role="button"
                 >
                   <img src={drawerIconFileName} />
@@ -57,8 +57,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
               </div>
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${!isSidebarDrawerMode ? 'border-active' : ''}`}
-                  onClick={() => setIsSidebarDrawerMode(false)}
+                  className={`card customize-layout-card ${!isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  onClick={() => setIsSidebarCollapsedMode(false)}
                   role="button"
                 >
                   <img src={dockIconFileName} />
@@ -83,9 +83,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-open"
                 className="form-check-input"
                 name="mailVisibility"
-                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === false}
-                disabled={isSidebarDrawerMode}
-                onChange={() => setIsSidebarClosedAtDockMode(false)}
+                checked={isSidebarCollapsedMode === false}
+                onChange={() => setIsSidebarCollapsedMode(false)}
               />
               <label className="form-label form-check-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
@@ -97,9 +96,8 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 id="is-closed"
                 className="form-check-input"
                 name="mailVisibility"
-                checked={isSidebarDrawerMode === false && isSidebarClosedAtDockMode === true}
-                disabled={isSidebarDrawerMode}
-                onChange={() => setIsSidebarClosedAtDockMode(true)}
+                checked={isSidebarCollapsedMode === true}
+                onChange={() => setIsSidebarCollapsedMode(true)}
               />
               <label className="form-label form-check-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
