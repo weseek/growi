@@ -5,6 +5,7 @@ import styles from './ResizableArea.module.scss';
 
 
 type Props = {
+  className?: string,
   width?: number,
   minWidth?: number,
   disabled?: boolean,
@@ -16,6 +17,7 @@ type Props = {
 
 export const ResizableArea = memo((props: Props): JSX.Element => {
   const {
+    className,
     width, minWidth = 0,
     disabled, children,
     onResize, onResizeDone, onCollapsed,
@@ -76,7 +78,7 @@ export const ResizableArea = memo((props: Props): JSX.Element => {
     <>
       <div
         ref={resizableContainer}
-        className={`${styles['grw-resizable-area']} h-100`}
+        className={`${styles['grw-resizable-area']} ${className}`}
         style={{ width }}
       >
         {children}

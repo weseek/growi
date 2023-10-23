@@ -91,6 +91,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
 
   return (
     <ResizableArea
+      className="flex-expand-vert"
       width={resizableAreaWidth}
       minWidth={resizableAreaMinWidth}
       disabled={disableResizing}
@@ -99,7 +100,7 @@ export const SidebarSubstance = memo((): JSX.Element => {
       onCollapsed={collapsedByResizableAreaHandler}
     >
       <SidebarHead />
-      <div className="grw-sidebar-inner d-flex flex-row h-100">
+      <div className="grw-sidebar-inner flex-expand-horiz">
         <SidebarNav />
         <div className="sidebar-contents-container flex-grow-1 overflow-y-auto">
           <SidebarContents />
