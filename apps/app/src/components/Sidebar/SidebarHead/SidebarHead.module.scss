@@ -1,66 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '@growi/core/scss/growi-official-colors';
-
-@use '../button-styles';
-@use '../variables' as var;
-
-// GROWI Logo
-.grw-sidebar-head :global {
-  .grw-logo {
-    $width: var.$grw-sidebar-nav-width;
-    $height: var.$grw-sidebar-nav-width; // declare $height with the same value as the sidebar nav width
-    $logomark-width: 27.7px;
-    $logomark-height: 24px;
-
-    width: $width;
-
-    svg {
-      width: $width;
-      height: $height;
-      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
-    }
-  }
-}
-
-// Popout for the collapsed mode
-.grw-sidebar-head :global {
-  .popout {
-    position: absolute;
-
-    &.grw-logo {
-      left: var.$grw-sidebar-nav-width;
-    }
-
-    &.grw-app-title {
-      left: var.$grw-sidebar-nav-width * 2;
-    }
-  }
-}
-
-
 
 // == Colors
-.grw-sidebar-head :global {
-  .grw-logo {
-    // set transition for fill
-    svg, svg * {
-      transition: fill 0.8s ease-out;
-    }
-
-    &:hover {
-      svg {
-        .group1 {
-          fill: growi-official-colors.$growi-green;
-        }
-
-        .group2 {
-          fill: growi-official-colors.$growi-blue;
-        }
-      }
-    }
-  }
-}
 @include bs.color-mode(light) {
   .grw-sidebar-head :global {
     background-color: var(
@@ -70,13 +11,6 @@
         var(--grw-highlight-100)
       )
     );
-
-    .grw-logo {
-      fill: var(--grw-logo-color, var(--bs-gray-500));
-    }
-    .grw-app-title {
-      color: var(--grw-app-title-color, var(--bs-gray-600));
-    }
   }
 }
 @include bs.color-mode(dark) {
@@ -88,12 +22,5 @@
         var(--grw-highlight-800)
       )
     );
-
-    .grw-logo {
-      fill: var(--grw-logo-color, var(--bs-gray-600));
-    }
-    .grw-app-title {
-      color: var(--grw-app-title-color, var(--bs-gray-500));
-    }
   }
 }

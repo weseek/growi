@@ -15,6 +15,7 @@ import {
   useSidebarMode,
 } from '~/stores/ui';
 
+import { AppTitle } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
@@ -186,13 +187,16 @@ export const Sidebar = (): JSX.Element => {
   }
 
   return (
-    <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
-      <ResizableContainer>
-        <SidebarHead />
-        <CollapsibleContainer Nav={SidebarNav} className="border-top">
-          <SidebarContents />
-        </CollapsibleContainer>
-      </ResizableContainer>
-    </DrawableContainer>
+    <>
+      <AppTitle />
+      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
+        <ResizableContainer>
+          <SidebarHead />
+          <CollapsibleContainer Nav={SidebarNav} className="border-top">
+            <SidebarContents />
+          </CollapsibleContainer>
+        </ResizableContainer>
+      </DrawableContainer>
+    </>
   );
 };
