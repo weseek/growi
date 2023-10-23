@@ -10,7 +10,6 @@ import {
   useDrawerMode, useDrawerOpened,
   useCollapsedMode, useCollapsedContentsOpened,
   useCurrentProductNavWidth,
-  useSidebarResizeDisabled,
 } from '~/stores/ui';
 
 import { ResizableArea } from './ResizableArea/ResizableArea';
@@ -39,8 +38,8 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
-  const { data: isResizeDisabled, mutate: mutateSidebarResizeDisabled } = useSidebarResizeDisabled();
 
+  const [isResizeDisabled, setResizeDisabled] = useState(false);
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
 
   const toggleDrawerMode = useCallback((bool) => {
@@ -52,14 +51,14 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
     // Drawer <-- Dock
     if (bool) {
       // disable resize
-      mutateSidebarResizeDisabled(true, false);
+      setResizeDisabled(true);
     }
     // Drawer --> Dock
     else {
       // enable resize
-      mutateSidebarResizeDisabled(false, false);
+      setResizeDisabled(false);
     }
-  }, [isResizeDisabled, mutateSidebarResizeDisabled]);
+  }, [isResizeDisabled]);
 
   const resizeHandler = useCallback((newWidth: number) => {
     setResizableAreaWidth(newWidth);

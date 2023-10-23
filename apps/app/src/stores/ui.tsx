@@ -267,10 +267,6 @@ export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<b
   return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
-export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
-};
-
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
   return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
