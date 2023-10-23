@@ -20,12 +20,6 @@ export const SidebarContents = memo(() => {
   const { data: currentSidebarContents } = useCurrentSidebarContents();
 
   const Contents = useMemo(() => {
-
-    // return an empty element when the collapsed mode and it is closed
-    if (isCollapsedMode() && !isCollapsedContentsOpened) {
-      return () => <></>;
-    }
-
     switch (currentSidebarContents) {
       case SidebarContentsType.RECENT:
         return RecentChanges;
@@ -38,10 +32,13 @@ export const SidebarContents = memo(() => {
       default:
         return PageTree;
     }
-  }, [currentSidebarContents, isCollapsedContentsOpened, isCollapsedMode]);
+  }, [currentSidebarContents]);
+
+  const isHidden = isCollapsedMode() && !isCollapsedContentsOpened;
+  const classToHide = isHidden ? 'd-none' : '';
 
   return (
-    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']}`} data-testid="grw-sidebar-contents">
+    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']} ${classToHide}`} data-testid="grw-sidebar-contents">
       <Contents />
     </div>
   );
