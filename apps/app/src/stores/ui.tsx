@@ -14,7 +14,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
 import type { IPageGrantData } from '~/interfaces/page';
-import { SidebarContentsType } from '~/interfaces/ui';
+import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
   useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
@@ -259,12 +259,47 @@ export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error>
   return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
 };
 
-export const useCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isCollapsedMode', initialData, { fallbackData: false });
+export const usePreferCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
 };
 
 export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean, Error> => {
   return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
+};
+
+type DetectSidebarModeUtils = {
+  isDrawerMode(): boolean
+  isCollapsedMode(): boolean
+  isDockMode(): boolean
+}
+
+export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
+
+  const condition = isDrawerMode != null && isCollapsedModeUnderDockMode != null;
+
+  const swrResponse = useSWRImmutable(
+    condition ? ['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode] : null,
+    // calcDrawerMode,
+    ([, isDrawerMode, isCollapsedModeUnderDockMode]) => {
+      if (isDrawerMode) {
+        return SidebarMode.DRAWER;
+      }
+      return isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+    },
+  );
+
+  const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);
+  const _isCollapsedMode = useCallback(() => swrResponse.data === SidebarMode.COLLAPSED, [swrResponse.data]);
+  const _isDockMode = useCallback(() => swrResponse.data === SidebarMode.DOCK, [swrResponse.data]);
+
+  return {
+    ...swrResponse,
+    isDrawerMode: _isDrawerMode,
+    isCollapsedMode: _isCollapsedMode,
+    isDockMode: _isDockMode,
+  };
 };
 
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {

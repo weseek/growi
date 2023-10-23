@@ -4,9 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import {
-  useCurrentSidebarContents, useCollapsedMode, useDrawerMode,
-} from '~/stores/ui';
+import { useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
 
@@ -81,13 +79,11 @@ type Props = {
 export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;
 
-  const { data: isCollapsedMode } = useCollapsedMode();
-  const { data: isDrawerMode } = useDrawerMode();
+  const { data: sidebarMode } = useSidebarMode();
 
-  // eslint-disable-next-line no-nested-ternary
-  const sidebarMode = isDrawerMode
-    ? SidebarMode.DRAWER
-    : (isCollapsedMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK);
+  if (sidebarMode == null) {
+    return <></>;
+  }
 
   return (
     <div className={styles['grw-primary-items']}>

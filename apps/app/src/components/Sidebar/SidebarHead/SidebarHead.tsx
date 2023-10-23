@@ -5,7 +5,7 @@ import React, {
 import Link from 'next/link';
 
 import { useIsDefaultLogo } from '~/stores/context';
-import { useCollapsedContentsOpened, useCollapsedMode } from '~/stores/ui';
+import { useCollapsedContentsOpened } from '~/stores/ui';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
@@ -16,12 +16,10 @@ import styles from './SidebarHead.module.scss';
 
 export const SidebarHead: FC = memo(() => {
 
-  const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
+  // const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const { data: isDefaultLogo } = useIsDefaultLogo();
-
-  const popoutClass = isCollapsedMode ? 'popout' : '';
 
   return (
     <div className={`${styles['grw-sidebar-head']} d-flex justify-content-end w-100`}>

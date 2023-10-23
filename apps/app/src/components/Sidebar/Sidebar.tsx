@@ -6,10 +6,13 @@ import React, {
 import dynamic from 'next/dynamic';
 
 import { scheduleToPut } from '~/client/services/user-ui-settings';
+import { SidebarMode } from '~/interfaces/ui';
 import {
-  useDrawerMode, useDrawerOpened,
-  useCollapsedMode, useCollapsedContentsOpened,
+  useDrawerOpened,
+  useCollapsedContentsOpened,
   useCurrentProductNavWidth,
+  usePreferCollapsedMode,
+  useSidebarMode,
 } from '~/stores/ui';
 
 import { ResizableArea } from './ResizableArea/ResizableArea';
@@ -34,31 +37,12 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const { children } = props;
 
-  const { data: isDrawerMode } = useDrawerMode();
+  const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { data: isCollapsedMode, mutate: mutateCollapsedMode } = useCollapsedMode();
+  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
-  const [isResizeDisabled, setResizeDisabled] = useState(false);
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
-
-  const toggleDrawerMode = useCallback((bool) => {
-    const isStateModified = isResizeDisabled !== bool;
-    if (!isStateModified) {
-      return;
-    }
-
-    // Drawer <-- Dock
-    if (bool) {
-      // disable resize
-      setResizeDisabled(true);
-    }
-    // Drawer --> Dock
-    else {
-      // enable resize
-      setResizeDisabled(false);
-    }
-  }, [isResizeDisabled]);
 
   const resizeHandler = useCallback((newWidth: number) => {
     setResizableAreaWidth(newWidth);
@@ -70,22 +54,18 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
-    mutateCollapsedMode(true);
+    mutatePreferCollapsedMode(true);
     mutateCollapsedContentsOpened(false);
     scheduleToPut({ preferCollapsedModeByUser: true });
-  }, [mutateCollapsedContentsOpened, mutateCollapsedMode]);
+  }, [mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
 
-
-  useEffect(() => {
-    toggleDrawerMode(isDrawerMode);
-  }, [isDrawerMode, toggleDrawerMode]);
 
   // open/close resizable container when drawer mode
   useEffect(() => {
-    if (isDrawerMode) {
+    if (isDrawerMode()) {
       setResizableAreaWidth(undefined);
     }
-    else if (isCollapsedMode) {
+    else if (isCollapsedMode()) {
       setResizableAreaWidth(resizableAreaCollapsedWidth);
     }
     else {
@@ -94,14 +74,12 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
     }
   }, [currentProductNavWidth, isCollapsedMode, isDrawerMode]);
 
-  const disableResizing = isResizeDisabled || isDrawerMode || isCollapsedMode;
-
   return (
     <ResizableArea
       className="flex-expand-vert"
       width={resizableAreaWidth}
       minWidth={resizableAreaMinWidth}
-      disabled={disableResizing}
+      disabled={!isDockMode()}
       onResize={resizeHandler}
       onResizeDone={resizeDoneHandler}
       onCollapsed={collapsedByResizableAreaHandler}
@@ -123,15 +101,15 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
 
   const { Nav, className, children } = props;
 
+  const { isCollapsedMode } = useSidebarMode();
   const { data: currentProductNavWidth } = useCurrentProductNavWidth();
-  const { data: isCollapsedMode } = useCollapsedMode();
   const { data: isCollapsedContentsOpened, mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
 
   // open menu when collapsed mode
   const primaryItemHoverHandler = useCallback(() => {
     // reject other than collapsed mode
-    if (!isCollapsedMode) {
+    if (!isCollapsedMode()) {
       return;
     }
 
@@ -141,7 +119,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   // close menu when collapsed mode
   const mouseLeaveHandler = useCallback(() => {
     // reject other than collapsed mode
-    if (!isCollapsedMode) {
+    if (!isCollapsedMode()) {
       return;
     }
 
@@ -149,7 +127,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   }, [isCollapsedMode, mutateCollapsedContentsOpened]);
 
   const openClass = `${isCollapsedContentsOpened ? 'open' : ''}`;
-  const collapsibleContentsWidth = isCollapsedMode ? currentProductNavWidth : undefined;
+  const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
@@ -186,17 +164,23 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: isCollapsedMode } = useCollapsedMode();
+  const { data: sidebarMode } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
   // eslint-disable-next-line no-nested-ternary
-  const modeClass = isDrawerMode
-    ? 'grw-sidebar-drawer'
-    : isCollapsedMode
-      ? 'grw-sidebar-collapsed'
-      : 'grw-sidebar-dock';
+  let modeClass;
+  switch (sidebarMode) {
+    case SidebarMode.DRAWER:
+      modeClass = 'grw-sidebar-drawer';
+      break;
+    case SidebarMode.COLLAPSED:
+      modeClass = 'grw-sidebar-collapsed';
+      break;
+    case SidebarMode.DOCK:
+      modeClass = 'grw-sidebar-dock';
+      break;
+  }
 
   return (
     <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">

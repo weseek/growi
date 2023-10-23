@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 
 import { SidebarContentsType } from '~/interfaces/ui';
-import { useCollapsedContentsOpened, useCollapsedMode, useCurrentSidebarContents } from '~/stores/ui';
+import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 
 import { Bookmarks } from './Bookmarks';
@@ -14,7 +14,7 @@ import styles from './SidebarContents.module.scss';
 
 
 export const SidebarContents = memo(() => {
-  const { data: isCollapsedMode } = useCollapsedMode();
+  const { isCollapsedMode } = useSidebarMode();
   const { data: isCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const { data: currentSidebarContents } = useCurrentSidebarContents();
@@ -22,7 +22,7 @@ export const SidebarContents = memo(() => {
   const Contents = useMemo(() => {
 
     // return an empty element when the collapsed mode and it is closed
-    if (isCollapsedMode && !isCollapsedContentsOpened) {
+    if (isCollapsedMode() && !isCollapsedContentsOpened) {
       return () => <></>;
     }
 
