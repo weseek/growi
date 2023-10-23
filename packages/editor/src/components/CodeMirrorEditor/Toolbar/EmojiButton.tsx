@@ -1,12 +1,12 @@
 import { FC, useState, CSSProperties } from 'react';
 
+import type { UseCodeMirrorEditor } from '@growi/editor';
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
-import { useResolvedTheme } from '../../../stores/use-resolved-theme';
+import { useResolvedThemeForEditor } from '../../../stores/use-resolved-theme';
 
-import type { UseCodeMirrorEditor } from 'src';
 
 import 'emoji-mart/css/emoji-mart.css';
 
@@ -67,7 +67,7 @@ const getEmojiTranslation = (): Translation => {
 export const EmojiButton: FC<Props> = (props) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { data: resolvedTheme } = useResolvedTheme();
+  const { data: resolvedTheme } = useResolvedThemeForEditor();
 
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;

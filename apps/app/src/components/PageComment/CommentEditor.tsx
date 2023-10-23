@@ -2,7 +2,7 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { useResolvedTheme } from '@growi/editor/src/stores/use-resolved-theme';
+import { useResolvedThemeForEditor } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -78,7 +78,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     increment: incrementEditingCommentsNum,
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
-  const { mutate: mutateResolvedTheme } = useResolvedTheme();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme(resolvedTheme);

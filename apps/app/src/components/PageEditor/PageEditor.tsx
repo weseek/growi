@@ -7,8 +7,9 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
-import { useResolvedTheme } from '@growi/editor/src/stores/use-resolved-theme';
+import {
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
+} from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -122,7 +123,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateIsConflict } = useIsConflict();
 
-  const { mutate: mutateResolvedTheme } = useResolvedTheme();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });

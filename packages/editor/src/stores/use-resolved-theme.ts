@@ -8,18 +8,18 @@ type ResolvedThemeStatus = {
 }
 
 type ResolvedThemeUtils = {
-  mutateResolvedTheme(resolvedTheme: ColorScheme): void
+  mutateResolvedThemeForEditor(resolvedTheme: ColorScheme): void
 }
 
-export const useResolvedTheme = (): SWRResponse<ResolvedThemeStatus, Error> & ResolvedThemeUtils => {
+export const useResolvedThemeForEditor = (): SWRResponse<ResolvedThemeStatus, Error> & ResolvedThemeUtils => {
   const swrResponse = useSWRStatic<ResolvedThemeStatus, Error>('resolvedTheme');
 
-  const mutateResolvedTheme = (resolvedTheme: ColorScheme) => {
+  const mutateResolvedThemeForEditor = (resolvedTheme: ColorScheme) => {
     mutate({ themeData: resolvedTheme });
   };
 
   return {
     ...swrResponse,
-    mutateResolvedTheme,
+    mutateResolvedThemeForEditor,
   };
 };
