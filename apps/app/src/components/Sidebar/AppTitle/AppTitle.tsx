@@ -1,27 +1,27 @@
-import React, {
-  type FC, memo,
-} from 'react';
+import React, { memo } from 'react';
 
 import Link from 'next/link';
 
-import { useIsDefaultLogo } from '~/stores/context';
-import { useSidebarMode } from '~/stores/ui';
+import { useAppTitle, useIsDefaultLogo } from '~/stores/context';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
 import styles from './AppTitle.module.scss';
 
 
-export const AppTitle: FC = memo(() => {
+type Props = {
+  className?: string,
+}
 
-  const { isCollapsedMode } = useSidebarMode();
+const AppTitleSubstance = memo((props: Props): JSX.Element => {
+
+  const { className } = props;
 
   const { data: isDefaultLogo } = useIsDefaultLogo();
-
-  const collapsedModeClass = isCollapsedMode() ? 'collapsed' : '';
+  const { data: appTitle } = useAppTitle();
 
   return (
-    <div className={`${styles['grw-app-title']} ${collapsedModeClass} position-absolute d-flex justify-content-end w-100`}>
+    <div className={`${styles['grw-app-title']} ${className} d-flex d-edit-none`}>
       {/* Brand Logo  */}
       <Link href="/" className="grw-logo d-block">
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
@@ -29,11 +29,18 @@ export const AppTitle: FC = memo(() => {
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
         <div className="grw-site-name text-truncate">
           <Link href="/" className="fs-4">
-            GROWI
+            {appTitle}
           </Link>
         </div>
       </div>
     </div>
   );
+});
 
+export const AppTitleOnSubnavigation = memo((): JSX.Element => {
+  return <AppTitleSubstance className={`position-absolute ${styles['on-subnavigation']}`} />;
+});
+
+export const AppTitleOnSidebarHead = memo((): JSX.Element => {
+  return <AppTitleSubstance className={`position-absolute z-1 ${styles['on-sidebar-head']}`} />;
 });

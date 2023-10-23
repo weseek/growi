@@ -24,14 +24,22 @@
 }
 
 
-// Collapsed Mode
-.grw-app-title {
-  &:global {
-    &.collapsed {
-      left: 48px;
-    }
-  }
+// == Location
+.on-subnavigation {
+  $grw-contextual-sub-navigation-width: 500px;
+
+  left: var.$grw-sidebar-nav-width;
+  // set width for truncation
+  width: calc(100vw - $grw-contextual-sub-navigation-width);
 }
+
+.on-sidebar-head {
+  $toggle-collapse-button-width: 50px;
+
+  // set width for truncation
+  width: calc(100% - $toggle-collapse-button-width);
+}
+
 
 // == Colors
 .grw-app-title :global {

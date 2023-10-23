@@ -15,7 +15,7 @@ import {
   useSidebarMode,
 } from '~/stores/ui';
 
-import { AppTitle } from './AppTitle/AppTitle';
+import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
@@ -27,7 +27,7 @@ const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mo
 
 
 const resizableAreaMinWidth = 348;
-const resizableAreaCollapsedWidth = 48;
+const sidebarNavCollapsedWidth = 48;
 
 
 type ResizableContainerProps = {
@@ -68,7 +68,7 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
       setResizableAreaWidth(undefined);
     }
     else if (isCollapsedMode()) {
-      setResizableAreaWidth(resizableAreaCollapsedWidth);
+      setResizableAreaWidth(sidebarNavCollapsedWidth);
     }
     else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -168,7 +168,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: sidebarMode } = useSidebarMode();
+  const { data: sidebarMode, isCollapsedMode } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -188,9 +188,10 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      <AppTitle />
+      { isCollapsedMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
+          { !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
