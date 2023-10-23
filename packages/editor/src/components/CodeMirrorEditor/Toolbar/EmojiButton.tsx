@@ -1,4 +1,6 @@
-import { FC, useState, CSSProperties } from 'react';
+import {
+  FC, useState, useCallback, CSSProperties,
+} from 'react';
 
 import type { UseCodeMirrorEditor } from '@growi/editor';
 import { Picker } from 'emoji-mart';
@@ -71,18 +73,10 @@ export const EmojiButton: FC<Props> = (props) => {
 
   const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
-
-  if (view == null) {
-    return <></>;
-  }
-
   const cursorIndex = view?.state.selection.main.head;
-
-  const translation = getEmojiTranslation();
-
   const toggle = () => setIsOpen(!isOpen);
 
-  const selectEmoji = (emoji: { colons: string }): void => {
+  const selectEmoji = useCallback((emoji: { colons: string }): void => {
 
     if (cursorIndex == null) {
       return;
@@ -96,7 +90,13 @@ export const EmojiButton: FC<Props> = (props) => {
     });
 
     toggle();
-  };
+  }, []);
+
+  if (view == null || cursorIndex == null) {
+    return <></>;
+  }
+
+  const translation = getEmojiTranslation();
 
   const setStyle = (): CSSProperties => {
     const offset = 20;
