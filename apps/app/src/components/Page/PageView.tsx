@@ -145,19 +145,14 @@ export const PageView = (props: Props): JSX.Element => {
   // TODO: Delete these experimental codes when the test is finished.
   const selectHandler = useCallback(() => {
     const sel = document.getSelection();
-    console.log(sel);
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
-    console.log('range', range);
     const newRangeContents = range.cloneContents();
-    console.log('newRangeContents', newRangeContents);
     const { firstElementChild } = range.cloneContents();
     const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
     const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
-    console.log(isSelectedRange);
     if (isRangeStartWithSpan && isSelectedRange) return;
     for (const childNode of newRangeContents.childNodes) {
-      console.log('hogehoge', childNode);
       if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
         const newNodeElement = document.createElement('span');
         newNodeElement.innerText = childNode.textContent;
@@ -169,7 +164,6 @@ export const PageView = (props: Props): JSX.Element => {
         const newNodeElement = document.createElement('span');
         newNodeElement.setAttribute('selected', 'selected');
         // newNodeElement.setAttributes(...childNode.getAttributes());
-        console.log('fugafuga', newNodeElement);
         childNode.replaceWith(newNodeElement);
       }
     }
