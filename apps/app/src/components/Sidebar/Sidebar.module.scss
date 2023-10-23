@@ -39,6 +39,12 @@
     &.grw-sidebar-collapsed {
       position: sticky;
 
+      .sidebar-contents-container {
+        border-color: var(--bs-border-color);
+        border-style: solid;
+        border-width : 1px 1px 1px 0;
+      }
+
       &.open {
         .sidebar-contents-container {
           position: absolute;
