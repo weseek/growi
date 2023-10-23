@@ -27,11 +27,11 @@ const resizableAreaMinWidth = 348;
 const resizableAreaCollapsedWidth = 48;
 
 
-type ResizabeSidebarProps = {
+type ResizableContainerProps = {
   children?: React.ReactNode,
 }
 
-const ResizableSidebar = memo((props: ResizabeSidebarProps): JSX.Element => {
+const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element => {
 
   const { children } = props;
 
@@ -114,13 +114,13 @@ const ResizableSidebar = memo((props: ResizabeSidebarProps): JSX.Element => {
 });
 
 
-type CollapsibleSidebarProps = {
+type CollapsibleContainerProps = {
   Nav: FC<SidebarNavProps>,
   className?: string,
   children?: React.ReactNode,
 }
 
-const CollapsibleSidebar = memo((props: CollapsibleSidebarProps): JSX.Element => {
+const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Element => {
 
   const { Nav, className, children } = props;
 
@@ -164,12 +164,12 @@ const CollapsibleSidebar = memo((props: CollapsibleSidebarProps): JSX.Element =>
 });
 
 
-type DrawableSidebarProps = {
+type DrawableContainerProps = {
   className?: string,
   children?: React.ReactNode,
 }
 
-const DrawableSidebar = memo((props: DrawableSidebarProps): JSX.Element => {
+const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { className, children } = props;
 
@@ -200,13 +200,13 @@ export const Sidebar = (): JSX.Element => {
       : 'grw-sidebar-dock';
 
   return (
-    <DrawableSidebar className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
-      <ResizableSidebar>
+    <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
+      <ResizableContainer>
         <SidebarHead />
-        <CollapsibleSidebar Nav={SidebarNav} className="border-top">
+        <CollapsibleContainer Nav={SidebarNav} className="border-top">
           <SidebarContents />
-        </CollapsibleSidebar>
-      </ResizableSidebar>
-    </DrawableSidebar>
+        </CollapsibleContainer>
+      </ResizableContainer>
+    </DrawableContainer>
   );
 };
