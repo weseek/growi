@@ -1,15 +1,14 @@
 import { useMemo } from 'react';
 
-import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
-import { syntaxTree } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState, Prec, type Extension } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
-import emojiData from 'emoji-mart/data/all.json';
 import deepmerge from 'ts-deepmerge';
+
+import { useEmojiAutocompletion } from '../use-emoji-autocompletion/use-emoji-autocompletion';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -36,70 +35,9 @@ const defaultExtensions: Extension[] = [
   Prec.lowest(keymap.of(defaultKeymap)),
 ];
 
-const getEmojiDataArray = (): string[] => {
-  const rawEmojiDataArray = emojiData.categories;
-
-  const emojiCategoriesData = [
-    'people',
-    'nature',
-    'foods',
-    'activity',
-    'places',
-    'objects',
-    'symbols',
-    'flags',
-  ];
-
-  const fixedEmojiDataArray: string[] = [];
-
-  emojiCategoriesData.forEach((value) => {
-    const tempArray = rawEmojiDataArray.find(obj => obj.id === value)?.emojis;
-
-    if (tempArray == null) {
-      return;
-    }
-
-    fixedEmojiDataArray.push(...tempArray);
-  });
-
-  return fixedEmojiDataArray;
-};
-
-const emojiDataArray = getEmojiDataArray();
-
-const emojiOptions = emojiDataArray.map(
-  tag => ({ label: `:${tag}:`, type: tag }),
-);
-
-const completeEmojiInput = (context: CompletionContext) => {
-  const nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1);
-  const textBefore = context.state.sliceDoc(nodeBefore.from, context.pos);
-  const emojiBefore = /:\w*$/.exec(textBefore);
-
-  if (!emojiBefore && !context.explicit) return null;
-
-  return {
-    from: emojiBefore ? nodeBefore.from + emojiBefore.index : context.pos,
-    options: emojiOptions,
-    validFor: /^(:\w*)?$/,
-  };
-};
-
-const emojiIcon = autocompletion({
-  addToOptions: [{
-    render: (completion: Completion, state: EditorState) => {
-      const emojiName = completion.type ?? '';
-      const element = document.createElement('span');
-      element.innerText = emojiName;
-      return element;
-    },
-    position: 20,
-  }],
-  icons: false,
-  override: [completeEmojiInput],
-});
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
+  const emojiAutocompletionSettings = useEmojiAutocompletion();
 
   const mergedProps = useMemo(() => {
     return deepmerge(
@@ -107,7 +45,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       {
         extensions: [
           defaultExtensions,
-          emojiIcon,
+          emojiAutocompletionSettings,
         ],
         // Reset settings of react-codemirror.
         // The extension defined first will be used, so it must be disabled here.
