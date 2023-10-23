@@ -148,24 +148,38 @@ export const PageView = (props: Props): JSX.Element => {
     console.log(sel);
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
+    console.log('range', range);
     const newRangeContents = range.cloneContents();
-    console.log(newRangeContents);
+    console.log('newRangeContents', newRangeContents);
+    const { firstElementChild } = range.cloneContents();
+    const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
+    const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
+    console.log(isSelectedRange);
+    if (isRangeStartWithSpan && isSelectedRange) return;
     for (const childNode of newRangeContents.childNodes) {
-      console.log(childNode);
+      console.log('hogehoge', childNode);
       if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
         const newNodeElement = document.createElement('span');
         newNodeElement.innerText = childNode.textContent;
         newNodeElement.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
+        newNodeElement.setAttribute('selected', 'selected');
         childNode.replaceWith(newNodeElement);
       }
       else {
-        const newNodeElement = childNode.textContent;
-        console.log(newNodeElement);
+        const newNodeElement = document.createElement('span');
+        newNodeElement.setAttribute('selected', 'selected');
+        // newNodeElement.setAttributes(...childNode.getAttributes());
+        console.log('fugafuga', newNodeElement);
+        childNode.replaceWith(newNodeElement);
       }
-
     }
-    range.deleteContents(); // Delete range selection.
-    range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
+    // range.deleteContents(); // Delete range selection.
+    // range.detach();
+    // range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
+    const markerElement = document.createElement('selected');
+    markerElement.setAttribute('comment-id', 'undefined');
+    range.insertNode(markerElement);
+
 
     // const newNode = document.createElement('span');
     // newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
