@@ -28,7 +28,9 @@ export const AppTitle: FC = memo(() => {
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
         <div className="grw-site-name text-truncate">
-          <span className="fs-4">GROWI</span>
+          <Link href="/" className="fs-4">
+            GROWI
+          </Link>
         </div>
       </div>
     </div>

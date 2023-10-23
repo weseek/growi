@@ -41,6 +41,8 @@
       transition: fill 0.8s ease-out;
     }
 
+    fill: var(--grw-app-title-color, var(--bs-tertiary-color));
+
     &:hover {
       svg {
         .group1 {
@@ -53,24 +55,9 @@
       }
     }
   }
-}
-@include bs.color-mode(light) {
-  .grw-app-title :global {
-    .grw-logo {
-      fill: var(--grw-logo-color, var(--bs-gray-500));
-    }
-    .grw-site-name {
-      color: var(--grw-app-title-color, var(--bs-gray-600));
-    }
-  }
-}
-@include bs.color-mode(dark) {
-  .grw-app-title :global {
-    .grw-logo {
-      fill: var(--grw-logo-color, var(--bs-gray-600));
-    }
-    .grw-site-name {
-      color: var(--grw-app-title-color, var(--bs-gray-500));
-    }
+
+  .grw-site-name {
+    --bs-link-color-rgb: var(--grw-app-title-color-rgb, var(--bs-tertiary-color-rgb));
+    --bs-link-opacity: 0.5;
   }
 }
