@@ -10,9 +10,11 @@ import {
 } from 'reactstrap';
 
 import type { IPageGrantData } from '~/interfaces/page';
-import { useIsAclEnabled } from '~/stores/context';
+import {
+  useIsEditable, useIsAclEnabled,
+} from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
-import { useSWRxCurrentPage, useIsEditablePage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -35,7 +37,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { slackChannels } = props;
   const { t } = useTranslation();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: isEditablePage } = useIsEditablePage();
+  const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
@@ -57,11 +59,11 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   }, [slackChannels]);
 
 
-  if (isEditablePage == null || isAclEnabled == null || grantData == null) {
+  if (isEditable == null || isAclEnabled == null || grantData == null) {
     return null;
   }
 
-  if (!isEditablePage) {
+  if (!isEditable) {
     return null;
   }
 

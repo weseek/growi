@@ -23,7 +23,7 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
+  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
@@ -35,7 +35,6 @@ import {
 import { useConflictDiffModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
-  useIsEditablePage,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -101,7 +100,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
-  const { data: isEditablePage } = useIsEditablePage();
+  const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
   const { data: isSlackEnabled } = useIsSlackEnabled();
@@ -558,7 +557,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, [onRouterChangeComplete, router.events]);
 
-  if (!isEditablePage) {
+  if (!isEditable) {
     return <></>;
   }
 
