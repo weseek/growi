@@ -38,6 +38,7 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { children } = props;
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
+  const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
   const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
@@ -72,7 +73,9 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       setResizableAreaWidth(currentProductNavWidth!);
     }
-  }, [currentProductNavWidth, isCollapsedMode, isDrawerMode]);
+
+    mutateDrawerOpened(false);
+  }, [currentProductNavWidth, isCollapsedMode, isDrawerMode, mutateDrawerOpened]);
 
   return (
     <ResizableArea
