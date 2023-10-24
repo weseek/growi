@@ -220,7 +220,8 @@ export const PageView = (props: Props): JSX.Element => {
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
     console.log(sel);
-    setSelectedRange(range);
+    // Range selection disappears
+    setSelectedRange(range); // <- this code has problem.
     // const clientRect = range.getClientRects();
     // console.log(clientRect);
     // const newRangeContents = range.cloneContents();
