@@ -41,6 +41,14 @@ const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../U
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
+const InlineCommentBox = (props: any): JSX.Element => {
+  const { position } = props;
+  return (
+    <div className="position-absolute">
+
+    </div>
+  );
+};
 
 type Props = {
   pagePath: string,
@@ -173,13 +181,6 @@ export const PageView = (props: Props): JSX.Element => {
     const markerElement = document.createElement('selected');
     markerElement.setAttribute('comment-id', 'undefined');
     range.insertNode(markerElement);
-
-
-    // const newNode = document.createElement('span');
-    // newNode.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
-    // newNode.innerHTML = sel.toString();
-    // range.deleteContents(); // Delete range selection.
-    // range.insertNode(newNode); // Insert a qualified span from the beginning of the range selection.
   }, []);
 
   useEffect(() => {
@@ -195,18 +196,21 @@ export const PageView = (props: Props): JSX.Element => {
       sideContents={sideContents}
       footerContents={footerContents}
     >
-      <PageAlerts />
+      <div className="position-relative">
+        <PageAlerts />
 
-      {specialContents}
-      {specialContents == null && (
-        <>
-          {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
-            <Contents />
-          </div>
-        </>
-      )}
+        {specialContents}
+        {specialContents == null && (
+          <>
+            {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
+            <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+              <Contents />
+            </div>
+          </>
+        )}
 
+        <InlineCommentBox />
+      </div>
     </PageViewLayout>
   );
 };
