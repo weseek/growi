@@ -56,6 +56,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        yarn global add node-gyp
         yarn --frozen-lockfile
 
     - name: Restore dist
@@ -126,7 +127,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
         - 27017/tcp
       elasticsearch:
@@ -214,7 +215,7 @@ jobs:
 
     services:
       mongodb:
-        image: mongo:4.4
+        image: mongo:6.0
         ports:
         - 27017/tcp
       elasticsearch:
@@ -267,6 +268,7 @@ jobs:
 
     - name: Install dependencies
       run: |
+        yarn global add node-gyp
         yarn --frozen-lockfile
         yarn cypress install
 
@@ -303,7 +305,7 @@ jobs:
         cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
 
     - name: Cypress Run
-      uses: cypress-io/github-action@v5
+      uses: cypress-io/github-action@v6
       with:
         browser: chromium
         working-directory: ./apps/app

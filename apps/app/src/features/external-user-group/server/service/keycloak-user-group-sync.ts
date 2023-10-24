@@ -59,6 +59,7 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     await this.auth();
 
     // Type is 'GroupRepresentation', but 'find' does not return 'attributes' field. Hence, attribute for description is not present.
+    logger.info('Get groups from keycloak server');
     const rootGroups = await this.kcAdminClient.groups.find({ realm: this.realm });
 
     return (await batchProcessPromiseAll(rootGroups, TREES_BATCH_SIZE, group => this.groupRepresentationToTreeNode(group)))
@@ -85,7 +86,8 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
   private async groupRepresentationToTreeNode(group: GroupRepresentation): Promise<ExternalUserGroupTreeNode | null> {
     if (group.id == null || group.name == null) return null;
 
-    const userRepresentations = await this.kcAdminClient.groups.listMembers({ id: group.id, realm: this.realm });
+    logger.info('Get users from keycloak server');
+    const userRepresentations = await this.getMembers(group.id);
 
     const userInfos = userRepresentations != null ? this.userRepresentationsToExternalUserInfos(userRepresentations) : [];
     const description = await this.getGroupDescription(group.id) || undefined;
@@ -111,12 +113,34 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
     };
   }
 
+  private async getMembers(groupId: string): Promise<UserRepresentation[]> {
+    let allUsers: UserRepresentation[] = [];
+
+    const fetchUsersWithOffset = async(offset: number) => {
+      await this.auth();
+      const response = await this.kcAdminClient.groups.listMembers({
+        id: groupId, realm: this.realm, first: offset,
+      });
+
+      if (response != null && response.length > 0) {
+        allUsers = allUsers.concat(response);
+        return fetchUsersWithOffset(offset + response.length);
+      }
+    };
+
+    await fetchUsersWithOffset(0);
+
+    return allUsers;
+  }
+
+
   /**
    * Fetch group detail from Keycloak and return group description
    */
   private async getGroupDescription(groupId: string): Promise<string | null> {
     if (this.groupDescriptionAttribute == null) return null;
 
+    await this.auth();
     const groupDetail = await this.kcAdminClient.groups.findOne({ id: groupId, realm: this.realm });
 
     const description = groupDetail?.attributes?.[this.groupDescriptionAttribute]?.[0];

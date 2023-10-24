@@ -925,6 +925,7 @@
     "USER_API_TOKEN_UPDATE": "API トークンの更新",
     "USER_EDITOR_SETTINGS_UPDATE": "エディター設定の更新",
     "USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE": "アプリ内通知設定の更新",
+    "USER_REGISTRATION_APPROVAL_REQUEST": "ID/Password 認証のユーザー登録リクエスト",
     "PAGE_VIEW": "ページ閲覧",
     "PAGE_USER_HOME_VIEW": "ページ閲覧（ユーザーホーム）",
     "PAGE_FORBIDDEN": "ページ閲覧（fobiddenページ）",
@@ -1090,7 +1091,8 @@
       "name_mapper_detail": "グループの「名前」として読み込む属性",
       "updated_group_sync_settings": "LDAP グループ同期設定を更新しました",
       "password": "パスワード",
-      "password_detail": "認証設定がユーザ Bind のため、ログイン時のパスワードの入力が必要となります"
+      "password_detail": "認証設定がユーザ Bind のため、ログイン時のパスワードの入力が必要となります",
+      "auth_not_set": "同期実行前にセキュリティ設定で LDAP 認証を有効にし、設定してください"
     },
     "keycloak": {
       "group_sync_settings": "Keycloak グループ同期設定",
@@ -1106,7 +1108,7 @@
       "group_sync_client_secret_detail": "Keycloak admin API にリクエストするための認証に使う client の secret",
       "updated_group_sync_settings": "Keycloak グループ同期設定を更新しました",
       "preserve_deleted_keycloak_groups": "Keycloak から削除されたグループを GROWI に残す",
-      "auth_not_set": "同期実行前に、セキュリティ設定で Keycloak を使った OIDC または SAML 認証を設定し、有効にしてください"
+      "auth_not_set": "同期実行前にセキュリティ設定で Keycloak を使った OIDC または SAML 認証を有効にし、設定してください"
     },
     "auto_generate_user_on_sync": "作成されていない GROWI アカウントを自動生成する",
     "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。"

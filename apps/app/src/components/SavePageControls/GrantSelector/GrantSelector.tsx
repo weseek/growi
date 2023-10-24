@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { isPopulated } from '@growi/core';
-import type { GroupType, IGrantedGroup } from '@growi/core';
+import { isPopulated, GroupType, type IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -197,7 +196,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
               className={`list-group-item list-group-item-action ${activeClass}`}
               onClick={() => groupListItemClickHandler(group)}
             >
-              <h5>{group.item.name}</h5>
+              <h5 className="d-inline-block">{group.item.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">external</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
