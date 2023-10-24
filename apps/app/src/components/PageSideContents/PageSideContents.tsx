@@ -62,6 +62,7 @@ const Tags = (props: TagsProps): JSX.Element => {
             tags={tagsInfoData.tags}
             isTagLabelsDisabled={isTagLabelsDisabled ?? false}
             pageId={pageId}
+            revisionId={revisionId}
           />
         )
         : <PageTagsSkeleton />

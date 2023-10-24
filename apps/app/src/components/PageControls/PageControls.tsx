@@ -42,7 +42,7 @@ type TagsProps = {
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, revisionId } = props;
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
@@ -58,7 +58,7 @@ const Tags = (props: TagsProps): JSX.Element => {
     <div className="grw-taglabels-container d-flex align-items-center">
       <a
         className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
-        onClick={() => openTagEditModal(tagsInfoData?.tags)}
+        onClick={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
       >
         <i className="icon-tag me-2" />
         Tags

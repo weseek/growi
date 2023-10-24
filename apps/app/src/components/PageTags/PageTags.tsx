@@ -12,6 +12,7 @@ type Props = {
   isTagLabelsDisabled: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
   pageId: string,
+  revisionId,
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
@@ -20,7 +21,7 @@ export const PageTagsSkeleton = (): JSX.Element => {
 
 export const PageTags:FC<Props> = (props: Props) => {
   const {
-    tags, isTagLabelsDisabled, pageId,
+    tags, isTagLabelsDisabled, pageId, revisionId,
   } = props;
 
   if (tags == null) {
@@ -34,6 +35,7 @@ export const PageTags:FC<Props> = (props: Props) => {
           tags={tags}
           isTagLabelsDisabled={isTagLabelsDisabled}
           pageId={pageId}
+          revisionId={revisionId}
         />
       </div>
     </>

@@ -13,11 +13,12 @@ type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
   pageId: string,
+  revisionId: string,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, pageId,
+    tags, isTagLabelsDisabled, pageId, revisionId,
   } = props;
   const { t } = useTranslation();
 
@@ -48,7 +49,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
                 ${isTagsEmpty && 'no-tags'}
                 ${isTagLabelsDisabled && 'disabled'}`
               }
-              onClick={() => openTagEditModal(tagsInfoData?.tags)}
+              onClick={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
             >
               {isTagsEmpty && <> {t('Add tags for this page')}</>}
               <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
