@@ -8,6 +8,7 @@ import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
+import { apiPost } from '~/client/util/apiv1-client';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
@@ -42,10 +43,39 @@ const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../U
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
 const InlineCommentBox = (props: any): JSX.Element => {
-  const { position } = props;
+  const {
+    positionX, positionY, text, pageId, revisionId,
+  } = props;
+
+  const onSubmit = (data) => {
+    const {};
+    await apiPost('/comments.add', {
+      commentForm: {
+        comment,
+        page_id: pageId,
+        revision_id: revisionId,
+        replyTo,
+      },
+      slackNotificationForm: {
+        isSlackEnabled,
+        slackChannels,
+      },
+    });
+  };
+
   return (
     <div className="position-absolute">
-
+      <div className="card">
+        <div className="card-header">
+          {text}
+        </div>
+        <div className="card-body">
+          <textarea name="" id="" cols={30} rows={10} className="form-control"></textarea>
+        </div>
+        <div className="card-footer">
+          <button type="button" onSubmit={onSubmit}>送信</button>
+        </div>
+      </div>
     </div>
   );
 };
