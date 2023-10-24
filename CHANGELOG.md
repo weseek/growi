@@ -1,27 +1,32 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
 
-## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
+## [v6.2.1](https://github.com/weseek/growi/compare/v6.2.0...v6.2.1) - 2023-10-03
+
+### BREAKING CHANGES
+
+- support: Omit promster (#8105) @yuki-takei
 
 ### 🚀 Improvement
 
-- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
-
-## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
-
-### 🐛 Bug Fixes
-
-- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
-
-## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
+- imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
+- imprv: Admin customize presentation form (#8083) @meiri-k
+- imprv: i18n for marp settings (#8110) @moekumasaka
+- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
 
 ### 🐛 Bug Fixes
 
-- fix: Do not work img tag if use style property (#7988) @jam411
-- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
+- fix: Marp is enabled incorrectly problem (#8100) @reiji-h
+- fix: Do not work img tag if use style property 62x (#8092) @jam411
+
+### 🧰 Maintenance
+
+- support: Internationalization USER_REGISTRATION_APPROVAL_REQUEST label for v62x (#8130) @jam411
+- ci(deps): bump get-func-name from 2.0.0 to 2.0.2 (#8119) @dependabot
+- support: Omit promster (#8105) @yuki-takei
 
 ## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
 
@@ -57,6 +62,25 @@
 - support: Omit core-js v2 (#7944) @yuki-takei
 - support: Improve build settings (#7919) @yuki-takei
 - support: Url to join to the slack team (#8073) @WNomunomu
+
+## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
+
+### 🚀 Improvement
+
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (for v6.1.x) (#8057) @yuki-takei
+
+## [v6.1.14](https://github.com/weseek/growi/compare/v6.1.13...v6.1.14) - 2023-08-22
+
+### 🐛 Bug Fixes
+
+- fix: Add option to lightbox (6.1.x) (#8003) @yuki-takei
+
+## [v6.1.13](https://github.com/weseek/growi/compare/v6.1.12...v6.1.13) - 2023-08-17
+
+### 🐛 Bug Fixes
+
+- fix: Do not work img tag if use style property (#7988) @jam411
+- fix: "Searching..." label appearing unnecessarily (#7990) @yuki-takei
 
 ## [v6.1.12](https://github.com/weseek/growi/compare/v6.1.11...v6.1.12) - 2023-08-14
 

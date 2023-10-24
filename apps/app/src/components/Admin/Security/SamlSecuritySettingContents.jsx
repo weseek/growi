@@ -474,25 +474,21 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
                         </a>.
                       </p>
-                      {/* TODO: use new accordion component */}
-                      {/* https://redmine.weseek.co.jp/issues/129222 */}
-                      <div className="accordion" id="accordionExample">
-                        <div className="card">
-                          <div className="card-header p-1">
-                            <h2 className="mb-0">
-                              <button
-                                className="btn btn-link text-start"
-                                type="button"
-                                onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
-                                aria-expanded="true"
-                                aria-controls="ablchelp"
-                              >
-                                <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
-                              </button>
-                            </h2>
-                          </div>
+                      <div className="accordion" id="accordionId">
+                        <div className="accordion-item p-1">
+                          <h2 className="accordion-header">
+                            <button
+                              className="btn btn-link text-start"
+                              type="button"
+                              onClick={() => this.setState({ isHelpOpened: !this.state.isHelpOpened })}
+                              aria-expanded="true"
+                              aria-controls="ablchelp"
+                            >
+                              <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                            </button>
+                          </h2>
                           <Collapse isOpen={this.state.isHelpOpened}>
-                            <div className="card-body">
+                            <div className="accordion-body">
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_help') }} />
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example1') }} />
                               <p dangerouslySetInnerHTML={{ __html: t('security_settings.SAML.attr_based_login_control_rule_example2') }} />

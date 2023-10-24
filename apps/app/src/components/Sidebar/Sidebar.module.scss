@@ -1,143 +1,20 @@
-@use '~/styles/mixins';
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/mixins';
+
+@use './variables' as var;
+
 .grw-sidebar :global {
-  // sticky
-  position: sticky;
   top: 0;
 
-  // set the max value that should be taken when sticky
-  height: 100vh;
-
-
-  .data-layout-container {
-    display: flex;
-    flex-direction: row;
-    height: 100vh;
-    margin-top: 0px;
-    // css-teprsg
-    > div:nth-of-type(2) {
-      padding-left: unset !important;
-      margin-left: unset !important;
-    }
+  .sidebar-contents-container {
+    backdrop-filter: blur(20px);
   }
-  .navigation {
-    .grw-navigation-wrap {
-      display: flex;
-      flex-direction: row;
-      height: 100%;
-      overflow: hidden;
+}
 
-      .grw-contextual-navigation {
-        position: relative;
-        width: 240px;
-        height: 100%;
-        &:not(.dragging) {
-          transition: width 200ms cubic-bezier(0.2, 0, 0, 1) 0s;
-        }
-        will-change: width;
 
-        .grw-contextual-navigation-child {
-          height: 100%;
-          overflow-x: hidden;
-        }
-
-        .grw-drawer-toggler {
-          display: none; // invisible in default
-        }
-
-      }
-
-      .simplebar-mask {
-        z-index: 110; // greater than the value of .grw-navigation-draggable to fix https://redmine.weseek.co.jp/issues/86678
-      }
-    }
-    .grw-navigation-draggable {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      left: 100%;
-      z-index: 10; // greater than the value of SimpleBar
-      width: 0;
-      .grw-navigation-draggable-hitarea {
-        position: relative;
-        left: -4px;
-        width: 24px;
-        height: 100%;
-        cursor: ew-resize;
-        .grw-navigation-draggable-hitarea-child {
-          position: absolute;
-          left: 3px;
-          display: none;
-          width: 2px;
-          height: 100%;
-          background-color: rgb(76, 154, 255);
-        }
-      }
-      .grw-navigation-resize-button {
-        position: fixed;
-
-        $width: 27.691px;
-        $height: 23.999px;
-
-        @mixin hitarea($size-hitarea) {
-          top: ($width - $size-hitarea) / 2;
-          left: ($height - $size-hitarea) / 2;
-          width: $size-hitarea;
-          height: $size-hitarea;
-        }
-
-        // locate to the center of screen
-        top: calc(50vh - $height/2);
-
-        display: none;
-        padding: 0px;
-        background-color: transparent;
-        border: 0;
-        transform: translateX(-50%);
-
-        .hexagon-container {
-          // set transform
-          svg * {
-            transition: fill 100ms linear;
-          }
-          svg {
-            width: $width + 2px; // add 1px for drop-shadow
-            height: $height + 2px; // add 1px for drop-shadow
-            .background {
-              filter: drop-shadow(0px 1px 0px rgba(#999, 60%));
-            }
-          }
-        }
-        .hitarea {
-          position: absolute;
-          border-radius: bs.$border-radius-pill;
-
-          @include hitarea(30px);
-        }
-
-        // reverse and center icon at the time of collapsed
-        &.collapsed {
-          display: block;
-          .hexagon-container svg {
-            transform: rotate(180deg);
-          }
-          .hitarea {
-            @include hitarea(80px);
-          }
-        }
-      }
-      &:hover {
-        .grw-navigation-draggable-hitarea-child {
-          display: block;
-        }
-        .grw-navigation-resize-button {
-          display: block;
-        }
-      }
-    }
-  }
-
+// TODO: commonize reload button style
+.grw-sidebar :global {
   .grw-sidebar-content-header {
     .grw-btn-reload {
       font-size: 18px;
@@ -145,76 +22,78 @@
   }
 }
 
-
 // Dock Mode
-@mixin dock() {
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-dock {
+      position: sticky;
+    }
+  }
+}
+
+// Collapsed Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-collapsed {
+      position: sticky;
+
+      .sidebar-contents-container {
+        border-color: var(--bs-border-color);
+        border-style: solid;
+        border-width : 1px 1px 1px 0;
+      }
+
+      // open
+      .sidebar-contents-container.open {
+        position: absolute;
+        left: var.$grw-sidebar-nav-width;
+        min-height: 50vh;
+        max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
+      }
+    }
+  }
 }
 
 // Drawer Mode
-@mixin drawer() {
-  z-index: bs.$zindex-fixed + 2;
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-drawer {
+      position: fixed;
+      z-index: bs.$zindex-fixed + 2;
+      width: 348px;
 
-  .data-layout-container {
-    position: fixed;
-    top: 0;
-    width: 0;
-  }
-  div.navigation.transition-enabled {
-    max-width: 80vw;
+      // apply transition
+      transition-property: transform;
+      @include mixins.apply-navigation-transition();
 
-    // apply transition
-    transition-property: transform;
-    @include mixins.apply-navigation-transition();
-  }
-
-  &:not(.open) {
-    div.navigation {
-      transform: translateX(-100%);
-    }
-  }
-  &.open {
-    div.navigation {
-      transform: translateX(0);
-    }
-
-    .grw-contextual-navigation-child {
-      .grw-drawer-toggler {
-        display: block;
+      &:not(.open) {
+        transform: translateX(-100%);
       }
-    }
-  }
-
-  .grw-navigation-resize-button {
-    display: none !important;
-  }
-
-  .grw-contextual-navigation-child {
-    .grw-drawer-toggler {
-      @include bs.media-breakpoint-down(sm) {
-        position: fixed;
-        right: -15px;
-        bottom: 15px;
-        width: 42px;
-        height: 42px;
-        font-size: 18px;
-        transform: translateX(100%);
+      &.open {
+        transform: translateX(0);
       }
     }
   }
 }
 
-.grw-sidebar {
-  &:global {
-    &.grw-sidebar-drawer {
-      @include drawer();
+
+@include bs.color-mode(light) {
+  .grw-sidebar :global {
+    --bs-border-color: var(--grw-highlight-200);
+
+    .sidebar-contents-container {
+      background-color: rgba(var(--grw-highlight-100-rgb), .5);
     }
-    &.grw-sidebar-dock {
-      @include bs.media-breakpoint-down(sm) {
-        @include drawer();
-      }
-      @include bs.media-breakpoint-up(md) {
-        @include dock();
-      }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-sidebar :global {
+    --bs-color: var(--bs-gray-400);
+    --bs-border-color: var(--grw-highlight-800);
+
+    .sidebar-contents-container {
+      background-color: rgba(var(--grw-highlight-800-rgb), .5);
     }
   }
 }

@@ -29,7 +29,7 @@ const AdminLayout = ({
       <div className={`admin-page ${styles['admin-page']}`}>
 
         <header className="py-0 container-fluid">
-          <h1 className="title px-3">{componentTitle}</h1>
+          <h1 className="p-3 fs-2">{componentTitle}</h1>
         </header>
         <div id="main" className="main">
           <div className="container-fluid">

@@ -459,7 +459,7 @@ export const HandsontableModal = (): JSX.Element => {
             type="button"
             className="me-4 data-import-button btn btn-secondary"
             data-bs-toggle="collapse"
-            data-target="#collapseDataImport"
+            data-bs-target="#collapseDataImport"
             aria-expanded={isDataImportAreaExpanded}
             onClick={toggleDataImportArea}
           >

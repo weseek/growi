@@ -33,14 +33,13 @@ import {
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
-  useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
+  useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
-import { useHasDraftOnHackmd, usePageIdOnHackmd, useRevisionIdHackmdSynced } from '~/stores/hackmd';
 import {
   useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
@@ -121,9 +120,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
-    <div data-testid="grw-contextual-sub-nav">
-      <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
-    </div>
+    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
   );
 };
 
@@ -154,7 +151,6 @@ type Props = CommonProps & {
   isAclEnabled: boolean,
   // hasSlackConfig: boolean,
   drawioUri: string | null,
-  hackmdUri: string,
   noCdn: string,
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
@@ -210,7 +206,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useIsMailerSetup(props.isMailerSetup);
   useIsAclEnabled(props.isAclEnabled);
   // useHasSlackConfig(props.hasSlackConfig);
-  useHackmdUri(props.hackmdUri);
   // useNoCdn(props.noCdn);
   useDefaultIndentSize(props.adminPreferredIndentSize);
   useIsIndentSizeForced(props.isIndentSizeForced);
@@ -230,8 +225,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
-  usePageIdOnHackmd(pageWithMeta?.data.pageIdOnHackmd);
-  useHasDraftOnHackmd(pageWithMeta?.data.hasDraftOnHackmd ?? false);
   useCurrentPathname(props.currentPathname);
 
   useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
@@ -248,7 +241,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { mutate: mutateSelectedGrant } = useSelectedGrant();
 
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
-  const { mutate: mutateRevisionIdHackmdSynced } = useRevisionIdHackmdSynced();
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
@@ -301,8 +293,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useEffect(() => {
     mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
-    mutateRevisionIdHackmdSynced(pageWithMeta?.data.revisionHackmdSynced);
-  }, [mutateRemoteRevisionId, mutateRevisionIdHackmdSynced, pageWithMeta?.data.revision?._id, pageWithMeta?.data.revisionHackmdSynced]);
+  }, [mutateRemoteRevisionId, pageWithMeta?.data.revision?._id]);
 
   useEffect(() => {
     mutateCurrentPageId(pageId ?? null);
@@ -332,11 +323,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
-        <header className="py-0 position-relative">
-          <div id="grw-subnav-container">
-            <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-          </div>
-        </header>
+        <nav className="sticky-top">
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+        </nav>
 
         <DisplaySwitcher
           pageView={(
@@ -562,7 +551,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isAclEnabled = aclService.isAclEnabled();
   // props.hasSlackConfig = slackNotificationService.hasSlackConfig();
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
-  props.hackmdUri = configManager.getConfig('crowi', 'app:hackmdUri');
   props.noCdn = configManager.getConfig('crowi', 'app:noCdn');
   // props.highlightJsStyle = configManager.getConfig('crowi', 'customize:highlightJsStyle');
   props.isAllReplyShown = configManager.getConfig('crowi', 'customize:isAllReplyShown');

@@ -4,19 +4,21 @@ import styles from './PageViewLayout.module.scss';
 
 type Props = {
   children?: ReactNode,
+  headerContents?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
 }
 
 export const PageViewLayout = (props: Props): JSX.Element => {
   const {
-    children, sideContents, footerContents,
+    children, headerContents, sideContents, footerContents,
   } = props;
 
   return (
     <>
       <div id="main" className={`main page-view-layout ${styles['page-view-layout']}`}>
         <div id="content-main" className="content-main container-lg grw-container-convertible">
+          { headerContents != null && headerContents }
           { sideContents != null
             ? (
               <div className="d-flex flex-column flex-column-reverse flex-lg-row">

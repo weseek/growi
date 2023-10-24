@@ -1,3 +1,10 @@
 {
-  "ignore": ["package.json", ".next", "public/static"]
+  "ignore": [
+    "package.json",
+    ".next",
+    "public/static",
+
+    "// ignore watching preset theme updates",
+    "packages/preset-themes/dist/themes/manifest.json"
+  ]
 }
