@@ -43,8 +43,8 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
 
 type Props = {
   editorMode: EditorMode | undefined,
-  onPageEditorModeButtonClicked?: (editorMode: EditorMode) => void,
   isBtnDisabled?: boolean,
+  onPageEditorModeButtonClicked?: (editorMode: EditorMode) => Promise<void>,
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
@@ -57,13 +57,12 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled ?? false) {
+  const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
+    if (isBtnDisabled || onPageEditorModeButtonClicked == null) {
       return;
     }
-    if (onPageEditorModeButtonClicked != null) {
-      onPageEditorModeButtonClicked(viewType);
-    }
+
+    onPageEditorModeButtonClicked(viewType);
   }, [isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
