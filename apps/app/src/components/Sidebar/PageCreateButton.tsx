@@ -38,10 +38,13 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         body: undefined,
         grant: currentPage?.grant || 1,
         grantUserGroupId: currentPage?.grantedGroup || null,
+        isSlackEnabled: false,
+        slackChannels: '',
+        pageTags: [],
         shouldGeneratePath: true,
       });
 
-      router.push(`${response.data.page.path}#edit`);
+      router.push(`${response.data.page.id}#edit`);
     }
     catch (err) {
       logger.warn(err);
