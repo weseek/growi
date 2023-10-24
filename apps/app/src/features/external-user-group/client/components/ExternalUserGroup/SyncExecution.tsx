@@ -118,8 +118,6 @@ export const SyncExecution = ({
     );
   };
 
-  window.addEventListener('customSubmitEvent', onSyncExecConfirmBtnClick);
-
   return (
     <>
       <h3 className="border-bottom mb-3">{t('external_user_group.execute_sync')}</h3>
