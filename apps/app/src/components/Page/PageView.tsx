@@ -83,7 +83,7 @@ const InlineCommentBox = (props: any): JSX.Element => {
   }
 
   return (
-    <div id="inlineCommentBox" className="position-absolute" ref={inlineCommentBoxRef}>
+    <div id="inlineCommentBox" className="position-absolut" ref={inlineCommentBoxRef}>
       <div className="card">
         <div className="card-header">
           {selectedText}
@@ -200,19 +200,8 @@ export const PageView = (props: Props): JSX.Element => {
   };
 
   const [selectedRange, setSelectedRange] = useState<any>();
-  const inlineCommentTargetRect = useMemo(() => {
-    if (selectedRange == null || selectedRange.getClientRect == null) {
-      return;
-    }
-    return selectedRange.getClientRect();
-  }, [selectedRange]);
-  const selectedRangeText = useMemo(() => {
-    if (selectedRange == null || selectedRange.cloneContents == null) {
-      return;
-    }
-    const contents = selectedRange.cloneContents();
-    return contents.textContent;
-  }, [selectedRange]);
+  const [selectedRangeText, setSelectedRangeText] = useState<string|null>('');
+  const [targetRect, setTargetRect] = useState<any>();
 
   // TODO: Delete these experimental codes when the test is finished.
   const selectHandler = useCallback(() => {
@@ -222,11 +211,13 @@ export const PageView = (props: Props): JSX.Element => {
     console.log(sel);
     // Range selection disappears
     setSelectedRange(range); // <- this code has problem.
+    const clientRect = range.getClientRects();
+    console.log(clientRect);
+    const rangeContents = range.cloneContents();
+    setSelectedRangeText(rangeContents.textContent);
+    setTargetRect(range.getClientRects());
 
     // The following code will be used later.
-    // const clientRect = range.getClientRects();
-    // console.log(clientRect);
-    // const newRangeContents = range.cloneContents();
     // const { firstElementChild } = range.cloneContents();
     // const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
     // const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
@@ -285,8 +276,8 @@ export const PageView = (props: Props): JSX.Element => {
             selectedText={selectedRangeText}
             pageId
             revisionId
-            positionX={inlineCommentTargetRect?.left}
-            positionY={inlineCommentTargetRect?.top}
+            positionX={targetRect?.left}
+            positionY={targetRect?.top}
           />
         )}
       </div>
