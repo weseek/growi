@@ -244,6 +244,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const { isLinkSharingDisabled } = props;
 
@@ -263,6 +264,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     if (isNotFound) {
       try {
+        setIsCreating(true);
+
         const response = await apiv3Post('/pages/', {
           path,
           body: undefined,
@@ -279,6 +282,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       catch (err) {
         logger.warn(err);
         toastError(t('toaster.create_failed', { target: path }));
+      }
+      finally {
+        setIsCreating(false);
       }
     }
 
@@ -394,7 +400,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}
-            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+            isBtnDisabled={isCreating || !!isGuestUser || !!isReadOnlyUser}
             onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
           />
         )}
