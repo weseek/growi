@@ -15,6 +15,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
 
   const [isHovered, setIsHovered] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);
@@ -29,6 +30,8 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     if (isLoading) return;
 
     try {
+      setIsCreating(true);
+
       const parentPath = currentPage == null || isCreatablePage(currentPage.path)
         ? '/'
         : currentPage.path;
@@ -49,6 +52,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     catch (err) {
       logger.warn(err);
       toastError(err);
+    }
+    finally {
+      setIsCreating(false);
     }
   }, [currentPage, isLoading, router]);
   const onCreateTodaysButtonHandler = useCallback(() => {
@@ -77,6 +83,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           onClick={onCreateNewPageButtonHandler}
           type="button"
           data-testid="grw-sidebar-nav-page-create-button"
+          disabled={isCreating}
         >
           <i className="material-icons">{iconName}</i>
         </button>
@@ -95,6 +102,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
                 className="dropdown-item"
                 onClick={onCreateNewPageButtonHandler}
                 type="button"
+                disabled={isCreating}
               >
                 Create New Page
               </button>
