@@ -52,11 +52,13 @@ const InlineCommentBox = (props: any): JSX.Element => {
   const [commentBody, setCommentBody] = useState('');
   const inlineCommentBoxRef = useRef(null);
   const postCommentHandler = useCallback(async() => {
+    console.log('postCommentHandler is called!', commentBody);
+    const comment = `> ${selectedText}  \n\n ${commentBody}`;
     try {
       // post new comment
       const postCommentArgs = {
         commentForm: {
-          comment: commentBody,
+          comment,
           revisionId,
           replyTo: undefined,
         },
@@ -92,7 +94,7 @@ const InlineCommentBox = (props: any): JSX.Element => {
           <textarea name="" id="" cols={30} rows={10} className="form-control" onChange={(e) => { setCommentBody(e.target.value) }}></textarea>
         </div>
         <div className="card-footer">
-          <button type="button" onSubmit={postCommentHandler}>送信</button>
+          <button type="button" onClick={postCommentHandler}>送信</button>
         </div>
       </div>
     </div>
@@ -274,8 +276,8 @@ export const PageView = (props: Props): JSX.Element => {
         { selectedRange != null && (
           <InlineCommentBox
             selectedText={selectedRangeText}
-            pageId
-            revisionId
+            pageId={page?._id}
+            revisionId={page?.revision._id}
             positionX={targetRect?.left}
             positionY={targetRect?.top}
           />
