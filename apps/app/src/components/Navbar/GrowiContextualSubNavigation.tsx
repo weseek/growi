@@ -12,6 +12,8 @@ import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError } from '~/client/util/toastr';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -22,13 +24,16 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo, useIsNotFound,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
+  useSelectedGrant,
+  EditorMode,
 } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
@@ -41,6 +46,7 @@ import { Skeleton } from '../Skeleton';
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
+const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 
 const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
@@ -180,6 +186,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { currentPage } = props;
 
   const router = useRouter();
+  const { t } = useTranslation('commons');
 
   const { data: shareLinkId } = useShareLinkId();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
@@ -197,6 +204,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
+  const { data: isNotFound, mutate: mutateIsNotFound } = useIsNotFound();
+  const { data: grantData } = useSelectedGrant();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
@@ -213,6 +222,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
+  const grant = currentPage?.grant ?? grantData?.grant;
+  const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125
@@ -244,6 +255,36 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   //   mutatePageTagsForEditors(newTags);
   //   return;
   // }, [mutatePageTagsForEditors]);
+
+  const onPageEditorModeButtonClicked = useCallback(async(viewType: EditorMode) => {
+    if (isNotFound == null || path == null || grant == null) {
+      return;
+    }
+
+    if (isNotFound) {
+      try {
+        await apiv3Post('/pages/', {
+          path,
+          body: undefined,
+          grant,
+          grantUserGroupId,
+          isSlackEnabled: false,
+          slackChannels: '',
+          pageTags: [],
+        });
+
+        mutateIsNotFound(false);
+        // Should not mutateEditorMode as it might prevent transitioning during mutation
+        router.push(`${path}#edit`);
+      }
+      catch (err) {
+        logger.warn(err);
+        toastError(t('toaster.create_failed', { target: path }));
+      }
+    }
+
+    mutateEditorMode(viewType);
+  }, [grant, grantUserGroupId, isNotFound, mutateEditorMode, mutateIsNotFound, path, router, t]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -355,7 +396,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           <PageEditorModeManager
             editorMode={editorMode}
             isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-            onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
+            onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
           />
         )}
       </div>
