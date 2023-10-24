@@ -48,20 +48,6 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
-    try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-
-      updateStateAfterSave?.();
-
-      toastSuccess('updated tags successfully');
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }, [pageId, revisionId, updateStateAfterSave]);
-
   if (!showTagLabel) {
     return <></>;
   }
@@ -78,7 +64,7 @@ const Tags = (props: TagsProps): JSX.Element => {
             tags={tagsInfoData.tags}
             isTagLabelsDisabled={isTagLabelsDisabled ?? false}
             isDisappear={isDisappear}
-            tagsUpdateInvoked={tagsUpdatedHandler}
+            pageId={pageId}
           />
         )
         : <PageTagsSkeleton />

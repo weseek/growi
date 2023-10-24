@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { Skeleton } from '../Skeleton';
 
 import RenderTagLabels from './RenderTagLabels';
-import TagEditModal from './TagEditModal';
+import { TagEditModal } from './TagEditModal';
 
 import styles from './TagLabels.module.scss';
 
@@ -12,6 +12,7 @@ type Props = {
   isTagLabelsDisabled: boolean,
   isDisappear: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
+  pageId: string,
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
@@ -20,18 +21,8 @@ export const PageTagsSkeleton = (): JSX.Element => {
 
 export const PageTags:FC<Props> = (props: Props) => {
   const {
-    tags, isTagLabelsDisabled, isDisappear, tagsUpdateInvoked,
+    tags, isTagLabelsDisabled, isDisappear, pageId,
   } = props;
-
-  const [isTagEditModalShown, setIsTagEditModalShown] = useState(false);
-
-  const openEditorModal = () => {
-    setIsTagEditModalShown(true);
-  };
-
-  const closeEditorModal = () => {
-    setIsTagEditModalShown(false);
-  };
 
   if (tags == null) {
     return <PageTagsSkeleton />;
@@ -42,17 +33,11 @@ export const PageTags:FC<Props> = (props: Props) => {
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
         <RenderTagLabels
           tags={tags}
-          openEditorModal={openEditorModal}
           isTagLabelsDisabled={isTagLabelsDisabled}
           isDisappear={isDisappear}
+          pageId={pageId}
         />
       </div>
-      <TagEditModal
-        tags={tags}
-        isOpen={isTagEditModalShown}
-        onClose={closeEditorModal}
-        onTagsUpdated={tagsUpdateInvoked}
-      />
     </>
   );
 };

@@ -3,6 +3,8 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useKeywordManager } from '~/client/services/search-operation';
+import { useTagEditModal } from '~/stores/modal';
+import { useSWRxTagsInfo } from '~/stores/page';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
@@ -11,23 +13,18 @@ type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
   isDisappear: boolean,
-  openEditorModal?: () => void,
+  pageId: string,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, isDisappear, openEditorModal,
+    tags, isTagLabelsDisabled, isDisappear, pageId,
   } = props;
   const { t } = useTranslation();
 
   const { pushState } = useKeywordManager();
-
-  function openEditorHandler() {
-    if (openEditorModal == null) {
-      return;
-    }
-    openEditorModal();
-  }
+  const { open: openTagEditModal } = useTagEditModal();
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   const isTagsEmpty = tags.length === 0;
 
@@ -53,19 +50,10 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
                 ${isTagLabelsDisabled && 'disabled'}
                 ${isDisappear && 'border border-secondary p-1'}`
               }
-              onClick={openEditorHandler}
+              onClick={() => openTagEditModal(tagsInfoData?.tags)}
             >
-              {isDisappear ? (
-                <>
-                  <i className={`icon-tag me-2 ${isTagsEmpty && 'ms-1'}`} />
-                  Tags
-                </>
-              ) : (
-                <>
-                  {isTagsEmpty && <> {t('Add tags for this page')}</>}
-                  <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
-                </>
-              )}
+              {isTagsEmpty && <> {t('Add tags for this page')}</>}
+              <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
             </a>
           </div>
         </NotAvailableForReadOnlyUser>

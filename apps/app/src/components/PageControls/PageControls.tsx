@@ -16,8 +16,9 @@ import {
 } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { tags } from '~/services/xss/recommended-whitelist';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
@@ -26,7 +27,6 @@ import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
-import { PageTagsSkeleton } from '../PageTags';
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
@@ -36,57 +36,33 @@ import SubscribeButton from './SubscribeButton';
 
 import styles from './PageControls.module.scss';
 
-
-const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), {
-  ssr: false,
-  loading: PageTagsSkeleton,
-});
-
 type TagsProps = {
   pageId: string,
   revisionId: string,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { pageId, revisionId } = props;
+  const { pageId } = props;
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { open: openTagEditModal } = useTagEditModal();
 
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
-
-  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
-    try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-
-      updateStateAfterSave?.();
-      toastSuccess('updated tags successfully');
-    }
-    catch (err) {
-      toastError(err);
-    }
-
-  }, [pageId, revisionId, updateStateAfterSave]);
 
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
-  const isDisappear = true;
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
-      { tagsInfoData?.tags != null
-        ? (
-          <PageTags
-            tags={tagsInfoData.tags}
-            isTagLabelsDisabled={isTagLabelsDisabled ?? false}
-            isDisappear={isDisappear}
-            tagsUpdateInvoked={tagsUpdatedHandler}
-          />
-        )
-        : <PageTagsSkeleton />
-      }
+      <a
+        className="btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center"
+        onClick={() => openTagEditModal(tagsInfoData?.tags)}
+      >
+        <i className="icon-tag me-2" />
+        Tags
+      </a>
     </div>
   );
 };

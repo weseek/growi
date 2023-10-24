@@ -5,41 +5,46 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { apiPost } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { useTagEditModal } from '~/stores/modal';
+import { useSWRxTagsInfo } from '~/stores/page';
+
 import { TagsInput } from './TagsInput';
 
-type Props = {
-  tags: string[],
-  isOpen: boolean,
-  onClose?: () => void,
-  onTagsUpdated?: (tags: string[]) => Promise<void> | void,
-};
-
-function TagEditModal(props: Props): JSX.Element {
-  const { onClose, onTagsUpdated } = props;
+export const TagEditModal: React.FC = () => {
 
   const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
+  const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
+  const isOpen = tagEditModalData?.isOpen;
+  const pageId = tagEditModalData?.pageId;
+  const revisionId = tagEditModalData?.revisionId;
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   useEffect(() => {
-    setTags(props.tags);
-  }, [props.tags]);
+    setTags(tags);
+  }, [tags]);
 
-  const closeModalHandler = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
+  const handleSubmit = useCallback(async() => {
 
-  const handleSubmit = useCallback(() => {
-    if (onTagsUpdated == null) {
-      return;
+    try {
+      await apiPost('/tags.update', { pageId, revisionId, tags });
+      updateStateAfterSave?.();
+
+      toastSuccess('updated tags successfully');
     }
-
-    onTagsUpdated(tags);
-    closeModalHandler();
-  }, [closeModalHandler, onTagsUpdated, tags]);
+    catch (err) {
+      toastError(err);
+    }
+    closeTagEditModal();
+  }, [tags, pageId, revisionId, closeTagEditModal]);
 
   return (
-    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
+    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeTagEditModal} className="bg-primary text-light">
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
@@ -53,6 +58,4 @@ function TagEditModal(props: Props): JSX.Element {
     </Modal>
   );
 
-}
-
-export default TagEditModal;
+};
