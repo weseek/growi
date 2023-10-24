@@ -45,17 +45,18 @@ const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod 
 
 const InlineCommentBox = (props: any): JSX.Element => {
   const {
-    positionX, positionY, selectedText, pageId, revisionId,
+    positionX, positionY, selectedText, pageId, revisionId, onFocus,
   } = props;
   const { post: postComment } = useSWRxPageComment(pageId);
 
+  const [commentBody, setCommentBody] = useState('');
   const inlineCommentBoxRef = useRef(null);
   const postCommentHandler = useCallback(async() => {
     try {
       // post new comment
       const postCommentArgs = {
         commentForm: {
-          comment,
+          comment: commentBody,
           revisionId,
           replyTo: undefined,
         },
@@ -74,9 +75,11 @@ const InlineCommentBox = (props: any): JSX.Element => {
   }, []);
 
   if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null) {
-    const ctx = inlineCommentBoxRef.current;
-    ctx.style.top = positionY;
-    ctx.style.left = positionX;
+    const { current } = inlineCommentBoxRef;
+    // if (current.style != null) {
+    //   current.style.top = positionY;
+    //   current.style.left = positionX;
+    // }
   }
 
   return (
@@ -86,7 +89,7 @@ const InlineCommentBox = (props: any): JSX.Element => {
           {selectedText}
         </div>
         <div className="card-body">
-          <textarea name="" id="" cols={30} rows={10} className="form-control"></textarea>
+          <textarea name="" id="" cols={30} rows={10} className="form-control" onChange={(e) => { setCommentBody(e.target.value) }}></textarea>
         </div>
         <div className="card-footer">
           <button type="button" onSubmit={postCommentHandler}>送信</button>
@@ -196,39 +199,56 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
+  const [selectedRange, setSelectedRange] = useState<any>();
+  const inlineCommentTargetRect = useMemo(() => {
+    if (selectedRange == null || selectedRange.getClientRect == null) {
+      return;
+    }
+    return selectedRange.getClientRect();
+  }, [selectedRange]);
+  const selectedRangeText = useMemo(() => {
+    if (selectedRange == null || selectedRange.cloneContents == null) {
+      return;
+    }
+    const contents = selectedRange.cloneContents();
+    return contents.textContent;
+  }, [selectedRange]);
 
   // TODO: Delete these experimental codes when the test is finished.
   const selectHandler = useCallback(() => {
     const sel = document.getSelection();
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
-    const clientRect = range.getClientRects();
-    const newRangeContents = range.cloneContents();
-    const { firstElementChild } = range.cloneContents();
-    const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
-    const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
-    if (isRangeStartWithSpan && isSelectedRange) return;
-    for (const childNode of newRangeContents.childNodes) {
-      if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
-        const newNodeElement = document.createElement('span');
-        newNodeElement.innerText = childNode.textContent;
-        newNodeElement.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
-        newNodeElement.setAttribute('selected', 'selected');
-        childNode.replaceWith(newNodeElement);
-      }
-      else {
-        const newNodeElement = document.createElement('span');
-        newNodeElement.setAttribute('selected', 'selected');
-        // newNodeElement.setAttributes(...childNode.getAttributes());
-        childNode.replaceWith(newNodeElement);
-      }
-    }
-    // range.deleteContents(); // Delete range selection.
-    // range.detach();
-    // range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
-    const markerElement = document.createElement('selected');
-    markerElement.setAttribute('comment-id', 'undefined');
-    range.insertNode(markerElement);
+    console.log(sel);
+    setSelectedRange(range);
+    // const clientRect = range.getClientRects();
+    // console.log(clientRect);
+    // const newRangeContents = range.cloneContents();
+    // const { firstElementChild } = range.cloneContents();
+    // const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
+    // const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
+    // if (isRangeStartWithSpan && isSelectedRange) return;
+    // for (const childNode of newRangeContents.childNodes) {
+    //   if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
+    //     const newNodeElement = document.createElement('span');
+    //     newNodeElement.innerText = childNode.textContent;
+    //     newNodeElement.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
+    //     newNodeElement.setAttribute('selected', 'selected');
+    //     childNode.replaceWith(newNodeElement);
+    //   }
+    //   else {
+    //     const newNodeElement = document.createElement('span');
+    //     newNodeElement.setAttribute('selected', 'selected');
+    //     // newNodeElement.setAttributes(...childNode.getAttributes());
+    //     childNode.replaceWith(newNodeElement);
+    //   }
+    // }
+    // // range.deleteContents(); // Delete range selection.
+    // // range.detach();
+    // // range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
+    // const markerElement = document.createElement('selected');
+    // markerElement.setAttribute('comment-id', 'undefined');
+    // range.insertNode(markerElement);
   }, []);
 
   useEffect(() => {
@@ -257,7 +277,15 @@ export const PageView = (props: Props): JSX.Element => {
           </>
         )}
 
-        <InlineCommentBox />
+        { selectedRange != null && (
+          <InlineCommentBox
+            selectedText={selectedRangeText}
+            pageId
+            revisionId
+            positionX={inlineCommentTargetRect?.left}
+            positionY={inlineCommentTargetRect?.top}
+          />
+        )}
       </div>
     </PageViewLayout>
   );
