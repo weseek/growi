@@ -84,11 +84,13 @@ export const SyncExecution = ({
   const onSyncExecConfirmBtnClick = useCallback(async() => {
     setIsAlertModalOpen(false);
     try {
-      await requestSyncAPI(currentSubmitEvent);
-      setProgress({ total: 0, current: 0 });
+      // set sync status before requesting to API, so that setting to syncFailed does not get overwritten
       setSyncStatus(SyncStatus.syncExecuting);
+      setProgress({ total: 0, current: 0 });
+      await requestSyncAPI(currentSubmitEvent);
     }
     catch (errs) {
+      setSyncStatus(SyncStatus.syncFailed);
       toastError(t(errs[0]?.code));
     }
   }, [t, requestSyncAPI, currentSubmitEvent]);

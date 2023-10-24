@@ -314,8 +314,23 @@ module.exports = (crowi: Crowi): Router => {
       );
     }
 
+    const isLdapEnabled = await configManager.getConfig('crowi', 'security:passport-ldap:isEnabled');
+    if (!isLdapEnabled) {
+      return res.apiv3Err(
+        new ErrorV3('Authentication using ldap is not set', 'external_user_group.ldap.auth_not_set'), 422,
+      );
+    }
+
+    try {
+      await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
+    }
+    catch (e) {
+      return res.apiv3Err(
+        new ErrorV3('LDAP group sync failed', 'external_user_group.sync_failed'), 500,
+      );
+    }
+
     // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
-    await crowi.ldapUserGroupSyncService?.init(req.user.name, req.body.password);
     crowi.ldapUserGroupSyncService?.syncExternalUserGroups();
 
     return res.apiv3({}, 202);
@@ -352,12 +367,12 @@ module.exports = (crowi: Crowi): Router => {
     const authProviderType = getAuthProviderType();
     if (authProviderType == null) {
       return res.apiv3Err(
-        new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 500,
+        new ErrorV3('Authentication using keycloak is not set', 'external_user_group.keycloak.auth_not_set'), 422,
       );
     }
 
-    // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
     crowi.keycloakUserGroupSyncService?.init(authProviderType);
+    // Do not await for sync to finish. Result (completed, failed) will be notified to the client by socket-io.
     crowi.keycloakUserGroupSyncService?.syncExternalUserGroups();
 
     return res.apiv3({}, 202);
