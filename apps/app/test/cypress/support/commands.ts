@@ -81,14 +81,14 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
 
   cy.getByTestid('grw-sidebar').should('be.visible').within(() => {
 
-    const isSidebarContextualNavigationHidden = isHiddenByTestId('grw-contextual-navigation-child');
-    if (isSidebarContextualNavigationHidden === isCollapsed) {
+    const isSidebarContentsHidden = isHiddenByTestId('grw-sidebar-contents');
+    if (isSidebarContentsHidden === isCollapsed) {
       return;
     }
 
     cy.waitUntil(() => {
       // do
-      cy.getByTestid("grw-navigation-resize-button").click({force: true});
+      cy.getByTestid("grw-switch-collapse-button").click({force: true});
       // wait until saving UserUISettings
       if (waitUntilSaving) {
         // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -96,7 +96,7 @@ Cypress.Commands.add('collapseSidebar', (isCollapsed: boolean, waitUntilSaving =
       }
 
       // wait until
-      return cy.getByTestid('grw-contextual-navigation-child').then($contents => isHidden($contents) === isCollapsed);
+      return cy.getByTestid('grw-sidebar-contents').then($contents => isHidden($contents) === isCollapsed);
     });
   });
 

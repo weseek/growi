@@ -113,8 +113,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
 
   props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
   };
 
   props.rendererConfig = {

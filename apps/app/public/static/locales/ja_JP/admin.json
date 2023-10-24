@@ -488,7 +488,11 @@
       "show_all_reply_comments": "返信コメントを全て表示する",
       "show_all_reply_comments_desc": "OFFの場合、最新2件のコメント以外が省略されます。",
       "select_search_scope_children_as_default": "検索範囲のデフォルト設定を「この階層下の子ページ」にする",
-      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。",
+      "select_search_scope_children_as_default_desc": "OFFの場合、検索範囲のデフォルト設定は「全てのページ」になります。"
+
+    },
+    "presentation":"プレゼンテーション",
+    "presentation_options":{
       "enable_marp": "Marp を有効化する",
       "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
       "marp_official_site": "参考：Marp 公式サイト",
@@ -507,6 +511,7 @@
     "write_css": " システム全体に適用されるCSSを記述できます。",
     "ctrl_space": "Ctrl+Space でコード補完",
     "custom_script": "カスタムスクリプト",
+    "custom_presentation":"プレゼンテーション",
     "write_java": "システム全体に適用されるJavaScriptを記述できます。",
     "reflect_change": "変更の反映はページの更新が必要です。",
     "custom_logo": "カスタムロゴ",
@@ -515,7 +520,7 @@
     "current_logo": "現在のロゴ",
     "upload_new_logo": "新しいロゴをアップロードする",
     "delete_logo": "ロゴを削除"
-  },
+   },
   "importer_management": {
     "import_data": "データインポート",
     "article": "記事",
@@ -561,10 +566,6 @@
           "initialize_meta_datas": {
             "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
             "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "HackMD 関連データを初期化する",
-            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
           }
         },
         "revisions": {
@@ -920,6 +921,7 @@
     "USER_API_TOKEN_UPDATE": "API トークンの更新",
     "USER_EDITOR_SETTINGS_UPDATE": "エディター設定の更新",
     "USER_IN_APP_NOTIFICATION_SETTINGS_UPDATE": "アプリ内通知設定の更新",
+    "USER_REGISTRATION_APPROVAL_REQUEST": "ID/Password 認証のユーザー登録リクエスト",
     "PAGE_VIEW": "ページ閲覧",
     "PAGE_USER_HOME_VIEW": "ページ閲覧（ユーザーホーム）",
     "PAGE_FORBIDDEN": "ページ閲覧（fobiddenページ）",

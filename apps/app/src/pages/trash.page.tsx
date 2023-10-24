@@ -6,17 +6,16 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
+import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId } from '~/stores/page';
-import { useDrawerMode } from '~/stores/ui';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useIsReadOnlyUser,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
 } from '../stores/context';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -27,6 +26,7 @@ import {
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -56,10 +56,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   useShowPageLimitationXL(props.showPageLimitationXL);
 
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
-
   const title = generateCustomTitleForPage(props, '/trash');
 
   return (
@@ -68,17 +64,12 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <header className="py-0 position-relative">
-          <GrowiSubNavigation
-            pagePath="/trash"
-            showDrawerToggler={isDrawerMode}
-            isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
-            isDrawerMode={isDrawerMode}
-            additionalClasses={['container-fluid']}
-          />
-        </header>
+        <nav className="sticky-top">
+          TODO: implement navigation for /trash
+        </nav>
 
         <div className="content-main container-lg grw-container-convertible mb-5 pb-5">
+          <PagePathNavSticky pagePath="/trash" />
           <TrashPageList />
         </div>
 
@@ -123,8 +114,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 
   props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
   };
 
 }

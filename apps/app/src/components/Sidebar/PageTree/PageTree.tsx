@@ -3,12 +3,12 @@ import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
-import PageTreeContentSkeleton from './PageTreeContentSkeleton';
+import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
 import { PageTreeHeader } from './PageTreeSubstance';
 
 const PageTreeContent = dynamic(
   () => import('./PageTreeSubstance').then(mod => mod.PageTreeContent),
-  { ssr: false, loading: PageTreeContentSkeleton },
+  { ssr: false, loading: ItemsTreeContentSkeleton },
 );
 
 
@@ -24,7 +24,7 @@ export const PageTree = (): JSX.Element => {
         </Suspense>
       </div>
 
-      <Suspense fallback={<PageTreeContentSkeleton />}>
+      <Suspense fallback={<ItemsTreeContentSkeleton />}>
         <PageTreeContent />
       </Suspense>
     </div>

@@ -9,7 +9,7 @@ import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import {
-  EditorMode, useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
+  useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
 } from '~/stores/ui';
 
 
@@ -76,8 +76,7 @@ const EditorNavbarBottom = (): JSX.Element => {
     </div>
   );
 
-  const isOptionsSelectorEnabled = editorMode !== EditorMode.HackMD;
-  const isCollapsedOptionsSelectorEnabled = isOptionsSelectorEnabled && isDeviceSmallerThanMd;
+  const isCollapsedOptionsSelectorEnabled = isDeviceSmallerThanMd;
 
   return (
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
@@ -103,7 +102,7 @@ const EditorNavbarBottom = (): JSX.Element => {
       <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
         <form>
           { isDeviceSmallerThanMd && renderDrawerButton() }
-          { isOptionsSelectorEnabled && !isDeviceSmallerThanMd && <OptionsSelector /> }
+          { !isDeviceSmallerThanMd && <OptionsSelector /> }
         </form>
         <form className="flex-nowrap ms-auto">
           {/* Responsive Design for the SlackNotification */}
