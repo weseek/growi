@@ -12,13 +12,12 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
-  isDisappear: boolean,
   pageId: string,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, isDisappear, pageId,
+    tags, isTagLabelsDisabled, pageId,
   } = props;
   const { t } = useTranslation();
 
@@ -30,7 +29,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
 
   return (
     <>
-      {!isDisappear && tags.map(tag => (
+      {tags.map(tag => (
         <a
           key={tag}
           type="button"
@@ -47,8 +46,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
               className={
                 `btn btn-link btn-edit-tags text-muted d-flex align-items-center
                 ${isTagsEmpty && 'no-tags'}
-                ${isTagLabelsDisabled && 'disabled'}
-                ${isDisappear && 'border border-secondary p-1'}`
+                ${isTagLabelsDisabled && 'disabled'}`
               }
               onClick={() => openTagEditModal(tagsInfoData?.tags)}
             >

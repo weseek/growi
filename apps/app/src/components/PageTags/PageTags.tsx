@@ -10,7 +10,6 @@ import styles from './TagLabels.module.scss';
 type Props = {
   tags?: string[],
   isTagLabelsDisabled: boolean,
-  isDisappear: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
   pageId: string,
 }
@@ -21,7 +20,7 @@ export const PageTagsSkeleton = (): JSX.Element => {
 
 export const PageTags:FC<Props> = (props: Props) => {
   const {
-    tags, isTagLabelsDisabled, isDisappear, pageId,
+    tags, isTagLabelsDisabled, pageId,
   } = props;
 
   if (tags == null) {
@@ -34,7 +33,6 @@ export const PageTags:FC<Props> = (props: Props) => {
         <RenderTagLabels
           tags={tags}
           isTagLabelsDisabled={isTagLabelsDisabled}
-          isDisappear={isDisappear}
           pageId={pageId}
         />
       </div>
