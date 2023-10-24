@@ -141,7 +141,8 @@ export const SyncExecution = ({
         toggle={() => setIsAlertModalOpen(false)}
       >
         <ModalHeader tag="h4" toggle={() => setIsAlertModalOpen(false)} className="bg-purple text-light">
-          {t('external_user_group.confirmation_before_sync')}
+          <i className="icon-fw icon-exclamation align-middle"></i>
+          <span className="align-middle">{t('external_user_group.confirmation_before_sync')}</span>
         </ModalHeader>
         <ModalBody>
           <ul>
@@ -149,7 +150,7 @@ export const SyncExecution = ({
             <li>{t('external_user_group.parallel_sync_forbidden')}</li>
           </ul>
           <div className="text-center">
-            <button className="btn btn-primary" type="button" onClick={onSyncExecConfirmBtnClick}>{t('external_user_group.sync')}</button>
+            <button className="btn btn-primary" type="button" onClick={onSyncExecConfirmBtnClick}>{t('Execute')}</button>
           </div>
         </ModalBody>
       </Modal>
