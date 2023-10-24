@@ -25,6 +25,7 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
   timestamps: true,
 });
 schema.plugin(mongoosePaginate);
+// group name should be unique for each provider
 schema.index({ name: 1, provider: 1 }, { unique: true });
 
 /**
