@@ -30,16 +30,18 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
 
   return (
     <>
-      {tags.map(tag => (
-        <a
-          key={tag}
-          type="button"
-          className="grw-tag-label badge bg-primary me-2"
-          onClick={() => pushState(`tag:${tag}`)}
-        >
-          {tag}
-        </a>
-      ))}
+      {tags.map((tag) => {
+        return (
+          <a
+            key={tag}
+            type="button"
+            className="grw-tag-label badge bg-primary me-2"
+            onClick={() => pushState(`tag:${tag}`)}
+          >
+            {tag}
+          </a>
+        );
+      })}
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
           <div id="edit-tags-btn-wrapper-for-tooltip">
@@ -51,7 +53,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
               }
               onClick={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
             >
-              {isTagsEmpty && <> {t('Add tags for this page')}</>}
+              {isTagsEmpty && <>{ t('Add tags for this page') }</>}
               <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
             </a>
           </div>

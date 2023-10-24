@@ -9,7 +9,6 @@ import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useTagEditModal } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
 
 import { TagsInput } from './TagsInput';
 
@@ -22,16 +21,15 @@ export const TagEditModal: React.FC = () => {
   const pageId = tagEditModalData?.pageId;
   const revisionId = tagEditModalData?.revisionId;
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   useEffect(() => {
     setTags(tags);
   }, [tags]);
 
-  const handleSubmit = useCallback(async() => {
+  const handleSubmit = useCallback(async(newTags: string[]) => {
 
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags });
+      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
       updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
@@ -40,7 +38,7 @@ export const TagEditModal: React.FC = () => {
       toastError(err);
     }
     closeTagEditModal();
-  }, [closeTagEditModal, pageId, revisionId, tags, updateStateAfterSave]);
+  }, [closeTagEditModal, pageId, revisionId, updateStateAfterSave]);
 
   return (
     <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>
@@ -51,7 +49,7 @@ export const TagEditModal: React.FC = () => {
         <TagsInput tags={tags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={handleSubmit}>
+        <button type="button" className="btn btn-primary" onClick={() => handleSubmit(tags)}>
           {t('tag_edit_modal.done')}
         </button>
       </ModalFooter>
