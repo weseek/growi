@@ -204,7 +204,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: isContainerFluid } = useIsContainerFluid();
-  const { data: isNotFound, mutate: mutateIsNotFound } = useIsNotFound();
+  const { data: isNotFound } = useIsNotFound();
   const { data: grantData } = useSelectedGrant();
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
@@ -263,7 +263,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
     if (isNotFound) {
       try {
-        await apiv3Post('/pages/', {
+        const response = await apiv3Post('/pages/', {
           path,
           body: undefined,
           grant,
@@ -273,9 +273,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           pageTags: [],
         });
 
-        mutateIsNotFound(false);
         // Should not mutateEditorMode as it might prevent transitioning during mutation
-        router.push(`${path}#edit`);
+        router.push(`${response.data.page.id}#edit`);
       }
       catch (err) {
         logger.warn(err);
@@ -284,7 +283,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     }
 
     mutateEditorMode(viewType);
-  }, [grant, grantUserGroupId, isNotFound, mutateEditorMode, mutateIsNotFound, path, router, t]);
+  }, [grant, grantUserGroupId, isNotFound, mutateEditorMode, path, router, t]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
