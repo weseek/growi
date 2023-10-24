@@ -40,7 +40,7 @@ export const TagEditModal: React.FC = () => {
       toastError(err);
     }
     closeTagEditModal();
-  }, [tags, pageId, revisionId, closeTagEditModal]);
+  }, [closeTagEditModal, pageId, revisionId, tags, updateStateAfterSave]);
 
   return (
     <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>

@@ -8,15 +8,12 @@ import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 import { DropdownItem } from 'reactstrap';
 
 import {
-  toggleLike, toggleSubscribe, useUpdateStateAfterSave,
+  toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
-import { apiPost } from '~/client/util/apiv1-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { tags } from '~/services/xss/recommended-whitelist';
+import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';

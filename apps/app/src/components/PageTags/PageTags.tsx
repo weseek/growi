@@ -1,9 +1,8 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 
 import { Skeleton } from '../Skeleton';
 
 import RenderTagLabels from './RenderTagLabels';
-import { TagEditModal } from './TagEditModal';
 
 import styles from './TagLabels.module.scss';
 
