@@ -222,6 +222,8 @@ export const PageView = (props: Props): JSX.Element => {
     console.log(sel);
     // Range selection disappears
     setSelectedRange(range); // <- this code has problem.
+
+    // The following code will be used later.
     // const clientRect = range.getClientRects();
     // console.log(clientRect);
     // const newRangeContents = range.cloneContents();
