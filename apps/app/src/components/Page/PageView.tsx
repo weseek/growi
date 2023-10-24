@@ -11,6 +11,7 @@ import { debounce } from 'throttle-debounce';
 import { apiPost } from '~/client/util/apiv1-client';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
+import { useSWRxPageComment } from '~/stores/comment';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
@@ -44,36 +45,51 @@ const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod 
 
 const InlineCommentBox = (props: any): JSX.Element => {
   const {
-    positionX, positionY, text, pageId, revisionId,
+    positionX, positionY, selectedText, pageId, revisionId,
   } = props;
+  const { post: postComment } = useSWRxPageComment(pageId);
 
-  const onSubmit = (data) => {
-    const {};
-    await apiPost('/comments.add', {
-      commentForm: {
-        comment,
-        page_id: pageId,
-        revision_id: revisionId,
-        replyTo,
-      },
-      slackNotificationForm: {
-        isSlackEnabled,
-        slackChannels,
-      },
-    });
-  };
+  const inlineCommentBoxRef = useRef(null);
+  const postCommentHandler = useCallback(async() => {
+    try {
+      // post new comment
+      const postCommentArgs = {
+        commentForm: {
+          comment,
+          revisionId,
+          replyTo: undefined,
+        },
+        slackNotificationForm: {
+          isSlackEnabled: false,
+          slackChannels: undefined,
+        },
+      };
+      await postComment(postCommentArgs);
+
+    }
+    catch (err) {
+      const errorMessage = err.message || 'An unknown error occured when posting comment';
+      alert(errorMessage);
+    }
+  }, []);
+
+  if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null) {
+    const ctx = inlineCommentBoxRef.current;
+    ctx.style.top = positionY;
+    ctx.style.left = positionX;
+  }
 
   return (
-    <div className="position-absolute">
+    <div id="inlineCommentBox" className="position-absolute" ref={inlineCommentBoxRef}>
       <div className="card">
         <div className="card-header">
-          {text}
+          {selectedText}
         </div>
         <div className="card-body">
           <textarea name="" id="" cols={30} rows={10} className="form-control"></textarea>
         </div>
         <div className="card-footer">
-          <button type="button" onSubmit={onSubmit}>送信</button>
+          <button type="button" onSubmit={postCommentHandler}>送信</button>
         </div>
       </div>
     </div>
@@ -180,11 +196,13 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
+
   // TODO: Delete these experimental codes when the test is finished.
   const selectHandler = useCallback(() => {
     const sel = document.getSelection();
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
+    const clientRect = range.getClientRects();
     const newRangeContents = range.cloneContents();
     const { firstElementChild } = range.cloneContents();
     const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
