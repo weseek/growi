@@ -120,7 +120,11 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
       });
 
       if (!preserveDeletedLdapGroups) {
-        await ExternalUserGroup.deleteMany({ _id: { $nin: existingExternalUserGroupIds }, groupProviderType: this.groupProviderType });
+        await ExternalUserGroup.deleteMany({
+          _id: { $nin: existingExternalUserGroupIds },
+          groupProviderType: this.groupProviderType,
+          provider: this.groupProviderType,
+        });
         await ExternalUserGroupRelation.removeAllInvalidRelations();
       }
       socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncCompleted);

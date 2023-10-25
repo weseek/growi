@@ -16,7 +16,7 @@ export interface ExternalUserGroupModel extends Model<ExternalUserGroupDocument>
 }
 
 const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   parent: { type: Schema.Types.ObjectId, ref: 'ExternalUserGroup', index: true },
   description: { type: String, default: '' },
   externalId: { type: String, required: true, unique: true },
@@ -25,6 +25,8 @@ const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({
   timestamps: true,
 });
 schema.plugin(mongoosePaginate);
+// group name should be unique for each provider
+schema.index({ name: 1, provider: 1 }, { unique: true });
 
 /**
  * Find group that has specified externalId and update, or create one if it doesn't exist.
