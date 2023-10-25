@@ -15,7 +15,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     setIsHovered(false);
   };
 
-  const iconName = 'create';
   const isSelected = true;
   // TODO: create page directly
   // TODO: https://redmine.weseek.co.jp/issues/132680s
@@ -49,7 +48,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           type="button"
           data-testid="grw-sidebar-nav-page-create-button"
         >
-          <i className="material-icons">{iconName}</i>
+          <i className="material-symbols-outlined">edit</i>
         </button>
       </div>
       {isHovered && (

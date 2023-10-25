@@ -80,7 +80,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
     >
-      <i className="material-icons">{iconName}</i>
+      <span className="material-symbols-outlined">{iconName}</span>
     </button>
   );
 };
@@ -104,7 +104,7 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TREE} label="Page Tree" iconName="format_list_bulleted" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.CUSTOM} label="Custom Sidebar" iconName="code" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
-      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmark" onHover={onItemHover} />
+      <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
       <InAppNotificationDropdown />
     </div>

@@ -28,7 +28,7 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
       target={`${isBlank ? '_blank' : ''}`}
       prefetch={false}
     >
-      <i className="material-icons">{iconName}</i>
+      <i className="material-symbols-outlined">{iconName}</i>
     </Link>
   );
 };
