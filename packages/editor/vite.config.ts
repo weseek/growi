@@ -50,9 +50,6 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
-      external: [
-        '~/stores/modal',
-      ],
     },
   },
 });
