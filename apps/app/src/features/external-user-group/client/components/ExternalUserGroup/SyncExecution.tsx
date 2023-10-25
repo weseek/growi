@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
@@ -14,7 +15,7 @@ import { useSWRxExternalUserGroupList } from '../../stores/external-user-group';
 
 type SyncExecutionProps = {
   provider: ExternalGroupProviderType
-  requestSyncAPI: (e) => Promise<void>
+  requestSyncAPI: (e?: React.FormEvent<HTMLFormElement>) => Promise<void>
   AdditionalForm?: FC
 }
 
@@ -38,6 +39,9 @@ export const SyncExecution = ({
     total: 0,
     current: 0,
   });
+  const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
+  // value to propagate the submit event of form to submit confirm modal
+  const [currentSubmitEvent, setCurrentSubmitEvent] = useState<React.FormEvent<HTMLFormElement>>();
 
   useEffect(() => {
     if (socket == null) return;
@@ -71,19 +75,25 @@ export const SyncExecution = ({
     };
   }, [socket, mutateExternalUserGroups, t, provider]);
 
-  const onSyncBtnClick = useCallback(async(e) => {
+  const onSyncBtnClick = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setCurrentSubmitEvent(e);
+    setIsAlertModalOpen(true);
+  };
+
+  const onSyncExecConfirmBtnClick = useCallback(async() => {
+    setIsAlertModalOpen(false);
     try {
       // set sync status before requesting to API, so that setting to syncFailed does not get overwritten
       setSyncStatus(SyncStatus.syncExecuting);
       setProgress({ total: 0, current: 0 });
-      await requestSyncAPI(e);
+      await requestSyncAPI(currentSubmitEvent);
     }
     catch (errs) {
       setSyncStatus(SyncStatus.syncFailed);
       toastError(t(errs[0]?.code));
     }
-  }, [t, requestSyncAPI]);
+  }, [t, requestSyncAPI, currentSubmitEvent]);
 
   const renderProgressBar = () => {
     if (syncStatus === SyncStatus.beforeSync) return null;
@@ -124,6 +134,26 @@ export const SyncExecution = ({
           <div className="col-md-6"><button className="btn btn-primary" type="submit">{t('external_user_group.sync')}</button></div>
         </div>
       </form>
+
+      <Modal
+        className="select-grant-group"
+        isOpen={isAlertModalOpen}
+        toggle={() => setIsAlertModalOpen(false)}
+      >
+        <ModalHeader tag="h4" toggle={() => setIsAlertModalOpen(false)} className="bg-purple text-light">
+          <i className="icon-fw icon-exclamation align-middle"></i>
+          <span className="align-middle">{t('external_user_group.confirmation_before_sync')}</span>
+        </ModalHeader>
+        <ModalBody>
+          <ul>
+            <li>{t('external_user_group.execution_time_warning')}</li>
+            <li>{t('external_user_group.parallel_sync_forbidden')}</li>
+          </ul>
+          <div className="text-center">
+            <button className="btn btn-primary" type="button" onClick={onSyncExecConfirmBtnClick}>{t('Execute')}</button>
+          </div>
+        </ModalBody>
+      </Modal>
     </>
   );
 };
