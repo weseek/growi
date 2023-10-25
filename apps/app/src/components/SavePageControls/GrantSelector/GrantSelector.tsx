@@ -197,7 +197,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
               onClick={() => groupListItemClickHandler(group)}
             >
               <h5 className="d-inline-block">{group.item.name}</h5>
-              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">external</span>}
+              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );

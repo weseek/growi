@@ -7,6 +7,8 @@ import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+
 
 type Props = {
   headerLabel?: string,
@@ -143,6 +145,7 @@ export const UserGroupTable: FC<Props> = ({
       <table className="table table-bordered table-user-list">
         <thead>
           <tr>
+            {isExternalGroup && <th>{t('external_user_group.provider')}</th>}
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
@@ -157,6 +160,7 @@ export const UserGroupTable: FC<Props> = ({
 
             return (
               <tr key={group._id}>
+                {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
                     <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>

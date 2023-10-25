@@ -10,6 +10,7 @@
   "Created": "作成日",
   "Edit": "編集",
   "Description": "説明",
+  "Execute": "実行",
   "last_login": "最終ログイン",
   "wiki_management_homepage": "Wiki管理トップ",
   "public": "公開",
@@ -1077,6 +1078,10 @@
     "sync_being_executed": "自身または他のユーザが実行した外部グループ同期が終了するまで次の実行ができません",
     "sync_succeeded": "外部グループ同期に成功しました",
     "sync_failed": "外部グループ同期に失敗しました",
+    "provider": "プロバイダ",
+    "confirmation_before_sync": "同期実行前の確認",
+    "execution_time_warning": "同期するグループやユーザが多い場合、同期が完了するまでに時間を要します",
+    "parallel_sync_forbidden": "同期実行中は、他の外部グループ同期は実行できません",
     "ldap": {
       "group_sync_settings": "LDAP グループ同期設定",
       "group_search_base_DN": "グループ検索ベース DN",

@@ -31,7 +31,7 @@ export const LdapGroupManagement: FC = () => {
 
   const requestSyncAPI = useCallback(async(e) => {
     if (isUserBind) {
-      const password = e.target.password.value;
+      const password = e.target.password?.value;
       await apiv3Put('/external-user-groups/ldap/sync', { password });
     }
     else {
