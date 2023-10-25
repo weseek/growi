@@ -55,7 +55,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         },
       },
     );
-  }, [props]);
+  }, [emojiAutocompletionSettings, props]);
 
   const { state, view } = useCodeMirror(mergedProps);
 
