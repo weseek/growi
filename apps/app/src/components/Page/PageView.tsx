@@ -79,20 +79,19 @@ const InlineCommentBox = (props: any): JSX.Element => {
 
   if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null) {
     const { current } = inlineCommentBoxRef;
-    // if (current.style != null) {
-    //   current.style.top = positionY;
-    //   current.style.left = positionX;
-    // }
+    console.log(current.style.top, positionY);
+    if (current.style != null) {
+      current.style.top = `${positionY}px`;
+      current.style.left = positionX;
+    }
   }
 
   return (
-    <div id="inlineCommentBox" className="position-absolut" ref={inlineCommentBoxRef}>
+    <div id="inlineCommentBox" className="position-absolute" ref={inlineCommentBoxRef}>
       <div className="card">
-        <div className="card-header">
-          {selectedText}
-        </div>
         <div className="card-body">
-          <textarea name="" id="" cols={30} rows={10} className="form-control" onChange={(e) => { setCommentBody(e.target.value) }}></textarea>
+          <p>{selectedText}</p>
+          <textarea name="" id="" cols={30} rows={1} className="form-control" onInput={(e) => { setCommentBody(e.target.value) }}></textarea>
         </div>
         <div className="card-footer">
           <button type="button" onClick={postCommentHandler}>送信</button>
@@ -111,6 +110,7 @@ type Props = {
 export const PageView = (props: Props): JSX.Element => {
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
+  const pageContentsWrapperRef = useRef<HTMLDivElement>(null);
 
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
@@ -212,17 +212,20 @@ export const PageView = (props: Props): JSX.Element => {
 
   // TODO: Delete these experimental codes when the test is finished.
   const selectHandler = useCallback(() => {
+    console.log('selectHandler is called.');
+
     const sel = document.getSelection();
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
-    console.log(sel);
+    // console.log(sel);
     // Range selection disappears
     setSelectedRange(range); // <- this code has problem.
-    const clientRect = range.getClientRects();
-    console.log(clientRect);
+    // console.log(clientRect);
     const rangeContents = range.cloneContents();
     setSelectedRangeText(rangeContents.textContent);
-    setTargetRect(range.getClientRects());
+    const clientRect = range.getClientRects();
+    console.log(clientRect);
+    setTargetRect(clientRect);
 
     // The following code will be used later.
     // const { firstElementChild } = range.cloneContents();
@@ -254,11 +257,16 @@ export const PageView = (props: Props): JSX.Element => {
 
   useEffect(() => {
     const selectionChangeHandler = debounce(1000, selectHandler);
-    document.addEventListener('selectionchange', selectionChangeHandler);
+    if (pageContentsWrapperRef != null && pageContentsWrapperRef.current != null) {
+      console.log('useEffect is called.', pageContentsWrapperRef.current.addEventListener);
+      pageContentsWrapperRef.current.addEventListener('selectstart', selectionChangeHandler);
+    }
     return () => {
-      document.removeEventListener('selectionchange', selectionChangeHandler);
+      if (pageContentsWrapperRef != null && pageContentsWrapperRef.current != null) {
+        pageContentsWrapperRef.current.removeEventListener('selectstart', selectionChangeHandler);
+      }
     };
-  }, [selectHandler]);
+  }, [selectHandler, pageContentsWrapperRef]);
 
   return (
     <PageViewLayout
@@ -273,7 +281,7 @@ export const PageView = (props: Props): JSX.Element => {
         {specialContents == null && (
           <>
             {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-            <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+            <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`} ref={pageContentsWrapperRef}>
               <Contents />
             </div>
           </>
