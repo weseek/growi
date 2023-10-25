@@ -10,6 +10,7 @@
   "Page": "页面",
   "Edit": "编辑",
   "Description": "描述",
+  "Execute": "执行",
   "last_login": "上次登录",
   "wiki_management_homepage": "Wiki管理首页",
   "public": "公共",
@@ -1076,6 +1077,9 @@
     "sync_being_executed": "There is a running external group sync process started by you or another user. The next sync cannot be executed until this finishes.",
     "sync_succeeded": "External group sync succeeded",
     "sync_failed": "External group sync failed",
+    "confirmation_before_sync": "Confirmation before sync",
+    "execution_time_warning": "If the number of groups or users is large, it might take a while until sync finishes",
+    "parallel_sync_forbidden": "While sync is executing, you cannot execute a different external group sync",
     "ldap": {
       "group_sync_settings": "LDAP Group Sync Settings",
       "group_search_base_DN": "Group Search Base DN",
