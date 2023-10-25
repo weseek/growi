@@ -1,7 +1,9 @@
-import { type RefObject, useCallback, useEffect } from 'react';
+import {
+  type RefObject, useCallback, useEffect,
+} from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
-import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
+import { type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
@@ -13,11 +15,8 @@ import {
 import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
-import { useUserUISettings } from '~/client/services/user-ui-settings';
-import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type { IPageGrantData } from '~/interfaces/page';
-import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { SidebarContentsType } from '~/interfaces/ui';
+import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
   useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
@@ -132,15 +131,17 @@ type EditorModeUtils = {
 
 export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMode> => {
   const { data: _isEditable } = useIsEditable();
+  const { data: isNotFound } = useIsNotFound();
 
   const editorModeByHash = determineEditorModeByHash();
 
   const isLoading = _isEditable === undefined;
   const isEditable = !isLoading && _isEditable;
-  const initialData = isEditable ? editorModeByHash : EditorMode.View;
+  const preventModeEditor = !isEditable || isNotFound === undefined || isNotFound === true;
+  const initialData = preventModeEditor ? EditorMode.View : editorModeByHash;
 
   const swrResponse = useSWRImmutable(
-    isLoading ? null : ['editorMode', isEditable],
+    isLoading ? null : ['editorMode', isEditable, preventModeEditor],
     null,
     { fallbackData: initialData },
   );
@@ -148,12 +149,12 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   // construct overriding mutate method
   const mutateOriginal = swrResponse.mutate;
   const mutate = useCallback((editorMode: EditorMode, shouldRevalidate?: boolean) => {
-    if (!isEditable) {
+    if (preventModeEditor) {
       return Promise.resolve(EditorMode.View); // fixed if not editable
     }
     updateHashByEditorMode(editorMode);
     return mutateOriginal(editorMode, shouldRevalidate);
-  }, [isEditable, mutateOriginal]);
+  }, [preventModeEditor, mutateOriginal]);
 
   const getClassNames = useCallback(() => {
     return getClassNamesByEditorMode(swrResponse.data);
@@ -221,153 +222,91 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
   return useStaticSWR(key);
 };
 
-type PreferDrawerModeByUserUtils = {
-  update: (preferDrawerMode: boolean) => void
-}
-
-export const usePreferDrawerModeByUser = (initialData?: boolean): SWRResponseWithUtils<PreferDrawerModeByUserUtils, boolean> => {
-  const { scheduleToPut } = useUserUISettings();
-
-  const swrResponse: SWRResponse<boolean, Error> = useStaticSWR('preferDrawerModeByUser', initialData);
-
-  const utils: PreferDrawerModeByUserUtils = {
-    update: (preferDrawerMode: boolean) => {
-      swrResponse.mutate(preferDrawerMode);
-      scheduleToPut({ preferDrawerModeByUser: preferDrawerMode });
-    },
-  };
-
-  return withUtils<PreferDrawerModeByUserUtils>(swrResponse, utils);
-
-};
-
-export const usePreferDrawerModeOnEditByUser = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('preferDrawerModeOnEditByUser', initialData, { fallbackData: true });
-};
-
-export const useSidebarCollapsed = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarCollapsed', initialData, { fallbackData: false });
-};
 
 export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useStaticSWR('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+  return useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('productNavWidth', initialData, { fallbackData: 320 });
+  return useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
 };
 
 export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: preferDrawerModeByUser } = usePreferDrawerModeByUser();
-  const { data: preferDrawerModeOnEditByUser } = usePreferDrawerModeOnEditByUser();
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
-  const condition = editorMode != null && preferDrawerModeByUser != null && preferDrawerModeOnEditByUser != null && isDeviceSmallerThanMd != null;
+  const condition = editorMode != null && isDeviceSmallerThanMd != null;
 
   const calcDrawerMode = (
-      endpoint: string,
+      _keyString: string,
       editorMode: EditorMode,
-      preferDrawerModeByUser: boolean,
-      preferDrawerModeOnEditByUser: boolean,
       isDeviceSmallerThanMd: boolean,
   ): boolean => {
-    // get preference on view or edit
-    const preferDrawerMode = editorMode !== EditorMode.View ? preferDrawerModeOnEditByUser : preferDrawerModeByUser;
-
-    return isDeviceSmallerThanMd ?? preferDrawerMode ?? false;
+    return isDeviceSmallerThanMd
+      ? true
+      : editorMode === EditorMode.Editor;
   };
 
-  const isViewModeWithPreferDrawerMode = editorMode === EditorMode.View && preferDrawerModeByUser;
-  const isEditModeWithPreferDrawerMode = editorMode !== EditorMode.View && preferDrawerModeOnEditByUser;
-  const isDrawerModeFixed = isViewModeWithPreferDrawerMode || isEditModeWithPreferDrawerMode;
-
   return useSWRImmutable(
-    condition ? ['isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd] : null,
+    condition ? ['isDrawerMode', editorMode, isDeviceSmallerThanMd] : null,
     // calcDrawerMode,
     key => calcDrawerMode(...key),
     condition
       ? {
-        fallbackData: isDrawerModeFixed
-          ? true
-          : calcDrawerMode('isDrawerMode', editorMode, preferDrawerModeByUser, preferDrawerModeOnEditByUser, isDeviceSmallerThanMd),
+        fallbackData: calcDrawerMode('isDrawerMode', editorMode, isDeviceSmallerThanMd),
       }
       : undefined,
   );
 };
 
-type SidebarConfigOption = {
-  update: () => Promise<void>,
-  isSidebarDrawerMode: boolean|undefined,
-  isSidebarClosedAtDockMode: boolean|undefined,
-  setIsSidebarDrawerMode: (isSidebarDrawerMode: boolean) => void,
-  setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode: boolean) => void
+export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
+};
+
+export const usePreferCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
+};
+
+export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
+};
+
+type DetectSidebarModeUtils = {
+  isDrawerMode(): boolean
+  isCollapsedMode(): boolean
+  isDockMode(): boolean
 }
 
-export const useSWRxSidebarConfig = (): SWRResponse<ISidebarConfig, Error> & SidebarConfigOption => {
+export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
+  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
+
+  const condition = isDrawerMode != null && isCollapsedModeUnderDockMode != null;
+
+  const fetcher = useCallback(([, isDrawerMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined]) => {
+    if (isDrawerMode) {
+      return SidebarMode.DRAWER;
+    }
+    return isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+  }, []);
+
   const swrResponse = useSWRImmutable(
-    '/customize-setting/sidebar',
-    endpoint => apiv3Get(endpoint).then(result => result.data),
+    condition ? ['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode] : null,
+    // calcDrawerMode,
+    fetcher,
+    { fallbackData: fetcher(['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode]) },
   );
+
+  const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);
+  const _isCollapsedMode = useCallback(() => swrResponse.data === SidebarMode.COLLAPSED, [swrResponse.data]);
+  const _isDockMode = useCallback(() => swrResponse.data === SidebarMode.DOCK, [swrResponse.data]);
+
   return {
     ...swrResponse,
-    update: async() => {
-      const { data } = swrResponse;
-
-      if (data == null) {
-        return;
-      }
-
-      const { isSidebarDrawerMode, isSidebarClosedAtDockMode } = data;
-
-      const updateData = {
-        isSidebarDrawerMode,
-        isSidebarClosedAtDockMode,
-      };
-
-      // invoke API
-      await apiv3Put('/customize-setting/sidebar', updateData);
-    },
-    isSidebarDrawerMode: swrResponse.data?.isSidebarDrawerMode,
-    isSidebarClosedAtDockMode: swrResponse.data?.isSidebarClosedAtDockMode,
-    setIsSidebarDrawerMode: (isSidebarDrawerMode) => {
-      const { data, mutate } = swrResponse;
-
-      if (data == null) {
-        return;
-      }
-
-      const updateData = {
-        isSidebarDrawerMode,
-      };
-
-      // update isSidebarDrawerMode in cache, not revalidate
-      mutate({ ...data, ...updateData }, false);
-
-    },
-    setIsSidebarClosedAtDockMode: (isSidebarClosedAtDockMode) => {
-      const { data, mutate } = swrResponse;
-
-      if (data == null) {
-        return;
-      }
-
-      const updateData = {
-        isSidebarClosedAtDockMode,
-      };
-
-      // update isSidebarClosedAtDockMode in cache, not revalidate
-      mutate({ ...data, ...updateData }, false);
-    },
+    isDrawerMode: _isDrawerMode,
+    isCollapsedMode: _isCollapsedMode,
+    isDockMode: _isDockMode,
   };
-};
-
-export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isDrawerOpened', isOpened, { fallbackData: false });
-};
-
-export const useSidebarResizeDisabled = (isDisabled?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isSidebarResizeDisabled', isDisabled, { fallbackData: false });
 };
 
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {

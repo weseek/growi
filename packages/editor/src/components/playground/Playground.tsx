@@ -4,7 +4,7 @@ import {
 
 import { toast } from 'react-toastify';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { AcceptedUploadFileType, GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
@@ -48,7 +48,6 @@ export const Playground = (): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
-
   return (
     <>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
@@ -63,6 +62,8 @@ export const Playground = (): JSX.Element => {
             indentSize={4}
             setMarkdownToPreview={setMarkdownToPreview}
             initialValue={initialValue}
+            acceptedFileType={AcceptedUploadFileType.ALL}
+            pageId={undefined}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">

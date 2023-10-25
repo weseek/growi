@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import type { Nullable } from '@growi/core';
 // TODO: import socket.io-client types wihtout lint error
 // import type { Socket, DefaultEventsMap } from 'socket.io-client';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -10,7 +11,7 @@ import { yCollab } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
-import { GlobalCodeMirrorEditorKey, userColor } from '../consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType, userColor } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
@@ -29,8 +30,9 @@ type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
+  acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  pageId?: string | null,
+  pageId: Nullable<string>,
   userName?: string,
   socket?: any, // Socket<DefaultEventsMap, DefaultEventsMap>,
   initialValue: string,
@@ -39,13 +41,15 @@ type Props = {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, indentSize, pageId, userName, initialValue, socket, setMarkdownToPreview,
+    onSave, onChange, onUpload, acceptedFileType, indentSize, pageId, userName, initialValue, socket, setMarkdownToPreview,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
+
+  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // cleanup ydoc and socketIOProvider
   useEffect(() => {
@@ -179,6 +183,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
       onUpload={onUpload}
+      acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
     />
   );

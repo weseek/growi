@@ -3637,7 +3637,7 @@ class PageService {
     const shouldValidateGrant = !isGrantRestricted;
     const canProcessCreate = await this.canProcessCreate(path, grantData, shouldValidateGrant, user, options);
     if (!canProcessCreate) {
-      throw Error('Cannnot process create');
+      throw Error('Cannot process create');
     }
 
     // Prepare a page document
@@ -3828,7 +3828,7 @@ class PageService {
     }
     const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
     if (!canProcessForceCreateBySystem) {
-      throw Error('Cannnot process forceCreateBySystem');
+      throw Error('Cannot process forceCreateBySystem');
     }
 
     // Prepare a page document
