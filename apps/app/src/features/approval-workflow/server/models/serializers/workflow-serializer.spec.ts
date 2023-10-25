@@ -92,12 +92,12 @@ describe('workflow-seroalizer', () => {
       expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
-      const serializedWorkflow = serializeWorkflowSecurely(workflow);
+      const serializedWorkflow = serializeWorkflowSecurely(workflow) as any;
 
       // then
       expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(4);
-      expect(serializedWorkflow.creator.password).toBeUndefined();
-      expect(serializedWorkflow.creator.apiToken).toBeUndefined();
+      expect(serializedWorkflow.creator?.password).toBeUndefined();
+      expect(serializedWorkflow.creator?.apiToken).toBeUndefined();
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toBeUndefined();
       expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toBeUndefined();
       expect(serializedWorkflow.approverGroups[1].approvers[0].user.password).toBeUndefined();
@@ -118,7 +118,7 @@ describe('workflow-seroalizer', () => {
       expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
-      const serializedWorkflow = serializeWorkflowSecurely(workflow, true);
+      const serializedWorkflow = serializeWorkflowSecurely(workflow, true) as any;
 
       // then
       expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(1);
