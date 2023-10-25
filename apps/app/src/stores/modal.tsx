@@ -739,35 +739,3 @@ export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & Li
     },
   });
 };
-
-/*
- * EmojiHintModal
- */
-type EmojiHintModalStatus = {
-  isOpened: boolean,
-}
-
-type EmojiHintModalUtils = {
-  open(): void,
-  close(): void,
-}
-
-export const useEmojiHintModal = (): SWRResponse<EmojiHintModalStatus, Error> & EmojiHintModalUtils => {
-
-  const initialStatus: EmojiHintModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<EmojiHintModalStatus, Error>('emojiHintModal', undefined, { fallbackData: initialStatus });
-
-  const open = () => {
-    swrResponse.mutate({ isOpened: true });
-  };
-
-  const close = () => {
-    swrResponse.mutate({ isOpened: false });
-  };
-
-  return {
-    ...swrResponse,
-    open,
-    close,
-  };
-};
