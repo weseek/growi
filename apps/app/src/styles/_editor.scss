@@ -8,7 +8,6 @@
   overflow: hidden !important;
 
   .page-wrapper {
-    top: 0;
     height: 100vh;
   }
 
@@ -27,7 +26,6 @@
    * Expand Editor
    *****************/
   .dynamic-layout-root {
-    left: var.$grw-sidebar-nav-width;
     width: calc(100vw - var.$grw-sidebar-nav-width);
     height: 100vh;
   }
