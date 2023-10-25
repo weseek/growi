@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -14,19 +14,18 @@ import { TagsInput } from './TagsInput';
 
 export const TagEditModal: React.FC = () => {
 
-  const [tags, setTags] = useState<string[]>([]);
   const { t } = useTranslation();
+
   const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
+
   const isOpen = tagEditModalData?.isOpen;
+  const initTags = tagEditModalData?.tags;
   const pageId = tagEditModalData?.pageId;
   const revisionId = tagEditModalData?.revisionId;
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  useEffect(() => {
-    setTags(tags);
-  }, [tags]);
-
-  const handleSubmit = useCallback(async(newTags: string[]) => {
+  const [tags, setTags] = useState<string[] | undefined>(initTags);
+  const handleSubmit = useCallback(async(newTags?: string[]) => {
 
     try {
       await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
@@ -46,7 +45,7 @@ export const TagEditModal: React.FC = () => {
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={tags} onTagsUpdated={tags => setTags(tags)} autoFocus />
+        <TagsInput tags={initTags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={() => handleSubmit(tags)}>
