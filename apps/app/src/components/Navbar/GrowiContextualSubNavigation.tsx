@@ -19,7 +19,7 @@ import {
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, useAutoSaveRevisionHistoryModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
@@ -27,7 +27,7 @@ import {
 import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
-  useIsAbleToChangeEditorMode,
+  useIsAbleToChangeEditorMode, EditorMode,
 } from '~/stores/ui';
 
 import CreateTemplateModal from '../CreateTemplateModal';
@@ -210,6 +210,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openAutoSaveRevisionHistoryModal } = useAutoSaveRevisionHistoryModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
@@ -329,37 +330,49 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <div
         className={`grw-contextual-sub-navigation ${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4
+          d-flex align-items-center justify-content-between px-2 py-1 gap-2 gap-md-4
         `}
         data-testid="grw-contextual-sub-nav"
       >
-        <div className="h-50">
-          {pageId != null && (
-            <PageControls
-              pageId={pageId}
-              revisionId={revisionId}
-              shareLinkId={shareLinkId}
-              path={path ?? currentPathname} // If the page is empty, "path" is undefined
-              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={additionalMenuItemsRenderer}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-              onClickSwitchContentWidth={switchContentWidthHandler}
+        <div className="d-flex">
+          {editorMode === EditorMode.Editor && (
+            <button
+              type="button"
+              className="btn"
+              onClick={openAutoSaveRevisionHistoryModal}
+            >
+              <HistoryIcon />
+            </button>
+          )}
+        </div>
+        <div className="d-flex">
+          <div className="h-50">
+            {pageId != null && (
+              <PageControls
+                pageId={pageId}
+                revisionId={revisionId}
+                shareLinkId={shareLinkId}
+                path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+                disableSeenUserInfoPopover={isSharedUser}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+                onClickSwitchContentWidth={switchContentWidthHandler}
+              />
+            )}
+          </div>
+          {isAbleToChangeEditorMode && (
+            <PageEditorModeManager
+              editorMode={editorMode}
+              isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+              onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
             />
           )}
         </div>
-        {isAbleToChangeEditorMode && (
-          <PageEditorModeManager
-            editorMode={editorMode}
-            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-            onPageEditorModeButtonClicked={viewType => mutateEditorMode(viewType)}
-          />
-        )}
       </div>
-
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal
           path={path}
