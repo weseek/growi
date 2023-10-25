@@ -51,7 +51,8 @@ const InlineCommentBox = (props: any): JSX.Element => {
   const { post: postComment } = useSWRxPageComment(pageId);
 
   const [commentBody, setCommentBody] = useState('');
-  const inlineCommentBoxRef = useRef(null);
+  console.log(commentBody);
+  const inlineCommentBoxRef = useRef<HTMLDivElement>(null);
   const postCommentHandler = useCallback(async() => {
     console.log('postCommentHandler is called!', commentBody);
     const comment = `> ${selectedText}  \n\n ${commentBody}`;
@@ -75,21 +76,23 @@ const InlineCommentBox = (props: any): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       alert(errorMessage);
     }
-  }, []);
+  }, [commentBody, postComment, revisionId, selectedText]);
 
   if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null && targetRect != null) {
     const { current } = inlineCommentBoxRef;
-    const { top, left } = targetRect;
-    console.log(current.style.top, targetRect.top);
     if (current.style != null) {
+      const { top, left } = targetRect;
+      console.log(current.style.top, targetRect.top);
+      // const { width, height } = current.style;
       console.log('changing styles');
       current.style.top = `${top}px`;
       current.style.left = `${left}px`;
+      current.style.transform = 'translateY(-100%)';
     }
   }
 
   return (
-    <div id="inlineCommentBox" className="position-absolute" ref={inlineCommentBoxRef}>
+    <div id="inlineCommentBox" className={`position-fixed ${selectedText === '' && 'd-none'}`} ref={inlineCommentBoxRef}>
       <div className="card">
         <div className="card-body">
           <p>{selectedText}</p>
@@ -100,7 +103,7 @@ const InlineCommentBox = (props: any): JSX.Element => {
             rows={1}
             className="form-control"
             onInput={(e) => {
-              console.log('input changes', e);
+              console.log('input changes', e.target.value);
               setCommentBody(e.target.value);
             }}
           >
@@ -219,7 +222,7 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
-  const [selectedRange, setSelectedRange] = useState<any>();
+  // const [selectedRange, setSelectedRange] = useState<any>();
   const [selectedRangeText, setSelectedRangeText] = useState<string|null>('');
   const [targetRect, setTargetRect] = useState<any>();
 
@@ -232,12 +235,13 @@ export const PageView = (props: Props): JSX.Element => {
     const range = sel.getRangeAt(0);
     // console.log(sel);
     // Range selection disappears
-    setSelectedRange(range); // <- this code has problem.
+    // setSelectedRange(range); // <- this code has problem.
     // console.log(clientRect);
     const rangeContents = range.cloneContents();
+    console.log(rangeContents.textContent);
     setSelectedRangeText(rangeContents.textContent);
     const clientRect = range.getBoundingClientRect();
-    console.log(clientRect);
+    // console.log(clientRect);
     setTargetRect(clientRect);
 
     // The following code will be used later.
@@ -268,6 +272,19 @@ export const PageView = (props: Props): JSX.Element => {
     // range.insertNode(markerElement);
   }, []);
 
+  const resetRect = useCallback(() => {
+    const sel = document.getSelection();
+    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
+    const range = sel.getRangeAt(0);
+    const clientRect = range.getBoundingClientRect();
+    setTargetRect(clientRect);
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('scroll', resetRect);
+    return document.removeEventListener('scroll', resetRect);
+  }, [resetRect]);
+
   useEffect(() => {
     const selectionChangeHandler = debounce(1000, selectHandler);
     if (pageContentsWrapperRef != null && pageContentsWrapperRef.current != null) {
@@ -287,28 +304,24 @@ export const PageView = (props: Props): JSX.Element => {
       sideContents={sideContents}
       footerContents={footerContents}
     >
-      <div className="position-relative">
-        <PageAlerts />
+      <PageAlerts />
 
-        {specialContents}
-        {specialContents == null && (
-          <>
-            {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-            <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`} ref={pageContentsWrapperRef}>
-              <Contents />
-            </div>
-          </>
-        )}
+      {specialContents}
+      {specialContents == null && (
+        <>
+          {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
+          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`} ref={pageContentsWrapperRef}>
+            <Contents />
+          </div>
+        </>
+      )}
 
-        { selectedRange != null && (
-          <InlineCommentBox
-            selectedText={selectedRangeText}
-            pageId={page?._id}
-            revisionId={page?.revision._id}
-            targetRect={targetRect}
-          />
-        )}
-      </div>
+      <InlineCommentBox
+        selectedText={selectedRangeText}
+        pageId={page?._id}
+        revisionId={page?.revision._id}
+        targetRect={targetRect}
+      />
     </PageViewLayout>
   );
 };
