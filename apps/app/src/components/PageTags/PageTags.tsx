@@ -10,8 +10,7 @@ type Props = {
   tags?: string[],
   isTagLabelsDisabled: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
-  pageId: string,
-  revisionId,
+  openTagEditModal?: () => void;
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
@@ -20,7 +19,7 @@ export const PageTagsSkeleton = (): JSX.Element => {
 
 export const PageTags:FC<Props> = (props: Props) => {
   const {
-    tags, isTagLabelsDisabled, pageId, revisionId,
+    tags, isTagLabelsDisabled, openTagEditModal,
   } = props;
 
   if (tags == null) {
@@ -33,8 +32,7 @@ export const PageTags:FC<Props> = (props: Props) => {
         <RenderTagLabels
           tags={tags}
           isTagLabelsDisabled={isTagLabelsDisabled}
-          pageId={pageId}
-          revisionId={revisionId}
+          openTagEditModal={openTagEditModal}
         />
       </div>
     </>

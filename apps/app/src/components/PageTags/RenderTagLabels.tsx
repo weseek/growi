@@ -3,8 +3,6 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { useKeywordManager } from '~/client/services/search-operation';
-import { useTagEditModal } from '~/stores/modal';
-import { useSWRxTagsInfo } from '~/stores/page';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
@@ -12,19 +10,16 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
-  pageId: string,
-  revisionId: string,
+  openTagEditModal?: () => void;
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, pageId, revisionId,
+    tags, isTagLabelsDisabled, openTagEditModal,
   } = props;
   const { t } = useTranslation();
 
   const { pushState } = useKeywordManager();
-  const { open: openTagEditModal } = useTagEditModal();
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
 
   const isTagsEmpty = tags.length === 0;
 
@@ -51,7 +46,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
                 ${isTagsEmpty && 'no-tags'}
                 ${isTagLabelsDisabled && 'disabled'}`
               }
-              onClick={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
+              onClick={openTagEditModal}
             >
               {isTagsEmpty && <>{ t('Add tags for this page') }</>}
               <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />

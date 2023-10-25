@@ -4,7 +4,6 @@ import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
 } from '@growi/core';
 import {
-  getIdForRef,
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -50,7 +49,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
       <a
-        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
+        className={`btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center ${isTagLabelsDisabled && 'disabled'}`}
         onClick={openTagEditModal}
       >
         <i className="icon-tag me-2" />

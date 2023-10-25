@@ -7,7 +7,7 @@ import dynamic from 'next/dynamic';
 import { Link } from 'react-scroll';
 
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
@@ -42,6 +42,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { open: openTagEditModal } = useTagEditModal();
 
   if (!showTagLabel) {
     return <></>;
@@ -56,8 +57,7 @@ const Tags = (props: TagsProps): JSX.Element => {
           <PageTags
             tags={tagsInfoData.tags}
             isTagLabelsDisabled={isTagLabelsDisabled ?? false}
-            pageId={pageId}
-            revisionId={revisionId}
+            openTagEditModal={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
           />
         )
         : <PageTagsSkeleton />
