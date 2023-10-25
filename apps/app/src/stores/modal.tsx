@@ -3,16 +3,14 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
-import useSWR, { SWRResponse, mutate } from 'swr';
+import { SWRResponse } from 'swr';
 
 import Linker from '~/client/models/Linker';
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
-import { IPageTagsInfo } from '~/interfaces/tag';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
-import { tags } from '~/services/xss/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -776,7 +774,9 @@ export const usePageSelectModal = (
   };
 };
 
-
+/*
+* TagEditModal
+*/
 type TagEditModalStatus = {
   tags: string[],
   isOpen: boolean,
@@ -789,7 +789,6 @@ type TagEditModalUtils = {
   close(): Promise<void>,
 }
 
-
 export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
   const initialStatus: TagEditModalStatus = {
     isOpen: false,
@@ -801,7 +800,7 @@ export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagE
   const swrResponse = useStaticSWR<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
-  const open = async(tags, pageId, revisionId) => {
+  const open = async(tags: string[], pageId: string, revisionId: string) => {
     mutate({
       isOpen: true,
       tags,

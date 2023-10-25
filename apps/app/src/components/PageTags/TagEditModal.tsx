@@ -32,11 +32,11 @@ export const TagEditModal: React.FC = () => {
       updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
+      closeTagEditModal();
     }
     catch (err) {
       toastError(err);
     }
-    closeTagEditModal();
   }, [closeTagEditModal, pageId, revisionId, updateStateAfterSave]);
 
   return (

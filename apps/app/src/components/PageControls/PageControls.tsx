@@ -42,9 +42,7 @@ const Tags = (props: TagsProps): JSX.Element => {
     isGuestUser, isReadOnlyUser, openTagEditModal,
   } = props;
 
-
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
-
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
