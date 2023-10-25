@@ -4,7 +4,6 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowHasId,
   IWorkflowReq,
   WorkflowStatus,
   CreateApproverGroupData,

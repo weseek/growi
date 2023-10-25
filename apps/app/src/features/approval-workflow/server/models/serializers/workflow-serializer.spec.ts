@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 
-import type { IWorkflowHasId } from '../../../interfaces/workflow';
 import { WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
 
 import { serializeWorkflowSecurely } from './workflow-serializer';
@@ -61,7 +60,7 @@ describe('workflow-seroalizer', () => {
             ],
           },
         ],
-      } as IWorkflowHasId;
+      };
     });
 
     const mocks = vi.hoisted(() => {
