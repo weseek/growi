@@ -10,7 +10,7 @@ import {
   CreateApproverGroupData,
   UpdateApproverGroupData,
 } from '../../interfaces/workflow';
-import Workflow from '../models/workflow';
+import Workflow, { WorkflowDocument } from '../models/workflow';
 
 import { WorkflowApproverGroupService } from './workflow-approver-group';
 
@@ -18,7 +18,7 @@ import { WorkflowApproverGroupService } from './workflow-approver-group';
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId>,
+  createWorkflow(workflow: IWorkflowReq): Promise<WorkflowDocument>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   updateWorkflow(
     workflowId: ObjectIdLike,
@@ -27,13 +27,13 @@ interface WorkflowService {
     comment?: string,
     createApproverGroupData?: CreateApproverGroupData[],
     approverGroupUpdateData?: UpdateApproverGroupData[],
-  ): Promise<IWorkflowHasId>,
-  validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void
+  ): Promise<WorkflowDocument>,
+  validateOperatableUser(workflow: WorkflowDocument, operator: IUserHasId): void
 }
 
 class WorkflowServiceImpl implements WorkflowService {
 
-  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowHasId> {
+  async createWorkflow(workflow: IWorkflowReq): Promise<WorkflowDocument> {
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {
       throw Error('An in-progress workflow already exists');
@@ -65,7 +65,7 @@ class WorkflowServiceImpl implements WorkflowService {
       comment?: string,
       createApproverGroupData?: CreateApproverGroupData[],
       updateApproverGroupData?: UpdateApproverGroupData[],
-  ): Promise<IWorkflowHasId> {
+  ): Promise<WorkflowDocument> {
     const targetWorkflow = await Workflow.findById(workflowId);
     if (targetWorkflow == null) {
       throw Error('Target workflow does not exist');
@@ -75,7 +75,7 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Cannot edit workflows that are not in progress');
     }
 
-    this.validateOperatableUser(targetWorkflow as unknown as IWorkflowHasId, operator);
+    this.validateOperatableUser(targetWorkflow, operator);
 
     if (createApproverGroupData != null && createApproverGroupData.length > 0) {
       WorkflowApproverGroupService.createApproverGroup(targetWorkflow, createApproverGroupData);
@@ -89,12 +89,12 @@ class WorkflowServiceImpl implements WorkflowService {
     targetWorkflow.comment = comment;
 
     const updatedWorkflow = await targetWorkflow.save();
-    return updatedWorkflow as unknown as IWorkflowHasId;
+    return updatedWorkflow;
   }
 
   // Call this method before performing operations (update, delete) on a Workflow document
   // Don't need to call this if workflows are deleted as a side effect, such as when deleting a page
-  validateOperatableUser(workflow: IWorkflowHasId, operator: IUserHasId): void {
+  validateOperatableUser(workflow: WorkflowDocument, operator: IUserHasId): void {
     if (operator.admin) {
       return;
     }

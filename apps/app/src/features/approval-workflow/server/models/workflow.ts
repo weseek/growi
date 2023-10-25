@@ -1,4 +1,7 @@
-import { Model, Schema, Types } from 'mongoose';
+import type { IUser, Ref } from '@growi/core';
+import {
+  Model, Schema, Types, Document,
+} from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -12,15 +15,17 @@ import {
   WorkflowApprovalType,
   WorkflowApprovalTypes,
 } from '../../interfaces/workflow';
-import type {
-  IWorkflowHasId, IWorkflowApproverGroupHasId, IWorkflowApproverHasId,
-} from '../../interfaces/workflow';
 
 
 /*
 * WorkflowApprover
 */
-interface WorkflowApproverDocument extends IWorkflowApproverHasId, Document {}
+interface IWorkflowApprover {
+  user: Ref<IUser>
+  status: WorkflowApproverStatus
+}
+
+export interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
 type WorkflowApproverModel = Model<WorkflowApproverDocument>;
 
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
@@ -43,8 +48,13 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
 /*
 * WorkflowApproverGroup
 */
-interface WorkflowApproverGroupDocument extends IWorkflowApproverGroupHasId, Document {
-  findApprover(userId: string): IWorkflowApproverHasId | undefined
+interface IWorkflowApproverGroupDocument {
+  approvalType: WorkflowApprovalType
+  approvers: Types.DocumentArray<WorkflowApproverDocument>
+  isApproved: boolean
+}
+export interface WorkflowApproverGroupDocument extends IWorkflowApproverGroupDocument, Document {
+  findApprover(userId: string): WorkflowApproverDocument | undefined
 }
 type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
 
@@ -60,8 +70,8 @@ const WorkflowApproverGroupSchema = new Schema<WorkflowApproverGroupDocument, Wo
   timestamps: { createdAt: true, updatedAt: true },
 });
 
-const getApproverStatuses = (approvers: IWorkflowApproverHasId[]) => {
-  return approvers.map(approver => approver.status);
+const getApproverStatuses = (approvers: Types.DocumentArray<WorkflowApproverDocument>) => {
+  return approvers.map((approver: WorkflowApproverDocument) => approver.status);
 };
 
 WorkflowApproverGroupSchema.virtual('isApproved').get(function() {
@@ -83,15 +93,23 @@ WorkflowApproverGroupSchema.virtual('isApproved').get(function() {
 WorkflowApproverGroupSchema.set('toJSON', { virtuals: true });
 WorkflowApproverGroupSchema.set('toObject', { virtuals: true });
 
-WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): IWorkflowApproverHasId | undefined {
-  return (this as IWorkflowApproverGroupHasId).approvers.find(v => v.user.toString() === userId);
+WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): WorkflowApproverDocument | undefined {
+  return (this as WorkflowApproverGroupDocument).approvers.find(v => v.user.toString() === userId);
 };
 
 
 /*
 * Workflow
 */
-interface WorkflowDocument extends IWorkflowHasId, Document {
+type IWorkflowDocument = {
+  creator: Ref<IUser>
+  pageId: string
+  name?: string,
+  comment?: string,
+  status: WorkflowStatus,
+  approverGroups: Types.DocumentArray<WorkflowApproverGroupDocument>
+}
+export interface WorkflowDocument extends IWorkflowDocument, Document {
   getLatestApprovedApproverGroupIndex(): number | null
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
@@ -100,7 +118,7 @@ interface WorkflowModel extends Model<WorkflowDocument> {
 
 const WorkflowSchema = new Schema<WorkflowDocument, WorkflowModel>({
   creator: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
@@ -133,7 +151,7 @@ WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId
 };
 
 WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number | null {
-  const workflow = this as IWorkflowHasId;
+  const workflow = this as WorkflowDocument;
   const apprverGroupsLength = workflow.approverGroups.length;
 
   for (let i = apprverGroupsLength; i > 0; i--) {

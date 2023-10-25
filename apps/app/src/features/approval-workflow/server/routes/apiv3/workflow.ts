@@ -10,7 +10,7 @@ import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowHasId, IWorkflowApproverGroupReq, IWorkflowPaginateResult, WorkflowStatus,
+  IWorkflowApproverGroupReq, WorkflowStatus,
 } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-serializer';
 import Workflow from '../../models/workflow';
@@ -120,7 +120,7 @@ module.exports = (crowi: Crowi): Router => {
       return res.apiv3Err('Target workflow does not exist');
     }
 
-    const serializedWorkflow = serializeWorkflowSecurely(workflow as unknown as IWorkflowHasId);
+    const serializedWorkflow = serializeWorkflowSecurely(workflow);
 
     return res.apiv3({ workflow: serializedWorkflow });
   });
@@ -167,7 +167,7 @@ module.exports = (crowi: Crowi): Router => {
     const offset = req.query.offset || 0;
 
     try {
-      const paginateResult: IWorkflowPaginateResult = await (Workflow as any).paginate(
+      const paginateResult = await (Workflow as any).paginate(
         { pageId },
         {
           limit,
@@ -415,7 +415,7 @@ module.exports = (crowi: Crowi): Router => {
       const { user } = req;
 
       try {
-        const workflow = await Workflow.findById(workflowId) as IWorkflowHasId;
+        const workflow = await Workflow.findById(workflowId);
         if (workflow == null) {
           return res.apiv3Err('Target workflow does not exist');
         }
