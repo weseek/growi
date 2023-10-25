@@ -132,7 +132,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{grantedGroups.map(group => group.name).join(', ')}</span>
+          <span className="label">
+            {grantedGroups.length > 1 ? `${grantedGroups[0].name} +${grantedGroups.length - 1}` : grantedGroups[0].name}
+          </span>
         </span>
       );
 
@@ -185,24 +187,27 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <div className="list-group">
+      <>
         { myUserGroups.map((group) => {
-          const activeClass = grantedGroups?.find(g => g.id === group.item._id) != null ? 'active' : '';
+          const groupIsGranted = grantedGroups?.find(g => g.id === group.item._id) != null;
+          const activeClass = groupIsGranted ? 'active' : '';
 
           return (
             <button
-              key={group.item._id}
+              className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
               type="button"
-              className={`list-group-item list-group-item-action ${activeClass}`}
+              key={group.item._id}
               onClick={() => groupListItemClickHandler(group)}
             >
-              <h5 className="d-inline-block">{group.item.name}</h5>
+              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
+              <h5 className="d-inline-block ml-3">{group.item.name}</h5>
               {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
         }) }
-      </div>
+        <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
+      </>
     );
 
   }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, grantedGroups]);
