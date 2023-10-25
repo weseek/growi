@@ -5,10 +5,15 @@ import Link from 'next/link';
 
 import { useGrowiCloudUri, useIsAdmin } from '~/stores/context';
 
+import { SkeletonItem } from './SkeletonItem';
+
 import styles from './SecondaryItems.module.scss';
 
 
-const PersonalDropdown = dynamic(() => import('../PersonalDropdown').then(mod => mod.PersonalDropdown), { ssr: false });
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown').then(mod => mod.PersonalDropdown), {
+  ssr: false,
+  loading: () => <SkeletonItem />,
+});
 
 
 type SecondaryItemProps = {
