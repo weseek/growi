@@ -1,7 +1,8 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/variables' as var;
+
 @use '../button-styles';
-@use '../variables' as var;
 
 .btn-toggle-collapse :global {
   @extend %btn-primary-basis;

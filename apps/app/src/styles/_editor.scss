@@ -5,7 +5,7 @@
 
 // global imported
 .layout-root.editing {
-  overflow-y: hidden !important;
+  overflow: hidden !important;
 
   .page-wrapper {
     top: 0;
@@ -27,9 +27,8 @@
    * Expand Editor
    *****************/
   .dynamic-layout-root {
-    // left: var.$grw-sidebar-nav-width;
-    // width: calc(100vw - var.$grw-sidebar-nav-width);
-    width: 100vw;
+    left: var.$grw-sidebar-nav-width;
+    width: calc(100vw - var.$grw-sidebar-nav-width);
     height: 100vh;
   }
   .grw-editor-navbar-bottom {
