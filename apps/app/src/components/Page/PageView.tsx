@@ -46,7 +46,7 @@ const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod 
 
 const InlineCommentBox = (props: any): JSX.Element => {
   const {
-    positionX, positionY, selectedText, pageId, revisionId, onFocus,
+    targetRect, selectedText, pageId, revisionId, onFocus,
   } = props;
   const { post: postComment } = useSWRxPageComment(pageId);
 
@@ -77,12 +77,14 @@ const InlineCommentBox = (props: any): JSX.Element => {
     }
   }, []);
 
-  if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null) {
+  if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null && targetRect != null) {
     const { current } = inlineCommentBoxRef;
-    console.log(current.style.top, positionY);
+    const { top, left } = targetRect;
+    console.log(current.style.top, targetRect.top);
     if (current.style != null) {
-      current.style.top = `${positionY}px`;
-      current.style.left = positionX;
+      console.log('changing styles');
+      current.style.top = `${top}px`;
+      current.style.left = `${left}px`;
     }
   }
 
@@ -91,7 +93,18 @@ const InlineCommentBox = (props: any): JSX.Element => {
       <div className="card">
         <div className="card-body">
           <p>{selectedText}</p>
-          <textarea name="" id="" cols={30} rows={1} className="form-control" onInput={(e) => { setCommentBody(e.target.value) }}></textarea>
+          <textarea
+            name="comment-body"
+            id="comment-body"
+            cols={30}
+            rows={1}
+            className="form-control"
+            onInput={(e) => {
+              console.log('input changes', e);
+              setCommentBody(e.target.value);
+            }}
+          >
+          </textarea>
         </div>
         <div className="card-footer">
           <button type="button" onClick={postCommentHandler}>送信</button>
@@ -223,7 +236,7 @@ export const PageView = (props: Props): JSX.Element => {
     // console.log(clientRect);
     const rangeContents = range.cloneContents();
     setSelectedRangeText(rangeContents.textContent);
-    const clientRect = range.getClientRects();
+    const clientRect = range.getBoundingClientRect();
     console.log(clientRect);
     setTargetRect(clientRect);
 
@@ -292,8 +305,7 @@ export const PageView = (props: Props): JSX.Element => {
             selectedText={selectedRangeText}
             pageId={page?._id}
             revisionId={page?.revision._id}
-            positionX={targetRect?.left}
-            positionY={targetRect?.top}
+            targetRect={targetRect}
           />
         )}
       </div>
