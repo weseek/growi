@@ -10,7 +10,7 @@ import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowApproverGroupReq, WorkflowStatus,
+  WorkflowStatus,
 } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-serializer';
 import Workflow from '../../models/workflow';
@@ -246,7 +246,7 @@ module.exports = (crowi: Crowi): Router => {
       name: xssProcessedName,
       comment: xssProcessedComment,
       status: WorkflowStatus.INPROGRESS,
-      approverGroups: approverGroups as IWorkflowApproverGroupReq[],
+      approverGroups,
     };
 
     try {
