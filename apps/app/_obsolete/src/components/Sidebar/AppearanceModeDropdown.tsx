@@ -106,7 +106,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
       {/* remove .dropdown-toggle for hide caret */}
       {/* See https://stackoverflow.com/a/44577512/13183572 */}
       <button className="btn btn-primary" type="button" data-bs-toggle="dropdown" ref={buttonRef} aria-haspopup="true">
-        <i className="material-icons">settings</i>
+        <span className="material-symbols-outlined">settings</span>
       </button>
 
       {/* dropdown */}
