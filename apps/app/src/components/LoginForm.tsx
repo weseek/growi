@@ -195,11 +195,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <div>
-              <span className="input-group-text">
-                <i className="icon-user"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-user"></i>
+            </span>
             <input
               type="text"
               className="form-control rounded-0"
@@ -209,20 +207,16 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               name="usernameForLogin"
             />
             {isLdapStrategySetup && (
-              <div>
-                <small className="input-group-text text-success">
-                  <i className="icon-fw icon-check"></i> LDAP
-                </small>
-              </div>
+              <small className="input-group-text text-success">
+                <i className="icon-fw icon-check"></i> LDAP
+              </small>
             )}
           </div>
 
           <div className="input-group">
-            <div>
-              <span className="input-group-text">
-                <i className="icon-lock"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-lock"></i>
+            </span>
             <input
               type="password"
               className="form-control rounded-0"
@@ -311,7 +305,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             type="button"
             className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
             data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
-            data-target="#external-auth"
+            data-bs-target="#external-auth"
             aria-expanded="false"
             aria-controls="external-auth"
           >
@@ -421,11 +415,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <div>
-                  <span className="input-group-text">
-                    <i className="icon-user"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-user"></i>
+                </span>
                 {/* username */}
                 <input
                   type="text"
@@ -441,11 +433,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <div>
-                  <span className="input-group-text">
-                    <i className="icon-tag"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-tag"></i>
+                </span>
                 {/* name */}
                 <input
                   type="text"
@@ -461,11 +451,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <div>
-              <span className="input-group-text">
-                <i className="icon-envelope"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-envelope"></i>
+            </span>
             {/* email */}
             <input
               type="email"
@@ -497,11 +485,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <div>
-                  <span className="input-group-text">
-                    <i className="icon-lock"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-lock"></i>
+                </span>
                 {/* Password */}
                 <input
                   type="password"

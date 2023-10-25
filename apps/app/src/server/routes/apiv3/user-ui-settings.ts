@@ -16,11 +16,9 @@ module.exports = (crowi) => {
 
   const validatorForPut = [
     body('settings').exists().withMessage('The body param \'settings\' is required'),
-    body('settings.isSidebarCollapsed').optional().isBoolean(),
     body('settings.currentSidebarContents').optional().isIn(AllSidebarContentsType),
     body('settings.currentProductNavWidth').optional().isNumeric(),
-    body('settings.preferDrawerModeByUser').optional().isBoolean(),
-    body('settings.preferDrawerModeOnEditByUser').optional().isBoolean(),
+    body('settings.preferCollapsedModeByUser').optional().isBoolean(),
   ];
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -30,11 +28,9 @@ module.exports = (crowi) => {
 
     // extract only necessary params
     const updateData = {
-      isSidebarCollapsed: settings.isSidebarCollapsed,
       currentSidebarContents: settings.currentSidebarContents,
       currentProductNavWidth: settings.currentProductNavWidth,
-      preferDrawerModeByUser: settings.preferDrawerModeByUser,
-      preferDrawerModeOnEditByUser: settings.preferDrawerModeOnEditByUser,
+      preferCollapsedModeByUser: settings.preferCollapsedModeByUser,
     };
 
     if (user == null) {

@@ -18,21 +18,11 @@ const _putUserUISettingsInBulk = (): Promise<AxiosResponse<IUserUISettings>> => 
 const _putUserUISettingsInBulkDebounced = debounce(1500, _putUserUISettingsInBulk);
 
 type ScheduleToPutFunction = (settings: Partial<IUserUISettings>) => Promise<AxiosResponse<IUserUISettings>>;
-const scheduleToPut: ScheduleToPutFunction = (settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
+export const scheduleToPut: ScheduleToPutFunction = (settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
   settingsForBulk = {
     ...settingsForBulk,
     ...settings,
   };
 
   return _putUserUISettingsInBulkDebounced();
-};
-
-type UserUISettingsUtil = {
-  scheduleToPut: ScheduleToPutFunction | (() => void),
-}
-export const useUserUISettings = (): UserUISettingsUtil => {
-
-  return {
-    scheduleToPut,
-  };
 };

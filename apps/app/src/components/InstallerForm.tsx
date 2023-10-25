@@ -147,9 +147,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <div>
-              <span className="input-group-text"><i className="icon-user" /></span>
-            </div>
+            <span className="input-group-text"><i className="icon-user" /></span>
             <input
               data-testid="tiUsername"
               type="text"
@@ -163,9 +161,7 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <div>
-              <span className="input-group-text"><i className="icon-tag" /></span>
-            </div>
+            <span className="input-group-text"><i className="icon-tag" /></span>
             <input
               data-testid="tiName"
               type="text"
@@ -177,9 +173,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div>
-              <span className="input-group-text"><i className="icon-envelope" /></span>
-            </div>
+            <span className="input-group-text"><i className="icon-envelope" /></span>
             <input
               data-testid="tiEmail"
               type="email"
@@ -191,9 +185,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <div>
-              <span className="input-group-text"><i className="icon-lock" /></span>
-            </div>
+            <span className="input-group-text"><i className="icon-lock" /></span>
             <input
               data-testid="tiPassword"
               type="password"

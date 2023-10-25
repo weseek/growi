@@ -38,9 +38,11 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <DndProvider backend={HTML5Backend}>
 
         <div className="page-wrapper flex-row">
-          <Sidebar />
+          <div className="z-2">
+            <Sidebar />
+          </div>
 
-          <div className="d-flex flex-grow-1 flex-column">{/* neccessary for nested {children} make expanded */}
+          <div className="d-flex flex-grow-1 flex-column z-1">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
             {children}
           </div>
