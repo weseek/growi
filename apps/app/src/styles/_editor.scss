@@ -26,6 +26,12 @@
   /*****************
    * Expand Editor
    *****************/
+  .dynamic-layout-root {
+    // left: var.$grw-sidebar-nav-width;
+    // width: calc(100vw - var.$grw-sidebar-nav-width);
+    width: 100vw;
+    height: 100vh;
+  }
   .grw-editor-navbar-bottom {
     height: var.$grw-editor-navbar-bottom-height;
 
