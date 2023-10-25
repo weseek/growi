@@ -2,7 +2,7 @@ import {
   FC, useState, useCallback, CSSProperties,
 } from 'react';
 
-import type { UseCodeMirrorEditor } from '@growi/editor';
+import { useCodeMirrorEditorIsolated } from '@growi/editor';
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
@@ -13,7 +13,7 @@ import { useResolvedThemeForEditor } from '../../../stores/use-resolved-theme';
 import 'emoji-mart/css/emoji-mart.css';
 
 type Props = {
-  codeMirrorEditor?: UseCodeMirrorEditor
+  editorKey: string,
 }
 
 type Translation = {
@@ -67,11 +67,13 @@ const getEmojiTranslation = (): Translation => {
 };
 
 export const EmojiButton: FC<Props> = (props) => {
+  const { editorKey } = props;
+
   const [isOpen, setIsOpen] = useState(false);
 
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { data: resolvedTheme } = useResolvedThemeForEditor();
 
-  const { codeMirrorEditor } = props;
   const view = codeMirrorEditor?.view;
   const cursorIndex = view?.state.selection.main.head;
   const toggle = () => setIsOpen(!isOpen);
@@ -90,7 +92,7 @@ export const EmojiButton: FC<Props> = (props) => {
     });
 
     toggle();
-  }, []);
+  }, [cursorIndex, view]);
 
   if (view == null || cursorIndex == null) {
     return <></>;
@@ -101,11 +103,10 @@ export const EmojiButton: FC<Props> = (props) => {
   const setStyle = (): CSSProperties => {
     const offset = 20;
     const emojiPickerHeight = 420;
-    // const cursorPos = this.editor.cursorCoords(true);
     const cursorRect = view.coordsAtPos(cursorIndex);
     const editorRect = view.dom.getBoundingClientRect();
 
-    if (cursorRect == null) {
+    if (cursorRect == null || !isOpen) {
       return {};
     }
 
@@ -129,18 +130,21 @@ export const EmojiButton: FC<Props> = (props) => {
       <button type="button" className="btn btn-toolbar-button" onClick={toggle}>
         <span className="material-icons-outlined fs-6">emoji_emotions</span>
       </button>
-      <div className="mb-2 d-none d-md-block">
-        <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
-          <Picker
-            onSelect={(emoji: any) => selectEmoji(emoji)}
-            i18n={translation}
-            title={translation.title}
-            emojiTooltip
-            style={setStyle()}
-            theme={resolvedTheme}
-          />
-        </Modal>
-      </div>
+      { isOpen
+      && (
+        <div className="mb-2 d-none d-md-block">
+          <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
+            <Picker
+              onSelect={(emoji: any) => selectEmoji(emoji)}
+              i18n={translation}
+              title={translation.title}
+              emojiTooltip
+              style={setStyle()}
+              theme={resolvedTheme}
+            />
+          </Modal>
+        </div>
+      )}
     </>
   );
 };
