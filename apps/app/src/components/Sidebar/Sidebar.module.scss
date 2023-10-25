@@ -1,8 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/variables' as var;
 @use '~/styles/mixins';
-
-@use './variables' as var;
 
 .grw-sidebar :global {
   top: 0;

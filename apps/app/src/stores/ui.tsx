@@ -231,34 +231,6 @@ export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<num
   return useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
 };
 
-export const useDrawerMode = (): SWRResponse<boolean, Error> => {
-  const { data: editorMode } = useEditorMode();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
-
-  const condition = editorMode != null && isDeviceSmallerThanMd != null;
-
-  const calcDrawerMode = (
-      _keyString: string,
-      editorMode: EditorMode,
-      isDeviceSmallerThanMd: boolean,
-  ): boolean => {
-    return isDeviceSmallerThanMd
-      ? true
-      : editorMode === EditorMode.Editor;
-  };
-
-  return useSWRImmutable(
-    condition ? ['isDrawerMode', editorMode, isDeviceSmallerThanMd] : null,
-    // calcDrawerMode,
-    key => calcDrawerMode(...key),
-    condition
-      ? {
-        fallbackData: calcDrawerMode('isDrawerMode', editorMode, isDeviceSmallerThanMd),
-      }
-      : undefined,
-  );
-};
-
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
 };
@@ -278,23 +250,28 @@ type DetectSidebarModeUtils = {
 }
 
 export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
-  const { data: isDrawerMode } = useDrawerMode();
+  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: editorMode } = useEditorMode();
   const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
 
-  const condition = isDrawerMode != null && isCollapsedModeUnderDockMode != null;
+  const condition = isDeviceSmallerThanMd != null && editorMode != null && isCollapsedModeUnderDockMode != null;
 
-  const fetcher = useCallback(([, isDrawerMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined]) => {
-    if (isDrawerMode) {
+  const isEditorMode = editorMode === EditorMode.Editor;
+
+  const fetcher = useCallback((
+      [, isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
+  ) => {
+    if (isDeviceSmallerThanMd) {
       return SidebarMode.DRAWER;
     }
-    return isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
+    return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
   }, []);
 
   const swrResponse = useSWRImmutable(
-    condition ? ['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode] : null,
+    condition ? ['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode] : null,
     // calcDrawerMode,
     fetcher,
-    { fallbackData: fetcher(['sidebarMode', isDrawerMode, isCollapsedModeUnderDockMode]) },
+    { fallbackData: fetcher(['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]) },
   );
 
   const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);
