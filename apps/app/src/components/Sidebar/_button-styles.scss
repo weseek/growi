@@ -1,0 +1,29 @@
+@use './variables' as var;
+
+%btn-primary-basis {
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  line-height: 1em;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none !important;
+}
+
+%btn-primary-color-vars {
+  --bs-btn-bg: transparent;
+  --bs-btn-active-bg: transparent;
+  --bs-btn-hover-color: var(
+    --grw-sidebar-nav-btn-hover-color,
+    var(
+      --grw-sidebar-nav-btn-color,
+      var(--bs-btn-color)
+    ),
+  );
+  --bs-btn-active-color: var(
+    --grw-sidebar-nav-btn-active-color,
+    var(
+      --grw-sidebar-nav-btn-color,
+      var(--bs-btn-color)
+    ),
+  );
+}

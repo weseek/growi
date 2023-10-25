@@ -1,0 +1,94 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '@growi/core/scss/growi-official-colors';
+
+@use '../button-styles';
+@use '../variables' as var;
+
+// GROWI Logo
+.grw-app-title :global {
+  .grw-logo {
+    $width: var.$grw-sidebar-nav-width;
+    $height: var.$grw-sidebar-nav-width; // declare $height with the same value as the sidebar nav width
+    $logomark-width: 27.7px;
+    $logomark-height: 24px;
+
+    width: $width;
+
+    svg {
+      width: $width;
+      height: $height;
+      padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
+    }
+  }
+}
+
+
+// == Location
+.on-subnavigation {
+  $grw-contextual-sub-navigation-width: 500px;
+
+  left: var.$grw-sidebar-nav-width;
+  // set width for truncation
+  width: calc(100vw - $grw-contextual-sub-navigation-width);
+}
+
+.on-sidebar-head {
+  $toggle-collapse-button-width: 50px;
+
+  // set width for truncation
+  width: calc(100% - $toggle-collapse-button-width);
+}
+
+
+// == Interaction
+@keyframes bounce-to-right {
+  10% { transform:translateX(3px); }
+  20% { transform:translateX(0%); }
+  25% { transform:translateX(2px); }
+  27% { transform:translateX(0%); }
+}
+
+.on-subnavigation {
+  animation: bounce-to-right 1s ease;
+}
+
+@keyframes bounce-to-left {
+  0% { transform:translateX(48px); }
+  100% { transform:translateX(0%); }
+}
+
+.on-sidebar-head {
+  animation: bounce-to-left 0.2s ease;
+}
+
+
+
+// == Colors
+.grw-app-title :global {
+  .grw-logo {
+    // set transition for fill
+    svg, svg * {
+      transition: fill 0.8s ease-out;
+    }
+
+    fill: var(--grw-app-title-color, var(--bs-tertiary-color));
+
+    &:hover {
+      svg {
+        .group1 {
+          fill: growi-official-colors.$growi-green;
+        }
+
+        .group2 {
+          fill: growi-official-colors.$growi-blue;
+        }
+      }
+    }
+  }
+
+  .grw-site-name {
+    --bs-link-color-rgb: var(--grw-app-title-color-rgb, var(--bs-tertiary-color-rgb));
+    --bs-link-opacity: 0.5;
+  }
+}
