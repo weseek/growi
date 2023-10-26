@@ -6,7 +6,7 @@ import { indentUnit } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
@@ -22,6 +22,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
@@ -30,6 +31,7 @@ type Props = {
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
+    acceptedFileType,
     onChange,
     onUpload,
     indentSize,
@@ -105,7 +107,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     isUploading,
     isDragReject,
     open,
-  } = useFileDropzone({ onUpload });
+  } = useFileDropzone({ onUpload, acceptedFileType });
 
   const dropzoneClassName = useMemo(() => {
     if (isUploading) {
@@ -138,7 +140,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       <div {...getRootProps()} className={`dropzone ${dropzoneClassName} flex-expand-vert`}>
         {renderOverlay()}
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar onFileOpen={open} />
+        <Toolbar onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>
     </div>
   );

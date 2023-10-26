@@ -7,7 +7,9 @@ import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
-import { CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
+import {
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, AcceptedUploadFileType,
+} from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -357,6 +359,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
 
+  const acceptedFileType = useMemo(() => {
+    if (!isUploadableFile) {
+      return AcceptedUploadFileType.NONE;
+    }
+    if (isUploadableImage) {
+      return AcceptedUploadFileType.IMAGE;
+    }
+    return AcceptedUploadFileType.ALL;
+  }, [isUploadableFile, isUploadableImage]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
     if (previewRef.current == null) {
@@ -554,8 +565,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return <></>;
   }
 
-  const isUploadable = isUploadableImage || isUploadableFile;
-
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
       <div className="page-editor-editor-container flex-expand-vert">
@@ -576,6 +585,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           onSave={saveWithShortcut}
           onUpload={uploadHandler}
           indentSize={currentIndentSize ?? defaultIndentSize}
+          acceptedFileType={acceptedFileType}
         />
       </div>
       <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

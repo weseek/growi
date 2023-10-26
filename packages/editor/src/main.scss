@@ -1,9 +1,8 @@
 @import 'bootstrap';
 @import 'react-toastify/scss/main';
 
-$material-icons-font-path: 'material-icons/iconfont/';
-@import 'material-icons/iconfont/filled';
-@import 'material-icons/iconfont/outlined';
-@import 'material-icons/iconfont/round';
+$material-symbols-font-path: '@material-symbols/font-300/';
+@import '@material-symbols/font-300/outlined';
+@import '@material-symbols/font-300/rounded';
 
 @import '@growi/core/scss/flex-expand';

@@ -10,6 +10,8 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 
+import { SkeletonItem } from './SkeletonItem';
+
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
 export const PersonalDropdown = (): JSX.Element => {
@@ -19,11 +21,7 @@ export const PersonalDropdown = (): JSX.Element => {
   const [isQuestionnaireModalOpen, setQuestionnaireModalOpen] = useState(false);
 
   if (currentUser == null) {
-    return (
-      <div className="text-muted text-center mb-5">
-        <i className="fa fa-2x fa-spinner fa-pulse me-1" />
-      </div>
-    );
+    return <SkeletonItem />;
   }
 
   const logoutHandler = async() => {
