@@ -338,7 +338,7 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
       <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
         { children ?? (
           <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-            <i className="icon-options"></i>
+            <span className="material-symbols-outlined">more_vert</span>
           </DropdownToggle>
         ) }
 

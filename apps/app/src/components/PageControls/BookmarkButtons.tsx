@@ -76,7 +76,9 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
           className={`shadow-none btn btn-bookmark border-0 rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
-          <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
+          <span className={`material-symbols-outlined ${isBookmarked ? 'fill' : ''}`}>
+            bookmark
+          </span>
         </DropdownToggle>
       </BookmarkFolderMenu>
       <UncontrolledTooltip placement="top" data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>

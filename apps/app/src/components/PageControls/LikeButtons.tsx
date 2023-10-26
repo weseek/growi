@@ -49,7 +49,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         className={`shadow-none btn btn-like border-0
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={`fa ${isLiked ? 'fa-heart' : 'fa-heart-o'}`}></i>
+        <span className={`material-symbols-outlined ${isLiked ? 'fill' : ''}`}>favorite</span>
       </button>
 
       <UncontrolledTooltip data-testid="like-button-tooltip" placement="top" target="like-button" autohide={false} fade={false}>
