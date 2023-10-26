@@ -1,0 +1,9 @@
+@mixin editing() {
+  :global {
+    .layout-root.editing {
+      :local {
+        @content;
+      }
+    }
+  }
+}
