@@ -2,13 +2,11 @@ import {
   FC, useState, useCallback, CSSProperties,
 } from 'react';
 
-import { useCodeMirrorEditorIsolated } from '@growi/editor';
 import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
-import { useResolvedThemeForEditor } from '../../../stores/use-resolved-theme';
-
+import { useCodeMirrorEditorIsolated, useResolvedThemeForEditor } from '../../../stores';
 
 import 'emoji-mart/css/emoji-mart.css';
 
