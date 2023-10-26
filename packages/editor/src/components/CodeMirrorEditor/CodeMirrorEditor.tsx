@@ -1,5 +1,5 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useCallback,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -112,7 +112,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return 'dropzone-uploading';
     }
     if (isDragAccept) {
-      return 'dropzone-accepted';
+      // return 'dropzone-accepted';
+      return 'dropzone-regected';
     }
     if (isDragReject) {
       return 'dropzone-regected';
@@ -120,17 +121,22 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return '';
   }, [isDragAccept, isDragReject, isUploading]);
 
+  const renderOverlay = useCallback(() => {
+    if (isDragActive) {
+      return (
+        <div className="overlay overlay-dropzone-active">
+          <span className="overlay-content">
+          </span>
+        </div>
+      );
+    }
+    return <></>;
+  }, [isDragActive]);
+
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${dropzoneClassName} flex-expand-vert`}>
-        {isDragActive
-        && (
-          <div className="overlay overlay-dropzone-active">
-            <span className="overlay-content">
-            </span>
-          </div>
-        )
-        }
+        {renderOverlay()}
         <CodeMirrorEditorContainer ref={containerRef} />
         <Toolbar onFileOpen={open} />
       </div>
