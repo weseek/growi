@@ -1,7 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/variables' as var;
 @use '../button-styles';
-@use '../variables' as var;
 
 @use './variables' as sidebarNavVar;
 

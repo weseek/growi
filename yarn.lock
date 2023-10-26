@@ -3229,6 +3229,11 @@
     markdown-it-front-matter "^0.2.3"
     postcss "^8.4.19"
 
+"@material-symbols/font-300@^0.13.1":
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/@material-symbols/font-300/-/font-300-0.13.1.tgz#33e1914565a8a8e421cb9de502ec5f6ccdc80256"
+  integrity sha512-3UcU9kw/1hKDyjkeOuv2wx9nwr5XSpbl/GG+o9+TY5xZ3ogeruNQ5aS7mRXqTxQiizLXtmkYeNUcS3N4fLQonQ==
+
 "@microsoft/api-extractor-model@7.27.5":
   version "7.27.5"
   resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.27.5.tgz#2220cf20c8587cd4cf78f82c20c4011a9e36a60f"
@@ -11088,11 +11093,6 @@ markdown-table@^3.0.0:
   version "3.0.2"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
   integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
-
-material-icons@^1.13.10:
-  version "1.13.12"
-  resolved "https://registry.yarnpkg.com/material-icons/-/material-icons-1.13.12.tgz#eed4082bf0426642edeb027e75397e3064adc536"
-  integrity sha512-/2YoaB79IjUK2B2JB+vIXXYGtBfHb/XG66LvoKVM5ykHW7yfrV5SP6d7KLX6iijY6/G9GqwgtPQ/sbhFnOURVA==
 
 mathjax-full@^3.2.2:
   version "3.2.2"
