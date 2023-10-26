@@ -22,6 +22,7 @@ import { useIsMobile } from '~/stores/ui';
 
 import type { CommentsProps } from '../Comments';
 import { PagePathNavSticky } from '../Common/PagePathNav';
+import { InlineCommentEditor } from '../InlineComment/InlineCommentEditor';
 import { PageViewLayout } from '../Layout/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
@@ -44,79 +45,6 @@ const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../U
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
 
-const InlineCommentBox = (props: any): JSX.Element => {
-  const {
-    targetRect, selectedText, pageId, revisionId, onFocus,
-  } = props;
-  const { post: postComment } = useSWRxPageComment(pageId);
-
-  const [commentBody, setCommentBody] = useState('');
-  console.log(commentBody);
-  const inlineCommentBoxRef = useRef<HTMLDivElement>(null);
-  const postCommentHandler = useCallback(async() => {
-    console.log('postCommentHandler is called!', commentBody);
-    const comment = `> ${selectedText}  \n\n ${commentBody}`;
-    try {
-      // post new comment
-      const postCommentArgs = {
-        commentForm: {
-          comment,
-          revisionId,
-          replyTo: undefined,
-        },
-        slackNotificationForm: {
-          isSlackEnabled: false,
-          slackChannels: undefined,
-        },
-      };
-      await postComment(postCommentArgs);
-
-    }
-    catch (err) {
-      const errorMessage = err.message || 'An unknown error occured when posting comment';
-      alert(errorMessage);
-    }
-  }, [commentBody, postComment, revisionId, selectedText]);
-
-  if (inlineCommentBoxRef != null && inlineCommentBoxRef.current != null && targetRect != null) {
-    const { current } = inlineCommentBoxRef;
-    if (current.style != null) {
-      const { top, left } = targetRect;
-      console.log(current.style.top, targetRect.top);
-      // const { width, height } = current.style;
-      console.log('changing styles');
-      current.style.top = `${top}px`;
-      current.style.left = `${left}px`;
-      current.style.transform = 'translateY(-100%)';
-    }
-  }
-
-  return (
-    <div id="inlineCommentBox" className={`position-fixed ${selectedText === '' && 'd-none'}`} ref={inlineCommentBoxRef}>
-      <div className="card">
-        <div className="card-body">
-          <p>{selectedText}</p>
-          <textarea
-            name="comment-body"
-            id="comment-body"
-            cols={30}
-            rows={1}
-            className="form-control"
-            onInput={(e) => {
-              console.log('input changes', e.target.value);
-              setCommentBody(e.target.value);
-            }}
-          >
-          </textarea>
-        </div>
-        <div className="card-footer">
-          <button type="button" onClick={postCommentHandler}>送信</button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 type Props = {
   pagePath: string,
   rendererConfig: RendererConfig,
@@ -126,7 +54,7 @@ type Props = {
 export const PageView = (props: Props): JSX.Element => {
 
   const commentsContainerRef = useRef<HTMLDivElement>(null);
-  const pageContentsWrapperRef = useRef<HTMLDivElement>(null);
+  const pageWrapperRef = useRef<HTMLDivElement>(null);
 
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
@@ -223,80 +151,47 @@ export const PageView = (props: Props): JSX.Element => {
   };
 
   // const [selectedRange, setSelectedRange] = useState<any>();
-  const [selectedRangeText, setSelectedRangeText] = useState<string|null>('');
-  const [targetRect, setTargetRect] = useState<any>();
+  const [selectedRangeText, setSelectedRangeText] = useState<string>('');
+  const [selectionTargetRect, setSelectionTargetRect] = useState<any>();
 
-  // TODO: Delete these experimental codes when the test is finished.
-  const selectHandler = useCallback(() => {
+  const resetSelectionRect = useCallback(() => {
+    const sel = document.getSelection();
+    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
+    const range = sel.getRangeAt(0);
+    const clientRect = range.getBoundingClientRect();
+    setSelectionTargetRect(clientRect);
+  }, []);
+
+  const domSelectHandler = useCallback(() => {
     console.log('selectHandler is called.');
 
     const sel = document.getSelection();
     if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
     const range = sel.getRangeAt(0);
-    // console.log(sel);
-    // Range selection disappears
-    // setSelectedRange(range); // <- this code has problem.
-    // console.log(clientRect);
     const rangeContents = range.cloneContents();
-    console.log(rangeContents.textContent);
-    setSelectedRangeText(rangeContents.textContent);
+    if (rangeContents.textContent != null) {
+      setSelectedRangeText(rangeContents.textContent);
+    }
     const clientRect = range.getBoundingClientRect();
-    // console.log(clientRect);
-    setTargetRect(clientRect);
-
-    // The following code will be used later.
-    // const { firstElementChild } = range.cloneContents();
-    // const isRangeStartWithSpan = firstElementChild?.nodeName === 'SPAN';
-    // const isSelectedRange = firstElementChild?.getAttribute('selected') === 'selected';
-    // if (isRangeStartWithSpan && isSelectedRange) return;
-    // for (const childNode of newRangeContents.childNodes) {
-    //   if (childNode.nodeType === Node.TEXT_NODE && childNode.textContent != null) {
-    //     const newNodeElement = document.createElement('span');
-    //     newNodeElement.innerText = childNode.textContent;
-    //     newNodeElement.setAttribute('style', 'background-color: blue;'); // Make the background of the range selection blue.
-    //     newNodeElement.setAttribute('selected', 'selected');
-    //     childNode.replaceWith(newNodeElement);
-    //   }
-    //   else {
-    //     const newNodeElement = document.createElement('span');
-    //     newNodeElement.setAttribute('selected', 'selected');
-    //     // newNodeElement.setAttributes(...childNode.getAttributes());
-    //     childNode.replaceWith(newNodeElement);
-    //   }
-    // }
-    // // range.deleteContents(); // Delete range selection.
-    // // range.detach();
-    // // range.insertNode(newRangeContents); // Insert a qualified span from the beginning of the range selection.
-    // const markerElement = document.createElement('selected');
-    // markerElement.setAttribute('comment-id', 'undefined');
-    // range.insertNode(markerElement);
-  }, []);
-
-  const resetRect = useCallback(() => {
-    const sel = document.getSelection();
-    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
-    const range = sel.getRangeAt(0);
-    const clientRect = range.getBoundingClientRect();
-    setTargetRect(clientRect);
+    setSelectionTargetRect(clientRect);
   }, []);
 
   useEffect(() => {
-    document.addEventListener('scroll', resetRect);
-    return document.removeEventListener('scroll', resetRect);
-  }, [resetRect]);
+    document.addEventListener('scroll', resetSelectionRect);
+    return document.removeEventListener('scroll', resetSelectionRect);
+  }, [resetSelectionRect]);
 
   useEffect(() => {
-    const selectionChangeHandler = debounce(1000, selectHandler);
-    if (pageContentsWrapperRef != null && pageContentsWrapperRef.current != null) {
-      console.log('useEffect is called.', pageContentsWrapperRef.current.addEventListener);
-      pageContentsWrapperRef.current.addEventListener('selectstart', selectionChangeHandler);
+    const selectionChangeHandler = debounce(1000, domSelectHandler);
+    if (pageWrapperRef != null && pageWrapperRef.current != null) {
+      pageWrapperRef.current.addEventListener('selectstart', selectionChangeHandler);
     }
     return () => {
-      if (pageContentsWrapperRef != null && pageContentsWrapperRef.current != null) {
-        pageContentsWrapperRef.current.removeEventListener('selectstart', selectionChangeHandler);
+      if (pageWrapperRef != null && pageWrapperRef.current != null) {
+        pageWrapperRef.current.removeEventListener('selectstart', selectionChangeHandler);
       }
     };
-  }, [selectHandler, pageContentsWrapperRef]);
+  }, [domSelectHandler, pageWrapperRef]);
 
   return (
     <PageViewLayout
@@ -310,18 +205,20 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`} ref={pageContentsWrapperRef}>
+          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`} ref={pageWrapperRef}>
             <Contents />
           </div>
         </>
       )}
 
-      <InlineCommentBox
-        selectedText={selectedRangeText}
-        pageId={page?._id}
-        revisionId={page?.revision._id}
-        targetRect={targetRect}
-      />
+      { page != null && (
+        <InlineCommentEditor
+          selectedText={selectedRangeText}
+          pageId={page._id}
+          revisionId={page.revision._id}
+          targetRect={selectionTargetRect}
+        />
+      )}
     </PageViewLayout>
   );
 };
