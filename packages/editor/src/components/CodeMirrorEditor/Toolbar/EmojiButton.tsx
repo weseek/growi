@@ -66,6 +66,8 @@ const getEmojiTranslation = (): Translation => {
   return translation;
 };
 
+const translation = getEmojiTranslation();
+
 export const EmojiButton: FC<Props> = (props) => {
   const { editorKey } = props;
 
@@ -97,8 +99,6 @@ export const EmojiButton: FC<Props> = (props) => {
   if (view == null || cursorIndex == null) {
     return <></>;
   }
-
-  const translation = getEmojiTranslation();
 
   const setStyle = (): CSSProperties => {
     const offset = 20;
