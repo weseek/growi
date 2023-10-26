@@ -73,7 +73,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         <DropdownToggle
           id="bookmark-dropdown-btn"
           color="transparent"
-          className={`shadow-none btn btn-bookmark border-0 rounded-end-0
+          className={`btn btn-bookmark rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
           <span className={`material-symbols-outlined ${isBookmarked ? 'fill' : ''}`}>
@@ -88,7 +88,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
       <button
         type="button"
         id="po-total-bookmarks"
-        className={`shadow-none btn btn-bookmark border-0
+        className={`btn btn-bookmark
           total-counts ${isBookmarked ? 'active' : ''}`}
       >
         {bookmarkCount}

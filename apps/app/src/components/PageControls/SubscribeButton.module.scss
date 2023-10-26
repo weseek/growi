@@ -2,8 +2,12 @@
 
 @use './button-styles';
 
-.btn-subscribe {
+.btn-subscribe :global {
   @extend %btn-basis;
+
+  .total-counts {
+    @extend %btn-total-counts-basis;
+  }
 }
 
 // == Colors

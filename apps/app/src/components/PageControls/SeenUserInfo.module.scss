@@ -6,6 +6,9 @@
   .btn-seen-user {
     @extend %btn-basis;
   }
+  .total-counts {
+    @extend %text-total-counts-basis;
+  }
 }
 
 

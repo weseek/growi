@@ -46,7 +46,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         type="button"
         id="like-button"
         onClick={onLikeClicked}
-        className={`shadow-none btn btn-like border-0
+        className={`btn btn-like
             ${isLiked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
         <span className={`material-symbols-outlined ${isLiked ? 'fill' : ''}`}>favorite</span>
@@ -59,7 +59,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
       <button
         type="button"
         id="po-total-likes"
-        className={`shadow-none btn btn-like border-0
+        className={`btn btn-like
           total-counts ${isLiked ? 'active' : ''}`}
       >
         {sumOfLikers}

@@ -6,6 +6,13 @@
   .btn-bookmark {
     @extend %btn-basis;
   }
+  .dropdown .btn-bookmark {
+    padding-right: 1px;
+  }
+  .total-counts {
+    @extend %btn-total-counts-basis;
+    padding-left: 5px;
+  }
 }
 
 // == Colors
