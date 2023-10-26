@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { createPage } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -35,14 +35,18 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         ? '/'
         : currentPage.path;
 
-      const response = await apiv3Post('/pages/', {
-        path: parentPath,
+      const params = {
+        isSlackEnabled: false,
+        slackChannels: '',
         grant: currentPage?.grant || 1,
-        grantUserGroupId: currentPage?.grantedGroup,
+        pageTags: [],
+        grantUserGroupId: currentPage?.grantedGroup?._id,
         shouldGeneratePath: true,
-      });
+      };
 
-      router.push(`${response.data.page.id}#edit`);
+      const response = await createPage(parentPath, '', params);
+
+      router.push(`${response.page.id}#edit`);
     }
     catch (err) {
       logger.warn(err);
