@@ -22,7 +22,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
   const { data: currentUser } = useCurrentUser();
   const {
-    editingApproverGroups, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+    editingApproverGroups, allEditingApproverIds, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
   } = useEditingApproverGroups();
 
   const { pageId, onCreated, onClickWorkflowListPageBackButton } = props;
@@ -60,6 +60,10 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
   if (currentUser == null) {
     return <></>;
   }
+
+  const excludedSearchUserIds = [currentUser._id, ...allEditingApproverIds];
+
+  const isCreatableWorkflow = allEditingApproverIds.length > 0;
 
   return (
     <>
@@ -110,8 +114,8 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         </div>
 
         <ApproverGroupCards
-          creatorId={currentUser?._id}
           editingApproverGroups={editingApproverGroups}
+          excludedSearchUserIds={excludedSearchUserIds}
           onUpdateApproverGroups={updateApproverGroupHandler}
           onClickAddApproverGroupCard={addApproverGroupHandler}
           onClickRemoveApproverGroupCard={removeApproverGroupHandler}
@@ -119,7 +123,11 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={createWorkflowButtonClickHandler}>
+        <button
+          type="button"
+          disabled={!isCreatableWorkflow}
+          onClick={createWorkflowButtonClickHandler}
+        >
           {t('approval_workflow.create')}
         </button>
       </ModalFooter>

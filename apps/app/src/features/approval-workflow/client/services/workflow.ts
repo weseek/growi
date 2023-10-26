@@ -19,8 +19,18 @@ const createInitialApproverGroup = (): IWorkflowApproverGroupReqForRenderList =>
   };
 };
 
+const getAllApproverIds = (approverGroups: IWorkflowApproverGroupReqForRenderList[]): string[] => {
+  const userIds: string[] = [];
+  approverGroups.forEach((group) => {
+    const ids = group.approvers.map(u => u.user.toString());
+    userIds.push(...ids);
+  });
+  return userIds;
+};
+
 type UseEditingApproverGroups = {
-  editingApproverGroups: IWorkflowApproverGroupReqForRenderList[],
+  editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
+  allEditingApproverIds: string[]
   updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
   addApproverGroupHandler: (groupIndex: number) => void
   removeApproverGroupHandler: (groupIndex: number) => void
@@ -28,6 +38,8 @@ type UseEditingApproverGroups = {
 
 export const useEditingApproverGroups = (): UseEditingApproverGroups => {
   const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReqForRenderList[]>([createInitialApproverGroup()]);
+
+  const allEditingApproverIds = getAllApproverIds(editingApproverGroups);
 
   const updateApproverGroupHandler = useCallback((groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => {
     const clonedApproverGroups = [...editingApproverGroups];
@@ -48,6 +60,10 @@ export const useEditingApproverGroups = (): UseEditingApproverGroups => {
   }, [editingApproverGroups]);
 
   return {
-    editingApproverGroups, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+    editingApproverGroups,
+    allEditingApproverIds,
+    updateApproverGroupHandler,
+    addApproverGroupHandler,
+    removeApproverGroupHandler,
   };
 };
