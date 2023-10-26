@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from 'react';
 
-import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useRouter } from 'next/router';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -32,18 +31,14 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     try {
       setIsCreating(true);
 
-      const parentPath = currentPage == null || isCreatablePage(currentPage.path)
+      const parentPath = currentPage == null
         ? '/'
         : currentPage.path;
 
       const response = await apiv3Post('/pages/', {
         path: parentPath,
-        body: undefined,
         grant: currentPage?.grant || 1,
-        grantUserGroupId: currentPage?.grantedGroup || null,
-        isSlackEnabled: false,
-        slackChannels: '',
-        pageTags: [],
+        grantUserGroupId: currentPage?.grantedGroup,
         shouldGeneratePath: true,
       });
 

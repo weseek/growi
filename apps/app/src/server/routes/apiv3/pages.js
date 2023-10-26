@@ -239,15 +239,11 @@ module.exports = (crowi) => {
     return [];
   }
 
-  async function checkIsPathExists(path) {
-    const Page = mongoose.model('Page');
-    const response = await Page.findByPath(path);
-    return response != null;
-  }
-
   async function generateUniquePath(basePath, index = 1) {
+    const Page = mongoose.model('Page');
     const path = basePath + index;
-    const isPathExists = await checkIsPathExists(path);
+    const response = await Page.findByPath(path);
+    const isPathExists = response != null;
     if (isPathExists) {
       return generateUniquePath(basePath, index + 1);
     }
@@ -325,6 +321,10 @@ module.exports = (crowi) => {
         const defaultTitle = '/Untitled';
         const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
         path = await generateUniquePath(basePath);
+
+        if (!isCreatablePage(path)) {
+          path = await generateUniquePath(defaultTitle);
+        }
       }
       catch (err) {
         return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
