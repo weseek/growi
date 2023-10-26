@@ -6,6 +6,15 @@ import { WorkflowApprovalType, IWorkflowApproverGroupReqForRenderList } from '..
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
+const getAllApproverIds = (approverGroups: IWorkflowApproverGroupReqForRenderList[]): string[] => {
+  const userIds: string[] = [];
+  approverGroups.forEach((group) => {
+    const ids = group.approvers.map(u => u.user.toString());
+    userIds.push(...ids);
+  });
+  return userIds;
+};
+
 type Props = {
   creatorId: string
   editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
@@ -23,8 +32,8 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
   const editingApproverGroup = editingApproverGroups?.[groupIndex];
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
-  const editingApprovers = editingApproverGroup.approvers?.map(v => v.user.toString()) ?? [];
-  const excludedSearchUserIds = [creatorId, ...editingApprovers];
+
+  const excludedSearchUserIds = [creatorId, ...getAllApproverIds(editingApproverGroups)];
 
   const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
     const clonedApproverGroup = { ...editingApproverGroup };
