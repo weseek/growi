@@ -1219,9 +1219,12 @@ module.exports = (crowi) => {
     const q = req.query.q;
     const offset = +req.query.offset || 0;
     const limit = +req.query.limit || 10;
+    const excludedUserIdsString = req.query.excludedUserIds == null || req.query.excludedUserIds.trim() === ''
+      ? '[]'
+      : req.query.excludedUserIds;
 
     try {
-      const excludedUserIds = JSON.parse(req.query.excludedUserIds || []);
+      const excludedUserIds = JSON.parse(excludedUserIdsString);
       const userData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit, excludedUserIds });
       return res.apiv3(userData);
     }
