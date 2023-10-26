@@ -33,12 +33,8 @@ export const useOnPageEditorModeButtonClicked = (
 
         const response = await apiv3Post('/pages/', {
           path,
-          body: undefined,
           grant,
           grantUserGroupId,
-          isSlackEnabled: false,
-          slackChannels: '',
-          pageTags: [],
         });
 
         // Should not mutateEditorMode as it might prevent transitioning during mutation
