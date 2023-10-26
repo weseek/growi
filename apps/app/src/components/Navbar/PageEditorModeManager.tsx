@@ -58,11 +58,11 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
-    if (isBtnDisabled || onPageEditorModeButtonClicked == null) {
+    if (isBtnDisabled) {
       return;
     }
 
-    onPageEditorModeButtonClicked(viewType);
+    onPageEditorModeButtonClicked?.(viewType);
   }, [isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
