@@ -8,7 +8,7 @@ import { DropdownItem } from 'reactstrap';
 
 import { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { SupportedTargetModel } from '~/interfaces/activity';
+import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 // Change the display for each targetmodel
@@ -91,51 +91,51 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   let actionIcon: string;
 
   switch (actionType) {
-    case 'PAGE_LIKE':
+    case SupportedAction.ACTION_PAGE_LIKE:
       actionMsg = 'liked';
       actionIcon = 'icon-like';
       break;
-    case 'PAGE_BOOKMARK':
+    case SupportedAction.ACTION_PAGE_BOOKMARK:
       actionMsg = 'bookmarked on';
       actionIcon = 'icon-star';
       break;
-    case 'PAGE_UPDATE':
+    case SupportedAction.ACTION_PAGE_UPDATE:
       actionMsg = 'updated on';
       actionIcon = 'ti ti-agenda';
       break;
-    case 'PAGE_RENAME':
+    case SupportedAction.ACTION_PAGE_RENAME:
       actionMsg = 'renamed';
       actionIcon = 'icon-action-redo';
       break;
-    case 'PAGE_DUPLICATE':
+    case SupportedAction.ACTION_PAGE_DUPLICATE:
       actionMsg = 'duplicated';
       actionIcon = 'icon-docs';
       break;
-    case 'PAGE_DELETE':
+    case SupportedAction.ACTION_PAGE_DELETE:
       actionMsg = 'deleted';
       actionIcon = 'icon-trash';
       break;
-    case 'PAGE_DELETE_COMPLETELY':
+    case SupportedAction.ACTION_PAGE_DELETE_COMPLETELY:
       actionMsg = 'completely deleted';
       actionIcon = 'icon-fire';
       break;
-    case 'PAGE_REVERT':
+    case SupportedAction.ACTION_PAGE_REVERT:
       actionMsg = 'reverted';
       actionIcon = 'icon-action-undo';
       break;
-    case 'PAGE_RECURSIVELY_RENAME':
+    case SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME:
       actionMsg = 'renamed under';
       actionIcon = 'icon-action-redo';
       break;
-    case 'PAGE_RECURSIVELY_DELETE':
+    case SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE:
       actionMsg = 'deleted under';
       actionIcon = 'icon-trash';
       break;
-    case 'PAGE_RECURSIVELY_DELETE_COMPLETELY':
+    case SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY:
       actionMsg = 'deleted completely under';
       actionIcon = 'icon-fire';
       break;
-    case 'PAGE_RECURSIVELY_REVERT':
+    case SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT:
       actionMsg = 'reverted under';
       actionIcon = 'icon-action-undo';
       break;
@@ -175,8 +175,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
           <PageModelNotification
             ref={notificationRef}
             notification={notification}
-            actionMsg={actionMsg}
-            actionIcon={actionIcon}
             actionUsers={actionUsers}
           />
         )}
