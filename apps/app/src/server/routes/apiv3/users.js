@@ -9,6 +9,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import user from '../user';
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -1226,6 +1227,9 @@ module.exports = (crowi) => {
     try {
       const excludedUserIds = JSON.parse(excludedUserIdsString);
       const userData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit, excludedUserIds });
+
+      userData.users = userData.users.map(user => serializeUserSecurely(user));
+
       return res.apiv3(userData);
     }
     catch (err) {
