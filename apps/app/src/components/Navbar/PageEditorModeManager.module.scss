@@ -7,11 +7,12 @@
     --bs-btn-font-size: 13px;
     --bs-btn-border-width: 2px;
 
-    width: 90px;
-    @include bs.media-breakpoint-up(md) {
-      width: 70px;
-    }
+    width: 70px;
     height: 30px;
+    @include bs.media-breakpoint-down(sm) {
+      width: 90px;
+      height: 38px;
+    }
 
     @include mixins.border-vertical('before', 70%, 1, true);
   }
@@ -19,10 +20,11 @@
 
 .grw-page-editor-mode-manager-skeleton :global {
   width: 179px;
+  height: 30px;
   @include bs.media-breakpoint-down(sm) {
     width: 90px;
+    height: 38px;
   }
-  height: 30px;
 }
 
 // == Colors
