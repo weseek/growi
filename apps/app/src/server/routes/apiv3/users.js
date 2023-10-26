@@ -136,6 +136,13 @@ module.exports = (crowi) => {
     query('options').optional().isString().withMessage('options must be string'),
   ];
 
+  validator.users = [
+    query('q').isString().withMessage('q is required'),
+    query('offset').optional().isInt().withMessage('offset must be a number'),
+    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
+    query('excludedUserIds').optional().isString().withMessage('excludedUserIds must be an array'),
+  ];
+
   // express middleware
   const certifyUserOperationOtherThenYourOwn = (req, res, next) => {
     const { id } = req.params;
@@ -1204,6 +1211,22 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get usernames', err);
+      return res.apiv3Err(err);
+    }
+  });
+
+  router.get('/users', accessTokenParser, loginRequired, validator.users, apiV3FormValidator, async(req, res) => {
+    const q = req.query.q;
+    const offset = +req.query.offset || 0;
+    const limit = +req.query.limit || 10;
+
+    try {
+      const excludedUserIds = JSON.parse(req.query.excludedUserIds || []);
+      const userData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit, excludedUserIds });
+      return res.apiv3(userData);
+    }
+    catch (err) {
+      logger.error(err);
       return res.apiv3Err(err);
     }
   });
