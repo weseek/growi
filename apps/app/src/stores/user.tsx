@@ -48,3 +48,17 @@ export const useSWRxUsernames = (q: string, offset?: number, limit?: number, opt
     }).then(result => result.data),
   );
 };
+
+type UserSearchResult = {
+  users: IUserHasId[],
+  totalCount: number
+}
+
+export const useSWRxSearchUsers = (q: string, offset?: number, limit?: number, excludedUserIds?: string): SWRResponse<UserSearchResult, Error> => {
+  return useSWRImmutable(
+    (q != null && q.trim() !== '') ? ['/users/users', q, offset, limit, excludedUserIds] : null,
+    ([endpoint, q, offset, limit, excludedUserIds]) => apiv3Get(endpoint, {
+      q, offset, limit, excludedUserIds,
+    }).then(result => result.data),
+  );
+};

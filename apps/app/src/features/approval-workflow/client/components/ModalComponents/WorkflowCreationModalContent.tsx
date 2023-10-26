@@ -57,6 +57,10 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
     }
   }, [createWorkflow, editingApproverGroups, onCreated]);
 
+  if (currentUser == null) {
+    return <></>;
+  }
+
   return (
     <>
       <WorkflowModalHeader

@@ -5,57 +5,48 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
 import { IClearable } from '~/client/interfaces/clearable';
+import { useSWRxSearchUsers } from '~/stores/user';
 
-const dumyUserData = [
-  {
-    _id: '653140203f643f1ba8496867',
-    username: 'test-user1',
-  },
-  {
-    _id: '65314045a45f085023861c7a',
-    username: 'test-user2',
-  },
-  {
-    _id: '65314dfff63cae573793c2b8',
-    username: 'test-user3',
-  },
-] as unknown as IUserHasId[];
-
-const getUserIdsByUsernames = (data, usernames: string[] | undefined): string[] | undefined => {
-  if (usernames == null || usernames.length === 0) {
+const getUserIdsByUsernames = (userData?: IUserHasId[], usernames?: string[]): string[] | undefined => {
+  if (userData == null || usernames == null || usernames.length === 0) {
     return;
   }
 
-  return data
+  return userData
     .filter(item => usernames.includes(item.username))
     .map(item => item._id);
 };
 
 type Props = {
+  excludedSearchUserIds?: string[]
   onChange?: (userIds?: string[]) => void
 };
 
 export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const [selectedUsernames, setSelectedUsernames] = useState<string[]>();
+  const { excludedSearchUserIds, onChange } = props;
 
-  const { onChange } = props;
+  const [selectedUsernames, setSelectedUsernames] = useState<string[]>();
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
+
+  const excludedSearchUserIdData = JSON.stringify(excludedSearchUserIds);
+  const { data: userData, error } = useSWRxSearchUsers(searchKeyword, 0, 5, excludedSearchUserIdData);
 
   const typeaheadRef = useRef<IClearable>(null);
 
-  const onSearchHandler = useCallback((
-      //
-  ) => {}, []);
+  const onSearchHandler = useCallback((text: string) => {
+    setSearchKeyword(text);
+  }, []);
 
   const onChangeHandler = useCallback((usernames: string[]) => {
     setSelectedUsernames(usernames);
 
     if (onChange != null) {
-      const userIds = getUserIdsByUsernames(dumyUserData, usernames);
+      const userIds = getUserIdsByUsernames(userData?.users, usernames);
       onChange(userIds);
     }
-  }, [onChange]);
+  }, [onChange, userData]);
 
   return (
     <div className="input-group me-2">
@@ -74,7 +65,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         onSearch={onSearchHandler}
         onChange={onChangeHandler}
         selected={selectedUsernames}
-        options={dumyUserData.map(v => v.username)}
+        options={userData?.users?.map(v => v.username)}
       />
     </div>
   );

@@ -7,7 +7,7 @@ import { WorkflowApprovalType, IWorkflowApproverGroupReqForRenderList } from '..
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
 type Props = {
-  creatorId?: string
+  creatorId: string
   editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
@@ -24,7 +24,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
   const editingApproverGroup = editingApproverGroups?.[groupIndex];
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
   const editingApprovers = editingApproverGroup.approvers?.map(v => v.user.toString()) ?? [];
-  const excludedSearchUserId = [creatorId, ...editingApprovers];
+  const excludedSearchUserIds = [creatorId, ...editingApprovers];
 
   const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
     const clonedApproverGroup = { ...editingApproverGroup };
@@ -63,7 +63,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
         <div className="card-body">
 
           <div className="d-flex justify-content-center align-items-center">
-            <SearchUserTypeahead onChange={updateApproversHandler} />
+            <SearchUserTypeahead excludedSearchUserIds={excludedSearchUserIds} onChange={updateApproversHandler} />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
               <button type="button" className="btn-close" aria-label="Close" onClick={() => { onClickRemoveApproverGroupCard(groupIndex) }}></button>
