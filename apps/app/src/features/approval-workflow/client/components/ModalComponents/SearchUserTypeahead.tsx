@@ -31,7 +31,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   const excludedSearchUserIdData = JSON.stringify(excludedSearchUserIds);
-  const { data: userData, error } = useSWRxSearchUsers(searchKeyword, 0, 5, excludedSearchUserIdData);
+  const { data: userData, isLoading } = useSWRxSearchUsers(searchKeyword, 0, 5, excludedSearchUserIdData);
 
   const typeaheadRef = useRef<IClearable>(null);
 
@@ -60,8 +60,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         delay={400}
         minLength={0}
         caseSensitive={false}
-        // isLoading={isLoading}
-        // options={allUser}
+        isLoading={isLoading}
         onSearch={onSearchHandler}
         onChange={onChangeHandler}
         selected={selectedUsernames}
