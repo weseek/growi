@@ -25,6 +25,7 @@ type Translation = {
   title: string
 }
 
+// TODO: https://redmine.weseek.co.jp/issues/133681
 const getEmojiTranslation = (): Translation => {
 
   const categories: { [key: string]: string } = {};
