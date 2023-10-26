@@ -328,7 +328,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   return (
     <>
       <div
-        className={`grw-contextual-sub-navigation ${styles['grw-contextual-sub-navigation']}
+        className={`${styles['grw-contextual-sub-navigation']}
           d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4
         `}
         data-testid="grw-contextual-sub-nav"
