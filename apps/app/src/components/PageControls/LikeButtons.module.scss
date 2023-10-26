@@ -1,17 +1,16 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use './button-styles';
+
 .btn-group-like :global {
   .btn-like {
-    box-shadow: none !important;
+    @extend %btn-basis;
+  }
+}
 
-    @include bs.button-outline-variant(rgba(bs.$secondary, 50%), lighten(bs.$red, 15%), rgba(lighten(bs.$red, 10%), 0.15), rgba(lighten(bs.$red, 10%), 0.5));
-
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: lighten(bs.$red, 15%);
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
+// == Colors
+.btn-group-like :global {
+  .btn-like {
+    @include button-styles.btn-color(bs.$red);
   }
 }

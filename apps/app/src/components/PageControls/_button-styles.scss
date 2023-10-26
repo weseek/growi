@@ -1,0 +1,25 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+%btn-basis {
+  padding: 6px 8px;
+  line-height: 1em;
+  border: 0;
+  box-shadow: none !important;
+}
+
+@mixin btn-color($color) {
+  $color-rgb: #{bs.to-rgb($color)};
+
+  --bs-btn-color: var(--bs-tertiary-color);
+  --bs-btn-bg: transparent;
+
+  --bs-btn-hover-color: #{$color};
+  --bs-btn-hover-bg: rgba(#{$color-rgb}, 0.2);
+
+  --bs-btn-active-color: #{$color};
+  --bs-btn-active-bg: transparent;
+
+  &:hover {
+    --bs-btn-active-bg: rgba(#{$color-rgb}, 0.2);
+  }
+}
