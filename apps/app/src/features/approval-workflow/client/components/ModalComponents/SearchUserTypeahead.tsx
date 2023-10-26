@@ -54,11 +54,12 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         <i className="icon-people" />
       </span>
       <AsyncTypeahead
-        id="user-typeahead-asynctypeahea"
+        id="user-typeahead-asynctypeahead"
         ref={typeaheadRef}
         multiple
-        delay={400}
+        delay={200}
         minLength={0}
+        useCache={false}
         caseSensitive={false}
         isLoading={isLoading}
         onSearch={onSearchHandler}
