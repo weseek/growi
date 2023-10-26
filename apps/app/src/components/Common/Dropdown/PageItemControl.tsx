@@ -266,7 +266,6 @@ PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
-  fetchOnInit?: boolean,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
 }
@@ -274,12 +273,12 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    pageId, pageInfo: presetPageInfo, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
     onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
@@ -376,20 +375,4 @@ export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
   }
 
   return <PageItemControlSubstance pageId={pageId} {...props} />;
-};
-
-
-type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
-  pageId?: string,
-  children?: React.ReactNode,
-}
-
-export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
-  const { pageId } = props;
-
-  if (pageId == null) {
-    return <></>;
-  }
-
-  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
 };
