@@ -1,17 +1,13 @@
 import React, {
-  useCallback,
   useEffect, useMemo, useRef, useState,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
-import { debounce } from 'throttle-debounce';
 
-import { apiPost } from '~/client/util/apiv1-client';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useSWRxPageComment } from '~/stores/comment';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
@@ -150,49 +146,6 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
-  // const [selectedRange, setSelectedRange] = useState<any>();
-  const [selectedRangeText, setSelectedRangeText] = useState<string>('');
-  const [selectionTargetRect, setSelectionTargetRect] = useState<any>();
-
-  const resetSelectionRect = useCallback(() => {
-    const sel = document.getSelection();
-    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
-    const range = sel.getRangeAt(0);
-    const clientRect = range.getBoundingClientRect();
-    setSelectionTargetRect(clientRect);
-  }, []);
-
-  const domSelectHandler = useCallback(() => {
-    console.log('selectHandler is called.');
-
-    const sel = document.getSelection();
-    if (sel == null || sel.isCollapsed) return; // Detach if selected aria is invalid.
-    const range = sel.getRangeAt(0);
-    const rangeContents = range.cloneContents();
-    if (rangeContents.textContent != null) {
-      setSelectedRangeText(rangeContents.textContent);
-    }
-    const clientRect = range.getBoundingClientRect();
-    setSelectionTargetRect(clientRect);
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('scroll', resetSelectionRect);
-    return document.removeEventListener('scroll', resetSelectionRect);
-  }, [resetSelectionRect]);
-
-  useEffect(() => {
-    const selectionChangeHandler = debounce(1000, domSelectHandler);
-    if (pageWrapperRef != null && pageWrapperRef.current != null) {
-      pageWrapperRef.current.addEventListener('selectstart', selectionChangeHandler);
-    }
-    return () => {
-      if (pageWrapperRef != null && pageWrapperRef.current != null) {
-        pageWrapperRef.current.removeEventListener('selectstart', selectionChangeHandler);
-      }
-    };
-  }, [domSelectHandler, pageWrapperRef]);
-
   return (
     <PageViewLayout
       headerContents={headerContents}
@@ -213,10 +166,9 @@ export const PageView = (props: Props): JSX.Element => {
 
       { page != null && (
         <InlineCommentEditor
-          selectedText={selectedRangeText}
           pageId={page._id}
           revisionId={page.revision._id}
-          targetRect={selectionTargetRect}
+          pageContentsWrapperRef={pageWrapperRef}
         />
       )}
     </PageViewLayout>
