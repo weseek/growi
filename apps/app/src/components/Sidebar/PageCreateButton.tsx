@@ -24,7 +24,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     setIsHovered(false);
   };
 
-  const iconName = 'create';
   const onCreateNewPageButtonHandler = useCallback(async() => {
     if (isLoading) return;
 
@@ -84,7 +83,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           data-testid="grw-sidebar-nav-page-create-button"
           disabled={isCreating}
         >
-          <i className="material-icons">{iconName}</i>
+          <i className="material-symbols-outlined">edit</i>
         </button>
       </div>
       {isHovered && (

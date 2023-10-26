@@ -17,7 +17,7 @@ export const AttachmentsButton = (props: Props): JSX.Element => {
     return (
       <>
         <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
-          <span className="material-icons-outlined fs-5">attach_file</span>
+          <span className="material-symbols-outlined fs-5">attach_file</span>
           Files
         </DropdownItem>
       </>
@@ -27,7 +27,7 @@ export const AttachmentsButton = (props: Props): JSX.Element => {
     return (
       <>
         <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
-          <span className="material-icons-outlined fs-5">image</span>
+          <span className="material-symbols-outlined fs-5">image</span>
           Images
         </DropdownItem>
       </>

@@ -17,8 +17,6 @@ $grw-pagetree-item-container-height: 40px;
   }
 
   :global {
-    min-height: calc(100vh - ($grw-sidebar-content-header-height + $grw-sidebar-content-footer-height));
-
     .btn-page-item-control {
       .icon-plus::before {
         font-size: 18px;
