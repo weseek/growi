@@ -1,4 +1,3 @@
-
 import { ErrorV3 } from '@growi/core/dist/models';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 
@@ -9,7 +8,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import user from '../user';
+
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -135,13 +134,6 @@ module.exports = (crowi) => {
     query('offset').optional().isInt().withMessage('offset must be a number'),
     query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
     query('options').optional().isString().withMessage('options must be string'),
-  ];
-
-  validator.users = [
-    query('q').isString().withMessage('q is required'),
-    query('offset').optional().isInt().withMessage('offset must be a number'),
-    query('limit').optional().isInt({ max: 20 }).withMessage('You should set less than 20 or not to set limit.'),
-    query('excludedUserIds').optional().isString().withMessage('excludedUserIds must be an array'),
   ];
 
   // express middleware
@@ -1212,28 +1204,6 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Failed to get usernames', err);
-      return res.apiv3Err(err);
-    }
-  });
-
-  router.get('/users', accessTokenParser, loginRequired, validator.users, apiV3FormValidator, async(req, res) => {
-    const q = req.query.q;
-    const offset = +req.query.offset || 0;
-    const limit = +req.query.limit || 10;
-    const excludedUserIdsString = req.query.excludedUserIds == null || req.query.excludedUserIds.trim() === ''
-      ? '[]'
-      : req.query.excludedUserIds;
-
-    try {
-      const excludedUserIds = JSON.parse(excludedUserIdsString);
-      const userData = await User.findUserByUsernameRegexWithTotalCount(q, [User.STATUS_ACTIVE], { offset, limit, excludedUserIds });
-
-      userData.users = userData.users.map(user => serializeUserSecurely(user));
-
-      return res.apiv3(userData);
-    }
-    catch (err) {
-      logger.error(err);
       return res.apiv3Err(err);
     }
   });

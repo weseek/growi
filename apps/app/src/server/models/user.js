@@ -749,9 +749,8 @@ module.exports = function(crowi) {
     const sortOpt = opt.sortOpt || { username: 1 };
     const offset = opt.offset || 0;
     const limit = opt.limit || 10;
-    const excludedUserIds = opt.excludedUserIds || [];
 
-    const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status }, _id: { $nin: excludedUserIds } };
+    const conditions = { username: { $regex: username, $options: 'i' }, status: { $in: status } };
 
     const users = await this.find(conditions)
       .sort(sortOpt)
