@@ -43,9 +43,13 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
 
   const createReplaceSelectionHandler = useCallback((prefix: string, suffix: string) => {
     return () => {
+      const selection = view.state.sliceDoc(
+        view.state.selection.main.from,
+        view.state.selection.main.to,
+      );
       const cursorPos = view.state.selection.main.head;
       let curPosAfterReplacing = {};
-      const insertText = view?.state.replaceSelection(prefix + suffix);
+      const insertText = view?.state.replaceSelection(prefix + selection + suffix);
 
       if (insertText) {
         view?.dispatch(insertText);
