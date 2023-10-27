@@ -1,8 +1,10 @@
-import React, { type ReactNode, useCallback } from 'react';
+import React, { type ReactNode, useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
+
+import { useOnPageEditorModeButtonClicked } from './hooks';
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -41,27 +43,36 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
 
 type Props = {
   editorMode: EditorMode | undefined,
-  isBtnDisabled?: boolean,
-  onPageEditorModeButtonClicked?: (editorMode: EditorMode) => Promise<void>,
+  isBtnDisabled: boolean,
+  path?: string,
+  grant?: number,
+  grantUserGroupId?: string
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
   const {
     editorMode = EditorMode.View,
     isBtnDisabled,
-    onPageEditorModeButtonClicked,
+    path,
+    grant,
+    grantUserGroupId,
   } = props;
 
   const { t } = useTranslation();
+  const [isCreating, setIsCreating] = useState(false);
+
   const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
 
+  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path, grant, grantUserGroupId);
+  const _isBtnDisabled = isCreating || isBtnDisabled;
+
   const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
-    if (isBtnDisabled) {
+    if (_isBtnDisabled) {
       return;
     }
 
     onPageEditorModeButtonClicked?.(viewType);
-  }, [isBtnDisabled, onPageEditorModeButtonClicked]);
+  }, [_isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
     <>
@@ -75,7 +86,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={_isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
           >
             <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
@@ -85,7 +96,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.Editor}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={_isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
