@@ -6,32 +6,11 @@ import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
-import { SupportedAction } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
-import type { ActionMsgAndIconType } from './PageModelNotification';
+import { useActionMsgAndIconForUserModelNotification } from './useActionAndMsg';
 
-const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
-  const actionType: string = notification.action;
-  let actionMsg: string;
-  let actionIcon: string;
-
-  switch (actionType) {
-    case SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST:
-      actionMsg = 'requested registration approval';
-      actionIcon = 'icon-bubble';
-      break;
-    default:
-      actionMsg = '';
-      actionIcon = '';
-  }
-
-  return {
-    actionMsg,
-    actionIcon,
-  };
-};
 
 const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, {
   notification: IInAppNotification & HasObjectId
@@ -41,7 +20,7 @@ const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
 }, ref) => {
   const router = useRouter();
 
-  const { actionMsg, actionIcon } = useActionMsgAndIcon(notification);
+  const { actionMsg, actionIcon } = useActionMsgAndIconForUserModelNotification(notification);
 
   // publish open()
   const publishOpen = () => {
