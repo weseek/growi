@@ -1,9 +1,13 @@
-import { PageGrant } from '@growi/core';
+import { GroupType, PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
 
+import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import UserGroup from '~/server/models/user-group';
 
 import { getInstance } from '../setup-crowi';
+
 
 /*
  * There are 3 grant types to test.
@@ -30,7 +34,11 @@ describe('PageGrantService', () => {
   let groupParent;
   let groupChild;
 
+  let externalGroupParent;
+  let externalGroupChild;
+
   const userGroupIdParent = new mongoose.Types.ObjectId();
+  const externalUserGroupIdParent = new mongoose.Types.ObjectId();
 
   let rootPage;
   let rootPublicPage;
@@ -115,6 +123,40 @@ describe('PageGrantService', () => {
       },
     ]);
 
+    await ExternalUserGroup.insertMany([
+      {
+        _id: externalUserGroupIdParent,
+        name: 'ExternalGroupParent',
+        externalId: 'ExternalGroupParent',
+        provider: ExternalGroupProviderType.ldap,
+        parent: null,
+      },
+      {
+        name: 'ExternalGroupChild',
+        externalId: 'ExternalGroupChild',
+        provider: ExternalGroupProviderType.ldap,
+        parent: externalUserGroupIdParent,
+      },
+    ]);
+
+    externalGroupParent = await ExternalUserGroup.findOne({ name: 'ExternalGroupParent' });
+    externalGroupChild = await ExternalUserGroup.findOne({ name: 'ExternalGroupChild' });
+
+    await ExternalUserGroupRelation.insertMany([
+      {
+        relatedGroup: externalGroupParent._id,
+        relatedUser: user1._id,
+      },
+      {
+        relatedGroup: externalGroupParent._id,
+        relatedUser: user2._id,
+      },
+      {
+        relatedGroup: externalGroupChild._id,
+        relatedUser: user1._id,
+      },
+    ]);
+
     // Root page (Depth: 0)
     rootPage = await Page.findOne({ path: '/' });
 
@@ -153,7 +195,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: null,
-        grantedGroups: [{ item: groupParent._id, type: 'UserGroup' }],
+        grantedGroups: [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }],
         parent: rootPage._id,
       },
     ]);
@@ -183,7 +225,7 @@ describe('PageGrantService', () => {
         path: v4PageRootOnlyInsideTheGroupPagePath,
         grant: Page.GRANT_USER_GROUP,
         parent: null,
-        grantedGroups: [{ item: groupParent._id, type: 'UserGroup' }],
+        grantedGroups: [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }],
       },
     ]);
 
@@ -280,7 +322,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: null,
-        grantedGroups: [{ item: groupParent._id, type: 'UserGroup' }],
+        grantedGroups: [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }],
         parent: emptyPage3._id,
       },
       {
@@ -289,7 +331,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: null,
-        grantedGroups: [{ item: groupChild._id, type: 'UserGroup' }],
+        grantedGroups: [{ item: groupChild._id, type: GroupType.userGroup }, { item: externalGroupChild._id, type: GroupType.externalUserGroup }],
         parent: emptyPage3._id,
       },
       {
@@ -345,10 +387,10 @@ describe('PageGrantService', () => {
       const targetPath = '/NEW_GroupParent';
       const grant = Page.GRANT_USER_GROUP;
       const grantedUserIds = null;
-      const grantedGroupIdš = [{ item: groupParent._id, type: 'UserGroup' }];
+      const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIdš, shouldCheckDescendants);
+      const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
 
       expect(result).toBe(true);
     });
@@ -369,7 +411,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageRootGroupParentPath}/NEW`;
       const grant = Page.GRANT_USER_GROUP;
       const grantedUserIds = null;
-      const grantedGroupIds = [{ item: groupParent._id, type: 'UserGroup' }];
+      const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -417,7 +459,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageE3GroupChildPath}/NEW`;
       const grant = Page.GRANT_USER_GROUP;
       const grantedUserIds = null;
-      const grantedGroupIds = [{ item: groupParent._id, type: 'UserGroup' }];
+      const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -455,7 +497,7 @@ describe('PageGrantService', () => {
       const targetPath = emptyPagePath3;
       const grant = Page.GRANT_USER_GROUP;
       const grantedUserIds = null;
-      const grantedGroupIds = [{ item: groupParent._id, type: 'UserGroup' }];
+      const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = true;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -490,7 +532,18 @@ describe('PageGrantService', () => {
 
     // parent property of all private pages is null
     test('Any grant is allowed if parent is null', async() => {
-      const userGroupRelation = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
+      const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+      const userPossessedGroups = [
+        ...userPossessedUserGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        }),
+        ...userPossessedExternalUserGroups.map((group) => {
+          return { type: GroupType.externalUserGroup, item: group };
+        }),
+      ];
 
       // OnlyMe
       const rootOnlyMePage = await Page.findOne({ path: v4PageRootOnlyMePagePath });
@@ -500,7 +553,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -512,7 +565,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -524,14 +577,25 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
     });
 
 
     test('Any grant is allowed if parent is public', async() => {
-      const userGroupRelation = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
+      const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+      const userPossessedGroups = [
+        ...userPossessedUserGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        }),
+        ...userPossessedExternalUserGroups.map((group) => {
+          return { type: GroupType.externalUserGroup, item: group };
+        }),
+      ];
 
       // OnlyMe
       const publicOnlyMePage = await Page.findOne({ path: pagePublicOnlyMePath });
@@ -541,7 +605,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -553,7 +617,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -565,7 +629,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
     });
@@ -633,7 +697,16 @@ describe('PageGrantService', () => {
     });
 
     test('"GRANT_USER_GROUP" is allowed if the parent\'s grant is GRANT_USER_GROUP and the user is included in the group', async() => {
-      const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(groupParent, user1);
+      const userGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(groupParent, user1);
+      const externalUserGroups = await ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(externalGroupParent, user1);
+      const applicableGroups = [
+        ...userGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        }),
+        ...externalUserGroups.map((group) => {
+          return { type: GroupType.externalUserGroup, item: group };
+        }),
+      ];
 
       // Public
       const onlyInsideGroupPublicPage = await Page.findOne({ path: pageOnlyInsideTheGroupPublicPath });
