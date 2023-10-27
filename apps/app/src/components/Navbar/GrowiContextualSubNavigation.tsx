@@ -39,8 +39,6 @@ import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
-import { useOnPageEditorModeButtonClicked } from './hooks';
-
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -238,11 +236,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
   const { isLinkSharingDisabled } = props;
-
-  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path, grant, grantUserGroupId);
 
   // TODO: implement tags for editor
   // refs: https://redmine.weseek.co.jp/issues/132125
@@ -361,8 +356,10 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}
-            isBtnDisabled={isCreating || !!isGuestUser || !!isReadOnlyUser}
-            onPageEditorModeButtonClicked={onPageEditorModeButtonClicked}
+            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+            path={path}
+            grant={grant}
+            grantUserGroupId={grantUserGroupId}
           />
         )}
       </div>
