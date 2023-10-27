@@ -36,7 +36,6 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
 
-  console.log(dataApplicableGrant);
   const applicableGroups = dataApplicableGrant[PageGrant.GRANT_USER_GROUP]?.applicableGroups;
 
   // Reset state when opened
@@ -258,7 +257,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
   if (!hasParent) {
     return <></>;
   }
-  if (dataIsGrantNormalized?.isGrantNormalized == null || !dataIsGrantNormalized.isGrantNormalized) {
+  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
