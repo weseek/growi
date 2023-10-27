@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { ColorScheme } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
@@ -14,9 +16,9 @@ type ResolvedThemeUtils = {
 export const useResolvedThemeForEditor = (): SWRResponse<ResolvedThemeStatus, Error> & ResolvedThemeUtils => {
   const swrResponse = useSWRStatic<ResolvedThemeStatus, Error>('resolvedTheme');
 
-  const mutateResolvedThemeForEditor = (resolvedTheme: ColorScheme) => {
-    mutate({ themeData: resolvedTheme });
-  };
+  const mutateResolvedThemeForEditor = useCallback((resolvedTheme: ColorScheme) => {
+    mutate('resolvedTheme', { themeData: resolvedTheme });
+  }, []);
 
   return {
     ...swrResponse,

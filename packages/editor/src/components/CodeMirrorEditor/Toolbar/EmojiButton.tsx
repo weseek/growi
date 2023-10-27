@@ -95,11 +95,11 @@ export const EmojiButton: FC<Props> = (props) => {
     toggle();
   }, [cursorIndex, view]);
 
-  if (view == null || cursorIndex == null) {
-    return <></>;
-  }
+  const setStyle = useCallback((): CSSProperties => {
+    if (view == null || cursorIndex == null) {
+      return {};
+    }
 
-  const setStyle = (): CSSProperties => {
     const offset = 20;
     const emojiPickerHeight = 420;
     const cursorRect = view.coordsAtPos(cursorIndex);
@@ -122,7 +122,7 @@ export const EmojiButton: FC<Props> = (props) => {
       left: cursorRect.left + offset,
       position: 'fixed',
     };
-  };
+  }, [cursorIndex, view]);
 
   return (
     <>
@@ -134,7 +134,7 @@ export const EmojiButton: FC<Props> = (props) => {
         <div className="mb-2 d-none d-md-block">
           <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
             <Picker
-              onSelect={(emoji: any) => selectEmoji(emoji)}
+              onSelect={selectEmoji}
               i18n={translation}
               title={translation.title}
               emojiTooltip
