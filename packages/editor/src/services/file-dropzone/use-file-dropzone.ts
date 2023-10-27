@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useDropzone, Accept } from 'react-dropzone';
 import type { DropzoneState } from 'react-dropzone';
@@ -7,6 +7,7 @@ import { AcceptedUploadFileType } from '../../consts';
 
 type FileDropzoneState = DropzoneState & {
   isUploading: boolean,
+  fileUploadState: string,
 }
 
 type DropzoneEditor = {
@@ -37,7 +38,7 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
 
   const disabled = acceptedFileType === AcceptedUploadFileType.NONE;
 
-  const dropzoneState = useDropzone({
+  const dzState = useDropzone({
     noKeyboard: true,
     noClick: true,
     disabled,
@@ -45,8 +46,41 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
     accept,
   });
 
+  const fileUploadState = useMemo(() => {
+
+    if (isUploading) {
+      return 'dropzone-uploading';
+    }
+
+    switch (acceptedFileType) {
+      case AcceptedUploadFileType.NONE:
+        return 'dropzone-disabled';
+
+      case AcceptedUploadFileType.IMAGE:
+        if (dzState.isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (dzState.isDragReject) {
+          return 'dropzone-mismatch';
+        }
+        break;
+
+      case AcceptedUploadFileType.ALL:
+        if (dzState.isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (dzState.isDragReject) {
+          return 'dropzone-rejected';
+        }
+        break;
+    }
+
+    return '';
+  }, [isUploading, dzState.isDragAccept, dzState.isDragReject, acceptedFileType]);
+
   return {
-    ...dropzoneState,
+    ...dzState,
     isUploading,
+    fileUploadState,
   };
 };
