@@ -27,7 +27,7 @@ export const useOnPageEditorModeButtonClicked = (
       return;
     }
 
-    if (isNotFound) {
+    if (editorMode === EditorMode.Editor && isNotFound) {
       try {
         setIsCreating(true);
 
