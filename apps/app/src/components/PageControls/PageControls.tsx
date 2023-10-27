@@ -57,7 +57,6 @@ const Tags = (props: TagsProps): JSX.Element => {
   );
 };
 
-
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   onClickMenuItem: (newValue: boolean) => void,
   expandContentWidth?: boolean,
