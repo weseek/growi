@@ -38,7 +38,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   } = props;
 
   const containerRef = useRef(null);
-  // const editorRef = useRef<EditorView | null>(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
