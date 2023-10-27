@@ -59,6 +59,7 @@ import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
+import EditorNavbarBottom from './EditorNavbarBottom';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -559,53 +560,54 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }
 
   return (
-    <div data-testid="page-editor" id="page-editor" className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-      <div className="page-editor-editor-container flex-expand-vert">
-        {/* <Editor
-          ref={editorRef}
-          value={initialValue}
-          isUploadable={isUploadable}
-          isUploadableFile={isUploadableFile}
-          indentSize={currentIndentSize}
-          onScroll={editorScrolledHandler}
-          onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
-          onChange={markdownChangedHandler}
-          onUpload={uploadHandler}
-          onSave={saveWithShortcut}
-        /> */}
-        <CodeMirrorEditorMain
-          onChange={markdownChangedHandler}
-          onSave={saveWithShortcut}
-          onUpload={uploadHandler}
-          indentSize={currentIndentSize ?? defaultIndentSize}
-          pageId={pageId}
-          userName={user?.name}
-          socket={socket}
-          initialValue={initialValue}
-          setMarkdownToPreview={setMarkdownToPreview}
-          acceptedFileType={acceptedFileType}
-        />
+    <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
+      <div className="flex-expand-vert justify-content-center align-items-center" style={{ minHeight: '72px' }}>
+        <div>Header</div>
       </div>
-      <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
-        <Preview
-          ref={previewRef}
-          rendererOptions={rendererOptions}
-          markdown={markdownToPreview}
-          pagePath={currentPagePath}
-          // TODO: implement
-          // refs: https://redmine.weseek.co.jp/issues/126519
-          // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
+      <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
+        <div className="page-editor-editor-container flex-expand-vert">
+          {/* <Editor
+            ref={editorRef}
+            value={initialValue}
+            isUploadable={isUploadable}
+            isUploadableFile={isUploadableFile}
+            indentSize={currentIndentSize}
+            onScroll={editorScrolledHandler}
+            onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
+            onChange={markdownChangedHandler}
+            onUpload={uploadHandler}
+            onSave={saveWithShortcut}
+          /> */}
+          <CodeMirrorEditorMain
+            onChange={markdownChangedHandler}
+            onSave={saveWithShortcut}
+            onUpload={uploadHandler}
+            indentSize={currentIndentSize ?? defaultIndentSize}
+            acceptedFileType={acceptedFileType}
+          />
+        </div>
+        <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+          <Preview
+            ref={previewRef}
+            rendererOptions={rendererOptions}
+            markdown={markdownToPreview}
+            pagePath={currentPagePath}
+            // TODO: implement
+            // refs: https://redmine.weseek.co.jp/issues/126519
+            // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
+          />
+        </div>
+        {/*
+        <ConflictDiffModal
+          isOpen={conflictDiffModalStatus?.isOpened}
+          onClose={() => closeConflictDiffModal()}
+          markdownOnEdit={markdownToPreview}
+          optionsToSave={optionsToSave}
+          afterResolvedHandler={afterResolvedHandler}
         />
+        */}
       </div>
-      {/*
-      <ConflictDiffModal
-        isOpen={conflictDiffModalStatus?.isOpened}
-        onClose={() => closeConflictDiffModal()}
-        markdownOnEdit={markdownToPreview}
-        optionsToSave={optionsToSave}
-        afterResolvedHandler={afterResolvedHandler}
-      />
-       */}
+      <EditorNavbarBottom />
     </div>
   );
 });

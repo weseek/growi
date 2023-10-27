@@ -12,7 +12,6 @@ import { LazyRenderer } from '../Common/LazyRenderer';
 
 
 const PageEditor = dynamic(() => import('../PageEditor'), { ssr: false });
-const EditorNavbarBottom = dynamic(() => import('../PageEditor/EditorNavbarBottom'), { ssr: false });
 
 
 type Props = {
@@ -37,8 +36,6 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
         <PageEditor />
       </LazyRenderer>
-
-      { isEditable && !isViewMode && <EditorNavbarBottom /> }
     </>
   );
 };

@@ -1,10 +1,9 @@
 .btn-toolbar-button {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+  --bs-btn-line-height: 1;
+  --bs-btn-border-width: 0;
+
   width: 24px !important;
   height: 24px !important;
-  padding: 0 !important;
-  font-size: 1rem !important;
-  line-height: 1 !important;
-  text-align: center !important;
-
-  border: 0;
 }

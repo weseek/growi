@@ -1,14 +1,16 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-.btn-subscribe {
-  &:global {
-    @include bs.button-outline-variant(rgba(bs.$secondary, 50%), bs.$success, rgba(lighten(bs.$success, 10%), 0.15), rgba(lighten(bs.$success, 10%), 0.5));
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: lighten(bs.$success, 15%);
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
+@use './button-styles';
+
+.btn-subscribe :global {
+  @extend %btn-basis;
+
+  .total-counts {
+    @extend %btn-total-counts-basis;
   }
+}
+
+// == Colors
+.btn-subscribe {
+  @include button-styles.btn-color(bs.$success);
 }

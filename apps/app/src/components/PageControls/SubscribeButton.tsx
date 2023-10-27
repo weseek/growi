@@ -36,7 +36,9 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         className={`shadow-none btn btn-subscribe ${styles['btn-subscribe']} border-0
           ${isSubscribing ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
       >
-        <i className={`fa ${isSubscribing ? 'fa-bell' : 'fa-bell-slash-o'}`}></i>
+        <span className={`material-symbols-outlined ${isSubscribing ? 'fill' : ''}`}>
+          {isSubscribing ? 'notifications' : 'notifications_off'}
+        </span>
       </button>
 
       <UncontrolledTooltip data-testid="subscribe-button-tooltip" placement="top" target="subscribe-button" fade={false}>

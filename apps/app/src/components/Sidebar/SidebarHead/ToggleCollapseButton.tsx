@@ -35,7 +35,7 @@ export const ToggleCollapseButton = memo((): JSX.Element => {
       className={`btn btn-primary ${styles['btn-toggle-collapse']} p-2`}
       onClick={isDrawerMode() ? toggleDrawer : toggleCollapsed}
     >
-      <span className={`material-icons fs-2 ${rotationClass}`}>{icon}</span>
+      <span className={`material-symbols-outlined fs-2 ${rotationClass}`}>{icon}</span>
     </button>
   );
 });
