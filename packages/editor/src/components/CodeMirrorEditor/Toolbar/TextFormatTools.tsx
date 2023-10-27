@@ -47,7 +47,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
         view?.state.selection.main.from,
         view?.state.selection.main.to,
       );
-      const cursorPos = view.state.selection.main.head;
+      const cursorPos = view?.state.selection.main.head;
       let curPosAfterReplacing = {};
       const insertText = view?.state.replaceSelection(prefix + selection + suffix);
 
@@ -57,7 +57,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           curPosAfterReplacing = cursorPos + prefix.length;
         }
         view?.dispatch({ selection: { anchor: curPosAfterReplacing } });
-        view.focus();
+        view?.focus();
       }
     };
   }, [view]);
