@@ -17,7 +17,7 @@ type TypeaheadInstance = {
 type Props = {
   tags?: string[],
   autoFocus: boolean,
-  onTagsUpdated: (tags?: string[] | undefined) => void,
+  onTagsUpdated: (tags: string[]) => void,
 }
 
 export const TagsInput: FC<Props> = (props: Props) => {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -25,6 +25,9 @@ export const TagEditModal: React.FC = () => {
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const [tags, setTags] = useState<string[] | undefined>(initTags);
+  useEffect(() => {
+    setTags(initTags);
+  }, [initTags]);
   const handleSubmit = useCallback(async(newTags?: string[]) => {
 
     try {
