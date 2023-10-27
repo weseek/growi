@@ -2,8 +2,9 @@
 
 @use '@growi/core/scss/growi-official-colors';
 
+@use '~/styles/variables' as var;
+
 @use '../button-styles';
-@use '../variables' as var;
 
 // GROWI Logo
 .grw-app-title :global {

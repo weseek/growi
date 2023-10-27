@@ -88,7 +88,7 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 // TODO: define return type
-const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
