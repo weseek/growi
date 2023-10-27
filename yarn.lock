@@ -3229,11 +3229,6 @@
     markdown-it-front-matter "^0.2.3"
     postcss "^8.4.19"
 
-"@material-symbols/font-300@^0.13.1":
-  version "0.13.1"
-  resolved "https://registry.yarnpkg.com/@material-symbols/font-300/-/font-300-0.13.1.tgz#33e1914565a8a8e421cb9de502ec5f6ccdc80256"
-  integrity sha512-3UcU9kw/1hKDyjkeOuv2wx9nwr5XSpbl/GG+o9+TY5xZ3ogeruNQ5aS7mRXqTxQiizLXtmkYeNUcS3N4fLQonQ==
-
 "@microsoft/api-extractor-model@7.27.5":
   version "7.27.5"
   resolved "https://registry.yarnpkg.com/@microsoft/api-extractor-model/-/api-extractor-model-7.27.5.tgz#2220cf20c8587cd4cf78f82c20c4011a9e36a60f"
