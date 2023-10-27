@@ -36,6 +36,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   } = props;
 
   const containerRef = useRef(null);
+  // const editorRef = useRef<EditorView | null>(null);
 
   const cmProps = useMemo<ReactCodeMirrorProps>(() => {
     return {
@@ -103,7 +104,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   return (
     <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar onFileOpen={open} />
+      <Toolbar onFileOpen={open} editorKey={editorKey} />
     </div>
   );
 };

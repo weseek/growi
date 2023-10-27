@@ -10,16 +10,17 @@ import { TextFormatTools } from './TextFormatTools';
 import styles from './Toolbar.module.scss';
 
 type Props = {
+  editorKey: string,
   onFileOpen: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
-  const { onFileOpen } = props;
+  const { editorKey, onFileOpen } = props;
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup onFileOpen={onFileOpen} />
-      <TextFormatTools />
+      <TextFormatTools editorKey={editorKey} />
       <EmojiButton />
       <TableButton />
       <DiagramButton />
