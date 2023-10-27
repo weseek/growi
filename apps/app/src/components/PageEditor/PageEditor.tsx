@@ -583,6 +583,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
             indentSize={currentIndentSize ?? defaultIndentSize}
+            pageId={pageId}
+            userName={user?.name}
+            socket={socket}
+            initialValue={initialValue}
+            setMarkdownToPreview={setMarkdownToPreview}
             acceptedFileType={acceptedFileType}
           />
         </div>
