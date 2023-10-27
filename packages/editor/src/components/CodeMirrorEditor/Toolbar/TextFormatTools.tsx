@@ -80,7 +80,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => createReplaceSelectionHandler('`', '`')()}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
