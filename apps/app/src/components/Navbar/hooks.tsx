@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { createPage } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -31,14 +31,18 @@ export const useOnPageEditorModeButtonClicked = (
       try {
         setIsCreating(true);
 
-        const response = await apiv3Post('/pages/', {
-          path,
+        const params = {
+          isSlackEnabled: false,
+          slackChannels: '',
           grant,
+          pageTags: [],
           grantUserGroupId,
-        });
+        };
+
+        const response = await createPage(path, '', params);
 
         // Should not mutateEditorMode as it might prevent transitioning during mutation
-        router.push(`${response.data.page.id}#edit`);
+        router.push(`${response.page.id}#edit`);
       }
       catch (err) {
         logger.warn(err);
