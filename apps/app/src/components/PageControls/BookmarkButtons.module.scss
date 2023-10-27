@@ -1,17 +1,24 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use './button-styles';
+
 .btn-group-bookmark :global {
   .btn-bookmark {
-    box-shadow: none !important;
-
-    @include bs.button-outline-variant(rgba(bs.$secondary, 50%), bs.$orange, rgba(lighten(bs.$orange, 20%), 0.5), rgba(lighten(bs.$orange, 20%), 0.5));
-
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: bs.$orange;
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
+    @extend %btn-basis;
+  }
+  .dropdown .btn-bookmark {
+    padding-right: 1px;
+  }
+  .total-counts {
+    @extend %btn-total-counts-basis;
+    padding-left: 5px;
   }
 }
+
+// == Colors
+.btn-group-bookmark :global {
+  .btn-bookmark {
+    @include button-styles.btn-color(bs.$orange);
+  }
+}
+

@@ -28,10 +28,8 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
 
   return (
     <div className={`grw-seen-user-info ${styles['grw-seen-user-info']}`}>
-      <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0">
-        <span className="me-1 footstamp-icon">
-          <FootstampIcon />
-        </span>
+      <button type="button" id="btn-seen-user" className="shadow-none btn btn-seen-user border-0 d-flex align-items-center">
+        <span className="material-symbols-outlined me-1">footprint</span>
         <span className="total-counts">{sumOfSeenUsers || seenUsers.length}</span>
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-seen-user" toggle={togglePopover} trigger="legacy" disabled={disabled}>

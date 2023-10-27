@@ -247,7 +247,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
-                <span className="material-icons-round">arrow_right</span>
+                <span className="material-symbols-rounded">arrow_right</span>
               </div>
             </button>
           )}

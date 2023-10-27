@@ -112,8 +112,7 @@ module.exports = (crowi) => {
       body('theme').isString(),
     ],
     sidebar: [
-      body('isSidebarDrawerMode').isBoolean(),
-      body('isSidebarClosedAtDockMode').isBoolean(),
+      body('isSidebarCollapsedMode').isBoolean(),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
@@ -342,9 +341,8 @@ module.exports = (crowi) => {
   router.get('/sidebar', loginRequiredStrictly, adminRequired, async(req, res) => {
 
     try {
-      const isSidebarDrawerMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode');
-      const isSidebarClosedAtDockMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
-      return res.apiv3({ isSidebarDrawerMode, isSidebarClosedAtDockMode });
+      const isSidebarCollapsedMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode');
+      return res.apiv3({ isSidebarCollapsedMode });
     }
     catch (err) {
       const msg = 'Error occurred in getting sidebar';
@@ -355,15 +353,13 @@ module.exports = (crowi) => {
 
   router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
-      'customize:isSidebarDrawerMode': req.body.isSidebarDrawerMode,
-      'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
+      'customize:isSidebarCollapsedMode': req.body.isSidebarCollapsedMode,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
-        isSidebarDrawerMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-        isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+        isSidebarCollapsedMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
       };
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
