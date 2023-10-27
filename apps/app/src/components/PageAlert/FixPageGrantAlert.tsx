@@ -258,7 +258,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
   if (!hasParent) {
     return <></>;
   }
-  if (dataIsGrantNormalized?.isGrantNormalized == null || !dataIsGrantNormalized.isGrantNormalized) {
+  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
