@@ -53,9 +53,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
 
       if (insertText) {
         view?.dispatch(insertText);
-        if (cursorPos) {
-          curPosAfterReplacing = cursorPos + prefix.length;
-        }
+        curPosAfterReplacing = cursorPos + prefix.length;
         view?.dispatch({ selection: { anchor: curPosAfterReplacing } });
         view?.focus();
       }
