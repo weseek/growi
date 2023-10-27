@@ -10,7 +10,7 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
-  openTagEditModal?: () => void;
+  openTagEditModal?: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {

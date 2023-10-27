@@ -32,27 +32,22 @@ import SubscribeButton from './SubscribeButton';
 import styles from './PageControls.module.scss';
 
 type TagsProps = {
-  isGuestUser?: boolean,
-  isReadOnlyUser?: boolean,
   openTagEditModal?: () => void,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const {
-    isGuestUser, isReadOnlyUser, openTagEditModal,
-  } = props;
-
-  const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
+  const { openTagEditModal } = props;
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
-      <a
-        className={`btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center ${isTagLabelsDisabled && 'disabled'}`}
+      <button
+        type="button"
+        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
         onClick={openTagEditModal}
       >
         <i className="icon-tag me-2" />
         Tags
-      </a>
+      </button>
     </div>
   );
 };
@@ -248,8 +243,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && !isViewMode && (
         <Tags
-          isGuestUser={isGuestUser}
-          isReadOnlyUser={isReadOnlyUser}
           openTagEditModal={openTagEditModal}
         />
       )}
