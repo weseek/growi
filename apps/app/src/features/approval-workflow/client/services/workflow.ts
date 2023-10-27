@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 
 import { apiv3Delete } from '~/client/util/apiv3-client';
 
@@ -39,7 +39,7 @@ type UseEditingApproverGroups = {
 export const useEditingApproverGroups = (): UseEditingApproverGroups => {
   const [editingApproverGroups, setEditingApproverGroups] = useState<IWorkflowApproverGroupReqForRenderList[]>([createInitialApproverGroup()]);
 
-  const allEditingApproverIds = getAllApproverIds(editingApproverGroups);
+  const allEditingApproverIds = useMemo(() => getAllApproverIds(editingApproverGroups), [editingApproverGroups]);
 
   const updateApproverGroupHandler = useCallback((groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => {
     const clonedApproverGroups = [...editingApproverGroups];
