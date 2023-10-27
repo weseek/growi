@@ -10,7 +10,7 @@ type Props = {
   tags?: string[],
   isTagLabelsDisabled: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
-  openTagEditModal?: () => void;
+  openTagEditModal?: () => void,
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
