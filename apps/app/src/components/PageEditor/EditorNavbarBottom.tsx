@@ -13,6 +13,11 @@ import {
 } from '~/stores/ui';
 
 
+import styles from './EditorNavbarBottom.module.scss';
+
+const moduleClass = styles['grw-editor-navbar-bottom'];
+
+
 const SavePageControls = dynamic<SavePageControlsProps>(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
 const SlackLogo = dynamic(() => import('~/components/SlackLogo').then(mod => mod.SlackLogo), { ssr: false });
 const SlackNotification = dynamic(() => import('~/components/SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
@@ -32,7 +37,6 @@ const EditorNavbarBottom = (): JSX.Element => {
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-  const additionalClasses = ['grw-editor-navbar-bottom'];
 
   const [slackChannelsStr, setSlackChannelsStr] = useState<string>('');
 
@@ -83,7 +87,7 @@ const EditorNavbarBottom = (): JSX.Element => {
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
-          <nav className={`navbar navbar-expand-lg border-top ${additionalClasses.join(' ')}`}>
+          <nav className={`navbar navbar-expand-lg border-top ${moduleClass}`}>
             {isSlackEnabled != null
             && (
               <SlackNotification
@@ -99,7 +103,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${additionalClasses.join(' ')}`}>
+      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${moduleClass}`}>
         <form>
           { isDeviceSmallerThanMd && renderDrawerButton() }
           { !isDeviceSmallerThanMd && <OptionsSelector /> }
@@ -139,7 +143,7 @@ const EditorNavbarBottom = (): JSX.Element => {
       { isCollapsedOptionsSelectorEnabled && (
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
-            <div className={`navbar navbar-expand border-top px-0 ${additionalClasses.join(' ')}`}>
+            <div className={`navbar navbar-expand border-top px-0 ${moduleClass}`}>
               <form className="ms-auto">
                 <OptionsSelector />
               </form>
