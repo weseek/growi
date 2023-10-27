@@ -4,7 +4,6 @@ import { Collapse } from 'reactstrap';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
-
 type TogglarProps = {
   isOpen: boolean,
   onClick?: () => void,
@@ -50,7 +49,6 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
       }
     };
   }, [view]);
-
 
   return (
     <div className="d-flex">
