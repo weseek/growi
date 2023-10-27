@@ -73,10 +73,12 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         <DropdownToggle
           id="bookmark-dropdown-btn"
           color="transparent"
-          className={`shadow-none btn btn-bookmark border-0 rounded-end-0
+          className={`btn btn-bookmark rounded-end-0
           ${isBookmarked ? 'active' : ''} ${isGuestUser ? 'disabled' : ''}`}
         >
-          <i className={`fa ${isBookmarked ? 'fa-bookmark' : 'fa-bookmark-o'}`}></i>
+          <span className={`material-symbols-outlined ${isBookmarked ? 'fill' : ''}`}>
+            bookmark
+          </span>
         </DropdownToggle>
       </BookmarkFolderMenu>
       <UncontrolledTooltip placement="top" data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
@@ -86,7 +88,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
       <button
         type="button"
         id="po-total-bookmarks"
-        className={`shadow-none btn btn-bookmark border-0
+        className={`btn btn-bookmark
           total-counts ${isBookmarked ? 'active' : ''}`}
       >
         {bookmarkCount}

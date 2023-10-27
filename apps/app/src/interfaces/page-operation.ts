@@ -34,4 +34,5 @@ export type OptionsToSave = {
   pageTags: string[] | null;
   grantUserGroupId?: string | null;
   grantUserGroupName?: string | null;
+  shouldGeneratePath?: boolean | null;
 };
