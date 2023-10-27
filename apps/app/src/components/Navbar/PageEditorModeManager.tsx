@@ -10,17 +10,16 @@ import styles from './PageEditorModeManager.module.scss';
 type PageEditorModeButtonProps = {
   currentEditorMode: EditorMode,
   editorMode: EditorMode,
-  icon: ReactNode,
-  label: ReactNode,
+  children?: ReactNode,
   isBtnDisabled?: boolean,
   onClick?: (mode: EditorMode) => void,
 }
 const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
   const {
-    currentEditorMode, isBtnDisabled, editorMode, icon, label, onClick,
+    currentEditorMode, isBtnDisabled, editorMode, children, onClick,
   } = props;
 
-  const classNames = ['btn btn-outline-primary px-1'];
+  const classNames = ['btn btn-outline-primary py-1 px-2 d-flex align-items-center justify-content-center'];
   if (currentEditorMode === editorMode) {
     classNames.push('active');
   }
@@ -35,8 +34,7 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
       onClick={() => onClick?.(editorMode)}
       data-testid={`${editorMode}-button`}
     >
-      <span className="me-1">{icon}</span>
-      <span>{label}</span>
+      {children}
     </button>
   );
 });
@@ -79,9 +77,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             editorMode={EditorMode.View}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            icon={<i className="icon-control-play" />}
-            label={t('view')}
-          />
+          >
+            <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
+          </PageEditorModeButton>
         )}
         {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && (
           <PageEditorModeButton
@@ -89,9 +87,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             editorMode={EditorMode.Editor}
             isBtnDisabled={isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            icon={<i className="icon-note" />}
-            label={t('Edit')}
-          />
+          >
+            <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
+          </PageEditorModeButton>
         )}
       </div>
     </>

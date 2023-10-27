@@ -5,3 +5,9 @@
 @import '@material-symbols/font-300/outlined';
 @import '@material-symbols/font-300/rounded';
 @import '@icon/themify-icons/themify-icons';
+
+.material-symbols-outlined {
+  &.fill {
+    font-variation-settings: 'FILL' 1;
+  }
+}
