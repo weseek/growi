@@ -773,3 +773,32 @@ export const usePageSelectModal = (
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };
+
+/*
+* AutoSaveRevisionHistoryModal
+*/
+type AutoSaveRevisionHistoryModalStatus = {
+  isOpened: boolean
+}
+
+type AutoSaveRevisionHistoryModalStatusUtils = {
+  open(): Promise<AutoSaveRevisionHistoryModalStatus | undefined>
+  close(): Promise<AutoSaveRevisionHistoryModalStatus | undefined>
+}
+
+export const useAutoSaveRevisionHistoryModal = (
+    status?: AutoSaveRevisionHistoryModalStatus,
+): SWRResponse<AutoSaveRevisionHistoryModalStatus, Error> & AutoSaveRevisionHistoryModalStatusUtils => {
+  const initialStatus = { isOpened: false };
+  const swrResponse = useStaticSWR<PageSelectModalStatus, Error>(
+    'AutoSaveRevisionHistoryModal',
+    status,
+    { fallbackData: initialStatus },
+  );
+
+  return {
+    ...swrResponse,
+    open: () => swrResponse.mutate({ isOpened: true }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};

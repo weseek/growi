@@ -74,6 +74,8 @@ const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal')
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
 const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
+const AutoSaveRevisionHistoryModal = dynamic(() => import('../components/AutoSaveRevisionHistoryModal')
+  .then(mod => mod.AutoSaveRevisionHistoryModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 
@@ -376,6 +378,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <QuestionnaireModalManager />
       <TemplateModal />
       <LinkEditModal />
+      <AutoSaveRevisionHistoryModal />
     </>
   );
 };

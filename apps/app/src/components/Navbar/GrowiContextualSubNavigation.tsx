@@ -19,7 +19,7 @@ import {
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, useAutoSaveRevisionHistoryModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
@@ -27,7 +27,7 @@ import {
 import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
-  useIsAbleToChangeEditorMode,
+  useIsAbleToChangeEditorMode, EditorMode,
   useSelectedGrant,
 } from '~/stores/ui';
 
@@ -211,6 +211,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
+  const { open: openAutoSaveRevisionHistoryModal } = useAutoSaveRevisionHistoryModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
@@ -335,35 +336,47 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         `}
         data-testid="grw-contextual-sub-nav"
       >
-        <div className="h-50">
-          {pageId != null && (
-            <PageControls
-              pageId={pageId}
-              revisionId={revisionId}
-              shareLinkId={shareLinkId}
-              path={path ?? currentPathname} // If the page is empty, "path" is undefined
-              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={additionalMenuItemsRenderer}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-              onClickSwitchContentWidth={switchContentWidthHandler}
+        <div className="d-flex">
+          {editorMode === EditorMode.Editor && (
+            <button
+              type="button"
+              className="btn"
+              onClick={openAutoSaveRevisionHistoryModal}
+            >
+              <HistoryIcon />
+            </button>
+          )}
+        </div>
+        <div className="d-flex">
+          <div className="h-50">
+            {pageId != null && (
+              <PageControls
+                pageId={pageId}
+                revisionId={revisionId}
+                shareLinkId={shareLinkId}
+                path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+                disableSeenUserInfoPopover={isSharedUser}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+                onClickSwitchContentWidth={switchContentWidthHandler}
+              />
+            )}
+          </div>
+          {isAbleToChangeEditorMode && (
+            <PageEditorModeManager
+              editorMode={editorMode}
+              isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+              path={path}
+              grant={grant}
+              grantUserGroupId={grantUserGroupId}
             />
           )}
         </div>
-        {isAbleToChangeEditorMode && (
-          <PageEditorModeManager
-            editorMode={editorMode}
-            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-            path={path}
-            grant={grant}
-            grantUserGroupId={grantUserGroupId}
-          />
-        )}
       </div>
-
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal
           path={path}
