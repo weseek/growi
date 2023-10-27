@@ -9,16 +9,38 @@ import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-noti
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
+import type { ActionMsgAndIconType } from './PageModelNotification';
+
+const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
+  const actionType: string = notification.action;
+  let actionMsg: string;
+  let actionIcon: string;
+
+  switch (actionType) {
+    case 'USER_REGISTRATION_APPROVAL_REQUEST':
+      actionMsg = 'requested registration approval';
+      actionIcon = 'icon-bubble';
+      break;
+    default:
+      actionMsg = '';
+      actionIcon = '';
+  }
+
+  return {
+    actionMsg,
+    actionIcon,
+  };
+};
 
 const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, {
   notification: IInAppNotification & HasObjectId
-  actionMsg: string
-  actionIcon: string
   actionUsers: string
 }> = ({
-  notification, actionMsg, actionIcon, actionUsers,
+  notification, actionUsers,
 }, ref) => {
   const router = useRouter();
+
+  const { actionMsg, actionIcon } = useActionMsgAndIcon(notification);
 
   // publish open()
   const publishOpen = () => {

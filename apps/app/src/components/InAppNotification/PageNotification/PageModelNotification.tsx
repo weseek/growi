@@ -5,8 +5,8 @@ import React, {
 import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
-import { SupportedAction } from '~/interfaces/activity';
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedAction } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
@@ -16,12 +16,12 @@ interface Props {
   actionUsers: string
 }
 
-type useActionMsgAndIconType = {
+export type ActionMsgAndIconType = {
   actionMsg: string
   actionIcon: string
 }
 
-const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): useActionMsgAndIconType => {
+const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;
@@ -75,13 +75,18 @@ const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): us
       actionMsg = 'reverted under';
       actionIcon = 'icon-action-undo';
       break;
+    case 'COMMENT_CREATE':
+      actionMsg = 'commented on';
+      actionIcon = 'icon-bubble';
+      break;
     default:
       actionMsg = '';
       actionIcon = '';
+  }
 
   return {
     actionMsg,
-    actionIcon
+    actionIcon,
   };
 };
 
@@ -91,9 +96,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
     notification, actionUsers,
   } = props;
 
-  const actionData = useActionMsgAndIcon(notification);
-  const actionMsg = actionData.actionMsg;
-  const actionIcon = actionData.actionIcon;
+  const { actionMsg, actionIcon } = useActionMsgAndIcon(notification);
 
   const router = useRouter();
 
