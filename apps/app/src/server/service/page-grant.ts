@@ -1,6 +1,6 @@
 import {
   type IGrantedGroup,
-  PageGrant, type PageGrantCanBeOnTree,
+  PageGrant, type PageGrantCanBeOnTree, GroupType,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
@@ -9,11 +9,11 @@ import { et } from 'date-fns/locale';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroup, { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { IRecordApplicableGrant } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
-import UserGroup from '~/server/models/user-group';
+import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
 import { includesObjectIds, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -493,12 +493,14 @@ class PageGrantService {
       [PageGrant.GRANT_RESTRICTED]: null, // any page can be restricted
     };
 
+    const userPossessedGroups = await this.getUserPossessedGroups(user);
+
     // -- Any grant is allowed if parent is null
     const isAnyGrantApplicable = page.parent == null;
     if (isAnyGrantApplicable) {
       data[PageGrant.GRANT_PUBLIC] = null;
       data[PageGrant.GRANT_OWNER] = null;
-      data[PageGrant.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userPossessedGroups };
       return data;
     }
 
@@ -514,7 +516,7 @@ class PageGrantService {
     if (grant === PageGrant.GRANT_PUBLIC) {
       data[PageGrant.GRANT_PUBLIC] = null;
       data[PageGrant.GRANT_OWNER] = null;
-      data[PageGrant.GRANT_USER_GROUP] = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userPossessedGroups };
     }
     else if (grant === PageGrant.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];
@@ -533,14 +535,6 @@ class PageGrantService {
         throw Error('Group not found to calculate grant data.');
       }
 
-      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
-        return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
-      }))).flat();
-      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
-        return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
-      }))).flat();
-      const applicableGroups = [...applicableUserGroups, ...applicableExternalUserGroups];
-
       const isUserExistInUserGroup = (await Promise.all(targetUserGroups.map((group) => {
         return UserGroupRelation.countByGroupIdsAndUser([group._id], user);
       }))).some(count => count > 0);
@@ -552,10 +546,41 @@ class PageGrantService {
       if (isUserExistInGroup) {
         data[PageGrant.GRANT_OWNER] = null;
       }
+
+      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroupRelation.findGroupsWithDescendantsByGroupAndUser(group, user);
+      }))).flat();
+
+      const applicableGroups = [
+        ...(applicableUserGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        })),
+        ...(applicableExternalUserGroups.map((group) => {
+          return { type: GroupType.externalUserGroup, item: group };
+        })),
+      ];
       data[PageGrant.GRANT_USER_GROUP] = { applicableGroups };
     }
 
     return data;
+  }
+
+  async getUserPossessedGroups(user): Promise<{type: GroupType, item: UserGroupDocument | ExternalUserGroupDocument}[]> {
+    const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
+    const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
+    const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+    return [
+      ...(userPossessedUserGroups.map((group) => {
+        return { type: GroupType.userGroup, item: group };
+      })),
+      ...(userPossessedExternalUserGroups.map((group) => {
+        return { type: GroupType.externalUserGroup, item: group };
+      })),
+    ];
   }
 
   /**

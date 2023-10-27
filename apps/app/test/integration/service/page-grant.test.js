@@ -1,4 +1,4 @@
-import { PageGrant } from '@growi/core';
+import { GroupType, PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
 
 import UserGroup from '~/server/models/user-group';
@@ -490,7 +490,13 @@ describe('PageGrantService', () => {
 
     // parent property of all private pages is null
     test('Any grant is allowed if parent is null', async() => {
-      const userGroupRelation = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
+      const userPossessedGroups = [
+        ...(userPossessedUserGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        })),
+      ];
 
       // OnlyMe
       const rootOnlyMePage = await Page.findOne({ path: v4PageRootOnlyMePagePath });
@@ -500,7 +506,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -512,7 +518,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -524,14 +530,20 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
     });
 
 
     test('Any grant is allowed if parent is public', async() => {
-      const userGroupRelation = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
+      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
+      const userPossessedGroups = [
+        ...(userPossessedUserGroups.map((group) => {
+          return { type: GroupType.userGroup, item: group };
+        })),
+      ];
 
       // OnlyMe
       const publicOnlyMePage = await Page.findOne({ path: pagePublicOnlyMePath });
@@ -541,7 +553,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -553,7 +565,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
 
@@ -565,7 +577,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: userGroupRelation,
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
         },
       );
     });
@@ -633,7 +645,10 @@ describe('PageGrantService', () => {
     });
 
     test('"GRANT_USER_GROUP" is allowed if the parent\'s grant is GRANT_USER_GROUP and the user is included in the group', async() => {
-      const applicableGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(groupParent, user1);
+      const userGroups = await UserGroupRelation.findGroupsWithDescendantsByGroupAndUser(groupParent, user1);
+      const applicableGroups = userGroups.map((group) => {
+        return { type: GroupType.userGroup, item: group };
+      });
 
       // Public
       const onlyInsideGroupPublicPage = await Page.findOne({ path: pageOnlyInsideTheGroupPublicPath });

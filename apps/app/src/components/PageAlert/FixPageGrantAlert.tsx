@@ -8,6 +8,7 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import { IPageGrantData } from '~/interfaces/page';
 import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { UserGroupDocument } from '~/server/models/user-group';
@@ -30,11 +31,12 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
-  const [selectedGroup, setSelectedGroup] = useState<UserGroupDocument | undefined>(undefined);
+  const [selectedGroup, setSelectedGroup] = useState<{type: GroupType, item: UserGroupDocument | ExternalUserGroupDocument} | undefined>(undefined);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
 
+  console.log(dataApplicableGrant);
   const applicableGroups = dataApplicableGrant[PageGrant.GRANT_USER_GROUP]?.applicableGroups;
 
   // Reset state when opened
@@ -58,7 +60,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroups: selectedGroup?._id != null ? [{ item: selectedGroup?._id, type: GroupType.userGroup }] : null,
+        grantedGroups: selectedGroup?.item._id != null ? [{ item: selectedGroup?.item._id, type: selectedGroup.type }] : null,
       });
 
       toastSuccess(t('Successfully updated'));
@@ -186,7 +188,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                       {
                         selectedGroup == null
                           ? t('fix_page_grant.modal.select_group_default_text')
-                          : selectedGroup.name
+                          : selectedGroup.item.name
                       }
                     </span>
                   </button>
@@ -194,12 +196,12 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     {
                       applicableGroups != null && applicableGroups.map(g => (
                         <button
-                          key={g._id}
+                          key={g.item._id}
                           className="dropdown-item"
                           type="button"
                           onClick={() => setSelectedGroup(g)}
                         >
-                          {g.name}
+                          {g.item.name}
                         </button>
                       ))
                     }
@@ -256,7 +258,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
   if (!hasParent) {
     return <></>;
   }
-  if (dataIsGrantNormalized?.isGrantNormalized == null || dataIsGrantNormalized.isGrantNormalized) {
+  if (dataIsGrantNormalized?.isGrantNormalized == null || !dataIsGrantNormalized.isGrantNormalized) {
     return <></>;
   }
 
