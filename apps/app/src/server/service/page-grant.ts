@@ -555,12 +555,12 @@ class PageGrantService {
       }))).flat();
 
       const applicableGroups = [
-        ...(applicableUserGroups.map((group) => {
+        ...applicableUserGroups.map((group) => {
           return { type: GroupType.userGroup, item: group };
-        })),
-        ...(applicableExternalUserGroups.map((group) => {
+        }),
+        ...applicableExternalUserGroups.map((group) => {
           return { type: GroupType.externalUserGroup, item: group };
-        })),
+        }),
       ];
       data[PageGrant.GRANT_USER_GROUP] = { applicableGroups };
     }
@@ -574,12 +574,12 @@ class PageGrantService {
     const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
     const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
     return [
-      ...(userPossessedUserGroups.map((group) => {
+      ...userPossessedUserGroups.map((group) => {
         return { type: GroupType.userGroup, item: group };
-      })),
-      ...(userPossessedExternalUserGroups.map((group) => {
+      }),
+      ...userPossessedExternalUserGroups.map((group) => {
         return { type: GroupType.externalUserGroup, item: group };
-      })),
+      }),
     ];
   }
 
