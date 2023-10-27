@@ -75,7 +75,7 @@ const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): Ac
       actionMsg = 'reverted under';
       actionIcon = 'icon-action-undo';
       break;
-    case 'COMMENT_CREATE':
+    case SupportedAction.ACTION_COMMENT_CREATE:
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
       break;

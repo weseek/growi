@@ -6,6 +6,7 @@ import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedAction } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
@@ -17,7 +18,7 @@ const useActionMsgAndIcon = (notification: IInAppNotification & HasObjectId): Ac
   let actionIcon: string;
 
   switch (actionType) {
-    case 'USER_REGISTRATION_APPROVAL_REQUEST':
+    case SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST:
       actionMsg = 'requested registration approval';
       actionIcon = 'icon-bubble';
       break;
