@@ -123,6 +123,7 @@ module.exports = (crowi) => {
       }
       return req.user.admin;
     }),
+    query('excludedUserIds').optional().isString().withMessage('excludedUserIds must be an array'),
   ];
 
   validator.recentCreatedByUser = [
@@ -284,6 +285,11 @@ module.exports = (crowi) => {
     };
 
     try {
+      if (req.query.excludedUserIds != null && req.query.excludedUserIds.trim() !== '') {
+        const excludedUserIds = JSON.parse(req.query.excludedUserIds);
+        query.$and.push({ _id: { $nin: excludedUserIds } });
+      }
+
       if (req.user != null) {
         orConditions.push(
           {
