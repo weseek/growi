@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { GroupType, PageGrant } from '@growi/core';
+import { PageGrant } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -8,10 +8,8 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import { IPageGrantData } from '~/interfaces/page';
-import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
-import { UserGroupDocument } from '~/server/models/user-group';
+import { ApplicableGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -31,7 +29,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
-  const [selectedGroup, setSelectedGroup] = useState<{type: GroupType, item: UserGroupDocument | ExternalUserGroupDocument} | undefined>(undefined);
+  const [selectedGroup, setSelectedGroup] = useState<ApplicableGroup | undefined>(undefined);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);

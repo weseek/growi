@@ -5,8 +5,12 @@ import { UserGroupDocument } from '~/server/models/user-group';
 
 import { IPageGrantData } from './page';
 
+
+type UserGroupType = typeof GroupType.userGroup;
+type ExternalUserGroupType = typeof GroupType.externalUserGroup;
+export type ApplicableGroup = {type: UserGroupType, item: UserGroupDocument } | {type: ExternalUserGroupType, item: ExternalUserGroupDocument }
 export type IDataApplicableGroup = {
-  applicableGroups?: {type: GroupType, item: UserGroupDocument | ExternalUserGroupDocument }[]
+  applicableGroups?: ApplicableGroup[]
 }
 
 export type IDataApplicableGrant = null | IDataApplicableGroup;
