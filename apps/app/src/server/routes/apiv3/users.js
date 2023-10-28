@@ -123,7 +123,7 @@ module.exports = (crowi) => {
       }
       return req.user.admin;
     }),
-    query('excludedUserIds').optional().isString().withMessage('excludedUserIds must be an array'),
+    query('excludedUserIds').optional().isArray().withMessage('excludedUserIds must be an array'),
   ];
 
   validator.recentCreatedByUser = [
@@ -257,6 +257,8 @@ module.exports = (crowi) => {
     const { forceIncludeAttributes } = req.query;
     const selectedStatusList = req.query.selectedStatusList || ['active'];
 
+    const excludedUserIds = req.query.excludedUserIds ?? [];
+
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -278,6 +280,7 @@ module.exports = (crowi) => {
     const query = {
       $and: [
         { status: { $in: statusNoList } },
+        { _id: { $nin: excludedUserIds } },
         {
           $or: orConditions,
         },
@@ -285,11 +288,6 @@ module.exports = (crowi) => {
     };
 
     try {
-      if (req.query.excludedUserIds != null && req.query.excludedUserIds.trim() !== '') {
-        const excludedUserIds = JSON.parse(req.query.excludedUserIds);
-        query.$and.push({ _id: { $nin: excludedUserIds } });
-      }
-
       if (req.user != null) {
         orConditions.push(
           {
