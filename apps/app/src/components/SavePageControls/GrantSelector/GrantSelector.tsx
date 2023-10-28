@@ -133,7 +133,13 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <span>
           <i className="icon icon-fw icon-organization"></i>
           <span className="label">
-            {grantedGroups.length > 1 ? `${grantedGroups[0].name} +${grantedGroups.length - 1}` : grantedGroups[0].name}
+            {grantedGroups.length > 1
+              ? (
+                <span>
+                  {`${grantedGroups[0].name}... `}
+                  <span className="badge badge-purple">+{grantedGroups.length - 1}</span>
+                </span>
+              ) : grantedGroups[0].name}
           </span>
         </span>
       );
