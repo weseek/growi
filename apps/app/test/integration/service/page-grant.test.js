@@ -532,10 +532,8 @@ describe('PageGrantService', () => {
 
     // parent property of all private pages is null
     test('Any grant is allowed if parent is null', async() => {
-      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
-      const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+      const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
+      const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
       const userPossessedGroups = [
         ...userPossessedUserGroups.map((group) => {
           return { type: GroupType.userGroup, item: group };
@@ -584,10 +582,8 @@ describe('PageGrantService', () => {
 
 
     test('Any grant is allowed if parent is public', async() => {
-      const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user1);
-      const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
-      const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+      const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
+      const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
       const userPossessedGroups = [
         ...userPossessedUserGroups.map((group) => {
           return { type: GroupType.userGroup, item: group };
