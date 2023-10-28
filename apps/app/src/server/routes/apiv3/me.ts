@@ -1,4 +1,4 @@
-import { type IUserHasId, isPopulated } from '@growi/core';
+import { type IUserHasId } from '@growi/core';
 import { Router, Request } from 'express';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
@@ -27,13 +27,7 @@ module.exports = function(crowi) {
    */
   router.get('/user-groups', accessTokenParser, loginRequiredStrictly, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
-      const userGroupRelations = await UserGroupRelation.findAllRelationForUser(req.user);
-      const userGroups = userGroupRelations.map((relation) => {
-        // relation.relatedGroup should be populated
-        return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-      })
-        // exclude undefined elements
-        .filter(elem => elem != null);
+      const userGroups = await UserGroupRelation.findAllGroupsForUser(req.user);
       return res.json(ApiResponse.success({ userGroups }));
     }
     catch (e) {
@@ -47,13 +41,7 @@ module.exports = function(crowi) {
    */
   router.get('/external-user-groups', accessTokenParser, loginRequiredStrictly, async(req: AuthorizedRequest, res: ApiV3Response) => {
     try {
-      const userGroupRelations = await ExternalUserGroupRelation.findAllRelationForUser(req.user);
-      const userGroups = userGroupRelations.map((relation) => {
-        // relation.relatedGroup should be populated
-        return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-      })
-      // exclude undefined elements
-        .filter(elem => elem != null);
+      const userGroups = await ExternalUserGroupRelation.findAllGroupsForUser(req.user);
       return res.json(ApiResponse.success({ userGroups }));
     }
     catch (e) {

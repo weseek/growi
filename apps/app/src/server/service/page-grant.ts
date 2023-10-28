@@ -568,11 +568,9 @@ class PageGrantService {
     return data;
   }
 
-  async getUserPossessedGroups(user): Promise<{type: GroupType, item: UserGroupDocument | ExternalUserGroupDocument}[]> {
-    const userPossessedUserGroupIds = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    const userPossessedExternalUserGroupIds = await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    const userPossessedUserGroups = await UserGroup.find({ _id: { $in: userPossessedUserGroupIds } });
-    const userPossessedExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: userPossessedExternalUserGroupIds } });
+  async getUserPossessedGroups(user) {
+    const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
+    const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
     return [
       ...userPossessedUserGroups.map((group) => {
         return { type: GroupType.userGroup, item: group };
