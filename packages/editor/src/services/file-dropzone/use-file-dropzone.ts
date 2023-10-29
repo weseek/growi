@@ -61,7 +61,7 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
           return 'dropzone-accepted';
         }
         if (dzState.isDragReject) {
-          return 'dropzone-mismatch';
+          return 'dropzone-mismatch-picture';
         }
         break;
 
