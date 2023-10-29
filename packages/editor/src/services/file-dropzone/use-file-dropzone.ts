@@ -36,12 +36,9 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
     acceptedFileType: [],
   };
 
-  const disabled = acceptedFileType === AcceptedUploadFileType.NONE;
-
   const dzState = useDropzone({
     noKeyboard: true,
     noClick: true,
-    disabled,
     onDrop: dropHandler,
     accept,
   });
