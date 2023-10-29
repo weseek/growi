@@ -108,7 +108,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   } = useFileDropzone({ onUpload, acceptedFileType });
 
   const renderOverlay = useCallback(() => {
-    if (!isDragActive) {
+    if (isDragActive) {
       return (
         <div className="overlay overlay-dropzone-active">
           <span className="overlay-content">
