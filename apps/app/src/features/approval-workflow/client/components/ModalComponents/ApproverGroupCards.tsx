@@ -25,6 +25,12 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
   const editingApproverGroup = editingApproverGroups?.[groupIndex];
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
 
+  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
+
+  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
+
+  const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
+
   const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
     const clonedApproverGroup = { ...editingApproverGroup };
     clonedApproverGroup.approvalType = approvalType;
@@ -44,11 +50,11 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
-
-  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
-
-  const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
+  const removeApproverGroupCardHander = useCallback(() => {
+    if (onClickRemoveApproverGroupCard != null && isDeletebleEditingApproverGroup) {
+      onClickRemoveApproverGroupCard(groupIndex);
+    }
+  }, [groupIndex, isDeletebleEditingApproverGroup, onClickRemoveApproverGroupCard]);
 
   return (
     <>
@@ -62,7 +68,11 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
         <div className="card-body">
 
           <div className="d-flex justify-content-center align-items-center">
-            <SearchUserTypeahead excludedSearchUserIds={excludedSearchUserIds} onChange={updateApproversHandler} />
+            <SearchUserTypeahead
+              excludedSearchUserIds={excludedSearchUserIds}
+              onChange={updateApproversHandler}
+              onRemoveLastEddtingApprover={removeApproverGroupCardHander}
+            />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
               <button type="button" className="btn-close" aria-label="Close" onClick={() => { onClickRemoveApproverGroupCard(groupIndex) }}></button>

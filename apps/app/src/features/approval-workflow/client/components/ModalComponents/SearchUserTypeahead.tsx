@@ -1,52 +1,54 @@
-import React, { useState, useCallback, useRef } from 'react';
+import React, {
+  useState, useCallback, useEffect, useRef,
+} from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
 import { IClearable } from '~/client/interfaces/clearable';
-import { useSWRxSearchUsers } from '~/stores/user';
-
-const getUserIdsByUsernames = (userData?: IUserHasId[], usernames?: string[]): string[] | undefined => {
-  if (userData == null || usernames == null || usernames.length === 0) {
-    return;
-  }
-
-  return userData
-    .filter(item => usernames.includes(item.username))
-    .map(item => item._id);
-};
+import { useSWRMUTxSearchUser } from '~/stores/user';
 
 type Props = {
   excludedSearchUserIds?: string[]
   onChange?: (userIds?: string[]) => void
+  onRemoveLastEddtingApprover?: () => void
 };
 
 export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
-  const { excludedSearchUserIds, onChange } = props;
-
-  const [selectedUsernames, setSelectedUsernames] = useState<string[]>();
-  const [searchKeyword, setSearchKeyword] = useState<string>('');
-
-  const excludedSearchUserIdData = JSON.stringify(excludedSearchUserIds);
-  const { data: userData, isLoading } = useSWRxSearchUsers(searchKeyword, 0, 5, excludedSearchUserIdData);
+  const {
+    excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
+  } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
 
-  const onSearchHandler = useCallback((text: string) => {
-    setSearchKeyword(text);
+  const [searchKeyword, setSearchKeyword] = useState<string | undefined>();
+
+  const { trigger: searchUser, data: userData, isMutating } = useSWRMUTxSearchUser('asc', 'username', 1, searchKeyword, excludedSearchUserIds);
+
+  const onSearchHandler = useCallback(async(searchKeyword: string) => {
+    const setText = searchKeyword.trim() === '' ? undefined : searchKeyword;
+    setSearchKeyword(setText);
   }, []);
 
-  const onChangeHandler = useCallback((usernames: string[]) => {
-    setSelectedUsernames(usernames);
-
+  const onChangeHandler = useCallback((selectedUsers: IUserHasId[]) => {
+    if (selectedUsers.length === 0 && onRemoveLastEddtingApprover != null) {
+      onRemoveLastEddtingApprover();
+      return;
+    }
     if (onChange != null) {
-      const userIds = getUserIdsByUsernames(userData?.users, usernames);
+      const userIds = selectedUsers.map(user => user._id);
       onChange(userIds);
     }
-  }, [onChange, userData]);
+  }, [onChange, onRemoveLastEddtingApprover]);
+
+  useEffect(() => {
+    if (searchKeyword != null) {
+      searchUser();
+    }
+  }, [searchKeyword, searchUser]);
 
   return (
     <div className="input-group me-2">
@@ -58,14 +60,14 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         ref={typeaheadRef}
         multiple
         delay={200}
-        minLength={0}
+        minLength={1}
         useCache={false}
         caseSensitive={false}
-        isLoading={isLoading}
+        isLoading={isMutating}
         onSearch={onSearchHandler}
         onChange={onChangeHandler}
-        selected={selectedUsernames}
-        options={userData?.users?.map(v => v.username)}
+        options={userData?.docs ?? []}
+        labelKey={(doc: IUserHasId) => doc.username}
       />
     </div>
   );
