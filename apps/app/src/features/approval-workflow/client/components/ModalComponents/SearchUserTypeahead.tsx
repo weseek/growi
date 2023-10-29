@@ -24,17 +24,16 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
 
   const typeaheadRef = useRef<IClearable>(null);
 
-  const [searchKeyword, setSearchKeyword] = useState<string | undefined>();
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
 
   const { trigger: searchUser, data: userData, isMutating } = useSWRMUTxSearchUser('asc', 'username', 1, searchKeyword, excludedSearchUserIds);
 
-  const onSearchHandler = useCallback(async(searchKeyword: string) => {
-    const setText = searchKeyword.trim() === '' ? undefined : searchKeyword;
-    setSearchKeyword(setText);
+  const onSearchHandler = useCallback((searchKeyword: string) => {
+    setSearchKeyword(searchKeyword);
   }, []);
 
   const onChangeHandler = useCallback((selectedUsers: IUserHasId[]) => {
-    if (selectedUsers.length === 0 && onRemoveLastEddtingApprover != null) {
+    if (selectedUsers.length <= 0 && onRemoveLastEddtingApprover != null) {
       onRemoveLastEddtingApprover();
       return;
     }
@@ -45,7 +44,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   }, [onChange, onRemoveLastEddtingApprover]);
 
   useEffect(() => {
-    if (searchKeyword != null) {
+    if (searchKeyword.trim() !== '') {
       searchUser();
     }
   }, [searchKeyword, searchUser]);
