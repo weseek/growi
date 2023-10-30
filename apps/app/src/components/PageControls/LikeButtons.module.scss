@@ -1,5 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
 @use './button-styles';
 
 .btn-group-like :global {
@@ -18,6 +20,6 @@
 // == Colors
 .btn-group-like :global {
   .btn-like {
-    @include button-styles.btn-color(bs.$red);
+    @include btn-muted.colorize(bs.$red);
   }
 }
