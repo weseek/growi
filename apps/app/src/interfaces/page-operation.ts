@@ -35,4 +35,5 @@ export type OptionsToSave = {
   grantUserGroupId?: string | null;
   grantUserGroupName?: string | null;
   shouldGeneratePath?: boolean | null;
+  shouldReturnIfPathExists?: boolean | null;
 };
