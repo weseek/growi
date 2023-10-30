@@ -61,7 +61,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const removeApproverGroupCardHander = useCallback(() => {
+  const removeApproverGroupCardHandler = useCallback(() => {
     if (onClickRemoveApproverGroupCard != null && isDeletebleEditingApproverGroup) {
       onClickRemoveApproverGroupCard(groupIndex);
     }
@@ -82,7 +82,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
             <SearchUserTypeahead
               excludedSearchUserIds={excludedSearchUserIds}
               onChange={updateApproversHandler}
-              onRemoveLastEddtingApprover={removeApproverGroupCardHander}
+              onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
             />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
