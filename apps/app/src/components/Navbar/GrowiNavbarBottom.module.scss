@@ -14,3 +14,18 @@
     bottom: #{-1 * var.$grw-navbar-bottom-height};
   }
 }
+
+
+// centering icons
+.grw-navbar-bottom :global {
+  .nav-link {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// == Colors
+.grw-navbar-bottom {
+  background-color: rgba(var(--bs-body-bg-rgb), 0.7);
+  backdrop-filter: blur(35px);
+}

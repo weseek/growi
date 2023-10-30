@@ -18,7 +18,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
 
-  const additionalClasses = ['grw-navbar-bottom', styles['grw-navbar-bottom']];
+  const additionalClasses = [styles['grw-navbar-bottom']];
   if (isDrawerOpened) {
     additionalClasses.push('grw-navbar-bottom-drawer-opened');
   }
@@ -34,18 +34,29 @@ export const GrowiNavbarBottom = (): JSX.Element => {
         </div>
       ) }
 
-      <div className={`navbar navbar-expand navbar-dark bg-primary px-0 ${additionalClasses.join(' ')}`}>
+      <div className={`navbar navbar-expand px-4 px-sm-5 ${additionalClasses.join(' ')}`}>
 
-        <ul className="navbar-nav w-100">
-          <li className="nav-item me-auto">
+        <ul className="navbar-nav flex-grow-1 d-flex align-items-center justify-content-between">
+          <li className="nav-item">
             <a
               role="button"
               className="nav-link btn-lg"
               onClick={() => mutateDrawerOpened(true)}
             >
-              <i className="icon-menu"></i>
+              <span className="material-symbols-outlined fs-2">reorder</span>
             </a>
           </li>
+
+          <li className="nav-item">
+            <a
+              role="button"
+              className="nav-link btn-lg"
+              onClick={() => openCreateModal(currentPagePath || '')}
+            >
+              <span className="material-symbols-outlined fs-2">edit</span>
+            </a>
+          </li>
+
           {
             !isSearchPage && (
               <li className="nav-item">
@@ -55,20 +66,22 @@ export const GrowiNavbarBottom = (): JSX.Element => {
                   data-bs-target="#grw-global-search-collapse"
                   data-bs-toggle="collapse"
                 >
-                  <i className="icon-magnifier"></i>
+                  <span className="material-symbols-outlined fs-2">search</span>
                 </a>
               </li>
             )
           }
-          <li className="nav-item ms-auto">
+
+          <li className="nav-item">
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => openCreateModal(currentPagePath || '')}
+              onClick={() => {}}
             >
-              <i className="icon-pencil"></i>
+              <span className="material-symbols-outlined fs-2">notifications</span>
             </a>
           </li>
+
         </ul>
       </div>
 
