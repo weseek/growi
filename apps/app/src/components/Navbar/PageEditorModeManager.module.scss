@@ -9,7 +9,7 @@
 
     width: 70px;
     height: 30px;
-    @include bs.media-breakpoint-down(sm) {
+    @include bs.media-breakpoint-down(md) {
       width: 90px;
       height: 38px;
     }
@@ -21,7 +21,7 @@
 .grw-page-editor-mode-manager-skeleton :global {
   width: 179px;
   height: 30px;
-  @include bs.media-breakpoint-down(sm) {
+  @include bs.media-breakpoint-down(md) {
     width: 90px;
     height: 38px;
   }
