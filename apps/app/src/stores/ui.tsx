@@ -250,28 +250,28 @@ type DetectSidebarModeUtils = {
 }
 
 export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
   const { data: editorMode } = useEditorMode();
   const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
 
-  const condition = isDeviceSmallerThanMd != null && editorMode != null && isCollapsedModeUnderDockMode != null;
+  const condition = isDeviceSmallerThanLg != null && editorMode != null && isCollapsedModeUnderDockMode != null;
 
   const isEditorMode = editorMode === EditorMode.Editor;
 
   const fetcher = useCallback((
-      [, isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
+      [, isDeviceSmallerThanLg, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
   ) => {
-    if (isDeviceSmallerThanMd) {
+    if (isDeviceSmallerThanLg) {
       return SidebarMode.DRAWER;
     }
     return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
   }, []);
 
   const swrResponse = useSWRImmutable(
-    condition ? ['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode] : null,
+    condition ? ['sidebarMode', isDeviceSmallerThanLg, isEditorMode, isCollapsedModeUnderDockMode] : null,
     // calcDrawerMode,
     fetcher,
-    { fallbackData: fetcher(['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]) },
+    { fallbackData: fetcher(['sidebarMode', isDeviceSmallerThanLg, isEditorMode, isCollapsedModeUnderDockMode]) },
   );
 
   const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);
