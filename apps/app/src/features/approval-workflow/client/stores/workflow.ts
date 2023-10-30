@@ -73,17 +73,17 @@ export const useSWRMUTxCreateWorkflow = (
 export const useSWRMUTxUpdateWorkflow = (
     workflowId: string,
     name?: string,
-    description?: string,
+    comment?: string,
     createApproverGroupData?: CreateApproverGroupData,
     updateApproverGroupData?: UpdateApproverGroupData,
 ): SWRMutationResponse<IWorkflowHasId, Error> => {
 
-  const key = workflowId != null ? [workflowId, name, description, createApproverGroupData, updateApproverGroupData] : null;
+  const key = workflowId != null ? [workflowId, name, comment, createApproverGroupData, updateApproverGroupData] : null;
 
   return useSWRMutation(
     key,
-    ([workflowId, name, description, createApproverGroupData, updateApproverGroupData]) => apiv3Put(`/workflow/${workflowId}`, {
-      name, comment: description, createApproverGroupData, updateApproverGroupData,
+    ([workflowId, name, comment, createApproverGroupData, updateApproverGroupData]) => apiv3Put(`/workflow/${workflowId}`, {
+      name, comment, createApproverGroupData, updateApproverGroupData,
     })
       .then(result => result.data.updatedWorkflow),
   );
