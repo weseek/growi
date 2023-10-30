@@ -859,6 +859,7 @@
     "completion": "完了",
     "add_flow": "フローの追加",
     "completion_conditions": "完了条件",
+    "cannot_change_approval_type": "承認者が一人の時は変更できません",
     "description_for_new_creation": "最後のフローが完了するとワークフローは完了になります",
     "approval_type": {
       "AND": "全員が承認",

@@ -11,7 +11,7 @@ import { useSWRMUTxSearchUser } from '~/stores/user';
 
 type Props = {
   excludedSearchUserIds?: string[]
-  onChange?: (userIds?: string[]) => void
+  onChange?: (userIds: string[]) => void
   onRemoveLastEddtingApprover?: () => void
 };
 
