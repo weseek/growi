@@ -1,31 +1,37 @@
-import React from 'react';
+import { type ReactNode } from 'react';
 
 import { useDrawerOpened } from '~/stores/ui';
 
+
+import styles from './DrawerToggler.module.scss';
+
+const moduleClass = styles['grw-drawer-toggler'];
+
+
 type Props = {
-  iconClass?: string,
+  className?: string,
+  togglerClassName?: string,
+  children?: ReactNode,
 }
 
-const DrawerToggler = (props: Props): JSX.Element => {
+export const DrawerToggler = (props: Props): JSX.Element => {
+
+  const { className, togglerClassName, children } = props;
 
   const { data: isOpened, mutate } = useDrawerOpened();
 
-  const iconClass = props.iconClass ?? isOpened
-    ? 'icon-arrow-left'
-    : 'icon-arrow-right';
-
   return (
-    <button
-      className="grw-drawer-toggler btn btn-secondary"
-      type="button"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-      onClick={() => mutate(!isOpened)}
-    >
-      <i className={iconClass}></i>
-    </button>
+    <div className={`${moduleClass} ${className}`}>
+      <button
+        className={`btn btn-outline-secondary ${togglerClassName} border-0`}
+        type="button"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+        onClick={() => mutate(!isOpened)}
+      >
+        {children}
+      </button>
+    </div>
   );
 
 };
-
-export default DrawerToggler;

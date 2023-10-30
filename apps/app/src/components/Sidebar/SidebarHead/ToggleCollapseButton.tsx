@@ -26,14 +26,11 @@ export const ToggleCollapseButton = memo((): JSX.Element => {
 
   const rotationClass = isCollapsedMode() ? 'rotate180' : '';
   const icon = useMemo(() => {
-    if (isDrawerMode()) {
-      return 'star';
-    }
-    else if (isCollapsedMode()) {
+    if (isCollapsedMode()) {
       return 'keyboard_double_arrow_left';
     }
     return 'first_page';
-  }, []);
+  }, [isCollapsedMode]);
 
   return (
     <button

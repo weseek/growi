@@ -15,13 +15,14 @@ import {
   useSidebarMode,
 } from '~/stores/ui';
 
+import { DrawerToggler } from '../Common/DrawerToggler';
+
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
-import { ToggleCollapseButton } from './SidebarHead/ToggleCollapseButton';
 
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
@@ -190,9 +191,9 @@ export const Sidebar = (): JSX.Element => {
   return (
     <>
       { sidebarMode != null && isDrawerMode() && (
-        <div className="vh-100 sticky-top">
-          <ToggleCollapseButton />
-        </div>
+        <DrawerToggler className="fixed-top">
+          <span className="material-symbols-outlined">menu</span>
+        </DrawerToggler>
       ) }
       { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
