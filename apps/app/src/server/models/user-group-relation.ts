@@ -1,4 +1,4 @@
-import type { IUserGroupRelation } from '@growi/core';
+import { isPopulated, type IUserGroupHasId, type IUserGroupRelation } from '@growi/core';
 import mongoose, { Model, Schema, Document } from 'mongoose';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
@@ -27,7 +27,7 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
 
   countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 
-  findAllRelationForUser: (user) => Promise<UserGroupRelationDocument[]>
+  findAllGroupsForUser: (user) => Promise<UserGroupDocument[]>
 }
 
 /*
@@ -116,23 +116,19 @@ schema.statics.findAllRelationForUserGroups = function(userGroups) {
 };
 
 /**
- * find all user and group relation of User
+ * find all groups of User
  *
  * @static
  * @param {User} user
- * @returns {Promise<UserGroupRelation[]>}
+ * @returns {Promise<UserGroupDocument[]>}
  * @memberof UserGroupRelation
  */
-schema.statics.findAllRelationForUser = function(user): Promise<UserGroupRelationDocument[]> {
-  return this
-    .find({ relatedUser: user.id })
-    .populate('relatedGroup')
-    // filter documents only relatedGroup is not null
-    .then((userGroupRelations) => {
-      return userGroupRelations.filter((relation) => {
-        return relation.relatedGroup != null;
-      });
-    });
+schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDocument[]> {
+  const userGroupRelations = await this.find({ relatedUser: user.id }).populate('relatedGroup');
+  const userGroups = userGroupRelations.map((relation) => {
+    return isPopulated(relation.relatedGroup) ? relation.relatedGroup as UserGroupDocument : null;
+  });
+  return userGroups.filter((group): group is NonNullable<UserGroupDocument> => group != null);
 };
 
 /**

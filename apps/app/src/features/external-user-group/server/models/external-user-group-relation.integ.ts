@@ -107,24 +107,20 @@ describe('ExternalUserGroupRelation model', () => {
     });
   });
 
-  describe('findAllRelationForUser', () => {
+  describe('findAllGroupsForUser', () => {
     beforeAll(async() => {
       await ExternalUserGroupRelation.createRelations([groupId1, groupId2], user1);
       await ExternalUserGroupRelation.create({ relatedGroup: groupId3, relatedUser: user2._id });
     });
 
-    it('finds all relations for user with group populated', async() => {
-      const relations = await ExternalUserGroupRelation.findAllRelationForUser(user1);
-      const populatedGroupIds = relations.map((relation) => {
-        return typeof relation.relatedGroup !== 'string' ? relation.relatedGroup._id : null;
-      });
-      expect(populatedGroupIds).toStrictEqual([groupId1, groupId2]);
+    it('finds all groups related to user', async() => {
+      const groups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
+      const groupIds = groups.map(group => group._id);
+      expect(groupIds).toStrictEqual([groupId1, groupId2]);
 
-      const relations2 = await ExternalUserGroupRelation.findAllRelationForUser(user2);
-      const populatedGroupIds2 = relations2.map((relation) => {
-        return typeof relation.relatedGroup !== 'string' ? relation.relatedGroup._id : null;
-      });
-      expect(populatedGroupIds2).toStrictEqual([groupId3]);
+      const groups2 = await ExternalUserGroupRelation.findAllGroupsForUser(user2);
+      const groupIds2 = groups2.map(group => group._id);
+      expect(groupIds2).toStrictEqual([groupId3]);
     });
   });
 });
