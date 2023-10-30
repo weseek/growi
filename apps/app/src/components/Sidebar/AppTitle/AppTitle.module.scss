@@ -29,6 +29,7 @@
 .on-subnavigation {
   $grw-contextual-sub-navigation-width: 500px;
 
+  top: 0;
   left: var.$grw-sidebar-nav-width;
   // set width for truncation
   width: calc(100vw - $grw-contextual-sub-navigation-width);

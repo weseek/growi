@@ -21,6 +21,7 @@ import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
 import styles from './Sidebar.module.scss';
+import { ToggleCollapseButton } from './SidebarHead/ToggleCollapseButton';
 
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
@@ -168,7 +169,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: sidebarMode, isCollapsedMode } = useSidebarMode();
+  const { data: sidebarMode, isDrawerMode, isDockMode } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -188,10 +189,15 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      { sidebarMode != null && isCollapsedMode() && <AppTitleOnSubnavigation /> }
+      { sidebarMode != null && isDrawerMode() && (
+        <div className="vh-100 sticky-top">
+          <ToggleCollapseButton />
+        </div>
+      ) }
+      { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
-          { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
+          { sidebarMode != null && isDockMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />
