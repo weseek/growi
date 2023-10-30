@@ -191,8 +191,8 @@ export const Sidebar = (): JSX.Element => {
   return (
     <>
       { sidebarMode != null && isDrawerMode() && (
-        <DrawerToggler className="fixed-top">
-          <span className="material-symbols-outlined">menu</span>
+        <DrawerToggler className="position-fixed">
+          <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       ) }
       { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }

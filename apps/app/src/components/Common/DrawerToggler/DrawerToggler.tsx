@@ -10,20 +10,19 @@ const moduleClass = styles['grw-drawer-toggler'];
 
 type Props = {
   className?: string,
-  togglerClassName?: string,
   children?: ReactNode,
 }
 
 export const DrawerToggler = (props: Props): JSX.Element => {
 
-  const { className, togglerClassName, children } = props;
+  const { className, children } = props;
 
   const { data: isOpened, mutate } = useDrawerOpened();
 
   return (
-    <div className={`${moduleClass} ${className}`}>
+    <div className={`${moduleClass} ${className ?? ''}`}>
       <button
-        className={`btn btn-outline-secondary ${togglerClassName} border-0`}
+        className="btn d-flex align-items-center border-0"
         type="button"
         aria-expanded="false"
         aria-label="Toggle navigation"
