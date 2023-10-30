@@ -14,14 +14,13 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
-import CountBadge from '../Common/CountBadge';
 import { ContentLinkButtons } from '../ContentLinkButtons';
-import PageListIcon from '../Icons/PageListIcon';
 import { PageTagsSkeleton } from '../PageTags';
 import TableOfContents from '../TableOfContents';
 
-import styles from './PageSideContents.module.scss';
 import { PageAccessoriesControl } from './PageAccessoriesControl';
+
+import styles from './PageSideContents.module.scss';
 
 
 const { isTopPage, isUsersHomepage, isTrashPage } = pagePathUtils;
@@ -113,8 +112,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
               icon={<span className="material-symbols-outlined">subject</span>}
               label={t('page_list')}
               // Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600
-              count={ !isTrash && pageInfo != null ? (pageInfo as IPageInfoForOperation).descendantCount : undefined }
-              onClick={() => openDescendantPageListModal(pagePath)} />
+              count={!isTrash && pageInfo != null ? (pageInfo as IPageInfoForOperation).descendantCount : undefined}
+              onClick={() => openDescendantPageListModal(pagePath)}
+            />
           </div>
         )}
 
@@ -124,8 +124,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
             <PageAccessoriesControl
               icon={<span className="material-symbols-outlined">chat</span>}
               label="Comments"
-              count={ pageInfo != null ? (pageInfo as IPageInfoForOperation).commentCount : undefined }
-              onClick={() => scroller.scrollTo('comments-container', { smooth: false, offset: -120 })} />
+              count={pageInfo != null ? (pageInfo as IPageInfoForOperation).commentCount : undefined}
+              onClick={() => scroller.scrollTo('comments-container', { smooth: false, offset: -120 })}
+            />
           </div>
         )}
       </div>

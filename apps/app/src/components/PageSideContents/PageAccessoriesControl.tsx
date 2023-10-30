@@ -30,7 +30,7 @@ export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
       onClick={onClick}
     >
       <span className="grw-icon d-flex">{icon}</span>
-      <span className="grw-labels ms-1 d-none d-md-flex">
+      <span className="grw-labels ms-1 d-none d-lg-flex">
         {label}
         {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
         { count != null
