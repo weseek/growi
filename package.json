@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "6.2.1",
+  "version": "6.2.2-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -76,7 +76,7 @@
     "glob": "^8.1.0",
     "mock-require": "^3.0.3",
     "path-browserify": "^1.0.1",
-    "postcss": "^8.4.5",
+    "postcss": "^8.4.31",
     "postcss-scss": "^4.0.3",
     "reg-keygen-git-hash-plugin": "^0.11.1",
     "reg-notify-github-plugin": "^0.11.1",

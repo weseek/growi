@@ -154,7 +154,7 @@ jobs:
 
 
   post-publish:
-    needs: [publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image, publish-image-ghcr]
     runs-on: ubuntu-latest
 
     steps:
@@ -177,15 +177,9 @@ jobs:
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
         created_tag: 'v${{ needs.create-github-release.outputs.RELEASED_VERSION }}'
 
-    - name: Check whether workspace is clean
-      run: |
-        STATUS=`git status --porcelain`
-        if [ -z "$STATUS" ]; then exit 0; else exit 1; fi
-
-
 
   create-pr-for-next-rc:
-    needs: [publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image, publish-image-ghcr]
     runs-on: ubuntu-latest
 
     steps:

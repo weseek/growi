@@ -10,8 +10,8 @@ GROWI Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`6.2.0`, `6.2`, `6`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v6.2.0/apps/app/docker/Dockerfile)
-* [`6.1.0`, `6.1` (Dockerfile)](https://github.com/weseek/growi/blob/v6.1.8/apps/app/docker/Dockerfile)
+* [`6.2.1`, `6.2`, `6`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v6.2.1/apps/app/docker/Dockerfile)
+* [`6.1.15`, `6.1` (Dockerfile)](https://github.com/weseek/growi/blob/v6.1.15/apps/app/docker/Dockerfile)
 * [`6.0.15`, `6.0` (Dockerfile)](https://github.com/weseek/growi/blob/v6.0.15/packages/app/docker/Dockerfile)
 * [`5.1.7`, `5.1`, `5` (Dockerfile)](https://github.com/weseek/growi/blob/v5.1.7/packages/app/docker/Dockerfile)
 * [`5.1.7-nocdn`, `5.1-nocdn`, `5-nocdn` (Dockerfile)](https://github.com/weseek/growi/blob/v5.1.7/packages/app/docker/Dockerfile)
@@ -34,7 +34,7 @@ Requirements
 
 ### Optional Dependencies
 
-* ElasticSearch (>= 6.6)
+* ElasticSearch (>= 7.17)
     * Japanese (kuromoji) Analysis plugin
     * ICU Analysis Plugin
 

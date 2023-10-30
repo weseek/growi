@@ -12,10 +12,10 @@
 
 ### 🚀 Improvement
 
-- imprv: 131279 update link in admin settings for marp (#8110) @moekumasaka
 - imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
-- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
 - imprv: Admin customize presentation form (#8083) @meiri-k
+- imprv: i18n for marp settings (#8110) @moekumasaka
+- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
 
 ### 🐛 Bug Fixes
 
