@@ -1,13 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import {
+  Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
+} from 'reactstrap';
 
 import { WorkflowApprovalType, IWorkflowApproverGroupReqForRenderList } from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
+
 type Props = {
-  creatorId?: string
+  excludedSearchUserIds: string[]
   editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
@@ -16,15 +20,23 @@ type Props = {
 
 const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
-    creatorId, groupIndex, editingApproverGroups, onUpdateApproverGroups, onClickAddApproverGroupCard, onClickRemoveApproverGroupCard,
+    groupIndex, editingApproverGroups, excludedSearchUserIds, onUpdateApproverGroups, onClickAddApproverGroupCard, onClickRemoveApproverGroupCard,
   } = props;
 
   const { t } = useTranslation();
 
+  const [isOpenChangeApprovalTypeMenu, setIsOpenChangeApprovalTypeMenu] = useState(false);
+
   const editingApproverGroup = editingApproverGroups?.[groupIndex];
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
-  const editingApprovers = editingApproverGroup.approvers?.map(v => v.user.toString()) ?? [];
-  const excludedSearchUserId = [creatorId, ...editingApprovers];
+
+  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
+
+  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
+
+  const isChangeableApprovealType = editingApproverGroup.approvers.length > 1;
+
+  const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
 
   const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
     const clonedApproverGroup = { ...editingApproverGroup };
@@ -35,21 +47,25 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const updateApproversHandler = useCallback((userIds?: string[]) => {
+  const updateApproversHandler = useCallback((userIds: string[]) => {
     const clonedApproverGroup = { ...editingApproverGroup };
     const approvers = userIds != null ? userIds.map(userId => ({ user: userId })) : [];
     clonedApproverGroup.approvers = approvers;
+
+    if (userIds.length <= 1) {
+      clonedApproverGroup.approvalType = WorkflowApprovalType.AND;
+    }
 
     if (onUpdateApproverGroups != null) {
       onUpdateApproverGroups(groupIndex, clonedApproverGroup);
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
-
-  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
-
-  const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
+  const removeApproverGroupCardHandler = useCallback(() => {
+    if (onClickRemoveApproverGroupCard != null && isDeletebleEditingApproverGroup) {
+      onClickRemoveApproverGroupCard(groupIndex);
+    }
+  }, [groupIndex, isDeletebleEditingApproverGroup, onClickRemoveApproverGroupCard]);
 
   return (
     <>
@@ -63,7 +79,11 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
         <div className="card-body">
 
           <div className="d-flex justify-content-center align-items-center">
-            <SearchUserTypeahead onChange={updateApproversHandler} />
+            <SearchUserTypeahead
+              excludedSearchUserIds={excludedSearchUserIds}
+              onChange={updateApproversHandler}
+              onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
+            />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
               <button type="button" className="btn-close" aria-label="Close" onClick={() => { onClickRemoveApproverGroupCard(groupIndex) }}></button>
@@ -76,21 +96,36 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
               {t('approval_workflow.completion_conditions')}
             </span>
 
-            <div className="dropdown">
-              <a className="btn btn-light btn-sm rounded-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                {t(`approval_workflow.approval_type.${editingApprovalType}`)}
-              </a>
-              <ul
-                className="dropdown-menu"
-                onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
-              >
-                { isApprovalTypeAnd
-                  ? <>{t('approval_workflow.approval_type.OR')}</>
-                  : <>{t('approval_workflow.approval_type.AND')}</>
-                }
-              </ul>
-            </div>
+            <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
+              <div id="change-approval-type-button">
+                <DropdownToggle
+                  className="btn btn-light btn-sm rounded-pill dropdown-toggle"
+                  disabled={!isChangeableApprovealType}
+                >
+                  {t(`approval_workflow.approval_type.${editingApprovalType}`)}
+                </DropdownToggle>
+                {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                { !isChangeableApprovealType && (
+                  <UncontrolledTooltip
+                    target="change-approval-type-button"
+                    placement="bottom"
+                    fade={false}
+                  >
+                    {t('approval_workflow.cannot_change_approval_type')}
+                  </UncontrolledTooltip>
+                )}
+              </div>
 
+              <DropdownMenu>
+                <DropdownItem
+                  onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
+                >  { isApprovalTypeAnd
+                    ? <>{t('approval_workflow.approval_type.OR')}</>
+                    : <>{t('approval_workflow.approval_type.AND')}</>
+                  }
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
           </div>
         </div>
       </div>
