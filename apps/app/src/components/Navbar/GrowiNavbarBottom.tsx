@@ -3,7 +3,7 @@ import React from 'react';
 import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
-import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useIsDeviceLargerThanMd, useDrawerOpened } from '~/stores/ui';
 
 import { GlobalSearch } from './GlobalSearch';
 
@@ -13,7 +13,7 @@ import styles from './GrowiNavbarBottom.module.scss';
 export const GrowiNavbarBottom = (): JSX.Element => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
@@ -26,7 +26,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   return (
     <div className="d-md-none d-edit-none fixed-bottom">
 
-      { isDeviceSmallerThanMd && !isSearchPage && (
+      { !isDeviceLargerThanMd && !isSearchPage && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
           <div className="p-3">
             <GlobalSearch dropup />

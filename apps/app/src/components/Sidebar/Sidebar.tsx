@@ -191,7 +191,7 @@ export const Sidebar = (): JSX.Element => {
   return (
     <>
       { sidebarMode != null && isDrawerMode() && (
-        <DrawerToggler className="position-fixed d-none d-sm-block">
+        <DrawerToggler className="position-fixed d-none d-md-block">
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       ) }
