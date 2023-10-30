@@ -38,6 +38,7 @@ import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
+import { getModelSafely } from '../util/mongoose-utils';
 
 const debug = require('debug')('growi:services:page');
 
@@ -222,6 +223,39 @@ class PageService {
 
   filterPagesByCanDelete(pages, user, isRecursively: boolean) {
     return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
+  }
+
+  async getNotificaionTargetUsers(activity) {
+    const User = getModelSafely('User') || require('~/server/models/user')();
+    const actionUser = activity.actionUser;
+    const target = activity.target;
+    const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
+    const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
+    const activeNotificationUsers = await User.find({
+      _id: { $in: notificationUsers },
+      status: User.STATUS_ACTIVE,
+    }).distinct('_id');
+
+    return activeNotificationUsers;
+  }
+
+  async getEveryNotificationUsers(descendantsSubscribedSets, activity) {
+    const notificationTargetUsers = await this.getNotificaionTargetUsers(activity);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+
+    let notificationDescendantsUsers = [];
+    if (descendantsSubscribedUsers != null) {
+      const User = this.crowi.model('User');
+      const descendantsUsers = descendantsSubscribedUsers.filter(item => (item.toString() !== activity.user._id.toString()));
+      notificationDescendantsUsers = await User.find({
+        _id: { $in: descendantsUsers },
+        status: User.STATUS_ACTIVE,
+      }).distinct('_id');
+    }
+
+    const everyNotificationUsers = [...notificationTargetUsers, ...notificationDescendantsUsers];
+
+    return everyNotificationUsers;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -542,8 +576,10 @@ class PageService {
     // update descendants first
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
-      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+      const everyNotificationUsers = this.getEveryNotificationUsers(descendantsSubscribedSets, activity);
+
+      this.activityEvent.emit('updated', activity, page, everyNotificationUsers);
     }
     catch (err) {
       logger.warn(err);
@@ -1511,8 +1547,9 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
 
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const everyNotificationUsers = this.getEveryNotificationUsers(descendantsSubscribedSets, activity);
+
+    this.activityEvent.emit('updated', activity, page, everyNotificationUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1835,8 +1872,10 @@ class PageService {
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const descendantsSubscribedSets = new Set();
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    const everyNotificationUsers = this.getEveryNotificationUsers(descendantsSubscribedSets, activity);
+
+    this.activityEvent.emit('updated', activity, page, everyNotificationUsers);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1879,9 +1918,10 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
 
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const everyNotificationUsers = this.getEveryNotificationUsers(descendantsSubscribedSets, activity);
+
+    this.activityEvent.emit('updated', activity, page, everyNotificationUsers);
 
     return pages;
   }
@@ -2204,8 +2244,10 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    const everyNotificationUsers = this.getEveryNotificationUsers(descendantsSubscribedSets, activity);
+
+    this.activityEvent.emit('updated', activity, page, everyNotificationUsers);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages

@@ -30,8 +30,6 @@ export interface ActivityDocument extends Document {
   event: Types.ObjectId
   action: SupportedActionType
   snapshot: ISnapshot
-
-  getNotificationTargetUsers(): Promise<any[]>
 }
 
 export interface ActivityModel extends Model<ActivityDocument> {
@@ -92,18 +90,6 @@ activitySchema.plugin(mongoosePaginate);
 activitySchema.post('save', function() {
   logger.debug('activity has been created', this);
 });
-
-activitySchema.methods.getNotificationTargetUsers = async function() {
-  const User = getModelSafely('User') || require('~/server/models/user')();
-  const { user: actionUser, target } = this;
-  const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-  const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-  const activeNotificationUsers = await User.find({
-    _id: { $in: notificationUsers },
-    status: User.STATUS_ACTIVE,
-  }).distinct('_id');
-  return activeNotificationUsers;
-};
 
 activitySchema.statics.createByParameters = async function(parameters): Promise<IActivity> {
   const activity = await this.create(parameters) as unknown as IActivity;
