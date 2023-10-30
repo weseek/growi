@@ -16,7 +16,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div id="main" className={`main page-view-layout ${styles['page-view-layout']}`}>
+      <div id="main" className={`main ${styles['page-view-layout']}`}>
         <div id="content-main" className="content-main container-lg grw-container-convertible">
           { headerContents != null && headerContents }
           { sideContents != null
