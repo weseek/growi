@@ -1,10 +1,12 @@
 import useSWR, { SWRResponse } from 'swr';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
-import { apiv3Get, apiv3Post } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
-import { IWorkflowHasId, IWorkflowPaginateResult, IWorkflowApproverGroupReq } from '../../interfaces/workflow';
+import type {
+  IWorkflowHasId, IWorkflowPaginateResult, IWorkflowApproverGroupReq, CreateApproverGroupData, UpdateApproverGroupData,
+} from '../../interfaces/workflow';
 
 export type WorkflowModalStatus = {
   pageId?: string,
@@ -64,5 +66,25 @@ export const useSWRMUTxCreateWorkflow = (
     ([pageId, approverGroups, name, comment]) => apiv3Post('/workflow', {
       pageId, approverGroups, name, comment,
     }).then(result => result.data.createdWorkflow),
+  );
+};
+
+
+export const useSWRMUTxUpdateWorkflow = (
+    workflowId: string,
+    name?: string,
+    description?: string,
+    createApproverGroupData?: CreateApproverGroupData,
+    updateApproverGroupData?: UpdateApproverGroupData,
+): SWRMutationResponse<IWorkflowHasId, Error> => {
+
+  const key = workflowId != null ? [workflowId, name, description, createApproverGroupData, updateApproverGroupData] : null;
+
+  return useSWRMutation(
+    key,
+    ([workflowId, name, description, createApproverGroupData, updateApproverGroupData]) => apiv3Put(`/workflow/${workflowId}`, {
+      name, comment: description, createApproverGroupData, updateApproverGroupData,
+    })
+      .then(result => result.data.updatedWorkflow),
   );
 };
