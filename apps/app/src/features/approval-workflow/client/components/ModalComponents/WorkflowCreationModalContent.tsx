@@ -120,6 +120,8 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
           onClickAddApproverGroupCard={addApproverGroupHandler}
           onClickRemoveApproverGroupCard={removeApproverGroupHandler}
         />
+
+        <p className="my-3 text-muted text-center">{t('approval_workflow.description_for_new_creation')}</p>
       </ModalBody>
 
       <ModalFooter>

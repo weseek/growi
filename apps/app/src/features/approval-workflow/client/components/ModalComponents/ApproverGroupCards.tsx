@@ -111,7 +111,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
                     placement="bottom"
                     fade={false}
                   >
-                    承認者が1人の時は変更することはできません
+                    {t('approval_workflow.cannot_change_approval_type')}
                   </UncontrolledTooltip>
                 )}
               </div>
