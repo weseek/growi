@@ -206,7 +206,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             <li><hr className="dropdown-divider" /></li>
             <li><span className="text-muted px-3">Create today&apos;s ...</span></li>
             {/* TODO: show correct create today's page path */}
-            {/* https://redmine.weseek.co.jp/issues/132682 */}
+            {/* https://redmine.weseek.co.jp/issues/133893 */}
             <li>
               <button
                 className="dropdown-item"
