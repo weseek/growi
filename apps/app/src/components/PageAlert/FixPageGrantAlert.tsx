@@ -233,7 +233,6 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
       </Modal>
       {applicableGroups != null && (
         <Modal
-          className="select-grant-group"
           isOpen={isGroupSelectModalShown}
           toggle={() => setIsGroupSelectModalShown(false)}
         >

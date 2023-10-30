@@ -225,7 +225,6 @@ export const GrantSelector = (props: Props): JSX.Element => {
       {/* render modal */}
       { !disabled && currentUser != null && (
         <Modal
-          className="select-grant-group"
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
         >
