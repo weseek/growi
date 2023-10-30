@@ -27,12 +27,32 @@
 
 // == Location
 .on-subnavigation {
-  $grw-contextual-sub-navigation-width: 500px;
-
   top: 0;
-  left: var.$grw-sidebar-nav-width;
+
+  @include bs.media-breakpoint-up(sm) {
+    left: var.$grw-sidebar-nav-width;
+  }
+}
+
+
+// == App title truncation
+.on-subnavigation {
   // set width for truncation
-  width: calc(100vw - $grw-contextual-sub-navigation-width);
+  $grw-page-controls-width: 226px;
+  $grw-page-editor-mode-manager-width: 90px;
+  $grw-contextual-subnavigation-padding-right: 8px;
+  $gap: 8px;
+  width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+
+  @include bs.media-breakpoint-up(sm) {
+    width: calc(100vw - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+  }
+
+  @include bs.media-breakpoint-up(md) {
+    $grw-page-editor-mode-manager-width: 140px;
+    $gap: 24px;
+    width: calc(100vw - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+  }
 }
 
 .on-sidebar-head {
