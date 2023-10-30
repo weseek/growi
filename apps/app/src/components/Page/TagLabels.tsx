@@ -34,9 +34,11 @@ export const TagLabels:FC<Props> = (props: Props) => {
     return <TagLabelsSkeleton />;
   }
 
+  const printNoneClass = tags.length === 0 ? 'd-print-none' : '';
+
   return (
     <>
-      <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
+      <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center ${printNoneClass}`} data-testid="grw-tag-labels">
         <i className="tag-icon icon-tag mr-2" />
         <RenderTagLabels
           tags={tags}
