@@ -1,3 +1,4 @@
+import type { IUserHasId } from '@growi/core';
 import { Document } from 'mongoose';
 
 enum AnnouncementStatuses {
@@ -7,7 +8,7 @@ enum AnnouncementStatuses {
 }
 
 export interface AnnouncementDocument extends Document {
-  sender,
+  sender: IUserHasId,
   name: string,
   comment: string,
   emoji: string,
@@ -15,7 +16,7 @@ export interface AnnouncementDocument extends Document {
   pageId,
   receivers: [
     {
-      receiver,
+      receiver: IUserHasId,
       updatedAt: Date,
       readStatus: AnnouncementStatuses,
     },
