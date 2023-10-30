@@ -19,7 +19,7 @@
 
 // md/lg layout padding
 .page-view-layout :global {
-  @include bs.media-breakpoint-between(sm, lg) {
+  @include bs.media-breakpoint-between(md, xl) {
     padding-left: var.$grw-sidebar-nav-width;
   }
 }
