@@ -1,7 +1,7 @@
 import React, { FC, useImperativeHandle } from 'react';
 
 import type { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { PagePathLabel } from '@growi/ui/dist/components';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';

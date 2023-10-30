@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import Link from 'next/link';
 
 import type { PageNode } from '../../../interfaces/page-node';
