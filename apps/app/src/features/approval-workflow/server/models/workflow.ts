@@ -20,12 +20,12 @@ import {
 /*
 * WorkflowApprover
 */
-interface IWorkflowApprover {
+interface IWorkflowApproverDocument {
   user: Ref<IUser>
   status: WorkflowApproverStatus
 }
 
-export interface WorkflowApproverDocument extends IWorkflowApprover, Document {}
+export interface WorkflowApproverDocument extends IWorkflowApproverDocument, Document {}
 type WorkflowApproverModel = Model<WorkflowApproverDocument>;
 
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
