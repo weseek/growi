@@ -36,8 +36,8 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
   }, [onUpload, setIsUploading, acceptedFileType]);
 
   const accept: Accept = {
-    acceptedFileType: [],
   };
+  accept[acceptedFileType] = [];
 
   const dzState = useDropzone({
     noKeyboard: true,
