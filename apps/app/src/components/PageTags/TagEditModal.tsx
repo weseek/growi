@@ -28,10 +28,10 @@ export const TagEditModal: React.FC = () => {
   useEffect(() => {
     setTags(initTags);
   }, [initTags]);
-  const handleSubmit = useCallback(async(newTags?: string[]) => {
+  const handleSubmit = useCallback(async() => {
 
     try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
+      await apiPost('/tags.update', { pageId, revisionId, tags });
       updateStateAfterSave?.();
 
       toastSuccess('updated tags successfully');
@@ -40,7 +40,7 @@ export const TagEditModal: React.FC = () => {
     catch (err) {
       toastError(err);
     }
-  }, [closeTagEditModal, pageId, revisionId, updateStateAfterSave]);
+  }, [closeTagEditModal, tags, pageId, revisionId, updateStateAfterSave]);
 
   return (
     <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>
@@ -51,7 +51,7 @@ export const TagEditModal: React.FC = () => {
         <TagsInput tags={initTags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
-        <button type="button" className="btn btn-primary" onClick={() => handleSubmit(tags)}>
+        <button type="button" className="btn btn-primary" onClick={handleSubmit}>
           {t('tag_edit_modal.done')}
         </button>
       </ModalFooter>
