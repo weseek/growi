@@ -829,6 +829,7 @@
     "completion": "完成",
     "add_flow": "额外流量",
     "completion_conditions": "完工条件",
+    "cannot_change_approval_type": "如果只有一个审批人，则无法更改",
     "description_for_new_creation": "当最终流程完成时，工作流程被标记为已完成",
     "approval_type": {
       "AND": "大家的认可",
