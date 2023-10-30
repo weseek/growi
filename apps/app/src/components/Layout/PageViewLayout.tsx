@@ -21,11 +21,11 @@ export const PageViewLayout = (props: Props): JSX.Element => {
           { headerContents != null && headerContents }
           { sideContents != null
             ? (
-              <div className="d-flex flex-column flex-column-reverse flex-lg-row">
+              <div className="d-flex gap-3">
                 <div className="flex-grow-1 flex-basis-0 mw-0">
                   {children}
                 </div>
-                <div className="grw-side-contents-container d-edit-none" data-vrt-blackout-side-contents>
+                <div className="grw-side-contents-container col-lg-3  d-edit-none" data-vrt-blackout-side-contents>
                   <div className="grw-side-contents-sticky-container">
                     {sideContents}
                   </div>
