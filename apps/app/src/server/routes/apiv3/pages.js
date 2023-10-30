@@ -176,6 +176,7 @@ module.exports = (crowi) => {
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
       body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
+      body('shouldReturnIfPathExists').optional().isBoolean().withMessage('shouldReturnIfPathExists is must be boolean or undefined'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -239,11 +240,15 @@ module.exports = (crowi) => {
     return [];
   }
 
-  async function generateUniquePath(basePath, index = 1) {
+  async function checkIsPathExists(path) {
     const Page = mongoose.model('Page');
-    const path = basePath + index;
     const response = await Page.findByPath(path);
-    const isPathExists = response != null;
+    return response != null;
+  }
+
+  async function generateUniquePath(basePath, index = 1) {
+    const path = basePath + index;
+    const isPathExists = await checkIsPathExists(path);
     if (isPathExists) {
       return generateUniquePath(basePath, index + 1);
     }
@@ -281,6 +286,9 @@ module.exports = (crowi) => {
    *                  shouldGeneratePath:
    *                    type: boolean
    *                    description: Determine whether a new path should be generated
+   *                  shouldReturnIfPathExists:
+   *                    type: boolean
+   *                    description: Determine whether a should return response if path exists
    *                required:
    *                  - body
    *                  - path
@@ -307,13 +315,25 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath, shouldReturnIfPathExists,
     } = req.body;
 
     let { path } = req.body;
 
     // check whether path starts slash
     path = addHeadingSlash(path);
+
+    if (shouldReturnIfPathExists) {
+      try {
+        const isPathExists = await checkIsPathExists(path);
+        if (isPathExists) {
+          return res.apiv3({}, 200);
+        }
+      }
+      catch (err) {
+        return res.apiv3Err(err);
+      }
+    }
 
     if (shouldGeneratePath) {
       try {

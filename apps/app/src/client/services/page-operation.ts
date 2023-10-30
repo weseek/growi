@@ -88,7 +88,15 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 // TODO: define return type
-export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+export const createPage = async(
+    pagePath: string,
+    markdown: string,
+    tmpParams: OptionsToSave,
+): Promise<{
+  page: any,
+  tags: any,
+  revision: any
+} | Record<string, never>> => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -98,7 +106,10 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams: O
   const res = await apiv3Post('/pages/', params);
   const { page, tags, revision } = res.data;
 
-  return { page, tags, revision };
+  if (page && tags && revision) {
+    return { page, tags, revision };
+  }
+  return {};
 };
 
 // TODO: define return type
