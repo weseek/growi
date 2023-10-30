@@ -495,7 +495,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply pagrent page grant
+    // apply parent page grant
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       await applyGrantToPage(props, ancestor);

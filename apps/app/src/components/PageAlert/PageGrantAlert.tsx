@@ -14,6 +14,10 @@ export const PageGrantAlert = (): JSX.Element => {
     return <></>;
   }
 
+  const populatedGrantedGroups = () => {
+    return pageData.grantedGroups.filter(group => isPopulated(group.item));
+  };
+
   const renderAlertContent = () => {
     const getGrantLabel = () => {
       if (pageData.grant === 2) {
@@ -35,7 +39,7 @@ export const PageGrantAlert = (): JSX.Element => {
           <>
             <i className="icon-fw icon-organization"></i>
             <strong>{
-              isPopulated(pageData.grantedGroups[0].item) && pageData.grantedGroups[0].item.name
+              populatedGrantedGroups().map(g => g.item.name).join(', ')
             }
             </strong>
           </>

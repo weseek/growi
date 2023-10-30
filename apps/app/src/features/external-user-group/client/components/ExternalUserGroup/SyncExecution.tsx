@@ -136,7 +136,6 @@ export const SyncExecution = ({
       </form>
 
       <Modal
-        className="select-grant-group"
         isOpen={isAlertModalOpen}
         toggle={() => setIsAlertModalOpen(false)}
       >
