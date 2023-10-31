@@ -8,7 +8,7 @@
     "paths": {
     },
 
-    /* TOOD: remove below flags for strict checking */
+    /* TODO: remove below flags for strict checking */
     "noImplicitAny": false
   },
   "include": [

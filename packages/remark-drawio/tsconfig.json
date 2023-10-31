@@ -4,7 +4,7 @@
   "compilerOptions": {
     "jsx": "react-jsx",
 
-    /* TOOD: remove below flags for strict checking */
+    /* TODO: remove below flags for strict checking */
     "strict": false,
     "noImplicitAny": false
   },
