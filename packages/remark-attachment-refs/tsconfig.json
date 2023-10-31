@@ -9,6 +9,7 @@
     },
 
     /* TOOD: remove below flags for strict checking */
+    "strict": false,
     "noImplicitAny": false
   },
   "include": [

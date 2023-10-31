@@ -2,8 +2,6 @@
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    /* TOOD: remove below flags for strict checking */
-    "noImplicitAny": false
   },
   "include": [
     "src"
