@@ -250,6 +250,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   return (
     <DropdownMenu
+      className="d-print-none"
       data-testid="page-item-control-menu"
       end={alignEnd}
       container="body"

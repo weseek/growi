@@ -39,7 +39,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
       })}
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
-          <div id="edit-tags-btn-wrapper-for-tooltip">
+          <div id="edit-tags-btn-wrapper-for-tooltip" className="d-print-none">
             <a
               className={
                 `btn btn-link btn-edit-tags text-muted d-flex align-items-center

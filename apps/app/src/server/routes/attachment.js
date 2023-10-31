@@ -454,10 +454,8 @@ module.exports = function(crowi, app) {
    * @apiParam {File} file
    */
   api.add = async function(req, res) {
-    let pageId = req.body.page_id || null;
+    const pageId = req.body.page_id || null;
     const pagePath = req.body.path || null;
-    const pageBody = req.body.page_body || null;
-    let pageCreated = false;
 
     // check params
     if (pageId == null && pagePath == null) {
@@ -469,66 +467,30 @@ module.exports = function(crowi, app) {
 
     const file = req.file;
 
-    let page;
-    if (pageId == null) {
-      logger.debug('Create page before file upload');
-
-      if (!isCreatablePage(pagePath)) {
-        return res.json(ApiResponse.error(`Could not use the path '${pagePath}'`));
-      }
-
-      if (isUserPage(pagePath)) {
-        const isExistUser = await User.isExistUserByUserPagePath(pagePath);
-        if (!isExistUser) {
-          return res.json(ApiResponse.error("Unable to create a page under a non-existent user's user page"));
-        }
-      }
-
-      const isAclEnabled = crowi.aclService.isAclEnabled();
-      const grant = isAclEnabled ? Page.GRANT_OWNER : Page.GRANT_PUBLIC;
-
-      page = await crowi.pageService.create(pagePath, pageBody ?? '', req.user, { grant });
-      pageCreated = true;
-      pageId = page._id;
-    }
-    else {
-      page = await Page.findById(pageId);
+    try {
+      const page = await Page.findById(pageId);
 
       // check the user is accessible
       const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
       if (!isAccessible) {
         return res.json(ApiResponse.error(`Forbidden to access to the page '${page.id}'`));
       }
-    }
 
-    let attachment;
-    try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+      const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+
+      const result = {
+        page: serializePageSecurely(page),
+        revision: serializeRevisionSecurely(page.revision),
+        attachment: attachment.toObject({ virtuals: true }),
+      };
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
+
+      res.json(ApiResponse.success(result));
     }
     catch (err) {
       logger.error(err);
       return res.json(ApiResponse.error(err.message));
-    }
-
-    const result = {
-      page: serializePageSecurely(page),
-      revision: serializeRevisionSecurely(page.revision),
-      attachment: attachment.toObject({ virtuals: true }),
-      pageCreated,
-    };
-
-    activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
-
-    res.json(ApiResponse.success(result));
-
-    if (pageCreated) {
-      // global notification
-      try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, page, req.user);
-      }
-      catch (err) {
-        logger.error('Create notification failed', err);
-      }
     }
   };
 
