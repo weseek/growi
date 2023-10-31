@@ -96,20 +96,18 @@ export const createPage = async(
   page: any,
   tags: any,
   revision: any
-} | Record<string, never>> => {
+}> => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
     body: markdown,
   });
 
+  // !! WARNING !! in the case where the 'shouldReturnIfPathExists' in 'params' is true, return value might be an empty object {}.
   const res = await apiv3Post('/pages/', params);
   const { page, tags, revision } = res.data;
 
-  if (page && tags && revision) {
-    return { page, tags, revision };
-  }
-  return {};
+  return { page, tags, revision };
 };
 
 // TODO: define return type
