@@ -45,7 +45,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     setOpen(bool => !bool);
   }, []);
 
-  const onClickCreateReplaceSelection = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownText(prefix, suffix);
+  const onClickCreateReplaceSelection = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
 
   return (
     <div className="d-flex">

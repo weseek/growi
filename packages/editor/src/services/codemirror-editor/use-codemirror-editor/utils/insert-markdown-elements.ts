@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { EditorView } from '@codemirror/view';
 
-export type InsertMarkdownText = (
+export type InsertMarkdowElements = (
   prefix: string,
   suffix: string,
 ) => void;
 
-export const useInsertMarkdownText = (view?: EditorView): InsertMarkdownText => {
+export const useInsertMarkdownElements = (view?: EditorView): InsertMarkdowElements => {
 
   return useCallback((prefix, suffix) => {
     const selection = view?.state.sliceDoc(
