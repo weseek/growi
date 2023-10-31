@@ -24,7 +24,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   }
 
   return (
-    <div className="d-md-none d-edit-none fixed-bottom">
+    <div className="d-md-none d-edit-none d-print-none fixed-bottom">
 
       { isDeviceSmallerThanMd && !isSearchPage && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
