@@ -15,16 +15,13 @@ export const useInsertMarkdownText = (view?: EditorView): InsertMarkdownText => 
       view?.state.selection.main.to,
     );
     const cursorPos = view?.state.selection.main.head;
-    let curPosAfterReplacing = {};
     const insertText = view?.state.replaceSelection(prefix + selection + suffix);
 
-    if (insertText) {
-      view?.dispatch(insertText);
-      if (cursorPos) {
-        curPosAfterReplacing = cursorPos + prefix.length;
-      }
-      view?.dispatch({ selection: { anchor: curPosAfterReplacing as number } });
-      view?.focus();
+    if (insertText == null || cursorPos == null) {
+      return;
     }
+    view?.dispatch(insertText);
+    view?.dispatch({ selection: { anchor: cursorPos + prefix.length } });
+    view?.focus();
   }, [view]);
 };
