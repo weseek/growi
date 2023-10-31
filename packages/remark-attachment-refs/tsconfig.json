@@ -6,7 +6,10 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+
+    /* TOOD: remove below flags for strict checking */
+    "noImplicitAny": false
   },
   "include": [
     "src"

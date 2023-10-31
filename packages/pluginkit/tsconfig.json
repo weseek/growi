@@ -5,7 +5,10 @@
     "module": "CommonJS",
     "types": [
       "vitest/globals"
-    ]
+    ],
+
+    /* TOOD: remove below flags for strict checking */
+    "noImplicitAny": false
   },
   "include": [
     "src"

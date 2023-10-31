@@ -15,7 +15,11 @@
       "~/*": ["./src/*"],
       "^/*": ["./*"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
-    }
+    },
+
+    /* TOOD: remove below flags for strict checking */
+    "noImplicitAny": false
+
   },
   "include": [
     "next-env.d.ts",
