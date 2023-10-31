@@ -1,4 +1,3 @@
-
 import { ErrorV3 } from '@growi/core/dist/models';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 
@@ -9,6 +8,7 @@ import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+
 
 const logger = loggerFactory('growi:routes:apiv3:users');
 
@@ -123,6 +123,7 @@ module.exports = (crowi) => {
       }
       return req.user.admin;
     }),
+    query('excludedUserIds').optional().isArray().withMessage('excludedUserIds must be an array'),
   ];
 
   validator.recentCreatedByUser = [
@@ -256,6 +257,8 @@ module.exports = (crowi) => {
     const { forceIncludeAttributes } = req.query;
     const selectedStatusList = req.query.selectedStatusList || ['active'];
 
+    const excludedUserIds = req.query.excludedUserIds ?? [];
+
     const statusNoList = (selectedStatusList.includes('all')) ? Object.values(statusNo) : selectedStatusList.map(element => statusNo[element]);
 
     // Search from input
@@ -277,6 +280,7 @@ module.exports = (crowi) => {
     const query = {
       $and: [
         { status: { $in: statusNoList } },
+        { _id: { $nin: excludedUserIds } },
         {
           $or: orConditions,
         },
