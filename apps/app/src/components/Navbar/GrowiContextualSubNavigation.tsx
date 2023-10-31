@@ -312,14 +312,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
             disableSeenUserInfoPopover={isSharedUser}
             showPageControlDropdown={isAbleToShowPageManagement}
-            isReadOnlyUser={isReadOnlyUser}
-            isGuestUser={isGuestUser}
             additionalMenuItemRenderer={additionalMenuItemsRenderer}
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
             onClickSwitchContentWidth={switchContentWidthHandler}
           />
+
         )}
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager

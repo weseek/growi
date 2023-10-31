@@ -13,6 +13,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
@@ -113,9 +114,8 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    isGuestUser, isReadOnlyUser, onClickEditTagsButton,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer, isGuestUser, isReadOnlyUser,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: editorMode } = useEditorMode();
@@ -299,16 +299,16 @@ type PageControlsProps = CommonProps & {
   revisionId?: string | null,
   path?: string | null,
   expandContentWidth?: boolean,
-  isGuestUser?: boolean,
-  isReadOnlyUser?: boolean,
 };
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, expandContentWidth, isGuestUser, isReadOnlyUser,
+    pageId, revisionId, path, shareLinkId, expandContentWidth,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { open: openTagEditModal } = useTagEditModal();
