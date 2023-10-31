@@ -32,18 +32,11 @@ import SubscribeButton from './SubscribeButton';
 import styles from './PageControls.module.scss';
 
 type TagsProps = {
-  pageId: string,
-  revisionId: string,
+  onClickEditTagsButton: () => void,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { pageId, revisionId } = props;
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
-  const { open: openTagEditModal } = useTagEditModal();
-
-  const onClickEditTagsButton = useCallback(() => {
-    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
-  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
+  const { onClickEditTagsButton } = props;
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
@@ -113,6 +106,7 @@ type PageControlsSubstanceProps = CommonProps & {
   expandContentWidth?: boolean,
   isGuestUser?: boolean,
   isReadOnlyUser?: boolean,
+  onClickEditTagsButton: () => void,
 }
 
 const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
@@ -120,7 +114,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    isGuestUser, isReadOnlyUser,
+    isGuestUser, isReadOnlyUser, onClickEditTagsButton,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -249,8 +243,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && !isViewMode && (
         <Tags
-          pageId={pageId}
-          revisionId={revisionId}
+          onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
       {revisionId != null && (
@@ -317,6 +310,12 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { open: openTagEditModal } = useTagEditModal();
+
+  const onClickEditTagsButton = useCallback(() => {
+    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
+  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
 
   if (error != null) {
     return <></>;
@@ -335,6 +334,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       path={path}
       isGuestUser={isGuestUser}
       isReadOnlyUser={isReadOnlyUser}
+      onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}
