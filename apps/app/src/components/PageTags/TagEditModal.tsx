@@ -1,4 +1,6 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, {
+  useState, useCallback, useEffect, useMemo,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -18,13 +20,16 @@ export const TagEditModal: React.FC = () => {
 
   const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
 
+  const initTags = useMemo(() => {
+    return tagEditModalData?.tags ?? [];
+  }, [tagEditModalData?.tags]);
+
   const isOpen = tagEditModalData?.isOpen;
-  const initTags = tagEditModalData?.tags;
   const pageId = tagEditModalData?.pageId;
   const revisionId = tagEditModalData?.revisionId;
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  const [tags, setTags] = useState<string[] | undefined>(initTags);
+  const [tags, setTags] = useState<string[] | undefined>();
 
   // use to take initTags when redirect to other page
   useEffect(() => {

@@ -15,13 +15,15 @@ type TypeaheadInstance = {
 }
 
 type Props = {
-  tags?: string[],
+  tags,
   autoFocus: boolean,
   onTagsUpdated: (tags: string[]) => void,
 }
 
 export const TagsInput: FC<Props> = (props: Props) => {
   const { t } = useTranslation();
+  const { tags, autoFocus, onTagsUpdated } = props;
+
   const tagsInputRef = useRef<TypeaheadInstance>(null);
 
   const [resultTags, setResultTags] = useState<string[]>([]);
@@ -32,10 +34,10 @@ export const TagsInput: FC<Props> = (props: Props) => {
   const isLoading = error == null && tagsSearch === undefined;
 
   const changeHandler = useCallback((selected: string[]) => {
-    if (props.onTagsUpdated != null) {
-      props.onTagsUpdated(selected);
+    if (onTagsUpdated != null) {
+      onTagsUpdated(selected);
     }
-  }, [props]);
+  }, [onTagsUpdated]);
 
   const searchHandler = useCallback(async(query: string) => {
     const tagsSearchData = tagsSearch?.tags || [];
@@ -64,7 +66,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
         id="tag-typeahead-asynctypeahead"
         ref={tagsInputRef}
         caseSensitive={false}
-        defaultSelected={props.tags ?? []}
+        defaultSelected={tags}
         isLoading={isLoading}
         minLength={1}
         multiple
@@ -74,7 +76,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
         onKeyDown={keyDownHandler}
         options={resultTags} // Search result (Some tag names)
         placeholder={t('tag_edit_modal.tags_input.tag_name')}
-        autoFocus={props.autoFocus}
+        autoFocus={autoFocus}
       />
     </div>
   );
