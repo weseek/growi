@@ -99,7 +99,7 @@ const WorkflowModal = (): JSX.Element => {
         />
       )}
 
-      { pageType === PageType.edit && (
+      { pageType === PageType.edit && selectedWorkflow != null && (
         <WorkflowEditModalContent
           workflow={selectedWorkflow}
           onUpdated={workflowSaveButtonClickHandler}

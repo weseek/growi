@@ -11,8 +11,8 @@ import { useSWRxWorkflow } from '../../stores/workflow';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
-  workflow?: IWorkflowHasId
-  onUpdated: () => void
+  workflow: IWorkflowHasId
+  onUpdated?: () => void
   onClickWorkflowDetailPageBackButton: () => void
 }
 
@@ -21,10 +21,10 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const { workflow, onUpdated, onClickWorkflowDetailPageBackButton } = props;
 
-  const { editingApproverGroups } = useEditingApproverGroups(workflow?.approverGroups);
+  const { editingApproverGroups } = useEditingApproverGroups(workflow.approverGroups);
 
-  const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow?.name);
-  const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow?.comment);
+  const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
+  const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
 
@@ -41,10 +41,6 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     }
   }, [editingWorkflowDescription, editingWorkflowName, onUpdated, updateWorkflow]);
 
-
-  if (workflow == null) {
-    return <></>;
-  }
 
   return (
     <>
