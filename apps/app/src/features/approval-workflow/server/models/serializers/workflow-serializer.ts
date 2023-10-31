@@ -1,9 +1,9 @@
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 
-import { WorkflowDocument } from '../workflow';
+import { IWorkflowDocument } from '../workflow';
 
 
-export const serializeWorkflowSecurely = (workflow: WorkflowDocument, isOnlyCreator = false):WorkflowDocument => {
+export const serializeWorkflowSecurely = (workflow: IWorkflowDocument, isOnlyCreator = false): IWorkflowDocument => {
 
   workflow.creator = serializeUserSecurely(workflow.creator);
   if (isOnlyCreator) {

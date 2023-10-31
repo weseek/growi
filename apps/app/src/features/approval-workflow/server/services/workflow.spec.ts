@@ -4,7 +4,7 @@ import mongoose from 'mongoose';
 import {
   WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus,
 } from '../../interfaces/workflow';
-import { WorkflowDocument } from '../models/workflow';
+import { IWorkflowDocument } from '../models/workflow';
 
 
 import { WorkflowService } from './workflow';
@@ -35,7 +35,7 @@ describe('WorkflowService', () => {
           ],
         },
       ],
-    } as any as WorkflowDocument;
+    } as any as IWorkflowDocument;
 
     it('Should fail if not Workflow Creator, Workflow Approver, or Admin User', () => {
       // setup

@@ -101,7 +101,7 @@ WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): Wor
 /*
 * Workflow
 */
-type IWorkflowDocument = {
+export type IWorkflowDocument = {
   creator: Ref<IUser>
   pageId: string
   name?: string,
