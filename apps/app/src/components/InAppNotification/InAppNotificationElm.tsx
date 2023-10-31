@@ -86,72 +86,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const actionUsers = getActionUsers();
 
-  const actionType: string = notification.action;
-  let actionMsg: string;
-  let actionIcon: string;
-
-  switch (actionType) {
-    case 'PAGE_LIKE':
-      actionMsg = 'liked';
-      actionIcon = 'icon-like';
-      break;
-    case 'PAGE_BOOKMARK':
-      actionMsg = 'bookmarked on';
-      actionIcon = 'icon-star';
-      break;
-    case 'PAGE_UPDATE':
-      actionMsg = 'updated on';
-      actionIcon = 'ti ti-agenda';
-      break;
-    case 'PAGE_RENAME':
-      actionMsg = 'renamed';
-      actionIcon = 'icon-action-redo';
-      break;
-    case 'PAGE_DUPLICATE':
-      actionMsg = 'duplicated';
-      actionIcon = 'icon-docs';
-      break;
-    case 'PAGE_DELETE':
-      actionMsg = 'deleted';
-      actionIcon = 'icon-trash';
-      break;
-    case 'PAGE_DELETE_COMPLETELY':
-      actionMsg = 'completely deleted';
-      actionIcon = 'icon-fire';
-      break;
-    case 'PAGE_REVERT':
-      actionMsg = 'reverted';
-      actionIcon = 'icon-action-undo';
-      break;
-    case 'PAGE_RECURSIVELY_RENAME':
-      actionMsg = 'renamed under';
-      actionIcon = 'icon-action-redo';
-      break;
-    case 'PAGE_RECURSIVELY_DELETE':
-      actionMsg = 'deleted under';
-      actionIcon = 'icon-trash';
-      break;
-    case 'PAGE_RECURSIVELY_DELETE_COMPLETELY':
-      actionMsg = 'deleted completely under';
-      actionIcon = 'icon-fire';
-      break;
-    case 'PAGE_RECURSIVELY_REVERT':
-      actionMsg = 'reverted under';
-      actionIcon = 'icon-action-undo';
-      break;
-    case 'COMMENT_CREATE':
-      actionMsg = 'commented on';
-      actionIcon = 'icon-bubble';
-      break;
-    case 'USER_REGISTRATION_APPROVAL_REQUEST':
-      actionMsg = 'requested registration approval';
-      actionIcon = 'icon-bubble';
-      break;
-    default:
-      actionMsg = '';
-      actionIcon = '';
-  }
-
   const isDropdownItem = props.type === 'dropdown-item';
 
   // determine tag
@@ -175,8 +109,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
           <PageModelNotification
             ref={notificationRef}
             notification={notification}
-            actionMsg={actionMsg}
-            actionIcon={actionIcon}
             actionUsers={actionUsers}
           />
         )}
@@ -184,8 +116,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
           <UserModelNotification
             ref={notificationRef}
             notification={notification}
-            actionMsg={actionMsg}
-            actionIcon={actionIcon}
             actionUsers={actionUsers}
           />
         )}

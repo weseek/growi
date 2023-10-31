@@ -3,8 +3,7 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';

@@ -336,16 +336,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // refs: https://redmine.weseek.co.jp/issues/126528
         // editorRef.current.insertText(insertText);
         codeMirrorEditor?.insertText(insertText);
-
-        // when if created newly
-        // Not using 'mutateGrant' to inherit the grant of the parent page
-        if (resAdd.pageCreated) {
-          logger.info('Page is created', resAdd.page._id);
-          mutateIsLatestRevision(true);
-          setCreatedPageRevisionIdWithAttachment(resAdd.page.revision);
-          await mutateCurrentPageId(resAdd.page._id);
-          await mutateCurrentPage();
-        }
       }
       catch (e) {
         logger.error('failed to upload', e);
@@ -358,7 +348,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     });
 
-  }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
+  }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadableFile) {

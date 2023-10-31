@@ -26,7 +26,6 @@
     "@codemirror/language": "^6.8.0",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.15.3",
-    "@material-symbols/font-300": "^0.13.1",
     "@popperjs/core": "^2.11.8",
     "@types/react": "^18.2.14",
     "@types/react-dom": "^18.2.6",

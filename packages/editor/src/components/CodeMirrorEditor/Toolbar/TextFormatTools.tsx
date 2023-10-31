@@ -4,6 +4,11 @@ import { Collapse } from 'reactstrap';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
+import styles from './TextFormatTools.module.scss';
+
+const btnTextFormatToolsTogglerClass = styles['btn-text-format-tools-toggler'];
+
+
 type TogglarProps = {
   isOpen: boolean,
   onClick?: () => void,
@@ -11,17 +16,17 @@ type TogglarProps = {
 
 const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 
-  const { onClick } = props;
+  const { isOpen, onClick } = props;
 
-  // TODO: change color by isOpen
+  const activeClass = isOpen ? 'active' : '';
 
   return (
     <button
       type="button"
-      className="btn btn-toolbar-button"
+      className={`btn btn-toolbar-button ${btnTextFormatToolsTogglerClass} ${activeClass}`}
       onClick={onClick}
     >
-      <span className="material-symbols-outlined fs-5">match_case</span>
+      <span className="material-symbols-outlined fs-3">match_case</span>
     </button>
   );
 };
