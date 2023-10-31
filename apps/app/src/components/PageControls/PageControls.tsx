@@ -105,8 +105,6 @@ type PageControlsSubstanceProps = CommonProps & {
   path?: string | null,
   pageInfo: IPageInfoForOperation,
   expandContentWidth?: boolean,
-  isGuestUser?: boolean,
-  isReadOnlyUser?: boolean,
   onClickEditTagsButton: () => void,
 }
 
@@ -114,10 +112,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer, isGuestUser, isReadOnlyUser,
+    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: editorMode } = useEditorMode();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
@@ -307,8 +307,6 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { open: openTagEditModal } = useTagEditModal();
@@ -332,8 +330,6 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId ?? null}
       path={path}
-      isGuestUser={isGuestUser}
-      isReadOnlyUser={isReadOnlyUser}
       onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}

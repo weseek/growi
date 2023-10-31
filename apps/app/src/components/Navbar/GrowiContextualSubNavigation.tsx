@@ -318,8 +318,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             onClickDeleteMenuItem={deleteItemClickedHandler}
             onClickSwitchContentWidth={switchContentWidthHandler}
           />
-
         )}
+
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}
