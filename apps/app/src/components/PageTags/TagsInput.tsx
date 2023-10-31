@@ -15,7 +15,7 @@ type TypeaheadInstance = {
 }
 
 type Props = {
-  tags,
+  tags: string[],
   autoFocus: boolean,
   onTagsUpdated: (tags: string[]) => void,
 }

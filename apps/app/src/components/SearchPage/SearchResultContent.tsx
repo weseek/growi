@@ -194,7 +194,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-          // onClickEditTagsButton={onClickEditTagsButton}
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
