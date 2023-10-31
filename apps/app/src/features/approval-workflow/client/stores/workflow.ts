@@ -40,8 +40,15 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
 };
 
 
+type UpdateWorkflowData = {
+  name?: string,
+  comment?: string,
+  createApproverGroupData?: CreateApproverGroupData,
+  updateApproverGroupData?: UpdateApproverGroupData
+}
+
 type UseSWRxWorkflowUtils = {
-  update(name?: string, comment?: string, createApproverGroupData?: CreateApproverGroupData, updateApproverGroupData?: UpdateApproverGroupData): Promise<void>
+  update(updateData: UpdateWorkflowData): Promise<void>
 };
 
 export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSWRxWorkflowUtils, IWorkflowHasId, Error> => {
@@ -53,18 +60,14 @@ export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSW
   );
 
   // utils
-  const update = useCallback(async(
-      name?: string, comment?: string, createApproverGroupData?: CreateApproverGroupData, updateApproverGroupData?: UpdateApproverGroupData,
-  ) => {
-    try {
-      const response = await apiv3Put(`/workflow/${workflowId}`, {
-        name, comment, createApproverGroupData, updateApproverGroupData,
-      });
-      swrResponse.mutate(response.data.updatedWorkflow);
-    }
-    catch (err) {
-      throw err;
-    }
+  const update = useCallback(async(updateData: UpdateWorkflowData) => {
+    const response = await apiv3Put(`/workflow/${workflowId}`, {
+      name: updateData.name,
+      comment: updateData.comment,
+      createApproverGroupData: updateData.createApproverGroupData,
+      updateApproverGroupData: updateData.updateApproverGroupData,
+    });
+    swrResponse.mutate(response.data.updatedWorkflow);
   }, [swrResponse, workflowId]);
 
   return withUtils<UseSWRxWorkflowUtils, IWorkflowHasId, Error>(swrResponse, { update });

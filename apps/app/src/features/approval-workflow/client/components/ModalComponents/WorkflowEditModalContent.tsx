@@ -30,7 +30,13 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const clickSaveWorkflowButtonClickHandler = useCallback(async() => {
     try {
-      await updateWorkflow(editingWorkflowName, editingWorkflowDescription, undefined, undefined);
+      const updateData = {
+        name: editingWorkflowName,
+        comment: editingWorkflowDescription,
+        createApproverGroupData: undefined,
+        updateApproverGroupData: undefined,
+      };
+      await updateWorkflow(updateData);
 
       if (onUpdated != null) {
         onUpdated();
