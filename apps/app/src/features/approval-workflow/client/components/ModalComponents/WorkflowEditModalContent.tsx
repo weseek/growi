@@ -23,8 +23,8 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const { editingApproverGroups } = useEditingApproverGroups(workflow?.approverGroups);
 
-  const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>();
-  const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>();
+  const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow?.name);
+  const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow?.comment);
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
 
@@ -37,7 +37,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       }
     }
     catch (err) {
-      //
+      // TODO: Consider how to display errors
     }
   }, [editingWorkflowDescription, editingWorkflowName, onUpdated, updateWorkflow]);
 
