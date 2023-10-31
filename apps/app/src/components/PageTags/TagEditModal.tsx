@@ -25,9 +25,12 @@ export const TagEditModal: React.FC = () => {
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const [tags, setTags] = useState<string[] | undefined>(initTags);
+
+  // use to take initTags when redirect to other page
   useEffect(() => {
     setTags(initTags);
   }, [initTags]);
+
   const handleSubmit = useCallback(async() => {
 
     try {
