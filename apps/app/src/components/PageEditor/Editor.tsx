@@ -24,6 +24,7 @@ import { Cheatsheet } from './Cheatsheet';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
 
+
 import styles from './Editor.module.scss';
 
 export type EditorPropsType = {

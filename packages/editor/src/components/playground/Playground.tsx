@@ -4,7 +4,7 @@ import {
 
 import { toast } from 'react-toastify';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { AcceptedUploadFileType, GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
@@ -48,9 +48,8 @@ export const Playground = (): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
-
   return (
-    <>
+    <div className="d-flex flex-column vw-100 vh-100">
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
         <div className="text-white">GrowiSubNavigation</div>
       </div>
@@ -61,6 +60,7 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
+            acceptedFileType={AcceptedUploadFileType.ALL}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
@@ -71,6 +71,6 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>
         <div className="text-white">EditorNavbarBottom</div>
       </div>
-    </>
+    </div>
   );
 };

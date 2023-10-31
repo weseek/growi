@@ -16,10 +16,8 @@ type Props = {
 
 const CustomizePresentationSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
-
-  console.log(adminCustomizeContainer);
-
   const { t } = useTranslation();
+
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizePresentation();
@@ -28,7 +26,8 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [adminCustomizeContainer]);
+  }, [adminCustomizeContainer, t]);
+
   return (
     <React.Fragment>
       <h2 className="admin-setting-header">{t('admin:customize_settings.custom_presentation')}</h2>
@@ -51,10 +50,10 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
               </a>
               <br></br>
               <a
-                href={`${t('admin:customize_settings.presentation_options.presentation_docs_link')}`}
+                href={`${t('admin:customize_settings.presentation_options.marp_in_gorwi_link')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-              >{`${t('admin:customize_settings.presentation_options.presentation_docs')}`}
+              >{`${t('admin:customize_settings.presenattion_options.marp_in_growi')}`}
               </a>
             </p>
           </CustomizePresentationOption>

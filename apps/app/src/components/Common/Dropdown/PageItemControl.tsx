@@ -250,6 +250,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   return (
     <DropdownMenu
+      className="d-print-none"
       data-testid="page-item-control-menu"
       end={alignEnd}
       container="body"
@@ -266,7 +267,6 @@ PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
-  fetchOnInit?: boolean,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
 }
@@ -274,12 +274,12 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    pageId, pageInfo: presetPageInfo, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
     onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
@@ -336,10 +336,10 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   return (
     <NotAvailableForGuest>
-      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
+      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} className="grw-page-item-control" data-testid="open-page-item-control-btn">
         { children ?? (
           <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-            <i className="icon-options"></i>
+            <span className="material-symbols-outlined">more_vert</span>
           </DropdownToggle>
         ) }
 
@@ -376,20 +376,4 @@ export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
   }
 
   return <PageItemControlSubstance pageId={pageId} {...props} />;
-};
-
-
-type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
-  pageId?: string,
-  children?: React.ReactNode,
-}
-
-export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
-  const { pageId } = props;
-
-  if (pageId == null) {
-    return <></>;
-  }
-
-  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
 };

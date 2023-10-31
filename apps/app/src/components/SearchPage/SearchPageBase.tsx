@@ -213,7 +213,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
 
       </div>
 
-      <div className="flex-expand-vert d-none d-lg-flex search-result-content">
+      <div className="flex-expand-vert d-none d-lg-flex">
         {pages != null && pages.length !== 0 && selectedPageWithMeta != null && (
           <SearchResultContent
             pageWithMeta={selectedPageWithMeta}

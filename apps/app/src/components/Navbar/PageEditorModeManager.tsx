@@ -1,8 +1,10 @@
-import React, { type ReactNode, useCallback } from 'react';
+import React, { type ReactNode, useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { EditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+
+import { useOnPageEditorModeButtonClicked } from './hooks';
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -10,17 +12,16 @@ import styles from './PageEditorModeManager.module.scss';
 type PageEditorModeButtonProps = {
   currentEditorMode: EditorMode,
   editorMode: EditorMode,
-  icon: ReactNode,
-  label: ReactNode,
+  children?: ReactNode,
   isBtnDisabled?: boolean,
   onClick?: (mode: EditorMode) => void,
 }
 const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
   const {
-    currentEditorMode, isBtnDisabled, editorMode, icon, label, onClick,
+    currentEditorMode, isBtnDisabled, editorMode, children, onClick,
   } = props;
 
-  const classNames = ['btn btn-outline-primary px-1'];
+  const classNames = ['btn btn-outline-primary py-1 px-2 d-flex align-items-center justify-content-center'];
   if (currentEditorMode === editorMode) {
     classNames.push('active');
   }
@@ -35,38 +36,43 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
       onClick={() => onClick?.(editorMode)}
       data-testid={`${editorMode}-button`}
     >
-      <span className="d-flex flex-column flex-md-row justify-content-center">
-        <span className="grw-page-editor-mode-manager-icon me-md-1">{icon}</span>
-        <span className="grw-page-editor-mode-manager-label">{label}</span>
-      </span>
+      {children}
     </button>
   );
 });
 
 type Props = {
   editorMode: EditorMode | undefined,
-  onPageEditorModeButtonClicked?: (editorMode: EditorMode) => void,
-  isBtnDisabled?: boolean,
+  isBtnDisabled: boolean,
+  path?: string,
+  grant?: number,
+  grantUserGroupId?: string
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
   const {
     editorMode = EditorMode.View,
     isBtnDisabled,
-    onPageEditorModeButtonClicked,
+    path,
+    grant,
+    grantUserGroupId,
   } = props;
 
   const { t } = useTranslation();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const [isCreating, setIsCreating] = useState(false);
 
-  const pageEditorModeButtonClickedHandler = useCallback((viewType) => {
-    if (isBtnDisabled ?? false) {
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+
+  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path, grant, grantUserGroupId);
+  const _isBtnDisabled = isCreating || isBtnDisabled;
+
+  const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
+    if (_isBtnDisabled) {
       return;
     }
-    if (onPageEditorModeButtonClicked != null) {
-      onPageEditorModeButtonClicked(viewType);
-    }
-  }, [isBtnDisabled, onPageEditorModeButtonClicked]);
+
+    onPageEditorModeButtonClicked?.(viewType);
+  }, [_isBtnDisabled, onPageEditorModeButtonClicked]);
 
   return (
     <>
@@ -76,25 +82,25 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
       >
-        {(!isDeviceSmallerThanMd || editorMode !== EditorMode.View) && (
+        {(isDeviceLargerThanMd || editorMode !== EditorMode.View) && (
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={_isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            icon={<i className="icon-control-play" />}
-            label={t('view')}
-          />
+          >
+            <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
+          </PageEditorModeButton>
         )}
-        {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && (
+        {(isDeviceLargerThanMd || editorMode === EditorMode.View) && (
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.Editor}
-            isBtnDisabled={isBtnDisabled}
+            isBtnDisabled={_isBtnDisabled}
             onClick={pageEditorModeButtonClickedHandler}
-            icon={<i className="icon-note" />}
-            label={t('Edit')}
-          />
+          >
+            <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
+          </PageEditorModeButton>
         )}
       </div>
     </>

@@ -111,16 +111,12 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               <input type="hidden" name="token" value={token} />
 
               <div className="input-group">
-                <div>
-                  <span className="input-group-text"><i className="icon-envelope"></i></span>
-                </div>
+                <span className="input-group-text"><i className="icon-envelope"></i></span>
                 <input type="text" className="form-control" placeholder={t('Email')} disabled value={email} />
               </div>
 
               <div className="input-group" id="input-group-username">
-                <div>
-                  <span className="input-group-text"><i className="icon-user"></i></span>
-                </div>
+                <span className="input-group-text"><i className="icon-user"></i></span>
                 <input
                   type="text"
                   className="form-control"
@@ -138,9 +134,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               )}
 
               <div className="input-group">
-                <div>
-                  <span className="input-group-text"><i className="icon-tag"></i></span>
-                </div>
+                <span className="input-group-text"><i className="icon-tag"></i></span>
                 <input
                   type="text"
                   className="form-control"
@@ -154,9 +148,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </div>
 
               <div className="input-group">
-                <div>
-                  <span className="input-group-text"><i className="icon-lock"></i></span>
-                </div>
+                <span className="input-group-text"><i className="icon-lock"></i></span>
                 <input
                   type="password"
                   className="form-control"

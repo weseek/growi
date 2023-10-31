@@ -93,7 +93,7 @@ export const EmojiButton: FC<Props> = (props) => {
     });
 
     toggle();
-  }, [cursorIndex, view]);
+  }, [cursorIndex, toggle, view]);
 
   const setStyle = useCallback((): CSSProperties => {
     if (view == null || cursorIndex == null) {
@@ -122,12 +122,12 @@ export const EmojiButton: FC<Props> = (props) => {
       left: cursorRect.left + offset,
       position: 'fixed',
     };
-  }, [cursorIndex, view]);
+  }, [cursorIndex, isOpen, view]);
 
   return (
     <>
       <button type="button" className="btn btn-toolbar-button" onClick={toggle}>
-        <span className="material-icons-outlined fs-6">emoji_emotions</span>
+        <span className="material-symbols-outlined fs-5">emoji_emotions</span>
       </button>
       { isOpen
       && (

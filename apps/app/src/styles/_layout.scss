@@ -13,6 +13,7 @@
 
 .dynamic-layout-root {
   @extend %flex-expand-vert;
+  overflow-y: unset;
 }
 
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
@@ -60,22 +61,6 @@
   @include bs.media-breakpoint-up(lg) {
     margin-top: 2rem;
   }
-}
-
-.grw-side-contents-container {
-  margin-bottom: 1rem;
-
-  @include bs.media-breakpoint-up(lg) {
-    width: 250px;
-    min-width: 250px;
-    margin-left: 30px;
-  }
-}
-
-.grw-side-contents-sticky-container {
-  position: sticky;
-  // growisubnavigation + grw-navbar-boder + some spacing
-  top: calc(100px + 4px + 20px);
 }
 
 // printable style

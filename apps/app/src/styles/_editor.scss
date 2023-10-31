@@ -5,28 +5,9 @@
 
 // global imported
 .layout-root.editing {
-  overflow-y: hidden !important;
-
-  .grw-navbar {
-    position: fixed !important;
-    width: 100vw;
-  }
-
-  // restrict height of subnav
-  .grw-subnav {
-    height: var.$grw-subnav-height-on-edit;
-    min-height: unset;
-    padding-top: 0;
-    padding-right: 15px;
-    padding-left: 15px;
-
-    @include bs.media-breakpoint-up(lg) {
-      height: var.$grw-subnav-height-lg-on-edit;
-    }
-  }
+  overflow: hidden !important;
 
   .page-wrapper {
-    top: 0;
     height: 100vh;
   }
 
@@ -44,87 +25,11 @@
   /*****************
    * Expand Editor
    *****************/
-  .grw-editor-navbar-bottom {
-    height: var.$grw-editor-navbar-bottom-height;
-
-    .grw-grant-selector {
-      @include bs.media-breakpoint-down(sm) {
-        .btn .label {
-          display: none;
-        }
-      }
-      @include bs.media-breakpoint-up(md) {
-        .dropdown-toggle {
-          min-width: 100px;
-
-          // caret
-          &::after {
-            margin-left: 1em;
-          }
-        }
-      }
-    }
-
-    .btn-submit {
-      width: 100px;
-    }
-
-    .btn-expand {
-      // rotate icon
-      i {
-        display: inline-block;
-        transition: transform 200ms;
-      }
-      &.expand i {
-        transform: rotate(-180deg);
-      }
-    }
+  .dynamic-layout-root {
+    width: calc(100vw - var.$grw-sidebar-nav-width);
+    height: 100vh;
   }
 
-  /*********************
-   * Navigation styles
-   */
-  .grw-subnav {
-    padding-bottom: 0;
-
-    h1 {
-      font-size: 16px;
-    }
-
-    .grw-drawer-toggler {
-      width: 38px;
-      height: 38px;
-      font-size: 18px;
-    }
-  }
-
-  // ellipsis .grw-page-path-hierarchical-link
-  .grw-subnav-start-side {
-    overflow: hidden;
-    .grw-path-nav-container {
-      margin-right: 1rem;
-      overflow: hidden;
-      .grw-page-path-nav {
-        white-space: nowrap;
-
-        .grw-page-path-hierarchical-link {
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        h1 {
-          overflow: hidden;
-        }
-      }
-    }
-  }
-
-  .grw-copy-dropdown {
-    .btn-copy {
-      padding: 3px !important; // overwrite padding
-    }
-  }
 
   &.builtin-editor {
     /*****************
@@ -209,20 +114,6 @@
     top: 4.5em;
   }
 
-}
-
-.layout-root.editing {
-  &:not(.growi-layout-fluid) .page-editor-preview-body {
-    .wiki {
-      max-width: 980px;
-      margin: 0 auto;
-    }
-  }
-  &.growi-layout-fluid .page-editor-preview-body {
-    .wiki {
-      margin: 0 auto;
-    }
-  }
 }
 
 // TODO: Never used this id class
