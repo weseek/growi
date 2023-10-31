@@ -25,7 +25,6 @@ export const TagsInput: FC<Props> = (props: Props) => {
   const { tags, autoFocus, onTagsUpdated } = props;
 
   const tagsInputRef = useRef<TypeaheadInstance>(null);
-
   const [resultTags, setResultTags] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
