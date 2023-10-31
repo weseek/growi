@@ -29,7 +29,7 @@ export const TagEditModal: React.FC = () => {
   const revisionId = tagEditModalData?.revisionId;
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  const [tags, setTags] = useState<string[] | undefined>();
+  const [tags, setTags] = useState<string[]>([]);
 
   // use to take initTags when redirect to other page
   useEffect(() => {
