@@ -39,28 +39,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     setOpen(bool => !bool);
   }, []);
 
-  const view = codeMirrorEditor?.view;
-
-  const createReplaceSelectionHandler = useCallback((prefix: string, suffix: string) => {
-    return () => {
-      const selection = view?.state.sliceDoc(
-        view?.state.selection.main.from,
-        view?.state.selection.main.to,
-      );
-      const cursorPos = view?.state.selection.main.head;
-      let curPosAfterReplacing = {};
-      const insertText = view?.state.replaceSelection(prefix + selection + suffix);
-
-      if (insertText) {
-        view?.dispatch(insertText);
-        if (cursorPos) {
-          curPosAfterReplacing = cursorPos + prefix.length;
-        }
-        view?.dispatch({ selection: { anchor: curPosAfterReplacing as number } });
-        view?.focus();
-      }
-    };
-  }, [view]);
+  const insertMarkdownText = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownText(prefix, suffix);
 
   return (
     <div className="d-flex">
@@ -68,19 +47,19 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
 
       <Collapse isOpen={isOpen} horizontal>
         <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => createReplaceSelectionHandler('**', '**')()}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => insertMarkdownText('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-symbols-outlined fs-5" onClick={() => createReplaceSelectionHandler('*', '*')()}>format_italic</span>
+            <span className="material-symbols-outlined fs-5" onClick={() => insertMarkdownText('*', '*')}>format_italic</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => createReplaceSelectionHandler('~', '~')()}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => insertMarkdownText('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => createReplaceSelectionHandler('`', '`')()}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => insertMarkdownText('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
