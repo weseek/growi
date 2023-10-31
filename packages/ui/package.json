@@ -8,8 +8,21 @@
   ],
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "scss"
   ],
+  "exports": {
+    "./dist/components": {
+      "import": "./dist/components/index.js"
+    },
+    "./dist/interfaces": {
+      "import": "./dist/interfaces/index.js"
+    },
+    "./dist/utils": {
+      "import": "./dist/utils/index.js"
+    },
+    "./scss/*": "./scss/*.scss"
+  },
   "scripts": {
     "build": "vite build",
     "clean": "shx rm -rf dist",

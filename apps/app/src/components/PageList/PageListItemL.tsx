@@ -9,8 +9,7 @@ import type {
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
@@ -29,7 +28,7 @@ import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
-import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
@@ -83,7 +82,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     },
   }));
 
-  const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -117,14 +116,14 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   // click event handler
   const clickHandler = useCallback(() => {
     // do nothing if mobile
-    if (isDeviceSmallerThanLg) {
+    if (!isDeviceLargerThanLg) {
       return;
     }
 
     if (onClickItem != null) {
       onClickItem(pageData._id);
     }
-  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+  }, [isDeviceLargerThanLg, onClickItem, pageData._id]);
 
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
@@ -174,9 +173,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
-  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
+  const styleListGroupItem = (isDeviceLargerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
-  const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
+  const styleActive = isDeviceLargerThanLg && isSelected ? 'active' : '';
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 

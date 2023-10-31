@@ -1,5 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
 @use './button-styles';
 
 .btn-group-bookmark :global {
@@ -18,7 +20,7 @@
 // == Colors
 .btn-group-bookmark :global {
   .btn-bookmark {
-    @include button-styles.btn-color(bs.$orange);
+    @include btn-muted.colorize(bs.$orange);
   }
 }
 
