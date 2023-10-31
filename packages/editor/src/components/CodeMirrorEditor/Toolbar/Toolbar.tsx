@@ -7,12 +7,12 @@ import { TableButton } from './TableButton';
 import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
-import { AcceptedUploadFileType } from 'src/consts';
+import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from 'src/consts';
 
 import styles from './Toolbar.module.scss';
 
 type Props = {
-  editorKey: string,
+  editorKey: string | GlobalCodeMirrorEditorKey,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType
 }

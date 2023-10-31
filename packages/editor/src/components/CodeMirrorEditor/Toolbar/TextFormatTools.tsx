@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
+import { GlobalCodeMirrorEditorKey } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';
@@ -32,7 +33,7 @@ const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 };
 
 type TextFormatToolsType = {
-  editorKey: string,
+  editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
 export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
