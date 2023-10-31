@@ -8,7 +8,7 @@ import { keymap, EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
-import { useEmojiAutocompletion } from '../use-emoji-autocompletion/use-emoji-autocompletion';
+import { emojiAutocompletionSettings } from '../../../stores/emojiAutocompletionSettings';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -37,7 +37,6 @@ const defaultExtensions: Extension[] = [
 
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
-  const emojiAutocompletionSettings = useEmojiAutocompletion();
 
   const mergedProps = useMemo(() => {
     return deepmerge(
@@ -55,7 +54,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         },
       },
     );
-  }, [emojiAutocompletionSettings, props]);
+  }, [props]);
 
   const { state, view } = useCodeMirror(mergedProps);
 
