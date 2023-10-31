@@ -20,8 +20,7 @@ const generateEmptyApproverGroup = (): IWorkflowApproverGroupReqForRenderList =>
 };
 
 const setUUIDtoApproverGroups = (approverGroups: IWorkflowApproverGroupHasId[]): IWorkflowApproverGroupReqForRenderList[] => {
-  const clonedApproverGroups = [...approverGroups] as unknown as IWorkflowApproverGroupReqForRenderList[];
-  return clonedApproverGroups.map((g) => { return { ...g, uuidForRenderList: crypto.randomUUID() } });
+  return approverGroups.map((g) => { return { ...g, uuidForRenderList: crypto.randomUUID() } }) as unknown as IWorkflowApproverGroupReqForRenderList[];
 };
 
 const getAllApproverIds = (approverGroups: IWorkflowApproverGroupReqForRenderList[]): string[] => {
