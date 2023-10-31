@@ -2,7 +2,6 @@ import { useCallback } from 'react';
 
 import { EditorView } from '@codemirror/view';
 
-
 export type InsertMarkdownText = (
   prefix: string,
   suffix: string,
