@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
+import { useCodeMirrorEditorIsolated } from '../../../stores';
+
 
 import styles from './TextFormatTools.module.scss';
 
@@ -30,12 +32,20 @@ const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
   );
 };
 
-export const TextFormatTools = (): JSX.Element => {
+type TextFormatToolsType = {
+  editorKey: string,
+}
+
+export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
+  const { editorKey } = props;
   const [isOpen, setOpen] = useState(false);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
   }, []);
+
+  const onClickAddPrefixToSelection = (prefix: string) => codeMirrorEditor?.insertPrefix(prefix);
 
   return (
     <div className="d-flex">
@@ -52,7 +62,7 @@ export const TextFormatTools = (): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickAddPrefixToSelection('#')}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
