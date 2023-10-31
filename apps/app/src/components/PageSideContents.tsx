@@ -41,7 +41,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   return (
     <>
       {/* Page list */}
-      <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']} d-print-none`}>
+      <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
         {!isSharedUser && (
           <button
             type="button"
@@ -64,7 +64,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
       {/* Comments */}
       {!isTopPagePath && (
-        <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']} d-print-none`}>
+        <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']}`}>
           <Link to="page-comments" offset={-120}>
             <button
               type="button"
