@@ -58,6 +58,11 @@ const WorkflowModal = (): JSX.Element => {
   /*
   * for WorkflowEditModalContent
   */
+  const workflowSaveButtonClickHandler = useCallback(async() => {
+    await mutateWorkflows();
+    setPageType(PageType.detail);
+  }, [mutateWorkflows]);
+
   const workflowDetailPageBackButtonClickHandler = useCallback(() => {
     setPageType(PageType.detail);
   }, []);
@@ -96,6 +101,8 @@ const WorkflowModal = (): JSX.Element => {
 
       { pageType === PageType.edit && (
         <WorkflowEditModalContent
+          workflow={selectedWorkflow}
+          onUpdated={workflowSaveButtonClickHandler}
           onClickWorkflowDetailPageBackButton={workflowDetailPageBackButtonClickHandler}
         />
       )}
