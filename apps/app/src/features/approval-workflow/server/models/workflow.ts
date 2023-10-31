@@ -30,7 +30,7 @@ type WorkflowApproverModel = Model<WorkflowApproverDocument>;
 
 const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowApproverModel>({
   user: {
-    type: Types.ObjectId,
+    type: Schema.Types.ObjectId,
     ref: 'User',
     required: true,
   },
@@ -48,7 +48,7 @@ const WorkflowApproverSchema = new Schema<WorkflowApproverDocument, WorkflowAppr
 /*
 * WorkflowApproverGroup
 */
-interface IWorkflowApproverGroupDocument {
+export interface IWorkflowApproverGroupDocument {
   approvalType: WorkflowApprovalType
   approvers: Types.DocumentArray<WorkflowApproverDocument>
   isApproved: boolean

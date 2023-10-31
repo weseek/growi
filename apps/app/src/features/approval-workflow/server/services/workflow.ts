@@ -9,7 +9,7 @@ import {
   CreateApproverGroupData,
   UpdateApproverGroupData,
 } from '../../interfaces/workflow';
-import Workflow, { IWorkflowDocument } from '../models/workflow';
+import Workflow, { type IWorkflowDocument } from '../models/workflow';
 
 import { WorkflowApproverGroupService } from './workflow-approver-group';
 

@@ -1,6 +1,6 @@
 import { serializeUserSecurely } from '~/server/models/serializers/user-serializer';
 
-import { IWorkflowDocument } from '../workflow';
+import type { IWorkflowDocument } from '../workflow';
 
 
 export const serializeWorkflowSecurely = (workflow: IWorkflowDocument, isOnlyCreator = false): IWorkflowDocument => {

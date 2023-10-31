@@ -4,7 +4,9 @@ import type {
   CreateApproverGroupData,
 } from '../../interfaces/workflow';
 import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
-import { WorkflowDocument, WorkflowApproverGroupDocument } from '../models/workflow';
+import type {
+  IWorkflowDocument, WorkflowDocument, IWorkflowApproverGroupDocument, WorkflowApproverGroupDocument,
+} from '../models/workflow';
 
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void
@@ -78,7 +80,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  private removeApproverGroup(targetWorkflow: WorkflowDocument, approverGroup: WorkflowApproverGroupDocument): void {
+  private removeApproverGroup(targetWorkflow: IWorkflowDocument, approverGroup: WorkflowApproverGroupDocument): void {
     const isIncludeApprovedApprover = approverGroup.approvers.some(v => v.status === WorkflowApproverStatus.APPROVE);
     if (isIncludeApprovedApprover) {
       throw Error('Cannot remove an approverGroup that contains approved approvers');
@@ -107,7 +109,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  private addApprover(approverGroup: WorkflowApproverGroupDocument, userIdsToAdd: string[]): void {
+  private addApprover(approverGroup: IWorkflowApproverGroupDocument, userIdsToAdd: string[]): void {
     userIdsToAdd.forEach((userId) => { approverGroup.approvers.push({ user: userId }) });
 
     return;
