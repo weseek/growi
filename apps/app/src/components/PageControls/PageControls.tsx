@@ -13,10 +13,10 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import { type IPageForPageDuplicateModal } from '~/stores/modal';
+import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
@@ -32,11 +32,18 @@ import SubscribeButton from './SubscribeButton';
 import styles from './PageControls.module.scss';
 
 type TagsProps = {
-  onClickEditTagsButton: () => void,
+  pageId: string,
+  revisionId: string,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { onClickEditTagsButton } = props;
+  const { pageId, revisionId } = props;
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { open: openTagEditModal } = useTagEditModal();
+
+  const onClickEditTagsButton = useCallback(() => {
+    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
+  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
@@ -106,7 +113,6 @@ type PageControlsSubstanceProps = CommonProps & {
   expandContentWidth?: boolean,
   isGuestUser?: boolean,
   isReadOnlyUser?: boolean,
-  onClickEditTagsButton: () => void,
 }
 
 const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
@@ -114,7 +120,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    isGuestUser, isReadOnlyUser, onClickEditTagsButton,
+    isGuestUser, isReadOnlyUser,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -243,7 +249,8 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && !isViewMode && (
         <Tags
-          onClickEditTagsButton={onClickEditTagsButton}
+          pageId={pageId}
+          revisionId={revisionId}
         />
       )}
       {revisionId != null && (
@@ -301,13 +308,12 @@ type PageControlsProps = CommonProps & {
   expandContentWidth?: boolean,
   isGuestUser?: boolean,
   isReadOnlyUser?: boolean,
-  onClickEditTagsButton: () => void,
 };
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
     pageId, revisionId, path, shareLinkId, expandContentWidth, isGuestUser, isReadOnlyUser,
-    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -329,7 +335,6 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       path={path}
       isGuestUser={isGuestUser}
       isReadOnlyUser={isReadOnlyUser}
-      onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}

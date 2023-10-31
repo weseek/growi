@@ -19,10 +19,10 @@ import {
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, useTagEditModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo, useSWRxTagsInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -202,11 +202,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
 
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { open: openTagEditModal } = useTagEditModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
@@ -216,10 +214,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const { isLinkSharingDisabled } = props;
-
-  const onClickEditTagsButton = useCallback(() => {
-    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
-  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -320,7 +314,6 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             showPageControlDropdown={isAbleToShowPageManagement}
             isReadOnlyUser={isReadOnlyUser}
             isGuestUser={isGuestUser}
-            onClickEditTagsButton={onClickEditTagsButton}
             additionalMenuItemRenderer={additionalMenuItemsRenderer}
             onClickDuplicateMenuItem={duplicateItemClickedHandler}
             onClickRenameMenuItem={renameItemClickedHandler}
