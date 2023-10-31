@@ -11,7 +11,10 @@
 
     /* TODO: remove below flags for strict checking */
     "strict": false,
-    "noImplicitAny": false
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "noImplicitAny": false,
+    "noImplicitOverride": true
   },
   "include": [
     "src"
