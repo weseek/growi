@@ -32,18 +32,18 @@ import SubscribeButton from './SubscribeButton';
 import styles from './PageControls.module.scss';
 
 type TagsProps = {
-  openTagEditModal?: () => void,
+  onClickEditTagsButton: () => void,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { openTagEditModal } = props;
+  const { onClickEditTagsButton } = props;
 
   return (
     <div className="grw-taglabels-container d-flex align-items-center">
       <button
         type="button"
         className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
-        onClick={openTagEditModal}
+        onClick={onClickEditTagsButton}
       >
         <i className="icon-tag me-2" />
         Tags
@@ -106,7 +106,7 @@ type PageControlsSubstanceProps = CommonProps & {
   expandContentWidth?: boolean,
   isGuestUser?: boolean,
   isReadOnlyUser?: boolean,
-  openTagEditModal?: () => void,
+  onClickEditTagsButton: () => void,
 }
 
 const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
@@ -114,7 +114,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    isGuestUser, isReadOnlyUser, openTagEditModal,
+    isGuestUser, isReadOnlyUser, onClickEditTagsButton,
     onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -243,7 +243,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
       {revisionId != null && !isViewMode && (
         <Tags
-          openTagEditModal={openTagEditModal}
+          onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
       {revisionId != null && (
@@ -301,13 +301,13 @@ type PageControlsProps = CommonProps & {
   expandContentWidth?: boolean,
   isGuestUser?: boolean,
   isReadOnlyUser?: boolean,
-  openTagEditModal?: () => void,
+  onClickEditTagsButton: () => void,
 };
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
     pageId, revisionId, path, shareLinkId, expandContentWidth, isGuestUser, isReadOnlyUser,
-    openTagEditModal, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -329,7 +329,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       path={path}
       isGuestUser={isGuestUser}
       isReadOnlyUser={isReadOnlyUser}
-      openTagEditModal={openTagEditModal}
+      onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}

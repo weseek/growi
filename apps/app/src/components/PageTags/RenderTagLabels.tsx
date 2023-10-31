@@ -10,12 +10,12 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
-  openTagEditModal?: () => void,
+  onClickEditTagsButton: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, openTagEditModal,
+    tags, isTagLabelsDisabled, onClickEditTagsButton,
   } = props;
   const { t } = useTranslation();
 
@@ -46,7 +46,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
                 ${isTagsEmpty && 'no-tags'}
                 ${isTagLabelsDisabled && 'disabled'}`
               }
-              onClick={openTagEditModal}
+              onClick={onClickEditTagsButton}
             >
               {isTagsEmpty && <>{ t('Add tags for this page') }</>}
               <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />

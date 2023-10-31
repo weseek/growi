@@ -44,6 +44,10 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { open: openTagEditModal } = useTagEditModal();
 
+  const onClickEditTagsButton = useCallback(() => {
+    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
+  }, [openTagEditModal, pageId, revisionId, tagsInfoData?.tags]);
+
   if (!showTagLabel) {
     return <></>;
   }
@@ -57,7 +61,7 @@ const Tags = (props: TagsProps): JSX.Element => {
           <PageTags
             tags={tagsInfoData.tags}
             isTagLabelsDisabled={isTagLabelsDisabled ?? false}
-            openTagEditModal={() => openTagEditModal(tagsInfoData?.tags, pageId, revisionId)}
+            onClickEditTagsButton={onClickEditTagsButton}
           />
         )
         : <PageTagsSkeleton />

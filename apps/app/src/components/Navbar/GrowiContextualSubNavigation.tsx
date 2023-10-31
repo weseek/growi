@@ -217,9 +217,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { isLinkSharingDisabled } = props;
 
-  const tagEditHandler = () => {
+  const onClickEditTagsButton = useCallback(() => {
     openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
-  };
+  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -321,7 +321,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
               showPageControlDropdown={isAbleToShowPageManagement}
               isReadOnlyUser={isReadOnlyUser}
               isGuestUser={isGuestUser}
-              openTagEditModal={tagEditHandler}
+              onClickEditTagsButton={onClickEditTagsButton}
               additionalMenuItemRenderer={additionalMenuItemsRenderer}
               onClickDuplicateMenuItem={duplicateItemClickedHandler}
               onClickRenameMenuItem={renameItemClickedHandler}
