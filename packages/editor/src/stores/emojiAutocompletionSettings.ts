@@ -1,6 +1,5 @@
 import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { syntaxTree } from '@codemirror/language';
-import { Extension } from '@codemirror/state';
 import { emojiIndex } from 'emoji-mart';
 import emojiData from 'emoji-mart/data/all.json';
 
@@ -53,7 +52,7 @@ const emojiAutocompletion = (context: CompletionContext) => {
   };
 };
 
-const emojiAutocompletionSettings = autocompletion({
+export const emojiAutocompletionSettings = autocompletion({
   addToOptions: [{
     render: (completion: Completion) => {
       const emojiName = completion.type ?? '';
@@ -70,7 +69,3 @@ const emojiAutocompletionSettings = autocompletion({
   icons: false,
   override: [emojiAutocompletion],
 });
-
-export const useEmojiAutocompletion = (): Extension => {
-  return emojiAutocompletionSettings;
-};
