@@ -10,15 +10,18 @@ import {
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useTagEditModal } from '~/stores/modal';
+import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
 
 import { TagsInput } from './TagsInput';
 
-const TagEditModalSubstance: React.FC = () => {
+type TagEditModalSubstanceProps = {
+  tagEditModalData?: TagEditModalStatus,
+  closeTagEditModal: () => void,
+}
 
+const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagEditModalSubstanceProps) => {
+  const { tagEditModalData, closeTagEditModal } = props;
   const { t } = useTranslation();
-
-  const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
 
   const initTags = useMemo(() => {
     return tagEditModalData?.tags ?? [];
@@ -69,12 +72,12 @@ const TagEditModalSubstance: React.FC = () => {
 };
 
 export const TagEditModal: React.FC = () => {
-  const { data: tagEditModalData } = useTagEditModal();
+  const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
   const isOpen = tagEditModalData?.isOpen;
 
   if (!isOpen) {
     return <></>;
   }
 
-  return <TagEditModalSubstance />;
+  return <TagEditModalSubstance tagEditModalData={tagEditModalData} closeTagEditModal={closeTagEditModal} />;
 };

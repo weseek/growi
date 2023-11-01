@@ -777,7 +777,7 @@ export const usePageSelectModal = (
 /*
 * TagEditModal
 */
-type TagEditModalStatus = {
+export type TagEditModalStatus = {
   tags: string[],
   isOpen: boolean,
   pageId: string,
@@ -785,7 +785,7 @@ type TagEditModalStatus = {
 }
 
 type TagEditModalUtils = {
-  open(tags, pageId, revisionId): Promise<void>
+  open(tags, pageId, revisionId): void,
   close(): void,
 }
 
