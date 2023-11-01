@@ -15,6 +15,8 @@ import {
   useSidebarMode,
 } from '~/stores/ui';
 
+import { DrawerToggler } from '../Common/DrawerToggler';
+
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
@@ -168,7 +170,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: sidebarMode, isCollapsedMode } = useSidebarMode();
+  const { data: sidebarMode, isDrawerMode, isDockMode } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -188,10 +190,15 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      { sidebarMode != null && isCollapsedMode() && <AppTitleOnSubnavigation /> }
+      { sidebarMode != null && isDrawerMode() && (
+        <DrawerToggler className="position-fixed d-none d-md-block">
+          <span className="material-symbols-outlined">reorder</span>
+        </DrawerToggler>
+      ) }
+      { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
-          { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
+          { sidebarMode != null && isDockMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />

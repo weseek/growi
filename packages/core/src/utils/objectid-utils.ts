@@ -1,12 +1,5 @@
 import ObjectId from 'bson-objectid';
 
-import { isServer } from './browser-utils';
-
-// Workaround to avoid https://github.com/williamkapke/bson-objectid/issues/50
-if (isServer()) {
-  global._Buffer = Buffer;
-}
-
 export function isValidObjectId(id: string | ObjectId | null | undefined): boolean {
   if (id == null) {
     return false;

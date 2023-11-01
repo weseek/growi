@@ -13,7 +13,6 @@ const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
 
-
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
@@ -59,6 +58,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
+
 
   return (
     <CodeMirrorEditor

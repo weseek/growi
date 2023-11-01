@@ -4,7 +4,7 @@ import { getIdForRef, type IPageHasId, type IPageInfoForOperation } from '@growi
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import { Link } from 'react-scroll';
+import { scroller } from 'react-scroll';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
@@ -14,11 +14,11 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
-import CountBadge from '../Common/CountBadge';
 import { ContentLinkButtons } from '../ContentLinkButtons';
-import PageListIcon from '../Icons/PageListIcon';
 import { PageTagsSkeleton } from '../PageTags';
 import TableOfContents from '../TableOfContents';
+
+import { PageAccessoriesControl } from './PageAccessoriesControl';
 
 import styles from './PageSideContents.module.scss';
 
@@ -104,48 +104,34 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       {/* Tags */}
       <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
 
-      {/* Page list */}
-      <div className={`grw-page-accessories-control ${styles['grw-page-accessories-control']} d-print-none`}>
+      <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
+        {/* Page list */}
         {!isSharedUser && (
-          <button
-            type="button"
-            className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-            onClick={() => openDescendantPageListModal(pagePath)}
-            data-testid="pageListButton"
-          >
-            <div className="grw-page-accessories-control-icon">
-              <PageListIcon />
-            </div>
-            {t('page_list')}
+          <div className="d-flex" data-testid="pageListButton">
+            <PageAccessoriesControl
+              icon={<span className="material-symbols-outlined">subject</span>}
+              label={t('page_list')}
+              // Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600
+              count={!isTrash && pageInfo != null ? (pageInfo as IPageInfoForOperation).descendantCount : undefined}
+              onClick={() => openDescendantPageListModal(pagePath)}
+            />
+          </div>
+        )}
 
-            {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
-            { !isTrash && pageInfo != null
-              ? <CountBadge count={(pageInfo as IPageInfoForOperation).descendantCount} offset={1} />
-              : <div className="px-2"></div>}
-          </button>
+        {/* Comments */}
+        {!isTopPagePath && (
+          <div className="d-flex" data-testid="page-comment-button">
+            <PageAccessoriesControl
+              icon={<span className="material-symbols-outlined">chat</span>}
+              label="Comments"
+              count={pageInfo != null ? (pageInfo as IPageInfoForOperation).commentCount : undefined}
+              onClick={() => scroller.scrollTo('comments-container', { smooth: false, offset: -120 })}
+            />
+          </div>
         )}
       </div>
 
-      {/* Comments */}
-      {!isTopPagePath && (
-        <div className={`mt-2 grw-page-accessories-control ${styles['grw-page-accessories-control']} d-print-none`}>
-          <Link to="page-comments" offset={-120}>
-            <button
-              type="button"
-              className="btn btn-outline-secondary grw-btn-page-accessories rounded-pill d-flex justify-content-between align-items-center"
-              data-testid="page-comment-button"
-            >
-              <i className="icon-fw icon-bubbles grw-page-accessories-control-icon"></i>
-              <span>Comments</span>
-              { pageInfo != null
-                ? <CountBadge count={(pageInfo as IPageInfoForOperation).commentCount} />
-                : <div className="px-2"></div>}
-            </button>
-          </Link>
-        </div>
-      )}
-
-      <div className="d-none d-lg-block">
+      <div className="d-none d-xl-block">
         <TableOfContents />
         {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>

@@ -335,24 +335,23 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         `}
         data-testid="grw-contextual-sub-nav"
       >
-        <div className="h-50">
-          {pageId != null && (
-            <PageControls
-              pageId={pageId}
-              revisionId={revisionId}
-              shareLinkId={shareLinkId}
-              path={path ?? currentPathname} // If the page is empty, "path" is undefined
-              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={additionalMenuItemsRenderer}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-              onClickSwitchContentWidth={switchContentWidthHandler}
-            />
-          )}
-        </div>
+        {pageId != null && (
+          <PageControls
+            pageId={pageId}
+            revisionId={revisionId}
+            shareLinkId={shareLinkId}
+            path={path ?? currentPathname} // If the page is empty, "path" is undefined
+            expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+            disableSeenUserInfoPopover={isSharedUser}
+            showPageControlDropdown={isAbleToShowPageManagement}
+            additionalMenuItemRenderer={additionalMenuItemsRenderer}
+            onClickDuplicateMenuItem={duplicateItemClickedHandler}
+            onClickRenameMenuItem={renameItemClickedHandler}
+            onClickDeleteMenuItem={deleteItemClickedHandler}
+            onClickSwitchContentWidth={switchContentWidthHandler}
+          />
+        )}
+
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}
