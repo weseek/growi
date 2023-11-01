@@ -93,7 +93,7 @@ export const EmojiButton: FC<Props> = (props) => {
     });
 
     toggle();
-  }, [cursorIndex, toggle, view]);
+  }, [cursorIndex, isOpen, toggle, view]);
 
   const setStyle = useCallback((): CSSProperties => {
     if (view == null || cursorIndex == null || !isOpen) {
