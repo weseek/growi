@@ -24,7 +24,6 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
   const { t } = useTranslation();
 
   const initTags = tagEditModalData.tags;
-
   const isOpen = tagEditModalData.isOpen;
   const pageId = tagEditModalData.pageId;
   const revisionId = tagEditModalData.revisionId;
