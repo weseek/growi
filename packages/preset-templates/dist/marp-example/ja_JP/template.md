@@ -126,7 +126,8 @@ size: 4:3
 
 # [画像イメージのための構文](https://marpit.marp.app/image-syntax)
 
-You can resize image size and apply filters through keywords: `width` (`w`), `height` (`h`), and filter CSS keywords.
+以下のキーワードを使って、画像サイズの変更やフィルターを適用できます
+ : `width` (`w`)、`height` (`h`)、CSS キーワードのフィルター
 
 ```markdown
 ![width:100px height:100px](image.png)
@@ -136,7 +137,7 @@ You can resize image size and apply filters through keywords: `width` (`w`), `he
 ![blur sepia:50%](filters.png)
 ```
 
-Please refer [resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image) and [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters).
+[resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image) と [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters)を指定してください。
 
 ![w:100px h:100px](https://avatars1.githubusercontent.com/u/20685754?v=4) ![w:100 h:100 blur sepia:50%](https://avatars1.githubusercontent.com/u/20685754?v=4)
 
