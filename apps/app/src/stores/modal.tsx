@@ -785,8 +785,8 @@ export type TagEditModalStatus = {
 }
 
 type TagEditModalUtils = {
-  open(tags: string[], pageId: string, revisionId: string): void,
-  close(): void,
+  open(tags: string[], pageId: string, revisionId: string): Promise<void>,
+  close(): Promise<void>,
 }
 
 export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
