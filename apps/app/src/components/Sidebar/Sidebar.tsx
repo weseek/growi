@@ -156,21 +156,29 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { className, children } = props;
 
-  const { data: isDrawerOpened } = useDrawerOpened();
+  const { data: isDrawerOpened, mutate } = useDrawerOpened();
 
   const openClass = `${isDrawerOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${className} ${openClass}`}>
-      {children}
-    </div>
+    <>
+      <div className={`${className} ${openClass}`}>
+        {children}
+      </div>
+      { isDrawerOpened && (
+        <div className="modal-backdrop fade show" onClick={() => mutate(false)} />
+      ) }
+    </>
   );
 });
 
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: sidebarMode, isDrawerMode, isDockMode } = useSidebarMode();
+  const {
+    data: sidebarMode,
+    isDrawerMode, isCollapsedMode, isDockMode,
+  } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -198,7 +206,7 @@ export const Sidebar = (): JSX.Element => {
       { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
-          { sidebarMode != null && isDockMode() && <AppTitleOnSidebarHead /> }
+          { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
             <SidebarContents />

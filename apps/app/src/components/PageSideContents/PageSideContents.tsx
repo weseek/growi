@@ -99,7 +99,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       {/* Tags */}
       <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
 
-      <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2 d-print-none`}>
+      <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
         {/* Page list */}
         {!isSharedUser && (
           <div className="d-flex" data-testid="pageListButton">

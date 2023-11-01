@@ -18,13 +18,12 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
 
-  const additionalClasses = [styles['grw-navbar-bottom']];
-  if (isDrawerOpened) {
-    additionalClasses.push('grw-navbar-bottom-drawer-opened');
-  }
-
   return (
-    <div className="d-md-none d-edit-none fixed-bottom">
+    <div className={`
+      ${styles['grw-navbar-bottom']}
+      ${isDrawerOpened ? styles['grw-navbar-bottom-drawer-opened'] : ''}
+      d-md-none d-edit-none d-print-none fixed-bottom`}
+    >
 
       { !isDeviceLargerThanMd && !isSearchPage && (
         <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
@@ -34,7 +33,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
         </div>
       ) }
 
-      <div className={`navbar navbar-expand px-4 px-sm-5 ${additionalClasses.join(' ')}`}>
+      <div className="navbar navbar-expand px-4 px-sm-5">
 
         <ul className="navbar-nav flex-grow-1 d-flex align-items-center justify-content-between">
           <li className="nav-item">

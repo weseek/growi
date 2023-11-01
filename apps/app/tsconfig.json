@@ -15,7 +15,14 @@
       "~/*": ["./src/*"],
       "^/*": ["./*"],
       "debug": ["./src/server/utils/logger/alias-for-debug"]
-    }
+    },
+
+    /* TODO: remove below flags for strict checking */
+    "strict": false,
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "noImplicitAny": false,
+    "noImplicitOverride": true
   },
   "include": [
     "next-env.d.ts",
