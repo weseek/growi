@@ -15,7 +15,7 @@ import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
 import { TagsInput } from './TagsInput';
 
 type TagEditModalSubstanceProps = {
-  tagEditModalData?: TagEditModalStatus,
+  tagEditModalData: TagEditModalStatus,
   closeTagEditModal: () => void,
 }
 
@@ -24,12 +24,12 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
   const { t } = useTranslation();
 
   const initTags = useMemo(() => {
-    return tagEditModalData?.tags ?? [];
-  }, [tagEditModalData?.tags]);
+    return tagEditModalData.tags;
+  }, [tagEditModalData.tags]);
 
-  const isOpen = tagEditModalData?.isOpen;
-  const pageId = tagEditModalData?.pageId;
-  const revisionId = tagEditModalData?.revisionId;
+  const isOpen = tagEditModalData.isOpen;
+  const pageId = tagEditModalData.pageId;
+  const revisionId = tagEditModalData.revisionId;
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
   const [tags, setTags] = useState<string[]>([]);
@@ -73,10 +73,9 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
 
 export const TagEditModal: React.FC = () => {
   const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
-  const isOpen = tagEditModalData?.isOpen;
 
-  if (!isOpen) {
-    return <></>;
+  if (tagEditModalData == null || !tagEditModalData.isOpen) {
+    return;
   }
 
   return <TagEditModalSubstance tagEditModalData={tagEditModalData} closeTagEditModal={closeTagEditModal} />;

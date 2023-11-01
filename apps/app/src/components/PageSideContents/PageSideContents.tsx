@@ -63,7 +63,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         ? (
           <PageTags
             tags={tagsInfoData.tags}
-            isTagLabelsDisabled={isTagLabelsDisabled ?? false}
+            isTagLabelsDisabled={isTagLabelsDisabled}
             onClickEditTagsButton={onClickEditTagsButton}
           />
         )
