@@ -9,7 +9,7 @@ import { getLatestApprovedApproverGroupIndex } from '../../../utils/workflow';
 import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
-import { ApproverGroupCards } from './ApproverGroupCards';
+import { EditableApproverGroupCards } from './EditableApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
@@ -63,7 +63,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
-        <ApproverGroupCards
+        <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
           excludedSearchUserIds={excludedSearchUserIds}
           latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}

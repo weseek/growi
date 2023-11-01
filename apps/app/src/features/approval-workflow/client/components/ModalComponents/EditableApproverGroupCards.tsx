@@ -19,7 +19,7 @@ type Props = {
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
 }
 
-const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
+const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
     groupIndex,
     editingApproverGroups,
@@ -160,11 +160,11 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
   );
 };
 
-export const ApproverGroupCards = (props: Props): JSX.Element => {
+export const EditableApproverGroupCards = (props: Props): JSX.Element => {
   return (
     <>
       {props.editingApproverGroups?.map((data, index) => (
-        <ApproverGroupCard
+        <EditableApproverGroupCard
           key={data.uuidForRenderList}
           groupIndex={index}
           {...props}
