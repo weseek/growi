@@ -1,4 +1,4 @@
-import type { IPageHasId, IUser, IUserHasId } from '@growi/core';
+import type { IUser, IPage } from '@growi/core';
 
 import { SupportedTargetModelType, SupportedActionType } from './activity';
 
@@ -13,7 +13,7 @@ export enum InAppNotificationStatuses {
 export interface IInAppNotification {
   user: IUser
   targetModel: SupportedTargetModelType
-  target: IUserHasId | IPageHasId
+  target: IUser | IPage
   action: SupportedActionType
   status: InAppNotificationStatuses
   actionUsers: IUser[]
