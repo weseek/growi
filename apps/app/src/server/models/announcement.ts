@@ -1,8 +1,11 @@
+import { getEmojiDataArray } from '@growi/editor';
 import {
   Types, Document, Schema, Model,
 } from 'mongoose';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
+
+const emojiDataArray = getEmojiDataArray();
 
 enum AnnouncementStatuses {
   STATUS_UNREAD = 'UNREAD',
@@ -47,8 +50,8 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
   },
   emoji: {
     type: String,
+    enum: emojiDataArray,
     required: true,
-    // enumにgetEmojiDataArray関数で取得したfixedEmojiDataArrayを入れる。
   },
   isReadReceiptTrackingEnabled: {
     type: Boolean,
