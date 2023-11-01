@@ -218,6 +218,7 @@
     "@types/express": "^4.17.11",
     "@types/jest": "^29.5.2",
     "@types/react-scroll": "^1.8.4",
+    "@types/throttle-debounce": "^5.0.1",
     "@types/url-join": "^4.0.2",
     "autoprefixer": "^9.0.0",
     "babel-loader": "^8.2.5",
