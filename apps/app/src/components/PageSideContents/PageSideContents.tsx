@@ -45,6 +45,9 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
+    if (pageId != null && revisionId != null) {
+      return;
+    }
     openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
   }, [openTagEditModal, pageId, revisionId, tagsInfoData?.tags]);
 

@@ -700,7 +700,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
   const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
     mutate({ isOpened: true, attachment, remove });
   }, [mutate]);
-  const close = useCallback((): void => {
+  const close = useCallback(() => {
     mutate({ isOpened: false });
   }, [mutate]);
 
@@ -778,24 +778,26 @@ export const usePageSelectModal = (
 * TagEditModal
 */
 export type TagEditModalStatus = {
-  tags: string[],
   isOpen: boolean,
+  tags: string[],
   pageId: string,
   revisionId: string,
 }
 
 type TagEditModalUtils = {
-  open(tags, pageId, revisionId): void,
+  open(tags?: string[], pageId?: string, revisionId?: string): void,
   close(): void,
 }
 
 export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
-  const initialStatus: TagEditModalStatus = {
-    isOpen: false,
-    tags: [],
-    pageId: '',
-    revisionId: '',
-  };
+  const initialStatus: TagEditModalStatus = useMemo(() => {
+    return {
+      isOpen: false,
+      tags: [],
+      pageId: '',
+      revisionId: '',
+    };
+  }, []);
 
   const swrResponse = useStaticSWR<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
@@ -809,9 +811,9 @@ export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagE
     });
   }, [mutate]);
 
-  const close = useCallback(() => {
-    mutate({ isOpen: false });
-  }, [mutate]);
+  const close = useCallback(async() => {
+    mutate(initialStatus);
+  }, [initialStatus, mutate]);
 
   return {
     ...swrResponse,
