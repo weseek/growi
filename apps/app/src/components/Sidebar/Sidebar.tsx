@@ -156,7 +156,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { className, children } = props;
 
-  const { data: isDrawerOpened } = useDrawerOpened();
+  const { data: isDrawerOpened, mutate } = useDrawerOpened();
 
   const openClass = `${isDrawerOpened ? 'open' : ''}`;
 
@@ -166,7 +166,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
         {children}
       </div>
       { isDrawerOpened && (
-        <div className="modal-backdrop fade show" />
+        <div className="modal-backdrop fade show" onClick={() => mutate(false)} />
       ) }
     </>
   );
