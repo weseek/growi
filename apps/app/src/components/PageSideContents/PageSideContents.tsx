@@ -45,7 +45,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
-    if (pageId == null || revisionId == null || tagsInfoData == null) {
+    if (tagsInfoData == null) {
       return;
     }
     openTagEditModal(tagsInfoData.tags, pageId, revisionId);
@@ -59,7 +59,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   return (
     <div className="grw-taglabels-container">
-      { tagsInfoData && tagsInfoData.tags != null
+      { tagsInfoData?.tags != null
         ? (
           <PageTags
             tags={tagsInfoData.tags}

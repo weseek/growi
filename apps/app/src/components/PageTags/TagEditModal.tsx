@@ -74,8 +74,8 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
 export const TagEditModal: React.FC = () => {
   const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
 
-  if (tagEditModalData == null || !tagEditModalData.isOpen) {
-    return;
+  if (!tagEditModalData?.isOpen) {
+    return <></>;
   }
 
   return <TagEditModalSubstance tagEditModalData={tagEditModalData} closeTagEditModal={closeTagEditModal} />;
