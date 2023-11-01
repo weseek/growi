@@ -21,14 +21,12 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const certifySharedFile = require('../../middlewares/certify-shared-file')(crowi);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
 
   const validator = {
-    attachment: [
-      query('attachmentId').isMongoId().withMessage('attachmentId is required'),
-    ],
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
@@ -47,16 +45,16 @@ module.exports = (crowi) => {
    *          200:
    *            description: Return attachment
    *        parameters:
-   *          - name: attachemnt_id
-   *            in: query
+   *          - name: id
+   *            in: params
    *            required: true
    *            description: attachment id
    *            schema:
    *              type: string
    */
-  router.get('/', accessTokenParser, loginRequired, validator.attachment, apiV3FormValidator, async(req, res) => {
+  router.get('/:id', accessTokenParser, certifySharedFile, loginRequired, apiV3FormValidator, async(req, res) => {
     try {
-      const attachmentId = req.query.attachmentId;
+      const attachmentId = req.params.id;
 
       const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
 
