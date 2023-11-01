@@ -786,7 +786,7 @@ type TagEditModalStatus = {
 
 type TagEditModalUtils = {
   open(tags, pageId, revisionId): Promise<void>
-  close(): Promise<void>,
+  close(): void,
 }
 
 export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
@@ -800,18 +800,18 @@ export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagE
   const swrResponse = useStaticSWR<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
-  const open = async(tags: string[], pageId: string, revisionId: string) => {
+  const open = useCallback(async(tags: string[], pageId: string, revisionId: string) => {
     mutate({
       isOpen: true,
       tags,
       pageId,
       revisionId,
     });
-  };
+  }, [mutate]);
 
-  const close = async() => {
-    mutate(initialStatus);
-  };
+  const close = useCallback(() => {
+    mutate({ isOpen: false });
+  }, [mutate]);
 
   return {
     ...swrResponse,

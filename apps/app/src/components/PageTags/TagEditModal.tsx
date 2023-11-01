@@ -14,7 +14,7 @@ import { useTagEditModal } from '~/stores/modal';
 
 import { TagsInput } from './TagsInput';
 
-export const TagEditModalSubstance: React.FC = () => {
+const TagEditModalSubstance: React.FC = () => {
 
   const { t } = useTranslation();
 
