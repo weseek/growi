@@ -13,6 +13,7 @@ import { SearchUserTypeahead } from './SearchUserTypeahead';
 type Props = {
   excludedSearchUserIds: string[]
   editingApproverGroups: EditingApproverGroup[]
+  latestApprovedApproverGroupIndex?: number
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
@@ -20,7 +21,13 @@ type Props = {
 
 const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
-    groupIndex, editingApproverGroups, excludedSearchUserIds, onUpdateApproverGroups, onClickAddApproverGroupCard, onClickRemoveApproverGroupCard,
+    groupIndex,
+    editingApproverGroups,
+    excludedSearchUserIds,
+    latestApprovedApproverGroupIndex,
+    onUpdateApproverGroups,
+    onClickAddApproverGroupCard,
+    onClickRemoveApproverGroupCard,
   } = props;
 
   const { t } = useTranslation();
@@ -30,9 +37,11 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
   const editingApproverGroup = editingApproverGroups?.[groupIndex];
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
 
-  const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
-  const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
-  const isChangeableApprovealType = editingApproverGroup.approvers.length > 1;
+  const isEditable = latestApprovedApproverGroupIndex == null ? true : groupIndex > latestApprovedApproverGroupIndex;
+  const isCreatableButtomApproverGroup = (isEditable && editingApproverGroup.approvers.length > 0) || (groupIndex === latestApprovedApproverGroupIndex);
+  const isCreatableTopApporverGroup = isCreatableButtomApproverGroup && groupIndex === 0;
+  const isDeletebleEditingApproverGroup = isEditable && editingApproverGroups.length > 1;
+  const isChangeableApprovealType = isEditable && editingApproverGroup.approvers.length > 1;
   const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
 
   // for updated
@@ -69,9 +78,14 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
   return (
     <>
-      {onClickAddApproverGroupCard != null && groupIndex === 0 && isCreatableEditingApproverGroup && (
+      {onClickAddApproverGroupCard != null && groupIndex === 0 && (
         <div className="text-center my-2">
-          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}>{t('approval_workflow.add_flow')}</button>
+          <button
+            type="button"
+            disabled={!isCreatableTopApporverGroup}
+            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+          >{t('approval_workflow.add_flow')}
+          </button>
         </div>
       )}
 
@@ -80,6 +94,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
           <div className="d-flex justify-content-center align-items-center">
             <SearchUserTypeahead
+              isEditable={isEditable}
               selectedUsers={selectedUsers}
               excludedSearchUserIds={excludedSearchUserIds}
               onChange={updateApproversHandler}
@@ -131,9 +146,14 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
         </div>
       </div>
 
-      {onClickAddApproverGroupCard != null && isCreatableEditingApproverGroup && (
+      {onClickAddApproverGroupCard != null && (
         <div className="text-center my-2">
-          <button type="button" onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}>{t('approval_workflow.add_flow')}</button>
+          <button
+            type="button"
+            disabled={!isCreatableButtomApproverGroup}
+            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
+          >{t('approval_workflow.add_flow')}
+          </button>
         </div>
       )}
     </>

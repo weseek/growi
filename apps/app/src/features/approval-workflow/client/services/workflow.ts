@@ -53,11 +53,6 @@ type UseEditingApproverGroupsForUpdate = {
   removeApproverGroupHandler: (groupIndex: number) => void
 }
 
-// type UseEditingApproverGroups = {
-//   (): UseEditingApproverGroupsForCreate
-//   (initialData: IWorkflowApproverGroupHasId[]): UseEditingApproverGroupsForUpdate
-// };
-
 export function useEditingApproverGroups(): UseEditingApproverGroupsForCreate
 export function useEditingApproverGroups(initialData: IWorkflowApproverGroupHasId[]): UseEditingApproverGroupsForUpdate
 
@@ -68,7 +63,6 @@ export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHas
 
   const allEditingApproverIds = useMemo(() => getAllApproverIds(editingApproverGroups), [editingApproverGroups]);
 
-  // eslint-disable-next-line max-len
   const updateApproverGroupHandler = useCallback((groupIndex: number, updateApproverGroupData: EditingApproverGroup) => {
     const clonedApproverGroups = [...editingApproverGroups];
     clonedApproverGroups[groupIndex] = updateApproverGroupData;

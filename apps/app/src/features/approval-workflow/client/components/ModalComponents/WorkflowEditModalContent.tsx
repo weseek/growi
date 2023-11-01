@@ -5,6 +5,7 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { IWorkflowHasId } from '~/features/approval-workflow/interfaces/workflow';
 
+import { getLatestApprovedApproverGroupIndex } from '../../../utils/workflow';
 import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
@@ -31,6 +32,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
 
+  const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(workflow);
   const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
 
   const clickSaveWorkflowButtonClickHandler = useCallback(async() => {
@@ -64,6 +66,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
         <ApproverGroupCards
           editingApproverGroups={editingApproverGroups}
           excludedSearchUserIds={excludedSearchUserIds}
+          latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
           onUpdateApproverGroups={updateApproverGroupHandler}
           onClickAddApproverGroupCard={addApproverGroupHandler}
           onClickRemoveApproverGroupCard={removeApproverGroupHandler}
