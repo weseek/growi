@@ -30,7 +30,7 @@ Marp
 
 ---
 
-# どうやってスライドを記述するのか
+# スライドの記述のしかた
 
 やり方はとてもシンプルです。ハイフン記号 (e.g. `---`)でページを分割します。
 
@@ -48,7 +48,7 @@ Marp
 
 ---
 
-# 指示構文
+# Directives
 
 Marp では美しいスライド作成を支援するため、**"Directives"**　という拡張構文を用意しています。
 
@@ -70,7 +70,7 @@ https://marpit.marp.app/directives
 
 ---
 
-## [グローバル指示構文](https://marpit.marp.app/directives?id=global-directives)
+## [グローバル Directives](https://marpit.marp.app/directives?id=global-directives)
 
 - `theme` : テーマを選ぶ
 - `size` : スライドのサイズを `16:9` か `4:3` で選択する *(Marpit frameworkを除く)* 
@@ -89,7 +89,7 @@ size: 4:3
 
 ---
 
-## [ローカル指示構文](https://marpit.marp.app/directives?id=local-directives)
+## [ローカル Directives](https://marpit.marp.app/directives?id=local-directives)
 
 スライドページ毎に設定できる値一覧
 
@@ -102,7 +102,7 @@ size: 4:3
 
 ---
 
-### スポット構文
+### スポット Directives
 
 ローカル構文は**任意のページとそれ以降のページ**に適用されます。 
 
@@ -124,7 +124,7 @@ size: 4:3
 
 ---
 
-# [Image syntax](https://marpit.marp.app/image-syntax)
+# [画像イメージのための構文](https://marpit.marp.app/image-syntax)
 
 You can resize image size and apply filters through keywords: `width` (`w`), `height` (`h`), and filter CSS keywords.
 
@@ -142,7 +142,7 @@ Please refer [resizing image syntax](https://marpit.marp.app/image-syntax?id=res
 
 ---
 
-# [Background image](https://marpit.marp.app/image-syntax?id=slide-backgrounds)
+# [背景イメージのための構文](https://marpit.marp.app/image-syntax?id=slide-backgrounds)
 
 You can set background image for a slide by using `bg` keyword.
 
