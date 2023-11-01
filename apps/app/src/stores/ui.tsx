@@ -3,18 +3,19 @@ import {
 } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
-import { type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
+import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, type SWRResponse, type Key,
+  useSWRConfig, type SWRResponse, type Key, KeyedMutator, MutatorOptions,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
+import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
@@ -251,24 +252,58 @@ export const useIsDeviceLargerThanXl = (): SWRResponse<boolean, Error> => {
 };
 
 
-export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+type MutateAndSaveUserUISettings<Data> = (data: Data, opts?: boolean | MutatorOptions<Data>) => Promise<Data | undefined>;
+type MutateAndSaveUserUISettingsUtils<Data> = {
+  mutateAndSave: MutateAndSaveUserUISettings<Data>;
+}
+
+export const useCurrentSidebarContents = (
+    initialData?: SidebarContentsType,
+): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<SidebarContentsType>, SidebarContentsType> => {
+  const swrResponse = useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<SidebarContentsType> = useCallback((data, opts?) => {
+    scheduleToPut({ currentSidebarContents: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
 };
 
-export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
+export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
+  const swrResponse = useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opts?) => {
+    scheduleToPut({ currentProductNavWidth: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
+export const usePreferCollapsedMode = (initialData?: boolean): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<boolean>, boolean> => {
+  const swrResponse = useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<boolean> = useCallback((data, opts?) => {
+    scheduleToPut({ preferCollapsedModeByUser: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
+export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean> => {
+  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
-};
-
-export const usePreferCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
-};
-
-export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 type DetectSidebarModeUtils = {
