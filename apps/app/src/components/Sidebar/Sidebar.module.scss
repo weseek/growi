@@ -69,6 +69,7 @@
         transform: translateX(-100%);
       }
       &.open {
+        z-index: bs.$zindex-modal;
         transform: translateX(0);
       }
     }
