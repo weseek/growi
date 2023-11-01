@@ -3,7 +3,6 @@ import React, { useCallback, useState } from 'react';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'react-i18next';
 
 import { createPage } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
@@ -11,10 +10,11 @@ import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
+import { PageCreateButtonDropdownMenu } from './PageCreateButtonDropdownMenu';
+
 const logger = loggerFactory('growi:cli:PageCreateButton');
 
 export const PageCreateButton = React.memo((): JSX.Element => {
-  const { t } = useTranslation('commons');
   const router = useRouter();
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
@@ -191,52 +191,14 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
+            disabled={isCreating}
           />
-          <ul className="dropdown-menu">
-            <li>
-              <button
-                className="dropdown-item"
-                onClick={onClickCreateNewPageButtonHandler}
-                type="button"
-                disabled={isCreating}
-              >
-                {t('create_page_dropdown.new_page')}
-              </button>
-            </li>
-            <li><hr className="dropdown-divider" /></li>
-            <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
-            {/* TODO: show correct create today's page path */}
-            {/* https://redmine.weseek.co.jp/issues/133893 */}
-            <li>
-              <button
-                className="dropdown-item"
-                onClick={onClickCreateTodaysButtonHandler}
-                type="button"
-              >
-                (TBD) Create today&apos;s
-              </button>
-            </li>
-            <li><hr className="dropdown-divider" /></li>
-            <li><span className="text-muted text-nowrap px-3">{t('create_page_dropdown.template.desc')}</span></li>
-            <li>
-              <button
-                className="dropdown-item"
-                onClick={onClickTemplateForChildrenButtonHandler}
-                type="button"
-              >
-                {t('create_page_dropdown.template.children')}
-              </button>
-            </li>
-            <li>
-              <button
-                className="dropdown-item"
-                onClick={onClickTemplateForDescendantsButtonHandler}
-                type="button"
-              >
-                {t('create_page_dropdown.template.decendants')}
-              </button>
-            </li>
-          </ul>
+          <PageCreateButtonDropdownMenu
+            onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
+            onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
+            onClickTemplateForChildrenButtonHandler={onClickTemplateForChildrenButtonHandler}
+            onClickTemplateForDescendantsButtonHandler={onClickTemplateForDescendantsButtonHandler}
+          />
         </div>
       )}
     </div>
