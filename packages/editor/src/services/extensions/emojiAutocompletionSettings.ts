@@ -3,7 +3,7 @@ import { syntaxTree } from '@codemirror/language';
 import { emojiIndex } from 'emoji-mart';
 import emojiData from 'emoji-mart/data/all.json';
 
-const getEmojiDataArray = (): string[] => {
+export const getEmojiDataArray = (): string[] => {
   const rawEmojiDataArray = emojiData.categories;
 
   const emojiCategoriesData = [
