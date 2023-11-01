@@ -8,7 +8,7 @@ import { keymap, EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
-import { emojiAutocompletionSettings } from '../../../stores/emojiAutocompletionSettings';
+import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -33,6 +33,7 @@ const defaultExtensions: Extension[] = [
   markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
+  emojiAutocompletionSettings,
 ];
 
 
@@ -44,7 +45,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
       {
         extensions: [
           defaultExtensions,
-          emojiAutocompletionSettings,
         ],
         // Reset settings of react-codemirror.
         // The extension defined first will be used, so it must be disabled here.

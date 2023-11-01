@@ -38,17 +38,21 @@ const emojiOptions = emojiDataArray.map(
   tag => ({ label: `:${tag}:`, type: tag }),
 );
 
+const TWO_OR_MORE_WORD_CHARACTERS_REGEX = /:\w{2,}$/;
+
+
+// EmojiAutocompletion is activated when two characters are entered into the editor.
 const emojiAutocompletion = (context: CompletionContext) => {
   const nodeBefore = syntaxTree(context.state).resolveInner(context.pos, -1);
   const textBefore = context.state.sliceDoc(nodeBefore.from, context.pos);
-  const emojiBefore = /:\w{2,}$/.exec(textBefore);
+  const emojiBefore = TWO_OR_MORE_WORD_CHARACTERS_REGEX.exec(textBefore);
 
   if (!emojiBefore && !context.explicit) return null;
 
   return {
     from: emojiBefore ? nodeBefore.from + emojiBefore.index : context.pos,
     options: emojiOptions,
-    validFor: /^:\w{2,}$/,
+    validFor: TWO_OR_MORE_WORD_CHARACTERS_REGEX,
   };
 };
 
