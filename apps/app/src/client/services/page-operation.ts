@@ -95,7 +95,6 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams: O
     body: markdown,
   });
 
-  // !! WARNING !! in the case where the 'shouldReturnIfPathExists' in 'params' is true, return value might be an empty object {}.
   const res = await apiv3Post('/pages/', params);
   const { page, tags, revision } = res.data;
 
