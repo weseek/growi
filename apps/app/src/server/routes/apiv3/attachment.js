@@ -37,47 +37,6 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /attachment:
-   *      get:
-   *        tags: [Attachment]
-   *        description: Get attachment
-   *        responses:
-   *          200:
-   *            description: Return attachment
-   *        parameters:
-   *          - name: id
-   *            in: params
-   *            required: true
-   *            description: attachment id
-   *            schema:
-   *              type: string
-   */
-  router.get('/:id', accessTokenParser, certifySharedFile, loginRequired, apiV3FormValidator, async(req, res) => {
-    try {
-      const attachmentId = req.params.id;
-
-      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
-
-      if (attachment == null) {
-        const message = 'Attachment not found';
-        return res.apiv3Err(message, 404);
-      }
-
-      if (attachment.creator != null && attachment.creator instanceof User) {
-        attachment.creator = serializeUserSecurely(attachment.creator);
-      }
-
-      return res.apiv3({ attachment });
-    }
-    catch (err) {
-      logger.error('Attachment retrieval failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
-
-  /**
-   * @swagger
-   *
    *    /attachment/list:
    *      get:
    *        tags: [Attachment]
@@ -129,6 +88,47 @@ module.exports = (crowi) => {
     }
     catch (err) {
       logger.error('Attachment not found', err);
+      return res.apiv3Err(err, 500);
+    }
+  });
+
+  /**
+   * @swagger
+   *
+   *    /attachment/{id}:
+   *      get:
+   *        tags: [Attachment]
+   *        description: Get attachment
+   *        responses:
+   *          200:
+   *            description: Return attachment
+   *        parameters:
+   *          - name: id
+   *            in: params
+   *            required: true
+   *            description: attachment id
+   *            schema:
+   *              type: string
+   */
+  router.get('/:id', accessTokenParser, certifySharedFile, loginRequired, apiV3FormValidator, async(req, res) => {
+    try {
+      const attachmentId = req.params.id;
+
+      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+
+      if (attachment == null) {
+        const message = 'Attachment not found';
+        return res.apiv3Err(message, 404);
+      }
+
+      if (attachment.creator != null && attachment.creator instanceof User) {
+        attachment.creator = serializeUserSecurely(attachment.creator);
+      }
+
+      return res.apiv3({ attachment });
+    }
+    catch (err) {
+      logger.error('Attachment retrieval failed', err);
       return res.apiv3Err(err, 500);
     }
   });
