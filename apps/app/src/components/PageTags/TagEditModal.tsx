@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useEffect, useMemo,
+  useState, useCallback, useEffect,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -23,9 +23,7 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
   const { tagEditModalData, closeTagEditModal } = props;
   const { t } = useTranslation();
 
-  const initTags = useMemo(() => {
-    return tagEditModalData.tags;
-  }, [tagEditModalData.tags]);
+  const initTags = tagEditModalData.tags;
 
   const isOpen = tagEditModalData.isOpen;
   const pageId = tagEditModalData.pageId;
