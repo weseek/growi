@@ -8,6 +8,7 @@ import { IWorkflowHasId } from '~/features/approval-workflow/interfaces/workflow
 import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
+import { ApproverGroupCards } from './ApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
@@ -21,12 +22,16 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const { workflow, onUpdated, onClickWorkflowDetailPageBackButton } = props;
 
-  const { editingApproverGroups } = useEditingApproverGroups(workflow.approverGroups);
+  const {
+    editingApproverGroups, allEditingApproverIds, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+  } = useEditingApproverGroups(workflow.approverGroups);
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
+
+  const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
 
   const clickSaveWorkflowButtonClickHandler = useCallback(async() => {
     try {
@@ -56,7 +61,13 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
-        Edit Page
+        <ApproverGroupCards
+          editingApproverGroups={editingApproverGroups}
+          excludedSearchUserIds={excludedSearchUserIds}
+          onUpdateApproverGroups={updateApproverGroupHandler}
+          onClickAddApproverGroupCard={addApproverGroupHandler}
+          onClickRemoveApproverGroupCard={removeApproverGroupHandler}
+        />
       </ModalBody>
 
       <ModalFooter>

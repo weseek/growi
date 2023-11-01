@@ -10,6 +10,7 @@ import { IClearable } from '~/client/interfaces/clearable';
 import { useSWRMUTxSearchUser } from '~/stores/user';
 
 type Props = {
+  selectedUsers?: IUserHasId[] // for updated
   excludedSearchUserIds?: string[]
   onChange?: (userIds: string[]) => void
   onRemoveLastEddtingApprover?: () => void
@@ -19,7 +20,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
+    selectedUsers, excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
   } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
@@ -67,6 +68,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         onChange={onChangeHandler}
         options={userData?.docs ?? []}
         labelKey={(doc: IUserHasId) => doc.username}
+        defaultSelected={selectedUsers ?? undefined}
       />
     </div>
   );

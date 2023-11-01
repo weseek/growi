@@ -5,15 +5,15 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { WorkflowApprovalType, IWorkflowApproverGroupReqForRenderList } from '../../../interfaces/workflow';
+import { WorkflowApprovalType, type EditingApproverGroup } from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
 
 type Props = {
   excludedSearchUserIds: string[]
-  editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
-  onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
+  editingApproverGroups: EditingApproverGroup[]
+  onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
 }
@@ -31,12 +31,12 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
   const editingApprovalType = editingApproverGroup.approvalType ?? WorkflowApprovalType.AND;
 
   const isDeletebleEditingApproverGroup = editingApproverGroups.length > 1;
-
   const isCreatableEditingApproverGroup = editingApproverGroup.approvers.length > 0;
-
   const isChangeableApprovealType = editingApproverGroup.approvers.length > 1;
-
   const isApprovalTypeAnd = editingApprovalType === WorkflowApprovalType.AND;
+
+  // for updated
+  const selectedUsers = editingApproverGroup.approvers.map(approver => approver.user);
 
   const changeApprovalTypeButtonClickHandler = useCallback((approvalType: WorkflowApprovalType) => {
     const clonedApproverGroup = { ...editingApproverGroup };
@@ -80,6 +80,7 @@ const ApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element =
 
           <div className="d-flex justify-content-center align-items-center">
             <SearchUserTypeahead
+              selectedUsers={selectedUsers}
               excludedSearchUserIds={excludedSearchUserIds}
               onChange={updateApproversHandler}
               onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
