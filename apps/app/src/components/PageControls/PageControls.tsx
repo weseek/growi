@@ -312,11 +312,11 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
-    if (pageId != null && revisionId != null) {
+    if (pageId == null || revisionId == null || tagsInfoData == null) {
       return;
     }
-    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
-  }, [openTagEditModal, tagsInfoData?.tags, pageId, revisionId]);
+    openTagEditModal(tagsInfoData.tags, pageId, revisionId);
+  }, [pageId, revisionId, tagsInfoData, openTagEditModal]);
 
   if (error != null) {
     return <></>;

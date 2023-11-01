@@ -785,7 +785,7 @@ export type TagEditModalStatus = {
 }
 
 type TagEditModalUtils = {
-  open(tags?: string[], pageId?: string, revisionId?: string): void,
+  open(tags: string[], pageId: string, revisionId: string): void,
   close(): void,
 }
 

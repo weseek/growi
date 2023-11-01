@@ -45,11 +45,11 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
-    if (pageId != null && revisionId != null) {
+    if (pageId == null || revisionId == null || tagsInfoData == null) {
       return;
     }
-    openTagEditModal(tagsInfoData?.tags, pageId, revisionId);
-  }, [openTagEditModal, pageId, revisionId, tagsInfoData?.tags]);
+    openTagEditModal(tagsInfoData.tags, pageId, revisionId);
+  }, [pageId, revisionId, tagsInfoData, openTagEditModal]);
 
   if (!showTagLabel) {
     return <></>;
@@ -59,7 +59,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   return (
     <div className="grw-taglabels-container">
-      { tagsInfoData?.tags != null
+      { tagsInfoData && tagsInfoData.tags != null
         ? (
           <PageTags
             tags={tagsInfoData.tags}
