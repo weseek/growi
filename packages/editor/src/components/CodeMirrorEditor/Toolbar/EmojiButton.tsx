@@ -81,7 +81,7 @@ export const EmojiButton: FC<Props> = (props) => {
 
   const selectEmoji = useCallback((emoji: { colons: string }): void => {
 
-    if (cursorIndex == null) {
+    if (cursorIndex == null || !isOpen) {
       return;
     }
 
@@ -96,7 +96,7 @@ export const EmojiButton: FC<Props> = (props) => {
   }, [cursorIndex, toggle, view]);
 
   const setStyle = useCallback((): CSSProperties => {
-    if (view == null || cursorIndex == null) {
+    if (view == null || cursorIndex == null || !isOpen) {
       return {};
     }
 
@@ -105,7 +105,7 @@ export const EmojiButton: FC<Props> = (props) => {
     const cursorRect = view.coordsAtPos(cursorIndex);
     const editorRect = view.dom.getBoundingClientRect();
 
-    if (cursorRect == null || !isOpen) {
+    if (cursorRect == null) {
       return {};
     }
 
