@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
-import { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { type GlobalCodeMirrorEditorKey } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';

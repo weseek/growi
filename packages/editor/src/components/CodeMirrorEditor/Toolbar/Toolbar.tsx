@@ -7,7 +7,7 @@ import { TableButton } from './TableButton';
 import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from 'src/consts';
+import type { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from 'src/consts';
 
 import styles from './Toolbar.module.scss';
 
