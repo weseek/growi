@@ -1,5 +1,7 @@
+import { isUserObj } from '@growi/core';
 import mongoose from 'mongoose';
 
+import type { IWorkflowHasId } from '../../../interfaces/workflow';
 import { WorkflowApprovalType, WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
 
 import { serializeWorkflowSecurely } from './workflow-serializer';
@@ -60,7 +62,7 @@ describe('workflow-seroalizer', () => {
             ],
           },
         ],
-      };
+      } as IWorkflowHasId;
     });
 
     const mocks = vi.hoisted(() => {
@@ -92,18 +94,27 @@ describe('workflow-seroalizer', () => {
       expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
-      const serializedWorkflow = serializeWorkflowSecurely(workflow) as any;
+      const serializedWorkflow = serializeWorkflowSecurely(workflow);
 
       // then
+      const workflowCreator = serializedWorkflow.creator;
+      const workflowApprover1 = serializedWorkflow.approverGroups[0].approvers[0].user;
+      const workflowApprover2 = serializedWorkflow.approverGroups[1].approvers[0].user;
+      const workflowApprover3 = serializedWorkflow.approverGroups[1].approvers[1].user;
+
+      if (!isUserObj(workflowCreator) || !isUserObj(workflowApprover1) || !isUserObj(workflowApprover2) || !isUserObj(workflowApprover3)) {
+        throw Error('Not an IUser Object');
+      }
+
       expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(4);
-      expect(serializedWorkflow.creator?.password).toBeUndefined();
-      expect(serializedWorkflow.creator?.apiToken).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[1].approvers[0].user.password).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[1].approvers[0].user.apiToken).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[1].approvers[1].user.password).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[1].approvers[1].user.apiToken).toBeUndefined();
+      expect(workflowCreator.password).toBeUndefined();
+      expect(workflowCreator.apiToken).toBeUndefined();
+      expect(workflowApprover1.password).toBeUndefined();
+      expect(workflowApprover1.apiToken).toBeUndefined();
+      expect(workflowApprover2.password).toBeUndefined();
+      expect(workflowApprover2.apiToken).toBeUndefined();
+      expect(workflowApprover3.password).toBeUndefined();
+      expect(workflowApprover3.apiToken).toBeUndefined();
     });
 
     it('Should serialize only the creator', () => {
@@ -118,18 +129,27 @@ describe('workflow-seroalizer', () => {
       expect(workflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
 
       // when
-      const serializedWorkflow = serializeWorkflowSecurely(workflow, true) as any;
+      const serializedWorkflow = serializeWorkflowSecurely(workflow, true);
 
       // then
+      const workflowCreator = serializedWorkflow.creator;
+      const workflowApprover1 = serializedWorkflow.approverGroups[0].approvers[0].user;
+      const workflowApprover2 = serializedWorkflow.approverGroups[1].approvers[0].user;
+      const workflowApprover3 = serializedWorkflow.approverGroups[1].approvers[1].user;
+
+      if (!isUserObj(workflowCreator) || !isUserObj(workflowApprover1) || !isUserObj(workflowApprover2) || !isUserObj(workflowApprover3)) {
+        throw Error('Not an IUser Object');
+      }
+
       expect(mocks.serializeUserSecurelyMock).toBeCalledTimes(1);
-      expect(serializedWorkflow.creator.password).toBeUndefined();
-      expect(serializedWorkflow.creator.apiToken).toBeUndefined();
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.password).toEqual(password);
-      expect(serializedWorkflow.approverGroups[0].approvers[0].user.apiToken).toEqual(apiToken);
-      expect(serializedWorkflow.approverGroups[1].approvers[0].user.password).toEqual(password);
-      expect(serializedWorkflow.approverGroups[1].approvers[0].user.apiToken).toEqual(apiToken);
-      expect(serializedWorkflow.approverGroups[1].approvers[1].user.password).toEqual(password);
-      expect(serializedWorkflow.approverGroups[1].approvers[1].user.apiToken).toEqual(apiToken);
+      expect(workflowCreator.password).toBeUndefined();
+      expect(workflowCreator.apiToken).toBeUndefined();
+      expect(workflowApprover1.password).toEqual(password);
+      expect(workflowApprover1.apiToken).toEqual(apiToken);
+      expect(workflowApprover2.password).toEqual(password);
+      expect(workflowApprover2.apiToken).toEqual(apiToken);
+      expect(workflowApprover3.password).toEqual(password);
+      expect(workflowApprover3.apiToken).toEqual(apiToken);
     });
   });
 });
