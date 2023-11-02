@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
+import { type IUserHasId, type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -18,6 +18,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
+import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
@@ -233,18 +234,23 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   try {
-    const ShareLinkModel = crowi.model('ShareLink');
-    const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
+    const shareLink = await ShareLink.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink == null) {
       props.isNotFound = true;
     }
     else {
       props.isNotFound = false;
-      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-      props.skipSSR = await skipSSR(shareLink.relatedPage, ssrMaxRevisionBodyLength);
-      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
+
+      // retrieve Page
+      const Page = crowi.model('Page');
+      const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      // determine whether skip SSR
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
+      // populate
+      props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
     }
   }
   catch (err) {

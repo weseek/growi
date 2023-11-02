@@ -5,6 +5,7 @@ import { SupportedAction } from '~/interfaces/activity';
 import { PageDeleteConfigValue } from '~/interfaces/page-delete-config';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
+import ShareLink from '~/server/models/share-link';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 import { validateDeleteConfigs, prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -731,7 +732,6 @@ module.exports = (crowi) => {
    *                      description: suceed to get all share links
    */
   router.get('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const linkQuery = {};
@@ -769,7 +769,6 @@ module.exports = (crowi) => {
    */
 
   router.delete('/all-share-links/', loginRequiredStrictly, adminRequired, async(req, res) => {
-    const ShareLink = crowi.model('ShareLink');
     try {
       const removedAct = await ShareLink.remove({});
       const removeTotal = await removedAct.n;
