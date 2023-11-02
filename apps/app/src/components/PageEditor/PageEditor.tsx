@@ -8,7 +8,8 @@ import nodePath from 'path';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, AcceptedUploadFileType,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
+  useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -48,6 +49,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useNextThemes } from '~/stores/use-next-themes';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
@@ -123,9 +125,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateIsConflict } = useIsConflict();
 
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme(resolvedTheme);
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -336,16 +342,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // refs: https://redmine.weseek.co.jp/issues/126528
         // editorRef.current.insertText(insertText);
         codeMirrorEditor?.insertText(insertText);
-
-        // when if created newly
-        // Not using 'mutateGrant' to inherit the grant of the parent page
-        if (resAdd.pageCreated) {
-          logger.info('Page is created', resAdd.page._id);
-          mutateIsLatestRevision(true);
-          setCreatedPageRevisionIdWithAttachment(resAdd.page.revision);
-          await mutateCurrentPageId(resAdd.page._id);
-          await mutateCurrentPage();
-        }
       }
       catch (e) {
         logger.error('failed to upload', e);
@@ -358,7 +354,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     });
 
-  }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
+  }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadableFile) {

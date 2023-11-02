@@ -331,28 +331,27 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <div
         className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4
+          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
       >
-        <div className="h-50">
-          {pageId != null && (
-            <PageControls
-              pageId={pageId}
-              revisionId={revisionId}
-              shareLinkId={shareLinkId}
-              path={path ?? currentPathname} // If the page is empty, "path" is undefined
-              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={additionalMenuItemsRenderer}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-              onClickSwitchContentWidth={switchContentWidthHandler}
-            />
-          )}
-        </div>
+        {pageId != null && (
+          <PageControls
+            pageId={pageId}
+            revisionId={revisionId}
+            shareLinkId={shareLinkId}
+            path={path ?? currentPathname} // If the page is empty, "path" is undefined
+            expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+            disableSeenUserInfoPopover={isSharedUser}
+            showPageControlDropdown={isAbleToShowPageManagement}
+            additionalMenuItemRenderer={additionalMenuItemsRenderer}
+            onClickDuplicateMenuItem={duplicateItemClickedHandler}
+            onClickRenameMenuItem={renameItemClickedHandler}
+            onClickDeleteMenuItem={deleteItemClickedHandler}
+            onClickSwitchContentWidth={switchContentWidthHandler}
+          />
+        )}
+
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}

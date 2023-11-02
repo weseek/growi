@@ -2,6 +2,7 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
+import { useResolvedThemeForEditor } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -19,6 +20,7 @@ import {
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
@@ -76,6 +78,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     increment: incrementEditingCommentsNum,
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme(resolvedTheme);
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');

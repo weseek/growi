@@ -34,9 +34,11 @@ export const PageTags:FC<Props> = (props: Props) => {
     return <PageTagsSkeleton />;
   }
 
+  const printNoneClass = tags.length === 0 ? 'd-print-none' : '';
+
   return (
     <>
-      <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center`} data-testid="grw-tag-labels">
+      <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center ${printNoneClass}`} data-testid="grw-tag-labels">
         <RenderTagLabels
           tags={tags}
           openEditorModal={openEditorModal}

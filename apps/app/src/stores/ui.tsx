@@ -3,18 +3,19 @@ import {
 } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
-import { type SWRResponseWithUtils, useSWRStatic } from '@growi/core/dist/swr';
+import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/dist/swr';
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import {
-  useSWRConfig, type SWRResponse, type Key,
+  useSWRConfig, type SWRResponse, type Key, KeyedMutator, MutatorOptions,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
+import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
@@ -95,8 +96,6 @@ export const EditorModeHash = {
 } as const;
 export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
 
-export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
-
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname, search } = window.location;
 
@@ -166,8 +165,8 @@ export const useEditorMode = (): SWRResponseWithUtils<EditorModeUtils, EditorMod
   });
 };
 
-export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
-  const key: Key = isClient() ? 'isDeviceSmallerThanMd' : null;
+export const useIsDeviceLargerThanMd = (): SWRResponse<boolean, Error> => {
+  const key: Key = isClient() ? 'isDeviceLargerThanMd' : null;
 
   const { cache, mutate } = useSWRConfig();
 
@@ -176,13 +175,13 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
       const mdOrAvobeHandler = function(this: MediaQueryList): void {
         // sm -> md: matches will be true
         // md -> sm: matches will be false
-        mutate(key, !this.matches);
+        mutate(key, this.matches);
       };
       const mql = addBreakpointListener(Breakpoint.MD, mdOrAvobeHandler);
 
       // initialize
       if (cache.get(key)?.data == null) {
-        cache.set(key, { ...cache.get(key), data: !mql.matches });
+        cache.set(key, { ...cache.get(key), data: mql.matches });
       }
 
       return () => {
@@ -191,11 +190,11 @@ export const useIsDeviceSmallerThanMd = (): SWRResponse<boolean, Error> => {
     }
   }, [cache, key, mutate]);
 
-  return useStaticSWR(key);
+  return useSWRStatic(key);
 };
 
-export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
-  const key: Key = isClient() ? 'isDeviceSmallerThanLg' : null;
+export const useIsDeviceLargerThanLg = (): SWRResponse<boolean, Error> => {
+  const key: Key = isClient() ? 'isDeviceLargerThanLg' : null;
 
   const { cache, mutate } = useSWRConfig();
 
@@ -204,13 +203,13 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
       const lgOrAvobeHandler = function(this: MediaQueryList): void {
         // md -> lg: matches will be true
         // lg -> md: matches will be false
-        mutate(key, !this.matches);
+        mutate(key, this.matches);
       };
       const mql = addBreakpointListener(Breakpoint.LG, lgOrAvobeHandler);
 
       // initialize
       if (cache.get(key)?.data == null) {
-        cache.set(key, { ...cache.get(key), data: !mql.matches });
+        cache.set(key, { ...cache.get(key), data: mql.matches });
       }
 
       return () => {
@@ -219,28 +218,90 @@ export const useIsDeviceSmallerThanLg = (): SWRResponse<boolean, Error> => {
     }
   }, [cache, key, mutate]);
 
-  return useStaticSWR(key);
+  return useSWRStatic(key);
+};
+
+export const useIsDeviceLargerThanXl = (): SWRResponse<boolean, Error> => {
+  const key: Key = isClient() ? 'isDeviceLargerThanXl' : null;
+
+  const { cache, mutate } = useSWRConfig();
+
+  useEffect(() => {
+    if (key != null) {
+      const xlOrAvobeHandler = function(this: MediaQueryList): void {
+        // lg -> xl: matches will be true
+        // xl -> lg: matches will be false
+        mutate(key, this.matches);
+      };
+      const mql = addBreakpointListener(Breakpoint.XL, xlOrAvobeHandler);
+
+      // initialize
+      if (cache.get(key)?.data == null) {
+        cache.set(key, { ...cache.get(key), data: mql.matches });
+      }
+
+      return () => {
+        cleanupBreakpointListener(mql, xlOrAvobeHandler);
+      };
+    }
+  }, [cache, key, mutate]);
+
+  return useSWRStatic(key);
 };
 
 
-export const useCurrentSidebarContents = (initialData?: SidebarContentsType): SWRResponse<SidebarContentsType, Error> => {
-  return useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+type MutateAndSaveUserUISettings<Data> = (data: Data, opts?: boolean | MutatorOptions<Data>) => Promise<Data | undefined>;
+type MutateAndSaveUserUISettingsUtils<Data> = {
+  mutateAndSave: MutateAndSaveUserUISettings<Data>;
+}
+
+export const useCurrentSidebarContents = (
+    initialData?: SidebarContentsType,
+): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<SidebarContentsType>, SidebarContentsType> => {
+  const swrResponse = useSWRStatic('sidebarContents', initialData, { fallbackData: SidebarContentsType.TREE });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<SidebarContentsType> = useCallback((data, opts?) => {
+    scheduleToPut({ currentSidebarContents: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
 };
 
-export const useCurrentProductNavWidth = (initialData?: number): SWRResponse<number, Error> => {
-  return useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
+export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
+  const swrResponse = useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opts?) => {
+    scheduleToPut({ currentProductNavWidth: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
+export const usePreferCollapsedMode = (initialData?: boolean): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<boolean>, boolean> => {
+  const swrResponse = useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<boolean> = useCallback((data, opts?) => {
+    scheduleToPut({ preferCollapsedModeByUser: data });
+    return mutate(data, opts);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
+export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean> => {
+  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 export const useDrawerOpened = (isOpened?: boolean): SWRResponse<boolean, Error> => {
   return useSWRStatic('isDrawerOpened', isOpened, { fallbackData: false });
-};
-
-export const usePreferCollapsedMode = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isPreferCollapsedMode', initialData, { fallbackData: false });
-};
-
-export const useCollapsedContentsOpened = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useSWRStatic('isCollapsedContentsOpened', initialData, { fallbackData: false });
 };
 
 type DetectSidebarModeUtils = {
@@ -250,28 +311,28 @@ type DetectSidebarModeUtils = {
 }
 
 export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, SidebarMode> => {
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceLargerThanXl } = useIsDeviceLargerThanXl();
   const { data: editorMode } = useEditorMode();
   const { data: isCollapsedModeUnderDockMode } = usePreferCollapsedMode();
 
-  const condition = isDeviceSmallerThanMd != null && editorMode != null && isCollapsedModeUnderDockMode != null;
+  const condition = isDeviceLargerThanXl != null && editorMode != null && isCollapsedModeUnderDockMode != null;
 
   const isEditorMode = editorMode === EditorMode.Editor;
 
   const fetcher = useCallback((
-      [, isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
+      [, isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode]: [Key, boolean|undefined, boolean|undefined, boolean|undefined],
   ) => {
-    if (isDeviceSmallerThanMd) {
+    if (!isDeviceLargerThanXl) {
       return SidebarMode.DRAWER;
     }
     return isEditorMode || isCollapsedModeUnderDockMode ? SidebarMode.COLLAPSED : SidebarMode.DOCK;
   }, []);
 
   const swrResponse = useSWRImmutable(
-    condition ? ['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode] : null,
+    condition ? ['sidebarMode', isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode] : null,
     // calcDrawerMode,
     fetcher,
-    { fallbackData: fetcher(['sidebarMode', isDeviceSmallerThanMd, isEditorMode, isCollapsedModeUnderDockMode]) },
+    { fallbackData: fetcher(['sidebarMode', isDeviceLargerThanXl, isEditorMode, isCollapsedModeUnderDockMode]) },
   );
 
   const _isDrawerMode = useCallback(() => swrResponse.data === SidebarMode.DRAWER, [swrResponse.data]);

@@ -1,57 +1,52 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useImperativeHandle,
+  forwardRef, ForwardRefRenderFunction,
 } from 'react';
 
 import type { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
-import FormattedDistanceDate from '../../FormattedDistanceDate';
+import { ModelNotification } from './ModelNotification';
+import { useActionMsgAndIconForPageModelNotification } from './useActionAndMsg';
+
 
 interface Props {
   notification: IInAppNotification & HasObjectId
-  actionMsg: string
-  actionIcon: string
   actionUsers: string
 }
 
 const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props, ref) => {
 
   const {
-    notification, actionMsg, actionIcon, actionUsers,
+    notification, actionUsers,
   } = props;
+
+  const { actionMsg, actionIcon } = useActionMsgAndIconForPageModelNotification(notification);
 
   const router = useRouter();
 
   // publish open()
-  useImperativeHandle(ref, () => ({
-    open() {
-      if (notification.target != null) {
-        // jump to target page
-        const targetPagePath = notification.target.path;
-        if (targetPagePath != null) {
-          router.push(targetPagePath);
-        }
+  const publishOpen = () => {
+    if (notification.target != null) {
+      // jump to target page
+      const targetPagePath = notification.target.path;
+      if (targetPagePath != null) {
+        router.push(targetPagePath);
       }
-    },
-  }));
+    }
+  };
 
   return (
-    <div className="p-2 overflow-hidden">
-      <div className="text-truncate">
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
-      </div>
-      <i className={`${actionIcon} me-2`} />
-      <FormattedDistanceDate
-        id={notification._id}
-        date={notification.createdAt}
-        isShowTooltip={false}
-        differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-      />
-    </div>
+    <ModelNotification
+      notification={notification}
+      actionMsg={actionMsg}
+      actionIcon={actionIcon}
+      actionUsers={actionUsers}
+      publishOpen={publishOpen}
+      ref={ref}
+    />
   );
 };
 

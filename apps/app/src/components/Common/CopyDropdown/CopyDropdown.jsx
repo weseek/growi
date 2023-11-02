@@ -110,7 +110,7 @@ export const CopyDropdown = (props) => {
 
   return (
     <>
-      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown`} isOpen={dropdownOpen} toggle={toggleDropdown}>
+      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`} isOpen={dropdownOpen} toggle={toggleDropdown}>
         <DropdownToggle
           caret
           className={dropdownToggleClassName}
