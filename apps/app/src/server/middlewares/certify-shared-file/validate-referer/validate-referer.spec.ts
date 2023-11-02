@@ -21,23 +21,31 @@ describe('validateReferer', () => {
 
       // then
       expect(result).toBeFalsy();
-      expect(mocks.configManagerMock.getConfig).not.toHaveBeenCalled(); // getConfig have not been called
+      expect(mocks.retrieveSiteUrlMock).not.toHaveBeenCalled();
     });
 
-    it('when the siteUrl is not set', () => {
+    it('when the referer is invalid', () => {
+      // when
+      const result = validateReferer('invalid URL');
+
+      // then
+      expect(result).toBeFalsy();
+      expect(mocks.retrieveSiteUrlMock).not.toHaveBeenCalledOnce();
+    });
+
+    it('when the siteUrl returns null', () => {
       // setup
-      mocks.configManagerMock.getConfig.mockImplementation(() => {
+      mocks.retrieveSiteUrlMock.mockImplementation(() => {
         return null;
       });
 
       // when
-      const refererString = 'referer string';
+      const refererString = 'https://example.org/share/xxxxx';
       const result = validateReferer(refererString);
 
       // then
       expect(result).toBeFalsy();
-      expect(mocks.configManagerMock.getConfig).toHaveBeenCalledWith('crowi', 'app:siteUrl');
-      expect(mocks.configManagerMock.getConfig).toHaveBeenCalledOnce();
+      expect(mocks.retrieveSiteUrlMock).toHaveBeenCalledOnce();
     });
 
     it('when the domain of the referer does not match with siteUrl', () => {

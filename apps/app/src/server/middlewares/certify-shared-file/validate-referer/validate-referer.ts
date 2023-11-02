@@ -15,19 +15,19 @@ export const validateReferer = (referer: string | undefined): ValidReferer | fal
     return false;
   }
 
-  // siteUrl
-  const siteUrl = retrieveSiteUrl();
-  if (siteUrl == null) {
-    return false;
-  }
-
   let refererUrl: URL;
   try {
     refererUrl = new URL(referer);
   }
   catch (err) {
     logger.error("The 'app:siteUrl' is invalid");
-    throw err;
+    return false;
+  }
+
+  // siteUrl
+  const siteUrl = retrieveSiteUrl();
+  if (siteUrl == null) {
+    return false;
   }
 
   // if (refererUrl.hostname !== )
