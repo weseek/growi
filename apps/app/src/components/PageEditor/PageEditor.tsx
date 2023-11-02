@@ -357,13 +357,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
-    if (isUploadableImage) {
+    if (!isUploadableImage) {
       return AcceptedUploadFileType.IMAGE;
     }
     if (isUploadableFile) {
-      return AcceptedUploadFileType.NONE;
+      return AcceptedUploadFileType.ALL;
     }
-    return AcceptedUploadFileType.ALL;
+    return AcceptedUploadFileType.IMAGE;
   }, [isUploadableFile, isUploadableImage]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
