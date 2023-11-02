@@ -59,17 +59,17 @@
   }
 }
 
-@mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
-  .overlay.#{$additionalSelector} {
-    background: rgba(255, 255, 255, 0.5);
-    .overlay-content {
-      padding: $contentPadding;
-      font-size: $contentFontSize;
-      color: bs.$gray-700;
-      background: rgba(200, 200, 200, 0.5);
-    }
-  }
-}
+// @mixin overlay-processing-style($additionalSelector, $contentFontSize: inherit, $contentPadding: inherit) {
+//   .overlay.#{$additionalSelector} {
+//     background: rgba(255, 255, 255, 0.5);
+//     .overlay-content {
+//       padding: $contentPadding;
+//       font-size: $contentFontSize;
+//       color: bs.$gray-700;
+//       background: rgba(200, 200, 200, 0.5);
+//     }
+//   }
+// }
 
 // @mixin insertSimpleLineIcons($code) {
 //   &:before {

@@ -112,6 +112,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return (
         <div className="overlay overlay-dropzone-active">
           <span className="overlay-content">
+            <span className="overlay-icon material-symbols-outlined">
+            </span>
           </span>
         </div>
       );

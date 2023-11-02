@@ -40,11 +40,10 @@
 }
 
 
-// ref codepoint: https://fonts.google.com/icons?hl=ja
 @mixin insertMaterialSymbolAndMessage($code, $message) {
-  &:before {
+  .overlay-icon:before {
     margin-right: 0.2em;
-    font-family: 'Material Symbols Outlined';
+    font-size:1.4em;
     content: $code;
   }
   &:after {
@@ -85,7 +84,7 @@
     &.dropzone-uploading {
       .overlay.overlay-dropzone-active {
         .overlay-content {
-          @include insertMaterialSymbolAndMessage('\e9fc', 'Uploading...');
+          @include insertMaterialSymbolAndMessage('upload_file', 'Uploading...');
         }
       }
     }
@@ -94,7 +93,7 @@
     &.dropzone-disabled {
       .overlay.overlay-dropzone-active {
         .overlay-content {
-          @include insertMaterialSymbolAndMessage('\e000', 'File uploading is disabled');
+          @include insertMaterialSymbolAndMessage('error', 'File uploading is disabled');
         }
       }
     }
@@ -108,7 +107,7 @@
         border: 4px dashed bs.$gray-300;
 
         .overlay-content {
-          @include insertMaterialSymbolAndMessage('\e2c3', 'Drop here to upload');
+          @include insertMaterialSymbolAndMessage('cloud_upload', 'Drop here to upload');
         }
       }
     }
@@ -117,7 +116,7 @@
     &.dropzone-mismatch-picture {
       .overlay.overlay-dropzone-active {
         .overlay-content {
-          @include insertMaterialSymbolAndMessage('\e410', 'Only an image file is allowed');
+          @include insertMaterialSymbolAndMessage('photo', 'Only an image file is allowed');
         }
       }
     }
@@ -128,7 +127,7 @@
         background: rgba(200, 200, 200, 0.8);
 
         .overlay-content {
-          @include insertMaterialSymbolAndMessage('\e410', 'This file is not allowed');
+          @include insertMaterialSymbolAndMessage('error', 'This file is not allowed');
         }
 
       }
