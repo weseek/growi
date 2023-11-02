@@ -10,7 +10,7 @@ import { validateReferer } from './validate-referer';
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 
 
-interface RequestToAllowShareLink extends Request {
+export interface RequestToAllowShareLink extends Request {
   isSharedPage?: boolean,
 }
 
