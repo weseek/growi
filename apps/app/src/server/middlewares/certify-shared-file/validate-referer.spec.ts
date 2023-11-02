@@ -1,4 +1,4 @@
-import { validateReferer } from './validate-referer';
+import { retrieveSiteUrl, validateReferer } from './validate-referer';
 
 const mocks = vi.hoisted(() => {
   return {
@@ -12,7 +12,8 @@ vi.mock('~/server/service/config-manager', () => {
   return { configManager: mocks.configManagerMock };
 });
 
-describe('validateReferer', () => {
+
+describe('retrieveSiteUrl', () => {
 
   it('throw a parse error when the siteUrl is invalid', () => {
     // setup
@@ -21,9 +22,25 @@ describe('validateReferer', () => {
     });
 
     // when
-    const refererString = 'referer string';
-    expect(() => validateReferer(refererString)).toThrowError();
+    expect(() => retrieveSiteUrl()).toThrowError();
   });
+
+  it('returns a URL instance', () => {
+    // setup
+    const siteUrl = 'https://example.com';
+    mocks.configManagerMock.getConfig.mockImplementation(() => siteUrl);
+
+    // when
+    const result = retrieveSiteUrl();
+
+    // then
+    expect(result).toEqual(new URL(siteUrl));
+  });
+
+});
+
+
+describe('validateReferer', () => {
 
   describe('refurns false', () => {
 
