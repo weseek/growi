@@ -96,8 +96,6 @@ export const EditorModeHash = {
 } as const;
 export type EditorModeHash = typeof EditorModeHash[keyof typeof EditorModeHash];
 
-export const isEditorModeHash = (hash: string): hash is EditorModeHash => Object.values<string>(EditorModeHash).includes(hash);
-
 const updateHashByEditorMode = (newEditorMode: EditorMode) => {
   const { pathname, search } = window.location;
 
