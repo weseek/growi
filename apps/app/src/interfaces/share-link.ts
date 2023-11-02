@@ -10,6 +10,7 @@ export type IShareLink = {
   createdAt: Date,
   expiredAt?: Date,
   description: string,
+  isExpired: () => boolean,
 };
 
 export type IShareLinkHasId = IShareLink & HasObjectId;
