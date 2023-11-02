@@ -1,3 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+
 .codemirror-editor-container :global {
 
   .cm-editor {
@@ -36,15 +39,6 @@
 
 }
 
-// TODO: ref Editor.module.scss
-//
-$gray-300: #dee2e6 !default;
-$gray-400: #ced4da !default;
-$gray-500: #adb5bd !default;
-$gray-600: #6c757d !default;
-$gray-700: #495057 !default;
-$secondary: $gray-600 !default;
-
 
 // ref codepoint: https://fonts.google.com/icons?hl=ja
 @mixin insertMaterialSymbolAndMessage($code, $message) {
@@ -82,7 +76,7 @@ $secondary: $gray-600 !default;
       .overlay-content {
         padding: 0.5em;
         font-size: 2.5em;
-        color: $gray-700;
+        color: bs.$gray-700;
         background: rgba(200, 200, 200, 0.5);
       }
     }
@@ -109,9 +103,9 @@ $secondary: $gray-600 !default;
     &.dropzone-accepted {
       .overlay.overlay-dropzone-active {
         // style
-        color: $secondary;
+        color: bs.$secondary;
         background: rgba(200, 200, 200, 0.8);
-        border: 4px dashed $gray-300;
+        border: 4px dashed bs.$gray-300;
 
         .overlay-content {
           @include insertMaterialSymbolAndMessage('\e2c3', 'Drop here to upload');
