@@ -358,7 +358,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadableImage) {
-      return AcceptedUploadFileType.IMAGE;
+      return AcceptedUploadFileType.NONE;
     }
     if (isUploadableFile) {
       return AcceptedUploadFileType.ALL;
