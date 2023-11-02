@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage } from '~/client/services/layout';
+import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -343,6 +343,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
+
+const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
+  const editorModeClassName = useEditorModeClassName();
+  return <BasicLayout className={editorModeClassName}>{children}</BasicLayout>;
+};
+
 type LayoutProps = Props & {
   children?: ReactNode
 }
@@ -351,11 +357,7 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
-  return (
-    <BasicLayout>
-      {children}
-    </BasicLayout>
-  );
+  return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };
 
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
