@@ -6,6 +6,7 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
+import { generateCertifySharedFileMiddleware } from '../middlewares/certify-shared-file';
 import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -33,7 +34,7 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
-  const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
+  const certifySharedFile = generateCertifySharedFileMiddleware(crowi);
   const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 

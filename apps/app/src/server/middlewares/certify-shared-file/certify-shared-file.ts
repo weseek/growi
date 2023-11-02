@@ -4,7 +4,7 @@ const url = require('url');
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
 
-module.exports = (crowi) => {
+export const generateCertifySharedFileMiddleware = (crowi) => {
 
   return async(req, res, next) => {
     const { referer } = req.headers;
