@@ -43,34 +43,6 @@ export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, r
     return next();
   }
 
-  // const Attachment = getModelSafely<IAttachment>('Attachment');
-  // if (Attachment == null) {
-  //   logger.warn('Could not get Attachment model. next() is called without processing anything.');
-  //   return next();
-  // }
-
-  // const attachment = await Attachment.findOne({ _id: fileId });
-
-  // if (attachment == null) {
-  //   return next();
-  // }
-
-  // const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
-
-  // // If sharelinks don't exist, skip it
-  // if (shareLinks.length === 0) {
-  //   return next();
-  // }
-
-  // // Is there a valid share link
-  // shareLinks.map((sharelink) => {
-  //   if (!sharelink.isExpired()) {
-  //     logger.debug('Confirmed target file belong to a share page');
-  //     req.isSharedPage = true;
-  //   }
-  //   return;
-  // });
-
   req.isSharedPage = true;
   next();
 

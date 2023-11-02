@@ -26,32 +26,34 @@ describe('certifySharedFileMiddleware', () => {
 
   describe('should called next() without req.isSharedPage set', () => {
 
-    it('when the fileId param is null', () => {
+    it('when the fileId param is null', async() => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = {}; // id: undefined
       req.headers = {};
 
       // when
-      certifySharedFileMiddleware(req, res, next);
+      await certifySharedFileMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).not.toHaveBeenCalled();
+      expect(req.isSharedPage === true).toBeFalsy();
       expect(next).toHaveBeenCalledOnce();
     });
 
-    it('when validateReferer returns null', () => {
+    it('when validateReferer returns null', async() => {
       // setup
       const req = mock<RequestToAllowShareLink>();
       req.params = { id: 'file id string' };
       req.headers = { referer: 'referer string' };
 
       // when
-      certifySharedFileMiddleware(req, res, next);
+      await certifySharedFileMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
       expect(mocks.validateRefererMock).toHaveBeenCalledWith('referer string');
+      expect(req.isSharedPage === true).toBeFalsy();
       expect(next).toHaveBeenCalledOnce();
     });
 
@@ -77,6 +79,7 @@ describe('certifySharedFileMiddleware', () => {
       expect(mocks.validateRefererMock).toHaveBeenCalledWith('referer string');
       expect(mocks.retrieveValidShareLinkByRefererMock).toHaveBeenCalledOnce();
       expect(mocks.retrieveValidShareLinkByRefererMock).toHaveBeenCalledWith(validReferer);
+      expect(req.isSharedPage === true).toBeFalsy();
       expect(next).toHaveBeenCalledOnce();
     });
 
@@ -104,8 +107,39 @@ describe('certifySharedFileMiddleware', () => {
       expect(mocks.retrieveValidShareLinkByRefererMock).toHaveBeenCalledWith(validReferer);
       expect(mocks.validateAttachmentMock).toHaveBeenCalledOnce();
       expect(mocks.validateAttachmentMock).toHaveBeenCalledWith('file id string', shareLinkMock);
+      expect(req.isSharedPage === true).toBeFalsy();
       expect(next).toHaveBeenCalledOnce();
     });
 
+  });
+
+  it('should set req.isSharedPage true', async() => {
+    // setup
+    const req = mock<RequestToAllowShareLink>();
+    req.params = { id: 'file id string' };
+    req.headers = { referer: 'referer string' };
+
+    const validReferer = vi.fn();
+    mocks.validateRefererMock.mockImplementation(() => validReferer);
+
+    const shareLinkMock = mock<ShareLinkDocument>();
+    mocks.retrieveValidShareLinkByRefererMock.mockResolvedValue(shareLinkMock);
+
+    mocks.validateAttachmentMock.mockResolvedValue(true);
+
+    // when
+    await certifySharedFileMiddleware(req, res, next);
+
+    // then
+    expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
+    expect(mocks.validateRefererMock).toHaveBeenCalledWith('referer string');
+    expect(mocks.retrieveValidShareLinkByRefererMock).toHaveBeenCalledOnce();
+    expect(mocks.retrieveValidShareLinkByRefererMock).toHaveBeenCalledWith(validReferer);
+    expect(mocks.validateAttachmentMock).toHaveBeenCalledOnce();
+    expect(mocks.validateAttachmentMock).toHaveBeenCalledWith('file id string', shareLinkMock);
+
+    expect(req.isSharedPage === true).toBeTruthy();
+
+    expect(next).toHaveBeenCalledOnce();
   });
 });
