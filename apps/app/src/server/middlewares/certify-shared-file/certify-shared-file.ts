@@ -32,28 +32,16 @@ export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, r
 
   logger.info('referer is valid.');
 
-  // // Attachments cannot be viewed by clients who do not send referer.
-  // // https://github.com/weseek/growi/issues/2819
-  // if (referer == null) {
-  //   return next();
-  // }
-
-  // const refererUrl = new URL(referer);
-
-  // if (!refererUrl.pathname.startsWith('/share/')) {
-  //   return next();
-  // }
-
-  const shareLink = retrieveValidShareLinkByReferer(validReferer);
+  const shareLink = await retrieveValidShareLinkByReferer(validReferer);
   if (shareLink == null) {
     logger.info(`No valid ShareLink document found by the referer (${validReferer.referer}})`);
     return next();
   }
 
-  if (!validateAttachment(fileId, shareLink)) {
-    logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
-    return next();
-  }
+  // if (!validateAttachment(fileId, shareLink)) {
+  //   logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
+  //   return next();
+  // }
 
   // const Attachment = getModelSafely<IAttachment>('Attachment');
   // if (Attachment == null) {
