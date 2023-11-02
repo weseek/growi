@@ -29,8 +29,24 @@ describe('certifySharedFileMiddleware', () => {
       certifySharedFileMiddleware(req, res, next);
 
       // then
-      expect(next).toHaveBeenCalledOnce();
       expect(mocks.validateRefererMock).not.toHaveBeenCalled();
+      expect(next).toHaveBeenCalledOnce();
     });
+
+    it('when validateReferer returns null', () => {
+      // setup
+      const req = mock<RequestToAllowShareLink>();
+      req.params = { id: 'file id string' };
+      req.headers = { referer: 'referer string' };
+
+      // when
+      certifySharedFileMiddleware(req, res, next);
+
+      // then
+      expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
+      expect(mocks.validateRefererMock).toHaveBeenCalledWith('referer string');
+      expect(next).toHaveBeenCalledOnce();
+    });
+
   });
 });
