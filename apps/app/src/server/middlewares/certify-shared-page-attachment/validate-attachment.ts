@@ -5,7 +5,7 @@ import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:middleware:certify-shared-fire:validate-attachment');
+const logger = loggerFactory('growi:middleware:certify-shared-page-attachment:validate-attachment');
 
 
 export const validateAttachment = async(fileId: string, shareLink: ShareLinkDocument): Promise<boolean> => {

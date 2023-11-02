@@ -3,7 +3,7 @@ import { mock } from 'vitest-mock-extended';
 
 import { ShareLinkDocument } from '~/server/models/share-link';
 
-import { certifySharedFileMiddleware, type RequestToAllowShareLink } from './certify-shared-file';
+import { certifySharedFileMiddleware, type RequestToAllowShareLink } from './certify-shared-page-attachment';
 import { ValidReferer } from './interfaces';
 
 const mocks = vi.hoisted(() => {

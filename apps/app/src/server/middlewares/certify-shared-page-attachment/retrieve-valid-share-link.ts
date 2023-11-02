@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 import type { ValidReferer } from './interfaces';
 
 
-const logger = loggerFactory('growi:middleware:certify-shared-fire:retrieve-valid-share-link');
+const logger = loggerFactory('growi:middleware:certify-shared-page-attachment:retrieve-valid-share-link');
 
 
 export const retrieveValidShareLinkByReferer = async(referer: ValidReferer): Promise<ShareLinkDocument | null> => {
