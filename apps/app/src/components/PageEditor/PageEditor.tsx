@@ -357,11 +357,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
-    if (!isUploadableFile) {
-      return AcceptedUploadFileType.NONE;
-    }
     if (isUploadableImage) {
       return AcceptedUploadFileType.IMAGE;
+    }
+    if (isUploadableFile) {
+      return AcceptedUploadFileType.NONE;
     }
     return AcceptedUploadFileType.ALL;
   }, [isUploadableFile, isUploadableImage]);
