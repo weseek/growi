@@ -1,43 +1,12 @@
-import { retrieveSiteUrl, validateReferer } from './validate-referer';
+import { validateReferer } from './validate-referer';
 
 const mocks = vi.hoisted(() => {
   return {
-    configManagerMock: {
-      getConfig: vi.fn(),
-    },
+    retrieveSiteUrlMock: vi.fn(),
   };
 });
 
-vi.mock('~/server/service/config-manager', () => {
-  return { configManager: mocks.configManagerMock };
-});
-
-
-describe('retrieveSiteUrl', () => {
-
-  it('throw a parse error when the siteUrl is invalid', () => {
-    // setup
-    mocks.configManagerMock.getConfig.mockImplementation(() => {
-      return 'invalid siteUrl string';
-    });
-
-    // when
-    expect(() => retrieveSiteUrl()).toThrowError();
-  });
-
-  it('returns a URL instance', () => {
-    // setup
-    const siteUrl = 'https://example.com';
-    mocks.configManagerMock.getConfig.mockImplementation(() => siteUrl);
-
-    // when
-    const result = retrieveSiteUrl();
-
-    // then
-    expect(result).toEqual(new URL(siteUrl));
-  });
-
-});
+vi.mock('./retrieve-site-url', () => ({ retrieveSiteUrl: mocks.retrieveSiteUrlMock }));
 
 
 describe('validateReferer', () => {
@@ -45,6 +14,8 @@ describe('validateReferer', () => {
   describe('refurns false', () => {
 
     it('when the referer argument is undefined', () => {
+      // setup
+
       // when
       const result = validateReferer(undefined);
 
