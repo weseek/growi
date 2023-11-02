@@ -2,7 +2,6 @@ import { FC, memo, useCallback } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
@@ -41,13 +40,12 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     onHover,
   } = props;
 
-  const { data: currentContents, mutate: mutateContents } = useCurrentSidebarContents();
+  const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
 
   const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
 
   const selectThisItem = useCallback(() => {
     mutateContents(contents, false);
-    scheduleToPut({ currentSidebarContents: contents });
   }, [contents, mutateContents]);
 
   const itemClickedHandler = useCallback(() => {

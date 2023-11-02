@@ -10,6 +10,8 @@ import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
+import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
+
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
@@ -51,15 +53,19 @@ const defaultExtensions: Extension[] = [
   Prec.lowest(keymap.of(defaultKeymap)),
   syntaxHighlighting(markdownHighlighting),
   Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
+  emojiAutocompletionSettings,
 ];
+
 
 export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor => {
 
-  const mergedProps = useMemo<UseCodeMirror>(() => {
+  const mergedProps = useMemo(() => {
     return deepmerge(
       props ?? {},
       {
-        extensions: defaultExtensions,
+        extensions: [
+          defaultExtensions,
+        ],
         // Reset settings of react-codemirror.
         // Extensions are defined first will be used if they have the same priority.
         // If extensions conflict, disable them here.

@@ -1,8 +1,25 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.2](https://github.com/weseek/growi/compare/v6.2.1...v6.2.2) - 2023-10-30
+
+### 🚀 Improvement
+
+- imprv: Printing styles (#8195) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Show liker counts in lsx (#8194) @yuki-takei
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump postcss from 8.4.26 to 8.4.31 (#8142) @dependabot
+- ci(deps): bump cypress-io/github-action from 5 to 6 (#8051) @dependabot
+- ci(deps): bump amannn/action-semantic-pull-request from 5.0.2 to 5.3.0 (#8127) @dependabot
+- ci(deps): bump aws-actions/configure-aws-credentials from 2 to 4 (#8128) @dependabot
 
 ## [v6.2.1](https://github.com/weseek/growi/compare/v6.2.0...v6.2.1) - 2023-10-03
 

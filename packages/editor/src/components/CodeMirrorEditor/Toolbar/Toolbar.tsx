@@ -1,5 +1,7 @@
 import { memo } from 'react';
 
+import { AcceptedUploadFileType } from '../../../consts';
+
 import { AttachmentsDropup } from './AttachmentsDropup';
 import { DiagramButton } from './DiagramButton';
 import { EmojiButton } from './EmojiButton';
@@ -7,11 +9,11 @@ import { TableButton } from './TableButton';
 import { TemplateButton } from './TemplateButton';
 import { TextFormatTools } from './TextFormatTools';
 
-import { AcceptedUploadFileType } from 'src/consts';
 
 import styles from './Toolbar.module.scss';
 
 type Props = {
+  editorKey: string,
   editorKey: string,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType
@@ -20,11 +22,14 @@ type Props = {
 export const Toolbar = memo((props: Props): JSX.Element => {
 
   const { editorKey, onFileOpen, acceptedFileType } = props;
+
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
       <TextFormatTools editorKey={editorKey} />
-      <EmojiButton />
+      <EmojiButton
+        editorKey={editorKey}
+      />
       <TableButton />
       <DiagramButton />
       <TemplateButton />
