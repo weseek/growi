@@ -10,11 +10,11 @@ import type { IShareLink } from '~/interfaces/share-link';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
-export interface ShareLinkDocument extends IShareLink, Document {}
-
-export interface ShareLinkModel extends Model<ShareLinkDocument>{
+export interface ShareLinkDocument extends IShareLink, Document {
   isExpired: () => boolean,
 }
+
+export type ShareLinkModel = Model<ShareLinkDocument>;
 
 
 /*
