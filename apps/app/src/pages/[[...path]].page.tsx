@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage, useEditorModeClassName } from '~/client/services/layout';
+import { useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -348,13 +348,11 @@ type LayoutProps = Props & {
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  const className = useEditorModeClassName();
-
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   return (
-    <BasicLayout className={className}>
+    <BasicLayout>
       {children}
     </BasicLayout>
   );

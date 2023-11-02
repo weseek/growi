@@ -4,6 +4,8 @@ import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
+import { useEditorModeClassName } from '~/client/services/layout';
+
 import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
@@ -32,8 +34,10 @@ type Props = {
 
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+  const editorModeClassName = useEditorModeClassName();
+
   return (
-    <RawLayout className={className ?? ''}>
+    <RawLayout className={`${className ?? ''} ${editorModeClassName}`}>
       <DndProvider backend={HTML5Backend}>
 
         <div className="page-wrapper flex-row">
