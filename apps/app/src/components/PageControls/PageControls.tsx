@@ -296,7 +296,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 type PageControlsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId?: string,
+  revisionId: string,
   path?: string | null,
   expandContentWidth?: boolean,
 };
@@ -312,7 +312,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const { open: openTagEditModal } = useTagEditModal();
 
   const onClickEditTagsButton = useCallback(() => {
-    if (pageId == null || revisionId == null || tagsInfoData == null) {
+    if (tagsInfoData == null) {
       return;
     }
     openTagEditModal(tagsInfoData.tags, pageId, revisionId);
