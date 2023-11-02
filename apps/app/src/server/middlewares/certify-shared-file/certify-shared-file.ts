@@ -1,10 +1,13 @@
 import type { IAttachment } from '@growi/core';
 import type { NextFunction, Request, Response } from 'express';
 
-import type { IShareLink } from '~/interfaces/share-link';
 import loggerFactory from '~/utils/logger';
 
 import { getModelSafely } from '../../util/mongoose-utils';
+
+import { retrieveValidShareLinkByReferer } from './retrieve-valid-share-link';
+import { validateAttachment } from './validate-attachment';
+import { validateReferer } from './validate-referer';
 
 
 const logger = loggerFactory('growi:middleware:certify-shared-fire');
@@ -16,56 +19,79 @@ interface RequestToAllowShareLink extends Request {
 
 export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, res: Response, next: NextFunction): Promise<void> => {
 
+  const fileId: string | undefined = req.params.id;
   const { referer } = req.headers;
 
-  // Attachments cannot be viewed by clients who do not send referer.
-  // https://github.com/weseek/growi/issues/2819
-  if (referer == null) {
+  if (fileId == null) {
+    logger.error('The param fileId is required.');
     return next();
   }
 
-  const refererUrl = new URL(referer);
-
-  if (!refererUrl.pathname.startsWith('/share/')) {
+  const validReferer = validateReferer(referer);
+  if (!validReferer) {
+    logger.info('invalid referer.');
     return next();
   }
 
-  const fileId = req.params.id || null;
+  logger.info('referer is valid.');
 
-  const Attachment = getModelSafely<IAttachment>('Attachment');
-  const ShareLink = getModelSafely<IShareLink>('ShareLink');
+  // // Attachments cannot be viewed by clients who do not send referer.
+  // // https://github.com/weseek/growi/issues/2819
+  // if (referer == null) {
+  //   return next();
+  // }
 
-  if (Attachment == null) {
-    logger.warn('Could not get Attachment model. next() is called without processing anything.');
+  // const refererUrl = new URL(referer);
+
+  // if (!refererUrl.pathname.startsWith('/share/')) {
+  //   return next();
+  // }
+
+  const shareLink = retrieveValidShareLinkByReferer(validReferer);
+  if (shareLink == null) {
+    logger.info(`No valid ShareLink document found by the referer (${validReferer.referer}})`);
     return next();
   }
-  if (ShareLink == null) {
-    logger.warn('Could not get Attachment model. next() is called without processing anything.');
+  // const ShareLink = getModelSafely<IShareLink>('ShareLink');
+  // if (ShareLink == null) {
+  //   logger.warn('Could not get Attachment model. next() is called without processing anything.');
+  //   return next();
+  // }
+
+  if (!validateAttachment(fileId, shareLink)) {
+    logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
     return next();
   }
 
-  const attachment = await Attachment.findOne({ _id: fileId });
+  // const Attachment = getModelSafely<IAttachment>('Attachment');
+  // if (Attachment == null) {
+  //   logger.warn('Could not get Attachment model. next() is called without processing anything.');
+  //   return next();
+  // }
 
-  if (attachment == null) {
-    return next();
-  }
+  // const attachment = await Attachment.findOne({ _id: fileId });
 
-  const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
+  // if (attachment == null) {
+  //   return next();
+  // }
 
-  // If sharelinks don't exist, skip it
-  if (shareLinks.length === 0) {
-    return next();
-  }
+  // const shareLinks = await ShareLink.find({ relatedPage: attachment.page });
 
-  // Is there a valid share link
-  shareLinks.map((sharelink) => {
-    if (!sharelink.isExpired()) {
-      logger.debug('Confirmed target file belong to a share page');
-      req.isSharedPage = true;
-    }
-    return;
-  });
+  // // If sharelinks don't exist, skip it
+  // if (shareLinks.length === 0) {
+  //   return next();
+  // }
 
+  // // Is there a valid share link
+  // shareLinks.map((sharelink) => {
+  //   if (!sharelink.isExpired()) {
+  //     logger.debug('Confirmed target file belong to a share page');
+  //     req.isSharedPage = true;
+  //   }
+  //   return;
+  // });
+
+  req.isSharedPage = true;
   next();
 
 };
