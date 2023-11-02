@@ -45,7 +45,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     setOpen(bool => !bool);
   }, []);
 
-  const onClickAddPrefixToSelection = (prefix: string) => codeMirrorEditor?.insertPrefix(prefix);
+  const onClickAddHeaderToSelection = (prefix: string) => codeMirrorEditor?.insertHeader(prefix);
 
   return (
     <div className="d-flex">
@@ -62,7 +62,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickAddPrefixToSelection('#')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickAddHeaderToSelection('#')}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
