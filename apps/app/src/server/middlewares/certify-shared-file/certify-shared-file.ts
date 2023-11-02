@@ -20,7 +20,7 @@ export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, r
   const { referer } = req.headers;
 
   if (fileId == null) {
-    logger.error('The param fileId is required.');
+    logger.error('The param fileId is required. Please confirm to usage of this middleware.');
     return next();
   }
 
@@ -49,11 +49,6 @@ export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, r
     logger.info(`No valid ShareLink document found by the referer (${validReferer.referer}})`);
     return next();
   }
-  // const ShareLink = getModelSafely<IShareLink>('ShareLink');
-  // if (ShareLink == null) {
-  //   logger.warn('Could not get Attachment model. next() is called without processing anything.');
-  //   return next();
-  // }
 
   if (!validateAttachment(fileId, shareLink)) {
     logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
