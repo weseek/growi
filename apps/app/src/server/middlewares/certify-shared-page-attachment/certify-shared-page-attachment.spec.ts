@@ -3,7 +3,7 @@ import { mock } from 'vitest-mock-extended';
 
 import { ShareLinkDocument } from '~/server/models/share-link';
 
-import { certifySharedFileMiddleware, type RequestToAllowShareLink } from './certify-shared-page-attachment';
+import { certifySharedPageAttachmentMiddleware, type RequestToAllowShareLink } from './certify-shared-page-attachment';
 import { ValidReferer } from './interfaces';
 
 const mocks = vi.hoisted(() => {
@@ -19,7 +19,7 @@ vi.mock('./retrieve-valid-share-link', () => ({ retrieveValidShareLinkByReferer:
 vi.mock('./validate-attachment', () => ({ validateAttachment: mocks.validateAttachmentMock }));
 
 
-describe('certifySharedFileMiddleware', () => {
+describe('certifySharedPageAttachmentMiddleware', () => {
 
   const res = mock<Response>();
   const next = vi.fn();
@@ -33,7 +33,7 @@ describe('certifySharedFileMiddleware', () => {
       req.headers = {};
 
       // when
-      await certifySharedFileMiddleware(req, res, next);
+      await certifySharedPageAttachmentMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).not.toHaveBeenCalled();
@@ -48,7 +48,7 @@ describe('certifySharedFileMiddleware', () => {
       req.headers = { referer: 'referer string' };
 
       // when
-      await certifySharedFileMiddleware(req, res, next);
+      await certifySharedPageAttachmentMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
@@ -72,7 +72,7 @@ describe('certifySharedFileMiddleware', () => {
       mocks.retrieveValidShareLinkByRefererMock.mockResolvedValue(null);
 
       // when
-      await certifySharedFileMiddleware(req, res, next);
+      await certifySharedPageAttachmentMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
@@ -98,7 +98,7 @@ describe('certifySharedFileMiddleware', () => {
       mocks.validateAttachmentMock.mockResolvedValue(false);
 
       // when
-      await certifySharedFileMiddleware(req, res, next);
+      await certifySharedPageAttachmentMiddleware(req, res, next);
 
       // then
       expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
@@ -128,7 +128,7 @@ describe('certifySharedFileMiddleware', () => {
     mocks.validateAttachmentMock.mockResolvedValue(true);
 
     // when
-    await certifySharedFileMiddleware(req, res, next);
+    await certifySharedPageAttachmentMiddleware(req, res, next);
 
     // then
     expect(mocks.validateRefererMock).toHaveBeenCalledOnce();
