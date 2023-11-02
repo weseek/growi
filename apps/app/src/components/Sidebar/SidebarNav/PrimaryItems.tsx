@@ -40,7 +40,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     onHover,
   } = props;
 
-  const { data: currentContents, mutate: mutateContents } = useCurrentSidebarContents();
+  const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
 
   const indicatorClass = useIndicator(sidebarMode, contents === currentContents);
 

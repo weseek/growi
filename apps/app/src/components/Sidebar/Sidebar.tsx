@@ -42,7 +42,7 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
   const { data: currentProductNavWidth, mutateAndSave: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
