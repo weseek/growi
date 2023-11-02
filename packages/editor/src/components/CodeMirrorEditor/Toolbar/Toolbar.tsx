@@ -14,7 +14,6 @@ import styles from './Toolbar.module.scss';
 
 type Props = {
   editorKey: string,
-  editorKey: string,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType
 }
