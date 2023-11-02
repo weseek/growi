@@ -71,13 +71,13 @@
   }
 }
 
-@mixin insertSimpleLineIcons($code) {
-  &:before {
-    margin-right: 0.2em;
-    font-family: 'simple-line-icons';
-    content: $code;
-  }
-}
+// @mixin insertSimpleLineIcons($code) {
+//   &:before {
+//     margin-right: 0.2em;
+//     font-family: 'simple-line-icons';
+//     content: $code;
+//   }
+// }
 
 @mixin grw-skeleton-text($font-size, $line-height) {
   height: $line-height;
