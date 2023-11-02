@@ -38,10 +38,10 @@ export const certifySharedFileMiddleware = async(req: RequestToAllowShareLink, r
     return next();
   }
 
-  // if (!validateAttachment(fileId, shareLink)) {
-  //   logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
-  //   return next();
-  // }
+  if (!(await validateAttachment(fileId, shareLink))) {
+    logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
+    return next();
+  }
 
   // const Attachment = getModelSafely<IAttachment>('Attachment');
   // if (Attachment == null) {
