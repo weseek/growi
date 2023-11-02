@@ -24,7 +24,7 @@ describe('workflow-seroalizer', () => {
       };
 
       const approver = {
-        name: 'Workflow Approver',
+        username: 'Workflow Approver',
         password,
         apiToken,
       };
