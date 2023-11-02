@@ -1,9 +1,6 @@
-import type { IAttachment } from '@growi/core';
 import type { NextFunction, Request, Response } from 'express';
 
 import loggerFactory from '~/utils/logger';
-
-import { getModelSafely } from '../../util/mongoose-utils';
 
 import { retrieveValidShareLinkByReferer } from './retrieve-valid-share-link';
 import { validateAttachment } from './validate-attachment';

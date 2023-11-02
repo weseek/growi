@@ -1,16 +1,27 @@
-// disable no-return-await for model functions
-/* eslint-disable no-return-await */
+import mongoose, { Schema } from 'mongoose';
+import type {
+  Document, Model,
+} from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
+import uniqueValidator from 'mongoose-unique-validator';
 
-const mongoose = require('mongoose');
-const mongoosePaginate = require('mongoose-paginate-v2');
-const uniqueValidator = require('mongoose-unique-validator');
+import type { IShareLink } from '~/interfaces/share-link';
 
-const ObjectId = mongoose.Schema.Types.ObjectId;
+import { getOrCreateModel } from '../util/mongoose-utils';
+
+
+export interface ShareLinkDocument extends IShareLink, Document {}
+
+export interface ShareLinkModel extends Model<ShareLinkDocument>{
+  isExpired: () => boolean,
+}
+
 
 /*
  * define schema
  */
-const schema = new mongoose.Schema({
+const ObjectId = mongoose.Schema.Types.ObjectId;
+const schema = new Schema<ShareLinkDocument, ShareLinkModel>({
   relatedPage: {
     type: ObjectId,
     ref: 'Page',
@@ -25,15 +36,11 @@ const schema = new mongoose.Schema({
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-module.exports = function(crowi) {
-
-  schema.methods.isExpired = function() {
-    if (this.expiredAt == null) {
-      return false;
-    }
-    return this.expiredAt.getTime() < new Date().getTime();
-  };
-
-  const model = mongoose.model('ShareLink', schema);
-  return model;
+schema.methods.isExpired = function() {
+  if (this.expiredAt == null) {
+    return false;
+  }
+  return this.expiredAt.getTime() < new Date().getTime();
 };
+
+export default getOrCreateModel<ShareLinkDocument, ShareLinkModel>('ShareLink', schema);
