@@ -9,7 +9,7 @@ import { useCurrentUser } from '~/stores/context';
 import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
-import { ApproverGroupCards } from './ApproverGroupCards';
+import { EditableApproverGroupCards } from './EditableApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
@@ -113,7 +113,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
           </div>
         </div>
 
-        <ApproverGroupCards
+        <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
           excludedSearchUserIds={excludedSearchUserIds}
           onUpdateApproverGroups={updateApproverGroupHandler}
