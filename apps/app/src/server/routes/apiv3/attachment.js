@@ -1,4 +1,5 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import { param, query } from 'express-validator';
 
 import loggerFactory from '~/utils/logger';
 
@@ -8,7 +9,6 @@ const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable
 const express = require('express');
 
 const router = express.Router();
-const { query } = require('express-validator');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
@@ -33,6 +33,9 @@ module.exports = (crowi) => {
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
+    ],
+    history: [
+      param('attachmentId').isMongoId().withMessage('attachmentId is required'),
     ],
   };
 
@@ -132,6 +135,24 @@ module.exports = (crowi) => {
     catch (err) {
       logger.error('Attachment not found', err);
       return res.apiv3Err(err, 500);
+    }
+  });
+
+  router.get('/history/:attachmentId', accessTokenParser, loginRequired, validator.history, apiV3FormValidator, async(req, res) => {
+    const { attachmentId } = req.params;
+
+    try {
+      const targetAttachment = await Attachment.findById(attachmentId);
+      if (targetAttachment == null) {
+        throw Error('Attachment not found');
+      }
+
+      const history = await Attachment.findAttachmentsWithTag(targetAttachment);
+      return res.apiv3({ history });
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err);
     }
   });
 

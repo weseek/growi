@@ -96,6 +96,9 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     insertText: (text: string) => {
       editorSubstance()?.insertText(text);
     },
+    replaceValue: (text: string, from, to) => {
+      editorSubstance()?.replaceValue(text, from, to);
+    },
     /**
      * remove overlay and set isUploading to false
      */
