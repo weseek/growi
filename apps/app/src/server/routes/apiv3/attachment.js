@@ -9,7 +9,7 @@ const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable
 const express = require('express');
 
 const router = express.Router();
-const { query } = require('express-validator');
+const { query, param } = require('express-validator');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
@@ -27,6 +27,9 @@ module.exports = (crowi) => {
   const Attachment = crowi.model('Attachment');
 
   const validator = {
+    retrieveAttachment: [
+      param('id').isMongoId().withMessage('attachment id is required'),
+    ],
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
@@ -104,34 +107,35 @@ module.exports = (crowi) => {
    *            description: Return attachment
    *        parameters:
    *          - name: id
-   *            in: params
+   *            in: path
    *            required: true
    *            description: attachment id
    *            schema:
    *              type: string
    */
-  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, apiV3FormValidator, async(req, res) => {
-    try {
-      const attachmentId = req.params.id;
+  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
+    async(req, res) => {
+      try {
+        const attachmentId = req.params.id;
 
-      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+        const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
 
-      if (attachment == null) {
-        const message = 'Attachment not found';
-        return res.apiv3Err(message, 404);
+        if (attachment == null) {
+          const message = 'Attachment not found';
+          return res.apiv3Err(message, 404);
+        }
+
+        if (attachment.creator != null && attachment.creator instanceof User) {
+          attachment.creator = serializeUserSecurely(attachment.creator);
+        }
+
+        return res.apiv3({ attachment });
       }
-
-      if (attachment.creator != null && attachment.creator instanceof User) {
-        attachment.creator = serializeUserSecurely(attachment.creator);
+      catch (err) {
+        logger.error('Attachment retrieval failed', err);
+        return res.apiv3Err(err, 500);
       }
-
-      return res.apiv3({ attachment });
-    }
-    catch (err) {
-      logger.error('Attachment retrieval failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+    });
 
   return router;
 };
