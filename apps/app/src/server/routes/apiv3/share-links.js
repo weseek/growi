@@ -1,16 +1,16 @@
 // TODO remove this setting after implemented all
 /* eslint-disable no-unused-vars */
 import { ErrorV3 } from '@growi/core/dist/models';
+import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
+import ShareLink from '~/server/models/share-link';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:share-links');
-
-const express = require('express');
 
 const router = express.Router();
 
@@ -31,7 +31,6 @@ module.exports = (crowi) => {
   const adminRequired = require('../../middlewares/admin-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  const ShareLink = crowi.model('ShareLink');
   const Page = crowi.model('Page');
 
   const activityEvent = crowi.event('activity');
@@ -144,8 +143,6 @@ module.exports = (crowi) => {
       logger.error('Error', msg);
       return res.apiv3Err(new ErrorV3(msg, 'post-shareLink-failed'));
     }
-
-    const ShareLink = crowi.model('ShareLink');
 
     try {
       const postedShareLink = await ShareLink.create({ relatedPage, expiredAt, description });
