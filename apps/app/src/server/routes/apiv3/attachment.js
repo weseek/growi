@@ -3,6 +3,7 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -21,7 +22,6 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const certifySharedFile = require('../../middlewares/certify-shared-file')(crowi);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
@@ -110,7 +110,7 @@ module.exports = (crowi) => {
    *            schema:
    *              type: string
    */
-  router.get('/:id', accessTokenParser, certifySharedFile, loginRequired, apiV3FormValidator, async(req, res) => {
+  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, apiV3FormValidator, async(req, res) => {
     try {
       const attachmentId = req.params.id;
 
