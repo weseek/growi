@@ -113,6 +113,7 @@ class UserGroupService {
     return userGroup.save();
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async removeCompletelyByRootGroupId(
       deleteRootGroupId, action, user, transferToUserGroup?: IGrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
