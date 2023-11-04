@@ -37,6 +37,7 @@ import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-
 import PageOperation, { PageOperationDocument } from '../models/page-operation';
 import { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
+import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
@@ -1693,7 +1694,6 @@ class PageService {
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
-    const ShareLink = this.crowi.model('ShareLink');
     const Revision = this.crowi.model('Revision');
     const Attachment = this.crowi.model('Attachment');
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;

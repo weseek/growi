@@ -22,6 +22,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import UserEvent from '../events/user';
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
+import ShareLink from '../models/share-link';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
 import UserGroupRelation from '../models/user-group-relation';
@@ -313,6 +314,7 @@ Crowi.prototype.setupModels = async function() {
   crowiIndependent.UserGroup = UserGroup;
   crowiIndependent.UserGroupRelation = UserGroupRelation;
   crowiIndependent.PageRedirect = PageRedirect;
+  crowiIndependent.ShareLink = ShareLink;
 
   Object.keys(crowiIndependent).forEach((key) => {
     return this.model(key, crowiIndependent[key]);
