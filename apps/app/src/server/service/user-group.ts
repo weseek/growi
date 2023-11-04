@@ -1,4 +1,5 @@
 import type { IUser, IGrantedGroup } from '@growi/core';
+import { DeleteResult } from 'mongodb';
 import { Model } from 'mongoose';
 
 import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -113,12 +114,11 @@ class UserGroupService {
     return userGroup.save();
   }
 
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   async removeCompletelyByRootGroupId(
       deleteRootGroupId, action, user, transferToUserGroup?: IGrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
-  ) {
+  ): Promise<DeleteResult> {
     const rootGroup = await userGroupModel.findById(deleteRootGroupId);
     if (rootGroup == null) {
       throw new Error(`UserGroup data does not exist. id: ${deleteRootGroupId}`);
