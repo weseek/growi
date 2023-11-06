@@ -5,7 +5,6 @@ import { Collapse } from 'reactstrap';
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
-
 import styles from './TextFormatTools.module.scss';
 
 const btnTextFormatToolsTogglerClass = styles['btn-text-format-tools-toggler'];
@@ -46,9 +45,13 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     setOpen(bool => !bool);
   }, []);
 
-  const onClickAddHeaderToSelection = (prefix: string) => codeMirrorEditor?.insertHeader(prefix);
+  const onClickAddHeaderToSelection = (prefix: string) => {
+    codeMirrorEditor?.insertHeader(prefix);
+  };
 
-  const onClickInsertMarkdownElements = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
+  const onClickInsertMarkdownElements = (prefix: string, suffix: string) => {
+    codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
+  };
 
   return (
     <div className="d-flex">
