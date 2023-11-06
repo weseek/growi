@@ -12,7 +12,7 @@ const PageType = {
   list: 'LIST',
   creation: 'CREATION',
   detail: 'DETAIL',
-  edit: 'Edit',
+  edit: 'EDIT',
 } as const;
 
 type PageType = typeof PageType[keyof typeof PageType];
