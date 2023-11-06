@@ -25,7 +25,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
                 <div className="flex-grow-1 flex-basis-0 mw-0">
                   {children}
                 </div>
-                <div className="grw-side-contents-container col-lg-3  d-edit-none" data-vrt-blackout-side-contents>
+                <div className="grw-side-contents-container col-lg-3  d-edit-none d-print-none" data-vrt-blackout-side-contents>
                   <div className="grw-side-contents-sticky-container">
                     {sideContents}
                   </div>
