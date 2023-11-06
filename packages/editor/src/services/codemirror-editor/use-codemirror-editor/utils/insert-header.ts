@@ -7,26 +7,33 @@ export type InsertHeader = (prefix: string) => void;
 export const useInsertHeader = (view?: EditorView): InsertHeader => {
 
   return useCallback((prefix) => {
+
+    if (view == null) {
+      return;
+    }
+
     const selection = view?.state.sliceDoc(
-      view?.state.selection.main.from,
-      view?.state.selection.main.to,
+      view.state.selection.main.from,
+      view.state.selection.main.to,
     );
 
-    const cursorPos = view?.state.selection.main.head;
-    const space = ' ';
-    const insertText = prefix + space;
+    const cursorPos = view.state.selection.main.head;
+    const line = view.state.doc.lineAt(cursorPos);
+    const insertPos = line.text.startsWith('#') ? cursorPos - 1 : cursorPos;
+    let insertText = prefix;
 
-    if (insertText && cursorPos) {
-      view.dispatch({
-        changes: {
-          from: view?.state.selection.main.from,
-          to: view?.state.selection.main.from,
-          insert: insertText + selection,
-        },
-        selection: { anchor: cursorPos + insertText.length },
-      });
+    if (!line.text.startsWith('#')) {
+      insertText += ' ';
     }
+
+    view.dispatch({
+      changes: {
+        from: insertPos,
+        to: insertPos,
+        insert: insertText + selection,
+      },
+      selection: { anchor: cursorPos + insertText.length },
+    });
     view?.focus();
   }, [view]);
-
 };
