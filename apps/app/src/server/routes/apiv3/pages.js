@@ -240,11 +240,9 @@ module.exports = (crowi) => {
   }
 
   async function generateUniquePath(basePath, index = 1) {
-    const Page = mongoose.model('Page');
     const path = basePath + index;
-    const response = await Page.findByPath(path);
-    const isPathExists = response != null;
-    if (isPathExists) {
+    const existingPageId = await Page.exists({ path, isEmpty: false });
+    if (existingPageId != null) {
       return generateUniquePath(basePath, index + 1);
     }
     return path;
