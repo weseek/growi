@@ -2,7 +2,7 @@ import React, {
   FC, useRef,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IUser, IPage, HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { DropdownItem } from 'reactstrap';
 
@@ -16,7 +16,7 @@ import PageModelNotification from './PageNotification/PageModelNotification';
 import UserModelNotification from './PageNotification/UserModelNotification';
 
 interface Props {
-  notification: IInAppNotification & HasObjectId
+  notification: IInAppNotification<IUser | IPage> & HasObjectId
   elemClassName?: string,
   type?: 'button' | 'dropdown-item',
 }
@@ -28,7 +28,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const notificationRef = useRef<IInAppNotificationOpenable>(null);
 
-  const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
+  const clickHandler = async(notification: IInAppNotification<IUser | IPage> & HasObjectId): Promise<void> => {
     if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
@@ -38,31 +38,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     if (currentInstance != null) {
       currentInstance.open();
     }
-  };
-
-  const getActionUsers = () => {
-    if (notification.targetModel === SupportedTargetModel.MODEL_USER) {
-      return notification.target.username;
-    }
-
-    const latestActionUsers = notification.actionUsers.slice(0, 3);
-    const latestUsers = latestActionUsers.map((user) => {
-      return `@${user.name}`;
-    });
-
-    let actionedUsers = '';
-    const latestUsersCount = latestUsers.length;
-    if (latestUsersCount === 1) {
-      actionedUsers = latestUsers[0];
-    }
-    else if (notification.actionUsers.length >= 4) {
-      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
-    }
-    else {
-      actionedUsers = latestUsers.join(', ');
-    }
-
-    return actionedUsers;
   };
 
   const renderActionUserPictures = (): JSX.Element => {
@@ -84,9 +59,16 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     );
   };
 
-  const actionUsers = getActionUsers();
 
   const isDropdownItem = props.type === 'dropdown-item';
+
+  function isPageNotification(notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IPage> {
+    return notification.targetModel === SupportedTargetModel.MODEL_USER;
+  }
+
+  function isUserNotification(notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IUser> {
+    return notification.targetModel === SupportedTargetModel.MODEL_USER;
+  }
 
   // determine tag
   const TagElem = isDropdownItem
@@ -105,18 +87,16 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         >
         </span>
         {renderActionUserPictures()}
-        {notification.targetModel === SupportedTargetModel.MODEL_PAGE && (
+        {isPageNotification(notification) && (
           <PageModelNotification
             ref={notificationRef}
             notification={notification}
-            actionUsers={actionUsers}
           />
         )}
-        {notification.targetModel === SupportedTargetModel.MODEL_USER && (
+        {isUserNotification(notification) && (
           <UserModelNotification
             ref={notificationRef}
             notification={notification}
-            actionUsers={actionUsers}
           />
         )}
       </div>

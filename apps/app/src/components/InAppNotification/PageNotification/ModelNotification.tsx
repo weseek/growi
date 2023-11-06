@@ -1,6 +1,6 @@
 import React, { FC, useImperativeHandle } from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IUser, IPage, HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui/dist/components';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
@@ -9,7 +9,7 @@ import type { IInAppNotification } from '~/interfaces/in-app-notification';
 import FormattedDistanceDate from '../../FormattedDistanceDate';
 
 type Props = {
-  notification: IInAppNotification & HasObjectId
+  notification: IInAppNotification<IUser | IPage> & HasObjectId
   actionMsg: string
   actionIcon: string
   actionUsers: string
