@@ -81,7 +81,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         slackChannels: '',
         grant: 1,
         pageTags: [],
-        shouldReturnIfPathExists: true,
       };
 
       await createPage(todaysPath, '', params);
@@ -115,7 +114,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         grant: currentPage?.grant || 1,
         pageTags: [],
         grantUserGroupId: currentPage?.grantedGroup?._id,
-        shouldReturnIfPathExists: true,
       };
 
       await createPage(path, '', params);
@@ -149,7 +147,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         grant: currentPage?.grant || 1,
         pageTags: [],
         grantUserGroupId: currentPage?.grantedGroup?._id,
-        shouldReturnIfPathExists: true,
       };
 
       await createPage(path, '', params);
