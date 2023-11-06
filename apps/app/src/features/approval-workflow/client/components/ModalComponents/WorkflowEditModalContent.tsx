@@ -42,7 +42,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
 
-  const [updateApproverGroupData, setUpdateApproverGroupData] = useState<Array<UpdateApproverGroupData & { uuidForRender: string }>>([]);
+  const [updateApproverGroupData, setUpdateApproverGroupData] = useState<Array<UpdateApproverGroupData & { uuidForRender?: string }>>([]);
 
   const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
     const createApproverGroupData: CreateApproverGroupData[] = [];
@@ -119,6 +119,22 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     updateApproverGroupHandler(groupIndex, approverGroup);
   }, [createRequestDataForUpdate, editingApproverGroups, updateApproverGroupHandler]);
 
+  const onRemoveApproverGroupsHandler = useCallback((groupIndex: number) => {
+    const targetEditingApproverGroup = editingApproverGroups[groupIndex];
+    const clonedUpdateApproverGroupData = [...updateApproverGroupData];
+    const targetUpdateApproverGroupData = clonedUpdateApproverGroupData.find(v => v.groupId === targetEditingApproverGroup._id);
+
+    if (targetUpdateApproverGroupData != null && targetEditingApproverGroup._id != null) {
+      targetUpdateApproverGroupData.shouldRemove = true;
+      setUpdateApproverGroupData(clonedUpdateApproverGroupData);
+    }
+    else if (targetUpdateApproverGroupData == null && targetEditingApproverGroup._id != null) {
+      setUpdateApproverGroupData([...clonedUpdateApproverGroupData, { groupId: targetEditingApproverGroup._id, shouldRemove: true }]);
+    }
+
+    removeApproverGroupHandler(groupIndex);
+  }, [editingApproverGroups, removeApproverGroupHandler, updateApproverGroupData]);
+
   const clickSaveWorkflowButtonClickHandler = useCallback(async() => {
     const createApproverGroupData = createRequestDataForCreate(editingApproverGroups);
 
@@ -155,7 +171,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
           latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
           onUpdateApproverGroups={onUpdateApproverGroupsHandler}
           onClickAddApproverGroupCard={addApproverGroupHandler}
-          onClickRemoveApproverGroupCard={removeApproverGroupHandler}
+          onClickRemoveApproverGroupCard={onRemoveApproverGroupsHandler}
         />
       </ModalBody>
 
