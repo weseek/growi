@@ -2,6 +2,8 @@ import { useCallback, useState } from 'react';
 
 import { Collapse } from 'reactstrap';
 
+import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';
 
@@ -30,12 +32,20 @@ const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
   );
 };
 
-export const TextFormatTools = (): JSX.Element => {
+type TextFormatToolsType = {
+  editorKey: string | GlobalCodeMirrorEditorKey,
+}
+
+export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
+  const { editorKey } = props;
   const [isOpen, setOpen] = useState(false);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
   }, []);
+
+  const onClickInsertMarkdownElements = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
 
   return (
     <div className="d-flex">
@@ -43,19 +53,19 @@ export const TextFormatTools = (): JSX.Element => {
 
       <Collapse isOpen={isOpen} horizontal>
         <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-symbols-outlined fs-5">format_italic</span>
+            <span className="material-symbols-outlined fs-5" onClick={() => onClickInsertMarkdownElements('*', '*')}>format_italic</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">

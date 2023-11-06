@@ -105,7 +105,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   return (
     <div {...getRootProps()} className="flex-expand-vert">
       <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
+      <Toolbar onFileOpen={open} acceptedFileType={acceptedFileType} editorKey={editorKey} />
     </div>
   );
 };
