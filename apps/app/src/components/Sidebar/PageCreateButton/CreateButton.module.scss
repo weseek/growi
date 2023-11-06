@@ -30,3 +30,9 @@
     fill: var(--bs-btn-hover-bg);
   }
 }
+
+.btn-create:active :global {
+  svg {
+    fill: var(--bs-btn-active-bg);
+  }
+}
