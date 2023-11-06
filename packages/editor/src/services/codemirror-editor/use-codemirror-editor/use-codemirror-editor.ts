@@ -17,6 +17,7 @@ import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertHeader, type InsertHeader } from './utils/insert-header';
+import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
@@ -38,6 +39,7 @@ type UseCodeMirrorEditorUtils = {
   setCaretLine: SetCaretLine,
   insertText: InsertText,
   replaceText: ReplaceText,
+  insertMarkdownElements: InsertMarkdowElements,
   insertHeader: InsertHeader,
 }
 export type UseCodeMirrorEditor = {
@@ -91,6 +93,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const setCaretLine = useSetCaretLine(view);
   const insertText = useInsertText(view);
   const replaceText = useReplaceText(view);
+  const insertMarkdownElements = useInsertMarkdownElements(view);
   const insertHeader = useInsertHeader(view);
 
   return {
@@ -103,6 +106,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     setCaretLine,
     insertText,
     replaceText,
+    insertMarkdownElements,
     insertHeader,
   };
 };
