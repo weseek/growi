@@ -18,7 +18,7 @@ import { useSWRxWorkflow } from '../../stores/workflow';
 import { EditableApproverGroupCards } from './EditableApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
-const findArrayDiff = (userIds1: string[], userIds2: string[]): { userIdToAdd?: string, userIdToRemove?: string } => {
+const findApproverGroupDiff = (userIds1: string[], userIds2: string[]): { userIdToAdd?: string, userIdToRemove?: string } => {
   const userIdToAdd = userIds2.find(item => !userIds1.includes(item));
   const userIdToRemove = userIds1.find(item => !userIds2.includes(item));
   return { userIdToAdd, userIdToRemove };
@@ -39,9 +39,13 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     editingApproverGroups, allEditingApproverIds, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
   } = useEditingApproverGroups(workflow.approverGroups);
 
+  const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
+
+  const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(workflow);
+  const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
+
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
-
   const [updateApproverGroupData, setUpdateApproverGroupData] = useState<Array<UpdateApproverGroupData & { uuidForRender?: string }>>([]);
 
   const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +55,6 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
     setEditingWorkflowDescription(event.target.value);
   }, []);
-
 
   const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
     const createApproverGroupData: CreateApproverGroupData[] = [];
@@ -77,26 +80,26 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       userIdToAdd?: string,
       userIdToRemove?: string,
   ) => {
-    const clonedData = [...updateApproverGroupData];
-    const targetData = clonedData.find(v => uuidForRender === v.uuidForRender);
+    const clonedUpdateApproverGroupData = [...updateApproverGroupData];
+    const targetUpdateApproverGroupData = clonedUpdateApproverGroupData.find(v => uuidForRender === v.uuidForRender);
 
-    if (targetData != null) {
-      targetData.approvalType = approvalType;
+    if (targetUpdateApproverGroupData != null) {
+      targetUpdateApproverGroupData.approvalType = approvalType;
 
-      if (userIdToAdd != null && !targetData.userIdsToAdd?.includes(userIdToAdd)) {
-        targetData.userIdsToAdd?.push(userIdToAdd);
+      if (userIdToAdd != null && !targetUpdateApproverGroupData.userIdsToAdd?.includes(userIdToAdd)) {
+        targetUpdateApproverGroupData.userIdsToAdd?.push(userIdToAdd);
 
-        const removeIndex = targetData.userIdsToRemove?.indexOf(userIdToAdd);
-        if (removeIndex != null && removeIndex >= 0) targetData.userIdsToRemove?.splice(removeIndex, 1);
+        const removeIndex = targetUpdateApproverGroupData.userIdsToRemove?.indexOf(userIdToAdd);
+        if (removeIndex != null && removeIndex >= 0) targetUpdateApproverGroupData.userIdsToRemove?.splice(removeIndex, 1);
       }
 
-      if (userIdToRemove != null && !targetData.userIdsToRemove?.includes(userIdToRemove)) {
-        targetData.userIdsToRemove?.push(userIdToRemove);
+      if (userIdToRemove != null && !targetUpdateApproverGroupData.userIdsToRemove?.includes(userIdToRemove)) {
+        targetUpdateApproverGroupData.userIdsToRemove?.push(userIdToRemove);
 
-        const removeIndex = targetData.userIdsToAdd?.indexOf(userIdToRemove);
-        if (removeIndex != null && removeIndex >= 0) targetData.userIdsToAdd?.splice(removeIndex, 1);
+        const removeIndex = targetUpdateApproverGroupData.userIdsToAdd?.indexOf(userIdToRemove);
+        if (removeIndex != null && removeIndex >= 0) targetUpdateApproverGroupData.userIdsToAdd?.splice(removeIndex, 1);
       }
-      setUpdateApproverGroupData(clonedData);
+      setUpdateApproverGroupData(clonedUpdateApproverGroupData);
     }
     else {
       const newData = {
@@ -110,15 +113,10 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     }
   }, [updateApproverGroupData]);
 
-  const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
-
-  const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(workflow);
-  const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
-
   const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: IWorkflowApproverGroupForRenderList) => {
     const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
     const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
-    const result = findArrayDiff(oldUserIds, newUserIds);
+    const result = findApproverGroupDiff(oldUserIds, newUserIds);
 
     // If approverGroup already exists in DB
     if (approverGroup._id != null) {
