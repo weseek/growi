@@ -1,5 +1,5 @@
 import type {
-  HasObjectId, Ref, IUser, IPage,
+  HasObjectId, Ref, IUser,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
@@ -18,7 +18,6 @@ import {
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
-import { isUserNotification, isPageNotification } from '~/utils/notification-utils';
 
 import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -208,7 +207,7 @@ export default class InAppNotificationService {
 
   // TODO: do not use any type
   // https://redmine.weseek.co.jp/issues/120632
-  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage, users: Ref<IUser>[]): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: any, users: Ref<IUser>[]): Promise<void> {
     if (activity.action === SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST) {
       const snapshot = userSerializers.stringifySnapshot(target);
       await this.upsertByActivity(users, activity, snapshot);
