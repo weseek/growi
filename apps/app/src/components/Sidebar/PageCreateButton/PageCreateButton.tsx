@@ -184,7 +184,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           disabled={isCreating}
         />
       </div>
-      {isHovered && (
+      { isHovered && (
         <div className="btn-group dropend position-absolute">
           <DropendToggle
             className="dropdown-toggle dropdown-toggle-split"
