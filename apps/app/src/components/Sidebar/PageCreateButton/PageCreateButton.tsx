@@ -7,9 +7,10 @@ import { toastError } from '~/client/util/toastr';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import styles from './PageCreateButton.module.scss';
-import { Hexagon } from './Hexagon';
 import { CreateButton } from './CreateButton';
+import { DropendToggle } from './DropendToggle';
+
+import styles from './PageCreateButton.module.scss';
 
 const moduleClass = styles['grw-page-create-button'];
 
@@ -88,9 +89,8 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       </div>
       {isHovered && (
         <div className="btn-group dropend">
-          <button
-            className="btn btn-secondary dropdown-toggle dropdown-toggle-split position-absolute"
-            type="button"
+          <DropendToggle
+            className="dropdown-toggle dropdown-toggle-split position-absolute"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           />

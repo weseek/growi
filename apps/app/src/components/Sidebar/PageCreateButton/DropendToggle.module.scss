@@ -1,0 +1,42 @@
+@use '~/styles/variables' as var;
+
+@use '../button-styles';
+
+.btn-toggle :global {
+  @extend %btn-basis;
+
+  right: -12px;
+  z-index: -1 !important;
+  padding: 0 3px;
+
+  .icon {
+    top: 50%;
+    right: 0px;
+    font-size: 22px;
+    transform: translateY(-50%);
+  }
+
+}
+
+// == Colors
+.btn-toggle {
+  background-color: transparent !important;
+}
+
+.btn-toggle :global {
+  svg {
+    fill: var(--grw-primary-400);
+  }
+}
+
+.btn-toggle:hover :global {
+  svg {
+    fill: var(--grw-primary-400);
+  }
+}
+
+.btn-toggle:active :global {
+  svg {
+    fill: var(--grw-primary-600);
+  }
+}
