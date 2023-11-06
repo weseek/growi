@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-type PageCreateButtonDropdownMenuProps = {
+type DropendMenuProps = {
   todaysPath: string,
   onClickCreateNewPageButtonHandler: () => Promise<void>
   onClickCreateTodaysButtonHandler: () => Promise<void>
@@ -10,7 +10,7 @@ type PageCreateButtonDropdownMenuProps = {
   onClickTemplateForDescendantsButtonHandler: () => Promise<void>
 }
 
-export const PageCreateButtonDropdownMenu = React.memo((props: PageCreateButtonDropdownMenuProps): JSX.Element => {
+export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => {
   const {
     todaysPath,
     onClickCreateNewPageButtonHandler,
@@ -66,4 +66,4 @@ export const PageCreateButtonDropdownMenu = React.memo((props: PageCreateButtonD
     </ul>
   );
 });
-PageCreateButtonDropdownMenu.displayName = 'PageCreateButtonDropdownMenu';
+DropendMenu.displayName = 'DropendMenu';

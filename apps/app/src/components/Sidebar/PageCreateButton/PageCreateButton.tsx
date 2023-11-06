@@ -10,7 +10,7 @@ import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { PageCreateButtonDropdownMenu } from './PageCreateButtonDropdownMenu';
+import { DropendMenu } from './DropendMenu';
 import { CreateButton } from './CreateButton';
 import { DropendToggle } from './DropendToggle';
 
@@ -191,7 +191,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             data-bs-toggle="dropdown"
             aria-expanded="false"
           />
-          <PageCreateButtonDropdownMenu
+          <DropendMenu
             todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
             onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
