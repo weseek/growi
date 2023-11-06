@@ -1,4 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
+
 @use './variables' as var;
 
 @import './organisms/wiki-custom-sidebar';
@@ -27,7 +28,7 @@
    *****************/
   .dynamic-layout-root {
     width: calc(100vw - var.$grw-sidebar-nav-width);
-    height: 100vh;
+    @extend .flex-expand-vh-100;
   }
 
 
