@@ -1,3 +1,37 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '~/styles/variables' as var;
+
+
 .page-view-layout :global {
   min-height: calc(100vh - 48px - 250px); // 100vh - subnavigation height - page-comments-row minimum height
+
+  .grw-side-contents-container {
+    margin-bottom: 1rem;
+
+    @include bs.media-breakpoint-up(lg) {
+      width: 250px;
+      min-width: 250px;
+      margin-left: 30px;
+    }
+  }
+}
+
+// md/lg layout padding
+.page-view-layout :global {
+  @include bs.media-breakpoint-between(md, xl) {
+    padding-left: var.$grw-sidebar-nav-width;
+  }
+}
+
+// sticky side contents
+.page-view-layout :global {
+  .grw-side-contents-sticky-container {
+    position: sticky;
+
+    $subnavigation-height: 50px;
+    $page-view-layout-margin-top: 32px;
+    $page-path-nav-height: 99px;
+    top: calc($subnavigation-height + $page-view-layout-margin-top + $page-path-nav-height + 4px);
+  }
 }
