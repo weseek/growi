@@ -42,10 +42,26 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
 
-  const [createApproverGroupData, setCreateApproverGroupData] = useState<Array<CreateApproverGroupData & { uuidForRender: string }>>([]);
   const [updateApproverGroupData, setUpdateApproverGroupData] = useState<Array<UpdateApproverGroupData & { uuidForRender: string }>>([]);
 
-  const updateGroup = useCallback((
+  const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
+    const createApproverGroupData: CreateApproverGroupData[] = [];
+    const notInDBApproverGroups = editingApproverGroups.filter(v => v._id == null);
+
+    notInDBApproverGroups.forEach((notInDBApproverGroup) => {
+      const groupIndex = editingApproverGroups
+        .findIndex(editingApproverGroup => editingApproverGroup.uuidForRenderList === notInDBApproverGroup.uuidForRenderList);
+      createApproverGroupData.push({
+        groupIndex,
+        approvalType: notInDBApproverGroup.approvalType,
+        userIdsToAdd: notInDBApproverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id)),
+      });
+    });
+
+    return createApproverGroupData;
+  }, []);
+
+  const createRequestDataForUpdate = useCallback((
       groupId: string,
       uuidForRender: string,
       approvalType: WorkflowApprovalType,
@@ -95,16 +111,22 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
     const result = findArrayDiff(oldUserIds, newUserIds);
 
-    updateGroup(approverGroup._id, approverGroup.uuidForRenderList, approverGroup.approvalType, result.userIdToAdd, result.userIdToRemove);
+    // If approverGroup already exists in DB
+    if (approverGroup._id != null) {
+      createRequestDataForUpdate(approverGroup._id, approverGroup.uuidForRenderList, approverGroup.approvalType, result.userIdToAdd, result.userIdToRemove);
+    }
+
     updateApproverGroupHandler(groupIndex, approverGroup);
-  }, [editingApproverGroups, updateApproverGroupHandler, updateGroup]);
+  }, [createRequestDataForUpdate, editingApproverGroups, updateApproverGroupHandler]);
 
   const clickSaveWorkflowButtonClickHandler = useCallback(async() => {
+    const createApproverGroupData = createRequestDataForCreate(editingApproverGroups);
+
     try {
       const updateData = {
         name: editingWorkflowName,
         comment: editingWorkflowDescription,
-        createApproverGroupData: undefined,
+        createApproverGroupData,
         updateApproverGroupData,
       };
       await updateWorkflow(updateData);
@@ -116,7 +138,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [editingWorkflowDescription, editingWorkflowName, onUpdated, updateApproverGroupData, updateWorkflow]);
+  }, [createRequestDataForCreate, editingApproverGroups, editingWorkflowDescription, editingWorkflowName, onUpdated, updateApproverGroupData, updateWorkflow]);
 
 
   return (
