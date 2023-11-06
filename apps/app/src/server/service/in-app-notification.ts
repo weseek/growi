@@ -60,7 +60,7 @@ export default class InAppNotificationService {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
-          await this.createInAppNotification(activity, target, users); // ここでcreateinappnotification
+          await this.createInAppNotification(activity, target, users);
         }
       }
       catch (err) {
