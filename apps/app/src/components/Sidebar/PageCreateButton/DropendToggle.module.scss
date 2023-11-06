@@ -5,9 +5,8 @@
 .btn-toggle :global {
   @extend %btn-basis;
 
-  right: -12px;
-  z-index: -1 !important;
-  padding: 0 3px;
+  left: 12px;
+  padding: 0;
 
   .icon {
     top: 50%;
@@ -15,7 +14,25 @@
     font-size: 22px;
     transform: translateY(-50%);
   }
+}
 
+// no caret
+.btn-toggle {
+  &:global {
+    // no caret
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+// hitarea
+.btn-create :global {
+  pointer-events: auto;
+
+  .hitarea {
+    left: 10px;
+  }
 }
 
 // == Colors

@@ -83,14 +83,15 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     >
       <div className="btn-group flex-grow-1">
         <CreateButton
+          className="z-2"
           onClick={onCreateNewPageButtonHandler}
           disabled={isCreating}
         />
       </div>
-      {isHovered && (
-        <div className="btn-group dropend">
+      { isHovered && (
+        <div className="btn-group dropend position-absolute">
           <DropendToggle
-            className="dropdown-toggle dropdown-toggle-split position-absolute"
+            className="dropdown-toggle dropdown-toggle-split"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           />

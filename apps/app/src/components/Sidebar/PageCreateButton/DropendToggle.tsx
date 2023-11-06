@@ -17,6 +17,7 @@ export const DropendToggle = (props: Props): JSX.Element => {
       className={`${moduleClass} btn btn-primary ${props.className ?? ''}`}
     >
       <Hexagon />
+      <Hexagon className="hitarea position-absolute invisible pe-auto" />
       <span className="icon material-symbols-outlined position-absolute">chevron_right</span>
     </button>
   );
