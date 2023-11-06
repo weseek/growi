@@ -50,7 +50,7 @@ Marp
 
 # Directives
 
-Marp では美しいスライド作成を支援するため、**"Directives"**　という拡張構文を用意しています。
+Marp では美しいスライド作成を支援するため、**"Directives"**　という拡張機能を用意しています。
 
 Markdown 記法の本文の前に挿入します:
 
@@ -60,7 +60,7 @@ theme: default
 ---
 ```
 
-または本文のどこかにHTML形式で記述します:
+または本文のどこかに HTML 形式で記述します:
 
 ```html
 <!-- theme: default -->
@@ -85,7 +85,7 @@ size: 4:3
 # 内容
 ```
 
-> Marp では以下の[built-in themes in Marp Core](https://github.com/marp-team/marp-core/tree/master/themes#readme)が利用可能 : `default` `gaia` `uncover`.
+> Marp では以下の [built-in themes in Marp Core](https://github.com/marp-team/marp-core/tree/master/themes#readme) が利用可能 : `default` `gaia` `uncover`.
 
 ---
 
@@ -106,7 +106,7 @@ size: 4:3
 
 ローカル構文は**任意のページとそれ以降のページ**に適用されます。 
 
-`_class`のようにアンダーバーと接頭辞を使うことで一つのページに適用できます。
+`_class` のようにアンダーバーと接頭辞を使うことで一つのページに適用できます。
 
 ![bg right 95%](https://marpit.marp.app/assets/directives.png)
 
@@ -114,7 +114,7 @@ size: 4:3
 
 ### 活用例
 
-このページは [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme)で色彩を反転させています。
+このページは [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme) で色彩を反転させています。
 
 <!-- _class: invert -->
 
@@ -189,31 +189,31 @@ Marp では背景を分割する[Deckset](https://docs.deckset.com/English.lproj
 
 ---
 
-## [Fragmented list](https://marpit.marp.app/fragmented-list)
+## [フラグメントリスト](https://marpit.marp.app/fragmented-list)
 
-Marp will parse a list with asterisk marker as the fragmented list for appearing contents one by one. (_**Only for exported HTML** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
+Marp ではアスタリスク記号をつけることで、各コンテンツをフラグメントリストとして分類します。 (_**HTML 形式のエクスポートのみ** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
 
 ```markdown
-# Bullet list
+# 箇条書きリスト
 
-- One
-- Two
-- Three
+- 1
+- 2
+- 3
 
 ---
 
-# Fragmented list
+# フラグメントリスト
 
-* One
-* Two
-* Three
+* 1
+* 2
+* 3
 ```
 
 ---
 
-## Math typesetting (only for [Marp Core][marp-core])
+## Math typesetting ( [Marp Core][marp-core] のみ)
 
-[KaTeX](https://katex.org/) math typesetting such as $ax^2+bc+c$ can use with [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math).
+[KaTeX](https://katex.org/) math typesetting は $ax^2+bc+c$ のように [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math)で利用できます。
 
 $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
@@ -226,9 +226,9 @@ $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
 ---
 
-## Auto-scaling (only for [Marp Core][marp-core])
+## オートスケーリング ( [Marp Core][marp-core] のみ)
 
-*Several built-in themes* are supported auto-scaling for code blocks and math typesettings.
+*Several built-in themes* ではコードブロックと typesettings でオートスケーリングされます。
 
 ```text
 Too long code block will be scaled-down automatically. ------------>
@@ -242,8 +242,8 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ---
 
-##### <!--fit--> Auto-fitting header (only for [Marp Core][marp-core])
-##### <!--fit--> is available by annotating `<!--fit-->` in headings.
+##### <!--fit--> ヘッダーの自動調整 ( [Marp Core][marp-core] のみ)
+##### <!--fit--> `<!--fit-->` のような注釈をヘッダーに入れることで利用可能です。
 
 <br />
 
