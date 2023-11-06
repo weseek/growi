@@ -3,6 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 type PageCreateButtonDropdownMenuProps = {
+  todaysPath: string,
   onClickCreateNewPageButtonHandler: () => Promise<void>
   onClickCreateTodaysButtonHandler: () => Promise<void>
   onClickTemplateForChildrenButtonHandler: () => Promise<void>
@@ -11,6 +12,7 @@ type PageCreateButtonDropdownMenuProps = {
 
 export const PageCreateButtonDropdownMenu = React.memo((props: PageCreateButtonDropdownMenuProps): JSX.Element => {
   const {
+    todaysPath,
     onClickCreateNewPageButtonHandler,
     onClickCreateTodaysButtonHandler,
     onClickTemplateForChildrenButtonHandler,
@@ -32,15 +34,13 @@ export const PageCreateButtonDropdownMenu = React.memo((props: PageCreateButtonD
       </li>
       <li><hr className="dropdown-divider" /></li>
       <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
-      {/* TODO: show correct create today's page path */}
-      {/* https://redmine.weseek.co.jp/issues/133893 */}
       <li>
         <button
           className="dropdown-item"
           onClick={onClickCreateTodaysButtonHandler}
           type="button"
         >
-          (TBD) Create today&apos;s
+          {todaysPath}
         </button>
       </li>
       <li><hr className="dropdown-divider" /></li>

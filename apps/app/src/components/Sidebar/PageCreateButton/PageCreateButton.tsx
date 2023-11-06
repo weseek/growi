@@ -4,7 +4,7 @@ import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 
-import { createPage } from '~/client/services/page-operation';
+import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -21,6 +21,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const [isHovered, setIsHovered] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
+
+  const now = format(new Date(), 'yyyy/MM/dd');
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
+  const todaysPath = `${userHomepagePath}/memo/${now}`;
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);
@@ -70,10 +74,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     try {
       setIsCreating(true);
 
-      const now = format(new Date(), 'yyyy/MM/dd');
-      const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-      const todaysPath = `${userHomepagePath}/memo/${now}`;
-
       // TODO: get grant, grantUserGroupId data from parent page
       // https://redmine.weseek.co.jp/issues/133892
       const params = {
@@ -83,7 +83,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         pageTags: [],
       };
 
-      await createPage(todaysPath, '', params);
+      const res = await exist(JSON.stringify([todaysPath]));
+      if (!res.pages[todaysPath]) {
+        await createPage(todaysPath, '', params);
+      }
 
       router.push(`${todaysPath}#edit`);
     }
@@ -94,7 +97,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     finally {
       setIsCreating(false);
     }
-  }, [currentUser, router]);
+  }, [currentUser, router, todaysPath]);
 
   const onClickTemplateForChildrenButtonHandler = useCallback(async() => {
     if (isLoading) return;
@@ -102,11 +105,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     try {
       setIsCreating(true);
 
-      const parentPath = currentPage == null
-        ? '/'
-        : currentPage.path;
-
-      const path = `${parentPath}/_template`;
+      const path = currentPage == null || currentPage.path === '/'
+        ? '/_template'
+        : `${currentPage.path}/_template`;
 
       const params = {
         isSlackEnabled: false,
@@ -116,7 +117,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
-      await createPage(path, '', params);
+      const res = await exist(JSON.stringify([path]));
+      if (!res.pages[path]) {
+        await createPage(path, '', params);
+      }
 
       router.push(`${path}#edit`);
     }
@@ -135,11 +139,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     try {
       setIsCreating(true);
 
-      const parentPath = currentPage == null
-        ? '/'
-        : currentPage.path;
-
-      const path = `${parentPath}/__template`;
+      const path = currentPage == null || currentPage.path === '/'
+        ? '/__template'
+        : `${currentPage.path}/__template`;
 
       const params = {
         isSlackEnabled: false,
@@ -149,7 +151,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
-      await createPage(path, '', params);
+      const res = await exist(JSON.stringify([path]));
+      if (!res.pages[path]) {
+        await createPage(path, '', params);
+      }
 
       router.push(`${path}#edit`);
     }
@@ -191,6 +196,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             disabled={isCreating}
           />
           <PageCreateButtonDropdownMenu
+            todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
             onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
             onClickTemplateForChildrenButtonHandler={onClickTemplateForChildrenButtonHandler}
