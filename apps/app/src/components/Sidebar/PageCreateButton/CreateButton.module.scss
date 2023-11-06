@@ -1,0 +1,32 @@
+@use '~/styles/variables' as var;
+
+@use '../button-styles';
+
+.btn-create :global {
+  @extend %btn-primary-basis;
+
+  padding: 0 3px;
+
+  .icon {
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+}
+
+// == Colors
+.btn-create {
+  background-color: transparent !important;
+}
+
+.btn-create :global {
+  svg {
+    fill: var(--bs-btn-bg);
+  }
+}
+
+.btn-create:hover :global {
+  svg {
+    fill: var(--bs-btn-hover-bg);
+  }
+}

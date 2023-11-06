@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const NavigationResizeHexagon = React.memo((): JSX.Element => (
+export const Hexagon = React.memo((): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 27.691 23.999"
@@ -14,4 +14,3 @@ export const NavigationResizeHexagon = React.memo((): JSX.Element => (
     </g>
   </svg>
 ));
-NavigationResizeHexagon.displayName = 'NavigationResizeHexagon';

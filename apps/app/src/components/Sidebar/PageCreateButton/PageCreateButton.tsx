@@ -7,6 +7,13 @@ import { toastError } from '~/client/util/toastr';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
+import styles from './PageCreateButton.module.scss';
+import { Hexagon } from './Hexagon';
+import { CreateButton } from './CreateButton';
+
+const moduleClass = styles['grw-page-create-button'];
+
+
 const logger = loggerFactory('growi:cli:PageCreateButton');
 
 export const PageCreateButton = React.memo((): JSX.Element => {
@@ -65,26 +72,19 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     // router.push(`${router.pathname}/__template#edit`);
   }, [router]);
 
-  // TODO: update button design
-  // https://redmine.weseek.co.jp/issues/132683
   // TODO: i18n
   // https://redmine.weseek.co.jp/issues/132681
   return (
     <div
-      className="d-flex flex-row"
+      className={`${moduleClass} d-flex flex-row`}
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <div className="btn-group">
-        <button
-          className="d-block btn btn-primary"
+      <div className="btn-group flex-grow-1">
+        <CreateButton
           onClick={onCreateNewPageButtonHandler}
-          type="button"
-          data-testid="grw-sidebar-nav-page-create-button"
           disabled={isCreating}
-        >
-          <i className="material-symbols-outlined">edit</i>
-        </button>
+        />
       </div>
       {isHovered && (
         <div className="btn-group dropend">
