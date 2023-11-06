@@ -1,8 +1,9 @@
 @use '~/styles/variables' as var;
 
 %btn-primary-basis {
-  padding-top: .75rem;
-  padding-bottom: .75rem;
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+
   line-height: 1em;
   border: 0;
   border-radius: 0;

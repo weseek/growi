@@ -9,6 +9,7 @@
   .btn {
     @extend %btn-primary-basis;
 
+    width: var.$grw-sidebar-nav-width;
     height: sidebarNavVar.$grw-sidebar-primary-button-height;
 
     i {
