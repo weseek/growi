@@ -127,7 +127,7 @@ size: 4:3
 # [画像イメージのための構文](https://marpit.marp.app/image-syntax)
 
 以下のキーワードを使って、画像サイズの変更やフィルターを適用できます
- : `width` (`w`)、`height` (`h`)、CSS キーワードのフィルター
+ : `width` (`w`)、`height` (`h`)、CSS のフィルター
 
 ```markdown
 ![width:100px height:100px](image.png)
@@ -145,7 +145,7 @@ size: 4:3
 
 # [背景イメージのための構文](https://marpit.marp.app/image-syntax?id=slide-backgrounds)
 
-You can set background image for a slide by using `bg` keyword.
+ `bg` でスライドに背景イメージを設定できます。
 
 ```markdown
 ![bg opacity](https://yhatt-marp-cli-example.netlify.com/assets/gradient.jpg)
@@ -155,9 +155,9 @@ You can set background image for a slide by using `bg` keyword.
 
 ---
 
-## Multiple backgrounds ([Marpit's advanced backgrounds](https://marpit.marp.app/image-syntax?id=advanced-backgrounds))
+## 複数の背景イメージを利用する ([Marpit's advanced backgrounds](https://marpit.marp.app/image-syntax?id=advanced-backgrounds))
 
-Marp can use multiple background images.
+Marp では複数の背景イメージを利用できます。
 
 ```markdown
 ![bg blur:3px](https://fakeimg.pl/800x600/fff/ccc/?text=A)
@@ -165,7 +165,7 @@ Marp can use multiple background images.
 ![bg blur:3px](https://fakeimg.pl/800x600/ddd/ccc/?text=C)
 ```
 
-Also can change alignment direction by including `vertical` keyword.
+ `vertical` で文字列の方向を変えることも可能です。
 
 ![bg blur:3px](https://fakeimg.pl/800x600/fff/ccc/?text=A)
 ![bg blur:3px](https://fakeimg.pl/800x600/eee/ccc/?text=B)
@@ -173,11 +173,11 @@ Also can change alignment direction by including `vertical` keyword.
 
 ---
 
-## [Split background](https://marpit.marp.app/image-syntax?id=split-backgrounds)
+## [背景を分割する](https://marpit.marp.app/image-syntax?id=split-backgrounds)
 
-Marp can use [Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) style split background(s).
+Marp では背景を分割する[Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) を利用できます。
 
-Make a space for background by `bg` + `left` / `right` keywords.
+ `bg` + `left` / `right` で背景イメージを配置するスぺースを指定可能です。
 
 ```markdown
 ![bg right](image.jpg)
