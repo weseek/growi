@@ -1,17 +1,12 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '~/styles/variables' as var;
-
 @use '../button-styles';
 
-@use './variables' as sidebarNavVar;
+@use '../variables' as sidebarVar;
 
 .grw-primary-items :global {
   .btn {
     @extend %btn-basis;
-
-    width: var.$grw-sidebar-nav-width;
-    height: sidebarNavVar.$grw-sidebar-primary-button-height;
 
     i {
       opacity: 0.7;
@@ -26,7 +21,7 @@
 
 // Add indicator
 .grw-primary-items :global {
-  $btn-height: sidebarNavVar.$grw-sidebar-primary-button-height;
+  $btn-height: sidebarVar.$grw-sidebar-button-height;
   $btn-active-indicator-height: 34px;
 
   .btn {

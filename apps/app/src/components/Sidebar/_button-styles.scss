@@ -1,8 +1,14 @@
 @use '~/styles/variables' as var;
 
+@use './variables' as sidebarVar;
+
+
 %btn-basis {
   --bs-btn-padding-x: 0;
   --bs-btn-padding-y: 0;
+
+  width: var.$grw-sidebar-nav-width;
+  height: sidebarVar.$grw-sidebar-button-height;
 
   line-height: 1em;
   border: 0;
