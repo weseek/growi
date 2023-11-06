@@ -1,13 +1,16 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/variables' as var;
+
 @use '../button-styles';
 
 @use './variables' as sidebarNavVar;
 
 .grw-secondary-items :global {
   .btn {
-    @extend %btn-primary-basis;
+    @extend %btn-basis;
 
+    width: var.$grw-sidebar-nav-width;
     height: sidebarNavVar.$grw-sidebar-primary-button-height;
 
     i {

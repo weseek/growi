@@ -3,7 +3,7 @@
 @use '../button-styles';
 
 .btn-create :global {
-  @extend %btn-primary-basis;
+  @extend %btn-basis;
 
   padding: 0 3px;
 
