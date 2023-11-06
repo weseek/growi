@@ -10,7 +10,9 @@ import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { PageCreateButtonDropdownMenu } from './PageCreateButtonDropdownMenu';
+import { DropendMenu } from './DropendMenu';
+import { CreateButton } from './CreateButton';
+import { DropendToggle } from './DropendToggle';
 
 const logger = loggerFactory('growi:cli:PageCreateButton');
 
@@ -175,27 +177,21 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
-      <div className="btn-group">
-        <button
-          className="d-block btn btn-primary"
+      <div className="btn-group flex-grow-1">
+        <CreateButton
+          className="z-2"
           onClick={onClickCreateNewPageButtonHandler}
-          type="button"
-          data-testid="grw-sidebar-nav-page-create-button"
           disabled={isCreating}
-        >
-          <i className="material-symbols-outlined">edit</i>
-        </button>
+        />
       </div>
-      {isHovered && (
-        <div className="btn-group dropend">
-          <button
-            className="btn btn-secondary dropdown-toggle dropdown-toggle-split position-absolute"
-            type="button"
+      { isHovered && (
+        <div className="btn-group dropend position-absolute">
+          <DropendToggle
+            className="dropdown-toggle dropdown-toggle-split"
             data-bs-toggle="dropdown"
             aria-expanded="false"
-            disabled={isCreating}
           />
-          <PageCreateButtonDropdownMenu
+          <DropendMenu
             todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
             onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
@@ -207,4 +203,3 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     </div>
   );
 });
-PageCreateButton.displayName = 'PageCreateButton';
