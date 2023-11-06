@@ -26,15 +26,11 @@ export const useSWRxInAppNotifications = (
       const inAppNotificationPaginateResult = response.data as inAppNotificationPaginateResult;
       inAppNotificationPaginateResult.docs.forEach((doc) => {
         try {
-          switch (doc.targetModel) {
-            case SupportedTargetModel.MODEL_PAGE:
-              doc.parsedSnapshot = pageSerializers.parseSnapshot(doc.snapshot);
-              break;
-            case SupportedTargetModel.MODEL_USER:
-              doc.parsedSnapshot = userSerializers.parseSnapshot(doc.snapshot);
-              break;
-            default:
-              throw new Error(`No serializer found for targetModel: ${doc.targetModel}`);
+          if (doc.targetModel === SupportedTargetModel.MODEL_USER) {
+            doc.parsedSnapshot = userSerializers.parseSnapshot(doc.snapshot);
+          }
+          else {
+            throw new Error(`No serializer found for targetModel: ${doc.targetModel}`);
           }
         }
         catch (err) {

@@ -62,13 +62,13 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const isDropdownItem = props.type === 'dropdown-item';
 
-  function isPageNotification(notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IPage> {
-    return notification.targetModel === SupportedTargetModel.MODEL_USER;
-  }
+  const isPageNotification = (notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IPage> => {
+    return notification.targetModel === SupportedTargetModel.MODEL_PAGE;
+  };
 
-  function isUserNotification(notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IUser> {
+  const isUserNotification = (notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IUser> => {
     return notification.targetModel === SupportedTargetModel.MODEL_USER;
-  }
+  };
 
   // determine tag
   const TagElem = isDropdownItem

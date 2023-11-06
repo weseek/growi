@@ -5,6 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
+
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
 import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
@@ -17,6 +18,7 @@ import {
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
+import { isUserNotification, isPageNotification } from '~/utils/notification-utils';
 
 import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -69,7 +71,7 @@ export default class InAppNotificationService {
     });
   }
 
-  emitSocketIo = async(targetUsers) => {
+  emitSocketIo = async(targetUsers): Promise<void> => {
     if (this.socketIoService.isInitialized) {
       targetUsers.forEach(async(userId) => {
 
