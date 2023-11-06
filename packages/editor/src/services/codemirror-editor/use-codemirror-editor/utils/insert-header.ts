@@ -34,6 +34,6 @@ export const useInsertHeader = (view?: EditorView): InsertHeader => {
       },
       selection: { anchor: cursorPos + insertText.length },
     });
-    view?.focus();
+    view.focus();
   }, [view]);
 };
