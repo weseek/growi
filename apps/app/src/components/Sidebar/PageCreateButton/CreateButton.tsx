@@ -14,7 +14,7 @@ export const CreateButton = (props: Props): JSX.Element => {
     <button
       type="button"
       {...props}
-      className={`${moduleClass} btn btn-primary`}
+      className={`${moduleClass} btn btn-primary ${props.className ?? ''}`}
       data-testid="grw-sidebar-nav-page-create-button"
     >
       <Hexagon />
