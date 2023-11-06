@@ -8,7 +8,7 @@ export const Hexagon = React.memo((props: Props): JSX.Element => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 27.691 23.999"
-    width="42px"
+    height="36px"
     className={props.className}
   >
     <g className="background" transform="translate(0 0)">
