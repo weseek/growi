@@ -44,6 +44,15 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const [updateApproverGroupData, setUpdateApproverGroupData] = useState<Array<UpdateApproverGroupData & { uuidForRender?: string }>>([]);
 
+  const workflowNameChangeHandler = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    setEditingWorkflowName(event.target.value);
+  }, []);
+
+  const workflowDescriptionChangeHandler = useCallback((event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setEditingWorkflowDescription(event.target.value);
+  }, []);
+
+
   const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
     const createApproverGroupData: CreateApproverGroupData[] = [];
     const notInDBApproverGroups = editingApproverGroups.filter(v => v._id == null);
@@ -165,6 +174,45 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
+        <div className="mb-3">
+          <div className="row align-items-center">
+            <label htmlFor="name" className="col-md-4 col-form-label">
+              {t('approval_workflow.name')}
+            </label>
+            <div className="col-md-8 mb-3">
+              <div className="row">
+                <div className="col">
+                  <input
+                    className="form-control"
+                    type="text"
+                    name="name"
+                    value={editingWorkflowName}
+                    onChange={workflowNameChangeHandler}
+                    required
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="row">
+            <label htmlFor="description" className="col-md-4 col-form-label">
+              {t('approval_workflow.description')}
+            </label>
+            <div className="col-md-8">
+              <div className="row">
+                <div className="col">
+                  <textarea
+                    className="form-control"
+                    name="description"
+                    value={editingWorkflowDescription}
+                    onChange={workflowDescriptionChangeHandler}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
           excludedSearchUserIds={excludedSearchUserIds}
