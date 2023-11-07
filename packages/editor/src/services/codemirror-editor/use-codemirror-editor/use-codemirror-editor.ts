@@ -17,6 +17,7 @@ import { useFocus, type Focus } from './utils/focus';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
+import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
@@ -39,6 +40,7 @@ type UseCodeMirrorEditorUtils = {
   insertText: InsertText,
   replaceText: ReplaceText,
   insertMarkdownElements: InsertMarkdowElements,
+  insertPrefix: InsertPrefix,
 }
 export type UseCodeMirrorEditor = {
   state: EditorState | undefined;
@@ -92,6 +94,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const insertText = useInsertText(view);
   const replaceText = useReplaceText(view);
   const insertMarkdownElements = useInsertMarkdownElements(view);
+  const insertPrefix = useInsertPrefix(view);
 
   return {
     state,
@@ -104,5 +107,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     insertText,
     replaceText,
     insertMarkdownElements,
+    insertPrefix,
   };
 };
