@@ -19,10 +19,10 @@ export const useInsertHeader = (view?: EditorView): InsertHeader => {
 
     const cursorPos = view.state.selection.main.head;
     const line = view.state.doc.lineAt(cursorPos);
-    const insertPos = line.text.startsWith('#') ? cursorPos - 1 : cursorPos;
+    const insertPos = line.text.startsWith(prefix) ? cursorPos - 1 : cursorPos;
     let insertText = prefix;
 
-    if (!line.text.startsWith('#')) {
+    if (!line.text.startsWith(prefix)) {
       insertText += ' ';
     }
 
