@@ -1,15 +1,10 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/variables' as var;
 @use '~/styles/mixins';
-
-@use './variables' as var;
 
 .grw-sidebar :global {
   top: 0;
-
-  .sidebar-contents-container {
-    backdrop-filter: blur(20px);
-  }
 }
 
 
@@ -70,6 +65,7 @@
         transform: translateX(-100%);
       }
       &.open {
+        z-index: bs.$zindex-modal;
         transform: translateX(0);
       }
     }
@@ -82,7 +78,18 @@
     --bs-border-color: var(--grw-highlight-200);
 
     .sidebar-contents-container {
-      background-color: rgba(var(--grw-highlight-100-rgb), .5);
+      background-color: color-mix(in srgb, var(--grw-highlight-100), var(--bs-body-bg));
+    }
+  }
+  // frosted glass effect in collapsed mode
+  .grw-sidebar {
+    &:global {
+      &.grw-sidebar-collapsed {
+        .sidebar-contents-container {
+          background-color: rgba(var(--grw-highlight-100-rgb), .5);
+          backdrop-filter: blur(20px);
+        }
+      }
     }
   }
 }
@@ -93,7 +100,18 @@
     --bs-border-color: var(--grw-highlight-800);
 
     .sidebar-contents-container {
-      background-color: rgba(var(--grw-highlight-800-rgb), .5);
+      background-color: color-mix(in srgb, var(--grw-highlight-800), var(--bs-body-bg));
+    }
+  }
+  // frosted glass effect in collapsed mode
+  .grw-sidebar {
+    &:global {
+      &.grw-sidebar-collapsed {
+        .sidebar-contents-container {
+          background-color: rgba(var(--grw-highlight-800-rgb), .5);
+          backdrop-filter: blur(20px);
+        }
+      }
     }
   }
 }

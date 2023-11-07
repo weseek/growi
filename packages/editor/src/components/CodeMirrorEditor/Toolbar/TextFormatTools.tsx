@@ -3,6 +3,11 @@ import { useCallback, useState } from 'react';
 import { Collapse } from 'reactstrap';
 
 
+import styles from './TextFormatTools.module.scss';
+
+const btnTextFormatToolsTogglerClass = styles['btn-text-format-tools-toggler'];
+
+
 type TogglarProps = {
   isOpen: boolean,
   onClick?: () => void,
@@ -10,17 +15,17 @@ type TogglarProps = {
 
 const TextFormatToolsToggler = (props: TogglarProps): JSX.Element => {
 
-  const { onClick } = props;
+  const { isOpen, onClick } = props;
 
-  // TODO: change color by isOpen
+  const activeClass = isOpen ? 'active' : '';
 
   return (
     <button
       type="button"
-      className="btn btn-toolbar-button"
+      className={`btn btn-toolbar-button ${btnTextFormatToolsTogglerClass} ${activeClass}`}
       onClick={onClick}
     >
-      <span className="material-icons fs-5">text_increase</span>
+      <span className="material-symbols-outlined fs-3">match_case</span>
     </button>
   );
 };
@@ -39,31 +44,31 @@ export const TextFormatTools = (): JSX.Element => {
       <Collapse isOpen={isOpen} horizontal>
         <div className="d-flex px-1 gap-1" style={{ width: '220px' }}>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">format_bold</span>
+            <span className="material-symbols-outlined fs-5">format_bold</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">format_italic</span>
+            <span className="material-symbols-outlined fs-5">format_italic</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">format_strikethrough</span>
+            <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">block</span>
+            <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">code</span>
+            <span className="material-symbols-outlined fs-5">code</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">format_list_bulleted</span>
+            <span className="material-symbols-outlined fs-5">format_list_bulleted</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">format_list_numbered</span>
+            <span className="material-symbols-outlined fs-5">format_list_numbered</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">block</span>
+            <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button">
-            <span className="material-icons-outlined fs-5">checklist</span>
+            <span className="material-symbols-outlined fs-5">checklist</span>
           </button>
         </div>
       </Collapse>

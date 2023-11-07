@@ -1,8 +1,15 @@
-@use './variables' as var;
+@use '~/styles/variables' as var;
 
-%btn-primary-basis {
-  padding-top: .75rem;
-  padding-bottom: .75rem;
+@use './variables' as sidebarVar;
+
+
+%btn-basis {
+  --bs-btn-padding-x: 0;
+  --bs-btn-padding-y: 0;
+
+  width: var.$grw-sidebar-nav-width;
+  height: sidebarVar.$grw-sidebar-button-height;
+
   line-height: 1em;
   border: 0;
   border-radius: 0;

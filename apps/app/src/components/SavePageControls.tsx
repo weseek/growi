@@ -70,7 +70,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { grant, grantedGroup } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
-  const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
+  const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 
   return (

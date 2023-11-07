@@ -149,12 +149,12 @@ const QuestionnaireModal = ({ questionnaireOrder }: QuestionnaireModalProps): JS
 
             {currentUser?.admin && (
               <a href="/admin/app#questionnaire-settings">
-                <i className="material-icons me-1">admin_panel_settings</i>
+                <i className="material-symbols-outlined me-1">admin_panel_settings</i>
               </a>
             )}
             {currentUser != null && (
               <a href="/me#other_settings">
-                <i className="material-icons">settings</i>
+                <i className="material-symbols-outlined">settings</i>
               </a>
             )}
           </div>

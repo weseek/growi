@@ -152,12 +152,12 @@ const PageRenameModal = (): JSX.Element => {
   }, [checkExistPaths]);
 
   const checkIsUsersHomepageDebounce = useMemo(() => {
-    const checkIsPagePathRenameable = () => {
+    const checkIsPagePathRenameable = (pageNameInput: string) => {
       setIsMatchedWithUserHomepagePath(isUsersHomepage(pageNameInput));
     };
 
     return debounce(1000, checkIsPagePathRenameable);
-  }, [isUsersHomepage, pageNameInput]);
+  }, [isUsersHomepage]);
 
   useEffect(() => {
     if (isOpened && page != null && pageNameInput !== page.data.path) {

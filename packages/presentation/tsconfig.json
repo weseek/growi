@@ -6,7 +6,10 @@
 
     "baseUrl": ".",
     "paths": {
-    }
+    },
+
+    /* TODO: remove below flags for strict checking */
+    "noImplicitAny": false
   },
   "include": [
     "src"

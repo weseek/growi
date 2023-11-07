@@ -4,7 +4,7 @@ import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoos
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:migration:add-installed-date-to-config');
+const logger = loggerFactory('growi:migrate:add-installed-date-to-config');
 
 const mongoose = require('mongoose');
 

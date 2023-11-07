@@ -1,0 +1,23 @@
+:root {
+  --font-family-sans-serif: var(--grw-font-family-lato), -apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif;
+  --font-family-serif: Georgia, 'Times New Roman', Times, serif;
+  --font-family-monospace: monospace, var(--grw-font-family-source-han-code-jp-subset-main), var(--grw-font-family-source-han-code-jp-subset-jis2);
+}
+
+.material-symbols-outlined {
+  display: inline-block;
+  font-family: var(--grw-font-family-material-symbols-outlined);
+  font-size: 24px;  /* Preferred icon size */
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  &.fill {
+    font-variation-settings: 'FILL' 1;
+  }
+}

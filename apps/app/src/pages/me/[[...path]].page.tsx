@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 
 import type { IUserHasId } from '@growi/core';
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -135,10 +135,24 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-MePage.getLayout = function getLayout(page) {
+
+type LayoutProps = Props & {
+  children?: ReactNode
+}
+
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
   return (
-    <BasicLayout>{page}</BasicLayout>
+    <BasicLayout>
+      {children}
+    </BasicLayout>
   );
+};
+
+MePage.getLayout = function getLayout(page) {
+  return <Layout {...page.props}>{page}</Layout>;
 };
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {

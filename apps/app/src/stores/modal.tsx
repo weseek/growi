@@ -700,7 +700,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
   const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
     mutate({ isOpened: true, attachment, remove });
   }, [mutate]);
-  const close = useCallback((): void => {
+  const close = useCallback(() => {
     mutate({ isOpened: false });
   }, [mutate]);
 
@@ -771,5 +771,53 @@ export const usePageSelectModal = (
       isOpened: true, opts,
     }),
     close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* TagEditModal
+*/
+export type TagEditModalStatus = {
+  isOpen: boolean,
+  tags: string[],
+  pageId: string,
+  revisionId: string,
+}
+
+type TagEditModalUtils = {
+  open(tags: string[], pageId: string, revisionId: string): Promise<void>,
+  close(): Promise<void>,
+}
+
+export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagEditModalUtils => {
+  const initialStatus: TagEditModalStatus = useMemo(() => {
+    return {
+      isOpen: false,
+      tags: [],
+      pageId: '',
+      revisionId: '',
+    };
+  }, []);
+
+  const swrResponse = useStaticSWR<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
+
+  const open = useCallback(async(tags: string[], pageId: string, revisionId: string) => {
+    mutate({
+      isOpen: true,
+      tags,
+      pageId,
+      revisionId,
+    });
+  }, [mutate]);
+
+  const close = useCallback(async() => {
+    mutate(initialStatus);
+  }, [initialStatus, mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
   };
 };
