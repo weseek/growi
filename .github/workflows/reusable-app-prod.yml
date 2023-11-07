@@ -27,6 +27,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      with:
+        # retrieve local font files
+        lfs: true
 
     - uses: actions/setup-node@v3
       with:
@@ -227,9 +230,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-      with:
-        # retrieve local font files
-        lfs: true
 
     - name: Install fonts
       run: sudo apt install fonts-noto
