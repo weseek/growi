@@ -58,7 +58,9 @@ export const RichAttachment: React.FC<{
           </div>
           <div className="ps-0">
             <div className="d-inline-block">
-              <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
+              {/* Since we need to include the "referer" to view the attachment on the shared page
+              we should avoid using target="_blank" */}
+              <a rel="noopener" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
               <a className="ms-2 attachment-download" href={downloadPathProxied}>
