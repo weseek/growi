@@ -102,7 +102,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
-              <button type="button" className="btn-close" aria-label="Close" onClick={() => { onClickRemoveApproverGroupCard(groupIndex) }}></button>
+              <button type="button" className="btn-close" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
             )}
           </div>
 
