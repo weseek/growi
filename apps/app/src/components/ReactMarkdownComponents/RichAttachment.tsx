@@ -13,11 +13,10 @@ type RichAttachmentProps = {
   attachmentId: string,
   url: string,
   attachmentName: string,
-  isSharedPage: 'true' | 'false',
 }
 
 export const RichAttachment = React.memo((props: RichAttachmentProps) => {
-  const { attachmentId, attachmentName, isSharedPage } = props;
+  const { attachmentId, attachmentName } = props;
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
@@ -70,11 +69,9 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
               <a className="ml-2 attachment-download" href={downloadPathProxied}>
                 <i className="icon-cloud-download" />
               </a>
-              {isSharedPage === 'false' && (
-                <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                  <i className="icon-trash" />
-                </a>
-              )}
+              <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
+                <i className="icon-trash" />
+              </a>
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />

@@ -5,7 +5,7 @@ import { Plugin } from 'unified';
 import { Node } from 'unist';
 import { visit } from 'unist-util-visit';
 
-const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName', 'isSharedPage'];
+const SUPPORTED_ATTRIBUTES = ['attachmentId', 'url', 'attachmentName'];
 
 const isAttachmentLink = (url: string): boolean => {
   // https://regex101.com/r/9qZhiK/1
@@ -13,7 +13,7 @@ const isAttachmentLink = (url: string): boolean => {
   return attachmentUrlFormat.test(url);
 };
 
-const rewriteNode = (node: Node, isSharedPage?: boolean) => {
+const rewriteNode = (node: Node) => {
   const attachmentId = path.basename(node.url as string);
   const data = node.data ?? (node.data = {});
   data.hName = 'attachment';
@@ -21,20 +21,16 @@ const rewriteNode = (node: Node, isSharedPage?: boolean) => {
     attachmentId,
     url: node.url,
     attachmentName: (node.children as any)[0]?.value,
-    isSharedPage: isSharedPage ? 'true' : 'false',
   };
 };
 
-type AttachmentPluginParams = {
-  isSharedPage?: boolean,
-}
 
-export const remarkPlugin: Plugin<[AttachmentPluginParams]> = (options) => {
+export const remarkPlugin: Plugin = () => {
   return (tree) => {
     visit(tree, (node) => {
       if (node.type === 'link') {
         if (isAttachmentLink(node.url as string)) {
-          rewriteNode(node, options.isSharedPage);
+          rewriteNode(node);
         }
       }
     });
