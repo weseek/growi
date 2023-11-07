@@ -1,19 +1,9 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
-@use '@growi/core/scss/flex-expand';
 
 @use './variables' as var;
 
-.flex-expand-horiz {
-  @extend %flex-expand-horiz;
-}
-
-.flex-expand-vert {
-  @extend %flex-expand-vert;
-}
-
 .dynamic-layout-root {
-  @extend %flex-expand-vert;
-  overflow-y: unset;
+  @extend .flex-expand-vert;
 }
 
 .dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
@@ -61,22 +51,6 @@
   @include bs.media-breakpoint-up(lg) {
     margin-top: 2rem;
   }
-}
-
-.grw-side-contents-container {
-  margin-bottom: 1rem;
-
-  @include bs.media-breakpoint-up(lg) {
-    width: 250px;
-    min-width: 250px;
-    margin-left: 30px;
-  }
-}
-
-.grw-side-contents-sticky-container {
-  position: sticky;
-  // growisubnavigation + grw-navbar-boder + some spacing
-  top: calc(100px + 4px + 20px);
 }
 
 // printable style

@@ -1,18 +1,25 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
-@use '~/styles/atoms/mixins/buttons' as mixins-buttons;
+
+@use '@growi/ui/scss/atoms/btn-muted';
+
+@use './button-styles';
 
 .grw-seen-user-info :global {
-  .btn.btn-seen-user {
-    $color-seen-user: #549c79;
+  .btn-seen-user {
+    @extend %btn-basis;
+  }
+  .total-counts {
+    @extend %text-total-counts-basis;
+  }
+}
 
-    @include bs.button-outline-variant($color-seen-user, $color-seen-user, rgba(lighten($color-seen-user, 10%), 0.15), rgba(lighten($color-seen-user, 10%), 0.5));
 
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      color: $color-seen-user;
-    }
-    &:not(:disabled):not(.disabled):not(:hover) {
-      background-color: transparent;
-    }
+// == Colors
+
+.grw-seen-user-info :global {
+  $color: #549c79;
+
+  .btn-seen-user {
+    @include btn-muted.colorize($color);
   }
 }

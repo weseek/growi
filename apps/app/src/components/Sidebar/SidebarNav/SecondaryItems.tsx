@@ -5,10 +5,15 @@ import Link from 'next/link';
 
 import { useGrowiCloudUri, useIsAdmin } from '~/stores/context';
 
+import { SkeletonItem } from './SkeletonItem';
+
 import styles from './SecondaryItems.module.scss';
 
 
-const PersonalDropdown = dynamic(() => import('../PersonalDropdown').then(mod => mod.PersonalDropdown), { ssr: false });
+const PersonalDropdown = dynamic(() => import('./PersonalDropdown').then(mod => mod.PersonalDropdown), {
+  ssr: false,
+  loading: () => <SkeletonItem />,
+});
 
 
 type SecondaryItemProps = {
@@ -24,11 +29,11 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
   return (
     <Link
       href={href}
-      className="d-block btn btn-primary"
+      className="d-block btn btn-primary d-flex align-items-center justify-content-center"
       target={`${isBlank ? '_blank' : ''}`}
       prefetch={false}
     >
-      <i className="material-icons">{iconName}</i>
+      <span className="material-symbols-outlined">{iconName}</span>
     </Link>
   );
 };

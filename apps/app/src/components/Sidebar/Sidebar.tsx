@@ -5,7 +5,6 @@ import React, {
 
 import dynamic from 'next/dynamic';
 
-import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarMode } from '~/interfaces/ui';
 import {
   useDrawerOpened,
@@ -14,6 +13,8 @@ import {
   usePreferCollapsedMode,
   useSidebarMode,
 } from '~/stores/ui';
+
+import { DrawerToggler } from '../Common/DrawerToggler';
 
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
@@ -40,8 +41,8 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { data: currentProductNavWidth, mutateAndSave: mutateProductNavWidth } = useCurrentProductNavWidth();
+  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
@@ -52,13 +53,11 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const resizeDoneHandler = useCallback((newWidth: number) => {
     mutateProductNavWidth(newWidth, false);
-    scheduleToPut({ preferCollapsedModeByUser: false, currentProductNavWidth: newWidth });
   }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutatePreferCollapsedMode(true);
     mutateCollapsedContentsOpened(false);
-    scheduleToPut({ preferCollapsedModeByUser: true });
   }, [mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
 
 
@@ -154,21 +153,29 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   const { className, children } = props;
 
-  const { data: isDrawerOpened } = useDrawerOpened();
+  const { data: isDrawerOpened, mutate } = useDrawerOpened();
 
   const openClass = `${isDrawerOpened ? 'open' : ''}`;
 
   return (
-    <div className={`${className} ${openClass}`}>
-      {children}
-    </div>
+    <>
+      <div className={`${className} ${openClass}`}>
+        {children}
+      </div>
+      { isDrawerOpened && (
+        <div className="modal-backdrop fade show" onClick={() => mutate(false)} />
+      ) }
+    </>
   );
 });
 
 
 export const Sidebar = (): JSX.Element => {
 
-  const { data: sidebarMode, isCollapsedMode } = useSidebarMode();
+  const {
+    data: sidebarMode,
+    isDrawerMode, isCollapsedMode, isDockMode,
+  } = useSidebarMode();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -188,7 +195,12 @@ export const Sidebar = (): JSX.Element => {
 
   return (
     <>
-      { sidebarMode != null && isCollapsedMode() && <AppTitleOnSubnavigation /> }
+      { sidebarMode != null && isDrawerMode() && (
+        <DrawerToggler className="position-fixed d-none d-md-block">
+          <span className="material-symbols-outlined">reorder</span>
+        </DrawerToggler>
+      ) }
+      { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
