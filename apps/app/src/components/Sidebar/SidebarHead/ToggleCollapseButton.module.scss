@@ -5,7 +5,7 @@
 @use '../button-styles';
 
 .btn-toggle-collapse :global {
-  @extend %btn-primary-basis;
+  @extend %btn-basis;
 
   $height: var.$grw-sidebar-nav-width; // declare $height with the same value as the sidebar nav width
   height: $height;

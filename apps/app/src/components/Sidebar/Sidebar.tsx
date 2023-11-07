@@ -5,7 +5,6 @@ import React, {
 
 import dynamic from 'next/dynamic';
 
-import { scheduleToPut } from '~/client/services/user-ui-settings';
 import { SidebarMode } from '~/interfaces/ui';
 import {
   useDrawerOpened,
@@ -42,8 +41,8 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const { isDrawerMode, isCollapsedMode, isDockMode } = useSidebarMode();
   const { mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: currentProductNavWidth, mutate: mutateProductNavWidth } = useCurrentProductNavWidth();
-  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { data: currentProductNavWidth, mutateAndSave: mutateProductNavWidth } = useCurrentProductNavWidth();
+  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
@@ -54,13 +53,11 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
 
   const resizeDoneHandler = useCallback((newWidth: number) => {
     mutateProductNavWidth(newWidth, false);
-    scheduleToPut({ preferCollapsedModeByUser: false, currentProductNavWidth: newWidth });
   }, [mutateProductNavWidth]);
 
   const collapsedByResizableAreaHandler = useCallback(() => {
     mutatePreferCollapsedMode(true);
     mutateCollapsedContentsOpened(false);
-    scheduleToPut({ preferCollapsedModeByUser: true });
   }, [mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
 
 

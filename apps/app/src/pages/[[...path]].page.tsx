@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage, useEditorModeClassName } from '~/client/services/layout';
+import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -76,6 +76,7 @@ const TemplateModal = dynamic(() => import('../components/TemplateModal').then(m
 const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
+const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -343,21 +344,21 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
+
+const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
+  const editorModeClassName = useEditorModeClassName();
+  return <BasicLayout className={editorModeClassName}>{children}</BasicLayout>;
+};
+
 type LayoutProps = Props & {
   children?: ReactNode
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  const className = useEditorModeClassName();
-
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
-  return (
-    <BasicLayout className={className}>
-      {children}
-    </BasicLayout>
-  );
+  return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };
 
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
@@ -376,6 +377,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <QuestionnaireModalManager />
       <TemplateModal />
       <LinkEditModal />
+      <TagEditModal />
     </>
   );
 };

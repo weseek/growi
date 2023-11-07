@@ -10,21 +10,16 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
-  openEditorModal?: () => void,
+  onClickEditTagsButton: () => void,
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
-  const { tags, isTagLabelsDisabled, openEditorModal } = props;
+  const {
+    tags, isTagLabelsDisabled, onClickEditTagsButton,
+  } = props;
   const { t } = useTranslation();
 
   const { pushState } = useKeywordManager();
-
-  function openEditorHandler() {
-    if (openEditorModal == null) {
-      return;
-    }
-    openEditorModal();
-  }
 
   const isTagsEmpty = tags.length === 0;
 
@@ -46,10 +41,14 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
         <NotAvailableForReadOnlyUser>
           <div id="edit-tags-btn-wrapper-for-tooltip" className="d-print-none">
             <a
-              className={`btn btn-link btn-edit-tags text-muted p-0 d-flex align-items-center ${isTagsEmpty && 'no-tags'} ${isTagLabelsDisabled && 'disabled'}`}
-              onClick={openEditorHandler}
+              className={
+                `btn btn-link btn-edit-tags text-muted d-flex align-items-center
+                ${isTagsEmpty && 'no-tags'}
+                ${isTagLabelsDisabled && 'disabled'}`
+              }
+              onClick={onClickEditTagsButton}
             >
-              { isTagsEmpty && <>{ t('Add tags for this page') }</>}
+              {isTagsEmpty && <>{ t('Add tags for this page') }</>}
               <i className={`icon-plus ${isTagsEmpty && 'ms-1'}`} />
             </a>
           </div>
