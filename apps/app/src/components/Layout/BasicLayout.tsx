@@ -34,7 +34,7 @@ type Props = {
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
-    <RawLayout className={className ?? ''}>
+    <RawLayout className={`${className ?? ''}`}>
       <DndProvider backend={HTML5Backend}>
 
         <div className="page-wrapper flex-row">

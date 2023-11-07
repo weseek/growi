@@ -2,15 +2,12 @@
 
 @use '../button-styles';
 
-@use './variables' as sidebarNavVar;
 
 .grw-secondary-items :global {
   .btn {
-    @extend %btn-primary-basis;
+    @extend %btn-basis;
 
-    height: sidebarNavVar.$grw-sidebar-primary-button-height;
-
-    i {
+    span {
       opacity: 0.6;
 
       &:hover,
@@ -31,7 +28,7 @@
   .grw-secondary-items :global {
     .btn-primary {
       --bs-btn-color: var(--grw-sidebar-nav-btn-color, var(--grw-primary-600));
-      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-700));
+      --bs-btn-hover-bg: var(--grw-sidebar-nav-btn-hover-bg, var(--grw-highlight-300));
     }
   }
 }

@@ -2,15 +2,31 @@
 @use '~/styles/mixins';
 
 .grw-navbar-bottom :global {
-  height: var.$grw-navbar-bottom-height;
-
   // apply transition
   transition-property: bottom;
   @include mixins.apply-navigation-transition();
+
+  .navbar {
+    height: var.$grw-navbar-bottom-height;
+  }
 }
 
-.grw-navbar-bottom {
-  &:global(.grw-navbar-bottom-drawer-opened) {
-    bottom: #{-1 * var.$grw-navbar-bottom-height};
+.grw-navbar-bottom-drawer-opened {
+  bottom: #{-1 * var.$grw-navbar-bottom-height};
+}
+
+// centering icons
+.grw-navbar-bottom :global {
+  .nav-link {
+    display: flex;
+    align-items: center;
+  }
+}
+
+// == Colors
+.grw-navbar-bottom :global {
+  .navbar {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.7);
+    backdrop-filter: blur(35px);
   }
 }

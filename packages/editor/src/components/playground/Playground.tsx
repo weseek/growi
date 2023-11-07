@@ -49,7 +49,7 @@ export const Playground = (): JSX.Element => {
   }, [codeMirrorEditor]);
 
   return (
-    <>
+    <div className="d-flex flex-column vw-100 flex-expand-vh-100">
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
         <div className="text-white">GrowiSubNavigation</div>
       </div>
@@ -71,6 +71,6 @@ export const Playground = (): JSX.Element => {
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>
         <div className="text-white">EditorNavbarBottom</div>
       </div>
-    </>
+    </div>
   );
 };
