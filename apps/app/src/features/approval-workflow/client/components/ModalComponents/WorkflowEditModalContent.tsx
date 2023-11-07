@@ -18,9 +18,10 @@ import { useSWRxWorkflow } from '../../stores/workflow';
 import { EditableApproverGroupCards } from './EditableApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
-const findApproverGroupDiff = (userIds1: string[], userIds2: string[]): { userIdToAdd?: string, userIdToRemove?: string } => {
-  const userIdToAdd = userIds2.find(item => !userIds1.includes(item));
-  const userIdToRemove = userIds1.find(item => !userIds2.includes(item));
+// Compare oldUserIds and newUserIds and extract the userId that has increased or decreased
+const compareApproverDiff = (oldUserIds: string[], newUserIds: string[]): { userIdToAdd?: string, userIdToRemove?: string } => {
+  const userIdToAdd = newUserIds.find(item => !oldUserIds.includes(item));
+  const userIdToRemove = oldUserIds.find(item => !newUserIds.includes(item));
   return { userIdToAdd, userIdToRemove };
 };
 
@@ -116,7 +117,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: IWorkflowApproverGroupForRenderList) => {
     const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
     const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
-    const result = findApproverGroupDiff(oldUserIds, newUserIds);
+    const result = compareApproverDiff(oldUserIds, newUserIds);
 
     // If approverGroup already exists in DB
     if (approverGroup._id != null) {
