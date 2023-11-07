@@ -43,8 +43,8 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
 type UpdateWorkflowData = {
   name?: string,
   comment?: string,
-  createApproverGroupData?: CreateApproverGroupData,
-  updateApproverGroupData?: UpdateApproverGroupData
+  createApproverGroupData?: CreateApproverGroupData[],
+  updateApproverGroupData?: UpdateApproverGroupData[],
 }
 
 type UseSWRxWorkflowUtils = {

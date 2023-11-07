@@ -4,10 +4,11 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 import {
-  IWorkflowReq,
   WorkflowStatus,
-  CreateApproverGroupData,
-  UpdateApproverGroupData,
+  type IWorkflowReq,
+  type IWorkflowApproverGroupReq,
+  type CreateApproverGroupData,
+  type UpdateApproverGroupData,
 } from '../../interfaces/workflow';
 import Workflow, { type IWorkflowDocument } from '../models/workflow';
 
@@ -83,6 +84,12 @@ class WorkflowServiceImpl implements WorkflowService {
     if (updateApproverGroupData != null && updateApproverGroupData.length > 0) {
       WorkflowApproverGroupService.updateApproverGroup(targetWorkflow, updateApproverGroupData);
     }
+
+    WorkflowApproverGroupService.validateApproverGroups(
+      false,
+      targetWorkflow.creator.toString(),
+      targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[],
+    );
 
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;

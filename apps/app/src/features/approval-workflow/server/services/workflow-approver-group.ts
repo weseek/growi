@@ -32,8 +32,6 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
       targetWorkflow.approverGroups.splice(data.groupIndex, 0, newApproverGroup as any);
     }
 
-    this.validateApproverGroups(false, targetWorkflow.creator.toString(), targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
-
     return;
   }
 
@@ -75,8 +73,6 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
       }
     }
 
-    this.validateApproverGroups(false, targetWorkflow.creator.toString(), targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[]);
-
     return;
   }
 
@@ -95,22 +91,24 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     userIdsToRemove.forEach((userId) => {
       const approver = approverGroup.findApprover(userId);
 
-      if (approver == null) {
-        throw Error('Target approver does not exist');
-      }
-
-      if (approver.status === WorkflowApproverStatus.APPROVE) {
+      if (approver != null && approver.status === WorkflowApproverStatus.APPROVE) {
         throw Error('Cannot remove an approved apporver');
       }
 
-      approverGroup.approvers.pull(approver._id);
+      approverGroup.approvers.pull(approver?._id);
     });
 
     return;
   }
 
   private addApprover(approverGroup: IWorkflowApproverGroupDocument, userIdsToAdd: string[]): void {
-    userIdsToAdd.forEach((userId) => { approverGroup.approvers.push({ user: userId }) });
+    userIdsToAdd.forEach((userIdToAdd) => {
+      const userIds = approverGroup.approvers.map(v => v.user.toString());
+
+      if (!userIds.includes(userIdToAdd)) {
+        approverGroup.approvers.push({ user: userIdToAdd });
+      }
+    });
 
     return;
   }
