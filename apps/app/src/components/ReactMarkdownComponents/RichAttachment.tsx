@@ -9,11 +9,15 @@ import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import styles from './RichAttachment.module.scss';
 
-export const RichAttachment: React.FC<{
+type RichAttachmentProps = {
   attachmentId: string,
   url: string,
-  attachmentName: string
-}> = React.memo(({ attachmentId, url, attachmentName }) => {
+  attachmentName: string,
+  isSharedPage?: boolean,
+}
+
+export const RichAttachment = React.memo((props: RichAttachmentProps) => {
+  const { attachmentId, attachmentName, isSharedPage } = props;
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
@@ -66,9 +70,11 @@ export const RichAttachment: React.FC<{
               <a className="ml-2 attachment-download" href={downloadPathProxied}>
                 <i className="icon-cloud-download" />
               </a>
-              <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash" />
-              </a>
+              {isSharedPage ?? (
+                <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
+                  <i className="icon-trash" />
+                </a>
+              )}
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />
