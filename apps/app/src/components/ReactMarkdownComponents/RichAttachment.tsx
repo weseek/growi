@@ -13,7 +13,7 @@ type RichAttachmentProps = {
   attachmentId: string,
   url: string,
   attachmentName: string,
-  isSharedPage?: boolean,
+  isSharedPage: 'true' | 'false',
 }
 
 export const RichAttachment = React.memo((props: RichAttachmentProps) => {
@@ -70,7 +70,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
               <a className="ml-2 attachment-download" href={downloadPathProxied}>
                 <i className="icon-cloud-download" />
               </a>
-              {isSharedPage ?? (
+              {isSharedPage === 'false' && (
                 <a className="ml-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
                   <i className="icon-trash" />
                 </a>

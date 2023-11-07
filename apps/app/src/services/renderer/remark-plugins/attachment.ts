@@ -21,7 +21,7 @@ const rewriteNode = (node: Node, isSharedPage?: boolean) => {
     attachmentId,
     url: node.url,
     attachmentName: (node.children as any)[0]?.value,
-    isSharedPage,
+    isSharedPage: isSharedPage ? 'true' : 'false',
   };
 };
 

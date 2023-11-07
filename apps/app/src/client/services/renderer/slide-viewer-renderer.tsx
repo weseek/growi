@@ -38,7 +38,7 @@ export const generatePresentationViewOptions = (
     drawio.remarkPlugin,
     mermaid.remarkPlugin,
     xsvToTable.remarkPlugin,
-    attachment.remarkPlugin,
+    [attachment.remarkPlugin, { isSharedPage: config.isSharedPage }],
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
   );
