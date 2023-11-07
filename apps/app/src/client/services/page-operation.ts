@@ -216,6 +216,6 @@ interface PageExistResponse {
 
 export const exist = async(pagePaths: string): Promise<PageExistResponse> => {
   const request: PageExistRequest = { pagePaths };
-  const res = await apiGet('/pages.exist', request);
-  return res as PageExistResponse;
+  const res = await apiGet<PageExistResponse>('/pages.exist', request);
+  return res;
 };
