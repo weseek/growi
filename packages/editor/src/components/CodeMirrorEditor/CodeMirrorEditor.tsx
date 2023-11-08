@@ -103,9 +103,43 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     getRootProps,
     isDragActive,
-    fileUploadState,
+    isDragAccept,
+    isDragReject,
+    isUploading,
     open,
   } = useFileDropzone({ onUpload, acceptedFileType });
+
+  const fileUploadState = useMemo(() => {
+
+    if (isUploading) {
+      return 'dropzone-uploading';
+    }
+
+    switch (acceptedFileType) {
+      case AcceptedUploadFileType.NONE:
+        return 'dropzone-disabled';
+
+      case AcceptedUploadFileType.IMAGE:
+        if (isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (isDragReject) {
+          return 'dropzone-mismatch-picture';
+        }
+        break;
+
+      case AcceptedUploadFileType.ALL:
+        if (isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (isDragReject) {
+          return 'dropzone-rejected';
+        }
+        break;
+    }
+
+    return '';
+  }, [isUploading, isDragAccept,isDragReject, acceptedFileType]);
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
