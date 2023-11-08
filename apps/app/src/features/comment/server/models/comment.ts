@@ -22,7 +22,7 @@ export interface CommentModel extends Model<CommentDocument> {
     comment: string,
     commentPosition: number,
     replyTo?: Types.ObjectId | null,
-  ) => Promise<void>
+  ) => Promise<CommentDocument>
 
   getCommentsByPageId: (pageId: Types.ObjectId) => Promise<CommentDocument[]>
 
@@ -46,13 +46,6 @@ const commentSchema = new Schema<CommentDocument, CommentModel>({
   timestamps: true,
 });
 
-/**
- * post remove hook
- */
-commentSchema.post('remove', async(savedComment) => {
-  await commentEvent.emit('delete', savedComment);
-});
-
 
 commentSchema.statics.add = async function(
     pageId: Types.ObjectId,
@@ -73,6 +66,8 @@ commentSchema.statics.add = async function(
       replyTo,
     });
     logger.debug('Comment saved.', data);
+
+    return data;
   }
   catch (err) {
     logger.debug('Error on saving comment.', err);
@@ -119,9 +114,6 @@ commentSchema.methods.removeWithReplies = async function(comment) {
     $or: (
       [{ replyTo: this._id }, { _id: this._id }]),
   });
-
-  await commentEvent.emit('delete', comment);
-  return;
 };
 
-export default getOrCreateModel<CommentDocument, CommentModel>('Comment', commentSchema);
+export const Comment = getOrCreateModel<CommentDocument, CommentModel>('Comment', commentSchema);

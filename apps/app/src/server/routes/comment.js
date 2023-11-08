@@ -1,4 +1,5 @@
 
+import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -49,7 +50,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
 
 module.exports = function(crowi, app) {
   const logger = loggerFactory('growi:routes:comment');
-  const Comment = crowi.model('Comment');
   const User = crowi.model('User');
   const Page = crowi.model('Page');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
@@ -234,7 +234,6 @@ module.exports = function(crowi, app) {
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
     const replyTo = commentForm.replyTo;
-    const commentEvent = crowi.event('comment');
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -244,8 +243,8 @@ module.exports = function(crowi, app) {
 
     let createdComment;
     try {
-      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, replyTo);
-      commentEvent.emit('create', createdComment);
+      createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
+      commentEvent.emit(CommentEvent.CREATE, createdComment);
     }
     catch (err) {
       logger.error(err);
@@ -357,8 +356,6 @@ module.exports = function(crowi, app) {
     const commentId = commentForm.comment_id;
     const revision = commentForm.revision_id;
 
-    const commentEvent = crowi.event('comment');
-
     if (commentStr === '') {
       return res.json(ApiResponse.error('Comment text is required'));
     }
@@ -389,7 +386,7 @@ module.exports = function(crowi, app) {
         { _id: commentId },
         { $set: { comment: commentStr, revision } },
       );
-      commentEvent.emit('update', updatedComment);
+      commentEvent.emit(CommentEvent.UPDATE, updatedComment);
     }
     catch (err) {
       logger.error(err);
@@ -446,8 +443,6 @@ module.exports = function(crowi, app) {
    * @apiParam {String} comment_id Comment Id.
    */
   api.remove = async function(req, res) {
-    const commentEvent = crowi.event('comment');
-
     const commentId = req.body.comment_id;
     if (!commentId) {
       return Promise.resolve(res.json(ApiResponse.error('\'comment_id\' is undefined')));
@@ -472,7 +467,7 @@ module.exports = function(crowi, app) {
 
       await comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
-      commentEvent.emit('delete', comment);
+      commentEvent.emit(CommentEvent.DELETE, comment);
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
