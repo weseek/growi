@@ -1,5 +1,5 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useCallback,
+  forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -7,7 +7,7 @@ import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone } from '../../services';
+import { useFileDropzone, FileDropzoneOverlay } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -107,24 +107,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     open,
   } = useFileDropzone({ onUpload, acceptedFileType });
 
-  const renderOverlay = useCallback(() => {
-    if (isDragActive) {
-      return (
-        <div className="overlay overlay-dropzone-active">
-          <span className="overlay-content">
-            <span className="overlay-icon material-symbols-outlined">
-            </span>
-          </span>
-        </div>
-      );
-    }
-    return <></>;
-  }, [isDragActive]);
-
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
-        {renderOverlay()}
+        <FileDropzoneOverlay isEnabled={isDragActive}/>
         <CodeMirrorEditorContainer ref={containerRef} />
         <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>
