@@ -58,8 +58,8 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
-            <span className="material-symbols-outlined fs-5" onClick={() => onClickInsertMarkdownElements('*', '*')}>format_italic</span>
+          <button type="button" className="btn btn-toolbar-button onClick={() => onClickInsertMarkdownElements('*', '*')}">
+            <span className="material-symbols-outlined fs-5">format_italic</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
