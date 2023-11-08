@@ -74,7 +74,7 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     <button
       type="button"
       data-testid={`grw-sidebar-nav-primary-${labelForTestId}`}
-      className={`d-block btn btn-primary ${indicatorClass}`}
+      className={`btn btn-primary ${indicatorClass}`}
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
     >
