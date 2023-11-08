@@ -21,11 +21,11 @@ Marp
 
 # 特徴
 
-- :memo: **プレーンな Markdown 記法でスライドデッキを記述する** (CommonMark)
-- :factory: [Marpit framework][marpit]上にビルトする: スライドデッキを作成するための真新しい洗練されたフレームワーク
-- :gear: [Marp Core][marp-core]: npmを通じてコアエンジンやビルトインテーマを使いやすくする
-- :tv: [Marp CLI][marp-cli]: マークうダウン形式をHTML、PDF、PPTX、画像に変換する
-- :vs: [Marp for VS Code][marp-vscode]: 編集中のデッキをライブプレビューする
+- :memo: **プレーンな Markdown プレゼンテーションを作成できる** (CommonMark)
+- :factory: [Marpit framework][marpit] を構築する: プレゼンテーションを作成するための洗練されたフレームワーク
+- :gear: [Marp Core][marp-core]: npm を介してコアエンジンや組み込みテーマを使いやすく
+- :tv: [Marp CLI][marp-cli]:  Markdown を HTML 、 PDF 、 PPTX 、画像に変換可能
+- :vs: [Marp for VS Code][marp-vscode]: 編集中のプレゼンテーションをライブプレビュー表示
 - and more...
 
 ---
