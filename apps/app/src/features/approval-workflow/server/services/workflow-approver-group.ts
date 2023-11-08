@@ -29,7 +29,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
         approvalType: data.approvalType,
       };
 
-      targetWorkflow.approverGroups.splice(data.groupIndex, 0, newApproverGroup as any);
+      targetWorkflow.approverGroups.splice(data.groupIndex, 0, newApproverGroup);
     }
 
     return;

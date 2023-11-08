@@ -8,6 +8,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import {
+  type IWorkflowApproverGroupReq,
   WorkflowStatus,
   WorkflowStatuses,
   WorkflowApproverStatus,
@@ -55,6 +56,7 @@ export interface IWorkflowApproverGroupDocument {
 }
 export interface WorkflowApproverGroupDocument extends IWorkflowApproverGroupDocument, Document {
   findApprover(userId: string): WorkflowApproverDocument | undefined
+
 }
 type WorkflowApproverGroupModel = Model<WorkflowApproverGroupDocument>
 
@@ -101,14 +103,20 @@ WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): Wor
 /*
 * Workflow
 */
+
+// Rewrote the interface of the splice method to add new data to the ApproverGroups array, since it must be in the form of a "WorkflowApproverGroupDocument"
+type WorkflowApproverGroupDocumentWithoutArraySplice = Omit<
+  Types.DocumentArray<WorkflowApproverGroupDocument
+>, 'splice'> & { splice: (start: number, deleteCount: number, item: IWorkflowApproverGroupReq) => void }
+
 export type IWorkflowDocument = {
   creator: Ref<IUser>
   pageId: string
   name?: string,
   comment?: string,
   status: WorkflowStatus,
-  approverGroups: Types.DocumentArray<WorkflowApproverGroupDocument>
-}
+  approverGroups: WorkflowApproverGroupDocumentWithoutArraySplice
+};
 export interface WorkflowDocument extends IWorkflowDocument, Document {
   getLatestApprovedApproverGroupIndex(): number | null
 }
