@@ -1,5 +1,5 @@
 import type {
-  HasObjectId, Ref, IUser, IPage,
+  HasObjectId, Ref, IUser,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
@@ -19,8 +19,8 @@ import InAppNotificationSettings from '~/server/models/in-app-notification-setti
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../crowi';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+import Crowi from '../../crowi';
+import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
