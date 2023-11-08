@@ -45,9 +45,13 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     setOpen(bool => !bool);
   }, []);
 
-  const onClickInsertMarkdownElements = (prefix: string, suffix: string) => codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
+  const onClickInsertMarkdownElements = (prefix: string, suffix: string) => {
+    codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
+  };
 
-  const onClickInsertPrefix = (prefix: string) => codeMirrorEditor?.insertPrefix(prefix);
+  const onClickInsertPrefix = (prefix: string) => {
+    codeMirrorEditor?.insertPrefix(prefix);
+  };
 
   return (
     <div className="d-flex">
