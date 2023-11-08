@@ -33,7 +33,7 @@ module.exports = (crowi: Crowi): Router => {
   const activityEvent = crowi.event('activity');
 
   const isExecutingSync = () => {
-    return crowi.ldapUserGroupSyncService?.isExecutingSync || crowi.keycloakUserGroupSyncService?.isExecutingSync || false;
+    return crowi.ldapUserGroupSyncService?.syncStatus?.isExecutingSync || crowi.keycloakUserGroupSyncService?.syncStatus?.isExecutingSync || false;
   };
 
   const validators = {
@@ -379,13 +379,13 @@ module.exports = (crowi: Crowi): Router => {
   });
 
   router.get('/ldap/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
-    const isExecutingSync = crowi.ldapUserGroupSyncService?.isExecutingSync || false;
-    return res.apiv3({ isExecutingSync });
+    const syncStatus = crowi.ldapUserGroupSyncService?.syncStatus;
+    return res.apiv3({ ...syncStatus });
   });
 
   router.get('/keycloak/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
-    const isExecutingSync = crowi.keycloakUserGroupSyncService?.isExecutingSync || false;
-    return res.apiv3({ isExecutingSync });
+    const syncStatus = crowi.keycloakUserGroupSyncService?.syncStatus;
+    return res.apiv3({ ...syncStatus });
   });
 
   return router;

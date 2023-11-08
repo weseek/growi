@@ -25,9 +25,11 @@ const logger = loggerFactory('growi:service:external-user-group-sync-service');
 const TREES_BATCH_SIZE = 10;
 const USERS_BATCH_SIZE = 30;
 
+type SyncStatus = { isExecutingSync: boolean, totalCount: number, count: number }
+
 class ExternalUserGroupSyncS2sMessage extends S2sMessage {
 
-  isExecutingSync: boolean;
+  syncStatus: SyncStatus;
 
 }
 
@@ -41,7 +43,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
 
   s2sMessagingService: S2sMessagingService | null;
 
-  isExecutingSync = false;
+  syncStatus: SyncStatus = { isExecutingSync: false, totalCount: 0, count: 0 };
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(groupProviderType: ExternalGroupProviderType, s2sMessagingService: S2sMessagingService | null, socketIoService) {
@@ -61,16 +63,16 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
    * @inheritdoc
    */
   async handleS2sMessage(s2sMessage: ExternalUserGroupSyncS2sMessage): Promise<void> {
-    logger.info(`Set isExecutingSync to ${s2sMessage.isExecutingSync} by pubsub notification`);
-    this.isExecutingSync = s2sMessage.isExecutingSync;
+    logger.info('Update syncStatus by pubsub notification');
+    this.syncStatus = s2sMessage.syncStatus;
   }
 
-  async switchIsExecutingSync(isExecutingSync: boolean): Promise<void> {
-    this.isExecutingSync = isExecutingSync;
+  async setSyncStatus(syncStatus: SyncStatus): Promise<void> {
+    this.syncStatus = syncStatus;
 
     if (this.s2sMessagingService != null) {
       const s2sMessage = new ExternalUserGroupSyncS2sMessage('switchExternalUserGroupExecSyncStatus', {
-        isExecutingSync,
+        syncStatus: this.syncStatus,
       });
 
       try {
@@ -89,31 +91,33 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
   */
   async syncExternalUserGroups(): Promise<void> {
     if (this.authProviderType == null) throw new Error('auth provider type is not set');
-    if (this.isExecutingSync) throw new Error('External user group sync is already being executed');
-    await this.switchIsExecutingSync(true);
+    if (this.syncStatus.isExecutingSync) throw new Error('External user group sync is already being executed');
 
     const preserveDeletedLdapGroups: boolean = configManager?.getConfig('crowi', `external-user-group:${this.groupProviderType}:preserveDeletedGroups`);
     const existingExternalUserGroupIds: string[] = [];
 
     const socket = this.socketIoService?.getAdminSocket();
 
+    const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
+      const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
+      existingExternalUserGroupIds.push(externalUserGroup._id);
+      await this.setSyncStatus({ isExecutingSync: true, totalCount: this.syncStatus.totalCount, count:  this.syncStatus.count + 1 });
+      socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncProgress, {
+        totalCount: this.syncStatus.totalCount, count: this.syncStatus.count,
+      });
+      // Do not use Promise.all, because the number of promises processed can
+      // exponentially grow when group tree is enormous
+      for await (const childNode of node.childGroupNodes) {
+        await syncNode(childNode, externalUserGroup._id);
+      }
+    };
+
     try {
       const trees = await this.generateExternalUserGroupTrees();
       const totalCount = trees.map(tree => this.getGroupCountOfTree(tree))
         .reduce((sum, current) => sum + current);
-      let count = 0;
 
-      const syncNode = async(node: ExternalUserGroupTreeNode, parentId?: string) => {
-        const externalUserGroup = await this.createUpdateExternalUserGroup(node, parentId);
-        existingExternalUserGroupIds.push(externalUserGroup._id);
-        count++;
-        socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncProgress, { totalCount, count });
-        // Do not use Promise.all, because the number of promises processed can
-        // exponentially grow when group tree is enormous
-        for await (const childNode of node.childGroupNodes) {
-          await syncNode(childNode, externalUserGroup._id);
-        }
-      };
+      await this.setSyncStatus({ isExecutingSync: true, totalCount, count: 0 });
 
       await batchProcessPromiseAll(trees, TREES_BATCH_SIZE, async(tree) => {
         return syncNode(tree);
@@ -134,7 +138,7 @@ abstract class ExternalUserGroupSyncService implements S2sMessageHandlable {
       socket?.emit(SocketEventName.externalUserGroup[this.groupProviderType].GroupSyncFailed);
     }
     finally {
-      await this.switchIsExecutingSync(false);
+      await this.setSyncStatus({ isExecutingSync: false, totalCount: 0, count: 0 });
     }
   }
 
