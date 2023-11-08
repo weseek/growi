@@ -71,6 +71,19 @@
     "feedback": "意见和要求"
   },
 
+  "create_page_dropdown": {
+    "new_page": "新页面",
+    "todays": {
+      "desc": "Create today's ...",
+      "memo": "memo"
+    },
+    "template": {
+      "desc": "创建/编辑模板页",
+      "children": "子模板",
+      "descendants": "子代模板"
+    }
+  },
+
 	"copy_to_clipboard": {
 		"Copy to clipboard": "复制到剪贴板",
 		"Page path": "页面路径",
