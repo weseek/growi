@@ -50,7 +50,7 @@ Marp
 
 # Directives
 
-Marp では美しいスライド作成を支援するため、**"Directives"**　という拡張機能を用意しています。
+Marp では美しいスライド作成を支援するため、**"Directives"**　という拡張構文を用意しています。
 
 Markdown 記法の本文の前に挿入します:
 
@@ -114,7 +114,7 @@ size: 4:3
 
 ### 活用例
 
-このページは [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme) で色彩を反転させています。
+このページは  [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme) で色彩を反転させています。
 
 <!-- _class: invert -->
 
@@ -127,7 +127,7 @@ size: 4:3
 # [画像イメージのための構文](https://marpit.marp.app/image-syntax)
 
 以下のキーワードを使って、画像サイズの変更やフィルターを適用できます
- : `width` (`w`)、`height` (`h`)、CSS のフィルター
+ : `width` (`w`) 、 `height` (`h`) 、 CSS のフィルター
 
 ```markdown
 ![width:100px height:100px](image.png)
@@ -137,7 +137,7 @@ size: 4:3
 ![blur sepia:50%](filters.png)
 ```
 
-[resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image) と [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters)を指定してください。
+[resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image)  と  [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters) を指定してください。
 
 ![w:100px h:100px](https://avatars1.githubusercontent.com/u/20685754?v=4) ![w:100 h:100 blur sepia:50%](https://avatars1.githubusercontent.com/u/20685754?v=4)
 
@@ -175,7 +175,7 @@ Marp では複数の背景イメージを利用できます。
 
 ## [背景を分割する](https://marpit.marp.app/image-syntax?id=split-backgrounds)
 
-Marp では背景を分割する[Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) を利用できます。
+Marp では背景を分割する [Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) を利用できます。
 
  `bg` + `left` / `right` で背景イメージを配置するスぺースを指定可能です。
 
@@ -213,7 +213,7 @@ Marp ではアスタリスク記号をつけることで、各コンテンツを
 
 ## Math typesetting ( [Marp Core][marp-core] のみ)
 
-[KaTeX](https://katex.org/) math typesetting は $ax^2+bc+c$ のように [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math)で利用できます。
+[KaTeX](https://katex.org/) math typesetting は $ax^2+bc+c$ のように [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math) で利用できます。
 
 $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
@@ -253,9 +253,9 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ---
 
-## [Theme CSS](https://marpit.marp.app/theme-css)
+## [CSS テーマ](https://marpit.marp.app/theme-css)
 
-Marp uses `<section>` as the container of each slide. And others are same as styling for plain Markdown. The customized theme can use in [Marp CLI][marp-cli] and [Marp for VS Code][marp-vscode].
+Marp では各スライドのコンテナとして `<section>` を使います。その他はプレーンな Markdown と同様です。 [Marp CLI][marp-cli] と [Marp for VS Code][marp-vscode] ではカスタムテーマを利用可能です。
 
 ```css
 /* @theme your-theme */
@@ -276,9 +276,9 @@ h1 {
 
 ---
 
-## [Tweak style in Markdown](https://marpit.marp.app/theme-css?id=tweak-style-through-markdown)
+## [Markdown 記法のスタイル調整](https://marpit.marp.app/theme-css?id=tweak-style-through-markdown)
 
-`<style>` tag in Markdown will work in the context of theme CSS.
+Markdown 記法の `<style>` タグは theme CSS のコンテキストで機能します。
 
 ```markdown
 ---
@@ -294,14 +294,14 @@ section {
 Re-painted yellow background, ha-ha.
 ```
 
-> You can also add custom styling by class like `section.custom-class { ... }`.
-> Apply style through `<!-- _class: custom-class -->`.
+> `section.custom-class { ... }` のように class を活用することで、カスタムスタイルの追加も可能です。
+> `<!-- _class: custom-class -->` でスタイルを適用します。
 
 ---
 
-## [Scoped style](https://marpit.marp.app/theme-css?id=scoped-style)
+## [特定範囲へのスタイル適用](https://marpit.marp.app/theme-css?id=scoped-style)
 
-If you want one-shot styling for current page, you can use `<style scoped>`.
+現在のページの特定範囲へスタイルを適用したい場合は `<style scoped>` をご利用ください。
 
 ```markdown
 <style scoped>
@@ -319,8 +319,8 @@ a { color: green; }
 
 ---
 
-# Enjoy writing slides! :v: <!--fit-->
+# スライド作成を楽しみましょう! :v: <!--fit-->
 
-##### ![w:1em h:1em](https://avatars1.githubusercontent.com/u/20685754?v=4)  Marp: Markdown presentation ecosystem — https://marp.app/
+##### ![w:1em h:1em](https://avatars1.githubusercontent.com/u/20685754?v=4)  Marp: Markdown  — https://marp.app/
 
-###### by Marp Team ([@marp-team][marp-team])
+###### by Marp チーム ([@marp-team][marp-team])
