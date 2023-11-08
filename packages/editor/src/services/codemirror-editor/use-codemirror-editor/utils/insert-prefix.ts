@@ -7,9 +7,12 @@ export type InsertPrefix = (prefix: string) => void;
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
 
   return useCallback((prefix) => {
-    const selection = view?.state.sliceDoc(
-      view?.state.selection.main.from,
-      view?.state.selection.main.to,
+    if (view == null) {
+      return;
+    }
+    const selection = view.state.sliceDoc(
+      view.state.selection.main.from,
+      view.state.selection.main.to,
     );
 
     const cursorPos = view?.state.selection.main.head;
@@ -19,14 +22,14 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     if (insertText && cursorPos) {
       view.dispatch({
         changes: {
-          from: view?.state.selection.main.from,
-          to: view?.state.selection.main.to,
+          from: view.state.selection.main.from,
+          to: view.state.selection.main.to,
           insert: insertText + selection,
         },
         selection: { anchor: cursorPos + insertText.length },
       });
     }
-    view?.focus();
+    view.focus();
   }, [view]);
 
 };
