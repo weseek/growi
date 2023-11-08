@@ -378,6 +378,16 @@ module.exports = (crowi: Crowi): Router => {
     return res.apiv3({}, 202);
   });
 
+  router.get('/ldap/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+    const isExecutingSync = crowi.ldapUserGroupSyncService?.isExecutingSync || false;
+    return res.apiv3({ isExecutingSync });
+  });
+
+  router.get('/keycloak/sync-status', loginRequiredStrictly, adminRequired, (req: AuthorizedRequest, res: ApiV3Response) => {
+    const isExecutingSync = crowi.keycloakUserGroupSyncService?.isExecutingSync || false;
+    return res.apiv3({ isExecutingSync });
+  });
+
   return router;
 
 };

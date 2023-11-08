@@ -5,6 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
 import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
@@ -42,6 +43,16 @@ export const SyncExecution = ({
   const [isAlertModalOpen, setIsAlertModalOpen] = useState(false);
   // value to propagate the submit event of form to submit confirm modal
   const [currentSubmitEvent, setCurrentSubmitEvent] = useState<React.FormEvent<HTMLFormElement>>();
+
+  useEffect(() => {
+    const getSyncStatus = async() => {
+      const res = await apiv3Get(`/external-user-groups/${provider}/sync-status`);
+      if (res.data.isExecutingSync) {
+        setSyncStatus(SyncStatus.syncExecuting);
+      }
+    };
+    getSyncStatus();
+  }, [provider]);
 
   useEffect(() => {
     if (socket == null) return;
