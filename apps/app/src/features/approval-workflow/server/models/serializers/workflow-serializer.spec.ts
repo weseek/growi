@@ -1,4 +1,4 @@
-import { isUserObj } from '@growi/core';
+import { isPopulated } from '@growi/core';
 import mongoose from 'mongoose';
 
 import type { IWorkflowHasId } from '../../../interfaces/workflow';
@@ -102,7 +102,7 @@ describe('workflow-seroalizer', () => {
       const workflowApprover2 = serializedWorkflow.approverGroups[1].approvers[0].user;
       const workflowApprover3 = serializedWorkflow.approverGroups[1].approvers[1].user;
 
-      if (!isUserObj(workflowCreator) || !isUserObj(workflowApprover1) || !isUserObj(workflowApprover2) || !isUserObj(workflowApprover3)) {
+      if (!isPopulated(workflowCreator) || !isPopulated(workflowApprover1) || !isPopulated(workflowApprover2) || !isPopulated(workflowApprover3)) {
         throw Error('Not an IUser Object');
       }
 
@@ -137,7 +137,7 @@ describe('workflow-seroalizer', () => {
       const workflowApprover2 = serializedWorkflow.approverGroups[1].approvers[0].user;
       const workflowApprover3 = serializedWorkflow.approverGroups[1].approvers[1].user;
 
-      if (!isUserObj(workflowCreator) || !isUserObj(workflowApprover1) || !isUserObj(workflowApprover2) || !isUserObj(workflowApprover3)) {
+      if (!isPopulated(workflowCreator) || !isPopulated(workflowApprover1) || !isPopulated(workflowApprover2) || !isPopulated(workflowApprover3)) {
         throw Error('Not an IUser Object');
       }
 
