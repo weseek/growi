@@ -1,14 +1,24 @@
-import type { IUser, IPage } from '@growi/core';
+import type { IUser, Ref } from '@growi/core';
 
 import { SupportedTargetModel } from '~/interfaces/activity';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
+import { ActivityDocument } from '~/server/models/activity';
 
+import { PageNotificationDelegator } from './page-notification';
+import { UserNotificationDelegator } from './user-notification';
 
-export const getDelegator = <T>(targetModel: string) => {
+export const getDelegator = (
+    targetModel: string, activity: ActivityDocument, target, users: Ref<IUser>[], socketIoService, commentService,
+): PageNotificationDelegator | UserNotificationDelegator => {
+  let delegator;
+
   switch (targetModel) {
     case SupportedTargetModel.MODEL_USER:
-      return インスタンス;
+      delegator = new UserNotificationDelegator(activity, target, users, socketIoService);
+      break;
     case SupportedTargetModel.MODEL_PAGE:
-      return インスタンス;
+      delegator = new PageNotificationDelegator(activity, target, users, socketIoService, commentService);
+      break;
   }
+
+  return delegator;
 };
