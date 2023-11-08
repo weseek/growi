@@ -10,7 +10,7 @@ import { upsertByActivity, emitSocketIo } from './in-app-notification-utils';
 
 export class UserNotificationDelegator {
 
-  createInAppNotification = async(activity: ActivityDocument, target, users: Ref<IUser>[], socketIoService) => {
+  createInAppNotification = async(activity: ActivityDocument, target, users: Ref<IUser>[], socketIoService): Promise<void> => {
     const snapshot = userSerializers.stringifySnapshot(target);
     await upsertByActivity(users, activity, snapshot);
     await emitSocketIo(users, socketIoService);

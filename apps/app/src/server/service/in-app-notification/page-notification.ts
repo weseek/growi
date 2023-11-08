@@ -11,7 +11,7 @@ import { upsertByActivity, emitSocketIo } from './in-app-notification-utils';
 
 export class PageNotificationDelegator {
 
-  createInAppNotification = async(activity: ActivityDocument, target, users: Ref<IUser>[], socketIoService, commentService) => {
+  createInAppNotification = async(activity: ActivityDocument, target, users: Ref<IUser>[], socketIoService, commentService): Promise<void> => {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     const snapshot = pageSerializers.stringifySnapshot(target);
     if (shouldNotification) {
