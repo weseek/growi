@@ -49,8 +49,8 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
   };
 
-  const onClickInsertPrefix = (prefix: string) => {
-    codeMirrorEditor?.insertPrefix(prefix);
+  const onClickInsertPrefix = (prefix: string, isContinuous: boolean) => {
+    codeMirrorEditor?.insertPrefix(prefix, isContinuous);
   };
 
   return (
@@ -68,22 +68,22 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('#', true)}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('-')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('-', false)}>
             <span className="material-symbols-outlined fs-5">format_list_bulleted</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('1.')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('1.', false)}>
             <span className="material-symbols-outlined fs-5">format_list_numbered</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>', false)}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]', false)}>
             <span className="material-symbols-outlined fs-5">checklist</span>
           </button>
         </div>
