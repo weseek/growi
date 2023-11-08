@@ -20,6 +20,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const line = view.state.doc.lineAt(cursorPos);
     const insertText = isContinuous && line.text.startsWith(prefix) ? prefix : prefix + space;
     const insertPos = isContinuous && line.text.startsWith(prefix) ? cursorPos - 1 : cursorPos;
+    const afterInsertPos = cursorPos + insertText.length + selection.length;
 
     if (insertText && cursorPos) {
       view.dispatch({
@@ -28,7 +29,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
           to: insertPos,
           insert: insertText,
         },
-        selection: { anchor: cursorPos + insertText.length + selection.length },
+        selection: { anchor: afterInsertPos },
       });
     }
     view.focus();
