@@ -702,7 +702,6 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.getNotificationTargetUsers = async function() {
-    const Comment = mongoose.model('Comment');
     const Revision = mongoose.model('Revision');
 
     const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);

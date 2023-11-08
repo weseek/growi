@@ -124,21 +124,21 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
-    let fetcher = null;
+    let query = null;
 
     try {
       if (revisionId) {
-        fetcher = Comment.getCommentsByRevisionId(revisionId);
+        query = Comment.findCommentsByRevisionId(revisionId);
       }
       else {
-        fetcher = Comment.getCommentsByPageId(pageId);
+        query = Comment.findCommentsByPageId(pageId);
       }
     }
     catch (err) {
       return res.json(ApiResponse.error(err));
     }
 
-    const comments = await fetcher.populate('creator');
+    const comments = await query.populate('creator');
     comments.forEach((comment) => {
       if (comment.creator != null && comment.creator instanceof User) {
         comment.creator = serializeUserSecurely(comment.creator);

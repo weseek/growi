@@ -1,6 +1,6 @@
 import type { IUser } from '@growi/core/dist/interfaces';
 import {
-  Types, Document, Model, Schema,
+  Types, Document, Model, Schema, Query,
 } from 'mongoose';
 
 import { IComment } from '~/interfaces/comment';
@@ -14,25 +14,28 @@ export interface CommentDocument extends IComment, Document {
   findCreatorsByPage: (pageId: Types.ObjectId) => Promise<CommentDocument[]>
 }
 
+
+type Add = (
+  pageId: Types.ObjectId,
+  creatorId: Types.ObjectId,
+  revisionId: Types.ObjectId,
+  comment: string,
+  commentPosition: number,
+  replyTo?: Types.ObjectId | null,
+) => Promise<CommentDocument>;
+type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
+type FindCommentsByRevisionId = (revisionId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
+type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>
+type GetPageIdToCommentMap = (pageIds: Types.ObjectId[]) => Promise<Record<string, CommentDocument[]>>
+type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>
+
 export interface CommentModel extends Model<CommentDocument> {
-  add: (
-    pageId: Types.ObjectId,
-    creatorId: Types.ObjectId,
-    revisionId: Types.ObjectId,
-    comment: string,
-    commentPosition: number,
-    replyTo?: Types.ObjectId | null,
-  ) => Promise<CommentDocument>
-
-  getCommentsByPageId: (pageId: Types.ObjectId) => Promise<CommentDocument[]>
-
-  getCommentsByRevisionId: (revisionId: Types.ObjectId) => Promise<CommentDocument[]>
-
-  getPageIdToCommentMap: (pageIds: Types.ObjectId[]) => Promise<Record<string, CommentDocument[]>>
-
-  findCreatorsByPage: (pageId: Types.ObjectId) => Promise<IUser[]>
-
-  countCommentByPageId: (pageId: Types.ObjectId) => Promise<number>
+  add: Add
+  findCommentsByPageId: FindCommentsByPageId
+  findCommentsByRevisionId: FindCommentsByRevisionId
+  findCreatorsByPage: FindCreatorsByPage
+  getPageIdToCommentMap: GetPageIdToCommentMap
+  countCommentByPageId: CountCommentByPageId
 }
 
 const commentSchema = new Schema<CommentDocument, CommentModel>({
@@ -46,16 +49,15 @@ const commentSchema = new Schema<CommentDocument, CommentModel>({
   timestamps: true,
 });
 
-
-commentSchema.statics.add = async function(
-    pageId: Types.ObjectId,
-    creatorId: Types.ObjectId,
-    revisionId: Types.ObjectId,
-    comment: string,
-    commentPosition: number,
-    replyTo?: string,
-) {
-
+const add: Add = async function(
+    this: CommentModel,
+    pageId,
+    creatorId,
+    revisionId,
+    comment,
+    commentPosition,
+    replyTo?,
+): Promise<CommentDocument> {
   try {
     const data = await this.create({
       page: pageId.toString(),
@@ -74,15 +76,19 @@ commentSchema.statics.add = async function(
     throw err;
   }
 };
+commentSchema.statics.add = add;
 
-commentSchema.statics.getCommentsByPageId = function(id) {
+commentSchema.statics.findCommentsByPageId = function(id) {
   return this.find({ page: id }).sort({ createdAt: -1 });
 };
 
-commentSchema.statics.getCommentsByRevisionId = function(id) {
+commentSchema.statics.findCommentsByRevisionId = function(id) {
   return this.find({ revision: id }).sort({ createdAt: -1 });
 };
 
+commentSchema.statics.findCreatorsByPage = async function(page) {
+  return this.distinct('creator', { page }).exec();
+};
 
 /**
  * @return {object} key: page._id, value: comments
@@ -99,10 +105,6 @@ commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
   });
 
   return idToCommentMap;
-};
-
-commentSchema.statics.findCreatorsByPage = async function(page) {
-  return this.distinct('creator', { page }).exec();
 };
 
 commentSchema.statics.countCommentByPageId = async function(page) {
