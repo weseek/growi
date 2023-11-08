@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isPopulated } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import {
@@ -47,6 +48,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
     const commentDate = format(new Date(comment.createdAt), 'yyyy/MM/dd HH:mm');
 
+    const creator = isPopulated(comment.creator) ? comment.creator : undefined;
+
     let commentBody = comment.comment;
     if (commentBody.length > OMIT_BODY_THRES) { // omit
       commentBody = `${commentBody.substr(0, OMIT_BODY_THRES)}...`;
@@ -55,7 +58,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
     return (
       <>
-        <UserPicture user={comment.creator} size="xs" /> <strong><Username user={comment.creator}></Username></strong> wrote on {commentDate}:
+        <UserPicture user={creator} size="xs" /> <strong><Username user={creator}></Username></strong> wrote on {commentDate}:
         <p className="card custom-card comment-body mt-2 p-2">{commentBodyElement}</p>
       </>
     );

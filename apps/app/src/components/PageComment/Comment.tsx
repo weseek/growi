@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import type { IUser } from '@growi/core';
+import { isPopulated, type IUser } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
@@ -51,7 +51,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
   const [isReEdit, setIsReEdit] = useState(false);
 
   const commentId = comment._id;
-  const creator = comment.creator;
+  const creator = isPopulated(comment.creator) ? comment.creator : undefined;
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
