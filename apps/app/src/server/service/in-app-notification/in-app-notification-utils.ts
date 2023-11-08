@@ -1,28 +1,18 @@
-import type {
-  HasObjectId, Ref, IUser, IPage,
-} from '@growi/core';
-import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
 
-import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
-import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
-import * as userSerializers from '~/models/serializers/in-app-notification-snapshot/user';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 import { ActivityDocument } from '~/server/models/activity';
 import {
   InAppNotification,
   InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
-import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
-import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
 
-const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
+const { STATUS_UNREAD } = InAppNotificationStatuses;
 
 const logger = loggerFactory('growi:service:inAppNotification');
 

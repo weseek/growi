@@ -2,14 +2,11 @@ import type {
   HasObjectId, Ref, IUser,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
-import { subDays } from 'date-fns';
-import { Types, FilterQuery, UpdateQuery } from 'mongoose';
+import { Types } from 'mongoose';
 import { T } from 'vitest/dist/types-dea83b3d';
 
-import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
+import { AllEssentialActions } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
-import * as userSerializers from '~/models/serializers/in-app-notification-snapshot/user';
 import { ActivityDocument } from '~/server/models/activity';
 import {
   InAppNotification,
@@ -20,7 +17,8 @@ import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
-import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
+
+import { getDelegator } from './in-app-notification-delegator';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
@@ -44,8 +42,6 @@ export default class InAppNotificationService {
     this.activityEvent = crowi.event('activity');
     this.socketIoService = crowi.socketIoService;
 
-    this.emitSocketIo = this.emitSocketIo.bind(this);
-    this.upsertByActivity = this.upsertByActivity.bind(this);
     this.getUnreadCountByUser = this.getUnreadCountByUser.bind(this);
     this.createInAppNotification = this.createInAppNotification.bind(this);
 
@@ -69,54 +65,6 @@ export default class InAppNotificationService {
       }
     });
   }
-
-  emitSocketIo = async(targetUsers): Promise<void> => {
-    if (this.socketIoService.isInitialized) {
-      targetUsers.forEach(async(userId) => {
-
-        // emit to the room for each user
-        await this.socketIoService.getDefaultSocket()
-          .in(getRoomNameWithId(RoomPrefix.USER, userId))
-          .emit('notificationUpdated');
-      });
-    }
-  };
-
-  upsertByActivity = async function(
-      users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
-  ): Promise<void> {
-    const {
-      _id: activityId, targetModel, target, action,
-    } = activity;
-    const now = createdAt || Date.now();
-    const lastWeek = subDays(now, 7);
-    const operations = users.map((user) => {
-      const filter: FilterQuery<InAppNotificationDocument> = {
-        user, target, action, createdAt: { $gt: lastWeek }, snapshot,
-      };
-      const parameters: UpdateQuery<InAppNotificationDocument> = {
-        user,
-        targetModel,
-        target,
-        action,
-        status: STATUS_UNREAD,
-        createdAt: now,
-        snapshot,
-        $addToSet: { activities: activityId },
-      };
-      return {
-        updateOne: {
-          filter,
-          update: parameters,
-          upsert: true,
-        },
-      };
-    });
-
-    await InAppNotification.bulkWrite(operations);
-    logger.info('InAppNotification bulkWrite has run');
-    return;
-  };
 
   getLatestNotificationsByUser = async(
       userId: Types.ObjectId,
@@ -208,31 +156,14 @@ export default class InAppNotificationService {
   // TODO: do not use any type
   // https://redmine.weseek.co.jp/issues/120632
   createInAppNotification = async function(activity: ActivityDocument, target: T, users: Ref<IUser>[]): Promise<void> {
-    if (activity.action === SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST) {
-      const snapshot = userSerializers.stringifySnapshot(target);
-      await this.upsertByActivity(users, activity, snapshot);
-      await this.emitSocketIo(users);
-      return;
-    }
+    const targetModel = activity.targetModel;
 
-    const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
-    const snapshot = pageSerializers.stringifySnapshot(target);
-    if (shouldNotification) {
-      let mentionedUsers: IUser[] = [];
-      if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
-        mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
-      }
+    const socketIoService = this.crowi.socketIoService;
+    const commentService = this.crowi.commentService;
 
-      await this.upsertByActivity([...mentionedUsers, ...users], activity, snapshot);
-      await this.emitSocketIo([users]);
-    }
-    else {
-      throw Error('No activity to notify');
-    }
-    return;
-    // delegater = getDelegater(); // getDelegatorで型に応じて適切なインスタンスを渡す
+    const delegator = getDelegator(targetModel); // getDelegatorで型に応じて適切なインスタンスを渡す
 
-    // delegate.createInAppNotification(target: );
+    delegator.createInAppNotification(activity, target, users, socketIoService, commentService);
   };
 
 }

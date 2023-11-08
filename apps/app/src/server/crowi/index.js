@@ -717,7 +717,7 @@ Crowi.prototype.setupPageService = async function() {
 };
 
 Crowi.prototype.setupInAppNotificationService = async function() {
-  const InAppNotificationService = require('../service/in-app-notification');
+  const InAppNotificationService = require('../service/in-app-notification/in-app-notification');
   if (this.inAppNotificationService == null) {
     this.inAppNotificationService = new InAppNotificationService(this);
   }
