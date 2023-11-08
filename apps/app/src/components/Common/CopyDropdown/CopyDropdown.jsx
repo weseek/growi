@@ -110,10 +110,10 @@ export const CopyDropdown = (props) => {
 
   return (
     <>
-      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`} isOpen={dropdownOpen} toggle={toggleDropdown}>
+      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`} isOpen={dropdownOpen} size="sm" toggle={toggleDropdown}>
         <DropdownToggle
-          caret
-          className={dropdownToggleClassName}
+          caret={isShareLinkMode}
+          className={`btn-copy ${dropdownToggleClassName}`}
         >
           <span id={dropdownToggleId}>{children}</span>
         </DropdownToggle>
