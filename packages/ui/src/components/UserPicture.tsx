@@ -3,7 +3,7 @@ import {
   memo, forwardRef, useCallback, useRef,
 } from 'react';
 
-import { type Ref, type IUser, isUserObj } from '@growi/core';
+import type { Ref, IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -58,6 +58,14 @@ const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPic
       </>
     );
   };
+};
+
+
+/**
+ * type guard to determine whether the specified object is IUser
+ */
+const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is Partial<IUser> => {
+  return typeof obj !== 'string' && 'username' in obj;
 };
 
 

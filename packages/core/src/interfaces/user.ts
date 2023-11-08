@@ -60,10 +60,3 @@ export type IAdminExternalAccount = {
   user: IUser,
   createdAt: Date,
 }
-
-/**
- * type guard to determine whether the specified object is IUser
- */
-export const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is Partial<IUser> => {
-  return typeof obj !== 'string' && 'username' in obj;
-};
