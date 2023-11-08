@@ -30,7 +30,7 @@ module.exports = {
         projectId: '2ce91e4f-98e9-43a0-8da7-ae5ebd4d2e49',
         apiKey: '53989b1a-db2d-4084-a765-d33ac45b356e',
         referenceLng: 'ja_JP',
-        version: 'latest'
+        version: 'latest',
       },
     ],
   },
