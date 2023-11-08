@@ -1,10 +1,10 @@
 import type {
-  HasObjectId, Ref, IUser,
+  HasObjectId, Ref, IUser, IPage,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types, FilterQuery, UpdateQuery } from 'mongoose';
-
+import { T } from 'vitest/dist/types-dea83b3d';
 
 import { AllEssentialActions, SupportedAction } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
@@ -207,7 +207,7 @@ export default class InAppNotificationService {
 
   // TODO: do not use any type
   // https://redmine.weseek.co.jp/issues/120632
-  createInAppNotification = async function(activity: ActivityDocument, target: any, users: Ref<IUser>[]): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: T, users: Ref<IUser>[]): Promise<void> {
     if (activity.action === SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST) {
       const snapshot = userSerializers.stringifySnapshot(target);
       await this.upsertByActivity(users, activity, snapshot);
@@ -230,6 +230,9 @@ export default class InAppNotificationService {
       throw Error('No activity to notify');
     }
     return;
+    // delegater = getDelegater(); // getDelegatorで型に応じて適切なインスタンスを渡す
+
+    // delegate.createInAppNotification(target: );
   };
 
 }
