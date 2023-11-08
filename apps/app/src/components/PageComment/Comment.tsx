@@ -52,7 +52,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
 
   const commentId = comment._id;
   const creator = comment.creator;
-  const isMarkdown = comment.isMarkdown;
   const createdAt = new Date(comment.createdAt);
   const updatedAt = new Date(comment.updatedAt);
   const isEdited = createdAt < updatedAt;
@@ -122,16 +121,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
       return <></>;
     }
 
-    return isMarkdown
-      ? (
-        <RevisionRenderer
-          rendererOptions={rendererOptions}
-          markdown={markdown}
-          additionalClassName="comment"
-        />
-      )
-      : renderText(comment.comment);
-  }, [comment, isMarkdown, markdown, rendererOptions]);
+    return (
+      <RevisionRenderer
+        rendererOptions={rendererOptions}
+        markdown={markdown}
+        additionalClassName="comment"
+      />
+    );
+  }, [markdown, rendererOptions]);
 
   const rootClassName = getRootClassName(comment);
   const revHref = `?revisionId=${comment.revision}`;

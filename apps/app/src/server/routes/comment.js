@@ -233,7 +233,6 @@ module.exports = function(crowi, app) {
     const revisionId = commentForm.revision_id;
     const comment = commentForm.comment;
     const position = commentForm.comment_position || -1;
-    const isMarkdown = commentForm.is_markdown ?? true; // comment is always markdown (https://github.com/weseek/growi/pull/6096)
     const replyTo = commentForm.replyTo;
     const commentEvent = crowi.event('comment');
 
@@ -245,7 +244,7 @@ module.exports = function(crowi, app) {
 
     let createdComment;
     try {
-      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, isMarkdown, replyTo);
+      createdComment = await Comment.create(pageId, req.user._id, revisionId, comment, position, replyTo);
       commentEvent.emit('create', createdComment);
     }
     catch (err) {
@@ -355,7 +354,6 @@ module.exports = function(crowi, app) {
     const { commentForm } = req.body;
 
     const commentStr = commentForm.comment;
-    const isMarkdown = commentForm.is_markdown ?? true; // comment is always markdown (https://github.com/weseek/growi/pull/6096)
     const commentId = commentForm.comment_id;
     const revision = commentForm.revision_id;
 
@@ -389,7 +387,7 @@ module.exports = function(crowi, app) {
 
       updatedComment = await Comment.findOneAndUpdate(
         { _id: commentId },
-        { $set: { comment: commentStr, isMarkdown, revision } },
+        { $set: { comment: commentStr, revision } },
       );
       commentEvent.emit('update', updatedComment);
     }
