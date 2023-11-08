@@ -1,4 +1,3 @@
-// pageへの通知を司るオブジェクト
 import type {
   Ref, IUser,
 } from '@growi/core';
@@ -16,7 +15,7 @@ export class PageNotificationDelegator {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     const snapshot = pageSerializers.stringifySnapshot(target);
     if (shouldNotification) {
-      let mentionedUsers: IUser[] = [];
+      let mentionedUsers: Ref<IUser>[] = [];
       if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
         mentionedUsers = await commentService.getMentionedUsers(activity.event);
       }

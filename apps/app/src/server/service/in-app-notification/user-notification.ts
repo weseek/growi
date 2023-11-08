@@ -1,5 +1,3 @@
-// userへの通知を司るオブジェクト
-
 import type {
   Ref, IUser,
 } from '@growi/core';

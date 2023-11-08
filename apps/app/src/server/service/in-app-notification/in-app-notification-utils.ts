@@ -1,5 +1,6 @@
+import type { Ref, IUser } from '@growi/core';
 import { subDays } from 'date-fns';
-import { Types, FilterQuery, UpdateQuery } from 'mongoose';
+import { FilterQuery, UpdateQuery } from 'mongoose';
 
 
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
@@ -29,7 +30,7 @@ export const emitSocketIo = async(targetUsers, socketIoService): Promise<void> =
 };
 
 export const upsertByActivity = async function(
-    users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
+    users: Ref<IUser>[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
 ): Promise<void> {
   const {
     _id: activityId, targetModel, target, action,

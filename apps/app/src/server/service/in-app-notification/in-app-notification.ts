@@ -161,7 +161,7 @@ export default class InAppNotificationService {
     const socketIoService = this.crowi.socketIoService;
     const commentService = this.crowi.commentService;
 
-    const delegator = getDelegator(targetModel); // getDelegatorで型に応じて適切なインスタンスを渡す
+    const delegator = getDelegator(targetModel);
 
     delegator.createInAppNotification(activity, target, users, socketIoService, commentService);
   };
