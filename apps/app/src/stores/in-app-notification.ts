@@ -4,7 +4,6 @@ import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
 import { SupportedTargetModel } from '~/interfaces/activity';
 import type { InAppNotificationStatuses, IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
-import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 import * as userSerializers from '~/models/serializers/in-app-notification-snapshot/user';
 import loggerFactory from '~/utils/logger';
 
