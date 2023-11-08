@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUserHasId } from '@growi/core';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
 import { IClearable } from '~/client/interfaces/clearable';
@@ -12,6 +12,7 @@ import { useSWRMUTxSearchUser } from '~/stores/user';
 type Props = {
   isEditable: boolean
   selectedUsers?: IUserHasId[] // for updated
+  approvedUserIds?: string[]
   excludedSearchUserIds?: string[]
   onChange?: (userIds: string[]) => void
   onRemoveLastEddtingApprover?: () => void
@@ -21,7 +22,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isEditable, selectedUsers, excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
+    isEditable, selectedUsers, approvedUserIds, excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
   } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
@@ -44,6 +45,14 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
       onChange(userIds);
     }
   }, [onChange, onRemoveLastEddtingApprover]);
+
+  const renderToken = (option: IUserHasId) => {
+    const isApproved = approvedUserIds?.includes(option._id);
+    const isDisabled = !isEditable || isApproved;
+    return (
+      <Token onRemove={() => {}} disabled={isDisabled} readOnly={false}>{option.username}</Token>
+    );
+  };
 
   useEffect(() => {
     if (searchKeyword.trim() !== '') {
@@ -70,7 +79,8 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         onChange={onChangeHandler}
         defaultSelected={selectedUsers}
         options={userData?.docs ?? []}
-        labelKey={(doc: IUserHasId) => doc.username}
+        labelKey={(option: IUserHasId) => option.username}
+        renderToken={(option: IUserHasId) => renderToken(option)}
       />
     </div>
   );

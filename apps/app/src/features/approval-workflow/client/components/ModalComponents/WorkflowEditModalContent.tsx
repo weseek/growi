@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import type {
-  IWorkflowHasId,
-  IWorkflowApproverGroupForRenderList,
-  WorkflowApprovalType,
-  CreateApproverGroupData,
-  UpdateApproverGroupData,
+import {
+  type IWorkflowHasId,
+  type IWorkflowApproverGroupForRenderList,
+  type WorkflowApprovalType,
+  type CreateApproverGroupData,
+  type UpdateApproverGroupData,
+  WorkflowApproverStatus,
 } from '~/features/approval-workflow/interfaces/workflow';
 
 import { getLatestApprovedApproverGroupIndex } from '../../../utils/workflow';
@@ -23,6 +24,18 @@ const compareApproverDiff = (oldUserIds: string[], newUserIds: string[]): { user
   const userIdToAdd = newUserIds.find(item => !oldUserIds.includes(item));
   const userIdToRemove = oldUserIds.find(item => !newUserIds.includes(item));
   return { userIdToAdd, userIdToRemove };
+};
+
+const getApprovedUserIds = (workflow: IWorkflowHasId): string[] => {
+  const allApprovedUserIds: string[] = [];
+  workflow.approverGroups.forEach((group) => {
+    const ids = group.approvers
+      .filter(approver => approver.status === WorkflowApproverStatus.APPROVE)
+      .map(approver => approver.user._id);
+    allApprovedUserIds.push(...ids);
+  });
+
+  return allApprovedUserIds;
 };
 
 type Props = {
@@ -44,6 +57,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(workflow);
   const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
+  const allApprovedUserIds = useMemo(() => getApprovedUserIds(workflow), [workflow]);
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
@@ -214,6 +228,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
         </div>
         <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
+          approvedUserIds={allApprovedUserIds}
           excludedSearchUserIds={excludedSearchUserIds}
           latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
           onUpdateApproverGroups={onUpdateApproverGroupsHandler}
