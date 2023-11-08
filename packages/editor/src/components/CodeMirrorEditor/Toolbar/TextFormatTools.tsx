@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { Collapse } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { useInsertHeader } from '../../../services/codemirror-editor/use-codemirror-editor/utils/insert-header';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';
@@ -40,17 +41,18 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
   const { editorKey } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
+  const insertHeader = useInsertHeader();
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
   }, []);
 
-  const onClickAddHeaderToSelection = (prefix: string) => {
-    codeMirrorEditor?.insertHeader(prefix);
-  };
-
   const onClickInsertMarkdownElements = (prefix: string, suffix: string) => {
     codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
+  };
+
+  const onClickAddHeaderToSelection = () => {
+    insertHeader(codeMirrorEditor?.view);
   };
 
   return (
@@ -68,7 +70,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickAddHeaderToSelection('#')}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickAddHeaderToSelection()}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>

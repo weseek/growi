@@ -2,37 +2,30 @@ import { useCallback } from 'react';
 
 import { EditorView } from '@codemirror/view';
 
-export type InsertHeader = (prefix: string) => void;
+type InsertHeader = (view?: EditorView) => void;
 
-export const useInsertHeader = (view?: EditorView): InsertHeader => {
-
-  return useCallback((prefix) => {
+export const useInsertHeader = (): InsertHeader => {
+  return useCallback((view?: EditorView) => {
     if (view == null) {
       return;
     }
-
-    const selection = view.state.sliceDoc(
-      view.state.selection.main.from,
-      view.state.selection.main.to,
-    );
-
+    let prefix = '#';
     const cursorPos = view.state.selection.main.head;
     const line = view.state.doc.lineAt(cursorPos);
     const insertPos = line.text.startsWith(prefix) ? cursorPos - 1 : cursorPos;
 
-    let insertText = prefix;
     if (!line.text.startsWith(prefix)) {
-      insertText += ' ';
+      prefix += ' ';
     }
 
     view.dispatch({
       changes: {
         from: insertPos,
         to: insertPos,
-        insert: insertText + selection,
+        insert: prefix,
       },
-      selection: { anchor: cursorPos + insertText.length },
+      selection: { anchor: cursorPos + prefix.length },
     });
     view.focus();
-  }, [view]);
+  }, []);
 };
