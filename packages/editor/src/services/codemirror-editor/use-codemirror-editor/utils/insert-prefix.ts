@@ -17,14 +17,14 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
 
     const cursorPos = view?.state.selection.main.head;
     const space = ' ';
-    const insertText = prefix + space;
+    const insertText = prefix + space + selection;
 
     if (insertText && cursorPos) {
       view.dispatch({
         changes: {
           from: view.state.selection.main.from,
           to: view.state.selection.main.to,
-          insert: insertText + selection,
+          insert: insertText,
         },
         selection: { anchor: cursorPos + insertText.length },
       });
