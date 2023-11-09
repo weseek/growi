@@ -28,6 +28,7 @@ import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
+import { TextSelectableContainer } from './TextSelectionTools';
 
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
@@ -139,7 +140,9 @@ export const PageView = (props: Props): JSX.Element => {
     return (
       <>
         <PageContentsUtilities />
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+        <TextSelectableContainer>
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+        </TextSelectableContainer>
       </>
     );
   };
