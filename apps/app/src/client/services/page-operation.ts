@@ -102,12 +102,13 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams: O
 };
 
 // TODO: define return type
-const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
+const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave, pageTags: string[]) => {
   // clone
   const params = Object.assign(tmpParams, {
     page_id: pageId,
     revision_id: revisionId,
     body: markdown,
+    tags: pageTags,
   });
 
   const res: any = await apiPost('/pages.update', params);
@@ -121,6 +122,7 @@ type PageInfo= {
   path: string,
   pageId: Nullable<string>,
   revisionId: Nullable<string>,
+  pageTags: string[],
 }
 
 type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => any;
@@ -132,7 +134,9 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
   /* eslint-enable react-hooks/rules-of-hooks */
 
   return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
-    const { path, pageId, revisionId } = pageInfo;
+    const {
+      path, pageId, revisionId, pageTags,
+    } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
 
@@ -145,7 +149,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
         const msg = '\'revisionId\' is required to update page';
         throw new Error(msg);
       }
-      res = await updatePage(pageId, revisionId, markdown, options);
+      res = await updatePage(pageId, revisionId, markdown, options, pageTags);
     }
 
     mutateIsEnabledUnsavedWarning(false);
