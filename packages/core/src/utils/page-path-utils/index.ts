@@ -1,5 +1,6 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { type IUserStatus, USER_STATUS } from '../../interfaces';
 import { isValidObjectId } from '../objectid-utils';
 import { addTrailingSlash } from '../path-utils';
 
@@ -39,17 +40,24 @@ export const isUsersHomepage = (path: string): boolean => {
 /**
  * Whether path is the protected pages for systems
  * @param path
+ * @param creatorStatus
+ * @param isUsersHomepageDeletionEnabled
  */
-export const isUsersProtectedPages = (path: string): boolean => {
+export const isUsersProtectedPages = (path: string, creatorStatus?: IUserStatus, isUsersHomepageDeletionEnabled?: boolean): boolean => {
+  if (isUsersHomepageDeletionEnabled && creatorStatus === USER_STATUS.DELETED) {
+    return isUsersTopPage(path);
+  }
   return isUsersTopPage(path) || isUsersHomepage(path);
 };
 
 /**
  * Whether path is movable
  * @param path
+ * @param creatorStatus
+ * @param isUsersHomepageDeletionEnabled
  */
-export const isMovablePage = (path: string): boolean => {
-  return !isTopPage(path) && !isUsersProtectedPages(path);
+export const isMovablePage = (path: string, creatorStatus?: IUserStatus, isUsersHomepageDeletionEnabled?: boolean): boolean => {
+  return !isTopPage(path) && !isUsersProtectedPages(path, creatorStatus, isUsersHomepageDeletionEnabled);
 };
 
 /**
