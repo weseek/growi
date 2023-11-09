@@ -3,6 +3,7 @@ import { useCallback, useState } from 'react';
 import { Collapse } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { useInsertHeader } from '../../../services/codemirror-editor/use-codemirror-editor/utils/insert-header';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';
@@ -40,6 +41,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
   const { editorKey } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
+  const insertHeader = useInsertHeader();
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
