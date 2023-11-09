@@ -6,7 +6,7 @@ export type InsertPrefix = (prefix: string, flag: boolean) => void;
 
 export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
 
-  return useCallback((prefix, isContinuous) => {
+  return useCallback((prefix: string, isContinuous: boolean) => {
     if (view == null) {
       return;
     }
