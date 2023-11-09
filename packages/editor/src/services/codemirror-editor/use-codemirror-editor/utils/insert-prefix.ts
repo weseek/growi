@@ -10,25 +10,19 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     if (view == null) {
       return;
     }
-    const selection = view.state.sliceDoc(
-      view.state.selection.main.from,
-      view.state.selection.main.to,
-    );
 
     const cursorPos = view.state.selection.main.head;
     const space = ' ';
     const line = view.state.doc.lineAt(cursorPos);
     const insertText = isContinuous && line.text.startsWith(prefix) ? prefix : prefix + space;
-    const insertPos = isContinuous && line.text.startsWith(prefix) ? cursorPos - 1 : cursorPos;
-    const afterInsertPos = cursorPos + insertText.length + selection.length;
 
     view.dispatch({
       changes: {
-        from: insertPos,
-        to: insertPos,
+        from: line.from,
+        to: line.from,
         insert: insertText,
       },
-      selection: { anchor: afterInsertPos, head: afterInsertPos - selection.length },
+      selection: { anchor: line.from + line.text.length + insertText.length },
     });
     view.focus();
   }, [view]);
