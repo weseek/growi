@@ -31,6 +31,8 @@ import type { PageContentFooterProps } from '../PageContentFooter';
 
 import styles from './SearchResultContent.module.scss';
 
+const moduleClass = styles['search-result-content'];
+
 
 const SubNavButtons = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
@@ -210,7 +212,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     <div
       key={page._id}
       data-testid="search-result-content"
-      className={`dynamic-layout-root ${growiLayoutFluidClass} search-result-content ${styles['search-result-content']}`}
+      className={`dynamic-layout-root ${growiLayoutFluidClass} ${moduleClass}`}
     >
       <RightComponent />
 

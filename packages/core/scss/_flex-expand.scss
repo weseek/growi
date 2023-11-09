@@ -1,9 +1,22 @@
-@use './placeholders/flex-expand';
-
 .flex-expand-horiz {
-  @extend %flex-expand-horiz;
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  height: 100%;
 }
 
 .flex-expand-vert {
-  @extend %flex-expand-vert;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+}
+
+.flex-expand-vh-100 {
+  height: 100vh;
+
+  .flex-expand-horiz,
+  .flex-expand-vert {
+    overflow-y: auto;
+  }
 }

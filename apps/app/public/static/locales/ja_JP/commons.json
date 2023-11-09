@@ -70,6 +70,19 @@
     "feedback": "ご意見・ご要望"
   },
 
+  "create_page_dropdown": {
+    "new_page": "新規ページ作成",
+    "todays": {
+      "desc": "今日の◯◯を作成",
+      "memo": "メモ"
+    },
+    "template": {
+      "desc": "テンプレートページの作成/編集",
+      "children": "同一階層テンプレート",
+      "decendants": "下位層テンプレート"
+    }
+  },
+
   "copy_to_clipboard": {
     "Copy to clipboard": "クリップボードにコピー",
     "Page path": "ページ名",

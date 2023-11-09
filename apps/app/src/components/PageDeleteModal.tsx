@@ -32,12 +32,12 @@ const logger = loggerFactory('growi:cli:PageDeleteModal');
 const deleteIconAndKey = {
   completely: {
     color: 'danger',
-    icon: 'fire',
+    icon: 'delete_forever',
     translationKey: 'completely',
   },
   temporary: {
-    color: 'primary',
-    icon: 'trash',
+    color: 'warning',
+    icon: 'delete',
     translationKey: 'page',
   },
 };
@@ -245,10 +245,10 @@ const PageDeleteModal: FC = () => {
     }
 
     return (
-      <>
-        <i className={`icon-fw icon-${deleteIconAndKey[deleteMode].icon}`}></i>
-        { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
-      </>
+      <span className={`text-${deleteIconAndKey[deleteMode].color} d-flex align-items-center`}>
+        <span className="material-symbols-outlined me-1">{deleteIconAndKey[deleteMode].icon}</span>
+        <b>{ t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }</b>
+      </span>
     );
   };
 
@@ -280,7 +280,7 @@ const PageDeleteModal: FC = () => {
         <ApiErrorMessageList errs={errs} />
         <button
           type="button"
-          className={`btn btn-${deleteIconAndKey[deleteMode].color}`}
+          className={`btn btn-outline-${deleteIconAndKey[deleteMode].color}`}
           disabled={!isDeletable}
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
@@ -294,7 +294,7 @@ const PageDeleteModal: FC = () => {
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeDeleteModal} data-testid="page-delete-modal">
-      <ModalHeader tag="h4" toggle={closeDeleteModal} className={`bg-${deleteIconAndKey[deleteMode].color} text-light`}>
+      <ModalHeader toggle={closeDeleteModal}>
         {headerContent()}
       </ModalHeader>
       <ModalBody>
