@@ -14,7 +14,8 @@ type Props = {
   selectedUsers?: IUserHasId[] // for updated
   approvedUserIds?: string[]
   excludedSearchUserIds?: string[]
-  onChange?: (userIds: string[]) => void
+  onChange?: (users: IUserHasId[]) => void
+  onRemoveApprover?: (user: IUserHasId) => void
   onRemoveLastEddtingApprover?: () => void
 };
 
@@ -22,7 +23,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isEditable, selectedUsers, approvedUserIds, excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
+    isEditable, selectedUsers, approvedUserIds, excludedSearchUserIds, onChange, onRemoveApprover, onRemoveLastEddtingApprover,
   } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
@@ -41,16 +42,21 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
       return;
     }
     if (onChange != null) {
-      const userIds = selectedUsers.map(user => user._id);
-      onChange(userIds);
+      onChange(selectedUsers);
     }
   }, [onChange, onRemoveLastEddtingApprover]);
+
+  const onRemoveApproverHandler = useCallback((user: IUserHasId) => {
+    if (onRemoveApprover != null) {
+      onRemoveApprover(user);
+    }
+  }, [onRemoveApprover]);
 
   const renderToken = (option: IUserHasId) => {
     const isApproved = approvedUserIds?.includes(option._id);
     const isDisabled = !isEditable || isApproved;
     return (
-      <Token onRemove={() => {}} disabled={isDisabled} readOnly={false}>{option.username}</Token>
+      <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token>
     );
   };
 
@@ -77,7 +83,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         isLoading={isMutating}
         onSearch={onSearchHandler}
         onChange={onChangeHandler}
-        defaultSelected={selectedUsers}
+        selected={selectedUsers}
         options={userData?.docs ?? []}
         labelKey={(option: IUserHasId) => option.username}
         renderToken={(option: IUserHasId) => renderToken(option)}

@@ -1,11 +1,14 @@
 import React, { useState, useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
-import { WorkflowApprovalType, type EditingApproverGroup } from '../../../interfaces/workflow';
+import {
+  WorkflowApprovalType, type EditingApproverGroup, IWorkflowApproverReq, IWorkflowApproverHasId, WorkflowApproverStatus,
+} from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
@@ -58,12 +61,36 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
     }
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
-  const updateApproversHandler = useCallback((userIds: string[]) => {
+  const updateApproversHandler = useCallback((users: IUserHasId[]) => {
     const clonedApproverGroup = { ...editingApproverGroup };
-    const approvers = userIds != null ? userIds.map(userId => ({ user: userId })) : [];
+    const approvers: IWorkflowApproverReq[] = users.map(user => ({ user, status: WorkflowApproverStatus.NONE }));
     clonedApproverGroup.approvers = approvers;
 
-    if (userIds.length <= 1) {
+    if (users.length <= 1) {
+      clonedApproverGroup.approvalType = WorkflowApprovalType.AND;
+    }
+
+    if (onUpdateApproverGroups != null) {
+      onUpdateApproverGroups(groupIndex, clonedApproverGroup);
+    }
+  }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
+
+  const removeApproverHandler = useCallback((user: IUserHasId) => {
+    // const clonedApproverGroup = { ...editingApproverGroup };
+
+    // const hoge = clonedApproverGroup.approvers.filter(
+    //   approver => (typeof approver.user === 'string' ? approver.user !== userId : approver.user._id !== userId),
+    // );
+    // clonedApproverGroup.approvers = hoge;
+
+    const clonedApproverGroup = structuredClone(editingApproverGroup);
+
+    const removeIndex = clonedApproverGroup.approvers.findIndex(
+      approver => (typeof approver.user === 'string' ? approver.user === user._id : approver.user._id === user._id),
+    );
+    clonedApproverGroup.approvers.splice(removeIndex, 1);
+
+    if (clonedApproverGroup.approvers.length <= 1) {
       clonedApproverGroup.approvalType = WorkflowApprovalType.AND;
     }
 
@@ -101,6 +128,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
               approvedUserIds={approvedUserIds}
               excludedSearchUserIds={excludedSearchUserIds}
               onChange={updateApproversHandler}
+              onRemoveApprover={removeApproverHandler}
               onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
             />
 
