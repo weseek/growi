@@ -74,16 +74,16 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('-', undefined)}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('-')}>
             <span className="material-symbols-outlined fs-5">format_list_bulleted</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('1.', undefined)}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('1.')}>
             <span className="material-symbols-outlined fs-5">format_list_numbered</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>', undefined)}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>')}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]', undefined)}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]')}>
             <span className="material-symbols-outlined fs-5">checklist</span>
           </button>
         </div>
