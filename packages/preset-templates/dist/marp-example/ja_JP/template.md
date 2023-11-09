@@ -21,11 +21,11 @@ Marp
 
 # 特徴
 
-- :memo: **プレーンな Markdown プレゼンテーションを作成できる** (CommonMark)
-- :factory: [Marpit framework][marpit] を構築する: プレゼンテーションを作成するための洗練されたフレームワーク
-- :gear: [Marp Core][marp-core]: npm を介してコアエンジンや組み込みテーマを使いやすく
+- :memo: **プレーンな Markdown 記法のプレゼンテーションを作成できる** (CommonMark)
+- :factory: [Marpit framework][marpit] を基に構築する: プレゼンテーションを作成するための新しくシンプルなフレームワーク
+- :gear: [Marp Core][marp-core]: npm を介して基本エンジンやビルトインテーマを使いやすく
 - :tv: [Marp CLI][marp-cli]:  Markdown を HTML 、 PDF 、 PPTX 、画像に変換可能
-- :vs: [Marp for VS Code][marp-vscode]: 編集中のプレゼンテーションをライブプレビュー表示
+- :vs: [Marp for VS Code][marp-vscode]: 編集中のスライドをライブプレビュー表示
 - and more...
 
 ---
