@@ -14,14 +14,14 @@ export interface AnnouncementDocument extends Document {
   _id: Types.ObjectId
   sender: Types.ObjectId
   name: string
-  comment: string
+  comment?: string
   emoji: string
   isReadReceiptTrackingEnabled: boolean
   pageId: Types.ObjectId
   receivers: [
     {
       receiver: Types.ObjectId,
-      updatedAt: Date,
+      updatedAt?: Date,
       readStatus: AnnouncementStatuses,
     },
   ]
@@ -71,6 +71,7 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
         type: String,
         enum: Object.values(AnnouncementStatuses),
         default: AnnouncementStatuses.STATUS_UNREAD,
+        required: true,
       },
     },
   ],
