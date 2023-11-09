@@ -50,7 +50,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
-RUN git-lfs pull
+# RUN git-lfs pull
 RUN yarn global add turbo
 RUN yarn global add node-gyp
 
