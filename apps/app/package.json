@@ -248,6 +248,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dropzone": "^11.2.4",
     "react-hotkeys": "^2.0.0",
+    "react-laag": "^2.0.5",
     "react-stickynode": "^4.1.0",
     "rehype-rewrite": "^3.0.6",
     "replacestream": "^4.0.3",
