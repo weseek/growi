@@ -15,7 +15,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
       view.state.selection.main.to,
     );
 
-    const cursorPos = view?.state.selection.main.head;
+    const cursorPos = view.state.selection.main.head;
     const space = ' ';
     const line = view.state.doc.lineAt(cursorPos);
     const insertText = isContinuous && line.text.startsWith(prefix) ? prefix : prefix + space;
@@ -28,7 +28,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
         to: insertPos,
         insert: insertText,
       },
-      selection: { anchor: afterInsertPos },
+      selection: { anchor: afterInsertPos, head: afterInsertPos - selection.length },
     });
     view.focus();
   }, [view]);
