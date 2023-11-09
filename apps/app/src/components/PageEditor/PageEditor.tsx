@@ -99,8 +99,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: tagsInfo, mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
@@ -228,7 +227,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (currentPathname == null || optionsToSave == null || tagsInfoData == null) {
+    if (currentPathname == null || optionsToSave == null || tagsInfo == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
     }
@@ -241,7 +240,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       const { page } = await saveOrUpdate(
         codeMirrorEditor?.getDoc() ?? '',
         {
-          pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId, pageTags: tagsInfoData.tags,
+          pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId, pageTags: tagsInfo.tags,
         },
         options,
       );

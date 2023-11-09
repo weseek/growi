@@ -56,7 +56,9 @@ export const useHandsontableModalLauncherForView = (opts?: {
       const currentRevisionId = currentPage.revision._id;
       await saveOrUpdate(
         newMarkdown,
-        { pageId: currentPage._id, path: currentPage.path, revisionId: currentRevisionId },
+        {
+          pageId: currentPage._id, path: currentPage.path, revisionId: currentRevisionId, pageTags: tagsInfo.tags,
+        },
         optionsToSave,
       );
 
