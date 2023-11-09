@@ -45,6 +45,7 @@ interface ItemProps {
   isEnableActions: boolean
   isReadOnlyUser: boolean
   itemNode: ItemNode
+  isUsersHomepageDeletionEnabled?: boolean
   targetPathOrId?: Nullable<string>
   isOpen?: boolean
   onRenamed?(fromPath: string | undefined, toPath: string): void
@@ -112,8 +113,9 @@ const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element
 const Item: FC<ItemProps> = (props: ItemProps) => {
   const { t } = useTranslation();
   const {
-    itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    isEnableActions, isReadOnlyUser, itemNode,
+    isUsersHomepageDeletionEnabled, targetPathOrId, isOpen: _isOpen = false,
+    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem,
   } = props;
 
   const { page, children } = itemNode;
@@ -155,10 +157,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
     type: 'PAGE_TREE',
     item: { page },
     canDrag: () => {
-      if (page.path == null) {
+      if (page.path == null || page.creator?.status == null) {
         return false;
       }
-      return !pagePathUtils.isUsersProtectedPages(page.path);
+      return !pagePathUtils.isUsersProtectedPages(page.path, page.creator.status, isUsersHomepageDeletionEnabled);
     },
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
@@ -542,9 +544,10 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
             <Item
               isEnableActions={isEnableActions}
               isReadOnlyUser={isReadOnlyUser}
+              isUsersHomepageDeletionEnabled={isUsersHomepageDeletionEnabled}
               itemNode={node}
-              isOpen={false}
               targetPathOrId={targetPathOrId}
+              isOpen={false}
               onRenamed={onRenamed}
               onClickDuplicateMenuItem={onClickDuplicateMenuItem}
               onClickDeleteMenuItem={onClickDeleteMenuItem}

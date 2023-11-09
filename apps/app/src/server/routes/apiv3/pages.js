@@ -641,7 +641,7 @@ module.exports = (crowi) => {
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
 
-    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
+    const deletablePages = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
     if (deletablePages.length === 0) {
       const msg = 'No pages can be deleted.';
@@ -910,14 +910,14 @@ module.exports = (crowi) => {
      * Delete Completely
      */
     if (isCompletely) {
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     /*
      * Trash
      */
     else {
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
     }
 
     if (pagesCanBeDeleted.length === 0) {

@@ -32,7 +32,7 @@ import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
   useIsEnabledStaleNotification, useIsIdenticalPath,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useDisableLinkSharing, useIsUsersHomepageDeletionEnabled,
   useHackmdUri, useDefaultIndentSize, useIsIndentSizeForced,
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
@@ -170,6 +170,7 @@ type Props = CommonProps & {
   adminPreferredIndentSize: number,
   isIndentSizeForced: boolean,
   disableLinkSharing: boolean,
+  isUsersHomepageDeletionEnabled: boolean,
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
@@ -218,6 +219,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useDefaultIndentSize(props.adminPreferredIndentSize);
   useIsIndentSizeForced(props.isIndentSizeForced);
   useDisableLinkSharing(props.disableLinkSharing);
+  useIsUsersHomepageDeletionEnabled(props.isUsersHomepageDeletionEnabled);
   useRendererConfig(props.rendererConfig);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   // useRendererSettings(props.rendererSettingsStr != null ? JSON.parse(props.rendererSettingsStr) : undefined);
@@ -579,6 +581,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
+  props.isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
   props.editorConfig = {
     upload: {
       isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),

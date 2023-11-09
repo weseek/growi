@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import EventEmitter from 'events';
 
-import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
+import { isMovablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -11,7 +11,7 @@ import {
 
 import type { IPageGrantData } from '~/interfaces/page';
 import {
-  useIsEditable, useIsAclEnabled,
+  useIsEditable, useIsAclEnabled, useIsUsersHomepageDeletionEnabled,
 } from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -39,6 +39,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
+  const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
 
@@ -69,7 +70,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   const { grant, grantedGroup } = grantData;
 
-  const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
+  const isGrantSelectorDisabledPage = !isMovablePage(currentPage?.path ?? '', currentPage?.creator?.status, isUsersHomepageDeletionEnabled ?? undefined);
   const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
 

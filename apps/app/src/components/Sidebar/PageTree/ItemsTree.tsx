@@ -13,6 +13,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
 import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { useIsUsersHomepageDeletionEnabled } from '~/stores/context';
 import {
   IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -109,6 +110,7 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: ancestorsChildrenResult, error: error1 } = useSWRxPageAncestorsChildren(targetPath);
   const { data: rootPageResult, error: error2 } = useSWRxRootPage();
   const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isUsersHomepageDeletionEnabled } = useIsUsersHomepageDeletionEnabled();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: sidebarScrollerRef } = useSidebarScrollerRef();
@@ -274,11 +276,12 @@ const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
       <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
         <Item
           key={initialItemNode.page.path}
-          targetPathOrId={targetPathOrId}
-          itemNode={initialItemNode}
-          isOpen
           isEnableActions={isEnableActions}
           isReadOnlyUser={isReadOnlyUser}
+          itemNode={initialItemNode}
+          isUsersHomepageDeletionEnabled={isUsersHomepageDeletionEnabled ?? undefined}
+          targetPathOrId={targetPathOrId}
+          isOpen
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}
           onClickDeleteMenuItem={onClickDeleteMenuItem}
