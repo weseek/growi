@@ -1,4 +1,4 @@
-import type { Ref, IUserHasId, HasObjectId } from '@growi/core';
+import type { IUserHasId, HasObjectId } from '@growi/core';
 
 import type { PaginateResult } from '~/interfaces/mongoose-utils';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -55,7 +55,7 @@ export type IWorkflow = {
   createdAt: Date;
 }
 
-export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: Ref<IUserHasId>, status?: WorkflowApproverStatus }
+export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
 export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
   & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }

@@ -7,7 +7,7 @@ import {
 } from 'reactstrap';
 
 import {
-  WorkflowApprovalType, type EditingApproverGroup, IWorkflowApproverReq, IWorkflowApproverHasId, WorkflowApproverStatus,
+  WorkflowApprovalType, type EditingApproverGroup, type IWorkflowApproverHasId,
 } from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
@@ -63,7 +63,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
 
   const updateApproversHandler = useCallback((users: IUserHasId[]) => {
     const clonedApproverGroup = { ...editingApproverGroup };
-    const approvers: IWorkflowApproverReq[] = users.map(user => ({ user, status: WorkflowApproverStatus.NONE }));
+    const approvers = users.map(user => ({ user })) as IWorkflowApproverHasId[];
     clonedApproverGroup.approvers = approvers;
 
     if (users.length <= 1) {
@@ -76,13 +76,6 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
   const removeApproverHandler = useCallback((user: IUserHasId) => {
-    // const clonedApproverGroup = { ...editingApproverGroup };
-
-    // const hoge = clonedApproverGroup.approvers.filter(
-    //   approver => (typeof approver.user === 'string' ? approver.user !== userId : approver.user._id !== userId),
-    // );
-    // clonedApproverGroup.approvers = hoge;
-
     const clonedApproverGroup = structuredClone(editingApproverGroup);
 
     const removeIndex = clonedApproverGroup.approvers.findIndex(
