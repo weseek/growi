@@ -2,7 +2,7 @@ import React, {
   forwardRef, ForwardRefRenderFunction,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IUser, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
@@ -13,10 +13,9 @@ import { useActionMsgAndIconForUserModelNotification } from './useActionAndMsg';
 
 
 const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, {
-  notification: IInAppNotification & HasObjectId
-  actionUsers: string
+  notification: IInAppNotification<IUser> & HasObjectId
 }> = ({
-  notification, actionUsers,
+  notification,
 }, ref) => {
   const router = useRouter();
 
@@ -26,6 +25,8 @@ const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
   const publishOpen = () => {
     router.push('/admin/users');
   };
+
+  const actionUsers = notification.target.username;
 
   return (
     <ModelNotification
