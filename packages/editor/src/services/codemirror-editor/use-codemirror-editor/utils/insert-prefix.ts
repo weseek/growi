@@ -22,16 +22,14 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const insertPos = isContinuous && line.text.startsWith(prefix) ? cursorPos - 1 : cursorPos;
     const afterInsertPos = cursorPos + insertText.length + selection.length;
 
-    if (insertText && cursorPos) {
-      view.dispatch({
-        changes: {
-          from: insertPos,
-          to: insertPos,
-          insert: insertText,
-        },
-        selection: { anchor: afterInsertPos },
-      });
-    }
+    view.dispatch({
+      changes: {
+        from: insertPos,
+        to: insertPos,
+        insert: insertText,
+      },
+      selection: { anchor: afterInsertPos },
+    });
     view.focus();
   }, [view]);
 
