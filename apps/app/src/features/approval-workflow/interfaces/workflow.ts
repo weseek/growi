@@ -29,8 +29,8 @@ export const WorkflowApproverStatuses = Object.values(WorkflowApproverStatus);
 export const WorkflowApprovalTypes = Object.values(WorkflowApprovalType);
 
 
-type WorkflowStatus = typeof WorkflowStatus[keyof typeof WorkflowStatus];
-type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof WorkflowApproverStatus];
+export type WorkflowStatus = typeof WorkflowStatus[keyof typeof WorkflowStatus];
+export type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof WorkflowApproverStatus];
 export type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
 
 
