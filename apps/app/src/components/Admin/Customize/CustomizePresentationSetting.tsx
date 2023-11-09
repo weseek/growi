@@ -17,9 +17,8 @@ type Props = {
 const CustomizePresentationSetting = (props: Props): JSX.Element => {
   const { adminCustomizeContainer } = props;
 
-  console.log(adminCustomizeContainer);
-
   const { t } = useTranslation();
+
   const onClickSubmit = useCallback(async() => {
     try {
       await adminCustomizeContainer.updateCustomizePresentation();
@@ -28,7 +27,8 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [adminCustomizeContainer]);
+  }, [adminCustomizeContainer, t]);
+
   return (
     <React.Fragment>
       <h2 className="admin-setting-header">{t('admin:customize_settings.custom_presentation')}</h2>
