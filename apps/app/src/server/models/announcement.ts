@@ -38,10 +38,6 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
     index: true,
     required: true,
   },
-  name: {
-    type: String,
-    required: true,
-  },
   comment: {
     type: String,
   },
