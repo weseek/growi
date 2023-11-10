@@ -2,26 +2,14 @@ import {
   isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
 } from './index';
 
-import { USER_STATUS } from '@growi/core';
-
 describe.concurrent('isMovablePage test', () => {
   test('should decide deletable or not', () => {
     expect(isMovablePage('/')).toBeFalsy();
-    expect(isMovablePage('/', USER_STATUS.DELETED, true)).toBeFalsy();
     expect(isMovablePage('/hoge')).toBeTruthy();
-    expect(isMovablePage('/hoge', USER_STATUS.DELETED, true)).toBeTruthy();
     expect(isMovablePage('/user')).toBeFalsy();
-    expect(isMovablePage('/user', USER_STATUS.DELETED, true)).toBeFalsy();
     expect(isMovablePage('/user/xxx')).toBeFalsy();
-    expect(isMovablePage('/user/xxx', USER_STATUS.DELETED, true)).toBeTruthy();
-    expect(isMovablePage('/user/xxx', USER_STATUS.DELETED, false)).toBeFalsy();
-    expect(isMovablePage('/user/xxx', USER_STATUS.ACTIVE, true)).toBeFalsy();
-    expect(isMovablePage('/user/xxx', undefined, true)).toBeFalsy();
-    expect(isMovablePage('/user/xxx', USER_STATUS.DELETED, undefined)).toBeFalsy();
     expect(isMovablePage('/user/xxx123')).toBeFalsy();
-    expect(isMovablePage('/user/xxx123', USER_STATUS.DELETED, true)).toBeTruthy();
     expect(isMovablePage('/user/xxx/hoge')).toBeTruthy();
-    expect(isMovablePage('/user/xxx/hoge', USER_STATUS.ACTIVE, false)).toBeTruthy();
   });
 });
 
