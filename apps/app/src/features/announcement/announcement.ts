@@ -2,7 +2,7 @@ import {
   Types, Document, Schema, Model,
 } from 'mongoose';
 
-import { getOrCreateModel } from '../util/mongoose-utils';
+import { getOrCreateModel } from '../../server/util/mongoose-utils';
 
 enum AnnouncementStatuses {
   STATUS_UNREAD = 'UNREAD',
@@ -48,6 +48,7 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
   isReadReceiptTrackingEnabled: {
     type: Boolean,
     required: true,
+    default: false,
   },
   pageId: {
     type: Schema.Types.ObjectId,
