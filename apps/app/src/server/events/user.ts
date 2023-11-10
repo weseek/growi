@@ -18,31 +18,29 @@ class UserEvent extends EventEmitter {
   }
 
   async onActivated(user: IUserHasId): Promise<void> {
-    if (this.crowi.pageService === null) {
-      logger.warn('crowi pageService is null');
-      return;
-    }
+    try {
+      if (this.crowi.pageService === null) {
+        throw new Error('crowi pageService is null');
+      }
 
-    const Page = this.crowi.model('Page');
-    const userHomepagePath = pagePathUtils.userHomepagePath(user);
+      const Page = this.crowi.model('Page');
+      const userHomepagePath = pagePathUtils.userHomepagePath(user);
 
-    let page = await Page.findByPath(userHomepagePath, true);
+      let page = await Page.findByPath(userHomepagePath, true);
 
-    if (page != null && page.creator != null && page.creator.toString() !== user._id.toString()) {
-      await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
-      page = null;
-    }
+      if (page != null && page.creator != null && page.creator.toString() !== user._id.toString()) {
+        await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
+        page = null;
+      }
 
-    if (page == null) {
-      const body = `# ${user.username}\nThis is ${user.username}'s page`;
-
-      try {
+      if (page == null) {
+        const body = `# ${user.username}\nThis is ${user.username}'s page`;
         await this.crowi.pageService.create(userHomepagePath, body, user, {});
         logger.debug('User page created', page);
       }
-      catch (err) {
-        logger.error('Failed to create user page', err);
-      }
+    }
+    catch (err) {
+      logger.error('Failed to create user page', err);
     }
   }
 

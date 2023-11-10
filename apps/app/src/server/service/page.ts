@@ -9,7 +9,7 @@ import { PageGrant, PageStatus } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { collectAncestorPaths, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -1972,20 +1972,27 @@ class PageService {
    * @throws {Error} - If an error occurs during the deletion process.
    */
   async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
-    const Page = this.crowi.model('Page');
-    const userHomepage = await Page.findByPath(userHomepagePath, true);
-
-    if (userHomepage == null) {
-      logger.error('user homepage is not found.');
-      return;
-    }
-
-    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
-
-    const ids = [userHomepage._id];
-    const paths = [userHomepage.path];
-
     try {
+      if (!isUsersHomepage(userHomepagePath)) {
+        const msg = 'input value is not user homepage path.';
+        logger.error(msg);
+        throw new Error(msg);
+      }
+
+      const Page = this.crowi.model('Page');
+      const userHomepage = await Page.findByPath(userHomepagePath, true);
+
+      if (userHomepage == null) {
+        const msg = 'user homepage is not found.';
+        logger.error(msg);
+        throw new Error(msg);
+      }
+
+      const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
+
+      const ids = [userHomepage._id];
+      const paths = [userHomepage.path];
+
       if (!shouldUseV4Process) {
         // Ensure consistency of ancestors
         const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
