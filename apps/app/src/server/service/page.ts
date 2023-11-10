@@ -4198,17 +4198,12 @@ class PageService {
     // get pages at once
     const queryBuilder = new PageQueryBuilder(Page.find({ path: { $in: regexps } }), true);
     await queryBuilder.addViewerCondition(user, userGroups);
+    queryBuilder.addConditionAsOnTree();
+    await queryBuilder.addConditionToMinimizeDataForRendering();
 
     const pages = await queryBuilder
-      .addConditionAsOnTree()
-      .addConditionToMinimizeDataForRendering()
       .addConditionToSortPagesByAscPath()
       .query
-      .populate({
-        path: 'creator',
-        model: 'User',
-        select: 'status',
-      })
       .lean()
       .exec();
 

@@ -60,7 +60,7 @@ export interface PageModel extends Model<PageDocument> {
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
-  // findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
+  findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
@@ -429,8 +429,15 @@ export class PageQueryBuilder {
     return this;
   }
 
-  addConditionToMinimizeDataForRendering(): PageQueryBuilder {
-    this.query = this.query.select('_id path isEmpty grant revision descendantCount creator');
+  async addConditionToMinimizeDataForRendering(): Promise<PageQueryBuilder> {
+    // eslint-disable-next-line rulesdir/no-populate
+    this.query = this.query
+      .select('_id path isEmpty grant revision descendantCount creator')
+      .populate({
+        path: 'creator',
+        model: 'User',
+        select: 'status',
+      });
 
     return this;
   }
@@ -636,46 +643,46 @@ schema.statics.findRecentUpdatedPages = async function(
 };
 
 
-// /*
-//  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
-//  * The result will include the target as well
-//  */
-// schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
-//   let path;
-//   if (!hasSlash(pathOrId)) {
-//     const _id = pathOrId;
-//     const page = await this.findOne({ _id });
+/*
+ * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
+ * The result will include the target as well
+ */
+schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
+  let path;
+  if (!hasSlash(pathOrId)) {
+    const _id = pathOrId;
+    const page = await this.findOne({ _id });
 
-//     path = page == null ? '/' : page.path;
-//   }
-//   else {
-//     path = pathOrId;
-//   }
+    path = page == null ? '/' : page.path;
+  }
+  else {
+    path = pathOrId;
+  }
 
-//   const ancestorPaths = collectAncestorPaths(path);
-//   ancestorPaths.push(path); // include target
+  const ancestorPaths = collectAncestorPaths(path);
+  ancestorPaths.push(path); // include target
 
-//   // Do not populate
-//   const queryBuilder = new PageQueryBuilder(this.find(), true);
-//   await queryBuilder.addViewerCondition(user, userGroups);
+  // Do not populate
+  const queryBuilder = new PageQueryBuilder(this.find(), true);
+  await queryBuilder.addViewerCondition(user, userGroups);
+  queryBuilder.addConditionAsOnTree();
+  queryBuilder.addConditionToListByPathsArray(ancestorPaths);
+  await queryBuilder.addConditionToMinimizeDataForRendering();
 
-//   const _targetAndAncestors: PageDocument[] = await queryBuilder
-//     .addConditionAsOnTree()
-//     .addConditionToListByPathsArray(ancestorPaths)
-//     .addConditionToMinimizeDataForRendering()
-//     .addConditionToSortPagesByDescPath()
-//     .query
-//     .lean()
-//     .exec();
+  const _targetAndAncestors: PageDocument[] = await queryBuilder
+    .addConditionToSortPagesByDescPath()
+    .query
+    .lean()
+    .exec();
 
-//   // no same path pages
-//   const ancestorsMap = new Map<string, PageDocument>();
-//   _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
-//   const targetAndAncestors = Array.from(ancestorsMap.values());
-//   const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
+  // no same path pages
+  const ancestorsMap = new Map<string, PageDocument>();
+  _targetAndAncestors.forEach(page => ancestorsMap.set(page.path, page));
+  const targetAndAncestors = Array.from(ancestorsMap.values());
+  const rootPage = targetAndAncestors[targetAndAncestors.length - 1];
 
-//   return { targetAndAncestors, rootPage };
-// };
+  return { targetAndAncestors, rootPage };
+};
 
 /**
  * Create empty pages at paths at which no pages exist
