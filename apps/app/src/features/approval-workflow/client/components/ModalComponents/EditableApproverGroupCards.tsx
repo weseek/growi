@@ -74,12 +74,9 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
   }, [editingApproverGroup, groupIndex, onUpdateApproverGroups]);
 
   const removeApproverHandler = useCallback((user: IUserHasId) => {
-    const clonedApproverGroup = structuredClone(editingApproverGroup);
-
-    const removeIndex = clonedApproverGroup.approvers.findIndex(
-      approver => (approver.user._id === user._id),
-    );
-    clonedApproverGroup.approvers.splice(removeIndex, 1);
+    const clonedApproverGroup = { ...editingApproverGroup };
+    const removeIndex = clonedApproverGroup.approvers.findIndex(approver => (approver.user._id === user._id));
+    clonedApproverGroup.approvers = clonedApproverGroup.approvers.toSpliced(removeIndex, 1);
 
     if (clonedApproverGroup.approvers.length <= 1) {
       clonedApproverGroup.approvalType = WorkflowApprovalType.AND;
