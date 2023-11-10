@@ -250,7 +250,6 @@ class PageService {
         meta: {
           isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
-          isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
           isRevertible: false,
@@ -2390,7 +2389,6 @@ class PageService {
       return {
         isV5Compatible: true,
         isEmpty: true,
-        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
         isRevertible: false,
@@ -2407,7 +2405,6 @@ class PageService {
       likerIds: this.extractStringIds(likers),
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
-      isMovable,
       isDeletable: isMovable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
