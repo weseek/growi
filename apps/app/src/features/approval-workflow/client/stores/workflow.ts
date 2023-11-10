@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useMemo } from 'react';
 
 import {
   type SWRResponseWithUtils, withUtils,
@@ -92,6 +92,26 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
 // Data type for requests to POST:/workflow
 type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] };
 
+const transformToRequestData = (approverGroups?: EditingApproverGroup[]): TransformedApproverGroup[] | undefined => {
+  if (approverGroups == null) {
+    return;
+  }
+
+  const clonedApproverGroups = [...approverGroups];
+  const transformedApproverGroups: TransformedApproverGroup[] = [];
+
+  clonedApproverGroups.forEach((group) => {
+    const approvers = group.approvers.map((v) => { return { user: v.user._id } });
+    const requestData = {
+      approvalType: group.approvalType,
+      approvers,
+    };
+    transformedApproverGroups.push(requestData);
+  });
+
+  return transformedApproverGroups;
+};
+
 export const useSWRMUTxCreateWorkflow = (
     pageId?: string,
     approverGroups?: EditingApproverGroup[],
@@ -99,31 +119,13 @@ export const useSWRMUTxCreateWorkflow = (
     comment?: string,
 ): SWRMutationResponse<IWorkflowHasId, Error> => {
 
-  const transformToRequestData = useCallback(() => {
-    if (approverGroups == null) {
-      return;
-    }
-    const clonedApproverGroups = [...approverGroups];
-    const transformedApproverGroups: TransformedApproverGroup[] = [];
-
-    clonedApproverGroups.forEach((group) => {
-      const approvers = group.approvers.map((v) => { return { user: v.user._id } });
-      const requestData = {
-        approvalType: group.approvalType,
-        approvers,
-      };
-      transformedApproverGroups.push(requestData);
-    });
-
-    return transformedApproverGroups;
-  }, [approverGroups]);
-
-  const key = pageId != null || approverGroups != null ? [pageId, transformToRequestData(), name, comment] : null;
+  const transformedApproverGroup = useMemo(() => transformToRequestData(approverGroups), [approverGroups]);
+  const key = pageId != null || transformedApproverGroup != null ? [pageId, transformedApproverGroup, name, comment] : null;
 
   return useSWRMutation(
     key,
-    ([pageId, approverGroups, name, comment]) => apiv3Post('/workflow', {
-      pageId, approverGroups, name, comment,
+    ([pageId, transformedApproverGroup, name, comment]) => apiv3Post('/workflow', {
+      pageId, approverGroups: transformedApproverGroup, name, comment,
     }).then(result => result.data.createdWorkflow),
   );
 };
