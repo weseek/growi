@@ -169,7 +169,7 @@ class PageService {
     if (operator == null || isTopPage(path)) return false;
 
     if (isUsersProtectedPages(path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       const User = mongoose.model('User');
       const creator = await User.findById(creatorId);
       if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
@@ -189,7 +189,7 @@ class PageService {
     if (operator == null || isTopPage(path)) return false;
 
     if (isUsersProtectedPages(path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       const User = mongoose.model('User');
       const creator = await User.findById(creatorId);
       if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
@@ -1423,7 +1423,7 @@ class PageService {
         throw new Error('Page is not deletable.');
       }
 
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       const populatedPage = await page.populate('creator');
       if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
         throw new Error('Page is not deletable.');
@@ -1583,7 +1583,7 @@ class PageService {
         throw new Error('Page is not deletable.');
       }
 
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       const populatedPage = await page.populate('creator');
       if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
         throw new Error('Page is not deletable.');
@@ -2447,7 +2447,7 @@ class PageService {
         isDeletable = false;
       }
       else {
-        const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+        const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
         const populatedPage = await page.populate('creator');
         if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
           isDeletable = false;
