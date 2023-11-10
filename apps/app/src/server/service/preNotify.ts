@@ -1,6 +1,6 @@
 import type { IUser } from '@growi/core';
 
-type PreNotifyProps = {
+export type PreNotifyProps = {
   notificationTargetUsers?: IUser[],
 }
 
