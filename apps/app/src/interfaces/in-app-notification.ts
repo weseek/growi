@@ -10,10 +10,10 @@ export enum InAppNotificationStatuses {
 
 // TODO: do not use any type
 // https://redmine.weseek.co.jp/issues/120632
-export interface IInAppNotification {
+export interface IInAppNotification<T> {
   user: IUser
   targetModel: SupportedTargetModelType
-  target: any
+  target: T
   action: SupportedActionType
   status: InAppNotificationStatuses
   actionUsers: IUser[]
