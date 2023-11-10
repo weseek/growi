@@ -262,6 +262,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                     <PageItemControl
                       alignRight
                       pageId={pageData._id}
+                      pagePath={pageData.path}
                       pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                       isEnableActions={isEnableActions}
                       isReadOnlyUser={isReadOnlyUser}

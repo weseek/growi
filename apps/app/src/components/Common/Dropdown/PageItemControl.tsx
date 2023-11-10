@@ -2,9 +2,8 @@ import React, {
   useState, useCallback, useEffect,
 } from 'react';
 
-import {
-  type IPageInfoAll, isIPageInfoForOperation,
-} from '@growi/core';
+import { type IPageInfoAll, isIPageInfoForOperation } from '@growi/core';
+import { pagePathUtils } from '@growi/core/dist/utils';
 import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
@@ -57,6 +56,7 @@ type CommonProps = {
 
 type DropdownMenuProps = CommonProps & {
   pageId: string,
+  pagePath: string,
   isLoading?: boolean,
   operationProcessData?: IPageOperationProcessData,
 }
@@ -65,7 +65,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const { t } = useTranslation('');
 
   const {
-    pageId, isLoading, pageInfo, isEnableActions, isReadOnlyUser, forceHideMenuItems, operationProcessData,
+    pageId, pagePath, isLoading, pageInfo, isEnableActions, isReadOnlyUser, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
@@ -178,10 +178,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && (
+        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && pagePathUtils.isMovablePage(pagePath) && (
           <DropdownItem
             onClick={renameItemClickedHandler}
-            disabled={!pageInfo.isDeletable}
+            disabled={!pagePathUtils.isMovablePage(pagePath)}
             data-testid="open-page-move-rename-modal-btn"
             className="grw-page-control-dropdown-item"
           >
@@ -233,7 +233,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && pageInfo.isDeletable && (
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
@@ -271,6 +271,7 @@ PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
+  pagePath: string,
   fetchOnInit?: boolean,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
@@ -369,32 +370,34 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
 export type PageItemControlProps = CommonProps & {
   pageId?: string,
+  pagePath?: string,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
 }
 
 export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, pagePath } = props;
 
-  if (pageId == null) {
+  if (pageId == null || pagePath == null) {
     return <></>;
   }
 
-  return <PageItemControlSubstance pageId={pageId} {...props} />;
+  return <PageItemControlSubstance pageId={pageId} pagePath={pagePath} {...props} />;
 };
 
 
 type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
   pageId?: string,
+  pagePath?: string,
   children?: React.ReactNode,
 }
 
 export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
-  const { pageId } = props;
+  const { pageId, pagePath } = props;
 
-  if (pageId == null) {
+  if (pageId == null || pagePath == null) {
     return <></>;
   }
 
-  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
+  return <PageItemControlSubstance pageId={pageId} pagePath={pagePath} fetchOnInit {...props} />;
 };

@@ -78,7 +78,7 @@ type SubNavButtonsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId: string | null,
-  path?: string | null,
+  path?: string,
   pageInfo: IPageInfoForOperation,
   expandContentWidth?: boolean,
 }
@@ -247,6 +247,7 @@ const SubNavButtonsSubstance = (props: SubNavButtonsSubstanceProps): JSX.Element
         <PageItemControl
           alignRight
           pageId={pageId}
+          pagePath={path}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
           isReadOnlyUser={!!isReadOnlyUser}
@@ -266,7 +267,7 @@ export type SubNavButtonsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
   revisionId?: string | null,
-  path?: string | null,
+  path?: string,
   expandContentWidth?: boolean,
 };
 
