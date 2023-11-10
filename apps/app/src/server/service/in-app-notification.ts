@@ -21,6 +21,8 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
+import type { PreNotifyProps, PreNotify } from './preNotify';
+
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
 
@@ -51,11 +53,11 @@ export default class InAppNotificationService {
   initActivityEventListeners(): void {
     // TODO: do not use any type
     // https://redmine.weseek.co.jp/issues/120632
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: any, users?: Ref<IUser>[]) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: any, preNotify: PreNotify) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
-          await this.createInAppNotification(activity, target, users);
+          await this.createInAppNotification(activity, target, preNotify);
         }
       }
       catch (err) {
@@ -201,33 +203,16 @@ export default class InAppNotificationService {
 
   // TODO: do not use any type
   // https://redmine.weseek.co.jp/issues/120632
-  createInAppNotification = async function(activity: ActivityDocument, target, users?: Ref<IUser>[]): Promise<void> {
-    if (activity.action === SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST) {
-      const snapshot = userSerializers.stringifySnapshot(target);
-      await this.upsertByActivity(users, activity, snapshot);
-      await this.emitSocketIo(users);
-      return;
-    }
+  createInAppNotification = async function(activity: ActivityDocument, target, preNotify: PreNotify): Promise<void> {
 
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     const snapshot = pageSerializers.stringifySnapshot(target);
     if (shouldNotification) {
-      let mentionedUsers: IUser[] = [];
-      if (activity.action === SupportedAction.ACTION_COMMENT_CREATE) {
-        mentionedUsers = await this.crowi.commentService.getMentionedUsers(activity.event);
-      }
-      const notificationTargetUsers = await activity?.getNotificationTargetUsers();
-      let notificationDescendantsUsers = [];
-      if (users != null) {
-        const User = this.crowi.model('User');
-        const descendantsUsers = users.filter(item => (item.toString() !== activity.user._id.toString()));
-        notificationDescendantsUsers = await User.find({
-          _id: { $in: descendantsUsers },
-          status: User.STATUS_ACTIVE,
-        }).distinct('_id');
-      }
-      await this.upsertByActivity([...notificationTargetUsers, ...mentionedUsers, ...notificationDescendantsUsers], activity, snapshot);
-      await this.emitSocketIo([...notificationTargetUsers, notificationDescendantsUsers]);
+      const props: PreNotifyProps = generateInitialPreNotifyProps();
+      await preNotify(props);
+
+      await this.upsertByActivity(props.notificationTargetUsers, activity, snapshot);
+      await this.emitSocketIo(props.notificationTargetUsers);
     }
     else {
       throw Error('No activity to notify');
