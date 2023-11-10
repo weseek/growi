@@ -429,15 +429,8 @@ export class PageQueryBuilder {
     return this;
   }
 
-  async addConditionToMinimizeDataForRendering(): Promise<PageQueryBuilder> {
-    // eslint-disable-next-line rulesdir/no-populate
-    this.query = this.query
-      .select('_id path isEmpty grant revision descendantCount creator')
-      .populate({
-        path: 'creator',
-        model: 'User',
-        select: 'status',
-      });
+  addConditionToMinimizeDataForRendering(): PageQueryBuilder {
+    this.query = this.query.select('_id path isEmpty grant revision descendantCount');
 
     return this;
   }
@@ -665,11 +658,11 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   // Do not populate
   const queryBuilder = new PageQueryBuilder(this.find(), true);
   await queryBuilder.addViewerCondition(user, userGroups);
-  queryBuilder.addConditionAsOnTree();
-  queryBuilder.addConditionToListByPathsArray(ancestorPaths);
-  await queryBuilder.addConditionToMinimizeDataForRendering();
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
+    .addConditionAsOnTree()
+    .addConditionToListByPathsArray(ancestorPaths)
+    .addConditionToMinimizeDataForRendering()
     .addConditionToSortPagesByDescPath()
     .query
     .lean()
