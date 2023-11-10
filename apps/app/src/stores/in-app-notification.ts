@@ -28,9 +28,6 @@ export const useSWRxInAppNotifications = (
           if (doc.targetModel === SupportedTargetModel.MODEL_USER) {
             doc.parsedSnapshot = userSerializers.parseSnapshot(doc.snapshot);
           }
-          else {
-            throw new Error(`No serializer found for targetModel: ${doc.targetModel}`);
-          }
         }
         catch (err) {
           logger.warn('Failed to parse snapshot', err);
