@@ -14,9 +14,10 @@ import {
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
-import { useSWRxPageInfo } from '../../stores/page';
+import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
 import {
   AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
@@ -31,6 +32,26 @@ import SubscribeButton from './SubscribeButton';
 
 import styles from './PageControls.module.scss';
 
+type TagsProps = {
+  onClickEditTagsButton: () => void,
+}
+
+const Tags = (props: TagsProps): JSX.Element => {
+  const { onClickEditTagsButton } = props;
+
+  return (
+    <div className="grw-taglabels-container d-flex align-items-center">
+      <button
+        type="button"
+        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
+        onClick={onClickEditTagsButton}
+      >
+        <i className="icon-tag me-2" />
+        Tags
+      </button>
+    </div>
+  );
+};
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
   onClickMenuItem: (newValue: boolean) => void,
@@ -84,6 +105,7 @@ type PageControlsSubstanceProps = CommonProps & {
   path?: string | null,
   pageInfo: IPageInfoForOperation,
   expandContentWidth?: boolean,
+  onClickEditTagsButton: () => void,
 }
 
 const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
@@ -91,11 +113,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { data: editorMode } = useEditorMode();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -214,8 +237,15 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     MenuItemType.REVERT,
   ];
 
+  const isViewMode = editorMode === EditorMode.View;
+
   return (
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
+      {revisionId != null && !isViewMode && (
+        <Tags
+          onClickEditTagsButton={onClickEditTagsButton}
+        />
+      )}
       {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
@@ -266,7 +296,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 type PageControlsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId?: string | null,
+  revisionId?: string,
   path?: string | null,
   expandContentWidth?: boolean,
 };
@@ -278,6 +308,15 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { open: openTagEditModal } = useTagEditModal();
+
+  const onClickEditTagsButton = useCallback(() => {
+    if (tagsInfoData == null || revisionId == null) {
+      return;
+    }
+    openTagEditModal(tagsInfoData.tags, pageId, revisionId);
+  }, [pageId, revisionId, tagsInfoData, openTagEditModal]);
 
   if (error != null) {
     return <></>;
@@ -294,6 +333,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       pageId={pageId}
       revisionId={revisionId ?? null}
       path={path}
+      onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
       onClickRenameMenuItem={onClickRenameMenuItem}
       onClickDeleteMenuItem={onClickDeleteMenuItem}

@@ -76,6 +76,7 @@ const TemplateModal = dynamic(() => import('../components/TemplateModal').then(m
 const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
+const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -376,6 +377,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <QuestionnaireModalManager />
       <TemplateModal />
       <LinkEditModal />
+      <TagEditModal />
     </>
   );
 };

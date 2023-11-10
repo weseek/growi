@@ -12,6 +12,8 @@
   --bs-btn-active-color: #{$color-active};
   --bs-btn-active-bg: transparent;
 
+  --bs-btn-border-width: 0;
+
   &:hover {
     --bs-btn-active-bg: rgba(#{$color-active-rgb}, 0.2);
   }
