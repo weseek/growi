@@ -26,18 +26,6 @@ const compareApproverDiff = (oldUserIds: string[], newUserIds: string[]): { user
   return { userIdToAdd, userIdToRemove };
 };
 
-const getApprovedUserIds = (workflow: IWorkflowHasId): string[] => {
-  const allApprovedUserIds: string[] = [];
-  workflow.approverGroups.forEach((group) => {
-    const ids = group.approvers
-      .filter(approver => approver.status === WorkflowApproverStatus.APPROVE)
-      .map(approver => approver.user._id);
-    allApprovedUserIds.push(...ids);
-  });
-
-  return allApprovedUserIds;
-};
-
 type Props = {
   workflow: IWorkflowHasId
   onUpdated?: () => void
@@ -50,14 +38,18 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const { workflow, onUpdated, onClickWorkflowDetailPageBackButton } = props;
 
   const {
-    editingApproverGroups, allEditingApproverIds, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+    editingApproverGroups,
+    allEditingApproverIds,
+    allApprovedApproverIds,
+    updateApproverGroupHandler,
+    addApproverGroupHandler,
+    removeApproverGroupHandler,
   } = useEditingApproverGroups(workflow.approverGroups);
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
 
   const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(workflow);
   const excludedSearchUserIds = [workflow.creator._id, ...allEditingApproverIds];
-  const allApprovedUserIds = useMemo(() => getApprovedUserIds(workflow), [workflow]);
 
   const [editingWorkflowName, setEditingWorkflowName] = useState<string | undefined>(workflow.name);
   const [editingWorkflowDescription, setEditingWorkflowDescription] = useState<string | undefined>(workflow.comment);
@@ -228,7 +220,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
         </div>
         <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
-          approvedUserIds={allApprovedUserIds}
+          approvedApproverIds={allApprovedApproverIds}
           excludedSearchUserIds={excludedSearchUserIds}
           latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
           onUpdateApproverGroups={onUpdateApproverGroupsHandler}

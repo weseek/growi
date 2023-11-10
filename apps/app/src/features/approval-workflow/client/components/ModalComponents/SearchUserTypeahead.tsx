@@ -12,7 +12,7 @@ import { useSWRMUTxSearchUser } from '~/stores/user';
 type Props = {
   isEditable: boolean
   selectedUsers?: IUserHasId[] // for updated
-  approvedUserIds?: string[]
+  approvedApproverIds?: string[]
   excludedSearchUserIds?: string[]
   onChange?: (users: IUserHasId[]) => void
   onRemoveApprover?: (user: IUserHasId) => void
@@ -23,7 +23,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isEditable, selectedUsers, approvedUserIds, excludedSearchUserIds, onChange, onRemoveApprover, onRemoveLastEddtingApprover,
+    isEditable, selectedUsers, approvedApproverIds, excludedSearchUserIds, onChange, onRemoveApprover, onRemoveLastEddtingApprover,
   } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
@@ -53,7 +53,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   }, [onRemoveApprover]);
 
   const renderToken = (option: IUserHasId) => {
-    const isApproved = approvedUserIds?.includes(option._id);
+    const isApproved = approvedApproverIds?.includes(option._id);
     const isDisabled = !isEditable || isApproved;
     return (
       <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token>

@@ -13,7 +13,7 @@ import { SearchUserTypeahead } from './SearchUserTypeahead';
 
 type Props = {
   excludedSearchUserIds: string[]
-  approvedUserIds?: string[]
+  approvedApproverIds?: string[]
   editingApproverGroups: EditingApproverGroup[]
   latestApprovedApproverGroupIndex?: number
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
@@ -24,7 +24,7 @@ type Props = {
 const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
   const {
     groupIndex,
-    approvedUserIds,
+    approvedApproverIds,
     editingApproverGroups,
     excludedSearchUserIds,
     latestApprovedApproverGroupIndex,
@@ -112,7 +112,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             <SearchUserTypeahead
               isEditable={isEditable}
               selectedUsers={selectedUsers}
-              approvedUserIds={approvedUserIds}
+              approvedApproverIds={approvedApproverIds}
               excludedSearchUserIds={excludedSearchUserIds}
               onChange={updateApproversHandler}
               onRemoveApprover={removeApproverHandler}
