@@ -6,9 +6,7 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
-import {
-  WorkflowApprovalType, type EditingApproverGroup, type IWorkflowApproverHasId,
-} from '../../../interfaces/workflow';
+import { WorkflowApprovalType, type EditingApproverGroup } from '../../../interfaces/workflow';
 
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
@@ -63,7 +61,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
 
   const updateApproversHandler = useCallback((users: IUserHasId[]) => {
     const clonedApproverGroup = { ...editingApproverGroup };
-    const approvers = users.map(user => ({ user })) as IWorkflowApproverHasId[];
+    const approvers = users.map(user => ({ user }));
     clonedApproverGroup.approvers = approvers;
 
     if (users.length <= 1) {

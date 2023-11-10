@@ -55,14 +55,21 @@ export type IWorkflow = {
   createdAt: Date;
 }
 
+export type EditingApproverGroup = {
+  _id?: string
+  isApproved?: boolean
+  approvalType: WorkflowApprovalType
+  uuidForRenderList: string
+  approvers: Array<{
+    user: IUserHasId
+    status?: WorkflowApproverStatus
+  }>
+}
+
 export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
 export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
 export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
   & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
-
-export type IWorkflowApproverGroupReqForRenderList = IWorkflowApproverGroupReq & { uuidForRenderList: string };
-export type IWorkflowApproverGroupForRenderList = IWorkflowApproverGroupHasId & { uuidForRenderList: string };
-export type EditingApproverGroup = IWorkflowApproverGroupReqForRenderList | IWorkflowApproverGroupForRenderList
 
 // TODO: If you don't need it, delete it
 export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;

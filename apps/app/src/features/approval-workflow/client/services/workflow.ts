@@ -3,9 +3,7 @@ import { useState, useCallback, useMemo } from 'react';
 import { apiv3Delete } from '~/client/util/apiv3-client';
 
 import type {
-  IWorkflowApproverGroupReqForRenderList,
   IWorkflowApproverGroupHasId,
-  IWorkflowApproverGroupForRenderList,
   EditingApproverGroup,
 } from '../../interfaces/workflow';
 
@@ -16,7 +14,7 @@ export const deleteWorkflow = async(workflowId: string): Promise<void> => {
 
 // see: https://robinpokorny.medium.com/index-as-a-key-is-an-anti-pattern-e0349aece318
 // When rendering with maps, without a unique key, unintended behavior can occur.
-const generateEmptyApproverGroup = (): IWorkflowApproverGroupReqForRenderList => {
+const generateEmptyApproverGroup = (): EditingApproverGroup => {
   return {
     approvalType: 'AND',
     approvers: [],
@@ -24,8 +22,8 @@ const generateEmptyApproverGroup = (): IWorkflowApproverGroupReqForRenderList =>
   };
 };
 
-const setUUIDtoApproverGroups = (approverGroups: IWorkflowApproverGroupHasId[]): IWorkflowApproverGroupReqForRenderList[] => {
-  return approverGroups.map((g) => { return { ...g, uuidForRenderList: crypto.randomUUID() } }) as unknown as IWorkflowApproverGroupReqForRenderList[];
+const setUUIDtoApproverGroups = (approverGroups: IWorkflowApproverGroupHasId[]): EditingApproverGroup[] => {
+  return approverGroups.map((g) => { return { ...g, uuidForRenderList: crypto.randomUUID() } });
 };
 
 const getAllApproverIds = (approverGroups: EditingApproverGroup[]): string[] => {
@@ -37,24 +35,25 @@ const getAllApproverIds = (approverGroups: EditingApproverGroup[]): string[] => 
   return userIds;
 };
 
-type UseEditingApproverGroupsForCreate = {
-  editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
-  allEditingApproverIds: string[]
-  updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
-  addApproverGroupHandler: (groupIndex: number) => void
-  removeApproverGroupHandler: (groupIndex: number) => void
-}
+// type UseEditingApproverGroupsForCreate = {
+//   editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
+//   allEditingApproverIds: string[]
+//   updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
+//   addApproverGroupHandler: (groupIndex: number) => void
+//   removeApproverGroupHandler: (groupIndex: number) => void
+// }
 
-type UseEditingApproverGroupsForUpdate = {
-  editingApproverGroups: IWorkflowApproverGroupForRenderList[]
-  allEditingApproverIds: string[]
-  updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupForRenderList) => void
-  addApproverGroupHandler: (groupIndex: number) => void
-  removeApproverGroupHandler: (groupIndex: number) => void
-}
+// type UseEditingApproverGroupsForUpdate = {
+//   editingApproverGroups: IWorkflowApproverGroupForRenderList[]
+//   allEditingApproverIds: string[]
+//   updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupForRenderList) => void
+//   addApproverGroupHandler: (groupIndex: number) => void
+//   removeApproverGroupHandler: (groupIndex: number) => void
+// }
 
-export function useEditingApproverGroups(): UseEditingApproverGroupsForCreate
-export function useEditingApproverGroups(initialData: IWorkflowApproverGroupHasId[]): UseEditingApproverGroupsForUpdate
+// export function useEditingApproverGroups(): UseEditingApproverGroupsForCreate
+// export function useEditingApproverGroups(initialData: IWorkflowApproverGroupHasId[]): UseEditingApproverGroupsForUpdate
+
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHasId[]) {

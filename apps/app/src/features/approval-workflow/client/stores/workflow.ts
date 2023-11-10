@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import {
   type SWRResponseWithUtils, withUtils,
 } from '@growi/core/dist/swr';
@@ -10,7 +11,11 @@ import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
 import type {
-  IWorkflowHasId, IWorkflowPaginateResult, IWorkflowApproverGroupReq, CreateApproverGroupData, UpdateApproverGroupData,
+  IWorkflowHasId,
+  IWorkflowPaginateResult,
+  EditingApproverGroup,
+  CreateApproverGroupData,
+  UpdateApproverGroupData,
 } from '../../interfaces/workflow';
 
 
@@ -84,14 +89,36 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
   );
 };
 
+
+type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] | IUserHasId[] };
+
 export const useSWRMUTxCreateWorkflow = (
     pageId?: string,
-    approverGroups?: IWorkflowApproverGroupReq[],
+    approverGroups?: EditingApproverGroup[],
     name?: string,
     comment?: string,
 ): SWRMutationResponse<IWorkflowHasId, Error> => {
 
-  const key = pageId != null || approverGroups != null ? [pageId, approverGroups, name, comment] : null;
+  const transformToRequestData = useCallback(() => {
+    if (approverGroups == null) {
+      return;
+    }
+    const clonedApproverGroups = [...approverGroups];
+    const transformedApproverGroups: TransformedApproverGroup[] = [];
+
+    clonedApproverGroups.forEach((group) => {
+      const approvers = group.approvers.map((v) => { return { user: v.user._id } });
+      const requestData = {
+        approvalType: group.approvalType,
+        approvers,
+      };
+      transformedApproverGroups.push(requestData);
+    });
+
+    return transformedApproverGroups;
+  }, [approverGroups]);
+
+  const key = pageId != null || approverGroups != null ? [pageId, transformToRequestData(), name, comment] : null;
 
   return useSWRMutation(
     key,

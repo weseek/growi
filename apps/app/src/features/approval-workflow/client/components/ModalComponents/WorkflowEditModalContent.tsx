@@ -5,8 +5,8 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 
 import {
   type IWorkflowHasId,
-  type IWorkflowApproverGroupForRenderList,
   type WorkflowApprovalType,
+  type EditingApproverGroup,
   type CreateApproverGroupData,
   type UpdateApproverGroupData,
   WorkflowApproverStatus,
@@ -71,7 +71,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     setEditingWorkflowDescription(event.target.value);
   }, []);
 
-  const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
+  const createRequestDataForCreate = useCallback((editingApproverGroups: EditingApproverGroup[]): CreateApproverGroupData[] => {
     const createApproverGroupData: CreateApproverGroupData[] = [];
     const notInDBApproverGroups = editingApproverGroups.filter(v => v._id == null);
 
@@ -128,7 +128,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     }
   }, [updateApproverGroupData]);
 
-  const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: IWorkflowApproverGroupForRenderList) => {
+  const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: EditingApproverGroup) => {
     const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
     const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
     const result = compareApproverDiff(oldUserIds, newUserIds);
