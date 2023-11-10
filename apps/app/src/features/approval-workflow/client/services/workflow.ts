@@ -35,28 +35,15 @@ const getAllApproverIds = (approverGroups: EditingApproverGroup[]): string[] => 
   return userIds;
 };
 
-// type UseEditingApproverGroupsForCreate = {
-//   editingApproverGroups: IWorkflowApproverGroupReqForRenderList[]
-//   allEditingApproverIds: string[]
-//   updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupReqForRenderList) => void
-//   addApproverGroupHandler: (groupIndex: number) => void
-//   removeApproverGroupHandler: (groupIndex: number) => void
-// }
+type UseEditingApproverGroups = {
+  editingApproverGroups: EditingApproverGroup[]
+  allEditingApproverIds: string[]
+  updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
+  addApproverGroupHandler: (groupIndex: number) => void
+  removeApproverGroupHandler: (groupIndex: number) => void
+}
 
-// type UseEditingApproverGroupsForUpdate = {
-//   editingApproverGroups: IWorkflowApproverGroupForRenderList[]
-//   allEditingApproverIds: string[]
-//   updateApproverGroupHandler: (groupIndex: number, updateApproverGroupData: IWorkflowApproverGroupForRenderList) => void
-//   addApproverGroupHandler: (groupIndex: number) => void
-//   removeApproverGroupHandler: (groupIndex: number) => void
-// }
-
-// export function useEditingApproverGroups(): UseEditingApproverGroupsForCreate
-// export function useEditingApproverGroups(initialData: IWorkflowApproverGroupHasId[]): UseEditingApproverGroupsForUpdate
-
-
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHasId[]) {
+export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHasId[]): UseEditingApproverGroups {
   const initialApproverGroupData = initialData != null ? setUUIDtoApproverGroups(initialData) : [generateEmptyApproverGroup()];
   const [editingApproverGroups, setEditingApproverGroups] = useState<EditingApproverGroup[]>(initialApproverGroupData);
 
