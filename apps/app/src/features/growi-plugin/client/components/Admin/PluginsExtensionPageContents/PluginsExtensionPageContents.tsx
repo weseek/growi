@@ -54,7 +54,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                     id={plugin._id}
                     name={plugin.meta.name}
                     url={plugin.origin.url}
-                    isEnalbed={plugin.isEnabled}
+                    isEnabled={plugin.isEnabled}
                     desc={plugin.meta.desc}
                     onDelete={() => openPluginDeleteModal(plugin)}
                   />

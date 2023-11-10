@@ -12,7 +12,7 @@ type Props = {
   id: string,
   name: string,
   url: string,
-  isEnalbed: boolean,
+  isEnabled: boolean,
   desc?: string,
   onDelete: () => void,
 }
@@ -20,27 +20,27 @@ type Props = {
 export const PluginCard = (props: Props): JSX.Element => {
 
   const {
-    id, name, url, isEnalbed, desc,
+    id, name, url, isEnabled, desc,
   } = props;
 
   const { t } = useTranslation('admin');
 
   const PluginCardButton = (): JSX.Element => {
-    const [isEnabled, setState] = useState<boolean>(isEnalbed);
+    const [_isEnabled, setIsEnabled] = useState<boolean>(isEnabled);
 
     const onChangeHandler = async() => {
       try {
-        if (isEnabled) {
+        if (_isEnabled) {
           const reqUrl = `/plugins/${id}/deactivate`;
           const res = await apiv3Put(reqUrl);
-          setState(!isEnabled);
+          setIsEnabled(!_isEnabled);
           const pluginName = res.data.pluginName;
           toastSuccess(t('toaster.deactivate_plugin_success', { pluginName }));
         }
         else {
           const reqUrl = `/plugins/${id}/activate`;
           const res = await apiv3Put(reqUrl);
-          setState(!isEnabled);
+          setIsEnabled(!_isEnabled);
           const pluginName = res.data.pluginName;
           toastSuccess(t('toaster.activate_plugin_success', { pluginName }));
         }
