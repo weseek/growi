@@ -29,7 +29,7 @@ const setUUIDtoApproverGroups = (approverGroups: IWorkflowApproverGroupHasId[]):
 const getAllApproverIds = (approverGroups: EditingApproverGroup[]): string[] => {
   const userIds: string[] = [];
   approverGroups.forEach((group) => {
-    const ids = group.approvers.map((approver) => { return typeof approver.user === 'string' ? approver.user : approver.user._id });
+    const ids = group.approvers.map((approver) => { return approver.user._id });
     userIds.push(...ids);
   });
   return userIds;
@@ -43,7 +43,7 @@ type UseEditingApproverGroups = {
   removeApproverGroupHandler: (groupIndex: number) => void
 }
 
-export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHasId[]): UseEditingApproverGroups {
+export const useEditingApproverGroups = (initialData?: IWorkflowApproverGroupHasId[]): UseEditingApproverGroups => {
   const initialApproverGroupData = initialData != null ? setUUIDtoApproverGroups(initialData) : [generateEmptyApproverGroup()];
   const [editingApproverGroups, setEditingApproverGroups] = useState<EditingApproverGroup[]>(initialApproverGroupData);
 
@@ -74,4 +74,4 @@ export function useEditingApproverGroups(initialData?: IWorkflowApproverGroupHas
     addApproverGroupHandler,
     removeApproverGroupHandler,
   };
-}
+};

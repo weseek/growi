@@ -77,7 +77,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
     const clonedApproverGroup = structuredClone(editingApproverGroup);
 
     const removeIndex = clonedApproverGroup.approvers.findIndex(
-      approver => (typeof approver.user === 'string' ? approver.user === user._id : approver.user._id === user._id),
+      approver => (approver.user._id === user._id),
     );
     clonedApproverGroup.approvers.splice(removeIndex, 1);
 

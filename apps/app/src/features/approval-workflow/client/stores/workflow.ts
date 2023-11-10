@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import type { IUserHasId } from '@growi/core';
 import {
   type SWRResponseWithUtils, withUtils,
 } from '@growi/core/dist/swr';
@@ -90,6 +89,7 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
 };
 
 
+// Data type for requests to POST:/workflow
 type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] };
 
 export const useSWRMUTxCreateWorkflow = (

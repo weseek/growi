@@ -81,7 +81,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       createApproverGroupData.push({
         groupIndex,
         approvalType: notInDBApproverGroup.approvalType,
-        userIdsToAdd: notInDBApproverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id)),
+        userIdsToAdd: notInDBApproverGroup.approvers.map(v => v.user._id),
       });
     });
 
@@ -129,8 +129,8 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   }, [updateApproverGroupData]);
 
   const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: EditingApproverGroup) => {
-    const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
-    const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
+    const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => v.user._id);
+    const newUserIds = approverGroup.approvers.map(v => (v.user._id));
     const result = compareApproverDiff(oldUserIds, newUserIds);
 
     // If approverGroup already exists in DB
