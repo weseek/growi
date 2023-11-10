@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 
 import { ModelNotification } from './ModelNotification';
 import { useActionMsgAndIconForPageModelNotification } from './useActionAndMsg';
@@ -57,6 +58,8 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       }
     }
   };
+
+  notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
 
   return (
     <ModelNotification
