@@ -5,7 +5,7 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
-import { PageGrant, PageStatus } from '@growi/core';
+import { PageGrant, PageStatus, USER_STATUS } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -40,12 +40,14 @@ import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 
+import { configManager } from './config-manager';
+
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -163,8 +165,17 @@ class PageService {
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
-  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) return false;
+  async canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
+    if (operator == null || isTopPage(path)) return false;
+
+    if (isUsersProtectedPages(path)) {
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const User = mongoose.model('User');
+      const creator = await User.findById(creatorId);
+      if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
+        return false;
+      }
+    }
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
@@ -174,8 +185,17 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) return false;
+  async canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
+    if (operator == null || isTopPage(path)) return false;
+
+    if (isUsersProtectedPages(path)) {
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const User = mongoose.model('User');
+      const creator = await User.findById(creatorId);
+      if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
+        return false;
+      }
+    }
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
@@ -217,12 +237,22 @@ class PageService {
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
+  async filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean): Promise<boolean[]> {
+    const filteredPages = await Promise.all(pages.map(async(p) => {
+      const canDeleteCompletely = await this.canDeleteCompletely(p.path, p.creator, user, isRecursively);
+      return p.isEmpty || canDeleteCompletely;
+    }));
+
+    return filteredPages;
   }
 
-  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
+  async filterPagesByCanDelete(pages, user, isRecursively: boolean): Promise<boolean[]> {
+    const filteredPages = await Promise.all(pages.map(async(p) => {
+      const canDelete = await this.canDelete(p.path, p.creator, user, isRecursively);
+      return p.isEmpty || canDelete;
+    }));
+
+    return filteredPages;
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -258,7 +288,7 @@ class PageService {
     }
 
     const isGuestUser = user == null;
-    const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
+    const pageInfo = await this.constructBasicPageInfo(page, isGuestUser);
 
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
@@ -287,8 +317,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    const isDeletable = this.canDelete(page.path, creatorId, user, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+    const isDeletable = await this.canDelete(page.path, creatorId, user, false);
+    const isAbleToDeleteCompletely = await this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
@@ -1384,8 +1414,20 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (!isMovablePage(page.path)) {
+    if (isTopPage(page.path)) {
       throw new Error('Page is not deletable.');
+    }
+
+    if (isUsersProtectedPages(page.path)) {
+      if (page.creator == null) {
+        throw new Error('Page is not deletable.');
+      }
+
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const populatedPage = await page.populate('creator');
+      if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+        throw new Error('Page is not deletable.');
+      }
     }
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -1532,8 +1574,20 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (!isMovablePage(page.path)) {
+    if (isTopPage(page.path)) {
       throw new Error('Page is not deletable.');
+    }
+
+    if (isUsersProtectedPages(page.path)) {
+      if (page.creator == null) {
+        throw new Error('Page is not deletable.');
+      }
+
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+      const populatedPage = await page.populate('creator');
+      if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+        throw new Error('Page is not deletable.');
+      }
     }
 
     if (isRecursively) {
@@ -2382,8 +2436,24 @@ class PageService {
     });
   }
 
-  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
-    const isMovable = isGuestUser ? false : isMovablePage(page.path);
+  async constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): Promise<IPageInfo | IPageInfoForEntity> {
+    let isDeletable = true;
+    if (isGuestUser || isTopPage(page.path)) {
+      isDeletable = false;
+    }
+
+    if (isUsersProtectedPages(page.path)) {
+      if (page.creator == null) {
+        isDeletable = false;
+      }
+      else {
+        const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+        const populatedPage = await page.populate('creator');
+        if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+          isDeletable = false;
+        }
+      }
+    }
 
     if (page.isEmpty) {
       return {
@@ -2405,7 +2475,7 @@ class PageService {
       likerIds: this.extractStringIds(likers),
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
-      isDeletable: isMovable,
+      isDeletable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
