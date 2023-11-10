@@ -5,6 +5,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
 import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
@@ -74,6 +75,18 @@ export const SyncExecution = ({
       socket.off(eventName.GroupSyncFailed);
     };
   }, [socket, mutateExternalUserGroups, t, provider]);
+
+  // get sync status on load, since next socket data may take a while
+  useEffect(() => {
+    const getSyncStatus = async() => {
+      const res = await apiv3Get(`/external-user-groups/${provider}/sync-status`);
+      if (res.data.isExecutingSync) {
+        setSyncStatus(SyncStatus.syncExecuting);
+        setProgress({ total: res.data.totalCount, current: res.data.count });
+      }
+    };
+    getSyncStatus();
+  }, [provider]);
 
   const onSyncBtnClick = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
