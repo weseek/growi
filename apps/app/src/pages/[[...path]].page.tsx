@@ -37,7 +37,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
+  useEditorConfig, useIsAllReplyShown, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -216,8 +216,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
-  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+  useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
@@ -559,8 +559,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
+      isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
