@@ -75,8 +75,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
 
   const removeApproverHandler = useCallback((user: IUserHasId) => {
     const clonedApproverGroup = { ...editingApproverGroup };
-    const removeIndex = clonedApproverGroup.approvers.findIndex(approver => (approver.user._id === user._id));
-    clonedApproverGroup.approvers = clonedApproverGroup.approvers.toSpliced(removeIndex, 1);
+    clonedApproverGroup.approvers = clonedApproverGroup.approvers.filter(v => v.user._id !== user._id);
 
     if (clonedApproverGroup.approvers.length <= 1) {
       clonedApproverGroup.approvalType = WorkflowApprovalType.AND;
