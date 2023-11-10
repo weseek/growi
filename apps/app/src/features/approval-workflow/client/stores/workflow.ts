@@ -90,7 +90,7 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
 };
 
 
-type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] | IUserHasId[] };
+type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] };
 
 export const useSWRMUTxCreateWorkflow = (
     pageId?: string,
