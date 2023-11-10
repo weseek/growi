@@ -149,7 +149,7 @@ const routerFactory = (crowi: Crowi): Router => {
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: await pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, page.creator.status, req.user, false), // use normal delete config
+            isAbleToDeleteCompletely: await pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
