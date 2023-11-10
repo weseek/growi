@@ -1,15 +1,33 @@
 import {
-  isMovablePage, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
+  isMovablePage, isTopPage, isUsersProtectedPages, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
 } from './index';
 
 describe.concurrent('isMovablePage test', () => {
-  test('should decide deletable or not', () => {
+  test('should decide movable or not', () => {
     expect(isMovablePage('/')).toBeFalsy();
     expect(isMovablePage('/hoge')).toBeTruthy();
     expect(isMovablePage('/user')).toBeFalsy();
     expect(isMovablePage('/user/xxx')).toBeFalsy();
     expect(isMovablePage('/user/xxx123')).toBeFalsy();
     expect(isMovablePage('/user/xxx/hoge')).toBeTruthy();
+  });
+});
+
+describe.concurrent('isTopPage test', () => {
+  test('should decide deletable or not', () => {
+    expect(isTopPage('/')).toBeTruthy();
+    expect(isTopPage('/hoge')).toBeFalsy();
+    expect(isTopPage('/user/xxx/hoge')).toBeFalsy();
+  });
+});
+
+describe.concurrent('isUsersProtectedPages test', () => {
+  test('Should decide users protected pages or not', () => {
+    expect(isUsersProtectedPages('/hoge')).toBeFalsy();
+    expect(isUsersProtectedPages('/user')).toBeTruthy();
+    expect(isUsersProtectedPages('/user/xxx')).toBeTruthy();
+    expect(isUsersProtectedPages('/user/xxx123')).toBeTruthy();
+    expect(isUsersProtectedPages('/user/xxx/hoge')).toBeFalsy();
   });
 });
 
