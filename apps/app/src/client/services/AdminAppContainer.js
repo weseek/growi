@@ -60,6 +60,19 @@ export default class AdminAppContainer extends Container {
       s3SecretAccessKey: '',
       s3ReferenceFileWithRelayMode: false,
 
+      azureReferenceFileWithRelayMode: false,
+      azureUseOnlyEnvVars: false,
+      azureTenantId: '',
+      azureClientId: '',
+      azureClientSecret: '',
+      azureStorageAccountName: '',
+      azureStorageContainerName: '',
+      envAzureTenantId: '',
+      envAzureClientId: '',
+      envAzureClientSecret: '',
+      envAzureStorageAccountName: '',
+      envAzureStorageContainerName: '',
+
       isEnabledPlugins: true,
 
       isMaintenanceMode: false,
@@ -120,6 +133,20 @@ export default class AdminAppContainer extends Container {
       envGcsApiKeyJsonPath: appSettingsParams.envGcsApiKeyJsonPath,
       envGcsBucket: appSettingsParams.envGcsBucket,
       envGcsUploadNamespace: appSettingsParams.envGcsUploadNamespace,
+
+      azureUseOnlyEnvVars: appSettingsParams.azureUseOnlyEnvVars,
+      azureTenantId: appSettingsParams.azureTenantId,
+      azureClientId: appSettingsParams.azureClientId,
+      azureClientSecret: appSettingsParams.azureClientSecret,
+      azureStorageAccountName: appSettingsParams.azureStorageAccountName,
+      azureStorageContainerName: appSettingsParams.azureStorageContainerName,
+      azureReferenceFileWithRelayMode: appSettingsParams.azureReferenceFileWithRelayMode,
+      envAzureTenantId: appSettingsParams.envAzureTenantId,
+      envAzureClientId: appSettingsParams.envAzureClientId,
+      envAzureClientSecret: appSettingsParams.envAzureClientSecret,
+      envAzureStorageAccountName: appSettingsParams.envAzureStorageAccountName,
+      envAzureStorageContainerName: appSettingsParams.envAzureStorageContainerName,
+
       isEnabledPlugins: appSettingsParams.isEnabledPlugins,
       isMaintenanceMode: appSettingsParams.isMaintenanceMode,
     });
@@ -317,6 +344,48 @@ export default class AdminAppContainer extends Container {
   }
 
   /**
+   * Change azureReferenceFileWithRelayMode
+   */
+  changeAzureReferenceFileWithRelayMode(azureReferenceFileWithRelayMode) {
+    this.setState({ azureReferenceFileWithRelayMode });
+  }
+
+  /**
+   * Change azureTenantId
+   */
+  changeAzureTenantId(azureTenantId) {
+    this.setState({ azureTenantId });
+  }
+
+  /**
+   * Change azureClientId
+   */
+  changeAzureClientId(azureClientId) {
+    this.setState({ azureClientId });
+  }
+
+  /**
+   * Change azureClientSecret
+   */
+  changeAzureClientSecret(azureClientSecret) {
+    this.setState({ azureClientSecret });
+  }
+
+  /**
+   * Change azureStorageAccountName
+   */
+  changeAzureStorageAccountName(azureStorageAccountName) {
+    this.setState({ azureStorageAccountName });
+  }
+
+  /**
+   * Change azureStorageContainerName
+   */
+  changeAzureStorageContainerName(azureStorageContainerName) {
+    this.setState({ azureStorageContainerName });
+  }
+
+  /**
    * Update app setting
    * @memberOf AdminAppContainer
    * @return {Array} Appearance
@@ -428,6 +497,15 @@ export default class AdminAppContainer extends Container {
       requestParams.s3AccessKeyId = this.state.s3AccessKeyId;
       requestParams.s3SecretAccessKey = this.state.s3SecretAccessKey;
       requestParams.s3ReferenceFileWithRelayMode = this.state.s3ReferenceFileWithRelayMode;
+    }
+
+    if (fileUploadType === 'azure') {
+      requestParams.azureTenantId = this.state.azureTenantId;
+      requestParams.azureClientId = this.state.azureClientId;
+      requestParams.azureClientSecret = this.state.azureClientSecret;
+      requestParams.azureStorageAccountName = this.state.azureStorageAccountName;
+      requestParams.azureStorageContainerName = this.state.azureStorageContainerName;
+      requestParams.azureReferenceFileWithRelayMode = this.state.azureReferenceFileWithRelayMode;
     }
 
     const response = await apiv3Put('/app-settings/file-upload-setting', requestParams);
