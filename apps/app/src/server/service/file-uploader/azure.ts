@@ -185,7 +185,8 @@ module.exports = (crowi) => {
     const DEFAULT_MAX_CONCURRENCY = 5;
     const options: BlockBlobUploadStreamOptions = {
       blobHTTPHeaders: {
-        blobContentDisposition: `attachment; filename="${encodeURI(attachment.originalName)}"`,
+        blobContentType: attachment.fileFormat,
+        blobContentDisposition: `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
       },
     };
     return blockBlobClient.uploadStream(readStream, DEFAULT_BLOCK_BUFFER_SIZE_BYTES, DEFAULT_MAX_CONCURRENCY, options);
@@ -197,7 +198,7 @@ module.exports = (crowi) => {
     const options: BlockBlobParallelUploadOptions = {
       blobHTTPHeaders: {
         blobContentType: contentType,
-        blobContentDisposition: `attachment; filename="${encodeURI(path.basename(filePath))}"`,
+        blobContentDisposition: `attachment;filename*=UTF-8''${encodeURIComponent(path.basename(filePath))}`,
       },
     };
     const blockBlobUploadResponse: BlockBlobUploadResponse = await blockBlobClient.upload(data, data.length, options);
@@ -241,9 +242,9 @@ module.exports = (crowi) => {
     const containerClient = await getContainerClient();
 
     for await (const blob of containerClient.listBlobsFlat({
-      includeMetadata: true,
+      includeMetadata: false,
       includeSnapshots: false,
-      includeTags: true,
+      includeTags: false,
       includeVersions: false,
       prefix: '',
     })) {
