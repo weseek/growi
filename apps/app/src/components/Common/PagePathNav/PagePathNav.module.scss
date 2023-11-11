@@ -1,5 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
 .grw-mr-02em {
   margin-right: 0.2em;
 }
@@ -19,3 +21,8 @@
   }
 }
 
+.grw-page-path-nav :global {
+  .btn-copy {
+    @include btn-muted.colorize(bs.$orange);
+  }
+}

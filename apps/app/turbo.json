@@ -1,0 +1,60 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "extends": ["//"],
+  "pipeline": {
+
+    "styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss",
+        "../../packages/core/scss/**"
+      ],
+      "outputMode": "new-only"
+    },
+    "build": {
+      "dependsOn": ["^build", "styles-prebuilt"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "outputMode": "new-only"
+    },
+
+    "dev:migrate": {
+      "dependsOn": ["@growi/core#dev"],
+      "outputs": ["tmp/cache/migration-status.out"],
+      "inputs": ["src/migrations/*.js"],
+      "outputMode": "new-only"
+    },
+    "dev:styles-prebuilt": {
+      "outputs": ["src/styles/prebuilt/**"],
+      "inputs": [
+        "src/styles/**/*.scss",
+        "!src/styles/prebuilt/**",
+        "../../packages/core/scss/**"
+      ],
+      "outputMode": "new-only"
+    },
+    "dev": {
+      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "cache": false,
+      "persistent": true
+    },
+    "dev:ci": {
+      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
+      "cache": false
+    },
+
+    "lint": {
+      "dependsOn": ["^dev", "dev:styles-prebuilt"]
+    },
+
+    "test": {
+      "dependsOn": ["^dev"],
+      "outputMode": "new-only"
+    },
+
+    "version": {
+      "cache": false,
+      "dependsOn": ["^version", "//#version"]
+    }
+
+  }
+}
