@@ -28,6 +28,7 @@ import {
   type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -39,6 +40,8 @@ import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
+
+import { generatePreNotifyAlsoDescendants } from './preNotify';
 
 const debug = require('debug')('growi:services:page');
 
@@ -544,7 +547,10 @@ class PageService {
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
       const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+      const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     catch (err) {
       logger.warn(err);
@@ -1513,7 +1519,10 @@ class PageService {
     await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
 
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1836,7 +1845,10 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1881,7 +1893,9 @@ class PageService {
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
 
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     return pages;
   }
@@ -2205,7 +2219,10 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+
+    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages
