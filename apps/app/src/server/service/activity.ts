@@ -5,11 +5,13 @@ import {
   IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
-import Activity from '~/server/models/activity';
+import Activity, { ActivityDocument } from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
+
+import type { PreNotify } from './preNotify';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
@@ -39,8 +41,8 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target?: IPage, descendantsSubscribedUsers?: Ref<IUser>[]) => {
-      let activity: IActivity;
+    this.activityEvent.on('update', async(activityId: string, parameters, target: IPage, getPreNotify: (activity: ActivityDocument) => PreNotify) => {
+      let activity: ActivityDocument;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
       if (shoudUpdate) {
@@ -52,7 +54,9 @@ class ActivityService {
           return;
         }
 
-        this.activityEvent.emit('updated', activity, target, descendantsSubscribedUsers);
+        const preNotify = getPreNotify(activity);
+
+        this.activityEvent.emit('updated', activity, target, preNotify);
       }
     });
   }
