@@ -41,7 +41,7 @@ import { serializePageSecurely } from '../models/serializers/page-serializer';
 import Subscription from '../models/subscription';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 
-import { generatePreNotifyAlsoDescendants } from './preNotify';
+import { generateDefaultPreNotify, generatePreNotifyAlsoDescendants } from './preNotify';
 
 const debug = require('debug')('growi:services:page');
 
@@ -441,7 +441,9 @@ class PageService {
       throw err;
     }
     if (page.descendantCount < 1) {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = generateDefaultPreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     return renamedPage;
   }
@@ -1482,7 +1484,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = generateDefaultPreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return deletedPage;
@@ -1835,7 +1839,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = generateDefaultPreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return;
@@ -2172,7 +2178,10 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
-      this.activityEvent.emit('updated', activity, page);
+
+      const preNotify = generateDefaultPreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     else {
       let pageOp;
