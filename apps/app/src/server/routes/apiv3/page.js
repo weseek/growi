@@ -7,12 +7,14 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
 import sanitize from 'sanitize-filename';
 
+
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
+import { generateDefaultPreNotify } from '~/server/service/preNotify';
 import loggerFactory from '~/utils/logger';
 
 
@@ -358,7 +360,9 @@ module.exports = (crowi) => {
       target: page,
       action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, generateDefaultPreNotify);
+
 
     res.apiv3({ result });
 
