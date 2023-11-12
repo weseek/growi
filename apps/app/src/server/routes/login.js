@@ -44,13 +44,20 @@ module.exports = function(crowi, app) {
   }
 
   async function sendNotificationToAllAdmins(user) {
-    const adminUsers = await User.findAdmins();
+
     const activity = await activityService.createActivity({
       action: SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST,
       target: user,
       targetModel: SupportedTargetModel.MODEL_USER,
     });
-    await activityEvent.emit('updated', activity, user, adminUsers);
+
+    const preNotify = async(props) => {
+      const adminUsers = await User.findAdmins();
+
+      props.concat(adminUsers);
+    };
+
+    await activityEvent.emit('updated', activity, user, preNotify);
     return;
   }
 
