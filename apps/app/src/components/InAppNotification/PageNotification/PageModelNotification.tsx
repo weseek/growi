@@ -1,5 +1,5 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction,
+  forwardRef, ForwardRefRenderFunction, useCallback,
 } from 'react';
 
 import type { IPage, HasObjectId } from '@growi/core';
@@ -25,7 +25,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
 
   const router = useRouter();
 
-  const getActionUsers = () => {
+  const getActionUsers = useCallback(() => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
     const latestUsers = latestActionUsers.map((user) => {
       return `@${user.name}`;
@@ -44,7 +44,7 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
     }
 
     return actionedUsers;
-  };
+  }, [notification.actionUsers]);
 
   const actionUsers = getActionUsers();
 
