@@ -2,6 +2,7 @@ import type { IPageHasId } from '@growi/core';
 import mongoose from 'mongoose';
 import { FilterXSS } from 'xss';
 
+import { CommentEvent, commentEvent } from '~/features/comment/server';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
@@ -166,10 +167,9 @@ class SearchService implements SearchQueryParser, SearchResolver {
     const tagEvent = this.crowi.event('tag');
     tagEvent.on('update', this.fullTextSearchDelegator.syncTagChanged.bind(this.fullTextSearchDelegator));
 
-    const commentEvent = this.crowi.event('comment');
-    commentEvent.on('create', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
-    commentEvent.on('update', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
-    commentEvent.on('delete', this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on(CommentEvent.CREATE, this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on(CommentEvent.UPDATE, this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
+    commentEvent.on(CommentEvent.DELETE, this.fullTextSearchDelegator.syncCommentChanged.bind(this.fullTextSearchDelegator));
   }
 
   resetErrorStatus() {

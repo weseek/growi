@@ -9,7 +9,6 @@ module.exports = {
   Revision: require('./revision'),
   Tag: require('./tag'),
   Bookmark: require('./bookmark'),
-  Comment: require('./comment'),
   Attachment: require('./attachment'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
