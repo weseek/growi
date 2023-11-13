@@ -11,7 +11,6 @@ type AnnouncementStatuses = typeof AnnouncementStatuses;
 export interface AnnouncementDocument extends Document {
   _id: Types.ObjectId
   sender: Types.ObjectId
-  name: string
   comment?: string
   emoji: string
   isReadReceiptTrackingEnabled: boolean
