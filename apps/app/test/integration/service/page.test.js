@@ -12,6 +12,7 @@ let rootPage;
 let dummyUser1;
 let testUser1;
 let testUser2;
+let testUser3;
 let parentTag;
 let childTag;
 
@@ -49,6 +50,18 @@ let childForDeleteCompletely;
 
 let childForRevert;
 
+let userPage;
+let userHomepage;
+let userHomepageChild;
+
+let userPagePath;
+let userHomepagePath;
+let userHomepageChildPath;
+
+let totalPageCount;
+let totalUserPageCount;
+let totalDeleteUserPageCount;
+
 describe('PageService', () => {
 
   let crowi;
@@ -76,14 +89,22 @@ describe('PageService', () => {
     await User.insertMany([
       { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
       { name: 'someone2', username: 'someone2', email: 'someone2@example.com' },
+      { name: 'testuser3', username: 'testuser3', email: 'testuser3@example.com' },
     ]);
 
     testUser1 = await User.findOne({ username: 'someone1' });
     testUser2 = await User.findOne({ username: 'someone2' });
+    testUser3 = await User.findOne({ username: 'testuser3' });
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
 
     rootPage = await Page.findOne({ path: '/' });
+
+    userPagePath = '/user';
+    userHomepagePath = `${userPagePath}/testuser3`;
+    userHomepageChildPath = `${userHomepagePath}/child`;
+    totalUserPageCount = 4;
+    totalDeleteUserPageCount = 2;
 
     await Page.insertMany([
       {
@@ -235,7 +256,66 @@ describe('PageService', () => {
         creator: testUser1,
         lastUpdateUser: testUser1,
       },
+      {
+        _id: new mongoose.Types.ObjectId(),
+        path: userPagePath,
+        grant: Page.GRANT_PUBLIC,
+        isEmpty: true,
+        parent: rootPage._id,
+        descendantCount: totalUserPageCount,
+      },
     ]);
+
+    userPage = await Page.findOne({ path: userPagePath });
+
+    /*
+     * User homepage (Depth: 1)
+     */
+    await Page.insertMany([
+      {
+        path: '/user/someone1',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser1,
+        lastUpdateUser: testUser1,
+        parent: userPage._id,
+        descendantCount: 0,
+      },
+      {
+        path: '/user/someone2',
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser2,
+        lastUpdateUser: testUser2,
+        parent: userPage._id,
+        descendantCount: 0,
+      },
+      {
+        _id: new mongoose.Types.ObjectId(),
+        path: userHomepagePath,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser3,
+        lastUpdateUser: testUser3,
+        parent: userPage._id,
+        descendantCount: 1,
+      },
+    ]);
+
+    userHomepage = await Page.findOne({ path: userHomepagePath });
+
+    /*
+     * User homepage child (Depth: 2)
+     */
+    await Page.insertMany([
+      {
+        path: userHomepageChildPath,
+        grant: Page.GRANT_PUBLIC,
+        creator: testUser3,
+        lastUpdateUser: testUser3,
+        parent: userHomepage._id,
+        descendantCount: 0,
+      },
+    ]);
+
+    userHomepageChild = await Page.findOne({ path: userHomepageChildPath });
 
     parentForRename1 = await Page.findOne({ path: '/parentForRename1' });
     parentForRename2 = await Page.findOne({ path: '/parentForRename2' });
@@ -382,6 +462,13 @@ describe('PageService', () => {
         parent: null,
       },
     ]);
+
+    await Page.updateOne(
+      { _id: rootPage._id },
+      { $set: { descendantCount: await Page.countDocuments({}) } },
+    );
+    rootPage = await Page.findOne({ path: '/' });
+    totalPageCount = rootPage.descendantCount;
   });
 
   describe('rename page without using renameDescendantsWithStreamSpy', () => {
@@ -1016,4 +1103,65 @@ describe('PageService', () => {
     });
   });
 
+  describe('deleteCompletelyUserHomeBySystem', () => {
+    let pageEventSpy;
+    let deleteCompletelyOperationSpy;
+
+    let deleteManyBookmarkSpy;
+    let deleteManyCommentSpy;
+    let deleteManyPageTagRelationSpy;
+    let deleteManyShareLinkSpy;
+    let deleteManyRevisionSpy;
+    let deleteManyPageSpy;
+    let removeAllAttachmentsSpy;
+
+    beforeEach(async() => {
+      await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+
+      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
+      deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
+
+      deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
+      deleteManyCommentSpy = jest.spyOn(Comment, 'deleteMany').mockImplementation();
+      deleteManyPageTagRelationSpy = jest.spyOn(PageTagRelation, 'deleteMany').mockImplementation();
+      deleteManyShareLinkSpy = jest.spyOn(ShareLink, 'deleteMany').mockImplementation();
+      deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
+      deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
+      removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
+    });
+
+    // The user homepage can be delete
+    test('should delete user homepage and subpages', async() => {
+      expect(userHomepage).not.toBeNull();
+      expect(userHomepageChild).not.toBeNull();
+      expect(userPage.descendantCount).toBe(totalUserPageCount);
+
+      // Delete user homepage by system
+      await crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
+
+      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+
+      expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [userHomepage._id] } });
+      expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [userHomepage._id] } });
+      expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [userHomepage._id] } });
+      expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [userHomepage._id] } });
+      expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [userHomepage._id] } });
+      expect(deleteManyPageSpy).toHaveBeenCalledWith({ _id: { $in: [userHomepage._id] } });
+      expect(removeAllAttachmentsSpy).toHaveBeenCalled();
+
+      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', userHomepage);
+    });
+
+    // Check page counts under the user page to ensure that subpages have also been deleted
+    test('should page count be zero under the user page', async() => {
+      userPage = await Page.findOne({ path: userPagePath });
+      expect(userPage.descendantCount).toBe(totalDeleteUserPageCount);
+    });
+
+    // Check the all page count and confirm that only user homepage deletion
+    test('should currect total page count', async() => {
+      rootPage = await Page.findOne({ path: '/' });
+      expect(rootPage.descendantCount).toBe(totalPageCount - totalDeleteUserPageCount);
+    });
+  });
 });
