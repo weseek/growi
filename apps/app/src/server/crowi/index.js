@@ -20,6 +20,7 @@ import { projectRoot } from '~/utils/project-dir-utils';
 import UserEvent from '../events/user';
 import Activity from '../models/activity';
 import PageRedirect from '../models/page-redirect';
+import ShareLink from '../models/share-link';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
@@ -303,6 +304,7 @@ Crowi.prototype.setupModels = async function() {
   allModels.Tag = Tag;
   allModels.UserGroup = UserGroup;
   allModels.PageRedirect = PageRedirect;
+  allModels.ShareLink = ShareLink;
 
   Object.keys(allModels).forEach((key) => {
     return this.model(key, models[key](this));

@@ -18,9 +18,9 @@ export const getMongoUri = (): string => {
     || ((env.NODE_ENV === 'test') ? 'mongodb://mongo/growi_test' : 'mongodb://mongo/growi');
 };
 
-export const getModelSafely = <T>(modelName: string): Model<T & Document> | null => {
+export const getModelSafely = <Interface, Method = Interface>(modelName: string): Method & Model<Interface & Document> | null => {
   if (mongoose.modelNames().includes(modelName)) {
-    return mongoose.model<T & Document>(modelName);
+    return mongoose.model<Interface & Document, Method & Model<Interface & Document>>(modelName);
   }
   return null;
 };

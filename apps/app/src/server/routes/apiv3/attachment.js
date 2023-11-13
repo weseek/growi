@@ -3,12 +3,13 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
+import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
 const express = require('express');
 
 const router = express.Router();
-const { query } = require('express-validator');
+const { query, param } = require('express-validator');
 
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
@@ -26,8 +27,8 @@ module.exports = (crowi) => {
   const Attachment = crowi.model('Attachment');
 
   const validator = {
-    attachment: [
-      query('attachmentId').isMongoId().withMessage('attachmentId is required'),
+    retrieveAttachment: [
+      param('id').isMongoId().withMessage('attachment id is required'),
     ],
     retrieveAttachments: [
       query('pageId').isMongoId().withMessage('pageId is required'),
@@ -35,47 +36,6 @@ module.exports = (crowi) => {
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
   };
-
-  /**
-   * @swagger
-   *
-   *    /attachment:
-   *      get:
-   *        tags: [Attachment]
-   *        description: Get attachment
-   *        responses:
-   *          200:
-   *            description: Return attachment
-   *        parameters:
-   *          - name: attachemnt_id
-   *            in: query
-   *            required: true
-   *            description: attachment id
-   *            schema:
-   *              type: string
-   */
-  router.get('/', accessTokenParser, loginRequired, validator.attachment, apiV3FormValidator, async(req, res) => {
-    try {
-      const attachmentId = req.query.attachmentId;
-
-      const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
-
-      if (attachment == null) {
-        const message = 'Attachment not found';
-        return res.apiv3Err(message, 404);
-      }
-
-      if (attachment.creator != null && attachment.creator instanceof User) {
-        attachment.creator = serializeUserSecurely(attachment.creator);
-      }
-
-      return res.apiv3({ attachment });
-    }
-    catch (err) {
-      logger.error('Attachment retrieval failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
 
   /**
    * @swagger
@@ -134,6 +94,48 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
   });
+
+  /**
+   * @swagger
+   *
+   *    /attachment/{id}:
+   *      get:
+   *        tags: [Attachment]
+   *        description: Get attachment
+   *        responses:
+   *          200:
+   *            description: Return attachment
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: attachment id
+   *            schema:
+   *              type: string
+   */
+  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
+    async(req, res) => {
+      try {
+        const attachmentId = req.params.id;
+
+        const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+
+        if (attachment == null) {
+          const message = 'Attachment not found';
+          return res.apiv3Err(message, 404);
+        }
+
+        if (attachment.creator != null && attachment.creator instanceof User) {
+          attachment.creator = serializeUserSecurely(attachment.creator);
+        }
+
+        return res.apiv3({ attachment });
+      }
+      catch (err) {
+        logger.error('Attachment retrieval failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };

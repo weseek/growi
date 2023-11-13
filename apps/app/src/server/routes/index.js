@@ -6,6 +6,7 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
 import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
+import { certifySharedPageAttachmentMiddleware } from '../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -33,7 +34,6 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
-  const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
   const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -156,10 +156,10 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
-  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
+  app.get('/attachment/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
   app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
-  app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
+  app.get('/download/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware, loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
 
