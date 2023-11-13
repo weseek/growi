@@ -489,7 +489,6 @@ const Item: FC<ItemProps> = (props: ItemProps) => {
           <div className="grw-pagetree-control d-flex">
             <PageItemControl
               pageId={page._id}
-              pagePath={page.path}
               isEnableActions={isEnableActions}
               isReadOnlyUser={isReadOnlyUser}
               onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}

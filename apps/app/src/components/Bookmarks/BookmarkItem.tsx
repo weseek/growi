@@ -167,7 +167,6 @@ export const BookmarkItem = (props: Props): JSX.Element => {
         <div className="grw-foldertree-control">
           <PageItemControl
             pageId={bookmarkedPage._id}
-            pagePath={bookmarkedPage.path}
             isEnableActions
             isReadOnlyUser={isReadOnlyUser}
             pageInfo={pageInfo}
