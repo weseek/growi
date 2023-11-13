@@ -4,11 +4,9 @@ import {
 
 import { getOrCreateModel } from '../../server/util/mongoose-utils';
 
-enum AnnouncementStatuses {
-  STATUS_UNREAD = 'UNREAD',
-  STATUS_ALREADY_READ = 'ALREADY_READ',
-  STATUS_IGNORED = 'IGNORED'
-}
+import { AnnouncementStatuses } from './announcement-utils';
+
+type AnnouncementStatuses = typeof AnnouncementStatuses;
 
 export interface AnnouncementDocument extends Document {
   _id: Types.ObjectId
@@ -43,7 +41,6 @@ const AnnouncementSchema = new Schema<AnnouncementDocument>({
   },
   emoji: {
     type: String,
-    required: true,
   },
   isReadReceiptTrackingEnabled: {
     type: Boolean,
