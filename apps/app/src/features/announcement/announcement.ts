@@ -25,7 +25,7 @@ export interface AnnouncementDocument extends Document {
 }
 
 export interface AnnouncementModel extends Model<AnnouncementDocument> {
-  getReadRate(receivers: [Types.ObjectId]): Promise<number | undefined>
+  getReadRate: () => Promise<number | undefined>
 }
 
 const AnnouncementSchema = new Schema<AnnouncementDocument>({
