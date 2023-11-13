@@ -5,7 +5,7 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
-import { PageGrant, PageStatus } from '@growi/core';
+import { PageGrant, PageStatus, isPopulated } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -1979,8 +1979,8 @@ class PageService {
         throw new Error(msg);
       }
 
-      const Page = this.crowi.model('Page');
-      const userHomepage = await Page.findByPath(userHomepagePath, true);
+      const Page = mongoose.model<PageModel>('Page') as unknown as PageModel;
+      const userHomepage = await Page.findOne({ path: userHomepagePath });
 
       if (userHomepage == null) {
         const msg = 'user homepage is not found.';
@@ -1994,17 +1994,29 @@ class PageService {
       const paths = [userHomepage.path];
 
       if (!shouldUseV4Process) {
+        if (userHomepage.parent == null) {
+          const msg = 'user homepage parent is null';
+          logger.error(msg);
+          throw new Error(msg);
+        }
+
         // Ensure consistency of ancestors
         const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
+        await this.updateDescendantCountOfAncestors(isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent, inc, true);
       }
 
       // Delete the user's homepage
       await this.deleteCompletelyOperation(ids, paths);
 
       if (!shouldUseV4Process) {
+        if (userHomepage.parent == null) {
+          const msg = 'user homepage parent is null';
+          logger.error(msg);
+          throw new Error(msg);
+        }
+
         // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
+        await Page.removeLeafEmptyPagesRecursively(isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent);
       }
 
       if (!userHomepage.isEmpty) {
@@ -2017,7 +2029,7 @@ class PageService {
       // Find descendant pages with system deletion condition
       const builder = new PageQueryBuilder(Page.find(), true)
         .addConditionForSystemDeletion()
-        .addConditionToListOnlyDescendants(userHomepage.path);
+        .addConditionToListOnlyDescendants(userHomepage.path, {});
 
       // Stream processing to delete descendant pages
       // ────────┤ start │─────────
