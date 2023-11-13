@@ -1979,7 +1979,7 @@ class PageService {
         throw new Error(msg);
       }
 
-      const Page = mongoose.model<PageModel>('Page') as unknown as PageModel;
+      const Page = mongoose.model('Page') as unknown as PageModel;
       const userHomepage = await Page.findOne({ path: userHomepagePath });
 
       if (userHomepage == null) {
@@ -2000,9 +2000,10 @@ class PageService {
           throw new Error(msg);
         }
 
+        const parentId = isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent;
         // Ensure consistency of ancestors
         const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent, inc, true);
+        await this.updateDescendantCountOfAncestors(parentId, inc, true);
       }
 
       // Delete the user's homepage
@@ -2015,8 +2016,9 @@ class PageService {
           throw new Error(msg);
         }
 
+        const parentId = isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent;
         // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent);
+        await Page.removeLeafEmptyPagesRecursively(parentId);
       }
 
       if (!userHomepage.isEmpty) {
