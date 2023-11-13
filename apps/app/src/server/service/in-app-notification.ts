@@ -21,7 +21,7 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import type { PreNotifyProps, PreNotify } from './preNotify';
+import { generateInitialPreNotifyProps, type PreNotify, type PreNotifyProps } from './preNotify';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
@@ -208,7 +208,9 @@ export default class InAppNotificationService {
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     const snapshot = pageSerializers.stringifySnapshot(target);
     if (shouldNotification) {
+
       const props: PreNotifyProps = generateInitialPreNotifyProps();
+
       await preNotify(props);
 
       await this.upsertByActivity(props.notificationTargetUsers, activity, snapshot);
