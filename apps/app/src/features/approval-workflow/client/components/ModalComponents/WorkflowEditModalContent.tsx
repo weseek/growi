@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import type {
-  IWorkflowHasId,
-  IWorkflowApproverGroupForRenderList,
-  WorkflowApprovalType,
-  CreateApproverGroupData,
-  UpdateApproverGroupData,
+import {
+  type IWorkflowHasId,
+  type WorkflowApprovalType,
+  type EditingApproverGroup,
+  type CreateApproverGroupData,
+  type UpdateApproverGroupData,
+  WorkflowApproverStatus,
 } from '~/features/approval-workflow/interfaces/workflow';
 
 import { getLatestApprovedApproverGroupIndex } from '../../../utils/workflow';
@@ -37,7 +38,12 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
   const { workflow, onUpdated, onClickWorkflowDetailPageBackButton } = props;
 
   const {
-    editingApproverGroups, allEditingApproverIds, updateApproverGroupHandler, addApproverGroupHandler, removeApproverGroupHandler,
+    editingApproverGroups,
+    allEditingApproverIds,
+    allApprovedApproverIds,
+    updateApproverGroupHandler,
+    addApproverGroupHandler,
+    removeApproverGroupHandler,
   } = useEditingApproverGroups(workflow.approverGroups);
 
   const { update: updateWorkflow } = useSWRxWorkflow(workflow?._id);
@@ -57,7 +63,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     setEditingWorkflowDescription(event.target.value);
   }, []);
 
-  const createRequestDataForCreate = useCallback((editingApproverGroups: IWorkflowApproverGroupForRenderList[]): CreateApproverGroupData[] => {
+  const createRequestDataForCreate = useCallback((editingApproverGroups: EditingApproverGroup[]): CreateApproverGroupData[] => {
     const createApproverGroupData: CreateApproverGroupData[] = [];
     const notInDBApproverGroups = editingApproverGroups.filter(v => v._id == null);
 
@@ -67,7 +73,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       createApproverGroupData.push({
         groupIndex,
         approvalType: notInDBApproverGroup.approvalType,
-        userIdsToAdd: notInDBApproverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id)),
+        userIdsToAdd: notInDBApproverGroup.approvers.map(v => v.user._id),
       });
     });
 
@@ -114,9 +120,9 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
     }
   }, [updateApproverGroupData]);
 
-  const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: IWorkflowApproverGroupForRenderList) => {
-    const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
-    const newUserIds = approverGroup.approvers.map(v => (typeof v.user === 'string' ? v.user : v.user._id));
+  const onUpdateApproverGroupsHandler = useCallback((groupIndex: number, approverGroup: EditingApproverGroup) => {
+    const oldUserIds = editingApproverGroups[groupIndex].approvers.map(v => v.user._id);
+    const newUserIds = approverGroup.approvers.map(v => (v.user._id));
     const result = compareApproverDiff(oldUserIds, newUserIds);
 
     // If approverGroup already exists in DB
@@ -214,6 +220,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
         </div>
         <EditableApproverGroupCards
           editingApproverGroups={editingApproverGroups}
+          approvedApproverIds={allApprovedApproverIds}
           excludedSearchUserIds={excludedSearchUserIds}
           latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
           onUpdateApproverGroups={onUpdateApproverGroupsHandler}

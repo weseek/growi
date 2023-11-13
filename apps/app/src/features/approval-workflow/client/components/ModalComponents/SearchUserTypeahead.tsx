@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUserHasId } from '@growi/core';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
 import { IClearable } from '~/client/interfaces/clearable';
@@ -12,8 +12,10 @@ import { useSWRMUTxSearchUser } from '~/stores/user';
 type Props = {
   isEditable: boolean
   selectedUsers?: IUserHasId[] // for updated
+  approvedApproverIds?: string[]
   excludedSearchUserIds?: string[]
-  onChange?: (userIds: string[]) => void
+  onChange?: (users: IUserHasId[]) => void
+  onRemoveApprover?: (user: IUserHasId) => void
   onRemoveLastEddtingApprover?: () => void
 };
 
@@ -21,7 +23,7 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    isEditable, selectedUsers, excludedSearchUserIds, onChange, onRemoveLastEddtingApprover,
+    isEditable, selectedUsers, approvedApproverIds, excludedSearchUserIds, onChange, onRemoveApprover, onRemoveLastEddtingApprover,
   } = props;
 
   const typeaheadRef = useRef<IClearable>(null);
@@ -40,10 +42,23 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
       return;
     }
     if (onChange != null) {
-      const userIds = selectedUsers.map(user => user._id);
-      onChange(userIds);
+      onChange(selectedUsers);
     }
   }, [onChange, onRemoveLastEddtingApprover]);
+
+  const onRemoveApproverHandler = useCallback((user: IUserHasId) => {
+    if (onRemoveApprover != null) {
+      onRemoveApprover(user);
+    }
+  }, [onRemoveApprover]);
+
+  const renderToken = (option: IUserHasId) => {
+    const isApproved = approvedApproverIds?.includes(option._id);
+    const isDisabled = !isEditable || isApproved;
+    return (
+      <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token>
+    );
+  };
 
   useEffect(() => {
     if (searchKeyword.trim() !== '') {
@@ -68,9 +83,10 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
         isLoading={isMutating}
         onSearch={onSearchHandler}
         onChange={onChangeHandler}
-        defaultSelected={selectedUsers}
+        selected={selectedUsers}
         options={userData?.docs ?? []}
-        labelKey={(doc: IUserHasId) => doc.username}
+        labelKey={(option: IUserHasId) => option.username}
+        renderToken={(option: IUserHasId) => renderToken(option)}
       />
     </div>
   );
