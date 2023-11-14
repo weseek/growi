@@ -140,8 +140,9 @@ const routerFactory = (crowi: Crowi): Router => {
       const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
       const isGuestUser = req.user == null;
-      const promiseArray = pages.map(async(page) => {
+      for (const page of pages) {
         // construct isIPageInfoForListing
+        // eslint-disable-next-line no-await-in-loop
         const basicPageInfo = await pageService.constructBasicPageInfo(page, isGuestUser);
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
@@ -149,15 +150,14 @@ const routerFactory = (crowi: Crowi): Router => {
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
+            // eslint-disable-next-line no-await-in-loop
             isAbleToDeleteCompletely: await pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
 
         idToPageInfoMap[page._id] = pageInfo;
-      });
-
-      await Promise.all(promiseArray);
+      }
 
       return res.apiv3(idToPageInfoMap);
     }

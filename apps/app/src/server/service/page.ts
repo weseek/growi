@@ -260,19 +260,23 @@ class PageService {
   }
 
   async filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean): Promise<boolean[]> {
-    const filteredPages = await Promise.all(pages.map(async(p) => {
+    const filteredPages: boolean[] = [];
+    for (const p of pages) {
+      // eslint-disable-next-line no-await-in-loop
       const canDeleteCompletely = await this.canDeleteCompletely(p.path, p.creator, user, isRecursively);
-      return p.isEmpty || canDeleteCompletely;
-    }));
+      filteredPages.push(p.isEmpty || canDeleteCompletely);
+    }
 
     return filteredPages;
   }
 
   async filterPagesByCanDelete(pages, user, isRecursively: boolean): Promise<boolean[]> {
-    const filteredPages = await Promise.all(pages.map(async(p) => {
+    const filteredPages: boolean[] = [];
+    for (const p of pages) {
+      // eslint-disable-next-line no-await-in-loop
       const canDelete = await this.canDelete(p.path, p.creator, user, isRecursively);
       return p.isEmpty || canDelete;
-    }));
+    }
 
     return filteredPages;
   }
