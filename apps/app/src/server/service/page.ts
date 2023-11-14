@@ -47,7 +47,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  canMoveByPath, isUsersTopPage, isUsersHomepage, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -166,16 +166,23 @@ class PageService {
   }
 
   async canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
-    if (operator == null || isTopPage(path)) return false;
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
+      return false;
+    }
 
-    if (isUsersProtectedPages(path)) {
+    if (isUsersHomepage(path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       if (!isUsersHomepageDeletionEnabled) {
         return false;
       }
 
       const User = mongoose.model('User');
-      const creator = await User.findById(creatorId);
+      const creator = await User.findById<IUserHasId | null>(creatorId);
+
+      if (creator == null) {
+        throw new Error('user homepage creator document is not found.');
+      }
+
       if (creator.status !== USER_STATUS.DELETED) {
         return false;
       }
@@ -190,16 +197,23 @@ class PageService {
   }
 
   async canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
-    if (operator == null || isTopPage(path)) return false;
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
+      return false;
+    }
 
-    if (isUsersProtectedPages(path)) {
+    if (isUsersHomepage(path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       if (!isUsersHomepageDeletionEnabled) {
         return false;
       }
 
       const User = mongoose.model('User');
-      const creator = await User.findById(creatorId);
+      const creator = await User.findById<IUserHasId | null>(creatorId);
+
+      if (creator == null) {
+        throw new Error('user homepage creator document is not found.');
+      }
+
       if (creator.status !== USER_STATUS.DELETED) {
         return false;
       }
@@ -1422,18 +1436,18 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (isTopPage(page.path)) {
+    if (isTopPage(page.path) || isUsersTopPage(page.path)) {
       throw new Error('Page is not deletable.');
     }
 
-    if (isUsersProtectedPages(page.path)) {
-      if (page.creator == null) {
-        throw new Error('Page is not deletable.');
-      }
-
+    if (isUsersHomepage(page.path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       if (!isUsersHomepageDeletionEnabled) {
         throw new Error('Page is not deletable.');
+      }
+
+      if (page.creator == null) {
+        throw new Error('user homepage creator is null.');
       }
 
       const populatedPage = await page.populate('creator');
@@ -2443,14 +2457,18 @@ class PageService {
 
   async constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): Promise<IPageInfo | IPageInfoForEntity> {
     let isDeletable = true;
-    if (isGuestUser || isTopPage(page.path)) {
+    if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path)) {
       isDeletable = false;
     }
 
-    if (isUsersProtectedPages(page.path)) {
+    if (isUsersHomepage(page.path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
 
-      if (page.creator == null || !isUsersHomepageDeletionEnabled) {
+      if (page.creator == null) {
+        throw new Error('user homepage creator is null.');
+      }
+
+      if (!isUsersHomepageDeletionEnabled) {
         isDeletable = false;
       }
       else {
