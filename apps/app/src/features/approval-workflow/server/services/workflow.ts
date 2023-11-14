@@ -5,6 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   WorkflowStatus,
+  WorkflowApproverStatus,
   type IWorkflowReq,
   type IWorkflowApproverGroupReq,
   type CreateApproverGroupData,
@@ -28,6 +29,7 @@ interface WorkflowService {
     createApproverGroupData?: CreateApproverGroupData[],
     approverGroupUpdateData?: UpdateApproverGroupData[],
   ): Promise<IWorkflowDocument>,
+  approve(worfkFlowId: string, operatorId: string): Promise<IWorkflowDocument>,
   validateOperatableUser(workflow: IWorkflowDocument, operator: IUserHasId): void
 }
 
@@ -95,6 +97,40 @@ class WorkflowServiceImpl implements WorkflowService {
     targetWorkflow.comment = comment;
 
     const updatedWorkflow = await targetWorkflow.save();
+    return updatedWorkflow;
+  }
+
+  async approve(workflowId: string, operatorId: string) {
+    const targetWorkflow = await Workflow.findById(workflowId);
+
+    if (targetWorkflow == null) {
+      throw Error('Target workflow does not exist');
+    }
+
+    if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
+      throw Error('Workflow is not in-progress');
+    }
+
+    let updatedWorkflow;
+    for await (const approverGroup of targetWorkflow.approverGroups) {
+      const foundApprover = approverGroup.findApprover(operatorId);
+      if (foundApprover != null && !approverGroup.isApproved) {
+        foundApprover.status = WorkflowApproverStatus.APPROVE;
+        updatedWorkflow = await targetWorkflow.save();
+        break;
+      }
+    }
+
+    if (updatedWorkflow == null) {
+      throw Error('Operator is not an approver');
+    }
+
+    const finalApproverGroup = updatedWorkflow.approverGroups.slice(-1)[0];
+    if (finalApproverGroup.isApproved) {
+      updatedWorkflow.status = WorkflowStatus.APPROVE;
+      await updatedWorkflow.save();
+    }
+
     return updatedWorkflow;
   }
 
