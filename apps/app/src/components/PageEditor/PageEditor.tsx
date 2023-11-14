@@ -99,7 +99,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
   const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { data: tagsInfo, mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
+  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
@@ -218,7 +218,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
-      pageTags: pageTags ?? [],
+      pageTags: pageTags || null,
       grantUserGroupId: grantData.grantedGroup?.id,
       grantUserGroupName: grantData.grantedGroup?.name,
     };
@@ -227,7 +227,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (currentPathname == null || optionsToSave == null || tagsInfo == null) {
+    if (currentPathname == null || optionsToSave == null) {
       logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
       throw new Error('Some materials to save are invalid');
     }
@@ -239,9 +239,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const { page } = await saveOrUpdate(
         codeMirrorEditor?.getDoc() ?? '',
-        {
-          pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId, pageTags: tagsInfo.tags,
-        },
+        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
         options,
       );
 

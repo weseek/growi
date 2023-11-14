@@ -455,7 +455,8 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.tags || undefined;
+    const pageTags = req.body.pageTags || undefined;
+    console.log('tags', pageTags, pageId);
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
