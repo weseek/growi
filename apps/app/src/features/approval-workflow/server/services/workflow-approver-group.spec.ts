@@ -1,7 +1,6 @@
 import mongoose from 'mongoose';
 
 import { WorkflowApprovalType } from '../../interfaces/workflow';
-import type { IWorkflowApproverGroupReq } from '../../interfaces/workflow';
 
 import { WorkflowApproverGroupService } from './workflow-approver-group';
 
@@ -59,7 +58,7 @@ describe('WorkflowApproverGroupService', () => {
     it('Should fail when attempting to set the workflow creator as an approver', () => {
 
       // setup
-      const approverGroups: IWorkflowApproverGroupReq[] = [
+      const approverGroups = [
         {
           approvalType: WorkflowApprovalType.AND,
           approvers: [
@@ -80,7 +79,7 @@ describe('WorkflowApproverGroupService', () => {
     it('Should fail when setting approver.status to anything other than "NONE" during workflow creation', () => {
 
       // setup
-      const approverGroups: IWorkflowApproverGroupReq[] = [
+      const approverGroups = [
         {
           approvalType: WorkflowApprovalType.AND,
           approvers: [

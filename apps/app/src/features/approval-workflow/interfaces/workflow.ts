@@ -1,7 +1,6 @@
-import type { IUserHasId, HasObjectId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 
 import type { PaginateResult } from '~/interfaces/mongoose-utils';
-import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 
 export const WorkflowStatus = {
@@ -34,26 +33,27 @@ export type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof 
 export type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
 
 
-export type IWorkflowApprover = {
+type IWorkflowApproverHasId = {
   user: IUserHasId,
   status: WorkflowApproverStatus,
 }
 
-export type IWorkflowApproverGroup = {
+export type IWorkflowApproverGroupHasId = {
   approvalType: WorkflowApprovalType
-  approvers: IWorkflowApprover[],
-  isApproved: boolean, // virtual
+  approvers: IWorkflowApproverHasId[],
+  isApproved: boolean,
 };
 
-export type IWorkflow = {
+export type IWorkflowHasId = {
   creator: IUserHasId,
-  pageId: ObjectIdLike,
+  pageId: string,
   name?: string,
   comment?: string,
   status: WorkflowStatus,
-  approverGroups: IWorkflowApproverGroup[]
+  approverGroups: IWorkflowApproverGroupHasId[]
   createdAt: Date;
 }
+
 
 export type EditingApproverGroup = {
   _id?: string
@@ -66,18 +66,17 @@ export type EditingApproverGroup = {
   }>
 }
 
-export type IWorkflowApproverReq = Omit<IWorkflowApprover, 'user' | 'status'> & { user: ObjectIdLike, status?: WorkflowApproverStatus }
-export type IWorkflowApproverGroupReq = Omit<IWorkflowApproverGroup, 'isApproved' | 'approvers'> & { approvers: IWorkflowApproverReq[] }
-export type IWorkflowReq = Omit<IWorkflow, '_id' | 'creator' | 'approverGroups' | 'createdAt'>
-  & { creator: ObjectIdLike, approverGroups: IWorkflowApproverGroupReq[] }
-
-// TODO: If you don't need it, delete it
-export type IWorkflowApproverHasId = IWorkflowApprover & HasObjectId;
-export type IWorkflowApproverGroupHasId = Omit<IWorkflowApproverGroup, 'approvers'> & { approvers: IWorkflowApproverHasId[] } & HasObjectId;
-export type IWorkflowHasId = Omit<IWorkflow, 'approverGroups'> & { approverGroups: IWorkflowApproverGroupHasId[] } & HasObjectId;
-
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
 
+export type CreateWorkflowApproverGroupData = { approvers: Array<{ user: string }> };
+
+export type CreateWorkflowData = {
+  pageId: string,
+  creator: string,
+  name?: string,
+  comment?: string,
+  approverGroups: CreateWorkflowApproverGroupData[]
+}
 
 export type UpdateApproverGroupData = {
   groupId: string,

@@ -5,8 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   WorkflowStatus,
-  type IWorkflowReq,
-  type IWorkflowApproverGroupReq,
+  type CreateWorkflowData,
   type CreateApproverGroupData,
   type UpdateApproverGroupData,
 } from '../../interfaces/workflow';
@@ -18,7 +17,7 @@ import { WorkflowApproverGroupService } from './workflow-approver-group';
 const logger = loggerFactory('growi:service:workflow');
 
 interface WorkflowService {
-  createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowDocument>,
+  createWorkflow(workflow: CreateWorkflowData): Promise<IWorkflowDocument>,
   deleteWorkflow(workflowId: ObjectIdLike): Promise<void>,
   updateWorkflow(
     workflowId: ObjectIdLike,
@@ -33,7 +32,7 @@ interface WorkflowService {
 
 class WorkflowServiceImpl implements WorkflowService {
 
-  async createWorkflow(workflow: IWorkflowReq): Promise<IWorkflowDocument> {
+  async createWorkflow(workflow: CreateWorkflowData): Promise<IWorkflowDocument> {
     const hasInprogressWorkflowInTargetPage = await Workflow.hasInprogressWorkflowInTargetPage(workflow.pageId);
     if (hasInprogressWorkflowInTargetPage) {
       throw Error('An in-progress workflow already exists');
@@ -88,7 +87,7 @@ class WorkflowServiceImpl implements WorkflowService {
     WorkflowApproverGroupService.validateApproverGroups(
       false,
       targetWorkflow.creator.toString(),
-      targetWorkflow.approverGroups as unknown as IWorkflowApproverGroupReq[],
+      targetWorkflow.approverGroups,
     );
 
     targetWorkflow.name = name;

@@ -1,17 +1,39 @@
-import type {
-  IWorkflowApproverGroupReq,
-  UpdateApproverGroupData,
-  CreateApproverGroupData,
+import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+
+import {
+  WorkflowApprovalType,
+  WorkflowApprovalTypes,
+  WorkflowApproverStatus,
+  type UpdateApproverGroupData,
+  type CreateApproverGroupData,
 } from '../../interfaces/workflow';
-import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
 import type {
   IWorkflowDocument, WorkflowDocument, IWorkflowApproverGroupDocument, WorkflowApproverGroupDocument,
 } from '../models/workflow';
 
+
+type ValidateApproverGroupArg = {
+  approvalType: WorkflowApprovalType,
+  approvers: Array<{ user: ObjectIdLike, status?: WorkflowApproverStatus }>
+}
+
+// type guard
+const isValidateApproverGroupsArg = (approverGroups: any): approverGroups is ValidateApproverGroupArg[] => {
+  const firstApproverGroup = approverGroups[0];
+  const firstApprover = firstApproverGroup.approvers[0];
+
+  if (firstApproverGroup == null || firstApprover == null) {
+    return false;
+  }
+
+  return WorkflowApprovalTypes.includes(firstApproverGroup.approvalType)
+    && (typeof firstApproverGroup.approvers[0].user === 'string' || typeof firstApproverGroup.approvers[0].user === 'object'); // Check if ObjectIdLike
+};
+
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void
   updateApproverGroup(targetWorkflow: WorkflowDocument, updateApproverGroupData: UpdateApproverGroupData[]): void
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: any): void
 }
 class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
@@ -113,7 +135,11 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: any): void {
+    if (!isValidateApproverGroupsArg(approverGroups)) {
+      throw Error('approverGroups is not a valid value');
+    }
+
     const uniqueApprovers = new Set<string>();
     uniqueApprovers.add(creatorId);
 
