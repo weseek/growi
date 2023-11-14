@@ -455,8 +455,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
-    console.log('tags', pageTags, pageId);
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -497,18 +495,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    let savedTags;
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(pageId, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
-      tagEvent.emit('update', page, savedTags);
-    }
 
     const result = {
       page: serializePageSecurely(page),
       revision: serializeRevisionSecurely(page.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
