@@ -23,7 +23,9 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
       lines.push({ from: line.from, insert: insertText });
     }
     view.dispatch({ changes: lines });
-    view.dispatch({ selection: { anchor: view.state.selection.main.to } });
+    // get view state after insert
+    const getEndLine = view.state.doc.lineAt(view.state.selection.main.to);
+    view.dispatch({ selection: { anchor: getEndLine.from + getEndLine.text.length } });
     view.focus();
   }, [view]);
 };
