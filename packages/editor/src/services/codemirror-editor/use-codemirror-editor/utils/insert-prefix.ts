@@ -13,7 +13,6 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const endPos = view.state.selection.main.to;
     const lines = [];
     const space = ' ';
-    let lastLineTo = 0;
     let insertText = '';
 
     for (let i = view.state.doc.lineAt(startPos).number; i < view.state.doc.lineAt(endPos).number + 1; i++) {
@@ -22,12 +21,9 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
         ? prefix
         : prefix + space;
       lines.push({ from: line.from, insert: insertText });
-      lastLineTo = line.to;
     }
-    view.dispatch({
-      changes: lines,
-      selection: { anchor: lastLineTo + insertText.length },
-    });
+    view.dispatch({ changes: lines });
+    view.dispatch({ selection: { anchor: view.state.selection.main.to } });
     view.focus();
   }, [view]);
 };
