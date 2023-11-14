@@ -15,8 +15,28 @@ export const useTextSelection = (): TextSelection => {
   // if the selection is the selection we are after
   const ref = useRef<HTMLDivElement>(null);
 
+  const [isMouseDown, setMouseDown] = useState(false);
+
   // we store info about the current Range here
   const [range, setRange] = useState<Range>();
+
+  useEffect(() => {
+    function handleMouseDown() {
+      setMouseDown(true);
+    }
+    function handleMouseUp() {
+      setMouseDown(false);
+    }
+
+    const currentElem = ref.current;
+
+    currentElem?.addEventListener('mousedown', handleMouseDown);
+    currentElem?.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      currentElem?.removeEventListener('mousedown', handleMouseDown);
+      currentElem?.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   // In this effect we're registering for the documents "selectionchange" event
   useEffect(() => {
@@ -44,5 +64,8 @@ export const useTextSelection = (): TextSelection => {
     return () => document.removeEventListener('selectionchange', handleChange);
   }, []);
 
-  return { range, ref };
+  return {
+    ref,
+    range: isMouseDown ? undefined : range,
+  };
 };
