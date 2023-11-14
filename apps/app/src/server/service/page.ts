@@ -1590,20 +1590,9 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
+    // a protected page is not deletable regardless of the configuration settings in v4
     if (isUsersProtectedPages(page.path)) {
-      if (page.creator == null) {
-        throw new Error('Page is not deletable.');
-      }
-
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (!isUsersHomepageDeletionEnabled) {
-        throw new Error('Page is not deletable.');
-      }
-
-      const populatedPage = await page.populate('creator');
-      if (populatedPage.creator.status !== USER_STATUS.DELETED) {
-        throw new Error('Page is not deletable.');
-      }
+      throw new Error('Page is not deletable.');
     }
 
     if (isRecursively) {
