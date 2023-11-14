@@ -27,7 +27,7 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
       <div ref={ref}>{children}</div>
       { isOpen
         ? renderLayer(
-          <div className="tooltip" {...layerProps}>
+          <div {...layerProps}>
             <TextSelectionTools range={range} />
             <Arrow {...arrowProps} />
           </div>,
