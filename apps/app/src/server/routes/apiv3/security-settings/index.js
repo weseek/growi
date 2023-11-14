@@ -630,7 +630,10 @@ module.exports = (crowi) => {
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
       'security:user-homepage-deletion:isEnabled': req.body.isUsersHomepageDeletionEnabled,
-      'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': req.body.isForceDeleteUserHomepageOnUserDeletion,
+      // Validate user-homepage-deletion config
+      'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': req.body.isUsersHomepageDeletionEnabled
+        ? req.body.isForceDeleteUserHomepageOnUserDeletion
+        : false,
     };
 
     // Validate delete config
