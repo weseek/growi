@@ -50,7 +50,6 @@ export const useDrawioModalLauncherForView = (opts?: {
       grant: currentPage.grant,
       grantUserGroupId: currentPage.grantedGroup?._id,
       grantUserGroupName: currentPage.grantedGroup?.name,
-      pageTags: tagsInfo.tags,
     };
 
     try {

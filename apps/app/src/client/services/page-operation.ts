@@ -109,7 +109,6 @@ const updatePage = async(pageId: string, revisionId: string, markdown: string, t
     revision_id: revisionId,
     body: markdown,
   });
-  console.log('params', params);
 
   const res: any = await apiPost('/pages.update', params);
   if (!res.ok) {
