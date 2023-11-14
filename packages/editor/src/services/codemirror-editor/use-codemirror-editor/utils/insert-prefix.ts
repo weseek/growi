@@ -12,12 +12,11 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const startPos = view.state.selection.main.from;
     const endPos = view.state.selection.main.to;
     const lines = [];
-    const space = ' ';
-    let insertText = '';
 
     for (let i = view.state.doc.lineAt(startPos).number; i < view.state.doc.lineAt(endPos).number + 1; i++) {
       const line = view.state.doc.line(i);
-      insertText = noSpaceIfPrefixExists && line.text.startsWith(prefix)
+      const space = ' ';
+      const insertText = noSpaceIfPrefixExists && line.text.startsWith(prefix)
         ? prefix
         : prefix + space;
       lines.push({ from: line.from, insert: insertText });
