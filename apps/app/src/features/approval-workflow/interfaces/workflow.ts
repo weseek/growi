@@ -34,17 +34,20 @@ export type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof Wor
 
 
 type IWorkflowApproverHasId = {
+  _id: string,
   user: IUserHasId,
   status: WorkflowApproverStatus,
 }
 
 export type IWorkflowApproverGroupHasId = {
+  _id: string,
   approvalType: WorkflowApprovalType
   approvers: IWorkflowApproverHasId[],
   isApproved: boolean,
 };
 
 export type IWorkflowHasId = {
+  _id: string,
   creator: IUserHasId,
   pageId: string,
   name?: string,
