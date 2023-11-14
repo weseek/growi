@@ -170,9 +170,13 @@ class PageService {
 
     if (isUsersProtectedPages(path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (!isUsersHomepageDeletionEnabled) {
+        return false;
+      }
+
       const User = mongoose.model('User');
       const creator = await User.findById(creatorId);
-      if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
+      if (creator.status !== USER_STATUS.DELETED) {
         return false;
       }
     }
@@ -190,9 +194,13 @@ class PageService {
 
     if (isUsersProtectedPages(path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (!isUsersHomepageDeletionEnabled) {
+        return false;
+      }
+
       const User = mongoose.model('User');
       const creator = await User.findById(creatorId);
-      if (!(isUsersHomepageDeletionEnabled && creator.status === USER_STATUS.DELETED)) {
+      if (creator.status !== USER_STATUS.DELETED) {
         return false;
       }
     }
@@ -1424,8 +1432,12 @@ class PageService {
       }
 
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (!isUsersHomepageDeletionEnabled) {
+        throw new Error('Page is not deletable.');
+      }
+
       const populatedPage = await page.populate('creator');
-      if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+      if (populatedPage.creator.status !== USER_STATUS.DELETED) {
         throw new Error('Page is not deletable.');
       }
     }
@@ -1584,8 +1596,12 @@ class PageService {
       }
 
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (!isUsersHomepageDeletionEnabled) {
+        throw new Error('Page is not deletable.');
+      }
+
       const populatedPage = await page.populate('creator');
-      if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+      if (populatedPage.creator.status !== USER_STATUS.DELETED) {
         throw new Error('Page is not deletable.');
       }
     }
@@ -2443,13 +2459,14 @@ class PageService {
     }
 
     if (isUsersProtectedPages(page.path)) {
-      if (page.creator == null) {
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+
+      if (page.creator == null || !isUsersHomepageDeletionEnabled) {
         isDeletable = false;
       }
       else {
-        const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
         const populatedPage = await page.populate('creator');
-        if (!(isUsersHomepageDeletionEnabled && populatedPage.creator.status === USER_STATUS.DELETED)) {
+        if (populatedPage.creator.status !== USER_STATUS.DELETED) {
           isDeletable = false;
         }
       }
