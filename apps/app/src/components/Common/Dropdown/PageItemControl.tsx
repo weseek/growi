@@ -83,11 +83,11 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const renameItemClickedHandler = useCallback(async() => {
-    if (pageInfo == null || onClickRenameMenuItem == null) {
+    if (onClickRenameMenuItem == null) {
       return;
     }
 
-    if (!pageInfo.isDeletable) {
+    if (!pageInfo?.isDeletable) {
       logger.warn('This page could not be renamed.');
       return;
     }
