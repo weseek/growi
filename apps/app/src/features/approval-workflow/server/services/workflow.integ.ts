@@ -12,8 +12,8 @@ describe('WorkflowService', () => {
 
   describe('.createWorkflow', () => {
     const workflow = {
-      creator: new mongoose.Types.ObjectId(),
-      pageId: new mongoose.Types.ObjectId(),
+      creator: new mongoose.Types.ObjectId().toString(),
+      pageId: new mongoose.Types.ObjectId().toString(),
       status: WorkflowStatus.INPROGRESS,
       name: 'page1 workflow',
       comment: 'comment',
@@ -22,7 +22,7 @@ describe('WorkflowService', () => {
           approvalType: WorkflowApprovalType.AND,
           approvers: [
             {
-              user: new mongoose.Types.ObjectId(),
+              user: new mongoose.Types.ObjectId().toString(),
               status:  WorkflowApproverStatus.NONE,
             },
           ],
