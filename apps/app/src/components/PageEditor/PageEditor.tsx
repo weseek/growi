@@ -17,7 +17,8 @@ import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
+import { apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -308,9 +309,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     files.forEach(async(file) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const resLimit: any = await apiGet('/attachments.limit', {
+        const resLimit: any = await apiv3Get('/attachments.limit', {
           fileSize: file.size,
         });
+
+        console.log(resLimit);
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);
