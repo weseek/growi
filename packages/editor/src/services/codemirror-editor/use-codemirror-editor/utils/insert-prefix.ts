@@ -9,22 +9,27 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     if (view == null) {
       return;
     }
-    const startPos = view.state.selection.main.from;
-    const endPos = view.state.selection.main.to;
-    const lines = [];
 
-    for (let i = view.state.doc.lineAt(startPos).number; i < view.state.doc.lineAt(endPos).number + 1; i++) {
+    // get the line numbers of the selected range
+    const { from, to } = view.state.selection.main;
+    const startLine = view.state.doc.lineAt(from);
+    const endLine = view.state.doc.lineAt(to);
+
+    // Insert prefix for each line
+    const lines = [];
+    let insertTextLength = 0;
+    for (let i = startLine.number; i <= endLine.number; i++) {
       const line = view.state.doc.line(i);
-      const space = ' ';
       const insertText = noSpaceIfPrefixExists && line.text.startsWith(prefix)
         ? prefix
-        : prefix + space;
+        : `${prefix} `;
+      insertTextLength += insertText.length;
       lines.push({ from: line.from, insert: insertText });
     }
     view.dispatch({ changes: lines });
-    // get view state after insert
-    const endLine = view.state.doc.lineAt(view.state.selection.main.to);
-    view.dispatch({ selection: { anchor: endLine.from + endLine.text.length } });
+
+    // move the cursor to the end of the selected line
+    view.dispatch({ selection: { anchor: endLine.to + insertTextLength } });
     view.focus();
   }, [view]);
 };
