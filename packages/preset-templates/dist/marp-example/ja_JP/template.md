@@ -21,9 +21,9 @@ Marp
 
 # 特徴
 
-- :memo: **シンプルな Markdown 記法のプレゼンテーションを作成できる** (CommonMark)
-- :factory: [Marpit framework][marpit] を基に構築する: プレゼンテーションを作成するための新しく軽量なフレームワーク
-- :gear: [Marp Core][marp-core]: npm を介して基本エンジンやビルトインテーマを使いやすく
+- :memo: **Markdown 記法を使用したプレゼンテーションの作成** (CommonMark)
+- :factory: [Marpit framework][marpit] を基に構築: プレゼンテーションを作成するための新しく軽量なフレームワーク
+- :gear: [Marp Core][marp-core]: npm を介してコアエンジンやビルトインテーマを使いやすく
 - :tv: [Marp CLI][marp-cli]:  Markdown を HTML 、 PDF 、 PPTX 、画像に変換可能
 - :vs: [Marp for VS Code][marp-vscode]: 編集中のスライドをライブプレビュー表示
 - and more...
@@ -165,7 +165,7 @@ Marp では複数の背景イメージを利用できます。
 ![bg blur:3px](https://fakeimg.pl/800x600/ddd/ccc/?text=C)
 ```
 
- `vertical` で文字列の方向を変えることも可能です。
+ `vertical` で、アライメントの方向も変更可能です。
 
 ![bg blur:3px](https://fakeimg.pl/800x600/fff/ccc/?text=A)
 ![bg blur:3px](https://fakeimg.pl/800x600/eee/ccc/?text=B)
@@ -189,9 +189,9 @@ Marp では背景を分割する [Deckset](https://docs.deckset.com/English.lpro
 
 ---
 
-## [フラグメントリスト](https://marpit.marp.app/fragmented-list)
+## [階層リスト](https://marpit.marp.app/fragmented-list)
 
-Marp ではアスタリスク記号をつけることで、各コンテンツをフラグメントリストとして分類します。 (_**HTML 形式のエクスポートのみ** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
+Marp ではアスタリスク記号をつけることで、各コンテンツを階層リストとして分類します。 (_**HTML 形式のエクスポートのみ** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
 
 ```markdown
 # 箇条書きリスト
@@ -202,7 +202,7 @@ Marp ではアスタリスク記号をつけることで、各コンテンツを
 
 ---
 
-# フラグメントリスト
+# 階層リスト
 
 * 1
 * 2
@@ -211,7 +211,7 @@ Marp ではアスタリスク記号をつけることで、各コンテンツを
 
 ---
 
-## Math typesetting ( [Marp Core][marp-core] のみ)
+## 数式の設定 ( [Marp Core][marp-core] のみ)
 
 [KaTeX](https://katex.org/) math typesetting は $ax^2+bc+c$ のように [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math) で利用できます。
 
@@ -228,7 +228,7 @@ $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
 ## オートスケーリング ( [Marp Core][marp-core] のみ)
 
-*Several built-in themes* ではコードブロックと typesettings でオートスケーリングされます。
+*Several built-in themes* はコードブロックと typesettings でオートスケーリングされます。
 
 ```text
 Too long code block will be scaled-down automatically. ------------>
@@ -242,7 +242,7 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ---
 
-##### <!--fit--> ヘッダーの自動調整 ( [Marp Core][marp-core] のみ)
+##### <!--fit--> ヘッダーの自動調整 ( [Marp Core][marp-core] のみ)は
 ##### <!--fit--> `<!--fit-->` のような注釈をヘッダーに入れることで利用可能です。
 
 <br />
@@ -255,7 +255,7 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ## [CSS テーマ](https://marpit.marp.app/theme-css)
 
-Marp では各スライドのコンテナとして `<section>` を使います。その他はプレーンな Markdown と同様です。 [Marp CLI][marp-cli] と [Marp for VS Code][marp-vscode] ではカスタムテーマを利用可能です。
+Marp では各スライドのコンテナとして `<section>` を使います。その他は基本の Markdown 記法と同様です。 [Marp CLI][marp-cli] と [Marp for VS Code][marp-vscode] ではカスタムテーマを利用可能です。
 
 ```css
 /* @theme your-theme */

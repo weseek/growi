@@ -7,9 +7,9 @@ Marp
 
 ![h:250](https://avatars1.githubusercontent.com/u/20685754?v=4)
 
-##### Markdown presentation ecosystem
+##### Markdown 演示生态系统
 
-###### by Marp Team ([@marp-team][marp-team])
+###### by Marp 团队 ([@marp-team][marp-team])
 
 [marp-team]: https://github.com/marp-team
 [marpit]: https://github.com/marp-team/marpit
@@ -19,40 +19,40 @@ Marp
 
 ---
 
-# Features
+# 特点
 
-- :memo: **Write slide deck with plain Markdown** (CommonMark)
-- :factory: Built on [Marpit framework][marpit]: A brand-new skinny framework for creating slide deck
-- :gear: [Marp Core][marp-core]: Easy to start using the core engine and built-in themes via npm
-- :tv: [Marp CLI][marp-cli]: Convert Markdown into HTML, PDF, PPTX, and images
-- :vs: [Marp for VS Code][marp-vscode]: Live-preview your deck while editting
-- and more...
+- :memo: **使用普通的 Markdown 编写投影片** (CommonMark)
+- :factory: 基于 [Marpit framework][marpit]: 一个全新的轻量级框架，用于创建投影片
+- :gear: [Marp Core][marp-core]: 通过 npm 轻松启动核心引擎并使用内置主题
+- :tv: [Marp CLI][marp-cli]: 将 Markdown 转换为 HTML、 PDF、 PPTX、 和图像
+- :vs: [Marp for VS Code][marp-vscode]: 在编辑时实时预览您的投影片
+- 等等...
 
 ---
 
-# How to write slides?
+# 如何编写幻灯片？
 
-Split pages by horizontal ruler (e.g. `---`). It's very simple.
+通过水平标尺拆分页面 (e.g. `---`)。 这很简单。
 
 ```markdown
-# Slide 1
+# 幻灯片 1
 
-foobar
+张三李四
 
 ---
 
-# Slide 2
+# 幻灯片 2
 
-foobar
+张三李四
 ```
 
 ---
 
 # Directives
 
-Marp has extended syntax called **"Directives"** to support creating beautiful slides.
+Marp 引入了名为 **"Directives"** 的扩展语法，以支持创建漂亮的幻灯片。
 
-Insert front-matter to the top of Markdown:
+在 Markdown 正文之前插入:
 
 ```
 ---
@@ -60,7 +60,7 @@ theme: default
 ---
 ```
 
-or HTML comment to anywhere:
+或者在正文的任意位置使用 HTML 进行描述:
 
 ```html
 <!-- theme: default -->
@@ -70,11 +70,11 @@ https://marpit.marp.app/directives
 
 ---
 
-## [Global directives](https://marpit.marp.app/directives?id=global-directives)
+## [全球 directives](https://marpit.marp.app/directives?id=global-directives)
 
-- `theme`: Choose theme
-- `size`: Choose slide size from `16:9` and `4:3` *(except Marpit framework)*
-- [`headingDivider`](https://marpit.marp.app/directives?id=heading-divider): Instruct to divide slide pages at before of specified heading levels
+- `theme`: 选择主题
+- `size`: 选择幻灯片尺寸为 `16:9` 或 `4:3` *(不包括 Marpit framework)*
+- [`headingDivider`](https://marpit.marp.app/directives?id=heading-divider): 在任意标题之前插入幻灯片的分页符
 
 ```
 ---
@@ -85,36 +85,36 @@ size: 4:3
 # Content
 ```
 
-> Marp can use [built-in themes in Marp Core](https://github.com/marp-team/marp-core/tree/master/themes#readme): `default`, `gaia`, and `uncover`.
+> Marp 中有以下 [built-in themes in Marp Core](https://github.com/marp-team/marp-core/tree/master/themes#readme) 可供使用 : `default`, `gaia`, and `uncover`.
 
 ---
 
-## [Local directives](https://marpit.marp.app/directives?id=local-directives)
+## [局部 directives](https://marpit.marp.app/directives?id=local-directives)
 
-These are the setting value per slide pages.
+每个幻灯片页面可设置的值列表
 
-- `paginate`: Show pagination by set `true`
-- `header`: Specify the contents for header
-- `footer`: Specify the contents for footer
-- `class`: Set HTML class for current slide
-- `color`: Set text color
-- `backgroundColor`: Set background color
+- `paginate`: 使用 `true` 显示页数
+- `header`: 指定页眉内容
+- `footer`: 指定页脚内容
+- `class`: 为当前幻灯片设置 HTML 类
+- `color`: 指定文字颜色
+- `backgroundColor`: 指定背景颜色
 
 ---
 
-### Spot directives
+### 点 directives
 
-Local directives would apply to **defined page and following pages**.
+局部 directives 将应用于 **defined page and following pages**.
 
-They can apply to single page by using underscore prefix such as `_class`.
+通过使用下划线和前缀，例如 `_class` ，可以将其应用于单个页面。
 
 ![bg right 95%](https://marpit.marp.app/assets/directives.png)
 
 ---
 
-### Example
+### 例子
 
-This page is using invert color scheme [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme).
+该页面使用了反转色彩方案 [defined in Marp built-in theme](https://github.com/marp-team/marp-core/tree/master/themes#readme)。
 
 <!-- _class: invert -->
 
@@ -124,9 +124,9 @@ This page is using invert color scheme [defined in Marp built-in theme](https://
 
 ---
 
-# [Image syntax](https://marpit.marp.app/image-syntax)
+# [图像标记语言的语法](https://marpit.marp.app/image-syntax)
 
-You can resize image size and apply filters through keywords: `width` (`w`), `height` (`h`), and filter CSS keywords.
+您可以通过关键词调整图像大小并应用过滤器 : `width` (`w`), `height` (`h`), 和滤镜CSS关键词
 
 ```markdown
 ![width:100px height:100px](image.png)
@@ -136,15 +136,15 @@ You can resize image size and apply filters through keywords: `width` (`w`), `he
 ![blur sepia:50%](filters.png)
 ```
 
-Please refer [resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image) and [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters).
+请指定 [resizing image syntax](https://marpit.marp.app/image-syntax?id=resizing-image) 和 [a list of CSS filters](https://marpit.marp.app/image-syntax?id=image-filters)。
 
 ![w:100px h:100px](https://avatars1.githubusercontent.com/u/20685754?v=4) ![w:100 h:100 blur sepia:50%](https://avatars1.githubusercontent.com/u/20685754?v=4)
 
 ---
 
-# [Background image](https://marpit.marp.app/image-syntax?id=slide-backgrounds)
+# [背景图像的语法](https://marpit.marp.app/image-syntax?id=slide-backgrounds)
 
-You can set background image for a slide by using `bg` keyword.
+您可以使用 `bg` 关键字为幻灯片设置背景图像。
 
 ```markdown
 ![bg opacity](https://yhatt-marp-cli-example.netlify.com/assets/gradient.jpg)
@@ -154,9 +154,9 @@ You can set background image for a slide by using `bg` keyword.
 
 ---
 
-## Multiple backgrounds ([Marpit's advanced backgrounds](https://marpit.marp.app/image-syntax?id=advanced-backgrounds))
+## 利用多个背景图像 ([Marpit's advanced backgrounds](https://marpit.marp.app/image-syntax?id=advanced-backgrounds))
 
-Marp can use multiple background images.
+Marp 可以使用多个背景图像。
 
 ```markdown
 ![bg blur:3px](https://fakeimg.pl/800x600/fff/ccc/?text=A)
@@ -164,7 +164,7 @@ Marp can use multiple background images.
 ![bg blur:3px](https://fakeimg.pl/800x600/ddd/ccc/?text=C)
 ```
 
-Also can change alignment direction by including `vertical` keyword.
+还可以通过包含 `vertical` 关键字来更改对齐方向。
 
 ![bg blur:3px](https://fakeimg.pl/800x600/fff/ccc/?text=A)
 ![bg blur:3px](https://fakeimg.pl/800x600/eee/ccc/?text=B)
@@ -172,11 +172,11 @@ Also can change alignment direction by including `vertical` keyword.
 
 ---
 
-## [Split background](https://marpit.marp.app/image-syntax?id=split-backgrounds)
+## [分割背景](https://marpit.marp.app/image-syntax?id=split-backgrounds)
 
-Marp can use [Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) style split background(s).
+Marp 可以使用 [Deckset](https://docs.deckset.com/English.lproj/Media/01-background-images.html#split-slides) 风格的分割背景。
 
-Make a space for background by `bg` + `left` / `right` keywords.
+通过 `bg` + `left` / `right` 关键字为背景留出空间。
 
 ```markdown
 ![bg right](image.jpg)
@@ -188,31 +188,31 @@ Make a space for background by `bg` + `left` / `right` keywords.
 
 ---
 
-## [Fragmented list](https://marpit.marp.app/fragmented-list)
+## [分段列表](https://marpit.marp.app/fragmented-list)
 
-Marp will parse a list with asterisk marker as the fragmented list for appearing contents one by one. (_**Only for exported HTML** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
+Marp 将列表与星号标记解析为分段列表，以逐一显示内容。 (_**仅适用于导出的 HTML** by [Marp CLI][marp-cli] / [Marp for VS Code][marp-vscode]_)
 
 ```markdown
-# Bullet list
+# 项目符号列表
 
-- One
-- Two
-- Three
+- 一
+- 二
+- 三
 
 ---
 
-# Fragmented list
+# 分段列表
 
-* One
-* Two
-* Three
+* 一
+* 二
+* 三
 ```
 
 ---
 
-## Math typesetting (only for [Marp Core][marp-core])
+## 数学排版 (仅适用于 [Marp Core][marp-core])
 
-[KaTeX](https://katex.org/) math typesetting such as $ax^2+bc+c$ can use with [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math).
+使用 [KaTeX](https://katex.org/) 进行数学排版，例如 $ax^2+bc+c$ 可以与 [Pandoc's math syntax](https://pandoc.org/MANUAL.html#math) 一起使用。
 
 $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
@@ -225,9 +225,9 @@ $$I_{xx}=\int\int_Ry^2f(x,y)\cdot{}dydx$$
 
 ---
 
-## Auto-scaling (only for [Marp Core][marp-core])
+## 自动缩放 (仅适用于 [Marp Core][marp-core])
 
-*Several built-in themes* are supported auto-scaling for code blocks and math typesettings.
+*Several built-in themes* 支持对代码块和数学排版进行自动缩放。
 
 ```text
 Too long code block will be scaled-down automatically. ------------>
@@ -241,8 +241,8 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ---
 
-##### <!--fit--> Auto-fitting header (only for [Marp Core][marp-core])
-##### <!--fit--> is available by annotating `<!--fit-->` in headings.
+##### <!--fit--> 自动调整标题 (仅适用于 [Marp Core][marp-core])
+##### <!--fit--> 在标题中注释 `<!--fit-->` 即可使用。
 
 <br />
 
@@ -252,9 +252,9 @@ Too long code block will be scaled-down automatically. -------------------------
 
 ---
 
-## [Theme CSS](https://marpit.marp.app/theme-css)
+## [主题样式表](https://marpit.marp.app/theme-css)
 
-Marp uses `<section>` as the container of each slide. And others are same as styling for plain Markdown. The customized theme can use in [Marp CLI][marp-cli] and [Marp for VS Code][marp-vscode].
+Marp 使用 `<section>` 作为每个幻灯片的容器。 其他的样式与普通的 Markdown 样式相同。定制主题可在 [Marp CLI][marp-cli] 和 [Marp for VS Code][marp-vscode] 中使用。
 
 ```css
 /* @theme your-theme */
@@ -275,9 +275,9 @@ h1 {
 
 ---
 
-## [Tweak style in Markdown](https://marpit.marp.app/theme-css?id=tweak-style-through-markdown)
+## [在 Markdown 中微调样式](https://marpit.marp.app/theme-css?id=tweak-style-through-markdown)
 
-`<style>` tag in Markdown will work in the context of theme CSS.
+Markdown 中的 `<style>` 标签将在主题 CSS 的上下文中起作用。
 
 ```markdown
 ---
@@ -293,14 +293,14 @@ section {
 Re-painted yellow background, ha-ha.
 ```
 
-> You can also add custom styling by class like `section.custom-class { ... }`.
-> Apply style through `<!-- _class: custom-class -->`.
+> 您还可以通过类别添加自定义样式，例如 `section.custom-class { ... }` 。
+> 通过 `<!-- _class: custom-class -->` 应用样式。
 
 ---
 
-## [Scoped style](https://marpit.marp.app/theme-css?id=scoped-style)
+## [局部样式](https://marpit.marp.app/theme-css?id=scoped-style)
 
-If you want one-shot styling for current page, you can use `<style scoped>`.
+如果您想为当前页面设置一次性样式，可以使用 `<style scoped>` 。
 
 ```markdown
 <style scoped>
@@ -318,8 +318,8 @@ a { color: green; }
 
 ---
 
-# Enjoy writing slides! :v: <!--fit-->
+# 尽情享受幻灯片创作吧! :v: <!--fit-->
 
 ##### ![w:1em h:1em](https://avatars1.githubusercontent.com/u/20685754?v=4)  Marp: Markdown presentation ecosystem — https://marp.app/
 
-###### by Marp Team ([@marp-team][marp-team])
+###### by Marp 团队 ([@marp-team][marp-team])
