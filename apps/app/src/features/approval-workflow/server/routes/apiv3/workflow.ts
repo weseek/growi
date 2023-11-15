@@ -9,13 +9,7 @@ import { configManager } from '~/server/service/config-manager';
 import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
-import {
-  type IWorkflowHasId,
-  type IWorkflowApproverGroupReq,
-  type IWorkflowPaginateResult,
-  WorkflowStatus,
-  WorkflowApproverStatus,
-} from '../../../interfaces/workflow';
+import { WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-serializer';
 import Workflow from '../../models/workflow';
 import { WorkflowService } from '../../services/workflow';

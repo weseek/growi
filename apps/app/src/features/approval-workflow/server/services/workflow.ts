@@ -5,7 +5,6 @@ import loggerFactory from '~/utils/logger';
 
 import {
   WorkflowStatus,
-  WorkflowApproverStatus,
   type IWorkflowReq,
   type IWorkflowApproverGroupReq,
   type CreateApproverGroupData,
