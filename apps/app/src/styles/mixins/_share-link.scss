@@ -1,0 +1,20 @@
+@mixin share-link() {
+  .layout-root.share-link {
+    @content;
+  }
+}
+
+@mixin share-link-for-module($isContentGlobal: false) {
+  :global {
+    .layout-root.share-link {
+      @if ($isContentGlobal) {
+        @content;
+      }
+      @else {
+        :local {
+          @content;
+        }
+      }
+    }
+  }
+}
