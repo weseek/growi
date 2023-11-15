@@ -157,12 +157,12 @@ export const useIsBlinkedHeaderAtBoot = (initialData?: boolean): SWRResponse<boo
   return useContextSWR('isBlinkedAtBoot', initialData, { fallbackData: false });
 };
 
-export const useIsUploadableImage = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR('isUploadableImage', initialData);
+export const useIsUploadEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isUploadEnabled', initialData);
 };
 
-export const useIsUploadableFile = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useContextSWR('isUploadableFile', initialData);
+export const useIsUploadAllFileAllowed = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useContextSWR('isUploadAllFileAllowed', initialData);
 };
 
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
