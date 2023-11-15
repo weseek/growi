@@ -115,9 +115,11 @@ class WorkflowServiceImpl implements WorkflowService {
     for await (const approverGroup of targetWorkflow.approverGroups) {
       const foundApprover = approverGroup.findApprover(operatorId);
       if (foundApprover != null && !approverGroup.isApproved) {
-        foundApprover.status = WorkflowApproverStatus.APPROVE;
+        approverGroup.approve(operatorId);
         updatedWorkflow = await targetWorkflow.save();
-        break;
+      }
+      else if (foundApprover != null && approverGroup.isApproved) {
+        throw Error('Already approved Group');
       }
     }
 
@@ -125,12 +127,7 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Operator is not an approver');
     }
 
-    const finalApproverGroup = updatedWorkflow.approverGroups.slice(-1)[0];
-    if (finalApproverGroup.isApproved) {
-      updatedWorkflow.status = WorkflowStatus.APPROVE;
-      await updatedWorkflow.save();
-    }
-
+    updatedWorkflow = await updatedWorkflow.updateStatus();
     return updatedWorkflow;
   }
 
