@@ -29,14 +29,13 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
 
   const { open: openHandsontableModal } = useHandsontableModal();
 
   const saveOrUpdate = useSaveOrUpdate();
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || tagsInfo == null || shareLinkId != null) {
+    if (currentPage == null || shareLinkId != null) {
       return;
     }
 
@@ -65,7 +64,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [currentPage, opts, saveOrUpdate, shareLinkId, tagsInfo]);
+  }, [currentPage, opts, saveOrUpdate, shareLinkId]);
 
 
   // set handler to open HandsonTableModal
