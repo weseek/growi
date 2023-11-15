@@ -2,6 +2,7 @@ import { PageGrant } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { Comment } from '~/features/comment/server';
 import loggerFactory from '~/utils/logger';
 
 
@@ -274,7 +275,6 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const self = this;
-    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
         self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
@@ -702,7 +702,6 @@ export const getPageSchema = (crowi) => {
   };
 
   pageSchema.methods.getNotificationTargetUsers = async function() {
-    const Comment = mongoose.model('Comment');
     const Revision = mongoose.model('Revision');
 
     const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);

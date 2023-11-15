@@ -18,7 +18,7 @@ export interface IEditorSettings {
 
 export type EditorConfig = {
   upload: {
-    isUploadableFile: boolean,
-    isUploadableImage: boolean,
+    isUploadAllFileAllowed: boolean,
+    isUploadEnabled: boolean,
   }
 }

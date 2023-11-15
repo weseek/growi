@@ -24,7 +24,7 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
+  useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
@@ -110,8 +110,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { data: isUploadableFile } = useIsUploadableFile();
-  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+  const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
@@ -356,14 +356,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
-    if (!isUploadableFile) {
+    if (!isUploadEnabled) {
       return AcceptedUploadFileType.NONE;
     }
-    if (isUploadableImage) {
-      return AcceptedUploadFileType.IMAGE;
+    if (isUploadAllFileAllowed) {
+      return AcceptedUploadFileType.ALL;
     }
-    return AcceptedUploadFileType.ALL;
-  }, [isUploadableFile, isUploadableImage]);
+    return AcceptedUploadFileType.IMAGE;
+  }, [isUploadAllFileAllowed, isUploadEnabled]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
     if (previewRef.current == null) {
@@ -572,7 +572,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             ref={editorRef}
             value={initialValue}
             isUploadable={isUploadable}
-            isUploadableFile={isUploadableFile}
+            isUploadAllFileAllowed={isUploadAllFileAllowed}
             indentSize={currentIndentSize}
             onScroll={editorScrolledHandler}
             onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
