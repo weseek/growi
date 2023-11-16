@@ -328,7 +328,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
@@ -351,16 +350,9 @@ module.exports = function(crowi, app) {
 
     const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
-    let savedTags;
-    if (pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
     const result = {
       page: serializePageSecurely(createdPage),
       revision: serializeRevisionSecurely(createdPage.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
@@ -455,7 +447,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -496,18 +487,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    let savedTags;
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(pageId, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
-      tagEvent.emit('update', page, savedTags);
-    }
 
     const result = {
       page: serializePageSecurely(page),
       revision: serializeRevisionSecurely(page.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
