@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-import { WorkflowApprovalType } from '../../interfaces/workflow';
+import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
 
 import { WorkflowApproverGroupService } from './workflow-approver-group';
 
@@ -85,7 +85,7 @@ describe('WorkflowApproverGroupService', () => {
           approvers: [
             {
               user: approver,
-              status: 'APPROVE',
+              status: WorkflowApproverStatus.APPROVE,
             },
           ],
         },
