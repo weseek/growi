@@ -24,8 +24,8 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
     setStoredRange(undefined);
   }, []);
 
-  const commentSubmittedHandler = useCallback(() => {
-    console.log({ storedRange });
+  const commentSubmittedHandler = useCallback((comment: string) => {
+    console.log({ comment, storedRange });
     setStoredRange(undefined);
   }, [storedRange]);
 

@@ -12,7 +12,7 @@ type Props = {
 export const TextSelectionTools = (props: Props): JSX.Element | null => {
   const { onSubmit, onBlur } = props;
 
-  const [input, setInput] = useState('foo');
+  const [input, setInput] = useState('');
 
   const hundleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
     // fire onBlur only when the focus event has invoked from children
@@ -34,6 +34,7 @@ export const TextSelectionTools = (props: Props): JSX.Element | null => {
             className="form-control form-control-sm border-0"
             autoFocus
             placeholder="Input comment.."
+            onChange={e => setInput(e.target.value)}
             aria-describedby="inlineComment"
           />
           <button type="button" className="btn btn-sm btn-muted">
