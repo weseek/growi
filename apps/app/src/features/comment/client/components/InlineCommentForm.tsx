@@ -1,5 +1,22 @@
 import { useCallback, useState } from 'react';
 
+
+const isElement = (node: Node): node is Element => {
+  return 'innerHTML' in node;
+};
+
+const retrieveFirstLevelElement = (target: Node, root: Element): Node | null => {
+  if (target === root || target.parentElement == null) {
+    return null;
+  }
+  if (target.parentElement === root) {
+    return target;
+  }
+
+  return retrieveFirstLevelElement(target.parentElement, root);
+};
+
+
 type Props = {
   range: Range,
   onExit?: () => void,
@@ -11,7 +28,18 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
   const [input, setInput] = useState('');
 
   const submitHandler = useCallback(() => {
-    console.log({ input, range });
+    const wikiElements = document.getElementsByClassName('wiki');
+
+    if (wikiElements.length === 0) return;
+
+    const firstLevelElement = retrieveFirstLevelElement(range.commonAncestorContainer, wikiElements[0]);
+
+    if (firstLevelElement == null) {
+      onExit?.();
+    }
+
+    console.log({ input, range, firstLevelElement });
+
     onExit?.();
   }, [input, range, onExit]);
 
