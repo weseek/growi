@@ -12,7 +12,7 @@ import type {
 
 
 // WorkflowApproverGroupDocumentWithoutArraySplice omit Array.prototype.splice(), so ValidateApproverGroupArg also omit it
-export type ValidateApproverGroupArg = Omit<Array<{
+type ValidateApproverGroupArg = Omit<Array<{
   approvalType: WorkflowApprovalType,
   approvers: Array<{
     user: Ref<IUser>
