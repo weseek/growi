@@ -24,7 +24,7 @@ type ValidateApproverGroupArg = Omit<Array<{
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void
   updateApproverGroup(targetWorkflow: WorkflowDocument, updateApproverGroupData: UpdateApproverGroupData[]): void
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: any): void
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: ValidateApproverGroupArg): void
 }
 class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
