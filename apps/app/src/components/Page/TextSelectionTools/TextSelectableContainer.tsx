@@ -20,14 +20,9 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
 
   const isOpen = storedRange != null;
 
-  const blurFromToolsHandler = useCallback(() => {
+  const toolsExitHandler = useCallback(() => {
     setStoredRange(undefined);
   }, []);
-
-  const commentSubmittedHandler = useCallback((comment: string) => {
-    console.log({ comment, storedRange });
-    setStoredRange(undefined);
-  }, [storedRange]);
 
   const { renderLayer, layerProps } = useLayer({
     isOpen,
@@ -46,7 +41,7 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
       { isOpen
         ? renderLayer(
           <div className="z-1" {...layerProps}>
-            <TextSelectionTools range={storedRange} onSubmit={commentSubmittedHandler} onBlur={blurFromToolsHandler} />
+            <TextSelectionTools range={storedRange} onExit={toolsExitHandler} />
           </div>,
         )
         : <></>
