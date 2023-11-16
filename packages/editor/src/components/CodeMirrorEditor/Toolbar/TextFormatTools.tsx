@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react';
 import { Collapse } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
-import { useInsertHeader } from '../../../services/codemirror-editor/use-codemirror-editor/utils/insert-header';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 
 import styles from './TextFormatTools.module.scss';
@@ -41,7 +40,6 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
   const { editorKey } = props;
   const [isOpen, setOpen] = useState(false);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
-  const insertHeader = useInsertHeader();
 
   const toggle = useCallback(() => {
     setOpen(bool => !bool);
@@ -51,8 +49,8 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
     codeMirrorEditor?.insertMarkdownElements(prefix, suffix);
   };
 
-  const onClickAddHeaderToSelection = () => {
-    insertHeader(codeMirrorEditor?.view);
+  const onClickInsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => {
+    codeMirrorEditor?.insertPrefix(prefix, noSpaceIfPrefixExists);
   };
 
   return (
@@ -64,28 +62,28 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('**', '**')}>
             <span className="material-symbols-outlined fs-5">format_bold</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
-            <span className="material-symbols-outlined fs-5" onClick={() => onClickInsertMarkdownElements('*', '*')}>format_italic</span>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('*', '*')}>
+            <span className="material-symbols-outlined fs-5">format_italic</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('~', '~')}>
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button" onClick={onClickAddHeaderToSelection}>
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('#', true)}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('-')}>
             <span className="material-symbols-outlined fs-5">format_list_bulleted</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('1.')}>
             <span className="material-symbols-outlined fs-5">format_list_numbered</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>')}>
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
-          <button type="button" className="btn btn-toolbar-button">
+          <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]')}>
             <span className="material-symbols-outlined fs-5">checklist</span>
           </button>
         </div>
