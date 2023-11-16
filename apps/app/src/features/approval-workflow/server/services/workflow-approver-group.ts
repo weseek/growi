@@ -6,6 +6,7 @@ import {
   type UpdateApproverGroupData,
   type CreateApproverGroupData,
 } from '../../interfaces/workflow';
+import { getLatestApprovedApproverGroupIndex } from '../../utils/workflow';
 import type {
   IWorkflowDocument, WorkflowDocument, IWorkflowApproverGroupDocument, WorkflowApproverGroupDocument,
 } from '../models/workflow';
@@ -29,7 +30,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void {
-    const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
+    const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(targetWorkflow);
 
     for (const data of createApproverGroupData) {
       if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= data.groupIndex) {
@@ -49,7 +50,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   updateApproverGroup(targetWorkflow: WorkflowDocument, updateApproverGroupData: UpdateApproverGroupData[]): void {
-    const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
+    const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(targetWorkflow);
 
     for (const data of updateApproverGroupData) {
       const approverGroup = targetWorkflow.approverGroups.id(data.groupId);

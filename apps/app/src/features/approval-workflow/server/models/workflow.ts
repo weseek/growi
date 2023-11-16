@@ -117,9 +117,7 @@ export type IWorkflowDocument = {
   status: WorkflowStatus,
   approverGroups: WorkflowApproverGroupDocumentWithoutArraySplice
 };
-export interface WorkflowDocument extends IWorkflowDocument, Document {
-  getLatestApprovedApproverGroupIndex(): number | null
-}
+export interface WorkflowDocument extends IWorkflowDocument, Document {}
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
 }
@@ -156,20 +154,6 @@ WorkflowSchema.plugin(mongoosePaginate);
 WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
-};
-
-WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number | null {
-  const workflow = this as WorkflowDocument;
-  const apprverGroupsLength = workflow.approverGroups.length;
-
-  for (let i = apprverGroupsLength; i > 0; i--) {
-    const groupIndex = i - 1;
-    if (workflow.approverGroups[groupIndex].isApproved) {
-      return groupIndex;
-    }
-  }
-
-  return null;
 };
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);
