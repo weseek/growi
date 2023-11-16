@@ -9,9 +9,7 @@ import { configManager } from '~/server/service/config-manager';
 import XssService from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 
-import {
-  WorkflowStatus,
-} from '../../../interfaces/workflow';
+import { WorkflowStatus, WorkflowApproverStatus } from '../../../interfaces/workflow';
 import { serializeWorkflowSecurely } from '../../models/serializers/workflow-serializer';
 import Workflow from '../../models/workflow';
 import { WorkflowService } from '../../services/workflow';
@@ -73,7 +71,7 @@ module.exports = (crowi: Crowi): Router => {
       body('updateApproverGroupData').optional().isArray().withMessage('updateApproverGroupData must be an array'),
     ],
     updateWorkflowApproverStatus: [
-      body('workflowId').isMongoId().withMessage('workflowId is required'),
+      param('workflowId').isMongoId().withMessage('workflowId is required'),
       body('approverStatus').isString().withMessage('approverStatus is required'),
       body('delegatedUserId').optional().isMongoId().withMessage('delegatedUserId must be mongo id'),
     ],
@@ -375,17 +373,30 @@ module.exports = (crowi: Crowi): Router => {
    */
   router.put('/:workflowId/status', accessTokenParser, loginRequired, validator.updateWorkflowApproverStatus, apiV3FormValidator,
     async(req: RequestWithUser, res: ApiV3Response) => {
-      const { workflowId, approverStatus, delegatedUserId } = req.body;
+
+      const { workflowId } = req.params;
+      const { approverStatus, delegatedUserId } = req.body;
       const { user } = req;
 
-      // Descirption
-      // approver の status の更新
-
-      // Memo
-      // 進行中の workflow 内の approver の status を更新することができる
-      // req.body.approverStatus が "DELEGATE" だった場合は req.body.delegatedUserId が必須となる
-
-      return res.apiv3();
+      try {
+        let updatedWorkflow;
+        switch (approverStatus) {
+          case WorkflowApproverStatus.APPROVE:
+            updatedWorkflow = await WorkflowService.approve(workflowId, user._id.toString());
+            break;
+          case WorkflowApproverStatus.DELEGATE:
+            break;
+          case WorkflowApproverStatus.REMAND:
+            break;
+          default:
+            return res.apiv3Err('approverStatus can be "APPROVE", "REMAND" or "DELEGATE"');
+        }
+        return res.apiv3({ updatedWorkflow });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err);
+      }
     });
 
 
