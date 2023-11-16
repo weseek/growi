@@ -27,6 +27,7 @@ interface WorkflowService {
     createApproverGroupData?: CreateApproverGroupData[],
     approverGroupUpdateData?: UpdateApproverGroupData[],
   ): Promise<IWorkflowDocument>,
+  approve(worfkFlowId: string, operatorId: string): Promise<IWorkflowDocument>,
   validateOperatableUser(workflow: IWorkflowDocument, operator: IUserHasId): void
 }
 
@@ -92,6 +93,37 @@ class WorkflowServiceImpl implements WorkflowService {
 
     targetWorkflow.name = name;
     targetWorkflow.comment = comment;
+
+    const updatedWorkflow = await targetWorkflow.save();
+    return updatedWorkflow;
+  }
+
+  async approve(workflowId: string, operatorId: string) {
+    const targetWorkflow = await Workflow.findById(workflowId);
+
+    if (targetWorkflow == null) {
+      throw Error('Target workflow does not exist');
+    }
+
+    if (targetWorkflow.status !== WorkflowStatus.INPROGRESS) {
+      throw Error('Workflow is not in-progress');
+    }
+
+    let foundApprover;
+    for await (const approverGroup of targetWorkflow.approverGroups) {
+      foundApprover = approverGroup.findApprover(operatorId);
+      if (foundApprover != null && !approverGroup.isApproved) {
+        approverGroup.approve(operatorId);
+        break;
+      }
+      else if (foundApprover != null && approverGroup.isApproved) {
+        throw Error('This ApproverGroup has already been approved');
+      }
+    }
+
+    if (foundApprover == null) {
+      throw Error('Operator is not an approver');
+    }
 
     const updatedWorkflow = await targetWorkflow.save();
     return updatedWorkflow;
