@@ -125,7 +125,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
       <RevisionRenderer
         rendererOptions={rendererOptions}
         markdown={markdown}
-        additionalClassName="comment"
+        className="comment"
       />
     );
   }, [markdown, rendererOptions]);
