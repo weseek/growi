@@ -18,22 +18,21 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
     }
   }, [range]);
 
-  // const isOpen = range != null;
   const isOpen = storedRange != null;
 
   const blurFromToolsHandler = useCallback(() => {
-    console.log('blur');
-    // setStoredRange(undefined);
+    setStoredRange(undefined);
   }, []);
 
   const commentSubmittedHandler = useCallback(() => {
     console.log({ storedRange });
+    setStoredRange(undefined);
   }, [storedRange]);
 
   const { renderLayer, layerProps, arrowProps } = useLayer({
     isOpen,
-    trigger: range != null
-      ? { getBounds: () => range.getBoundingClientRect() }
+    trigger: isOpen
+      ? { getBounds: () => storedRange.getBoundingClientRect() }
       : undefined,
   });
 
@@ -46,9 +45,8 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
       <div ref={ref}>{children}</div>
       { isOpen
         ? renderLayer(
-          <div {...layerProps}>
+          <div className="z-1" {...layerProps}>
             <TextSelectionTools range={storedRange} onSubmit={commentSubmittedHandler} onBlur={blurFromToolsHandler} />
-            {/* <TextSelectionTools range={range} onSubmit={commentSubmittedHandler} onBlur={blurFromToolsHandler} /> */}
             <Arrow {...arrowProps} />
           </div>,
         )

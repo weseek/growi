@@ -1,4 +1,7 @@
-import { FocusEventHandler, useCallback, useState } from 'react';
+import {
+  useCallback, useState,
+  type FocusEventHandler, type FocusEvent,
+} from 'react';
 
 type Props = {
   range: Range,
@@ -11,17 +14,25 @@ export const TextSelectionTools = (props: Props): JSX.Element | null => {
 
   const [input, setInput] = useState('foo');
 
+  const hundleBlur = useCallback((e: FocusEvent<HTMLDivElement>) => {
+    // fire onBlur only when the focus event has invoked from children
+    if (!e.currentTarget?.contains(e.relatedTarget)) {
+      onBlur?.(e);
+    }
+  }, [onBlur]);
+
   const submitHandler = useCallback(() => {
     onSubmit?.(input);
   }, [input, onSubmit]);
 
   return (
     <form onSubmit={submitHandler}>
-      <div className="card" onBlur={onBlur}>
+      <div className="card" onBlur={hundleBlur}>
         <div className="card-body d-flex gap-1 py-1 px-3">
           <input
             type="text"
             className="form-control form-control-sm border-0"
+            autoFocus
             placeholder="Input comment.."
             aria-describedby="inlineComment"
           />

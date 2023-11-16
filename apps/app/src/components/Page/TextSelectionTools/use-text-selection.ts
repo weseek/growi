@@ -55,8 +55,6 @@ export const useTextSelection = (): TextSelection => {
         return;
       }
 
-      console.log({ selection, range: selection.getRangeAt(0) });
-
       setRange(selection.getRangeAt(0));
     }
 
