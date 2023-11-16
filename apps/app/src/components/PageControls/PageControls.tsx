@@ -26,6 +26,7 @@ import {
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
+import SearchButton from './SearchButton';
 import SeenUserInfo from './SeenUserInfo';
 import SubscribeButton from './SubscribeButton';
 
@@ -241,6 +242,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
+      <SearchButton />
       {revisionId != null && !isViewMode && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
