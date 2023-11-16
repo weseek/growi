@@ -102,7 +102,16 @@ WorkflowApproverGroupSchema.methods.findApprover = function(userId: string): Wor
 
 WorkflowApproverGroupSchema.methods.approve = function(userId: string) {
   const approver = this.findApprover(userId);
-  approver.status = WorkflowApproverStatus.APPROVE; // Content is not saved unless .save() is done on the parent document
+
+  if (approver == null) {
+    throw Error('Approver does not exist');
+  }
+
+  if (approver.status === WorkflowApproverStatus.APPROVE) {
+    throw Error('This approver has already been approved');
+  }
+
+  approver.status = WorkflowApproverStatus.APPROVE;
 };
 
 /*
@@ -124,7 +133,6 @@ export type IWorkflowDocument = {
 };
 export interface WorkflowDocument extends IWorkflowDocument, Document {
   getLatestApprovedApproverGroupIndex(): number | null
-  updateStatus(): Promise<WorkflowDocument>
 }
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
@@ -178,13 +186,14 @@ WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number 
   return null;
 };
 
-WorkflowSchema.methods.updateStatus = async function(): Promise<WorkflowDocument> {
+// Called before save()
+WorkflowSchema.pre('validate', async function(this, next) {
   const finalApproverGroup = this.approverGroups.slice(-1)[0];
   if (finalApproverGroup.isApproved) {
     this.status = WorkflowStatus.APPROVE;
   }
 
-  return this.save();
-};
+  next();
+});
 
 export default getOrCreateModel<WorkflowDocument, WorkflowModel>('Workflow', WorkflowSchema);

@@ -5,6 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import {
   WorkflowStatus,
+  WorkflowApproverStatus,
   type IWorkflowReq,
   type IWorkflowApproverGroupReq,
   type CreateApproverGroupData,
@@ -110,23 +111,23 @@ class WorkflowServiceImpl implements WorkflowService {
       throw Error('Workflow is not in-progress');
     }
 
-    let updatedWorkflow;
+    let foundApprover;
     for await (const approverGroup of targetWorkflow.approverGroups) {
-      const foundApprover = approverGroup.findApprover(operatorId);
+      foundApprover = approverGroup.findApprover(operatorId);
       if (foundApprover != null && !approverGroup.isApproved) {
         approverGroup.approve(operatorId);
-        updatedWorkflow = await targetWorkflow.save();
+        break;
       }
       else if (foundApprover != null && approverGroup.isApproved) {
-        throw Error('Already approved Group');
+        throw Error('This ApproverGroup has already been approved');
       }
     }
 
-    if (updatedWorkflow == null) {
+    if (foundApprover == null) {
       throw Error('Operator is not an approver');
     }
 
-    updatedWorkflow = await updatedWorkflow.updateStatus();
+    const updatedWorkflow = await targetWorkflow.save();
     return updatedWorkflow;
   }
 
