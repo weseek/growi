@@ -26,9 +26,9 @@ import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
+import { TextSelectableContainer } from './TextSelectionTools';
 
 import styles from './PageView.module.scss';
-import { TextSelectableContainer } from './TextSelectionTools';
 
 
 const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
