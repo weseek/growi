@@ -1,8 +1,7 @@
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { Ref, IUser } from '@growi/core';
 
 import {
   WorkflowApprovalType,
-  WorkflowApprovalTypes,
   WorkflowApproverStatus,
   type UpdateApproverGroupData,
   type CreateApproverGroupData,
@@ -12,23 +11,13 @@ import type {
 } from '../models/workflow';
 
 
-type ValidateApproverGroupArg = {
+export type ValidateApproverGroupArg = Omit<Array<{
   approvalType: WorkflowApprovalType,
-  approvers: Array<{ user: ObjectIdLike, status?: WorkflowApproverStatus }>
-}
-
-// type guard
-const isValidateApproverGroupsArg = (approverGroups: any): approverGroups is ValidateApproverGroupArg[] => {
-  const firstApproverGroup = approverGroups[0];
-  const firstApprover = firstApproverGroup.approvers[0];
-
-  if (firstApproverGroup == null || firstApprover == null) {
-    return false;
-  }
-
-  return WorkflowApprovalTypes.includes(firstApproverGroup.approvalType)
-    && (typeof firstApproverGroup.approvers[0].user === 'string' || typeof firstApproverGroup.approvers[0].user === 'object'); // Check if ObjectIdLike
-};
+  approvers: Array<{
+    user: Ref<IUser>
+    status?: WorkflowApproverStatus
+  }>
+}>, 'splice'>
 
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void
@@ -135,11 +124,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: any): void {
-    if (!isValidateApproverGroupsArg(approverGroups)) {
-      throw Error('approverGroups is not a valid value');
-    }
-
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: ValidateApproverGroupArg): void {
     const uniqueApprovers = new Set<string>();
     uniqueApprovers.add(creatorId);
 

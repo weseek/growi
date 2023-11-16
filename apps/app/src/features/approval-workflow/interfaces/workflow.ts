@@ -71,7 +71,10 @@ export type EditingApproverGroup = {
 
 export type IWorkflowPaginateResult = PaginateResult<IWorkflowHasId>
 
-export type CreateWorkflowApproverGroupData = { approvers: Array<{ user: string }> };
+export type CreateWorkflowApproverGroupData = {
+  approvalType: WorkflowApprovalType
+  approvers: Array<{ user: string }>
+};
 
 export type CreateWorkflowData = {
   pageId: string,
