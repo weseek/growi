@@ -40,7 +40,7 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
       <div ref={ref}>{children}</div>
       { isOpen
         ? renderLayer(
-          <div className="z-1" {...layerProps}>
+          <div className="z-2" {...layerProps}>
             <TextSelectionTools range={storedRange} onExit={toolsExitHandler} />
           </div>,
         )
