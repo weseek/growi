@@ -2,7 +2,7 @@ import {
   useCallback, type ReactNode, useState, useEffect,
 } from 'react';
 
-import { useLayer, Arrow } from 'react-laag';
+import { useLayer } from 'react-laag';
 
 import { TextSelectionTools } from './TextSelectionTools';
 import { useTextSelection } from './use-text-selection';
@@ -29,7 +29,7 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
     setStoredRange(undefined);
   }, [storedRange]);
 
-  const { renderLayer, layerProps, arrowProps } = useLayer({
+  const { renderLayer, layerProps } = useLayer({
     isOpen,
     trigger: isOpen
       ? { getBounds: () => storedRange.getBoundingClientRect() }
@@ -47,7 +47,6 @@ export const TextSelectableContainer = ({ children }: { children?: ReactNode }):
         ? renderLayer(
           <div className="z-1" {...layerProps}>
             <TextSelectionTools range={storedRange} onSubmit={commentSubmittedHandler} onBlur={blurFromToolsHandler} />
-            <Arrow {...arrowProps} />
           </div>,
         )
         : <></>
