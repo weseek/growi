@@ -66,3 +66,38 @@
     }
   }
 }
+
+// Animation
+.grw-primary-items :global {
+  .btn .material-symbols-outlined {
+    @keyframes notice {
+      8% { transform:rotate(6deg) translateX(-2px); }
+      18% { transform:rotate(-6deg) translateX(2px); }
+      28% { transform:rotate(4deg) translateX(-1px); }
+      38% { transform:rotate(-2deg) translateX(1px); }
+      45% { transform:rotate(1deg) translateX(0px); }
+    }
+    // memo: 0.8s
+    // @keyframes notice {
+    //   10% { transform:rotate(8deg); }
+    //   25% { transform:rotate(-8deg); }
+    //   40% { transform:rotate(5deg); }
+    //   55% { transform:rotate(-3deg); }
+    //   70% { transform:rotate(0%); }
+    // }
+    // @keyframes notice {
+    //   10% { transform:translateX(3px); }
+    //   20% { transform:translateX(0%); }
+    //   25% { transform:translateX(2px); }
+    //   27% { transform:translateX(0%); }
+    // }
+
+    &:local  {
+      &:hover {
+        transform-origin: center top;
+        // infinite ease both はプレビュー用に繰り返している
+        animation: notice 1.2s infinite ease both;
+      }
+    }
+  }
+}
