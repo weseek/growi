@@ -9,9 +9,10 @@ import {
   ListObjectsCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
+import type { Response } from 'express';
 import urljoin from 'url-join';
 
-import { IAttachmentDocument } from '~/server/models/attachment';
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';

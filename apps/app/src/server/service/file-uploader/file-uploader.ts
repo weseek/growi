@@ -1,5 +1,7 @@
 import { randomUUID } from 'crypto';
 
+import type { Response } from 'express';
+
 import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
