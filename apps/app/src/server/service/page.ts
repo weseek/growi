@@ -31,6 +31,7 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { Attachment } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
 import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
 import PageOperation, { PageOperationDocument } from '../models/page-operation';
@@ -1692,7 +1693,6 @@ class PageService {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { attachmentService } = this.crowi;

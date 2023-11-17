@@ -17,6 +17,7 @@ import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
+import { Attachment } from '../models';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
@@ -322,7 +323,6 @@ export class G2GTransferPusherService implements Pusher {
     const BATCH_SIZE = 100;
     const { fileUploadService, socketIoService } = this.crowi;
     const socket = socketIoService.getAdminSocket();
-    const Attachment = this.crowi.model('Attachment');
     const filesFromSrcGROWI = await this.listFilesInStorage(tk);
 
     /**

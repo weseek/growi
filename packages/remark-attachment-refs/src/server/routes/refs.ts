@@ -1,4 +1,6 @@
+import type { IAttachment } from '@growi/core';
 import { OptionParser } from '@growi/core/dist/remark-plugins';
+import { model } from 'mongoose';
 
 import loggerFactory from '../../utils/logger';
 
@@ -24,7 +26,6 @@ export const routesFactory = (crowi): any => {
 
   const User = crowi.model('User');
   const Page = crowi.model('Page');
-  const Attachment = crowi.model('Attachment');
 
   const { PageQueryBuilder } = Page;
 
@@ -100,6 +101,7 @@ export const routesFactory = (crowi): any => {
       orConditions.push({ _id: ObjectId(fileNameOrId) });
     }
 
+    const Attachment = model<IAttachment>('Attachment');
     const attachment = await Attachment
       .findOne({
         page: page._id,
@@ -189,15 +191,16 @@ export const routesFactory = (crowi): any => {
     logger.debug('retrieve attachments for pages:', pageIds);
 
     // create query to find
+    const Attachment = model<IAttachment>('Attachment');
     let query = Attachment
       .find({
         page: { $in: pageIds },
       });
     // add regex condition
     if (regex != null) {
-      query = query.and({
-        originalName: { $regex: regex },
-      });
+      query = query.and([
+        { originalName: { $regex: regex } },
+      ]);
     }
 
     const attachments = await query

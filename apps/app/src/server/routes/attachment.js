@@ -4,6 +4,8 @@ import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
+import { Attachment } from '../models';
+
 /* eslint-disable no-use-before-define */
 
 
@@ -134,7 +136,6 @@ const ApiResponse = require('../util/apiResponse');
  */
 
 module.exports = function(crowi, app) {
-  const Attachment = crowi.model('Attachment');
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');

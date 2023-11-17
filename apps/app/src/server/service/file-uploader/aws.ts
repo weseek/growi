@@ -12,7 +12,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Response } from 'express';
 import urljoin from 'url-join';
 
-import type { IAttachmentDocument } from '~/server/models/attachment';
+import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';

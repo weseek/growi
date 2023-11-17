@@ -6,6 +6,8 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
+import { Attachment } from './attachment';
+
 
 const crypto = require('crypto');
 
@@ -249,7 +251,6 @@ module.exports = function(crowi) {
       return this.image;
     }
     if (this.imageAttachment != null && this.imageAttachment._id != null) {
-      const Attachment = crowi.model('Attachment');
       const imageAttachment = await Attachment.findById(this.imageAttachment);
       return imageAttachment.filePathProxied;
     }

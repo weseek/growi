@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 
 import type { Response } from 'express';
 
-import type { IAttachmentDocument } from '~/server/models/attachment';
+import { Attachment, type IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -110,8 +110,6 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns Total file size
    */
   async getTotalFileSize() {
-    const Attachment = this.crowi.model('Attachment');
-
     // Get attachment total file size
     const res = await Attachment.aggregate().group({
       _id: null,

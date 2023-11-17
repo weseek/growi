@@ -1,6 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
 import { AttachmentType } from '../interfaces/attachment';
+import { Attachment } from '../models';
 
 const fs = require('fs');
 
@@ -26,8 +27,6 @@ class AttachmentService {
     if (!res.isUploadable) {
       throw new Error(res.errorMessage);
     }
-
-    const Attachment = this.crowi.model('Attachment');
 
     const fileStream = fs.createReadStream(file.path, {
       flags: 'r', encoding: null, fd: null, mode: '0666', autoClose: true,
@@ -69,7 +68,6 @@ class AttachmentService {
   }
 
   async removeAttachment(attachmentId) {
-    const Attachment = this.crowi.model('Attachment');
     const { fileUploadService } = this.crowi;
     const attachment = await Attachment.findById(attachmentId);
 
@@ -80,8 +78,6 @@ class AttachmentService {
   }
 
   async isBrandLogoExist() {
-    const Attachment = this.crowi.model('Attachment');
-
     const query = { attachmentType: AttachmentType.BRAND_LOGO };
     const count = await Attachment.countDocuments(query);
 

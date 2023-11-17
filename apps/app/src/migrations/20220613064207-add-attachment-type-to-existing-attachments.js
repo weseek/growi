@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 
 import { AttachmentType } from '~/server/interfaces/attachment';
-import attachmentModel from '~/server/models/attachment';
-import { getModelSafely, getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
+import { Attachment } from '~/server/models';
+import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:migrate:add-attachment-type-to-existing-attachments');
@@ -11,7 +11,6 @@ module.exports = {
   async up(db) {
     logger.info('Apply migration');
     mongoose.connect(getMongoUri(), mongoOptions);
-    const Attachment = getModelSafely('Attachment') || attachmentModel();
 
     // Add attachmentType for wiki page
     // Filter pages where "attachmentType" doesn't exist and "page" is not null

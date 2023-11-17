@@ -18,11 +18,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import Activity from '../models/activity';
-import PageRedirect from '../models/page-redirect';
-import ShareLink from '../models/share-link';
-import Tag from '../models/tag';
-import UserGroup from '../models/user-group';
+import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
@@ -39,7 +35,6 @@ import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
-const models = require('../models');
 
 const sep = path.sep;
 
@@ -294,20 +289,15 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  let allModels = {};
+  Object.keys(modelsDependsOnCrowi).forEach((key) => {
+    const factory = modelsDependsOnCrowi[key];
 
-  // include models that dependent on crowi
-  allModels = models;
+    if (!(factory instanceof Function)) {
+      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
+      return;
+    }
 
-  // include models that independent from crowi
-  allModels.Activity = Activity;
-  allModels.Tag = Tag;
-  allModels.UserGroup = UserGroup;
-  allModels.PageRedirect = PageRedirect;
-  allModels.ShareLink = ShareLink;
-
-  Object.keys(allModels).forEach((key) => {
-    return this.model(key, models[key](this));
+    return this.model(key, modelsDependsOnCrowi[key](this));
   });
 
 };

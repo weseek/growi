@@ -9,6 +9,7 @@ import multer from 'multer';
 import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { Attachment } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -102,7 +103,6 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
   const { customizeService, attachmentService } = crowi;
-  const Attachment = crowi.model('Attachment');
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const validator = {
     layout: [
