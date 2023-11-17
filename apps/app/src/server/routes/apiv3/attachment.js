@@ -1,5 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
+import { SupportedAction } from '~/interfaces/activity';
+import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -10,6 +12,8 @@ const express = require('express');
 const router = express.Router();
 const { query } = require('express-validator');
 
+const { serializePageSecurely } = require('../../models/serializers/page-serializer');
+const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
 const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
 /**
@@ -24,6 +28,9 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const Attachment = crowi.model('Attachment');
+  const { attachmentService } = crowi;
+
+  const activityEvent = crowi.event('activity');
 
   const validator = {
     attachment: [
@@ -178,6 +185,122 @@ module.exports = (crowi) => {
     const fileSize = Number(req.query.fileSize);
     return res.apiv3(await fileUploadService.checkLimit(fileSize));
   });
+
+
+  /**
+   * @swagger
+   *
+   *    /attachment/add:
+   *      post:
+   *        tags: [Attachment, CrowiCompatibles]
+   *        operationId: addAttachment
+   *        summary: /attachment/add
+   *        description: Add attachment to the page
+   *        requestBody:
+   *          content:
+   *            "multipart/form-data":
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    nullable: true
+   *                    type: string
+   *                  path:
+   *                    nullable: true
+   *                    type: string
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *            "*\/*":
+   *              schema:
+   *                properties:
+   *                  page_id:
+   *                    nullable: true
+   *                    type: string
+   *                  path:
+   *                    nullable: true
+   *                    type: string
+   *                  file:
+   *                    type: string
+   *                    format: binary
+   *                    description: attachment data
+   *              encoding:
+   *                path:
+   *                  contentType: application/x-www-form-urlencoded
+   *        responses:
+   *          200:
+   *            description: Succeeded to add attachment.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    page:
+   *                      $ref: '#/components/schemas/Page'
+   *                    attachment:
+   *                      $ref: '#/components/schemas/Attachment'
+   *                    url:
+   *                      $ref: '#/components/schemas/Attachment/properties/url'
+   *                    pageCreated:
+   *                      type: boolean
+   *                      description: whether the page was created
+   *                      example: false
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  /**
+   * @api {post} /attachment/add Add attachment to the page
+   * @apiName AddAttachment
+   * @apiGroup Attachment
+   *
+   * @apiParam {String} page_id
+   * @apiParam {File} file
+   */
+  router.post('/add', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
+    const pageId = req.body.page_id || null;
+    const pagePath = req.body.path || null;
+
+    // check params
+    if (pageId == null && pagePath == null) {
+      return res.apiv3Err('Either page_id or path is required.');
+    }
+    if (req.file == null) {
+      return res.apiv3Err('File error.');
+    }
+
+    const file = req.file;
+
+    try {
+      const page = await Page.findById(pageId);
+
+      // check the user is accessible
+      const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
+      if (!isAccessible) {
+        return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
+      }
+
+      const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+
+      const result = {
+        page: serializePageSecurely(page),
+        revision: serializeRevisionSecurely(page.revision),
+        attachment: attachment.toObject({ virtuals: true }),
+      };
+
+      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
+
+      res.apiv3(result);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(err.message);
+    }
+  });
+
 
   return router;
 };

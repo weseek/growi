@@ -17,8 +17,7 @@ import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { apiPostForm } from '~/client/util/apiv1-client';
-import { apiv3Get } from '~/client/util/apiv3-client';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -328,7 +327,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
         }
 
-        const resAdd: any = await apiPostForm('/attachments.add', formData);
+        const resAdd: any = await apiv3PostForm('/attachment/add', formData);
+
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
