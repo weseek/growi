@@ -39,6 +39,10 @@ const UPLOAD_CONFIG_KEYS = [
   'gcs:uploadNamespace',
   'gcs:referenceFileWithRelayMode',
   'gcs:useOnlyEnvVarsForSomeOptions',
+  'azure:storageAccountName',
+  'azure:storageContainerName',
+  'azure:referenceFileWithRelayMode',
+  'azure:useOnlyEnvVarsForSomeOptions',
 ] as const;
 
 /**
@@ -544,6 +548,8 @@ export class G2GTransferReceiverService implements Receiver {
       bucket: undefined,
       customEndpoint: undefined, // for S3
       uploadNamespace: undefined, // for GCS
+      accountName: undefined, // for Azure Blob
+      containerName: undefined,
     };
 
     // put storage location info to check storage identification
@@ -555,6 +561,10 @@ export class G2GTransferReceiverService implements Receiver {
       case 'gcs':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
         attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        break;
+      case 'azure':
+        attachmentInfo.accountName = configManager.getConfig('crowi', 'azure:storageAccountName');
+        attachmentInfo.containerName = configManager.getConfig('crowi', 'azure:storageContainerName');
         break;
       default:
     }
