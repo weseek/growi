@@ -9,13 +9,14 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiv3Get, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { useStaticSWR } from '~/stores/use-static-swr';
 
-import type {
-  IWorkflowHasId,
-  IWorkflowPaginateResult,
-  EditingApproverGroup,
-  CreateWorkflowApproverGroupData,
-  CreateApproverGroupData,
-  UpdateApproverGroupData,
+import {
+  WorkflowApproverStatus,
+  type IWorkflowHasId,
+  type IWorkflowPaginateResult,
+  type EditingApproverGroup,
+  type CreateWorkflowApproverGroupData,
+  type CreateApproverGroupData,
+  type UpdateApproverGroupData,
 } from '../../interfaces/workflow';
 
 
@@ -54,6 +55,7 @@ type UpdateWorkflowData = {
 
 type UseSWRxWorkflowUtils = {
   update(updateData: UpdateWorkflowData): Promise<void>
+  updateApproverStatus(approverStatus: WorkflowApproverStatus): Promise<void>
 };
 
 export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSWRxWorkflowUtils, IWorkflowHasId, Error> => {
@@ -75,7 +77,12 @@ export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSW
     swrResponse.mutate(response.data.updatedWorkflow);
   }, [swrResponse, workflowId]);
 
-  return withUtils<UseSWRxWorkflowUtils, IWorkflowHasId, Error>(swrResponse, { update });
+  const updateApproverStatus = useCallback(async(approverStatus: WorkflowApproverStatus) => {
+    const response = await apiv3Put(`/workflow/${workflowId}/status`, { approverStatus });
+    swrResponse.mutate(response.data.updatedWorkflow);
+  }, [swrResponse, workflowId]);
+
+  return withUtils<UseSWRxWorkflowUtils, IWorkflowHasId, Error>(swrResponse, { update, updateApproverStatus });
 };
 
 
