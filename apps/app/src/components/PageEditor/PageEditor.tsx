@@ -99,7 +99,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
@@ -219,12 +219,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
-      pageTags: pageTags ?? [],
       grantUserGroupId: grantData.grantedGroup?.id,
       grantUserGroupName: grantData.grantedGroup?.name,
     };
     return optionsToSave;
-  }, [grantData, isSlackEnabled, pageTags]);
+  }, [grantData, isSlackEnabled]);
 
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {

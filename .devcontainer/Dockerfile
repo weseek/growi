@@ -37,7 +37,9 @@ RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends git-lfs \
+    && apt-get -y install --no-install-recommends \
+      git-lfs \
+      iputils-ping net-tools dnsutils \
 
     # Uncomment below lines to install Chromium
     # --- works only on AMD64 ---
