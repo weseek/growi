@@ -1,18 +1,49 @@
-export const PagePath = () => {
+import { FC, useState } from 'react';
+
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+
+import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
+
+type Props = {
+  currentPagePath: string
+  currentPage: IPagePopulatedToShowRevision
+}
+
+export const PagePath: FC<Props> = (props) => {
+  const { currentPagePath, currentPage } = props;
+
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isButtonsShown, setButtonShown] = useState(false);
+
+  const stateHandler = { isRenameInputShown, setRenameInputShown };
 
   return (
     <>
       <div className="container">
         <div className="row">
-          <div className="col-4">
-            <div>PagePath</div>
+          <div
+            className="col-4"
+            // onMouseEnter={setButtonShown(true)}
+            // onMouseLeave={setButtonShown(false)}
+          >
+            <TextInputForPageTitleAndPath
+              currentPagePath={currentPagePath}
+              currentPage={currentPage}
+              stateHandler={stateHandler}
+              inputValue={currentPagePath}
+            />
           </div>
-          <div className="col-4">
-            <button type="button">編集ボタン</button>
-          </div>
-          <div className="col-4">
-            <button type="button">ページツリーボタン</button>
-          </div>
+          { isButtonsShown
+          && (
+            <>
+              <div className="col-4">
+                <button type="button">編集ボタン</button>
+              </div>
+              <div className="col-4">
+                <button type="button">ページツリーボタン</button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </>
