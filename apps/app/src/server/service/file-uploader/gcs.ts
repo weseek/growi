@@ -1,18 +1,55 @@
+import { Storage } from '@google-cloud/storage';
+import { Response } from 'express';
+import urljoin from 'url-join';
+
+import { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { AbstractFileUploader } from './file-uploader';
+import { configManager } from '../config-manager';
 
-const logger = loggerFactory('growi:service:fileUploaderAws');
+import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
 
-const { Storage } = require('@google-cloud/storage');
-const urljoin = require('url-join');
+const logger = loggerFactory('growi:service:fileUploaderGcs');
 
-let _instance;
 
+// TODO: rewrite this module to be a type-safe implementation
+class GcsFileUploader extends AbstractFileUploader {
+
+  /**
+   * @inheritdoc
+   */
+  override isValidUploadSettings(): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override saveFile(param: SaveFileParam) {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override deleteFiles() {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override respond(res: Response, attachment: IAttachmentDocument): void {
+    throw new Error('Method not implemented.');
+  }
+
+}
+
+
+let _instance: Storage;
 
 module.exports = function(crowi) {
-  const { configManager } = crowi;
-  const lib = new AbstractFileUploader(crowi);
+  const lib = new GcsFileUploader(crowi);
 
   function getGcsBucket() {
     return configManager.getConfig('crowi', 'gcs:bucket');
@@ -92,19 +129,19 @@ module.exports = function(crowi) {
 
   };
 
-  lib.deleteFile = function(attachment) {
+  (lib as any).deleteFile = function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
-    return lib.deleteFilesByFilePaths([filePath]);
+    return (lib as any).deleteFilesByFilePaths([filePath]);
   };
 
-  lib.deleteFiles = function(attachments) {
+  (lib as any).deleteFiles = function(attachments) {
     const filePaths = attachments.map((attachment) => {
       return getFilePathOnStorage(attachment);
     });
-    return lib.deleteFilesByFilePaths(filePaths);
+    return (lib as any).deleteFilesByFilePaths(filePaths);
   };
 
-  lib.deleteFilesByFilePaths = function(filePaths) {
+  (lib as any).deleteFilesByFilePaths = function(filePaths) {
     if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -121,7 +158,7 @@ module.exports = function(crowi) {
     });
   };
 
-  lib.uploadAttachment = function(fileStream, attachment) {
+  (lib as any).uploadAttachment = function(fileStream, attachment) {
     if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -151,7 +188,7 @@ module.exports = function(crowi) {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  lib.findDeliveryFile = async function(attachment) {
+  (lib as any).findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -186,7 +223,7 @@ module.exports = function(crowi) {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async function(uploadFileSize) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
     const gcsTotalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, gcsTotalLimit);
@@ -195,7 +232,7 @@ module.exports = function(crowi) {
   /**
    * List files in storage
    */
-  lib.listFiles = async function() {
+  (lib as any).listFiles = async function() {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }
