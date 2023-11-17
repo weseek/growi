@@ -1,18 +1,17 @@
 import type {
-  Nullable, Ref, HasObjectId,
+  Ref, HasObjectId,
   IPage, IRevision, IUser,
 } from '@growi/core';
 
 export type IComment = {
+  page: Ref<IPage>,
+  creator: Ref<IUser>,
+  revision: Ref<IRevision>,
   comment: string;
   commentPosition: number,
-  isMarkdown: boolean,
-  replyTo: Nullable<string>,
+  replyTo?: string,
   createdAt: Date,
   updatedAt: Date,
-  page: Ref<IPage>,
-  revision: Ref<IRevision>,
-  creator: IUser,
 };
 
 export interface ICommentPostArgs {
