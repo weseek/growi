@@ -345,7 +345,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     if (hackmdUri == null) {
       content = (
         <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> { t('hackmd.not_set_up')}</p>
+          <p className="text-center hackmd-status-label"><span className="material-symbols-outlined">description</span> { t('hackmd.not_set_up')}</p>
           {/* eslint-disable-next-line react/no-danger */}
           <p dangerouslySetInnerHTML={{ __html: t('hackmd.need_to_associate_with_growi_to_use_hackmd_refer_to_this') }} />
         </div>
