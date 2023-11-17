@@ -833,11 +833,16 @@
       "AND": "大家的认可",
       "OR": "一个人的认可"
     },
-    "statuses": {
+    "workflow-statuses": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
       "REJECT": "拒绝",
       "CANCEL": "取消"
+    },
+    "approver_status": {
+      "APPROVE": "批准",
+      "REMAND": "还押",
+      "DELEGATE": "代表们"
     }
   }
 }
