@@ -71,12 +71,21 @@
 .grw-primary-items :global {
   .btn .material-symbols-outlined {
     @keyframes notice {
-      8% { transform:rotate(6deg) translateX(-2px); }
-      18% { transform:rotate(-6deg) translateX(2px); }
-      28% { transform:rotate(4deg) translateX(-1px); }
-      38% { transform:rotate(-2deg) translateX(1px); }
-      45% { transform:rotate(1deg) translateX(0px); }
+      // scaleを追加して強調
+      8% { transform:rotate(6deg) translateX(-2px) scale(1.1, 1.1); }
+      18% { transform:rotate(-6deg) translateX(2px) scale(1.1, 1.1); }
+      28% { transform:rotate(4deg) translateX(-1px) scale(1.1, 1.1); }
+      38% { transform:rotate(-2deg) translateX(1px) scale(1.1, 1.1); }
+      45% { transform:rotate(1deg) translateX(0px) scale(1.1, 1.1) ; }
+      60% { transform:scale(1.0, 1.0) ; }
     }
+    // @keyframes notice {
+    //   8% { transform:rotate(6deg) translateX(-2px); }
+    //   18% { transform:rotate(-6deg) translateX(2px); }
+    //   28% { transform:rotate(4deg) translateX(-1px); }
+    //   38% { transform:rotate(-2deg) translateX(1px); }
+    //   45% { transform:rotate(1deg) translateX(0px); }
+    // }
     // memo: 0.8s
     // @keyframes notice {
     //   10% { transform:rotate(8deg); }
