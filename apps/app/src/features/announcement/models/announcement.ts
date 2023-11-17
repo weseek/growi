@@ -2,17 +2,17 @@ import {
   Types, Document, Schema, Model,
 } from 'mongoose';
 
-import { getOrCreateModel } from '../../server/util/mongoose-utils';
-
-import { AnnouncementStatuses } from './announcement-utils';
+import { getOrCreateModel } from '../../../server/util/mongoose-utils';
+import { AnnouncementStatuses } from '../announcement-utils';
+import { IAnnouncement } from '../interfaces/announcement';
 
 type AnnouncementStatuses = typeof AnnouncementStatuses;
 
-export interface AnnouncementDocument extends Document {
+export interface AnnouncementDocument extends IAnnouncement, Document {
   _id: Types.ObjectId
   sender: Types.ObjectId
   comment?: string
-  emoji: string
+  emoji?: string
   isReadReceiptTrackingEnabled: boolean
   pageId: Types.ObjectId
   receivers: [
