@@ -177,13 +177,8 @@ module.exports = (crowi: Crowi): Router => {
       description,
     } = req.body;
 
-    if (typeof description !== 'string') {
-      res.apiv3Err(new ErrorV3('Invalid description'));
-      return;
-    }
-
     try {
-      const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
+      const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { $set: { description } });
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
