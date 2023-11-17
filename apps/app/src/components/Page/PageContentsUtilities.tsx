@@ -1,30 +1,19 @@
+import { FC } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
-import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
+import { useModalLauncherForView } from '~/client/services/side-effects/modal-launcher-for-view';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { SaveByModalType } from '~/interfaces/page-operation';
 import { useCurrentPageId } from '~/stores/page';
 
-
-export const PageContentsUtilities = (): null => {
+const ModalLauncherUtility: FC<{ modalType: SaveByModalType }> = ({ modalType }) => {
   const { t } = useTranslation();
-
   const { data: pageId } = useCurrentPageId();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  useHandsontableModalLauncherForView({
-    onSaveSuccess: () => {
-      toastSuccess(t('toaster.save_succeeded'));
-
-      updateStateAfterSave?.();
-    },
-    onSaveError: (error) => {
-      toastError(error);
-    },
-  });
-
-  useDrawioModalLauncherForView({
+  useModalLauncherForView(modalType, {
     onSaveSuccess: () => {
       toastSuccess(t('toaster.save_succeeded'));
 
@@ -36,4 +25,16 @@ export const PageContentsUtilities = (): null => {
   });
 
   return null;
+};
+
+export const PageContentsUtilities: FC = () => {
+  const modalTypes: SaveByModalType[] = Object.values(SaveByModalType);
+
+  return (
+    <>
+      {modalTypes.map(modalType => (
+        <ModalLauncherUtility key={modalType} modalType={modalType} />
+      ))}
+    </>
+  );
 };

@@ -36,3 +36,10 @@ export type OptionsToSave = {
   grantUserGroupName?: string | null;
   isSyncRevisionToHackmd?: boolean;
 };
+
+export const SaveByModalType = {
+  DRAWIO: 'drawio',
+  HANDSONTABLE: 'handsontable',
+} as const;
+
+export type SaveByModalType = typeof SaveByModalType[keyof typeof SaveByModalType];
