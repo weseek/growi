@@ -184,7 +184,7 @@ module.exports = (crowi) => {
       body('sesSecretAccessKey').trim(),
     ],
     fileUploadSetting: [
-      body('fileUploadType').isIn(['aws', 'gcs', 'local', 'gridfs']),
+      body('fileUploadType').isIn(['aws', 'gcs', 'local', 'gridfs', 'azure']),
       body('gcsApiKeyJsonPath').trim(),
       body('gcsBucket').trim(),
       body('gcsUploadNamespace').trim(),
@@ -197,6 +197,13 @@ module.exports = (crowi) => {
       body('s3AccessKeyId').trim().if(value => value !== '').matches(/^[\da-zA-Z]+$/),
       body('s3SecretAccessKey').trim(),
       body('s3ReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
+      body('azureTenantId').trim(),
+      body('azureClientId').trim(),
+      body('azureClientSecret').trim(),
+      body('azureStorageAccountName').trim(),
+      body('azureStorageStorageName').trim(),
+      body('azureReferenceFileWithRelayMode').if(value => value != null).isBoolean(),
+
     ],
     questionnaireSettings: [
       body('isQuestionnaireEnabled').isBoolean(),
@@ -268,6 +275,20 @@ module.exports = (crowi) => {
       envGcsApiKeyJsonPath: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:apiKeyJsonPath'),
       envGcsBucket: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:bucket'),
       envGcsUploadNamespace: crowi.configManager.getConfigFromEnvVars('crowi', 'gcs:uploadNamespace'),
+
+      azureUseOnlyEnvVars: crowi.configManager.getConfig('crowi', 'azure:useOnlyEnvVarsForSomeOptions'),
+      azureTenantId: crowi.configManager.getConfigFromDB('crowi', 'azure:tenantId'),
+      azureClientId: crowi.configManager.getConfigFromDB('crowi', 'azure:clientId'),
+      azureClientSecret: crowi.configManager.getConfigFromDB('crowi', 'azure:clientSecret'),
+      azureStorageAccountName: crowi.configManager.getConfigFromDB('crowi', 'azure:storageAccountName'),
+      azureStorageContainerName: crowi.configManager.getConfigFromDB('crowi', 'azure:storageContainerName'),
+      azureReferenceFileWithRelayMode: crowi.configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode'),
+
+      envAzureTenantId: crowi.configManager.getConfigFromEnvVars('crowi', 'azure:tenantId'),
+      envAzureClientId: crowi.configManager.getConfigFromEnvVars('crowi', 'azure:clientId'),
+      envAzureClientSecret: crowi.configManager.getConfigFromEnvVars('crowi', 'azure:clientSecret'),
+      envAzureStorageAccountName: crowi.configManager.getConfigFromEnvVars('crowi', 'azure:storageAccountName'),
+      envAzureStorageContainerName: crowi.configManager.getConfigFromEnvVars('crowi', 'azure:storageContainerName'),
 
       isEnabledPlugins: crowi.configManager.getConfig('crowi', 'plugin:isEnabledPlugins'),
 
@@ -648,6 +669,15 @@ module.exports = (crowi) => {
       requestParams['aws:referenceFileWithRelayMode'] = req.body.s3ReferenceFileWithRelayMode;
     }
 
+    if (fileUploadType === 'azure') {
+      requestParams['azure:tenantId'] = req.body.azureTenantId;
+      requestParams['azure:clientId'] = req.body.azureClientId;
+      requestParams['azure:clientSecret'] = req.body.azureClientSecret;
+      requestParams['azure:storageAccountName'] = req.body.azureStorageAccountName;
+      requestParams['azure:storageContainerName'] = req.body.azureStorageContainerName;
+      requestParams['azure:referenceFileWithRelayMode'] = req.body.azureReferenceFileWithRelayMode;
+    }
+
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams, true);
 
@@ -676,6 +706,15 @@ module.exports = (crowi) => {
         responseParams.s3Bucket = crowi.configManager.getConfig('crowi', 'aws:s3Bucket');
         responseParams.s3AccessKeyId = crowi.configManager.getConfig('crowi', 'aws:s3AccessKeyId');
         responseParams.s3ReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
+      }
+
+      if (fileUploadType === 'azure') {
+        responseParams.azureTenantId = crowi.configManager.getConfig('crowi', 'azure:tenantId');
+        responseParams.azureClientId = crowi.configManager.getConfig('crowi', 'azure:clientId');
+        responseParams.azureClientSecret = crowi.configManager.getConfig('crowi', 'azure:clientSecret');
+        responseParams.azureStorageAccountName = crowi.configManager.getConfig('crowi', 'azure:storageAccountName');
+        responseParams.azureStorageContainerName = crowi.configManager.getConfig('crowi', 'azure:storageContainerName');
+        responseParams.azureReferenceFileWithRelayMode = crowi.configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode');
       }
       const parameters = { action: SupportedAction.ACTION_ADMIN_FILE_UPLOAD_CONFIG_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);

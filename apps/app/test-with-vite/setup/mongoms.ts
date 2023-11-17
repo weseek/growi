@@ -1,4 +1,4 @@
-import { MongoMemoryServer } from 'mongodb-memory-server';
+import { MongoMemoryServer } from 'mongodb-memory-server-core';
 import mongoose from 'mongoose';
 
 import { mongoOptions } from '~/server/util/mongoose-utils';
