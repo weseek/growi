@@ -181,6 +181,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
         <div className="visually-hidden">
+          {/*  Unsettled 11.17 meiri-k */}
           <i className="fa fa-spinner fa-pulse" />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
@@ -196,7 +197,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
             <span className="input-group-text">
-              <i className="icon-user"></i>
+              <span className="material-symbols-outlined">person</span>
             </span>
             <input
               type="text"
@@ -208,14 +209,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             />
             {isLdapStrategySetup && (
               <small className="input-group-text text-success">
-                <i className="icon-fw icon-check"></i> LDAP
+                <span className="material-symbols-outlined">select_check_box</span>LDAP
               </small>
             )}
           </div>
 
           <div className="input-group">
             <span className="input-group-text">
-              <i className="icon-lock"></i>
+              <span className="material-symbols-outlined">lock</span>
             </span>
             <input
               type="password"
@@ -237,7 +238,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-login'} />
+                {/* spinner.Tentative decision meiri-k 11.17 */}
+                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -416,7 +418,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <div>
               <div className="input-group" id="input-group-username">
                 <span className="input-group-text">
-                  <i className="icon-user"></i>
+                  <span className="material-symbols-outlined">person</span>
                 </span>
                 {/* username */}
                 <input
@@ -434,7 +436,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               </p>
               <div className="input-group">
                 <span className="input-group-text">
-                  <i className="icon-tag"></i>
+                  <span className="material-symbols-outlined">sell</span>
                 </span>
                 {/* name */}
                 <input
@@ -452,7 +454,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
           <div className="input-group">
             <span className="input-group-text">
-              <i className="icon-envelope"></i>
+              <span className="material-symbols-outlined">mail</span>
             </span>
             {/* email */}
             <input
@@ -486,7 +488,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <div>
               <div className="input-group">
                 <span className="input-group-text">
-                  <i className="icon-lock"></i>
+                  <span className="material-symbols-outlined">lock</span>
                 </span>
                 {/* Password */}
                 <input
@@ -511,7 +513,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} />
+                {/* spinner.Tentative decision meiri-k 11.17 */}
+                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -529,7 +532,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={switchForm}
             >
-              <i className="icon-fw icon-login"></i>
+              <span className="material-symbols-outlined">login</span>
               {t('Sign in is here')}
             </a>
           </div>
@@ -557,7 +560,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="text-end mb-2">
                     <a href="/forgot-password" className="d-block link-switch">
-                      <i className="icon-key"></i> {t('forgot_password.forgot_password')}
+                      <span className="material-symbols-outlined">vpn_key</span> {t('forgot_password.forgot_password')}
                     </a>
                   </div>
                 )}
