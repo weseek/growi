@@ -8,13 +8,13 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
 import {
-  type IWorkflowApproverGroupReq,
   WorkflowStatus,
   WorkflowStatuses,
   WorkflowApproverStatus,
   WorkflowApproverStatuses,
   WorkflowApprovalType,
   WorkflowApprovalTypes,
+  type CreateWorkflowApproverGroupData,
 } from '../../interfaces/workflow';
 
 
@@ -121,7 +121,7 @@ WorkflowApproverGroupSchema.methods.approve = function(userId: string) {
 // Rewrote the interface of the splice method to add new data to the ApproverGroups array, since it must be in the form of a "WorkflowApproverGroupDocument"
 type WorkflowApproverGroupDocumentWithoutArraySplice = Omit<
   Types.DocumentArray<WorkflowApproverGroupDocument
->, 'splice'> & { splice: (start: number, deleteCount: number, item: IWorkflowApproverGroupReq) => void }
+>, 'splice'> & { splice: (start: number, deleteCount: number, item: CreateWorkflowApproverGroupData) => void }
 
 export type IWorkflowDocument = {
   creator: Ref<IUser>
@@ -131,9 +131,7 @@ export type IWorkflowDocument = {
   status: WorkflowStatus,
   approverGroups: WorkflowApproverGroupDocumentWithoutArraySplice
 };
-export interface WorkflowDocument extends IWorkflowDocument, Document {
-  getLatestApprovedApproverGroupIndex(): number | null
-}
+export interface WorkflowDocument extends IWorkflowDocument, Document {}
 interface WorkflowModel extends Model<WorkflowDocument> {
   hasInprogressWorkflowInTargetPage(pageId: ObjectIdLike): Promise<boolean>
 }
@@ -170,20 +168,6 @@ WorkflowSchema.plugin(mongoosePaginate);
 WorkflowSchema.statics.hasInprogressWorkflowInTargetPage = async function(pageId: ObjectIdLike) {
   const workflow = await this.exists({ pageId, status: WorkflowStatus.INPROGRESS });
   return workflow != null;
-};
-
-WorkflowSchema.methods.getLatestApprovedApproverGroupIndex = function(): number | null {
-  const workflow = this as WorkflowDocument;
-  const apprverGroupsLength = workflow.approverGroups.length;
-
-  for (let i = apprverGroupsLength; i > 0; i--) {
-    const groupIndex = i - 1;
-    if (workflow.approverGroups[groupIndex].isApproved) {
-      return groupIndex;
-    }
-  }
-
-  return null;
 };
 
 // Called before save()

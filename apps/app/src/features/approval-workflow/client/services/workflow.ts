@@ -3,10 +3,10 @@ import { useState, useCallback, useMemo } from 'react';
 import { apiv3Delete } from '~/client/util/apiv3-client';
 
 import {
-  type IWorkflowApproverGroupHasId,
-  type EditingApproverGroup,
-  WorkflowApproverStatus,
   WorkflowApprovalType,
+  WorkflowApproverStatus,
+  type EditingApproverGroup,
+  type IWorkflowApproverGroupHasId,
 } from '../../interfaces/workflow';
 
 export const deleteWorkflow = async(workflowId: string): Promise<void> => {

@@ -13,6 +13,7 @@ import type {
   IWorkflowHasId,
   IWorkflowPaginateResult,
   EditingApproverGroup,
+  CreateWorkflowApproverGroupData,
   CreateApproverGroupData,
   UpdateApproverGroupData,
 } from '../../interfaces/workflow';
@@ -89,16 +90,14 @@ export const useSWRxWorkflowList = (pageId?: string, limit?: number, offset?: nu
 };
 
 
-// Data type for requests to POST:/workflow
-type TransformedApproverGroup = Omit<EditingApproverGroup, 'approvers' | 'uuidForRenderList'>& { approvers: { user: string }[] };
-
-const transformToRequestData = (approverGroups?: EditingApproverGroup[]): TransformedApproverGroup[] | undefined => {
+// Convert EditingApproverGroup[] to CreateWorkflowApproverGroupData[]
+const transformToRequestData = (approverGroups?: EditingApproverGroup[]): CreateWorkflowApproverGroupData[] | undefined => {
   if (approverGroups == null) {
     return;
   }
 
   const clonedApproverGroups = [...approverGroups];
-  const transformedApproverGroups: TransformedApproverGroup[] = [];
+  const transformedApproverGroups: CreateWorkflowApproverGroupData[] = [];
 
   clonedApproverGroups.forEach((group) => {
     const approvers = group.approvers.map((v) => { return { user: v.user._id } });

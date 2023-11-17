@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
@@ -9,7 +9,6 @@ import {
   type EditingApproverGroup,
   type CreateApproverGroupData,
   type UpdateApproverGroupData,
-  WorkflowApproverStatus,
 } from '~/features/approval-workflow/interfaces/workflow';
 
 import { getLatestApprovedApproverGroupIndex } from '../../../utils/workflow';

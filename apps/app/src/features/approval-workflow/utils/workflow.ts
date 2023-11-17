@@ -1,6 +1,7 @@
-import { IWorkflowHasId } from '../interfaces/workflow';
+import type { IWorkflowHasId } from '../interfaces/workflow';
+import type { IWorkflowDocument } from '../server/models/workflow';
 
-export const getLatestApprovedApproverGroupIndex = (workflow: IWorkflowHasId): number | null => {
+export const getLatestApprovedApproverGroupIndex = (workflow: IWorkflowHasId | IWorkflowDocument): number | null => {
   const apprverGroupsLength = workflow.approverGroups.length;
 
   for (let i = apprverGroupsLength; i > 0; i--) {

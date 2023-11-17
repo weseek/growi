@@ -1,23 +1,36 @@
-import type {
-  IWorkflowApproverGroupReq,
-  UpdateApproverGroupData,
-  CreateApproverGroupData,
+import type { Ref, IUser } from '@growi/core';
+
+import {
+  WorkflowApprovalType,
+  WorkflowApproverStatus,
+  type UpdateApproverGroupData,
+  type CreateApproverGroupData,
 } from '../../interfaces/workflow';
-import { WorkflowApprovalType, WorkflowApproverStatus } from '../../interfaces/workflow';
+import { getLatestApprovedApproverGroupIndex } from '../../utils/workflow';
 import type {
   IWorkflowDocument, WorkflowDocument, IWorkflowApproverGroupDocument, WorkflowApproverGroupDocument,
 } from '../models/workflow';
 
+
+// WorkflowApproverGroupDocumentWithoutArraySplice omit Array.prototype.splice(), so ValidateApproverGroupArg also omit it
+type ValidateApproverGroupArg = Omit<Array<{
+  approvalType: WorkflowApprovalType,
+  approvers: Array<{
+    user: Ref<IUser>
+    status?: WorkflowApproverStatus
+  }>
+}>, 'splice'>
+
 interface WorkflowApproverGroupService {
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void
   updateApproverGroup(targetWorkflow: WorkflowDocument, updateApproverGroupData: UpdateApproverGroupData[]): void
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: ValidateApproverGroupArg): void
 }
 class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   createApproverGroup(targetWorkflow: WorkflowDocument, createApproverGroupData: CreateApproverGroupData[]): void {
-    const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
+    const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(targetWorkflow);
 
     for (const data of createApproverGroupData) {
       if (latestApprovedApproverGroupIndex != null && latestApprovedApproverGroupIndex >= data.groupIndex) {
@@ -37,7 +50,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
 
   // This method should be used after passing the validation of WorkflowService.updateWorkflow()
   updateApproverGroup(targetWorkflow: WorkflowDocument, updateApproverGroupData: UpdateApproverGroupData[]): void {
-    const latestApprovedApproverGroupIndex = targetWorkflow.getLatestApprovedApproverGroupIndex();
+    const latestApprovedApproverGroupIndex = getLatestApprovedApproverGroupIndex(targetWorkflow);
 
     for (const data of updateApproverGroupData) {
       const approverGroup = targetWorkflow.approverGroups.id(data.groupId);
@@ -113,7 +126,7 @@ class WorkflowApproverGroupImpl implements WorkflowApproverGroupService {
     return;
   }
 
-  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: IWorkflowApproverGroupReq[]): void {
+  validateApproverGroups(isNew: boolean, creatorId: string, approverGroups: ValidateApproverGroupArg): void {
     const uniqueApprovers = new Set<string>();
     uniqueApprovers.add(creatorId);
 
