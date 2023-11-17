@@ -103,7 +103,7 @@ module.exports = (crowi: Crowi): Router => {
     const { groupId } = req.query;
 
     try {
-      const userGroup = await ExternalUserGroup.findById(groupId);
+      const userGroup = await ExternalUserGroup.findOne({ _id: { $eq: groupId } });
       const ancestorUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
       return res.apiv3({ ancestorUserGroups });
     }
@@ -176,6 +176,11 @@ module.exports = (crowi: Crowi): Router => {
     const {
       description,
     } = req.body;
+
+    if (typeof description !== 'string') {
+      res.apiv3Err(new ErrorV3('Invalid description'));
+      return;
+    }
 
     try {
       const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
