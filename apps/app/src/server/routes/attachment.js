@@ -311,28 +311,6 @@ module.exports = function(crowi, app) {
   };
 
   /**
-   * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
-   * @apiName get
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} pageId, fileName
-   */
-  api.obsoletedGetForMongoDB = async function(req, res) {
-    if (crowi.configManager.getConfig('crowi', 'app:fileUploadType') !== 'mongodb') {
-      return res.status(400);
-    }
-
-    const pageId = req.params.pageId;
-    const fileName = req.params.fileName;
-    const filePath = `attachment/${pageId}/${fileName}`;
-
-    const attachment = await Attachment.findOne({ filePath });
-
-    return responseForAttachment(req, res, attachment);
-  };
-
-
-  /**
    * @swagger
    *
    *    /attachments.limit:

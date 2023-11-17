@@ -155,7 +155,6 @@ module.exports = function(crowi, app) {
   app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
   app.get('/attachment/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware , loginRequired, attachment.api.get);
   app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
-  app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
   app.get('/download/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware, loginRequired, attachment.api.download);
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
