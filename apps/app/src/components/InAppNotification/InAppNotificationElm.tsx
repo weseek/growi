@@ -2,7 +2,7 @@ import React, {
   FC, useRef,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IUser, IPage, HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { DropdownItem } from 'reactstrap';
 
@@ -40,31 +40,6 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     }
   };
 
-  const getActionUsers = () => {
-    if (notification.targetModel === SupportedTargetModel.MODEL_USER) {
-      return notification.target.username;
-    }
-
-    const latestActionUsers = notification.actionUsers.slice(0, 3);
-    const latestUsers = latestActionUsers.map((user) => {
-      return `@${user.name}`;
-    });
-
-    let actionedUsers = '';
-    const latestUsersCount = latestUsers.length;
-    if (latestUsersCount === 1) {
-      actionedUsers = latestUsers[0];
-    }
-    else if (notification.actionUsers.length >= 4) {
-      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
-    }
-    else {
-      actionedUsers = latestUsers.join(', ');
-    }
-
-    return actionedUsers;
-  };
-
   const renderActionUserPictures = (): JSX.Element => {
     const actionUsers = notification.actionUsers;
 
@@ -84,9 +59,15 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     );
   };
 
-  const actionUsers = getActionUsers();
-
   const isDropdownItem = props.type === 'dropdown-item';
+
+  const isPageNotification = (notification: IInAppNotification): notification is IInAppNotification<IPage> => {
+    return notification.targetModel === SupportedTargetModel.MODEL_PAGE;
+  };
+
+  const isUserNotification = (notification: IInAppNotification): notification is IInAppNotification<IUser> => {
+    return notification.targetModel === SupportedTargetModel.MODEL_USER;
+  };
 
   // determine tag
   const TagElem = isDropdownItem
@@ -105,18 +86,16 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         >
         </span>
         {renderActionUserPictures()}
-        {notification.targetModel === SupportedTargetModel.MODEL_PAGE && (
+        {isPageNotification(notification) && (
           <PageModelNotification
             ref={notificationRef}
             notification={notification}
-            actionUsers={actionUsers}
           />
         )}
-        {notification.targetModel === SupportedTargetModel.MODEL_USER && (
+        {isUserNotification(notification) && (
           <UserModelNotification
             ref={notificationRef}
             notification={notification}
-            actionUsers={actionUsers}
           />
         )}
       </div>
