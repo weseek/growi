@@ -53,6 +53,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
+import { PageHeader } from '../PageHeader/PageHeader';
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 // import { ConflictDiffModal } from './ConflictDiffModal';
@@ -565,7 +566,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
       <div className="flex-expand-vert justify-content-center align-items-center" style={{ minHeight: '72px' }}>
-        <div>Header</div>
+        <PageHeader />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
