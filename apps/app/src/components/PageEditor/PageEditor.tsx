@@ -308,11 +308,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     files.forEach(async(file) => {
       try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const resLimit: any = await apiv3Get('/attachments.limit', {
+        const { data: resLimit }: any = await apiv3Get('/attachment/limit', {
           fileSize: file.size,
         });
-
-        console.log(resLimit);
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);

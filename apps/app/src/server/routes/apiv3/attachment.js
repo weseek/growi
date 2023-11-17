@@ -138,11 +138,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /attachments/limit:
+   *    /attachment/limit:
    *      get:
-   *        tags: [Attachments]
-   *        operationId: getAttachmentsLimit
-   *        summary: /attachments/limit
+   *        tags: [Attachment]
+   *        operationId: getAttachmentLimit
+   *        summary: /attachment/limit
    *        description: Get available capacity of uploaded file with GridFS
    *        parameters:
    *          - in: query
@@ -169,15 +169,15 @@ module.exports = (crowi) => {
    *            $ref: '#/components/responses/500'
    */
   /**
-   * @api {get} /attachments/limit get available capacity of uploaded file with GridFS
-   * @apiName AddAttachments
+   * @api {get} /attachment/limit get available capacity of uploaded file with GridFS
+   * @apiName AddAttachment
    * @apiGroup Attachment
    */
-  router.get('/limit', accessTokenParser, loginRequired, validator.retrieveAttachments, apiV3FormValidator, async(req, res) => {
+  router.get('/limit', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
-    const resLimit = await fileUploadService.checkLimit(fileSize);
-    return res.apiv3({ resLimit });
+    return res.apiv3(await fileUploadService.checkLimit(fileSize));
   });
+
   return router;
 };
