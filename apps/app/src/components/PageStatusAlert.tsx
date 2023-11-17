@@ -57,7 +57,7 @@ export const PageStatusAlert = (): JSX.Element => {
   // </>,
   //     btn:
   // <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-  //   <i className="fa fa-fw fa-file-text-o me-1"></i>
+  //   <span class="material-symbols-outlined">description</span>
   //   Open HackMD Editor
   // </a>,
   //   };
@@ -76,7 +76,7 @@ export const PageStatusAlert = (): JSX.Element => {
       additionalClasses: ['bg-warning text-dark'],
       label:
   <>
-    <i className="icon-fw icon-bulb"></i>
+    <span className="material-symbols-outlined">lightbulb</span>
     {label1}
   </>,
       btn:
@@ -91,7 +91,7 @@ export const PageStatusAlert = (): JSX.Element => {
         onClick={onClickResolveConflict}
         className="btn btn-outline-white"
       >
-        <i className="fa fa-fw fa-file-text-o me-1"></i>
+        <span className="material-symbols-outlined">description</span>
         {t('modal_resolve_conflict.resolve_conflict')}
       </button>
     )}

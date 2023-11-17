@@ -181,7 +181,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
         <div className="visually-hidden">
-          {/*  Unsettled 11.17 meiri-k */}
+          {/* Unsettled 11.17 meiri-k */}
           <i className="fa fa-spinner fa-pulse" />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
@@ -532,8 +532,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={switchForm}
             >
-              <span className="material-symbols-outlined">login</span>
-              {t('Sign in is here')}
+              <span className="material-symbols-outlined">login</span>{t('Sign in is here')}
             </a>
           </div>
         </div>
@@ -560,7 +559,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="text-end mb-2">
                     <a href="/forgot-password" className="d-block link-switch">
-                      <span className="material-symbols-outlined">vpn_key</span> {t('forgot_password.forgot_password')}
+                      <span className="material-symbols-outlined">vpn_key</span>{t('forgot_password.forgot_password')}
                     </a>
                   </div>
                 )}
