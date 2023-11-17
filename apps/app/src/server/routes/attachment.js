@@ -335,52 +335,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /attachments.limit:
-   *      get:
-   *        tags: [Attachments]
-   *        operationId: getAttachmentsLimit
-   *        summary: /attachments.limit
-   *        description: Get available capacity of uploaded file with GridFS
-   *        parameters:
-   *          - in: query
-   *            name: fileSize
-   *            schema:
-   *              type: number
-   *              description: file size
-   *              example: 23175
-   *            required: true
-   *        responses:
-   *          200:
-   *            description: Succeeded to get available capacity of uploaded file with GridFS.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    isUploadable:
-   *                      type: boolean
-   *                      description: uploadable
-   *                      example: true
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /attachments.limit get available capacity of uploaded file with GridFS
-   * @apiName AddAttachments
-   * @apiGroup Attachment
-   */
-  api.limit = async function(req, res) {
-    const { fileUploadService } = crowi;
-    const fileSize = Number(req.query.fileSize);
-    return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
-  };
-
-  /**
-   * @swagger
-   *
    *    /attachments.add:
    *      post:
    *        tags: [Attachments, CrowiCompatibles]
