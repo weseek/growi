@@ -1,10 +1,11 @@
 // TODO: https://redmine.weseek.co.jp/issues/130337
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
-import { IWorkflowHasId } from '../../../interfaces/workflow';
+import { type IWorkflowHasId, WorkflowApproverStatus } from '../../../interfaces/workflow';
+import { useSWRxWorkflow } from '../../stores/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
@@ -19,6 +20,16 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { workflow, onClickWorkflowEditButton, onClickWorkflowListPageBackButton } = props;
+  const { updateApproverStatus } = useSWRxWorkflow(workflow?._id);
+
+  const approveButtonClickHandler = useCallback(async() => {
+    try {
+      updateApproverStatus(WorkflowApproverStatus.APPROVE);
+    }
+    catch (err) {
+      // TODO: Consider how to display errors
+    }
+  }, [updateApproverStatus]);
 
   return (
     <>
@@ -33,6 +44,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
+        <button type="button" onClick={approveButtonClickHandler}>{t('approval_workflow.approver_status.APPROVE')}</button>
       </ModalFooter>
     </>
   );

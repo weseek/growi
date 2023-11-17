@@ -127,7 +127,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                       </div>
                     </td>
                     <td>
-                      {t(`approval_workflow.statuses.${workflow.status}`)}
+                      {t(`approval_workflow.workflow_status.${workflow.status}`)}
                     </td>
                     <td>
                       {workflow.creator.username}
