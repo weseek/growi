@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import type { IUser, IPage, HasObjectId } from '@growi/core';
+import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 
@@ -8,7 +8,7 @@ import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
-  inAppNotificationData?: PaginateResult<IInAppNotification<IUser | IPage>>,
+  inAppNotificationData?: PaginateResult<IInAppNotification>,
   elemClassName?: string,
   type?: 'button' | 'dropdown-item',
 };
@@ -30,7 +30,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
 
   return (
     <>
-      { notifications.map((notification: IInAppNotification<IUser | IPage> & HasObjectId) => {
+      { notifications.map((notification: IInAppNotification & HasObjectId) => {
         return (
           <InAppNotificationElm key={notification._id} notification={notification} type={props.type} elemClassName={props.elemClassName} />
         );

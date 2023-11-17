@@ -1,4 +1,3 @@
-import type { IUser, IPage } from '@growi/core';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 
 
@@ -11,14 +10,14 @@ import { apiv3Get } from '../client/util/apiv3-client';
 
 const logger = loggerFactory('growi:cli:InAppNotification');
 
-type inAppNotificationPaginateResult = PaginateResult<IInAppNotification<IUser | IPage>>
+type inAppNotificationPaginateResult = PaginateResult<IInAppNotification>
 
 export const useSWRxInAppNotifications = (
     limit: number,
     offset?: number,
     status?: InAppNotificationStatuses,
     config?: SWRConfiguration,
-): SWRResponse<PaginateResult<IInAppNotification<IUser | IPage>>, Error> => {
+): SWRResponse<PaginateResult<IInAppNotification>, Error> => {
   return useSWR(
     ['/in-app-notification/list', limit, offset, status],
     ([endpoint]) => apiv3Get(endpoint, { limit, offset, status }).then((response) => {

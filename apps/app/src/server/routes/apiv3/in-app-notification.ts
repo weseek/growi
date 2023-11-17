@@ -1,5 +1,3 @@
-import type { IUser, IPage } from '@growi/core';
-
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 
@@ -51,12 +49,12 @@ module.exports = (crowi) => {
       return activities.map(({ user }) => user).filter((user, i, self) => self.indexOf(user) === i);
     };
 
-    const serializedDocs: Array<IInAppNotification<IUser | IPage>> = paginationResult.docs.map((doc) => {
+    const serializedDocs: Array<IInAppNotification> = paginationResult.docs.map((doc) => {
       if (doc.user != null && doc.user instanceof User) {
         doc.user = serializeUserSecurely(doc.user);
       }
       // To add a new property into mongoose doc, need to change the format of doc to an object
-      const docObj: IInAppNotification<IUser | IPage> = doc.toObject();
+      const docObj: IInAppNotification = doc.toObject();
       const actionUsersNew = getActionUsersFromActivities(doc.activities);
 
       const serializedActionUsers = actionUsersNew.map((actionUser) => {

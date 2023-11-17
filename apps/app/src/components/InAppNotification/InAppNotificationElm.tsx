@@ -16,7 +16,7 @@ import PageModelNotification from './PageNotification/PageModelNotification';
 import UserModelNotification from './PageNotification/UserModelNotification';
 
 interface Props {
-  notification: IInAppNotification<IUser | IPage> & HasObjectId
+  notification: IInAppNotification & HasObjectId
   elemClassName?: string,
   type?: 'button' | 'dropdown-item',
 }
@@ -28,7 +28,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const notificationRef = useRef<IInAppNotificationOpenable>(null);
 
-  const clickHandler = async(notification: IInAppNotification<IUser | IPage> & HasObjectId): Promise<void> => {
+  const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
     if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
@@ -61,11 +61,11 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const isDropdownItem = props.type === 'dropdown-item';
 
-  const isPageNotification = (notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IPage> => {
+  const isPageNotification = (notification: IInAppNotification): notification is IInAppNotification<IPage> => {
     return notification.targetModel === SupportedTargetModel.MODEL_PAGE;
   };
 
-  const isUserNotification = (notification: IInAppNotification<IUser | IPage>): notification is IInAppNotification<IUser> => {
+  const isUserNotification = (notification: IInAppNotification): notification is IInAppNotification<IUser> => {
     return notification.targetModel === SupportedTargetModel.MODEL_USER;
   };
 
