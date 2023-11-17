@@ -5,8 +5,9 @@ import {
   DeleteObjectsCommand,
   PutObjectCommand,
   DeleteObjectCommand,
-  GetObjectCommandOutput,
   ListObjectsCommand,
+  type GetObjectCommandInput,
+  type GetObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Response } from 'express';
@@ -137,7 +138,7 @@ module.exports = (crowi) => {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  (lib as any).respond = async function(res, attachment) {
+  (lib as any).respond = async function(res, attachment: IAttachmentDocument) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -153,11 +154,13 @@ module.exports = (crowi) => {
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
-    const params = {
+    const params: GetObjectCommandInput = {
       Bucket: awsConfig.bucket,
       Key: filePath,
     };
-    const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), { expiresIn: lifetimeSecForTemporaryUrl });
+    const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
+      expiresIn: lifetimeSecForTemporaryUrl,
+    });
 
 
     res.redirect(signedUrl);
