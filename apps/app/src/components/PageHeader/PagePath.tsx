@@ -2,7 +2,10 @@ import { FC, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 
+import { usePageSelectModal } from '~/stores/modal';
+
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
+
 
 type Props = {
   currentPagePath: string
@@ -15,6 +18,8 @@ export const PagePath: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
 
+  const { open: openPageSelectModal, close: closePageSelectModal } = usePageSelectModal();
+
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
   return (
@@ -23,8 +28,8 @@ export const PagePath: FC<Props> = (props) => {
         <div className="row">
           <div
             className="col-4"
-            // onMouseEnter={setButtonShown(true)}
-            // onMouseLeave={setButtonShown(false)}
+            onMouseEnter={() => setButtonShown(true)}
+            onMouseLeave={() => setButtonShown(false)}
           >
             <TextInputForPageTitleAndPath
               currentPagePath={currentPagePath}
@@ -40,7 +45,7 @@ export const PagePath: FC<Props> = (props) => {
                 <button type="button">編集ボタン</button>
               </div>
               <div className="col-4">
-                <button type="button">ページツリーボタン</button>
+                <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
               </div>
             </>
           )}

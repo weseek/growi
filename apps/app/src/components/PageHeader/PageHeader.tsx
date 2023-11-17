@@ -15,7 +15,7 @@ export const PageHeader: FC = () => {
 
   return (
     <>
-      <div className="pull-left">
+      <div>
         <PagePath
           currentPagePath={currentPagePath}
           currentPage={currentPage}
