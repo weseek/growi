@@ -6,13 +6,18 @@ import type { IUser } from './user';
 export type IAttachment = {
   page?: Ref<IPage>,
   creator?: Ref<IUser>,
-  createdAt: Date,
+  fileName: string,
+  fileFormat: string,
   fileSize: number,
+  originalName: string,
+  temporaryUrlCached?: string,
+  temporaryUrlExpiredAt?: Date,
+
+  createdAt: Date,
+
   // virtual property
   filePathProxied: string,
-  fileFormat: string,
   downloadPathProxied: string,
-  originalName: string,
 };
 
 export type IAttachmentHasId = IAttachment & HasObjectId;

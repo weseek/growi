@@ -11,6 +11,7 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
+import { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -24,7 +25,7 @@ const logger = loggerFactory('growi:service:fileUploaderAws');
  * File metadata in storage
  * TODO: mv this to "./uploader"
  */
-  interface FileMeta {
+interface FileMeta {
   name: string;
   size: number;
 }
@@ -68,7 +69,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: Response): void {
+  override respond(res: Response, attachment: IAttachmentDocument): void {
     throw new Error('Method not implemented.');
   }
 

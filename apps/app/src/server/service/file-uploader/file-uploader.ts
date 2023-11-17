@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 
+import type { IAttachmentDocument } from '~/server/models/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -30,7 +31,7 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
   canRespond(): boolean
-  respond(res: Response, attachment: Response): void,
+  respond(res: Response, attachment: IAttachmentDocument): void,
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -146,6 +147,6 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Respond to the HTTP request.
    */
-  abstract respond(res: Response, attachment: Response): void;
+  abstract respond(res: Response, attachment: IAttachmentDocument): void;
 
 }
