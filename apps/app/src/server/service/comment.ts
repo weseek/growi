@@ -1,5 +1,7 @@
 import { Types } from 'mongoose';
 
+import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
+
 import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 import { getModelSafely } from '../util/mongoose-utils';
@@ -17,14 +19,10 @@ class CommentService {
 
   inAppNotificationService!: any;
 
-  commentEvent!: any;
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityService = crowi.activityService;
     this.inAppNotificationService = crowi.inAppNotificationService;
-
-    this.commentEvent = crowi.event('comment');
 
     // init
     this.initCommentEventListeners();
@@ -32,7 +30,7 @@ class CommentService {
 
   initCommentEventListeners(): void {
     // create
-    this.commentEvent.on('create', async(savedComment) => {
+    commentEvent.on(CommentEvent.CREATE, async(savedComment) => {
 
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
@@ -45,19 +43,11 @@ class CommentService {
     });
 
     // update
-    this.commentEvent.on('update', async() => {
-      try {
-        this.commentEvent.onUpdate();
-      }
-      catch (err) {
-        logger.error('Error occurred while handling the comment update event:\n', err);
-      }
+    commentEvent.on(CommentEvent.UPDATE, async() => {
     });
 
     // remove
-    this.commentEvent.on('delete', async(removedComment) => {
-      this.commentEvent.onDelete();
-
+    commentEvent.on(CommentEvent.DELETE, async(removedComment) => {
       try {
         const Page = getModelSafely('Page') || require('../models/page')(this.crowi);
         await Page.updateCommentCount(removedComment.page);
@@ -69,11 +59,17 @@ class CommentService {
   }
 
   getMentionedUsers = async(commentId: Types.ObjectId): Promise<Types.ObjectId[]> => {
-    const Comment = getModelSafely('Comment') || require('../models/comment')(this.crowi);
     const User = getModelSafely('User') || require('../models/user')(this.crowi);
 
     // Get comment by comment ID
     const commentData = await Comment.findOne({ _id: commentId });
+
+    // not found
+    if (commentData == null) {
+      logger.warn(`The comment ('${commentId.toString()}') is not found.`);
+      return [];
+    }
+
     const { comment } = commentData;
 
     const usernamesFromComment = comment.match(USERNAME_PATTERN);
