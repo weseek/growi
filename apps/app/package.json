@@ -58,6 +58,8 @@
     "@akebifiky/remark-simple-plantuml": "^1.0.2",
     "@aws-sdk/client-s3": "^3.58.0",
     "@aws-sdk/s3-request-presigner": "^3.58.0",
+    "@azure/identity": "^3.3.2",
+    "@azure/storage-blob": "^12.16.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
     "@elastic/elasticsearch7": "npm:@elastic/elasticsearch@^7.17.0",
     "@elastic/elasticsearch8": "npm:@elastic/elasticsearch@^8.7.0",

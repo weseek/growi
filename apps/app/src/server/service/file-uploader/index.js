@@ -11,6 +11,7 @@ const envToModuleMappings = {
   gridfs:  'gridfs',
   gcp:     'gcs',
   gcs:     'gcs',
+  azure:   'azure',
 };
 
 class FileUploadServiceFactory {
