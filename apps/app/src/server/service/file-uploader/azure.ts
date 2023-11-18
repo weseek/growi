@@ -15,7 +15,9 @@ import {
   BlockBlobParallelUploadOptions,
   BlockBlobUploadStreamOptions,
 } from '@azure/storage-blob';
+import type { Response } from 'express';
 
+import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -62,7 +64,14 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: Response): void {
+  override respond(res: Response, attachment: IAttachmentDocument): void {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
   }
 
@@ -206,7 +215,7 @@ module.exports = (crowi) => {
     return;
   };
 
-  (lib as any).findDeliveryFile = async function(attachment) {
+  lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('Azure is not configured.');
     }

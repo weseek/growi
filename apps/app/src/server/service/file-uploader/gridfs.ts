@@ -1,8 +1,11 @@
 import { Readable } from 'stream';
 import util from 'util';
 
+import type { Response } from 'express';
 import mongoose from 'mongoose';
+import { createModel } from 'mongoose-gridfs';
 
+import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -39,7 +42,14 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: Response): void {
+  override respond(res: Response, attachment: IAttachmentDocument): void {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
   }
 
@@ -52,7 +62,6 @@ module.exports = function(crowi) {
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
   // instantiate mongoose-gridfs
-  const { createModel } = require('mongoose-gridfs');
   const AttachmentFile = createModel({
     modelName: COLLECTION_NAME,
     bucketName: COLLECTION_NAME,
@@ -162,12 +171,8 @@ module.exports = function(crowi) {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  (lib as any).findDeliveryFile = async function(attachment) {
-    let filenameValue = attachment.fileName;
-
-    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      filenameValue = attachment.filePath;
-    }
+  lib.findDeliveryFile = async function(attachment) {
+    const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 

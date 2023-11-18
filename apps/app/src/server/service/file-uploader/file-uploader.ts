@@ -34,6 +34,7 @@ export interface FileUploader {
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
   canRespond(): boolean
   respond(res: Response, attachment: IAttachmentDocument): void,
+  findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -148,5 +149,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    * Respond to the HTTP request.
    */
   abstract respond(res: Response, attachment: IAttachmentDocument): void;
+
+  /**
+   * Find the file and Return ReadStream
+   */
+  abstract findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>;
 
 }

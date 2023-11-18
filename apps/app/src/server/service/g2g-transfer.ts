@@ -17,8 +17,11 @@ import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
+import type Crowi from '../crowi';
 import { Attachment } from '../models';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
+
+import { configManager } from './config-manager';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
@@ -209,7 +212,7 @@ interface Receiver {
  */
 export class G2GTransferPusherService implements Pusher {
 
-  crowi: any;
+  crowi: Crowi;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi: any) {
@@ -242,7 +245,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
-    const { fileUploadService, configManager } = this.crowi;
+    const { fileUploadService } = this.crowi;
 
     const version = this.crowi.version;
     if (version !== destGROWIInfo.version) {
@@ -424,7 +427,7 @@ export class G2GTransferPusherService implements Pusher {
     const targetConfigKeys = UPLOAD_CONFIG_KEYS;
 
     const uploadConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
-      return [key, this.crowi.configManager.getConfig('crowi', key)];
+      return [key, configManager.getConfig('crowi', key)];
     }));
 
     let zipFileStream: ReadStream;

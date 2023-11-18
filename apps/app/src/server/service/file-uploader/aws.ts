@@ -7,7 +7,6 @@ import {
   DeleteObjectCommand,
   ListObjectsCommand,
   type GetObjectCommandInput,
-  type GetObjectCommandOutput,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Response } from 'express';
@@ -72,6 +71,13 @@ class AwsFileUploader extends AbstractFileUploader {
    * @inheritdoc
    */
   override respond(res: Response, attachment: IAttachmentDocument): void {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
   }
 
@@ -256,7 +262,7 @@ module.exports = (crowi) => {
     return s3.send(new PutObjectCommand(params));
   };
 
-  (lib as any).findDeliveryFile = async function(attachment) {
+  lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -276,17 +282,24 @@ module.exports = (crowi) => {
       throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in AWS S3`);
     }
 
-    let stream : GetObjectCommandOutput['Body'];
     try {
-      stream = (await s3.send(new GetObjectCommand(params))).Body;
+      const body = (await s3.send(new GetObjectCommand(params))).Body;
+
+      if (body == null) {
+        throw new Error(`S3 returned null for the Attachment (${filePath})`);
+      }
+
+      // eslint-disable-next-line no-nested-ternary
+      return 'stream' in body
+        ? body.stream() // get stream from Blob
+        : !('read' in body)
+          ? body as unknown as NodeJS.ReadableStream // cast force
+          : body;
     }
     catch (err) {
       logger.error(err);
       throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
-
-    // return stream.Readable
-    return stream;
   };
 
   (lib as any).checkLimit = async function(uploadFileSize) {

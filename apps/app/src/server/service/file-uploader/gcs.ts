@@ -1,7 +1,8 @@
 import { Storage } from '@google-cloud/storage';
-import { Response } from 'express';
+import type { Response } from 'express';
 import urljoin from 'url-join';
 
+import type Crowi from '~/server/crowi';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -43,12 +44,19 @@ class GcsFileUploader extends AbstractFileUploader {
     throw new Error('Method not implemented.');
   }
 
+  /**
+   * @inheritdoc
+   */
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+    throw new Error('Method not implemented.');
+  }
+
 }
 
 
 let _instance: Storage;
 
-module.exports = function(crowi) {
+module.exports = function(crowi: Crowi) {
   const lib = new GcsFileUploader(crowi);
 
   function getGcsBucket() {
@@ -188,7 +196,7 @@ module.exports = function(crowi) {
    * @param {Attachment} attachment
    * @return {stream.Readable} readable stream
    */
-  (lib as any).findDeliveryFile = async function(attachment) {
+  lib.findDeliveryFile = async function(attachment) {
     if (!lib.getIsReadable()) {
       throw new Error('GCS is not configured.');
     }
@@ -204,17 +212,13 @@ module.exports = function(crowi) {
       throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
     }
 
-    let stream;
     try {
-      stream = file.createReadStream();
+      return file.createReadStream();
     }
     catch (err) {
       logger.error(err);
       throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
     }
-
-    // return stream.Readable
-    return stream;
   };
 
   /**

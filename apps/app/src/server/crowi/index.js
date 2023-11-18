@@ -23,6 +23,7 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import { FileUploader } from '../service/file-uploader/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -38,68 +39,78 @@ const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const sep = path.sep;
 
-function Crowi() {
-  this.version = pkg.version;
-  this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
+class Crowi {
 
-  this.publicDir = path.join(projectRoot, 'public') + sep;
-  this.resourceDir = path.join(projectRoot, 'resource') + sep;
-  this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.viewsDir = path.resolve(__dirname, '../views') + sep;
-  this.tmpDir = path.join(projectRoot, 'tmp') + sep;
-  this.cacheDir = path.join(this.tmpDir, 'cache');
+  /** @type {AppService} */
+  appService;
 
-  this.express = null;
+  /** @type {FileUploader} */
+  fileUploadService;
 
-  this.config = {};
-  this.configManager = null;
-  this.s2sMessagingService = null;
-  this.g2gTransferPusherService = null;
-  this.g2gTransferReceiverService = null;
-  this.mailService = null;
-  this.passportService = null;
-  this.globalNotificationService = null;
-  this.userNotificationService = null;
-  this.xssService = null;
-  this.aclService = null;
-  this.appService = null;
-  this.fileUploadService = null;
-  this.restQiitaAPIService = null;
-  this.growiBridgeService = null;
-  this.exportService = null;
-  this.importService = null;
-  this.pluginService = null;
-  this.searchService = null;
-  this.socketIoService = null;
-  this.pageService = null;
-  this.syncPageStatusService = null;
-  this.cdnResourcesService = new CdnResourcesService();
-  this.slackIntegrationService = null;
-  this.inAppNotificationService = null;
-  this.activityService = null;
-  this.commentService = null;
-  this.xss = new Xss();
-  this.questionnaireService = null;
-  this.questionnaireCronService = null;
+  constructor() {
+    this.version = pkg.version;
+    this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.tokens = null;
+    this.publicDir = path.join(projectRoot, 'public') + sep;
+    this.resourceDir = path.join(projectRoot, 'resource') + sep;
+    this.localeDir = path.join(this.resourceDir, 'locales') + sep;
+    this.viewsDir = path.resolve(__dirname, '../views') + sep;
+    this.tmpDir = path.join(projectRoot, 'tmp') + sep;
+    this.cacheDir = path.join(this.tmpDir, 'cache');
 
-  this.models = {};
+    this.express = null;
 
-  this.env = process.env;
-  this.node_env = this.env.NODE_ENV || 'development';
+    this.config = {};
+    this.configManager = null;
+    this.s2sMessagingService = null;
+    this.g2gTransferPusherService = null;
+    this.g2gTransferReceiverService = null;
+    this.mailService = null;
+    this.passportService = null;
+    this.globalNotificationService = null;
+    this.userNotificationService = null;
+    this.xssService = null;
+    this.aclService = null;
+    this.appService = null;
+    this.fileUploadService = null;
+    this.restQiitaAPIService = null;
+    this.growiBridgeService = null;
+    this.exportService = null;
+    this.importService = null;
+    this.pluginService = null;
+    this.searchService = null;
+    this.socketIoService = null;
+    this.pageService = null;
+    this.syncPageStatusService = null;
+    this.cdnResourcesService = new CdnResourcesService();
+    this.slackIntegrationService = null;
+    this.inAppNotificationService = null;
+    this.activityService = null;
+    this.commentService = null;
+    this.xss = new Xss();
+    this.questionnaireService = null;
+    this.questionnaireCronService = null;
 
-  this.port = this.env.PORT || 3000;
+    this.tokens = null;
 
-  this.events = {
-    user: new UserEvent(this),
-    page: new (require('../events/page'))(this),
-    activity: new (require('../events/activity'))(this),
-    bookmark: new (require('../events/bookmark'))(this),
-    comment: new (require('../events/comment'))(this),
-    tag: new (require('../events/tag'))(this),
-    admin: new (require('../events/admin'))(this),
-  };
+    this.models = {};
+
+    this.env = process.env;
+    this.node_env = this.env.NODE_ENV || 'development';
+
+    this.port = this.env.PORT || 3000;
+
+    this.events = {
+      user: new UserEvent(this),
+      page: new (require('../events/page'))(this),
+      activity: new (require('../events/activity'))(this),
+      bookmark: new (require('../events/bookmark'))(this),
+      comment: new (require('../events/comment'))(this),
+      tag: new (require('../events/tag'))(this),
+      admin: new (require('../events/admin'))(this),
+    };
+  }
+
 }
 
 Crowi.prototype.init = async function() {
