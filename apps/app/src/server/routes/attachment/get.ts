@@ -19,6 +19,7 @@ import ApiResponse from '../../util/apiResponse';
 const logger = loggerFactory('growi:routes:attachment:get');
 
 
+// TODO: remove this local interface when models/page has typescriptized
 interface PageModel {
   isAccessiblePageByViewer: (pageId: string, user: IUser | undefined) => Promise<boolean>
 }
