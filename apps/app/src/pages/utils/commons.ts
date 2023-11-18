@@ -42,7 +42,7 @@ export type CommonProps = {
 export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(context: GetServerSidePropsContext) => {
   const getModelSafely = await import('~/server/util/mongoose-utils').then(mod => mod.getModelSafely);
 
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { crowi, user } = req;
   const {
     appService, configManager, customizeService, attachmentService,

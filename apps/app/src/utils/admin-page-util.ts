@@ -24,7 +24,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 export const retrieveServerSideProps: any = async(
     context: GetServerSidePropsContext, injectServerConfigurations?:(context: GetServerSidePropsContext, props) => Promise<void>,
 ) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);

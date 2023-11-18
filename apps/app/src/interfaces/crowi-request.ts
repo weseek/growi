@@ -1,9 +1,11 @@
-import type { IUser, IUserHasId } from '@growi/core';
-import { Request } from 'express';
+import type { IUser } from '@growi/core';
+import type { Request } from 'express';
+import type { Document } from 'mongoose';
 
-export interface CrowiRequest<U extends IUser = IUserHasId> extends Request {
 
-  user?: U,
+export interface CrowiProperties {
+
+  user?: IUser & Document,
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   crowi: any,
@@ -14,3 +16,5 @@ export interface CrowiRequest<U extends IUser = IUserHasId> extends Request {
   csrfToken: () => string,
 
 }
+
+export interface CrowiRequest extends CrowiProperties, Request {}

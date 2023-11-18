@@ -224,7 +224,7 @@ async function addActivity(context: GetServerSidePropsContext, action: Supported
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
