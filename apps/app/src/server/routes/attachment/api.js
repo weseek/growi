@@ -162,103 +162,19 @@ export const routesFactory = (crowi) => {
     return await Page.isAccessiblePageByViewer(attachment.page, user);
   }
 
-  /**
-   * Common method to response
-   *
-   * @param {Request} req
-   * @param {Response} res
-   * @param {User} user
-   * @param {Attachment} attachment
-   * @param {boolean} forceDownload
-   */
-  async function responseForAttachment(req, res, attachment, forceDownload) {
-    const { fileUploadService } = crowi;
-
-    // add headers before evaluating 'req.fresh'
-    setHeaderToRes(res, attachment, forceDownload);
-
-    // return 304 if request is "fresh"
-    // see: http://expressjs.com/en/5x/api.html#req.fresh
-    if (req.fresh) {
-      return res.sendStatus(304);
-    }
-
-    if (fileUploadService.canRespond()) {
-      return fileUploadService.respond(res, attachment);
-    }
-
-    let fileStream;
-    try {
-      fileStream = await fileUploadService.findDeliveryFile(attachment);
-    }
-    catch (e) {
-      logger.error(e);
-      return res.json(ApiResponse.error(e.message));
-    }
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    await crowi.activityService.createActivity(parameters);
-
-    return fileStream.pipe(res);
-  }
-
-  /**
-   * set http response header
-   *
-   * @param {Response} res
-   * @param {Attachment} attachment
-   * @param {boolean} forceDownload
-   */
-  function setHeaderToRes(res, attachment, forceDownload) {
-    res.set({
-      ETag: `Attachment-${attachment._id}`,
-      'Last-Modified': attachment.createdAt.toUTCString(),
-    });
-
-    if (attachment.fileSize) {
-      res.set({
-        'Content-Length': attachment.fileSize,
-      });
-    }
-
-    // download
-    if (forceDownload) {
-      res.set({
-        'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
-    }
-    // reference
-    else {
-      res.set({
-        'Content-Type': attachment.fileFormat,
-        // eslint-disable-next-line max-len
-        'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
-    }
-  }
-
 
   const actions = {};
   const api = {};
 
   actions.api = api;
 
-  api.download = async function(req, res) {
-    const id = req.params.id;
+  // api.download = async function(req, res) {
+  //   const id = req.params.id;
 
-    const attachment = await Attachment.findById(id);
+  //   const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(req, res, attachment, true);
-  };
+  //   return responseForAttachment(req, res, attachment, true);
+  // };
 
   /**
    * @swagger

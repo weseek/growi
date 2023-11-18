@@ -5,7 +5,6 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
-import { certifySharedPageAttachmentMiddleware } from '../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -159,8 +158,7 @@ module.exports = function(crowi, app) {
   app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
 
   app.use('/attachment', attachment.getRouterFactory(crowi));
-
-  app.get('/download/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware, loginRequired, attachment.validateGetRequest, attachmentApi.download);
+  app.use('/download', attachment.downloadRouterFactory(crowi));
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
 

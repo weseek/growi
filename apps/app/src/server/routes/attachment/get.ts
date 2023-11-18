@@ -7,7 +7,6 @@ import type {
 } from 'express';
 import mongoose from 'mongoose';
 
-import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
 
@@ -75,36 +74,8 @@ export const setCommonHeadersToRes = (res: Response, attachment: IAttachmentDocu
       'Content-Length': attachment.fileSize,
     });
   }
-
-  // // download
-  // if (forceDownload) {
-  //   res.set({
-  //     'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-  //   });
-  // }
-  // // reference
-  // else {
-  //   res.set({
-  //     'Content-Type': attachment.fileFormat,
-  //     // eslint-disable-next-line max-len
-  //     'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-  //     'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-  //   });
-  // }
 };
 
-
-const generateActivityParameters = (req: CrowiRequest) => {
-  return {
-    ip:  req.ip,
-    endpoint: req.originalUrl,
-    action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
-    user: req.user?._id,
-    snapshot: {
-      username: req.user?.username,
-    },
-  };
-};
 
 export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) => {
   return async(req: CrowiRequest, res: Response): Promise<void> => {
@@ -118,25 +89,17 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
       'Content-Type': attachment.fileFormat,
       // eslint-disable-next-line max-len
       'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-      'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
     });
-
-    const activityParameters = generateActivityParameters(req);
-    const createActivity = async() => {
-      await crowi.activityService.createActivity(activityParameters);
-    };
 
     // return 304 if request is "fresh"
     // see: http://expressjs.com/en/5x/api.html#req.fresh
     if (req.fresh) {
       res.sendStatus(304);
-      createActivity();
       return;
     }
 
     if (fileUploadService.canRespond()) {
       fileUploadService.respond(res, attachment);
-      createActivity();
       return;
     }
 
@@ -150,19 +113,18 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
       return;
     }
 
-    createActivity();
     return;
   };
 };
 
 
-type GetRequest = CrowiProperties & Request<
+export type GetRequest = CrowiProperties & Request<
   { id: string },
   any, any, any,
   LocalsAfterDataInjection
 >;
 
-type GetResponse = Response<
+export type GetResponse = Response<
   any,
   LocalsAfterDataInjection
 >
@@ -178,6 +140,11 @@ export const getRouterFactory = (crowi: Crowi): Router => {
     certifySharedPageAttachmentMiddleware, loginRequired, validateGetRequest,
     (req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
+
+      res.set({
+        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+      });
+
       const getAction = getActionFactory(crowi, attachment);
       getAction(req, res);
     });
