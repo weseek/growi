@@ -1,1 +1,1 @@
-export * from './attachment';
+export * from './get';

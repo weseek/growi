@@ -133,27 +133,13 @@ const ApiResponse = require('../../util/apiResponse');
  *            example: "/download/5e0734e072560e001761fa67"
  */
 
-export const attachmentRoutesFactory = (crowi) => {
+export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
   const activityEvent = crowi.event('activity');
-
-  /**
-   * Check the user is accessible to the related page
-   *
-   * @param {User} user
-   * @param {Attachment} attachment
-   */
-  async function isAccessibleByViewer(user, attachment) {
-    if (attachment.page != null) {
-      // eslint-disable-next-line no-return-await
-      return await Page.isAccessiblePageByViewer(attachment.page, user);
-    }
-    return true;
-  }
 
   /**
    * Check the user is accessible to the related page
@@ -187,16 +173,6 @@ export const attachmentRoutesFactory = (crowi) => {
    */
   async function responseForAttachment(req, res, attachment, forceDownload) {
     const { fileUploadService } = crowi;
-
-    if (attachment == null) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
-
-    const user = req.user;
-    const isAccessible = await isAccessibleByViewer(user, attachment);
-    if (!isAccessible) {
-      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
-    }
 
     // add headers before evaluating 'req.fresh'
     setHeaderToRes(res, attachment, forceDownload);
