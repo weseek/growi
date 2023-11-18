@@ -12,6 +12,7 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Response } from 'express';
 import urljoin from 'url-join';
 
+import type { IContentHeaders } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -77,7 +78,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument): void {
+  override respond(res: Response, attachment: IAttachmentDocument, contentHeaders: IContentHeaders): void {
     throw new Error('Method not implemented.');
   }
 
@@ -151,7 +152,7 @@ module.exports = (crowi) => {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  lib.respond = async function(res, attachment: IAttachmentDocument) {
+  lib.respond = async function(res, attachment: IAttachmentDocument, contentHeaders: IContentHeaders) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
@@ -167,9 +168,12 @@ module.exports = (crowi) => {
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
+    const { contentType, contentDisposition } = contentHeaders;
     const params: GetObjectCommandInput = {
       Bucket: awsConfig.bucket,
       Key: filePath,
+      ResponseContentType: contentType?.value.toString(),
+      ResponseContentDisposition: contentDisposition?.value.toString(),
     };
     const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
       expiresIn: lifetimeSecForTemporaryUrl,

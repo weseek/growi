@@ -8,12 +8,17 @@ import type {
 import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
+import { ExpressHttpHeader } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { Attachment, type IAttachmentDocument } from '../../models';
 import ApiResponse from '../../util/apiResponse';
+
+import {
+  toExpressHttpHeaders, ContentHeaders, applyHeaders,
+} from './utils/headers';
 
 
 const logger = loggerFactory('growi:routes:attachment:get');
@@ -67,30 +72,21 @@ export const retrieveAttachmentFromIdParam = async(
 };
 
 
-export const setCommonHeadersToRes = (res: Response, attachment: IAttachmentDocument): void => {
-  res.set({
-    'Content-Type': attachment.fileFormat,
-    // eslint-disable-next-line max-len
-    'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+export const generateHeadersForFresh = (attachment: IAttachmentDocument): ExpressHttpHeader[] => {
+  return toExpressHttpHeaders({
     ETag: `Attachment-${attachment._id}`,
     'Last-Modified': attachment.createdAt.toUTCString(),
   });
-
-  if (attachment.fileSize) {
-    res.set({
-      'Content-Length': attachment.fileSize,
-    });
-  }
 };
 
 
-export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) => {
+export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument, contentHeaders: ContentHeaders) => {
   return async(req: CrowiRequest, res: Response): Promise<void> => {
 
     const { fileUploadService } = crowi;
 
     // add headers before evaluating 'req.fresh'
-    setCommonHeadersToRes(res, attachment);
+    applyHeaders(res, generateHeadersForFresh(attachment));
 
     // return 304 if request is "fresh"
     // see: http://expressjs.com/en/5x/api.html#req.fresh
@@ -100,9 +96,12 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
     }
 
     if (fileUploadService.canRespond()) {
-      fileUploadService.respond(res, attachment);
+      fileUploadService.respond(res, attachment, contentHeaders);
       return;
     }
+
+    // apply content-* headers before response
+    applyHeaders(res, contentHeaders.toExpressHttpHeaders());
 
     try {
       const readable = await fileUploadService.findDeliveryFile(attachment);
@@ -144,11 +143,9 @@ export const getRouterFactory = (crowi: Crowi): Router => {
     (req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
 
-      res.set({
-        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
+      const contentHeaders = new ContentHeaders(attachment, { inline: true });
+      const getAction = getActionFactory(crowi, attachment, contentHeaders);
 
-      const getAction = getActionFactory(crowi, attachment);
       getAction(req, res);
     });
 

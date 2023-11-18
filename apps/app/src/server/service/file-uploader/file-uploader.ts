@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 
 import type { Response } from 'express';
 
+import type { IContentHeaders } from '~/server/interfaces/attachment';
 import { Attachment, type IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -34,7 +35,7 @@ export interface FileUploader {
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
   canRespond(): boolean
-  respond(res: Response, attachment: IAttachmentDocument): void,
+  respond(res: Response, attachment: IAttachmentDocument, contentHeaders: IContentHeaders): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>
 }
 
@@ -151,7 +152,7 @@ export abstract class AbstractFileUploader implements FileUploader {
   /**
    * Respond to the HTTP request.
    */
-  abstract respond(res: Response, attachment: IAttachmentDocument): void;
+  abstract respond(res: Response, attachment: IAttachmentDocument, contentHeaders: IContentHeaders): void;
 
   /**
    * Find the file and Return ReadStream
