@@ -9,7 +9,7 @@ import {
 
 import { useCurrentUser } from '~/stores/context';
 
-import { IWorkflowHasId } from '../../../interfaces/workflow';
+import { type IWorkflowHasId } from '../../../interfaces/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
 
