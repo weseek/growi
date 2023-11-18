@@ -26,18 +26,21 @@ interface PageModel {
 
 type LocalsAfterDataInjection = { attachment: IAttachmentDocument };
 
-type ValidateGetRequest = CrowiProperties & Request<
+type RetrieveAttachmentFromIdParamRequest = CrowiProperties & Request<
   { id: string },
   any, any, any,
   LocalsAfterDataInjection
 >;
 
-type ValidateGetResponse = Response<
+type RetrieveAttachmentFromIdParamResponse = Response<
   any,
   LocalsAfterDataInjection
 >;
 
-export const validateGetRequest = async(req: ValidateGetRequest, res: ValidateGetResponse, next: NextFunction): Promise<void> => {
+export const retrieveAttachmentFromIdParam = async(
+    req: RetrieveAttachmentFromIdParamRequest, res: RetrieveAttachmentFromIdParamResponse, next: NextFunction,
+): Promise<void> => {
+
   const id = req.params.id;
   const attachment = await Attachment.findById(id);
 
@@ -66,6 +69,9 @@ export const validateGetRequest = async(req: ValidateGetRequest, res: ValidateGe
 
 export const setCommonHeadersToRes = (res: Response, attachment: IAttachmentDocument): void => {
   res.set({
+    'Content-Type': attachment.fileFormat,
+    // eslint-disable-next-line max-len
+    'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
     ETag: `Attachment-${attachment._id}`,
     'Last-Modified': attachment.createdAt.toUTCString(),
   });
@@ -85,12 +91,6 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
 
     // add headers before evaluating 'req.fresh'
     setCommonHeadersToRes(res, attachment);
-
-    res.set({
-      'Content-Type': attachment.fileFormat,
-      // eslint-disable-next-line max-len
-      'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-    });
 
     // return 304 if request is "fresh"
     // see: http://expressjs.com/en/5x/api.html#req.fresh
@@ -136,9 +136,11 @@ export const getRouterFactory = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  // note: validateGetRequest requires `req.params.id`
+  // note: retrieveAttachmentFromIdParam requires `req.params.id`
   router.get<{ id: string }>('/:id([0-9a-z]{24})',
-    certifySharedPageAttachmentMiddleware, loginRequired, validateGetRequest,
+    certifySharedPageAttachmentMiddleware, loginRequired,
+    retrieveAttachmentFromIdParam,
+
     (req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
 

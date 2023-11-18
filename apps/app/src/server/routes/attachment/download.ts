@@ -9,7 +9,7 @@ import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 
 import {
-  GetRequest, GetResponse, getActionFactory, validateGetRequest,
+  GetRequest, GetResponse, getActionFactory, retrieveAttachmentFromIdParam,
 } from './get';
 
 
@@ -34,9 +34,11 @@ export const downloadRouterFactory = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
-  // note: validateGetRequest requires `req.params.id`
+  // note: retrieveAttachmentFromIdParam requires `req.params.id`
   router.get<{ id: string }>('/:id([0-9a-z]{24})',
-    certifySharedPageAttachmentMiddleware, loginRequired, validateGetRequest,
+    certifySharedPageAttachmentMiddleware, loginRequired,
+    retrieveAttachmentFromIdParam,
+
     async(req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
 
