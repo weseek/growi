@@ -260,16 +260,6 @@ export const routesFactory = (crowi) => {
     return responseForAttachment(req, res, attachment, true);
   };
 
-  api.getBrandLogo = async function(req, res) {
-    const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
-
-    if (brandLogoAttachment == null) {
-      return res.status(404).json(ApiResponse.error('Brand logo does not exist'));
-    }
-
-    return responseForAttachment(req, res, brandLogoAttachment);
-  };
-
   /**
    * @swagger
    *

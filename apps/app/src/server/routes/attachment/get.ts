@@ -8,7 +8,7 @@ import type {
 import mongoose from 'mongoose';
 
 import { SupportedAction } from '~/interfaces/activity';
-import type { CrowiProperties } from '~/interfaces/crowi-request';
+import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
@@ -64,20 +64,7 @@ export const validateGetRequest = async(req: ValidateGetRequest, res: ValidateGe
 };
 
 
-type GetRequest = CrowiProperties & Request<
-  { id: string },
-  any, any, any,
-  LocalsAfterDataInjection
->;
-
-type GetResponse = Response<
-  any,
-  LocalsAfterDataInjection
->
-
-export const setCommonHeadersToRes = (res: GetResponse): void => {
-  const { attachment } = res.locals;
-
+export const setCommonHeadersToRes = (res: Response, attachment: IAttachmentDocument): void => {
   res.set({
     ETag: `Attachment-${attachment._id}`,
     'Last-Modified': attachment.createdAt.toUTCString(),
@@ -107,74 +94,92 @@ export const setCommonHeadersToRes = (res: GetResponse): void => {
 };
 
 
+const generateActivityParameters = (req: CrowiRequest) => {
+  return {
+    ip:  req.ip,
+    endpoint: req.originalUrl,
+    action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
+    user: req.user?._id,
+    snapshot: {
+      username: req.user?.username,
+    },
+  };
+};
+
+export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) => {
+  return async(req: CrowiRequest, res: Response): Promise<void> => {
+
+    const { fileUploadService } = crowi;
+
+    // add headers before evaluating 'req.fresh'
+    setCommonHeadersToRes(res, attachment);
+
+    res.set({
+      'Content-Type': attachment.fileFormat,
+      // eslint-disable-next-line max-len
+      'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
+      'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
+    });
+
+    const activityParameters = generateActivityParameters(req);
+    const createActivity = async() => {
+      await crowi.activityService.createActivity(activityParameters);
+    };
+
+    // return 304 if request is "fresh"
+    // see: http://expressjs.com/en/5x/api.html#req.fresh
+    if (req.fresh) {
+      res.sendStatus(304);
+      createActivity();
+      return;
+    }
+
+    if (fileUploadService.canRespond()) {
+      fileUploadService.respond(res, attachment);
+      createActivity();
+      return;
+    }
+
+    try {
+      const readable = await fileUploadService.findDeliveryFile(attachment);
+      readable.pipe(res);
+    }
+    catch (e) {
+      logger.error(e);
+      res.json(ApiResponse.error(e.message));
+      return;
+    }
+
+    createActivity();
+    return;
+  };
+};
+
+
+type GetRequest = CrowiProperties & Request<
+  { id: string },
+  any, any, any,
+  LocalsAfterDataInjection
+>;
+
+type GetResponse = Response<
+  any,
+  LocalsAfterDataInjection
+>
+
 export const getRouterFactory = (crowi: Crowi): Router => {
 
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
 
   const router = express.Router();
 
-
-  const generateActivityParameters = (req: GetRequest) => {
-    return {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-  };
-
-
   // note: validateGetRequest requires `req.params.id`
   router.get<{ id: string }>('/:id([0-9a-z]{24})',
     certifySharedPageAttachmentMiddleware, loginRequired, validateGetRequest,
-    async(req: GetRequest, res: GetResponse) => {
+    (req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
-
-      const { fileUploadService } = crowi;
-
-      // add headers before evaluating 'req.fresh'
-      setCommonHeadersToRes(res);
-
-      res.set({
-        'Content-Type': attachment.fileFormat,
-        // eslint-disable-next-line max-len
-        'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
-
-      const activityParameters = generateActivityParameters(req);
-      const createActivity = async() => {
-        await crowi.activityService.createActivity(activityParameters);
-      };
-
-      // return 304 if request is "fresh"
-      // see: http://expressjs.com/en/5x/api.html#req.fresh
-      if (req.fresh) {
-        res.sendStatus(304);
-        createActivity();
-        return;
-      }
-
-      if (fileUploadService.canRespond()) {
-        fileUploadService.respond(res, attachment);
-        createActivity();
-        return;
-      }
-
-      try {
-        const readable = await fileUploadService.findDeliveryFile(attachment);
-        readable.pipe(res);
-      }
-      catch (e) {
-        logger.error(e);
-        return res.json(ApiResponse.error(e.message));
-      }
-
-      createActivity();
-      return;
+      const getAction = getActionFactory(crowi, attachment);
+      getAction(req, res);
     });
 
   return router;

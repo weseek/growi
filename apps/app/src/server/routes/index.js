@@ -5,7 +5,6 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
-import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
 import { certifySharedPageAttachmentMiddleware } from '../middlewares/certify-shared-page-attachment';
 import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
@@ -36,7 +35,6 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
-  const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
@@ -111,7 +109,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
 
-  app.get('/attachment/brand-logo' , certifyBrandLogo, loginRequired, attachmentApi.getBrandLogo);
+  // brand logo
+  app.use('/attachment', attachment.getBrandLogoRouterFactory(crowi));
 
   /*
    * Routes below are unavailable when maintenance mode
