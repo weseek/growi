@@ -15,6 +15,7 @@ import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
 
+import { attachmentRoutesFactory } from './attachment';
 import * as forgotPassword from './forgot-password';
 import nextFactory from './next';
 import * as userActivation from './user-activation';
@@ -43,7 +44,7 @@ module.exports = function(crowi, app) {
   const loginPassport = require('./login-passport')(crowi, app);
   const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
-  const attachment = require('./attachment')(crowi, app);
+  const attachment = attachmentRoutesFactory(crowi);
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);

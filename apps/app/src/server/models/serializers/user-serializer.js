@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-function omitInsecureAttributes(user) {
+export function omitInsecureAttributes(user) {
   // omit password
   delete user.password;
   // omit apiToken
@@ -14,7 +14,7 @@ function omitInsecureAttributes(user) {
   return user;
 }
 
-function serializeUserSecurely(user) {
+export function serializeUserSecurely(user) {
   const User = mongoose.model('User');
 
   // return when it is not a user object
@@ -33,8 +33,3 @@ function serializeUserSecurely(user) {
 
   return serialized;
 }
-
-module.exports = {
-  omitInsecureAttributes,
-  serializeUserSecurely,
-};

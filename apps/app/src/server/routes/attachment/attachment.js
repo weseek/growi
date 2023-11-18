@@ -4,16 +4,14 @@ import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
-import { Attachment } from '../models';
+import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
 
 /* eslint-disable no-use-before-define */
 
 
 const logger = loggerFactory('growi:routes:attachment');
 
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
-const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-const ApiResponse = require('../util/apiResponse');
+const ApiResponse = require('../../util/apiResponse');
 
 /**
  * @swagger
@@ -135,7 +133,7 @@ const ApiResponse = require('../util/apiResponse');
  *            example: "/download/5e0734e072560e001761fa67"
  */
 
-module.exports = function(crowi, app) {
+export const attachmentRoutesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');

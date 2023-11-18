@@ -7,7 +7,7 @@ function serializeInsecurePageAttributes(bookmark) {
   return bookmark;
 }
 
-function serializeBookmarkSecurely(bookmark) {
+export function serializeBookmarkSecurely(bookmark) {
   let serialized = bookmark;
 
   // invoke toObject if bookmark is a model instance
@@ -19,7 +19,3 @@ function serializeBookmarkSecurely(bookmark) {
 
   return serialized;
 }
-
-module.exports = {
-  serializeBookmarkSecurely,
-};
