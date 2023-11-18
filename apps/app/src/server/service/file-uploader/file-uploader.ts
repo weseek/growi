@@ -27,6 +27,7 @@ export interface FileUploader {
   getIsReadable(): boolean,
   isValidUploadSettings(): boolean,
   getFileUploadEnabled(): boolean,
+  listFiles(): any,
   saveFile(param: SaveFileParam): Promise<any>,
   deleteFiles(): void,
   getFileUploadTotalLimit(): number,
@@ -87,6 +88,8 @@ export abstract class AbstractFileUploader implements FileUploader {
 
     return !!configManager.getConfig('crowi', 'app:fileUpload');
   }
+
+  abstract listFiles();
 
   abstract saveFile(param: SaveFileParam);
 

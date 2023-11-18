@@ -28,6 +28,13 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
+  override listFiles() {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
   override saveFile(param: SaveFileParam) {
     throw new Error('Method not implemented.');
   }

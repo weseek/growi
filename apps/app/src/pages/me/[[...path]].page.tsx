@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import type { IUserHasId } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -209,7 +208,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     const User = crowi.model('User');
-    const userData = await User.findById(req.user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
+    const userData = await User.findById(user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
     props.currentUser = userData.toObject();
   }
 
