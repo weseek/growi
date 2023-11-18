@@ -833,7 +833,7 @@
       "AND": "大家的认可",
       "OR": "一个人的认可"
     },
-    "workflow-statuses": {
+    "workflow_status": {
       "INPROGRESS": "进行中",
       "APPROVE": "批准",
       "REJECT": "拒绝",
