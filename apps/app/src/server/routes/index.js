@@ -158,8 +158,9 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
-  app.get('/attachment/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware , loginRequired, attachment.validateGetRequest, attachmentApi.get);
-  app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.validateGetRequest, attachmentApi.get);
+
+  app.use('/attachment', attachment.getRouterFactory(crowi));
+
   app.get('/download/:id([0-9a-z]{24})'         , certifySharedPageAttachmentMiddleware, loginRequired, attachment.validateGetRequest, attachmentApi.download);
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);

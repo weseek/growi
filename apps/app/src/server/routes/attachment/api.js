@@ -260,21 +260,6 @@ export const routesFactory = (crowi) => {
     return responseForAttachment(req, res, attachment, true);
   };
 
-  /**
-   * @api {get} /attachments.get get attachments
-   * @apiName get
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} id
-   */
-  api.get = async function(req, res) {
-    const id = req.params.id;
-
-    const attachment = await Attachment.findById(id);
-
-    return responseForAttachment(req, res, attachment);
-  };
-
   api.getBrandLogo = async function(req, res) {
     const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
 
