@@ -144,7 +144,7 @@ module.exports = (crowi) => {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  (lib as any).respond = async function(res, attachment: IAttachmentDocument) {
+  lib.respond = async function(res, attachment: IAttachmentDocument) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }

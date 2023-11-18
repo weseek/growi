@@ -141,7 +141,7 @@ module.exports = (crowi) => {
     return !configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode');
   };
 
-  (lib as any).respond = async function(res, attachment) {
+  lib.respond = async function(res, attachment) {
     const containerClient = await getContainerClient();
     const filePath = getFilePathOnStorage(attachment);
     const blockBlobClient: BlockBlobClient = await containerClient.getBlockBlobClient(filePath);
