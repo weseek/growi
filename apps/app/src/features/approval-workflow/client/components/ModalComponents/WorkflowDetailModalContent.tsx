@@ -24,7 +24,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
 
   const approveButtonClickHandler = useCallback(async() => {
     try {
-      updateApproverStatus(WorkflowApproverStatus.APPROVE);
+      await updateApproverStatus(WorkflowApproverStatus.APPROVE);
     }
     catch (err) {
       // TODO: Consider how to display errors
