@@ -32,3 +32,5 @@ export const getUploader = (crowi: Crowi): FileUploader => {
 
   return uploader;
 };
+
+export * from './utils';

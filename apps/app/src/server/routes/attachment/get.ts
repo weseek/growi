@@ -14,11 +14,10 @@ import loggerFactory from '~/utils/logger';
 import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { Attachment, type IAttachmentDocument } from '../../models';
-import ApiResponse from '../../util/apiResponse';
-
 import {
   toExpressHttpHeaders, ContentHeaders, applyHeaders,
-} from './utils/headers';
+} from '../../service/file-uploader';
+import ApiResponse from '../../util/apiResponse';
 
 
 const logger = loggerFactory('growi:routes:attachment:get');

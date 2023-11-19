@@ -4,14 +4,14 @@ import type { Response } from 'express';
 
 import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
-import {
-  ContentHeaders, applyHeaders,
-} from '~/server/routes/attachment/utils/headers';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
 import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+import {
+  ContentHeaders, applyHeaders,
+} from './utils';
 
 
 const logger = loggerFactory('growi:service:fileUploaderLocal');
