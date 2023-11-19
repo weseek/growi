@@ -8,7 +8,7 @@ import type {
 import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
-import { ExpressHttpHeader } from '~/server/interfaces/attachment';
+import type { ExpressHttpHeader, RespondOptions } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
@@ -80,10 +80,8 @@ export const generateHeadersForFresh = (attachment: IAttachmentDocument): Expres
 };
 
 
-export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument, contentHeaders: ContentHeaders) => {
-  return async(req: CrowiRequest, res: Response): Promise<void> => {
-
-    const { fileUploadService } = crowi;
+export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) => {
+  return async(req: CrowiRequest, res: Response, opts?: RespondOptions): Promise<void> => {
 
     // add headers before evaluating 'req.fresh'
     applyHeaders(res, generateHeadersForFresh(attachment));
@@ -95,12 +93,16 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument, 
       return;
     }
 
-    if (fileUploadService.canRespond()) {
-      fileUploadService.respond(res, attachment, contentHeaders);
+    const { fileUploadService } = crowi;
+
+    if (fileUploadService.shouldDelegateToResponse()) {
+      fileUploadService.respond(res, attachment, opts);
       return;
     }
 
     // apply content-* headers before response
+    const isDownload = opts?.download ?? false;
+    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     applyHeaders(res, contentHeaders.toExpressHttpHeaders());
 
     try {
@@ -142,10 +144,7 @@ export const getRouterFactory = (crowi: Crowi): Router => {
 
     (req: GetRequest, res: GetResponse) => {
       const { attachment } = res.locals;
-
-      const contentHeaders = new ContentHeaders(attachment, { inline: true });
-      const getAction = getActionFactory(crowi, attachment, contentHeaders);
-
+      const getAction = getActionFactory(crowi, attachment);
       getAction(req, res);
     });
 

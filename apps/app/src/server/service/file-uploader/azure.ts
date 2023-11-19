@@ -17,6 +17,7 @@ import {
 } from '@azure/storage-blob';
 import type { Response } from 'express';
 
+import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -71,7 +72,7 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument): void {
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
     throw new Error('Method not implemented.');
   }
 
@@ -144,18 +145,38 @@ module.exports = (crowi) => {
       && configManager.getConfig('crowi', 'azure:storageContainerName') != null;
   };
 
-  lib.canRespond = function() {
+  lib.shouldDelegateToResponse = function() {
     return !configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode');
   };
 
-  lib.respond = async function(res, attachment) {
+  lib.respond = async function(res, attachment, opts) {
+    if (!lib.getIsUploadable()) {
+      throw new Error('Azure Blob is not configured.');
+    }
+
+    const isDownload = opts?.download ?? false;
+
+    if (!isDownload) {
+      const temporaryUrl = attachment.getValidTemporaryUrl();
+      if (temporaryUrl != null) {
+        return res.redirect(temporaryUrl);
+      }
+    }
+
     const containerClient = await getContainerClient();
     const filePath = getFilePathOnStorage(attachment);
-    const blockBlobClient: BlockBlobClient = await containerClient.getBlockBlobClient(filePath);
+    const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
     const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'azure:lifetimeSecForTemporaryUrl');
 
     const sasToken = await getSasToken(lifetimeSecForTemporaryUrl);
     const signedUrl = `${blockBlobClient.url}?${sasToken}`;
+
+    // TODO: re-impl using generateSasUrl
+    // const contentHeaders = new ContentHeaders(attachment, { inline: true });
+    // const signedUrl = blockBlobClient.generateSasUrl({
+    //   contentType: contentHeaders.contentType?.value.toString(),
+    //   contentDisposition: contentHeaders.contentDisposition?.value.toString(),
+    // });
 
     res.redirect(signedUrl);
 

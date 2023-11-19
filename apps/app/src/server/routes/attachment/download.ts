@@ -11,7 +11,6 @@ import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify
 import {
   GetRequest, GetResponse, getActionFactory, retrieveAttachmentFromIdParam,
 } from './get';
-import { ContentHeaders } from './utils/headers';
 
 
 const logger = loggerFactory('growi:routes:attachment:download');
@@ -48,10 +47,8 @@ export const downloadRouterFactory = (crowi: Crowi): Router => {
         await crowi.activityService.createActivity(activityParameters);
       };
 
-      const contentHeaders = new ContentHeaders(attachment);
-      const getAction = getActionFactory(crowi, attachment, contentHeaders);
-
-      await getAction(req, res);
+      const getAction = getActionFactory(crowi, attachment);
+      await getAction(req, res, { download: true });
 
       createActivity();
     });

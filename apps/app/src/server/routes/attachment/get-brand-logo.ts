@@ -13,7 +13,6 @@ import { Attachment } from '../../models';
 import ApiResponse from '../../util/apiResponse';
 
 import { getActionFactory } from './get';
-import { ContentHeaders } from './utils/headers';
 
 
 const logger = loggerFactory('growi:routes:attachment:get-brand-logo');
@@ -33,9 +32,7 @@ export const getBrandLogoRouterFactory = (crowi: Crowi): Router => {
       return res.status(404).json(ApiResponse.error('Brand logo does not exist'));
     }
 
-    const contentHeaders = new ContentHeaders(brandLogoAttachment, { inline: true });
-    const getAction = getActionFactory(crowi, brandLogoAttachment, contentHeaders);
-
+    const getAction = getActionFactory(crowi, brandLogoAttachment);
     getAction(req, res);
   });
 

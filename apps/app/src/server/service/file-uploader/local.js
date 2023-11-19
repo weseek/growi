@@ -1,5 +1,9 @@
 import { Readable } from 'stream';
 
+import {
+  ContentHeaders, applyHeaders,
+  ExpressHttpHeaders,
+} from '~/server/routes/attachment/utils/headers';
 import loggerFactory from '~/utils/logger';
 
 import { AbstractFileUploader } from './file-uploader';
@@ -129,7 +133,7 @@ module.exports = function(crowi) {
   /**
    * Checks if Uploader can respond to the HTTP request.
    */
-  lib.canRespond = function() {
+  lib.shouldDelegateToResponse = function() {
     // Check whether to use internal redirect of nginx or Apache.
     return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
@@ -139,14 +143,20 @@ module.exports = function(crowi) {
    * @param {Response} res
    * @param {Response} attachment
    */
-  lib.respond = function(res, attachment) {
+  lib.respond = function(res, attachment, opts) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
     const internalPathRoot = configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
     const internalPath = urljoin(internalPathRoot, relativePath);
-    res.set('X-Accel-Redirect', internalPath);
-    res.set('X-Sendfile', storagePath);
+
+    const contentHeaders = new ContentHeaders(attachment, { inline: true });
+    applyHeaders(res, [
+      ...contentHeaders.toExpressHttpHeaders(),
+      { field: 'X-Accel-Redirect', value: internalPath },
+      { field: 'X-Sendfile', value: storagePath },
+    ]);
+
     return res.end();
   };
 

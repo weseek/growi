@@ -12,8 +12,9 @@ import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import type { Response } from 'express';
 import urljoin from 'url-join';
 
-import type { IContentHeaders } from '~/server/interfaces/attachment';
+import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
+import { ContentHeaders } from '~/server/routes/attachment/utils/headers';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -78,7 +79,7 @@ class AwsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument, contentHeaders: IContentHeaders): void {
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
     throw new Error('Method not implemented.');
   }
 
@@ -148,17 +149,22 @@ module.exports = (crowi) => {
       && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
-  lib.canRespond = function() {
+  lib.shouldDelegateToResponse = function() {
     return !configManager.getConfig('crowi', 'aws:referenceFileWithRelayMode');
   };
 
-  lib.respond = async function(res, attachment: IAttachmentDocument, contentHeaders: IContentHeaders) {
+  lib.respond = async function(res, attachment, opts?) {
     if (!lib.getIsUploadable()) {
       throw new Error('AWS is not configured.');
     }
-    const temporaryUrl = attachment.getValidTemporaryUrl();
-    if (temporaryUrl != null) {
-      return res.redirect(temporaryUrl);
+
+    const isDownload = opts?.download ?? false;
+
+    if (!isDownload) {
+      const temporaryUrl = attachment.getValidTemporaryUrl();
+      if (temporaryUrl != null) {
+        return res.redirect(temporaryUrl);
+      }
     }
 
     const s3 = S3Factory();
@@ -168,6 +174,7 @@ module.exports = (crowi) => {
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
+    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     const { contentType, contentDisposition } = contentHeaders;
     const params: GetObjectCommandInput = {
       Bucket: awsConfig.bucket,

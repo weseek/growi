@@ -18,3 +18,7 @@ export type IContentHeaders = {
   contentSecurityPolicy?: ExpressHttpHeader<'Content-Security-Policy'>;
   contentDisposition?: ExpressHttpHeader<'Content-Disposition'>;
 }
+
+export type RespondOptions = {
+  download?: boolean,
+}

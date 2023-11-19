@@ -3,7 +3,9 @@ import type { Response } from 'express';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
+import type { RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
+import { ContentHeaders } from '~/server/routes/attachment/utils/headers';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -47,7 +49,7 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument): void {
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
     throw new Error('Method not implemented.');
   }
 
@@ -107,17 +109,22 @@ module.exports = function(crowi: Crowi) {
       && configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
-  lib.canRespond = function() {
+  lib.shouldDelegateToResponse = function() {
     return !configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
   };
 
-  lib.respond = async function(res, attachment) {
+  lib.respond = async function(res, attachment, opts) {
     if (!lib.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
-    const temporaryUrl = attachment.getValidTemporaryUrl();
-    if (temporaryUrl != null) {
-      return res.redirect(temporaryUrl);
+
+    const isDownload = opts?.download ?? false;
+
+    if (!isDownload) {
+      const temporaryUrl = attachment.getValidTemporaryUrl();
+      if (temporaryUrl != null) {
+        return res.redirect(temporaryUrl);
+      }
     }
 
     const gcs = getGcsInstance();
@@ -128,9 +135,12 @@ module.exports = function(crowi: Crowi) {
 
     // issue signed url (default: expires 120 seconds)
     // https://cloud.google.com/storage/docs/access-control/signed-urls
+    const contentHeaders = new ContentHeaders(attachment, { inline: true });
     const [signedUrl] = await file.getSignedUrl({
       action: 'read',
       expires: Date.now() + lifetimeSecForTemporaryUrl * 1000,
+      responseType: contentHeaders.contentType?.value.toString(),
+      responseDisposition: contentHeaders.contentDisposition?.value.toString(),
     });
 
     res.redirect(signedUrl);
