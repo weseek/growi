@@ -1,12 +1,18 @@
 import { Readable } from 'stream';
 
+import type { Response } from 'express';
+
+import type { RespondOptions } from '~/server/interfaces/attachment';
+import type { IAttachmentDocument } from '~/server/models';
 import {
   ContentHeaders, applyHeaders,
-  ExpressHttpHeaders,
 } from '~/server/routes/attachment/utils/headers';
 import loggerFactory from '~/utils/logger';
 
-import { AbstractFileUploader } from './file-uploader';
+import { configManager } from '../config-manager';
+
+import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+
 
 const logger = loggerFactory('growi:service:fileUploaderLocal');
 
@@ -18,9 +24,61 @@ const mkdir = require('mkdirp');
 const streamToPromise = require('stream-to-promise');
 const urljoin = require('url-join');
 
+
+// TODO: rewrite this module to be a type-safe implementation
+class LocalFileUploader extends AbstractFileUploader {
+
+  /**
+   * @inheritdoc
+   */
+  override isValidUploadSettings(): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override listFiles() {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override saveFile(param: SaveFileParam) {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override deleteFiles() {
+    throw new Error('Method not implemented.');
+  }
+
+  deleteFileByFilePath(filePath: string): void {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+    throw new Error('Method not implemented.');
+  }
+
+}
+
 module.exports = function(crowi) {
-  const { configManager } = crowi;
-  const lib = new AbstractFileUploader(crowi);
+  const lib = new LocalFileUploader(crowi);
+
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
@@ -46,14 +104,14 @@ module.exports = function(crowi) {
     return true;
   };
 
-  lib.deleteFile = async function(attachment) {
+  (lib as any).deleteFile = async function(attachment) {
     const filePath = getFilePathOnStorage(attachment);
     return lib.deleteFileByFilePath(filePath);
   };
 
-  lib.deleteFiles = async function(attachments) {
+  (lib as any).deleteFiles = async function(attachments) {
     attachments.map((attachment) => {
-      return lib.deleteFile(attachment);
+      return (lib as any).deleteFile(attachment);
     });
   };
 
@@ -70,7 +128,7 @@ module.exports = function(crowi) {
     return fs.unlinkSync(filePath);
   };
 
-  lib.uploadAttachment = async function(fileStream, attachment) {
+  (lib as any).uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const filePath = getFilePathOnStorage(attachment);
@@ -124,7 +182,7 @@ module.exports = function(crowi) {
    * In detail, the followings are checked.
    * - per-file size limit (specified by MAX_FILE_SIZE)
    */
-  lib.checkLimit = async function(uploadFileSize) {
+  (lib as any).checkLimit = async function(uploadFileSize) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
@@ -143,7 +201,7 @@ module.exports = function(crowi) {
    * @param {Response} res
    * @param {Response} attachment
    */
-  lib.respond = function(res, attachment, opts) {
+  lib.respond = function(res, attachment) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
