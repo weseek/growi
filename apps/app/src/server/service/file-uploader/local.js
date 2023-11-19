@@ -20,16 +20,10 @@ module.exports = function(crowi) {
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
-    let filePath;
-    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      filePath = path.posix.join(basePath, attachment.filePath);
-    }
-    else {
-      const dirName = (attachment.page != null)
-        ? 'attachment'
-        : 'user';
-      filePath = path.posix.join(basePath, dirName, attachment.fileName);
-    }
+    const dirName = (attachment.page != null)
+      ? 'attachment'
+      : 'user';
+    const filePath = path.posix.join(basePath, dirName, attachment.fileName);
 
     return filePath;
   }

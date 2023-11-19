@@ -87,11 +87,7 @@ module.exports = function(crowi) {
   };
 
   (lib as any).deleteFile = async function(attachment) {
-    let filenameValue = attachment.fileName;
-
-    if (attachment.filePath != null) { // backward compatibility for v3.3.x or below
-      filenameValue = attachment.filePath;
-    }
+    const filenameValue = attachment.fileName;
 
     const attachmentFile = await AttachmentFile.findOne({ filename: filenameValue });
 
