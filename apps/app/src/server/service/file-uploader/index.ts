@@ -1,4 +1,11 @@
+import type Crowi from '~/server/crowi';
 import loggerFactory from '~/utils/logger';
+
+import { configManager } from '../config-manager';
+
+import type { FileUploader } from './file-uploader';
+
+export type { FileUploader } from './file-uploader';
 
 const logger = loggerFactory('growi:service:FileUploaderServise');
 
@@ -14,26 +21,14 @@ const envToModuleMappings = {
   azure:   'azure',
 };
 
-class FileUploadServiceFactory {
+export const getUploader = (crowi: Crowi): FileUploader => {
+  const method = envToModuleMappings[configManager.getConfig('crowi', 'app:fileUploadType')];
+  const modulePath = `./${method}`;
+  const uploader = require(modulePath)(crowi);
 
-  initializeUploader(crowi) {
-    const method = envToModuleMappings[crowi.configManager.getConfig('crowi', 'app:fileUploadType')];
-    const modulePath = `./${method}`;
-    this.uploader = require(modulePath)(crowi);
-
-    if (this.uploader == null) {
-      logger.warn('Failed to initialize uploader.');
-    }
+  if (uploader == null) {
+    logger.warn('Failed to initialize uploader.');
   }
 
-  getUploader(crowi) {
-    this.initializeUploader(crowi);
-    return this.uploader;
-  }
-
-}
-
-module.exports = (crowi) => {
-  const factory = new FileUploadServiceFactory(crowi);
-  return factory.getUploader(crowi);
+  return uploader;
 };

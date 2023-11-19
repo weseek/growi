@@ -23,7 +23,7 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import { FileUploader } from '../service/file-uploader/file-uploader'; // eslint-disable-line no-unused-vars
+import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -634,7 +634,7 @@ Crowi.prototype.setUpApp = async function() {
  */
 Crowi.prototype.setUpFileUpload = async function(isForceUpdate = false) {
   if (this.fileUploadService == null || isForceUpdate) {
-    this.fileUploadService = require('../service/file-uploader')(this);
+    this.fileUploadService = getUploader(this);
   }
 };
 
