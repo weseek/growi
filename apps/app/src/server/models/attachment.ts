@@ -25,9 +25,11 @@ function generateFileHash(fileName) {
 }
 
 type GetValidTemporaryUrl = () => string | null | undefined;
+type CashTemporaryUrlByProvideSec = (temporaryUrl: string, lifetimeSec: number) => Promise<IAttachmentDocument>;
+
 export interface IAttachmentDocument extends IAttachment, Document {
   getValidTemporaryUrl: GetValidTemporaryUrl
-  cashTemporaryUrlByProvideSec
+  cashTemporaryUrlByProvideSec: CashTemporaryUrlByProvideSec,
 }
 export interface IAttachmentModel extends Model<IAttachmentDocument> {
   createWithoutSave
@@ -99,14 +101,15 @@ const getValidTemporaryUrl: GetValidTemporaryUrl = function(this: IAttachmentDoc
 };
 attachmentSchema.methods.getValidTemporaryUrl = getValidTemporaryUrl;
 
-attachmentSchema.methods.cashTemporaryUrlByProvideSec = function(temporaryUrl, provideSec) {
+const cashTemporaryUrlByProvideSec: CashTemporaryUrlByProvideSec = function(this: IAttachmentDocument, temporaryUrl, lifetimeSec) {
   if (temporaryUrl == null) {
     throw new Error('url is required.');
   }
   this.temporaryUrlCached = temporaryUrl;
-  this.temporaryUrlExpiredAt = addSeconds(new Date(), provideSec);
+  this.temporaryUrlExpiredAt = addSeconds(new Date(), lifetimeSec);
 
   return this.save();
 };
+attachmentSchema.methods.cashTemporaryUrlByProvideSec = cashTemporaryUrlByProvideSec;
 
 export const Attachment = getOrCreateModel<IAttachmentDocument, IAttachmentModel>('Attachment', attachmentSchema);
