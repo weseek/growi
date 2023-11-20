@@ -1,37 +1,53 @@
 import React from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
-
-import {
+import type {
   IWorkflowHasId,
   IWorkflowApproverGroupHasId,
   IWorkflowApproverHasId,
 } from '../../../interfaces/workflow';
 
 
-type ApproverItemProps = {
-  approver: IWorkflowApproverHasId
+/*
+*  ApproverItem
+*/
+type CreatorOrApproverItemProps = {
+  creator?: IUserHasId
+  approver?: IWorkflowApproverHasId
 }
 
-const ApproverItem = (props: ApproverItemProps): JSX.Element => {
-  const { approver } = props;
+const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element => {
+  const { approver, creator } = props;
   const { t } = useTranslation();
+
+  const user = approver?.user ?? creator ?? undefined;
+
+  if ((creator == null && approver == null) && (creator != null && approver != null)) {
+    return <></>;
+  }
 
   return (
     <>
-      <div className="container my-2">
-        <div className="row">
-          <div className="col-4">
-            <UserPicture user={approver.user} />
-          </div>
-          <div className="col-4">
-            { approver.user.username }
-          </div>
-          <div className="col-4">
-            { t(`approval_workflow.approver_status.${approver.status}`)}
-          </div>
+      <div className="d-flex my-2">
+        <div className="p-2">
+          <UserPicture user={user} />
+        </div>
+
+        <div className="p-2">
+          { user?.username }
+        </div>
+
+        <div className="ms-auto p-2">
+          { creator != null && (
+            <>{t('approval_workflow.application')}</>
+          )}
+
+          { approver != null && (
+            <>{ t(`approval_workflow.approver_status.${approver?.status}`)}</>
+          )}
         </div>
       </div>
     </>
@@ -39,6 +55,9 @@ const ApproverItem = (props: ApproverItemProps): JSX.Element => {
 };
 
 
+/*
+*  ApproverGroupCard
+*/
 type ApproverGroupCardProps = {
   approverGroup: IWorkflowApproverGroupHasId
 }
@@ -52,7 +71,7 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
     <div className="card rounded  my-2">
       <div className="card-body">
         { approvers.map(approver => (
-          <ApproverItem
+          <CreatorOrApproverItem
             key={approver._id}
             approver={approver}
           />
@@ -63,6 +82,29 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
 };
 
 
+/*
+*  CreatorCard
+*/
+type CreatorCardProps = {
+  creator: IUserHasId;
+}
+
+const CreatorCard = (props: CreatorCardProps): JSX.Element => {
+  const { creator } = props;
+
+  return (
+    <div className="card rounded  my-2">
+      <div className="card-body">
+        <CreatorOrApproverItem creator={creator} />
+      </div>
+    </div>
+  );
+};
+
+
+/*
+*  ApproverGroupCards
+*/
 type ApproverGroupCardsProps = {
   workflow: IWorkflowHasId;
 };
@@ -72,9 +114,10 @@ export const ApproverGroupCards = (props: ApproverGroupCardsProps): JSX.Element 
 
   const approverGroups = workflow.approverGroups;
 
-
   return (
     <>
+      <CreatorCard creator={workflow.creator} />
+
       {approverGroups.map(approverGroup => (
         <ApproverGroupCard
           key={approverGroup._id}

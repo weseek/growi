@@ -46,7 +46,6 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       <ModalBody>
         <button type="button" onClick={() => { onClickWorkflowEditButton() }}>{t('approval_workflow.edit')}</button>
         <ApproverGroupCards workflow={workflow} />
-
       </ModalBody>
 
       <ModalFooter>
