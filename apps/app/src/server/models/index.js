@@ -4,8 +4,6 @@ export const modelsDependsOnCrowi = {
   Page,
   PageTagRelation: require('./page-tag-relation'),
   User: require('./user'),
-  ExternalAccount: require('./external-account'),
-  UserGroupRelation: require('./user-group-relation'),
   Revision: require('./revision'),
   Bookmark: require('./bookmark'),
   Comment: require('./comment'),
