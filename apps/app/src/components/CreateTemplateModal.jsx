@@ -17,7 +17,7 @@ const CreateTemplateModal = (props) => {
   }
 
   /**
-   * @param {string} target Which hierarchy to create [children, decendants]
+   * @param {string} target Which hierarchy to create [children, descendants]
    */
   function renderTemplateCard(target, label) {
     return (
@@ -57,7 +57,7 @@ const CreateTemplateModal = (props) => {
               {renderTemplateCard('children', '_template')}
             </div>
             <div className="col">
-              {renderTemplateCard('decendants', '__template')}
+              {renderTemplateCard('descendants', '__template')}
             </div>
           </div>
         </div>
