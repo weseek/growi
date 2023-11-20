@@ -143,6 +143,12 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'importer:esa:access_token': undefined,
   'importer:qiita:team_name': undefined,
   'importer:qiita:access_token': undefined,
+
+  'external-user-group:ldap:groupMembershipAttributeType': 'DN',
+  'external-user-group:ldap:autoGenerateUserOnGroupSync': false,
+  'external-user-group:ldap:preserveDeletedGroups': false,
+  'external-user-group:keycloak:autoGenerateUserOnGroupSync': false,
+  'external-user-group:keycloak:preserveDeletedGroups': false,
   /* eslint-enable key-spacing */
 };
 

@@ -18,7 +18,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
-import GrantSelector from './SavePageControls/GrantSelector';
+import { GrantSelector } from './SavePageControls/GrantSelector';
 
 
 declare global {
@@ -67,7 +67,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     return null;
   }
 
-  const { grant, grantedGroup } = grantData;
+  const { grant, grantedGroups } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = (currentPage != null && !currentPage.isEmpty) ? t('Update') : t('Create');
@@ -82,8 +82,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
             <GrantSelector
               grant={grant}
               disabled={isGrantSelectorDisabledPage}
-              grantGroupId={grantedGroup?.id}
-              grantGroupName={grantedGroup?.name}
+              grantedGroups={grantedGroups}
               onUpdateGrant={updateGrantHandler}
             />
           </div>

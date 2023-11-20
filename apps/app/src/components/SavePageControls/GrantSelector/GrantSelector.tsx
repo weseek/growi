@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import { isPopulated } from '@growi/core';
-import type { IUserGroupHasId } from '@growi/core';
+import { isPopulated, GroupType, type IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -12,8 +11,8 @@ import {
 
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxMyUserGroupRelations } from '~/stores/user-group';
 
+import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
@@ -35,8 +34,11 @@ const AVAILABLE_GRANTS = [
 type Props = {
   disabled?: boolean,
   grant: number,
-  grantGroupId?: string,
-  grantGroupName?: string,
+  grantedGroups?: {
+    id: string,
+    name: string,
+    type: GroupType,
+  }[]
 
   onUpdateGrant?: (grantData: IPageGrantData) => void,
 }
@@ -44,15 +46,14 @@ type Props = {
 /**
  * Page grant select component
  */
-const GrantSelector = (props: Props): JSX.Element => {
+export const GrantSelector = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const {
     disabled,
-    grantGroupName,
+    grantedGroups,
     onUpdateGrant,
     grant: currentGrant,
-    grantGroupId,
   } = props;
 
 
@@ -61,12 +62,12 @@ const GrantSelector = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
-  const { data: myUserGroupRelations, mutate: mutateMyUserGroupRelations } = useSWRxMyUserGroupRelations(shouldFetch);
+  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch);
 
   const showSelectGroupModal = useCallback(() => {
-    mutateMyUserGroupRelations();
+    updateMyUserGroups();
     setIsSelectGroupModalShown(true);
-  }, [mutateMyUserGroupRelations]);
+  }, [updateMyUserGroups]);
 
   /**
    * change event handler for grant selector
@@ -79,18 +80,23 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     if (onUpdateGrant != null) {
-      onUpdateGrant({ grant, grantedGroup: undefined });
+      onUpdateGrant({ grant, grantedGroups: undefined });
     }
   }, [onUpdateGrant, showSelectGroupModal]);
 
-  const groupListItemClickHandler = useCallback((grantGroup: IUserGroupHasId) => {
-    if (onUpdateGrant != null) {
-      onUpdateGrant({ grant: 5, grantedGroup: { id: grantGroup._id, name: grantGroup.name } });
+  const groupListItemClickHandler = useCallback((grantGroup: IGrantedGroup) => {
+    if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
+      let grantedGroupsCopy = grantedGroups != null ? [...grantedGroups] : [];
+      const grantGroupInfo = { id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type };
+      if (grantedGroupsCopy.find(group => group.id === grantGroupInfo.id) == null) {
+        grantedGroupsCopy.push(grantGroupInfo);
+      }
+      else {
+        grantedGroupsCopy = grantedGroupsCopy.filter(group => group.id !== grantGroupInfo.id);
+      }
+      onUpdateGrant({ grant: 5, grantedGroups: grantedGroupsCopy });
     }
-
-    // hide modal
-    setIsSelectGroupModalShown(false);
-  }, [onUpdateGrant]);
+  }, [onUpdateGrant, grantedGroups]);
 
   /**
    * Render grant selector DOM.
@@ -101,7 +107,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     let dropdownToggleLabelElm;
 
     const dropdownMenuElems = AVAILABLE_GRANTS.map((opt) => {
-      const label = ((opt.grant === 5 && opt.reselectLabel != null) && grantGroupId != null)
+      const label = ((opt.grant === 5 && opt.reselectLabel != null) && grantedGroups != null && grantedGroups.length > 0)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -122,11 +128,19 @@ const GrantSelector = (props: Props): JSX.Element => {
     });
 
     // add specified group option
-    if (grantGroupId != null) {
+    if (grantedGroups != null && grantedGroups.length > 0) {
       const labelElm = (
         <span>
           <i className="icon icon-fw icon-organization"></i>
-          <span className="label">{grantGroupName}</span>
+          <span className="label">
+            {grantedGroups.length > 1
+              ? (
+                <span>
+                  {`${grantedGroups[0].name}... `}
+                  <span className="badge badge-purple">+{grantedGroups.length - 1}</span>
+                </span>
+              ) : grantedGroups[0].name}
+          </span>
         </span>
       );
 
@@ -148,7 +162,7 @@ const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, grantGroupId, grantGroupName, t]);
+  }, [changeGrantHandler, currentGrant, disabled, grantedGroups, t]);
 
   /**
    * Render select grantgroup modal.
@@ -159,7 +173,7 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     // show spinner
-    if (myUserGroupRelations == null) {
+    if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
           <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
@@ -167,16 +181,7 @@ const GrantSelector = (props: Props): JSX.Element => {
       );
     }
 
-    // extract IUserGroupHasId
-    const userRelatedGroups: IUserGroupHasId[] = myUserGroupRelations
-      .map((relation) => {
-        // relation.relatedGroup should be populated by server
-        return isPopulated(relation.relatedGroup) ? relation.relatedGroup : undefined;
-      })
-      // exclude undefined elements
-      .filter((elem): elem is IUserGroupHasId => elem != null);
-
-    if (userRelatedGroups.length === 0) {
+    if (myUserGroups.length === 0) {
       return (
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
@@ -188,19 +193,30 @@ const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <div className="list-group">
-        { userRelatedGroups.map((group) => {
+      <>
+        { myUserGroups.map((group) => {
+          const groupIsGranted = grantedGroups?.find(g => g.id === group.item._id) != null;
+          const activeClass = groupIsGranted ? 'active' : '';
+
           return (
-            <button key={group._id} type="button" className="list-group-item list-group-item-action" onClick={() => groupListItemClickHandler(group)}>
-              <h5>{group.name}</h5>
+            <button
+              className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
+              type="button"
+              key={group.item._id}
+              onClick={() => groupListItemClickHandler(group)}
+            >
+              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
+              <h5 className="d-inline-block ml-3">{group.item.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
         }) }
-      </div>
+        <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
+      </>
     );
 
-  }, [currentUser?.admin, groupListItemClickHandler, myUserGroupRelations, shouldFetch, t]);
+  }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, grantedGroups]);
 
   return (
     <>
@@ -209,7 +225,6 @@ const GrantSelector = (props: Props): JSX.Element => {
       {/* render modal */}
       { !disabled && currentUser != null && (
         <Modal
-          className="select-grant-group"
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
         >
@@ -223,7 +238,4 @@ const GrantSelector = (props: Props): JSX.Element => {
       ) }
     </>
   );
-
 };
-
-export default GrantSelector;

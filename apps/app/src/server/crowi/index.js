@@ -10,6 +10,8 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
+import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -23,17 +25,21 @@ import PageRedirect from '../models/page-redirect';
 import ShareLink from '../models/share-link';
 import Tag from '../models/tag';
 import UserGroup from '../models/user-group';
+import UserGroupRelation from '../models/user-group-relation';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
@@ -152,10 +158,13 @@ Crowi.prototype.init = async function() {
     this.setUpCustomize(), // depends on pluginService
   ]);
 
-  // globalNotification depends on slack and mailer
   await Promise.all([
+    // globalNotification depends on slack and mailer
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
+    // depends on passport service
+    this.setupExternalAccountService(),
+    this.setupExternalUserGroupSyncService(),
   ]);
 
   await this.autoInstall();
@@ -294,22 +303,22 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  let allModels = {};
-
-  // include models that dependent on crowi
-  allModels = models;
-
-  // include models that independent from crowi
-  allModels.Activity = Activity;
-  allModels.Tag = Tag;
-  allModels.UserGroup = UserGroup;
-  allModels.PageRedirect = PageRedirect;
-  allModels.ShareLink = ShareLink;
-
-  Object.keys(allModels).forEach((key) => {
+  Object.keys(models).forEach((key) => {
     return this.model(key, models[key](this));
   });
 
+  // include models that are independent from crowi
+  const crowiIndependent = {};
+  crowiIndependent.Activity = Activity;
+  crowiIndependent.Tag = Tag;
+  crowiIndependent.UserGroup = UserGroup;
+  crowiIndependent.UserGroupRelation = UserGroupRelation;
+  crowiIndependent.PageRedirect = PageRedirect;
+  crowiIndependent.ShareLink = ShareLink;
+
+  Object.keys(crowiIndependent).forEach((key) => {
+    return this.model(key, crowiIndependent[key]);
+  });
 };
 
 Crowi.prototype.setupCron = function() {
@@ -360,7 +369,6 @@ Crowi.prototype.setupPassport = async function() {
   logger.debug('Passport is enabled');
 
   // initialize service
-  const PassportService = require('../service/passport');
   if (this.passportService == null) {
     this.passportService = new PassportService(this);
   }
@@ -669,7 +677,6 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
 };
 
 Crowi.prototype.setupUserGroupService = async function() {
-  const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
     return this.userGroupService.init();
@@ -770,6 +777,17 @@ Crowi.prototype.setupG2GTransferService = async function() {
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
   }
+};
+
+// execute after setupPassport
+Crowi.prototype.setupExternalAccountService = function() {
+  instanciateExternalAccountService(this.passportService);
+};
+
+// execute after setupPassport, s2sMessagingService, socketIoService
+Crowi.prototype.setupExternalUserGroupSyncService = function() {
+  this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
+  this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
 };
 
 export default Crowi;
