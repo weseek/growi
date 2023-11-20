@@ -7,6 +7,7 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 import { type IWorkflowHasId, WorkflowApproverStatus } from '../../../interfaces/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
+import { ApproverGroupCards } from './ApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 
@@ -31,6 +32,10 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
     }
   }, [updateApproverStatus]);
 
+  if (workflow == null) {
+    return <></>;
+  }
+
   return (
     <>
       <WorkflowModalHeader
@@ -40,7 +45,8 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
 
       <ModalBody>
         <button type="button" onClick={() => { onClickWorkflowEditButton() }}>{t('approval_workflow.edit')}</button>
-        詳細ページ
+        <ApproverGroupCards workflow={workflow} />
+
       </ModalBody>
 
       <ModalFooter>
