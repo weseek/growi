@@ -190,7 +190,6 @@ class AwsFileUploader extends AbstractFileUploader {
       throw new Error('AWS is not configured.');
     }
 
-
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
@@ -198,13 +197,13 @@ class AwsFileUploader extends AbstractFileUploader {
 
     // issue signed url (default: expires 120 seconds)
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/S3.html#getSignedUrl-property
-    // const isDownload = opts?.download ?? false;
-    // const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    const isDownload = opts?.download ?? false;
+    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     const params: GetObjectCommandInput = {
       Bucket: awsConfig.bucket,
       Key: filePath,
-      // ResponseContentType: contentHeaders.contentType?.value.toString(),
-      // ResponseContentDisposition: contentHeaders.contentDisposition?.value.toString(),
+      ResponseContentType: contentHeaders.contentType?.value.toString(),
+      ResponseContentDisposition: contentHeaders.contentDisposition?.value.toString(),
     };
     const signedUrl = await getSignedUrl(s3, new GetObjectCommand(params), {
       expiresIn: lifetimeSecForTemporaryUrl,
