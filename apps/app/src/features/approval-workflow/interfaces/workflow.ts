@@ -37,6 +37,7 @@ export type IWorkflowApproverHasId = {
   _id: string,
   user: IUserHasId,
   status: WorkflowApproverStatus,
+  updatedAt: Date
 }
 
 export type IWorkflowApproverGroupHasId = {

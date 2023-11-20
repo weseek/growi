@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
+import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 
 import type {
@@ -14,16 +15,25 @@ import type {
 /*
 *  CreatorOrApproverItem
 */
+const formatDate = (date: Date) => {
+  return format(new Date(date), 'yyyy/MM/dd HH:mm');
+};
+
+type Creator = {
+  user: IUserHasId
+  workflowCreatedAt: Date
+}
+
 type CreatorOrApproverItemProps = {
-  creator?: IUserHasId
+  creator?: Creator
   approver?: IWorkflowApproverHasId
 }
 
 const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element => {
-  const { approver, creator } = props;
+  const { creator, approver } = props;
   const { t } = useTranslation();
 
-  const user = approver?.user ?? creator;
+  const user = approver?.user ?? creator?.user;
 
   if ((creator == null && approver == null) || (creator != null && approver != null)) {
     return <></>;
@@ -31,7 +41,7 @@ const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element =
 
   return (
     <>
-      <div className="d-flex my-2">
+      <div className="d-flex my-2 align-items-center">
         <div className="p-2">
           <UserPicture user={user} />
         </div>
@@ -40,13 +50,19 @@ const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element =
           { user?.username }
         </div>
 
-        <div className="ms-auto p-2">
+        <div className="ms-auto p-2 text-center">
           { creator != null && (
-            <>{t('approval_workflow.application')}</>
+            <>
+              <div>{t('approval_workflow.application')}</div>
+              <div>{formatDate(creator.workflowCreatedAt)}</div>
+            </>
           )}
 
           { approver != null && (
-            <>{ t(`approval_workflow.approver_status.${approver.status}`)}</>
+            <div>
+              <div>{t(`approval_workflow.approver_status.${approver.status}`)}</div>
+              <div>{formatDate(approver.updatedAt)}</div>
+            </div>
           )}
         </div>
       </div>
@@ -71,10 +87,12 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
     <div className="card rounded my-3">
       <div className="card-body">
         { approvers.map(approver => (
-          <CreatorOrApproverItem
-            key={approver._id}
-            approver={approver}
-          />
+          <>
+            <CreatorOrApproverItem
+              key={approver._id}
+              approver={approver}
+            />
+          </>
         ))}
       </div>
     </div>
@@ -86,7 +104,7 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
 *  CreatorCard
 */
 type CreatorCardProps = {
-  creator: IUserHasId;
+  creator: Creator
 }
 
 const CreatorCard = (props: CreatorCardProps): JSX.Element => {
@@ -114,9 +132,14 @@ export const ApproverGroupCards = (props: ApproverGroupCardsProps): JSX.Element 
 
   const approverGroups = workflow.approverGroups;
 
+  const creator = {
+    user: workflow.creator,
+    workflowCreatedAt: workflow.createdAt,
+  };
+
   return (
     <>
-      <CreatorCard creator={workflow.creator} />
+      <CreatorCard creator={creator} />
 
       {approverGroups.map(approverGroup => (
         <ApproverGroupCard
