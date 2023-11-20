@@ -651,7 +651,10 @@ module.exports = (crowi) => {
     const usersHomepages = pagesInTrash.filter(page => isUsersHomepage(page.path));
     deletablePages = await Promise.all(
       usersHomepages
-        .map(page => page.isEmpty || crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, true)),
+        .map(async(page) => {
+          const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, true);
+          return canDeleteCompletely ? page : null;
+        }),
     );
 
     if (deletablePages.length === 0) {
@@ -928,7 +931,10 @@ module.exports = (crowi) => {
       const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
       pagesCanBeDeleted = await Promise.all(
         usersHomepages
-          .map(page => page.isEmpty || crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively)),
+          .map(async(page) => {
+            const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively);
+            return canDeleteCompletely ? page : null;
+          }),
       );
     }
     /*
@@ -944,7 +950,10 @@ module.exports = (crowi) => {
       const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
       pagesCanBeDeleted = await Promise.all(
         usersHomepages
-          .map(page => page.isEmpty || crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively)),
+          .map(async(page) => {
+            const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively);
+            return canDeleteCompletely ? page : null;
+          }),
       );
     }
 
