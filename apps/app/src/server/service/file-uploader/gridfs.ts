@@ -1,7 +1,6 @@
 import { Readable } from 'stream';
 import util from 'util';
 
-import type { Response } from 'express';
 import mongoose from 'mongoose';
 import { createModel } from 'mongoose-gridfs';
 
@@ -11,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from './file-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
 
@@ -50,8 +49,8 @@ class GridfsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
-    throw new Error('Method not implemented.');
+  override respond(): void {
+    throw new Error('GridfsFileUploader does not support ResponseMode.DELEGATE.');
   }
 
   /**
@@ -59,6 +58,13 @@ class GridfsFileUploader extends AbstractFileUploader {
    */
   override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritDoc
+   */
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+    throw new Error('GridfsFileUploader does not support ResponseMode.REDIRECT.');
   }
 
 }

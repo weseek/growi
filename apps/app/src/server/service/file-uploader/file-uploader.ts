@@ -22,6 +22,19 @@ export type CheckLimitResult = {
   errorMessage?: string,
 }
 
+export const ResponseMode = {
+  RELAY: 'relay',
+  REDIRECT: 'redirect',
+  DELEGATE: 'delegate',
+} as const;
+
+export type ResponseMode = typeof ResponseMode[keyof typeof ResponseMode];
+
+export type TemporaryUrl = {
+  url: string,
+  lifetimeSec: number,
+}
+
 export interface FileUploader {
   getIsUploadable(): boolean,
   isWritable(): Promise<boolean>,
@@ -34,9 +47,10 @@ export interface FileUploader {
   getFileUploadTotalLimit(): number,
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
-  shouldDelegateToResponse(): boolean
+  determineResponseMode(): ResponseMode,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
-  findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>
+  findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
+  generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -143,10 +157,10 @@ export abstract class AbstractFileUploader implements FileUploader {
   }
 
   /**
-   * Checks if Uploader can respond to the HTTP request.
+   * Determine ResponseMode
    */
-  shouldDelegateToResponse(): boolean {
-    return false;
+  determineResponseMode(): ResponseMode {
+    return ResponseMode.RELAY;
   }
 
   /**
@@ -158,5 +172,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    * Find the file and Return ReadStream
    */
   abstract findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>;
+
+  /**
+   * Generate temporaryUrl that is valid for a very short time
+   */
+  abstract generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>;
 
 }

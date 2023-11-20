@@ -1,5 +1,4 @@
 import { Storage } from '@google-cloud/storage';
-import type { Response } from 'express';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
@@ -9,10 +8,50 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+import {
+  AbstractFileUploader, ResponseMode, type TemporaryUrl, type SaveFileParam,
+} from './file-uploader';
 import { ContentHeaders } from './utils';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
+
+
+function getGcsBucket() {
+  return configManager.getConfig('crowi', 'gcs:bucket');
+}
+
+let storage: Storage;
+function getGcsInstance() {
+  if (storage == null) {
+    const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
+    // see https://googleapis.dev/nodejs/storage/latest/Storage.html
+    storage = keyFilename != null
+      ? new Storage({ keyFilename }) // Create a client with explicit credentials
+      : new Storage(); // Create a client that uses Application Default Credentials
+  }
+  return storage;
+}
+
+function getFilePathOnStorage(attachment) {
+  const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+  // const namespace = null;
+  const dirName = (attachment.page != null)
+    ? 'attachment'
+    : 'user';
+  const filePath = urljoin(namespace || '', dirName, attachment.fileName);
+
+  return filePath;
+}
+
+/**
+ * check file existence
+ * @param {File} file https://googleapis.dev/nodejs/storage/latest/File.html
+ */
+async function isFileExists(file) {
+  // check file exists
+  const res = await file.exists();
+  return res[0];
+}
 
 
 // TODO: rewrite this module to be a type-safe implementation
@@ -49,83 +88,56 @@ class GcsFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
-    throw new Error('Method not implemented.');
+  override determineResponseMode() {
+    return configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode')
+      ? ResponseMode.RELAY
+      : ResponseMode.REDIRECT;
   }
 
   /**
    * @inheritdoc
    */
-  override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
-    throw new Error('Method not implemented.');
-  }
-
-}
-
-
-let _instance: Storage;
-
-module.exports = function(crowi: Crowi) {
-  const lib = new GcsFileUploader(crowi);
-
-  function getGcsBucket() {
-    return configManager.getConfig('crowi', 'gcs:bucket');
-  }
-
-  function getGcsInstance() {
-    if (_instance == null) {
-      const keyFilename = configManager.getConfig('crowi', 'gcs:apiKeyJsonPath');
-      // see https://googleapis.dev/nodejs/storage/latest/Storage.html
-      _instance = keyFilename != null
-        ? new Storage({ keyFilename }) // Create a client with explicit credentials
-        : new Storage(); // Create a client that uses Application Default Credentials
-    }
-    return _instance;
-  }
-
-  function getFilePathOnStorage(attachment) {
-    const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
-    // const namespace = null;
-    const dirName = (attachment.page != null)
-      ? 'attachment'
-      : 'user';
-    const filePath = urljoin(namespace || '', dirName, attachment.fileName);
-
-    return filePath;
+  override respond(): void {
+    throw new Error('GcsFileUploader does not support ResponseMode.DELEGATE.');
   }
 
   /**
-   * check file existence
-   * @param {File} file https://googleapis.dev/nodejs/storage/latest/File.html
+   * @inheritdoc
    */
-  async function isFileExists(file) {
+  override async findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+    if (!this.getIsReadable()) {
+      throw new Error('GCS is not configured.');
+    }
+
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+    const filePath = getFilePathOnStorage(attachment);
+    const file = myBucket.file(filePath);
+
     // check file exists
-    const res = await file.exists();
-    return res[0];
+    const isExists = await isFileExists(file);
+    if (!isExists) {
+      throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
+    }
+
+    try {
+      return file.createReadStream();
+    }
+    catch (err) {
+      logger.error(err);
+      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
+    }
   }
 
-  lib.isValidUploadSettings = function() {
-    return configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
-      && configManager.getConfig('crowi', 'gcs:bucket') != null;
-  };
-
-  lib.shouldDelegateToResponse = function() {
-    return !configManager.getConfig('crowi', 'gcs:referenceFileWithRelayMode');
-  };
-
-  lib.respond = async function(res, attachment, opts) {
-    if (!lib.getIsUploadable()) {
+  /**
+   * @inheritDoc
+   */
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+    if (!this.getIsUploadable()) {
       throw new Error('GCS is not configured.');
     }
 
     const isDownload = opts?.download ?? false;
-
-    if (!isDownload) {
-      const temporaryUrl = attachment.getValidTemporaryUrl();
-      if (temporaryUrl != null) {
-        return res.redirect(temporaryUrl);
-      }
-    }
 
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
@@ -143,15 +155,22 @@ module.exports = function(crowi: Crowi) {
       responseDisposition: contentHeaders.contentDisposition?.value.toString(),
     });
 
-    res.redirect(signedUrl);
+    return {
+      url: signedUrl,
+      lifetimeSec: lifetimeSecForTemporaryUrl,
+    };
 
-    try {
-      return attachment.cashTemporaryUrlByProvideSec(signedUrl, lifetimeSecForTemporaryUrl);
-    }
-    catch (err) {
-      logger.error(err);
-    }
+  }
 
+}
+
+
+module.exports = function(crowi: Crowi) {
+  const lib = new GcsFileUploader(crowi);
+
+  lib.isValidUploadSettings = function() {
+    return configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null
+      && configManager.getConfig('crowi', 'gcs:bucket') != null;
   };
 
   (lib as any).deleteFile = function(attachment) {
@@ -205,37 +224,6 @@ module.exports = function(crowi: Crowi) {
     const myBucket = gcs.bucket(getGcsBucket());
 
     return myBucket.file(filePath).save(data, { resumable: false });
-  };
-
-  /**
-   * Find data substance
-   *
-   * @param {Attachment} attachment
-   * @return {stream.Readable} readable stream
-   */
-  lib.findDeliveryFile = async function(attachment) {
-    if (!lib.getIsReadable()) {
-      throw new Error('GCS is not configured.');
-    }
-
-    const gcs = getGcsInstance();
-    const myBucket = gcs.bucket(getGcsBucket());
-    const filePath = getFilePathOnStorage(attachment);
-    const file = myBucket.file(filePath);
-
-    // check file exists
-    const isExists = await isFileExists(file);
-    if (!isExists) {
-      throw new Error(`Any object that relate to the Attachment (${filePath}) does not exist in GCS`);
-    }
-
-    try {
-      return file.createReadStream();
-    }
-    catch (err) {
-      logger.error(err);
-      throw new Error(`Coudn't get file from AWS for the Attachment (${attachment._id.toString()})`);
-    }
   };
 
   /**

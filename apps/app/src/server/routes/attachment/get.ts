@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
 import type { ExpressHttpHeader, RespondOptions } from '~/server/interfaces/attachment';
+import { FileUploader, ResponseMode } from '~/server/service/file-uploader/file-uploader';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
@@ -79,6 +80,50 @@ export const generateHeadersForFresh = (attachment: IAttachmentDocument): Expres
 };
 
 
+const respondForRedirectMode = async(res: Response, fileUploadService: FileUploader, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> => {
+  const isDownload = opts?.download ?? false;
+
+  if (!isDownload) {
+    const temporaryUrl = attachment.getValidTemporaryUrl();
+    if (temporaryUrl != null) {
+      res.redirect(temporaryUrl);
+      return;
+    }
+  }
+
+  const temporaryUrl = await fileUploadService.generateTemporaryUrl(attachment, opts);
+
+  res.redirect(temporaryUrl.url);
+
+  // persist temporaryUrl
+  if (!isDownload) {
+    try {
+      attachment.cashTemporaryUrlByProvideSec(temporaryUrl.url, temporaryUrl.lifetimeSec);
+      return;
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  }
+};
+
+const respondForRelayMode = async(res: Response, fileUploadService: FileUploader, attachment: IAttachmentDocument, opts?: RespondOptions): Promise<void> => {
+  // apply content-* headers before response
+  const isDownload = opts?.download ?? false;
+  const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+  applyHeaders(res, contentHeaders.toExpressHttpHeaders());
+
+  try {
+    const readable = await fileUploadService.findDeliveryFile(attachment);
+    readable.pipe(res);
+  }
+  catch (e) {
+    logger.error(e);
+    res.json(ApiResponse.error(e.message));
+    return;
+  }
+};
+
 export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) => {
   return async(req: CrowiRequest, res: Response, opts?: RespondOptions): Promise<void> => {
 
@@ -94,27 +139,18 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
 
     const { fileUploadService } = crowi;
 
-    if (fileUploadService.shouldDelegateToResponse()) {
-      fileUploadService.respond(res, attachment, opts);
-      return;
+    const responseMode = fileUploadService.determineResponseMode();
+    switch (responseMode) {
+      case ResponseMode.DELEGATE:
+        fileUploadService.respond(res, attachment, opts);
+        return;
+      case ResponseMode.REDIRECT:
+        respondForRedirectMode(res, fileUploadService, attachment, opts);
+        return;
+      case ResponseMode.RELAY:
+        respondForRelayMode(res, fileUploadService, attachment, opts);
+        return;
     }
-
-    // apply content-* headers before response
-    const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
-    applyHeaders(res, contentHeaders.toExpressHttpHeaders());
-
-    try {
-      const readable = await fileUploadService.findDeliveryFile(attachment);
-      readable.pipe(res);
-    }
-    catch (e) {
-      logger.error(e);
-      res.json(ApiResponse.error(e.message));
-      return;
-    }
-
-    return;
   };
 };
 

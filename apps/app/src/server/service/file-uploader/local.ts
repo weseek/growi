@@ -8,7 +8,9 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+import {
+  AbstractFileUploader, ResponseMode, type TemporaryUrl, type SaveFileParam,
+} from './file-uploader';
 import {
   ContentHeaders, applyHeaders,
 } from './utils';
@@ -63,6 +65,15 @@ class LocalFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
+  override determineResponseMode() {
+    return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect')
+      ? ResponseMode.DELEGATE
+      : ResponseMode.RELAY;
+  }
+
+  /**
+   * @inheritdoc
+   */
   override respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void {
     throw new Error('Method not implemented.');
   }
@@ -72,6 +83,13 @@ class LocalFileUploader extends AbstractFileUploader {
    */
   override findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
     throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritDoc
+   */
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+    throw new Error('LocalFileUploader does not support ResponseMode.REDIRECT.');
   }
 
 }
@@ -186,14 +204,6 @@ module.exports = function(crowi) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');
     const totalLimit = configManager.getConfig('crowi', 'app:fileUploadTotalLimit');
     return lib.doCheckLimit(uploadFileSize, maxFileSize, totalLimit);
-  };
-
-  /**
-   * Checks if Uploader can respond to the HTTP request.
-   */
-  lib.shouldDelegateToResponse = function() {
-    // Check whether to use internal redirect of nginx or Apache.
-    return configManager.getConfig('crowi', 'fileUpload:local:useInternalRedirect');
   };
 
   /**
