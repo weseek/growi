@@ -11,7 +11,10 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import {
+  createPage, exist, exportAsMarkdown, updateContentWidth,
+} from '~/client/services/page-operation';
+import { toastError } from '~/client/util/toastr';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -30,6 +33,7 @@ import {
   useIsAbleToChangeEditorMode,
   useSelectedGrant,
 } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';
@@ -175,11 +179,15 @@ type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled?: boolean,
 };
 
+const logger = loggerFactory('growi:cli:GrowiContextualSubNavigation');
+
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
   const { currentPage } = props;
 
   const router = useRouter();
+
+  const [isCreating, setIsCreating] = useState<boolean>(false);
 
   const { data: shareLinkId } = useShareLinkId();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
@@ -261,6 +269,68 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     }
   }, [isSharedPage, mutateCurrentPage]);
 
+  const onClickTemplateForChildrenButtonHandler = useCallback(async() => {
+    try {
+      setIsCreating(true);
+
+      const path = currentPage == null || currentPage.path === '/'
+        ? '/_template'
+        : `${currentPage.path}/_template`;
+
+      const params = {
+        isSlackEnabled: false,
+        slackChannels: '',
+        grant: currentPage?.grant || 1,
+        grantUserGroupId: currentPage?.grantedGroup?._id,
+      };
+
+      const res = await exist(JSON.stringify([path]));
+      if (!res.pages[path]) {
+        await createPage(path, '', params);
+      }
+
+      router.push(`${path}#edit`);
+    }
+    catch (err) {
+      logger.warn(err);
+      toastError(err);
+    }
+    finally {
+      setIsCreating(false);
+    }
+  }, [currentPage, router]);
+
+  const onClickTemplateForDescendantsButtonHandler = useCallback(async() => {
+    try {
+      setIsCreating(true);
+
+      const path = currentPage == null || currentPage.path === '/'
+        ? '/__template'
+        : `${currentPage.path}/__template`;
+
+      const params = {
+        isSlackEnabled: false,
+        slackChannels: '',
+        grant: currentPage?.grant || 1,
+        grantUserGroupId: currentPage?.grantedGroup?._id,
+      };
+
+      const res = await exist(JSON.stringify([path]));
+      if (!res.pages[path]) {
+        await createPage(path, '', params);
+      }
+
+      router.push(`${path}#edit`);
+    }
+    catch (err) {
+      logger.warn(err);
+      toastError(err);
+    }
+    finally {
+      setIsCreating(false);
+    }
+  }, [currentPage, router]);
+
   const additionalMenuItemsRenderer = useCallback(() => {
     if (revisionId == null || pageId == null) {
       return (
@@ -336,6 +406,9 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           path={path}
           isOpen={isPageTemplateModalShown}
           onClose={() => setIsPageTempleteModalShown(false)}
+          isCreating={isCreating}
+          onClickTemplateForChildrenButtonHandler={onClickTemplateForChildrenButtonHandler}
+          onClickTemplateForDescendantsButtonHandler={onClickTemplateForDescendantsButtonHandler}
         />
       )}
     </>

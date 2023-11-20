@@ -4,17 +4,14 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
-import urljoin from 'url-join';
 
 const CreateTemplateModal = (props) => {
   const { t } = useTranslation();
-  const { path } = props;
+  const {
+    path, isCreating, onClickTemplateForChildrenButtonHandler, onClickTemplateForDescendantsButtonHandler,
+  } = props;
 
   const parentPath = pathUtils.addTrailingSlash(path);
-
-  function generateUrl(label) {
-    return encodeURI(urljoin(parentPath, label, '#edit'));
-  }
 
   /**
    * @param {string} target Which hierarchy to create [children, descendants]
@@ -28,14 +25,18 @@ const CreateTemplateModal = (props) => {
           <p className="form-text text-muted text-center"><small>{t(`template.${target}.desc`) }</small></p>
         </div>
         <div className="card-footer text-center">
-          <a
+          <button
+            disabled={isCreating}
             data-testid={`template-button-${target}`}
-            href={generateUrl(label)}
-            className="btn btn-sm btn-primary"
+            className="btn-sm btn-primary"
             id={`template-button-${target}`}
+            onClick={target === 'children'
+              ? onClickTemplateForChildrenButtonHandler
+              : onClickTemplateForDescendantsButtonHandler}
+            type="button"
           >
             { t('Edit') }
-          </a>
+          </button>
         </div>
       </div>
     );
@@ -71,6 +72,9 @@ CreateTemplateModal.propTypes = {
   path: PropTypes.string.isRequired,
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  isCreating: PropTypes.bool.isRequired,
+  onClickTemplateForChildrenButtonHandler: PropTypes.func.isRequired,
+  onClickTemplateForDescendantsButtonHandler: PropTypes.func.isRequired,
 };
 
 export default CreateTemplateModal;
