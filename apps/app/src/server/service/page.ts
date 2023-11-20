@@ -46,7 +46,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
   canMoveByPath, isUsersTopPage, isUsersHomepage, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
@@ -177,13 +177,9 @@ class PageService {
       }
 
       const User = mongoose.model('User');
-      const creator = await User.findById<IUserHasId | null>(creatorId);
-
-      if (creator == null) {
-        throw new Error('user homepage creator document is not found.');
-      }
-
-      if (creator.status !== USER_STATUS.DELETED) {
+      const username = getUsernameByPath(path);
+      const userHomepageOwner = await User.findOne<IUserHasId | null>({ username });
+      if (userHomepageOwner != null) {
         return false;
       }
     }
@@ -208,13 +204,9 @@ class PageService {
       }
 
       const User = mongoose.model('User');
-      const creator = await User.findById<IUserHasId | null>(creatorId);
-
-      if (creator == null) {
-        throw new Error('user homepage creator document is not found.');
-      }
-
-      if (creator.status !== USER_STATUS.DELETED) {
+      const username = getUsernameByPath(path);
+      const userHomepageOwner = await User.findOne<IUserHasId | null>({ username });
+      if (userHomepageOwner != null) {
         return false;
       }
     }
@@ -1450,12 +1442,10 @@ class PageService {
         throw new Error('Page is not deletable.');
       }
 
-      if (page.creator == null) {
-        throw new Error('user homepage creator is null.');
-      }
-
-      const populatedPage = await page.populate('creator');
-      if (populatedPage.creator.status !== USER_STATUS.DELETED) {
+      const User = mongoose.model('User');
+      const username = getUsernameByPath(page.path);
+      const userHomepageOwner = User.findOne<IUserHasId | null>({ username })
+      if (userHomepageOwner != null) {
         throw new Error('Page is not deletable.');
       }
     }
@@ -2468,16 +2458,14 @@ class PageService {
     if (isUsersHomepage(page.path)) {
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
 
-      if (page.creator == null) {
-        throw new Error('user homepage creator is null.');
-      }
-
       if (!isUsersHomepageDeletionEnabled) {
         isDeletable = false;
       }
       else {
-        const populatedPage = await page.populate('creator');
-        if (populatedPage.creator.status !== USER_STATUS.DELETED) {
+        const User = mongoose.model('User');
+        const username = getUsernameByPath(page.path);
+        const userHomepageOwner = User.findOne<IUserHasId | null>({ username })
+        if (userHomepageOwner != null) {
           isDeletable = false;
         }
       }
