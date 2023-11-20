@@ -870,6 +870,7 @@
       "CANCEL": "キャンセル"
     },
     "approver_status": {
+      "NONE": "未承認",
       "APPROVE": "承認",
       "REMAND": "差し戻し",
       "DELEGATE": "委譲"

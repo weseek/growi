@@ -837,6 +837,7 @@
       "CANCEL": "CANCEL"
     },
     "approver_status": {
+      "NONE": "Unapproved",
       "APPROVE": "Approve",
       "REMAND": "Remand",
       "DELEGATE": "Delegate"

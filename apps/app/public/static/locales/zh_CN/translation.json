@@ -840,6 +840,7 @@
       "CANCEL": "取消"
     },
     "approver_status": {
+      "NONE": "未经批准",
       "APPROVE": "批准",
       "REMAND": "还押",
       "DELEGATE": "代表们"
