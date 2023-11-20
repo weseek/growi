@@ -28,7 +28,7 @@ const CreateTemplateModal = (props) => {
           <button
             disabled={isCreating}
             data-testid={`template-button-${target}`}
-            className="btn-sm btn-primary"
+            className="btn btn-sm btn-primary"
             id={`template-button-${target}`}
             onClick={target === 'children'
               ? onClickTemplateForChildrenButtonHandler
