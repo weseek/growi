@@ -68,6 +68,10 @@ export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSW
 
   // utils
   const update = useCallback(async(updateData: UpdateWorkflowData) => {
+    if (workflowId == null) {
+      throw Error('workflowId is null');
+    }
+
     const response = await apiv3Put(`/workflow/${workflowId}`, {
       name: updateData.name,
       comment: updateData.comment,
@@ -78,6 +82,10 @@ export const useSWRxWorkflow = (workflowId?: string): SWRResponseWithUtils<UseSW
   }, [swrResponse, workflowId]);
 
   const updateApproverStatus = useCallback(async(approverStatus: WorkflowApproverStatus) => {
+    if (workflowId == null) {
+      throw Error('workflowId is null');
+    }
+
     const response = await apiv3Put(`/workflow/${workflowId}/status`, { approverStatus });
     swrResponse.mutate(response.data.updatedWorkflow);
   }, [swrResponse, workflowId]);
