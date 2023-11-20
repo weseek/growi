@@ -178,7 +178,7 @@ class PageService {
 
       const User = mongoose.model('User');
       const username = getUsernameByPath(path);
-      const userHomepageOwner = await User.findOne<IUserHasId | null>({ username });
+      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
       if (userHomepageOwner != null) {
         return false;
       }
@@ -205,7 +205,7 @@ class PageService {
 
       const User = mongoose.model('User');
       const username = getUsernameByPath(path);
-      const userHomepageOwner = await User.findOne<IUserHasId | null>({ username });
+      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
       if (userHomepageOwner != null) {
         return false;
       }
@@ -1444,7 +1444,7 @@ class PageService {
 
       const User = mongoose.model('User');
       const username = getUsernameByPath(page.path);
-      const userHomepageOwner = User.findOne<IUserHasId | null>({ username })
+      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
       if (userHomepageOwner != null) {
         throw new Error('Page is not deletable.');
       }
@@ -2464,7 +2464,7 @@ class PageService {
       else {
         const User = mongoose.model('User');
         const username = getUsernameByPath(page.path);
-        const userHomepageOwner = User.findOne<IUserHasId | null>({ username })
+        const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
         if (userHomepageOwner != null) {
           isDeletable = false;
         }
