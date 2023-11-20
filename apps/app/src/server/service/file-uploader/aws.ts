@@ -7,6 +7,7 @@ import {
   DeleteObjectCommand,
   ListObjectsCommand,
   type GetObjectCommandInput,
+  ObjectCannedACL,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -293,7 +294,7 @@ module.exports = (crowi) => {
       ContentType: attachment.fileFormat,
       Key: filePath,
       Body: fileStream,
-      ACL: 'public-read',
+      ACL: ObjectCannedACL.public_read,
     };
 
     return s3.send(new PutObjectCommand(params));
@@ -308,7 +309,7 @@ module.exports = (crowi) => {
       ContentType: contentType,
       Key: filePath,
       Body: data,
-      ACL: 'public-read',
+      ACL: ObjectCannedACL.public_read,
     };
 
     return s3.send(new PutObjectCommand(params));
