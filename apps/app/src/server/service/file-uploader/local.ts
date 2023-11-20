@@ -211,16 +211,17 @@ module.exports = function(crowi) {
    * @param {Response} res
    * @param {Response} attachment
    */
-  lib.respond = function(res, attachment) {
+  lib.respond = function(res, attachment, opts) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
     const relativePath = path.relative(crowi.publicDir, storagePath);
     const internalPathRoot = configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
     const internalPath = urljoin(internalPathRoot, relativePath);
 
-    const contentHeaders = new ContentHeaders(attachment, { inline: true });
+    // const isDownload = opts?.download ?? false;
+    // const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     applyHeaders(res, [
-      ...contentHeaders.toExpressHttpHeaders(),
+      // ...contentHeaders.toExpressHttpHeaders(),
       { field: 'X-Accel-Redirect', value: internalPath },
       { field: 'X-Sendfile', value: storagePath },
     ]);

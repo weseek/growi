@@ -171,8 +171,6 @@ class AzureFileUploader extends AbstractFileUploader {
       throw new Error('Azure Blob is not configured.');
     }
 
-    const isDownload = opts?.download ?? false;
-
     const containerClient = await getContainerClient();
     const filePath = getFilePathOnStorage(attachment);
     const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
@@ -182,7 +180,8 @@ class AzureFileUploader extends AbstractFileUploader {
     const signedUrl = `${blockBlobClient.url}?${sasToken}`;
 
     // TODO: re-impl using generateSasUrl
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    // const isDownload = opts?.download ?? false;
+    // const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     // const signedUrl = blockBlobClient.generateSasUrl({
     //   contentType: contentHeaders.contentType?.value.toString(),
     //   contentDisposition: contentHeaders.contentDisposition?.value.toString(),
