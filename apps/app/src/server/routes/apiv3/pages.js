@@ -643,19 +643,19 @@ module.exports = (crowi) => {
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
 
-    let deletablePages;
-    deletablePages = pagesInTrash
-      .filter(page => !isUsersHomepage(page.path))
-      .map(page => crowi.pageService.filterPagesByCanDeleteCompletely(page, req.user, true));
+    const deletablePages = [];
+    const filteredPages = pagesInTrash.filter(page => !isUsersHomepage(page.path));
+    deletablePages.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, true));
 
     const usersHomepages = pagesInTrash.filter(page => isUsersHomepage(page.path));
-    deletablePages = await Promise.all(
+    const usersHomepagesDeletable = await Promise.all(
       usersHomepages
         .map(async(page) => {
           const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, true);
           return canDeleteCompletely ? page : null;
         }),
     );
+    deletablePages.push(...usersHomepagesDeletable.filter(page => page !== null));
 
     if (deletablePages.length === 0) {
       const msg = 'No pages can be deleted.';
@@ -919,42 +919,37 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    let pagesCanBeDeleted;
+    const filteredPages = pagesToDelete.filter(page => !isUsersHomepage(page.path));
+    const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
+    let pagesCanBeDeleted = [];
     /*
      * Delete Completely
      */
     if (isCompletely) {
-      pagesCanBeDeleted = pagesToDelete
-        .filter(page => !isUsersHomepage(page.path))
-        .map(page => crowi.pageService.filterPagesByCanDeleteCompletely(page, req.user, isRecursively));
+      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, isRecursively));
 
-      const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
-      pagesCanBeDeleted = await Promise.all(
-        usersHomepages
-          .map(async(page) => {
-            const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively);
-            return canDeleteCompletely ? page : null;
-          }),
+      const usersHomepagesDeletable = await Promise.all(
+        usersHomepages.map(async(page) => {
+          const canDeleteCompletely = page.isEmpty || (await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively));
+          return canDeleteCompletely ? page : null;
+        }),
       );
+      pagesCanBeDeleted.push(...usersHomepagesDeletable.filter(page => page !== null));
     }
     /*
      * Trash
      */
     else {
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
 
-      pagesCanBeDeleted = pagesToDelete
-        .filter(page => !isUsersHomepage(page.path))
-        .map(page => crowi.pageService.filterPagesByCanDelete(page, req.user, isRecursively));
-
-      const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
-      pagesCanBeDeleted = await Promise.all(
-        usersHomepages
-          .map(async(page) => {
-            const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively);
-            return canDeleteCompletely ? page : null;
-          }),
+      const usersHomepagesDeletable = await Promise.all(
+        usersHomepages.map(async(page) => {
+          const canDeleteCompletely = page.isEmpty || (await crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively));
+          return canDeleteCompletely ? page : null;
+        }),
       );
+      pagesCanBeDeleted.push(...usersHomepagesDeletable.filter(page => page !== null));
     }
 
     if (pagesCanBeDeleted.length === 0) {
