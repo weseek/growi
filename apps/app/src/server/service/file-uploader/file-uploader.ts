@@ -2,7 +2,7 @@ import { randomUUID } from 'crypto';
 
 import type { Response } from 'express';
 
-import type { RespondOptions } from '~/server/interfaces/attachment';
+import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
 import { Attachment, type IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -21,14 +21,6 @@ export type CheckLimitResult = {
   isUploadable: boolean,
   errorMessage?: string,
 }
-
-export const ResponseMode = {
-  RELAY: 'relay',
-  REDIRECT: 'redirect',
-  DELEGATE: 'delegate',
-} as const;
-
-export type ResponseMode = typeof ResponseMode[keyof typeof ResponseMode];
 
 export type TemporaryUrl = {
   url: string,

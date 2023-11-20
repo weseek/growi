@@ -2,14 +2,14 @@ import { Readable } from 'stream';
 
 import type { Response } from 'express';
 
-import type { RespondOptions } from '~/server/interfaces/attachment';
+import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
 import {
-  AbstractFileUploader, ResponseMode, type TemporaryUrl, type SaveFileParam,
+  AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
 } from './file-uploader';
 import {
   ContentHeaders, applyHeaders,

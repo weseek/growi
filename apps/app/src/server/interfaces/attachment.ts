@@ -22,3 +22,10 @@ export type IContentHeaders = {
 export type RespondOptions = {
   download?: boolean,
 }
+
+export const ResponseMode = {
+  RELAY: 'relay',
+  REDIRECT: 'redirect',
+  DELEGATE: 'delegate',
+} as const;
+export type ResponseMode = typeof ResponseMode[keyof typeof ResponseMode];

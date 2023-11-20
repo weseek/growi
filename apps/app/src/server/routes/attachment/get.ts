@@ -8,16 +8,16 @@ import type {
 import mongoose from 'mongoose';
 
 import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
-import type { ExpressHttpHeader, RespondOptions } from '~/server/interfaces/attachment';
-import { FileUploader, ResponseMode } from '~/server/service/file-uploader/file-uploader';
+import { ResponseMode, type ExpressHttpHeader, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  type FileUploader,
+  toExpressHttpHeaders, ContentHeaders, applyHeaders,
+} from '~/server/service/file-uploader';
 import loggerFactory from '~/utils/logger';
 
 import type Crowi from '../../crowi';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
 import { Attachment, type IAttachmentDocument } from '../../models';
-import {
-  toExpressHttpHeaders, ContentHeaders, applyHeaders,
-} from '../../service/file-uploader';
 import ApiResponse from '../../util/apiResponse';
 
 
