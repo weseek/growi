@@ -103,7 +103,7 @@ module.exports = (crowi: Crowi): Router => {
     const { groupId } = req.query;
 
     try {
-      const userGroup = await ExternalUserGroup.findById(groupId);
+      const userGroup = await ExternalUserGroup.findOne({ _id: { $eq: groupId } });
       const ancestorUserGroups = await ExternalUserGroup.findGroupsWithAncestorsRecursively(userGroup);
       return res.apiv3({ ancestorUserGroups });
     }
@@ -178,7 +178,7 @@ module.exports = (crowi: Crowi): Router => {
     } = req.body;
 
     try {
-      const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { description });
+      const userGroup = await ExternalUserGroup.findOneAndUpdate({ _id: id }, { $set: { description } });
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_UPDATE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
