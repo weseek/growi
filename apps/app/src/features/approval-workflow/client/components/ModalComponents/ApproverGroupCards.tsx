@@ -12,7 +12,7 @@ import type {
 
 
 /*
-*  ApproverItem
+*  CreatorOrApproverItem
 */
 type CreatorOrApproverItemProps = {
   creator?: IUserHasId
@@ -23,9 +23,9 @@ const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element =
   const { approver, creator } = props;
   const { t } = useTranslation();
 
-  const user = approver?.user ?? creator ?? undefined;
+  const user = approver?.user ?? creator;
 
-  if ((creator == null && approver == null) && (creator != null && approver != null)) {
+  if ((creator == null && approver == null) || (creator != null && approver != null)) {
     return <></>;
   }
 
@@ -46,7 +46,7 @@ const CreatorOrApproverItem = (props: CreatorOrApproverItemProps): JSX.Element =
           )}
 
           { approver != null && (
-            <>{ t(`approval_workflow.approver_status.${approver?.status}`)}</>
+            <>{ t(`approval_workflow.approver_status.${approver.status}`)}</>
           )}
         </div>
       </div>
@@ -68,7 +68,7 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
   const approvers = approverGroup.approvers;
 
   return (
-    <div className="card rounded  my-2">
+    <div className="card rounded my-3">
       <div className="card-body">
         { approvers.map(approver => (
           <CreatorOrApproverItem
@@ -93,7 +93,7 @@ const CreatorCard = (props: CreatorCardProps): JSX.Element => {
   const { creator } = props;
 
   return (
-    <div className="card rounded  my-2">
+    <div className="card rounded my-3">
       <div className="card-body">
         <CreatorOrApproverItem creator={creator} />
       </div>
