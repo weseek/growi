@@ -1,7 +1,9 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import {
+  isCreatablePage, isTrashPage, isUserPage, isUsersHomepage,
+} from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
@@ -641,7 +643,16 @@ module.exports = (crowi) => {
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
 
-    const deletablePages = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
+    let deletablePages;
+    deletablePages = pagesInTrash
+      .filter(page => !isUsersHomepage(page.path))
+      .map(page => crowi.pageService.filterPagesByCanDeleteCompletely(page, req.user, true));
+
+    const usersHomepages = pagesInTrash.filter(page => isUsersHomepage(page.path));
+    deletablePages = await Promise.all(
+      usersHomepages
+        .map(page => page.isEmpty || crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, true)),
+    );
 
     if (deletablePages.length === 0) {
       const msg = 'No pages can be deleted.';
@@ -910,14 +921,31 @@ module.exports = (crowi) => {
      * Delete Completely
      */
     if (isCompletely) {
-      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
+      pagesCanBeDeleted = pagesToDelete
+        .filter(page => !isUsersHomepage(page.path))
+        .map(page => crowi.pageService.filterPagesByCanDeleteCompletely(page, req.user, isRecursively));
+
+      const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
+      pagesCanBeDeleted = await Promise.all(
+        usersHomepages
+          .map(page => page.isEmpty || crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively)),
+      );
     }
     /*
      * Trash
      */
     else {
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
-      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
+
+      pagesCanBeDeleted = pagesToDelete
+        .filter(page => !isUsersHomepage(page.path))
+        .map(page => crowi.pageService.filterPagesByCanDelete(page, req.user, isRecursively));
+
+      const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
+      pagesCanBeDeleted = await Promise.all(
+        usersHomepages
+          .map(page => page.isEmpty || crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively)),
+      );
     }
 
     if (pagesCanBeDeleted.length === 0) {

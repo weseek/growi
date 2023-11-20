@@ -165,7 +165,33 @@ class PageService {
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
-  async canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
+  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(path) || isUsersTopPage(path) || isUsersHomepage(path)) {
+      return false;
+    }
+
+    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
+
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(path) || isUsersTopPage(path) || isUsersHomepage(path)) {
+      return false;
+    }
+
+    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
+    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
+
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
+
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  async canDeleteCompletelyPromise(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
     if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
       return false;
     }
@@ -192,7 +218,7 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  async canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
+  async canDeletePromise(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
     if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
       return false;
     }
@@ -251,26 +277,12 @@ class PageService {
     return false;
   }
 
-  async filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean): Promise<boolean[]> {
-    const filteredPages: boolean[] = [];
-    for (const p of pages) {
-      // eslint-disable-next-line no-await-in-loop
-      const canDeleteCompletely = await this.canDeleteCompletely(p.path, p.creator, user, isRecursively);
-      filteredPages.push(p.isEmpty || canDeleteCompletely);
-    }
-
-    return filteredPages;
+  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
   }
 
-  async filterPagesByCanDelete(pages, user, isRecursively: boolean): Promise<boolean[]> {
-    const filteredPages: boolean[] = [];
-    for (const p of pages) {
-      // eslint-disable-next-line no-await-in-loop
-      const canDelete = await this.canDelete(p.path, p.creator, user, isRecursively);
-      return p.isEmpty || canDelete;
-    }
-
-    return filteredPages;
+  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
+    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -306,7 +318,7 @@ class PageService {
     }
 
     const isGuestUser = user == null;
-    const pageInfo = await this.constructBasicPageInfo(page, isGuestUser);
+    const pageInfo = await this.constructBasicPageInfoPromise(page, isGuestUser);
 
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
@@ -335,8 +347,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    const isDeletable = await this.canDelete(page.path, creatorId, user, false);
-    const isAbleToDeleteCompletely = await this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+    const isDeletable = await this.canDeletePromise(page.path, creatorId, user, false);
+    const isAbleToDeleteCompletely = await this.canDeleteCompletelyPromise(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
@@ -2449,7 +2461,43 @@ class PageService {
     });
   }
 
-  async constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): Promise<IPageInfo | IPageInfoForEntity> {
+  constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+    let isDeletable = true;
+    if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path) || isUsersHomepage(page.path)) {
+      isDeletable = false;
+    }
+
+    if (page.isEmpty) {
+      return {
+        isV5Compatible: true,
+        isEmpty: true,
+        isDeletable: false,
+        isAbleToDeleteCompletely: false,
+        isRevertible: false,
+      };
+    }
+
+    const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
+    const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
+
+    return {
+      isV5Compatible: isTopPage(page.path) || page.parent != null,
+      isEmpty: false,
+      sumOfLikers: page.liker.length,
+      likerIds: this.extractStringIds(likers),
+      seenUserIds: this.extractStringIds(seenUsers),
+      sumOfSeenUsers: page.seenUsers.length,
+      isDeletable,
+      isAbleToDeleteCompletely: false,
+      isRevertible: isTrashPage(page.path),
+      contentAge: page.getContentAge(),
+      descendantCount: page.descendantCount,
+      commentCount: page.commentCount,
+    };
+
+  }
+
+  async constructBasicPageInfoPromise(page: PageDocument, isGuestUser?: boolean): Promise<IPageInfo | IPageInfoForEntity> {
     let isDeletable = true;
     if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path)) {
       isDeletable = false;
