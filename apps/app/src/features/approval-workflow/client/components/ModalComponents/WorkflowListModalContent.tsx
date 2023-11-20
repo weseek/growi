@@ -9,7 +9,7 @@ import {
 
 import { useCurrentUser } from '~/stores/context';
 
-import { IWorkflowHasId } from '../../../interfaces/workflow';
+import { type IWorkflowHasId } from '../../../interfaces/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
 
@@ -127,7 +127,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                       </div>
                     </td>
                     <td>
-                      {t(`approval_workflow.statuses.${workflow.status}`)}
+                      {t(`approval_workflow.workflow_status.${workflow.status}`)}
                     </td>
                     <td>
                       {workflow.creator.username}

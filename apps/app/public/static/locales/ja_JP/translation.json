@@ -863,11 +863,16 @@
       "AND": "全員が承認",
       "OR": "1人が承認"
     },
-    "statuses": {
+    "workflow_status": {
       "INPROGRESS": "進行中",
       "APPROVE": "承認",
       "REJECT": "却下",
       "CANCEL": "キャンセル"
+    },
+    "approver_status": {
+      "APPROVE": "承認",
+      "REMAND": "差し戻し",
+      "DELEGATE": "委譲"
     }
   }
 }

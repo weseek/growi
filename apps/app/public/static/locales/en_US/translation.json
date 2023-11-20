@@ -830,11 +830,16 @@
       "AND": "Everyone's approval",
       "OR": "One person's approval"
     },
-    "statuses": {
+    "workflow_status": {
       "INPROGRESS": "IN-PROGRESS",
       "APPROVE": "APPROVE",
       "REJECT": "REJECT",
       "CANCEL": "CANCEL"
+    },
+    "approver_status": {
+      "APPROVE": "Approve",
+      "REMAND": "Remand",
+      "DELEGATE": "Delegate"
     }
   }
 }
