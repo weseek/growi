@@ -51,15 +51,16 @@
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
+    "@aws-skd/*": "fix version above 3.186.0 that is required by mongodb@4.16.0",
+    "@keycloak/keycloak-admin-client": "19.0.0 or above exports only ESM.",
     "escape-string-regexp": "5.0.0 or above exports only ESM",
     "string-width": "5.0.0 or above exports only ESM.",
-    "@keycloak/keycloak-admin-client": "19.0.0 or above exports only ESM.",
     "remark-wiki-link": "!!DO NOT REMOVE!! including 'mdast-util-wiki-link' and 'micromark-extension-wiki-link' required by pukiwiki-like-linker"
   },
   "dependencies": {
     "@akebifiky/remark-simple-plantuml": "^1.0.2",
-    "@aws-sdk/client-s3": "3.329.0",
-    "@aws-sdk/s3-request-presigner": "3.329.0",
+    "@aws-sdk/client-s3": "3.454.0",
+    "@aws-sdk/s3-request-presigner": "3.454.0",
     "@azure/identity": "^3.3.2",
     "@azure/storage-blob": "^12.16.0",
     "@browser-bunyan/console-formatted-stream": "^1.8.0",
