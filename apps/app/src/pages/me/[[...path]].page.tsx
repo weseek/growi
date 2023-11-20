@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import type { IUserHasId } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -194,7 +193,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user, crowi } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -209,7 +208,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     const User = crowi.model('User');
-    const userData = await User.findById(req.user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
+    const userData = await User.findById(user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
     props.currentUser = userData.toObject();
   }
 

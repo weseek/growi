@@ -1,5 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
+import { Attachment } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -24,7 +25,6 @@ module.exports = (crowi) => {
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const Attachment = crowi.model('Attachment');
 
   const validator = {
     retrieveAttachment: [

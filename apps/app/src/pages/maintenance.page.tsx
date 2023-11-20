@@ -79,7 +79,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
 
   const result = await getServerSideCommonProps(context);
 

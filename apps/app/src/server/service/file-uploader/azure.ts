@@ -6,21 +6,26 @@ import {
   BlobClient,
   BlockBlobClient,
   BlobDeleteOptions,
-  BlobDeleteIfExistsResponse,
-  BlockBlobUploadResponse,
   ContainerClient,
   generateBlobSASQueryParameters,
   ContainerSASPermissions,
   SASProtocol,
-  BlockBlobParallelUploadOptions,
-  BlockBlobUploadStreamOptions,
+  type BlobDeleteIfExistsResponse,
+  type BlockBlobUploadResponse,
+  type BlockBlobParallelUploadOptions,
+  type BlockBlobUploadStreamOptions,
 } from '@azure/storage-blob';
 
+import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
-import { AbstractFileUploader, type SaveFileParam } from './file-uploader';
+import {
+  AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
+} from './file-uploader';
+import { ContentHeaders } from './utils';
 
 const urljoin = require('url-join');
 
@@ -36,12 +41,72 @@ type AzureConfig = {
   containerName: string,
 }
 
+
+function getAzureConfig(): AzureConfig {
+  return {
+    accountName: configManager.getConfig('crowi', 'azure:storageAccountName'),
+    containerName: configManager.getConfig('crowi', 'azure:storageContainerName'),
+  };
+}
+
+function getCredential(): TokenCredential {
+  const tenantId = configManager.getConfig('crowi', 'azure:tenantId');
+  const clientId = configManager.getConfig('crowi', 'azure:clientId');
+  const clientSecret = configManager.getConfig('crowi', 'azure:clientSecret');
+  return new ClientSecretCredential(tenantId, clientId, clientSecret);
+}
+
+async function getContainerClient(): Promise<ContainerClient> {
+  const { accountName, containerName } = getAzureConfig();
+  const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
+  return blobServiceClient.getContainerClient(containerName);
+}
+
+// Server creates User Delegation SAS Token for container
+// https://learn.microsoft.com/ja-jp/azure/storage/blobs/storage-blob-create-user-delegation-sas-javascript
+async function getSasToken(lifetimeSec) {
+  const { accountName, containerName } = getAzureConfig();
+  const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
+
+  const now = Date.now();
+  const startsOn = new Date(now - 30 * 1000);
+  const expiresOn = new Date(now + lifetimeSec * 1000);
+  const userDelegationKey = await blobServiceClient.getUserDelegationKey(startsOn, expiresOn);
+
+  // https://github.com/Azure/azure-sdk-for-js/blob/d4d55f73/sdk/storage/storage-blob/src/ContainerSASPermissions.ts#L24
+  // r:read, a:add, c:create, w:write, d:delete, l:list
+  const containerPermissionsForAnonymousUser = 'rl';
+  const sasOptions = {
+    containerName,
+    permissions: ContainerSASPermissions.parse(containerPermissionsForAnonymousUser),
+    protocol: SASProtocol.HttpsAndHttp,
+    startsOn,
+    expiresOn,
+  };
+
+  const sasToken = generateBlobSASQueryParameters(sasOptions, userDelegationKey, accountName).toString();
+
+  return sasToken;
+}
+
+function getFilePathOnStorage(attachment) {
+  const dirName = (attachment.page != null) ? 'attachment' : 'user';
+  return urljoin(dirName, attachment.fileName);
+}
+
 class AzureFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritdoc
    */
   override isValidUploadSettings(): boolean {
+    throw new Error('Method not implemented.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override listFiles() {
     throw new Error('Method not implemented.');
   }
 
@@ -62,8 +127,71 @@ class AzureFileUploader extends AbstractFileUploader {
   /**
    * @inheritdoc
    */
-  override respond(res: Response, attachment: Response): void {
-    throw new Error('Method not implemented.');
+  override determineResponseMode() {
+    return configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode')
+      ? ResponseMode.RELAY
+      : ResponseMode.REDIRECT;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override respond(): void {
+    throw new Error('AzureFileUploader does not support ResponseMode.DELEGATE.');
+  }
+
+  /**
+   * @inheritdoc
+   */
+  override async findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream> {
+    if (!this.getIsReadable()) {
+      throw new Error('Azure is not configured.');
+    }
+
+    const filePath = getFilePathOnStorage(attachment);
+    const containerClient = await getContainerClient();
+    const blobClient: BlobClient = containerClient.getBlobClient(filePath);
+    const downloadResponse = await blobClient.download();
+    if (downloadResponse.errorCode) {
+      logger.error(downloadResponse.errorCode);
+      throw new Error(downloadResponse.errorCode);
+    }
+    if (!downloadResponse?.readableStreamBody) {
+      throw new Error(`Coudn't get file from Azure for the Attachment (${filePath})`);
+    }
+
+    return downloadResponse.readableStreamBody;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
+    if (!this.getIsUploadable()) {
+      throw new Error('Azure Blob is not configured.');
+    }
+
+    const containerClient = await getContainerClient();
+    const filePath = getFilePathOnStorage(attachment);
+    const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
+    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'azure:lifetimeSecForTemporaryUrl');
+
+    const sasToken = await getSasToken(lifetimeSecForTemporaryUrl);
+    const signedUrl = `${blockBlobClient.url}?${sasToken}`;
+
+    // TODO: re-impl using generateSasUrl
+    // const isDownload = opts?.download ?? false;
+    // const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    // const signedUrl = blockBlobClient.generateSasUrl({
+    //   contentType: contentHeaders.contentType?.value.toString(),
+    //   contentDisposition: contentHeaders.contentDisposition?.value.toString(),
+    // });
+
+    return {
+      url: signedUrl,
+      lifetimeSec: lifetimeSecForTemporaryUrl,
+    };
+
   }
 
 }
@@ -71,85 +199,9 @@ class AzureFileUploader extends AbstractFileUploader {
 module.exports = (crowi) => {
   const lib = new AzureFileUploader(crowi);
 
-  function getAzureConfig(): AzureConfig {
-    return {
-      accountName: configManager.getConfig('crowi', 'azure:storageAccountName'),
-      containerName: configManager.getConfig('crowi', 'azure:storageContainerName'),
-    };
-  }
-
-  function getCredential(): TokenCredential {
-    const tenantId = configManager.getConfig('crowi', 'azure:tenantId');
-    const clientId = configManager.getConfig('crowi', 'azure:clientId');
-    const clientSecret = configManager.getConfig('crowi', 'azure:clientSecret');
-    return new ClientSecretCredential(tenantId, clientId, clientSecret);
-  }
-
-  async function getContainerClient(): Promise<ContainerClient> {
-    const { accountName, containerName } = getAzureConfig();
-    const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
-    return blobServiceClient.getContainerClient(containerName);
-  }
-
-  // Server creates User Delegation SAS Token for container
-  // https://learn.microsoft.com/ja-jp/azure/storage/blobs/storage-blob-create-user-delegation-sas-javascript
-  async function getSasToken(lifetimeSec) {
-    const { accountName, containerName } = getAzureConfig();
-    const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
-
-    const now = Date.now();
-    const startsOn = new Date(now - 30 * 1000);
-    const expiresOn = new Date(now + lifetimeSec * 1000);
-    const userDelegationKey = await blobServiceClient.getUserDelegationKey(startsOn, expiresOn);
-
-    // https://github.com/Azure/azure-sdk-for-js/blob/d4d55f73/sdk/storage/storage-blob/src/ContainerSASPermissions.ts#L24
-    // r:read, a:add, c:create, w:write, d:delete, l:list
-    const containerPermissionsForAnonymousUser = 'rl';
-    const sasOptions = {
-      containerName,
-      permissions: ContainerSASPermissions.parse(containerPermissionsForAnonymousUser),
-      protocol: SASProtocol.HttpsAndHttp,
-      startsOn,
-      expiresOn,
-    };
-
-    const sasToken = generateBlobSASQueryParameters(sasOptions, userDelegationKey, accountName).toString();
-
-    return sasToken;
-  }
-
-  function getFilePathOnStorage(attachment) {
-    const dirName = (attachment.page != null) ? 'attachment' : 'user';
-    return urljoin(dirName, attachment.fileName);
-  }
-
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'azure:storageAccountName') != null
       && configManager.getConfig('crowi', 'azure:storageContainerName') != null;
-  };
-
-  lib.canRespond = function() {
-    return !configManager.getConfig('crowi', 'azure:referenceFileWithRelayMode');
-  };
-
-  (lib as any).respond = async function(res, attachment) {
-    const containerClient = await getContainerClient();
-    const filePath = getFilePathOnStorage(attachment);
-    const blockBlobClient: BlockBlobClient = await containerClient.getBlockBlobClient(filePath);
-    const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'azure:lifetimeSecForTemporaryUrl');
-
-    const sasToken = await getSasToken(lifetimeSecForTemporaryUrl);
-    const signedUrl = `${blockBlobClient.url}?${sasToken}`;
-
-    res.redirect(signedUrl);
-
-    try {
-      return attachment.cashTemporaryUrlByProvideSec(signedUrl, lifetimeSecForTemporaryUrl);
-    }
-    catch (err) {
-      logger.error(err);
-    }
-
   };
 
   (lib as any).deleteFile = async function(attachment) {
@@ -205,27 +257,6 @@ module.exports = (crowi) => {
     if (blockBlobUploadResponse.errorCode) { throw new Error(blockBlobUploadResponse.errorCode) }
     return;
   };
-
-  (lib as any).findDeliveryFile = async function(attachment) {
-    if (!lib.getIsReadable()) {
-      throw new Error('Azure is not configured.');
-    }
-
-    const filePath = getFilePathOnStorage(attachment);
-    const containerClient = await getContainerClient();
-    const blobClient: BlobClient = containerClient.getBlobClient(filePath);
-    const downloadResponse = await blobClient.download();
-    if (downloadResponse.errorCode) {
-      logger.error(downloadResponse.errorCode);
-      throw new Error(downloadResponse.errorCode);
-    }
-    if (!downloadResponse?.readableStreamBody) {
-      throw new Error(`Coudn't get file from Azure for the Attachment (${filePath})`);
-    }
-
-    return downloadResponse.readableStreamBody;
-  };
-
 
   (lib as any).checkLimit = async function(uploadFileSize) {
     const maxFileSize = configManager.getConfig('crowi', 'app:maxFileSize');

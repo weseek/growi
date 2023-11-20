@@ -20,17 +20,13 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import Activity from '../models/activity';
-import PageRedirect from '../models/page-redirect';
-import ShareLink from '../models/share-link';
-import Tag from '../models/tag';
-import UserGroup from '../models/user-group';
-import UserGroupRelation from '../models/user-group-relation';
+import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
@@ -45,72 +41,81 @@ import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
-const models = require('../models');
 
 const sep = path.sep;
 
-function Crowi() {
-  this.version = pkg.version;
-  this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
+class Crowi {
 
-  this.publicDir = path.join(projectRoot, 'public') + sep;
-  this.resourceDir = path.join(projectRoot, 'resource') + sep;
-  this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.viewsDir = path.resolve(__dirname, '../views') + sep;
-  this.tmpDir = path.join(projectRoot, 'tmp') + sep;
-  this.cacheDir = path.join(this.tmpDir, 'cache');
+  /** @type {AppService} */
+  appService;
 
-  this.express = null;
+  /** @type {FileUploader} */
+  fileUploadService;
 
-  this.config = {};
-  this.configManager = null;
-  this.s2sMessagingService = null;
-  this.g2gTransferPusherService = null;
-  this.g2gTransferReceiverService = null;
-  this.mailService = null;
-  this.passportService = null;
-  this.globalNotificationService = null;
-  this.userNotificationService = null;
-  this.xssService = null;
-  this.aclService = null;
-  this.appService = null;
-  this.fileUploadService = null;
-  this.restQiitaAPIService = null;
-  this.growiBridgeService = null;
-  this.exportService = null;
-  this.importService = null;
-  this.pluginService = null;
-  this.searchService = null;
-  this.socketIoService = null;
-  this.pageService = null;
-  this.syncPageStatusService = null;
-  this.cdnResourcesService = new CdnResourcesService();
-  this.slackIntegrationService = null;
-  this.inAppNotificationService = null;
-  this.activityService = null;
-  this.commentService = null;
-  this.xss = new Xss();
-  this.questionnaireService = null;
-  this.questionnaireCronService = null;
+  constructor() {
+    this.version = pkg.version;
+    this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.tokens = null;
+    this.publicDir = path.join(projectRoot, 'public') + sep;
+    this.resourceDir = path.join(projectRoot, 'resource') + sep;
+    this.localeDir = path.join(this.resourceDir, 'locales') + sep;
+    this.viewsDir = path.resolve(__dirname, '../views') + sep;
+    this.tmpDir = path.join(projectRoot, 'tmp') + sep;
+    this.cacheDir = path.join(this.tmpDir, 'cache');
 
-  this.models = {};
+    this.express = null;
 
-  this.env = process.env;
-  this.node_env = this.env.NODE_ENV || 'development';
+    this.config = {};
+    this.configManager = null;
+    this.s2sMessagingService = null;
+    this.g2gTransferPusherService = null;
+    this.g2gTransferReceiverService = null;
+    this.mailService = null;
+    this.passportService = null;
+    this.globalNotificationService = null;
+    this.userNotificationService = null;
+    this.xssService = null;
+    this.aclService = null;
+    this.appService = null;
+    this.fileUploadService = null;
+    this.restQiitaAPIService = null;
+    this.growiBridgeService = null;
+    this.exportService = null;
+    this.importService = null;
+    this.pluginService = null;
+    this.searchService = null;
+    this.socketIoService = null;
+    this.pageService = null;
+    this.syncPageStatusService = null;
+    this.cdnResourcesService = new CdnResourcesService();
+    this.slackIntegrationService = null;
+    this.inAppNotificationService = null;
+    this.activityService = null;
+    this.commentService = null;
+    this.xss = new Xss();
+    this.questionnaireService = null;
+    this.questionnaireCronService = null;
 
-  this.port = this.env.PORT || 3000;
+    this.tokens = null;
 
-  this.events = {
-    user: new UserEvent(this),
-    page: new (require('../events/page'))(this),
-    activity: new (require('../events/activity'))(this),
-    bookmark: new (require('../events/bookmark'))(this),
-    comment: new (require('../events/comment'))(this),
-    tag: new (require('../events/tag'))(this),
-    admin: new (require('../events/admin'))(this),
-  };
+    this.models = {};
+
+    this.env = process.env;
+    this.node_env = this.env.NODE_ENV || 'development';
+
+    this.port = this.env.PORT || 3000;
+
+    this.events = {
+      user: new UserEvent(this),
+      page: new (require('../events/page'))(this),
+      activity: new (require('../events/activity'))(this),
+      bookmark: new (require('../events/bookmark'))(this),
+      comment: new (require('../events/comment'))(this),
+      tag: new (require('../events/tag'))(this),
+      admin: new (require('../events/admin'))(this),
+    };
+  }
+
 }
 
 Crowi.prototype.init = async function() {
@@ -303,22 +308,17 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  Object.keys(models).forEach((key) => {
-    return this.model(key, models[key](this));
+  Object.keys(modelsDependsOnCrowi).forEach((key) => {
+    const factory = modelsDependsOnCrowi[key];
+
+    if (!(factory instanceof Function)) {
+      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
+      return;
+    }
+
+    return this.model(key, modelsDependsOnCrowi[key](this));
   });
 
-  // include models that are independent from crowi
-  const crowiIndependent = {};
-  crowiIndependent.Activity = Activity;
-  crowiIndependent.Tag = Tag;
-  crowiIndependent.UserGroup = UserGroup;
-  crowiIndependent.UserGroupRelation = UserGroupRelation;
-  crowiIndependent.PageRedirect = PageRedirect;
-  crowiIndependent.ShareLink = ShareLink;
-
-  Object.keys(crowiIndependent).forEach((key) => {
-    return this.model(key, crowiIndependent[key]);
-  });
 };
 
 Crowi.prototype.setupCron = function() {
@@ -641,7 +641,7 @@ Crowi.prototype.setUpApp = async function() {
  */
 Crowi.prototype.setUpFileUpload = async function(isForceUpdate = false) {
   if (this.fileUploadService == null || isForceUpdate) {
-    this.fileUploadService = require('../service/file-uploader')(this);
+    this.fileUploadService = getUploader(this);
   }
 };
 
