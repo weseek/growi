@@ -931,21 +931,20 @@ module.exports = (crowi) => {
 
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       if (isUsersHomepageDeletionEnabled) {
-        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
-
         const User = mongoose.model('User');
+        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
         const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
-        const nonExistingUsernames = usernameList.filter(username => !existingUsernames.includes(username));
 
-        for (const page of userHomepages) {
-          const pageUsername = getUsernameByPath(page.path);
-          if (nonExistingUsernames.includes(pageUsername)) {
-            const canDelete = page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
-            if (canDelete) {
-              pagesCanBeDeleted.push(page);
-            }
-          }
-        }
+        const isUserHomepageDeletable = (page) => {
+          const username = getUsernameByPath(page.path);
+          if (existingUsernames.includes(username)) return false;
+
+          return page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
+        };
+
+        const deletableUserHomepages = userHomepages.filter(page => isUserHomepageDeletable(page));
+
+        pagesCanBeDeleted.push(...deletableUserHomepages);
       }
     }
     /*
@@ -956,21 +955,20 @@ module.exports = (crowi) => {
 
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
       if (isUsersHomepageDeletionEnabled) {
-        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
-
         const User = mongoose.model('User');
+        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
         const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
-        const nonExistingUsernames = usernameList.filter(username => !existingUsernames.includes(username));
 
-        for (const page of userHomepages) {
-          const pageUsername = getUsernameByPath(page.path);
-          if (nonExistingUsernames.includes(pageUsername)) {
-            const canDelete = page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
-            if (canDelete) {
-              pagesCanBeDeleted.push(page);
-            }
-          }
-        }
+        const isUserHomepageDeletable = (page) => {
+          const username = getUsernameByPath(page.path);
+          if (existingUsernames.includes(username)) return false;
+
+          return page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
+        };
+
+        const deletableUserHomepages = userHomepages.filter(page => isUserHomepageDeletable(page));
+
+        pagesCanBeDeleted.push(...deletableUserHomepages);
       }
     }
 
