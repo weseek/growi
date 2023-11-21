@@ -940,16 +940,22 @@ module.exports = (crowi) => {
     { filteredPages: [], userHomepages: [] });
 
     const pagesCanBeDeleted = [];
+    const canDeleteCompletely = page => page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
+    const canDelete = (page) => {
+      return page.isEmpty
+      || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString())
+      || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
+    };
+
     if (isCompletely) {
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, isRecursively));
-      const canDeleteCompletely = page => page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
-      await processCanBeUserHomepageDeletion(canDeleteCompletely, userHomepages, pagesCanBeDeleted);
     }
     else {
-      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
-      const canDelete = page => page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
-      await processCanBeUserHomepageDeletion(canDelete, userHomepages, pagesCanBeDeleted);
+      const pages = filteredPages.filter(page => page.isEmpty || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString()));
+      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(pages, req.user, isRecursively));
     }
+
+    await processCanBeUserHomepageDeletion(isCompletely ? canDeleteCompletely : canDelete, userHomepages, pagesCanBeDeleted);
 
     if (pagesCanBeDeleted.length === 0) {
       const msg = 'No pages can be deleted.';
