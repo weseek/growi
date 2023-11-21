@@ -166,9 +166,7 @@ class PageService {
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
-      return false;
-    }
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
@@ -179,9 +177,7 @@ class PageService {
   }
 
   canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
-      return false;
-    }
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
@@ -1560,12 +1556,8 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (isTopPage(page.path)) {
-      throw new Error('Page is not deletable.');
-    }
-
     // a protected page is not deletable regardless of the configuration settings in v4
-    if (isUsersProtectedPages(page.path)) {
+    if (isTopPage(page.path) || isUsersProtectedPages(page.path)) {
       throw new Error('Page is not deletable.');
     }
 
@@ -2416,10 +2408,7 @@ class PageService {
   }
 
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
-    let isDeletable = true;
-    if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path)) {
-      isDeletable = false;
-    }
+    const isDeletable = !(isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path));
 
     if (page.isEmpty) {
       return {
