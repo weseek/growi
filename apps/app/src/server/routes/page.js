@@ -762,9 +762,14 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!await crowi.pageService.canDeleteCompletelyPromise(page.path, creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
+
+        if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
+          return res.json(ApiResponse.error('Could not delete user homepage'));
+        }
+
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively, false, activityParameters);
       }
       else {
@@ -778,8 +783,12 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!await crowi.pageService.canDeletePromise(page.path, creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
+        }
+
+        if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
+          return res.json(ApiResponse.error('Could not delete user homepage'));
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively, activityParameters);

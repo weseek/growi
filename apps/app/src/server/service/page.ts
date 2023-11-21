@@ -5,7 +5,7 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
-import { PageGrant, PageStatus, USER_STATUS } from '@growi/core';
+import { PageGrant, PageStatus } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -189,6 +189,24 @@ class PageService {
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  async canDeleteUserHomepage(path: string): Promise<boolean> {
+    if (isUsersHomepage(path)) {
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (!isUsersHomepageDeletionEnabled) {
+        return false;
+      }
+
+      const User = mongoose.model('User');
+      const username = getUsernameByPath(path);
+      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
+      if (userHomepageOwner != null) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   private canDeleteLogic(
@@ -1394,18 +1412,8 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (isUsersHomepage(page.path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (!isUsersHomepageDeletionEnabled) {
-        throw new Error('Page is not deletable.');
-      }
-
-      const User = mongoose.model('User');
-      const username = getUsernameByPath(page.path);
-      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-      if (userHomepageOwner != null) {
-        throw new Error('Page is not deletable.');
-      }
+    if (!await this.canDeleteUserHomepage(page.path)) {
+      throw new Error('User Homepage is not deletable.');
     }
 
     const newPath = Page.getDeletedPageName(page.path);
