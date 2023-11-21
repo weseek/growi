@@ -54,7 +54,8 @@ export const NewPageInput: FC<NewPageInputProps> = (props) => {
         path: newPagePath,
         body: undefined,
         grant: page.grant,
-        grantUserGroupId: page.grantedGroup,
+        // grantUserGroupId: page.grantedGroup,
+        grantUserGroupIds: page.grantedGroups,
       });
 
       mutateChildren();

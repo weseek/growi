@@ -1,8 +1,11 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import ExternalAccount from '~/server/models/external-account';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -89,8 +92,6 @@ module.exports = (crowi) => {
   const {
     User,
     Page,
-    ExternalAccount,
-    UserGroupRelation,
   } = crowi.models;
 
 
@@ -818,6 +819,7 @@ module.exports = (crowi) => {
       const homepagePath = userHomepagePath(user);
 
       await UserGroupRelation.remove({ relatedUser: user });
+      await ExternalUserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();
       await ExternalAccount.remove({ user });
 
