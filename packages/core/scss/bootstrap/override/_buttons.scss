@@ -1,4 +1,4 @@
-@import '../theming/utils/button-outline-variant';
+@import '../mixins/button-outline-variant';
 
 :root[data-bs-theme='light'] {
   @each $color, $value in $theme-colors {
