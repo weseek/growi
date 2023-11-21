@@ -192,7 +192,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     openHandsontableModal(markdownTable, editor);
   }, []);
 
-
   const checkIsConflict = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 

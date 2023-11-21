@@ -19,7 +19,7 @@ type Props = {
   onUpload?: (files: File[]) => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  openTabelModal: () => void,
+  openTabelModal?: () => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
