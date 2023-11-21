@@ -191,60 +191,6 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  async canDeleteCompletelyPromise(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
-      return false;
-    }
-
-    if (isUsersHomepage(path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (!isUsersHomepageDeletionEnabled) {
-        return false;
-      }
-
-      const User = mongoose.model('User');
-      const username = getUsernameByPath(path);
-      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-      if (userHomepageOwner != null) {
-        return false;
-      }
-    }
-
-    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
-
-    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
-
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
-  }
-
-  async canDeletePromise(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): Promise<boolean> {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
-      return false;
-    }
-
-    if (isUsersHomepage(path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (!isUsersHomepageDeletionEnabled) {
-        return false;
-      }
-
-      const User = mongoose.model('User');
-      const username = getUsernameByPath(path);
-      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-      if (userHomepageOwner != null) {
-        return false;
-      }
-    }
-
-    const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
-    const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
-
-    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
-
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
-  }
-
   private canDeleteLogic(
       creatorId: ObjectIdLike,
       operator,

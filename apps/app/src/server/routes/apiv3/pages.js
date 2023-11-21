@@ -2,12 +2,13 @@
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import {
-  isCreatablePage, isTrashPage, isUserPage, isUsersHomepage,
+  isCreatablePage, isTrashPage, isUserPage, isUsersHomepage, getUsernameByPath,
 } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -643,19 +644,7 @@ module.exports = (crowi) => {
 
     const pagesInTrash = await crowi.pageService.findAllTrashPages(req.user);
 
-    const deletablePages = [];
-    const filteredPages = pagesInTrash.filter(page => !isUsersHomepage(page.path));
-    deletablePages.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, true));
-
-    const usersHomepages = pagesInTrash.filter(page => isUsersHomepage(page.path));
-    const usersHomepagesDeletable = await Promise.all(
-      usersHomepages
-        .map(async(page) => {
-          const canDeleteCompletely = page.isEmpty || await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, true);
-          return canDeleteCompletely ? page : null;
-        }),
-    );
-    deletablePages.push(...usersHomepagesDeletable.filter(page => page !== null));
+    const deletablePages = crowi.pageService.filterPagesByCanDeleteCompletely(pagesInTrash, req.user, true);
 
     if (deletablePages.length === 0) {
       const msg = 'No pages can be deleted.';
@@ -919,37 +908,72 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    const filteredPages = pagesToDelete.filter(page => !isUsersHomepage(page.path));
-    const usersHomepages = pagesToDelete.filter(page => isUsersHomepage(page.path));
     let pagesCanBeDeleted = [];
+
+    // Since the decision to delete or not a user's homepage is an asynchronous process,
+    // filtering is done here on the user homepages and other pages for performance optimization.
+    const { filteredPages, userHomepages } = pagesToDelete.reduce((result, page) => {
+      if (isUsersHomepage(page.path)) {
+        result.userHomepages.push(page);
+      }
+      else {
+        result.filteredPages.push(page);
+      }
+      return result;
+    },
+    { filteredPages: [], userHomepages: [] });
+
     /*
      * Delete Completely
      */
     if (isCompletely) {
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, isRecursively));
 
-      const usersHomepagesDeletable = await Promise.all(
-        usersHomepages.map(async(page) => {
-          const canDeleteCompletely = page.isEmpty || (await crowi.pageService.canDeleteCompletelyPromise(page.path, page.creator, req.user, isRecursively));
-          return canDeleteCompletely ? page : null;
-        }),
-      );
-      pagesCanBeDeleted.push(...usersHomepagesDeletable.filter(page => page !== null));
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (isUsersHomepageDeletionEnabled) {
+        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
+
+        const User = mongoose.model('User');
+        const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
+        const nonExistingUsernames = usernameList.filter(username => !existingUsernames.includes(username));
+
+        for (const page of userHomepages) {
+          const pageUsername = getUsernameByPath(page.path);
+          if (nonExistingUsernames.includes(pageUsername)) {
+            const canDelete = page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
+            if (canDelete) {
+              pagesCanBeDeleted.push(page);
+            }
+          }
+        }
+      }
     }
     /*
      * Trash
      */
     else {
+      // TODO: check this code
       pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
 
-      const usersHomepagesDeletable = await Promise.all(
-        usersHomepages.map(async(page) => {
-          const canDeleteCompletely = page.isEmpty || (await crowi.pageService.canDeletePromise(page.path, page.creator, req.user, isRecursively));
-          return canDeleteCompletely ? page : null;
-        }),
-      );
-      pagesCanBeDeleted.push(...usersHomepagesDeletable.filter(page => page !== null));
+      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+      if (isUsersHomepageDeletionEnabled) {
+        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
+
+        const User = mongoose.model('User');
+        const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
+        const nonExistingUsernames = usernameList.filter(username => !existingUsernames.includes(username));
+
+        for (const page of userHomepages) {
+          const pageUsername = getUsernameByPath(page.path);
+          if (nonExistingUsernames.includes(pageUsername)) {
+            const canDelete = page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
+            if (canDelete) {
+              pagesCanBeDeleted.push(page);
+            }
+          }
+        }
+      }
     }
 
     if (pagesCanBeDeleted.length === 0) {
