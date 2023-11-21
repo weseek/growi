@@ -284,7 +284,7 @@ module.exports = function(crowi, app) {
 
         const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
-        props.concat(activeNotificationUsers, mentionedUsers);
+        props.push(...activeNotificationUsers, ...mentionedUsers);
 
       };
 

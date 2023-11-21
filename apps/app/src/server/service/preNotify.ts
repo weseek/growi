@@ -1,18 +1,20 @@
-import type { IPage, IUser, Ref } from '@growi/core';
+import type {
+  IPage, IUser, Ref,
+} from '@growi/core';
 
 import { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
 import { getModelSafely } from '../util/mongoose-utils';
 
 export type PreNotifyProps = {
-  notificationTargetUsers?: IUser[],
+  notificationTargetUsers?: Ref<IUser>[],
 }
 
 export type PreNotify = (props: PreNotifyProps) => Promise<void>;
 
 export const generateInitialPreNotifyProps = (): PreNotifyProps => {
 
-  const initialPreNotifyProps: IUser[] = [];
+  const initialPreNotifyProps: Ref<IUser>[] = [];
 
   return { notificationTargetUsers: initialPreNotifyProps };
 };
@@ -32,14 +34,13 @@ export const generateDefaultPreNotify = (activity: ActivityDocument): PreNotify 
       status: User.STATUS_ACTIVE,
     }).distinct('_id');
 
-    notificationTargetUsers?.concat(activeNotificationUsers);
-
+    notificationTargetUsers?.push(...activeNotificationUsers);
   };
 
   return preNotify;
 };
 
-export const generatePreNotifyAlsoDescendants = (activity: ActivityDocument, descendantsSubscribedUsers): PreNotify => {
+export const generatePreNotifyAlsoDescendants = (activity: ActivityDocument, descendantsSubscribedUsers: Ref<IUser>[]): PreNotify => {
 
   const preNotify = async(props: PreNotifyProps) => {
     const { notificationTargetUsers } = props;
@@ -54,9 +55,9 @@ export const generatePreNotifyAlsoDescendants = (activity: ActivityDocument, des
       status: User.STATUS_ACTIVE,
     }).distinct('_id');
 
-    notificationTargetUsers?.concat(
-      activeNotificationUsers,
-      descendantsSubscribedUsers as IUser[],
+    notificationTargetUsers?.push(
+      ...activeNotificationUsers,
+      ...descendantsSubscribedUsers,
     );
 
   };
