@@ -908,7 +908,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    let pagesCanBeDeleted = [];
+    const pagesCanBeDeleted = [];
 
     // Since the decision to delete or not a user's homepage is an asynchronous process,
     // filtering is done here on the user homepages and other pages for performance optimization.
@@ -952,8 +952,6 @@ module.exports = (crowi) => {
      * Trash
      */
     else {
-      // TODO: check this code
-      pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
 
       const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
