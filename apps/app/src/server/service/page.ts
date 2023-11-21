@@ -347,8 +347,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    const isDeletable = await this.canDeletePromise(page.path, creatorId, user, false);
-    const isAbleToDeleteCompletely = await this.canDeleteCompletelyPromise(page.path, creatorId, user, false); // use normal delete config
+    const isDeletable = this.canDelete(page.path, creatorId, user, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
 
     return {
       data: page,
