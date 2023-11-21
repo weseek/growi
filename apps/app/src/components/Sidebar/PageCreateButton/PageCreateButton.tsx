@@ -10,8 +10,8 @@ import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { DropendMenu } from './DropendMenu';
 import { CreateButton } from './CreateButton';
+import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 
 const logger = loggerFactory('growi:cli:PageCreateButton');
@@ -49,9 +49,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        pageTags: [],
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
         shouldGeneratePath: true,
       };
 
@@ -81,8 +81,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 1,
-        pageTags: [],
+        grant: 4,
       };
 
       const res = await exist(JSON.stringify([todaysPath]));
@@ -114,9 +113,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        pageTags: [],
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
       const res = await exist(JSON.stringify([path]));
@@ -148,9 +147,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        pageTags: [],
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
       const res = await exist(JSON.stringify([path]));

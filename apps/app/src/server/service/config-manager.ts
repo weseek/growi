@@ -36,6 +36,13 @@ const KEYS_FOR_GCS_USE_ONLY_ENV_OPTION = [
   'gcs:uploadNamespace',
 ];
 
+const KEYS_FOR_AZURE_USE_ONLY_ENV_OPTION = [
+  'azure:tenantId',
+  'azure:clientId',
+  'azure:clientSecret',
+  'azure:storageAccountName',
+  'azure:storageContainerName',
+];
 
 export interface ConfigManager {
   loadConfigs(): Promise<void>,
@@ -254,6 +261,11 @@ class ConfigManagerImpl implements ConfigManager, S2sMessageHandlable {
       || (
         KEYS_FOR_GCS_USE_ONLY_ENV_OPTION.includes(key)
         && this.searchOnlyFromEnvVarConfigs('crowi', 'gcs:useOnlyEnvVarsForSomeOptions')
+      )
+      // azure option
+      || (
+        KEYS_FOR_AZURE_USE_ONLY_ENV_OPTION.includes(key)
+        && this.searchOnlyFromEnvVarConfigs('crowi', 'azure:useOnlyEnvVarsForSomeOptions')
       )
     ));
   }
