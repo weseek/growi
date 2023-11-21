@@ -140,7 +140,6 @@ const routerFactory = (crowi: Crowi): Router => {
       const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
       const isGuestUser = req.user == null;
-
       for (const page of pages) {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
