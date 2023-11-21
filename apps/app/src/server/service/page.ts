@@ -166,7 +166,7 @@ class PageService {
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path) || isUsersHomepage(path)) {
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
       return false;
     }
 
@@ -179,7 +179,7 @@ class PageService {
   }
 
   canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path) || isUsersHomepage(path)) {
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) {
       return false;
     }
 
@@ -318,7 +318,7 @@ class PageService {
     }
 
     const isGuestUser = user == null;
-    const pageInfo = await this.constructBasicPageInfoPromise(page, isGuestUser);
+    const pageInfo = this.constructBasicPageInfo(page, isGuestUser);
 
     const Bookmark = this.crowi.model('Bookmark');
     const bookmarkCount = await Bookmark.countByPageId(pageId);
@@ -2463,60 +2463,8 @@ class PageService {
 
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
     let isDeletable = true;
-    if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path) || isUsersHomepage(page.path)) {
-      isDeletable = false;
-    }
-
-    if (page.isEmpty) {
-      return {
-        isV5Compatible: true,
-        isEmpty: true,
-        isDeletable: false,
-        isAbleToDeleteCompletely: false,
-        isRevertible: false,
-      };
-    }
-
-    const likers = page.liker.slice(0, 15) as Ref<IUserHasId>[];
-    const seenUsers = page.seenUsers.slice(0, 15) as Ref<IUserHasId>[];
-
-    return {
-      isV5Compatible: isTopPage(page.path) || page.parent != null,
-      isEmpty: false,
-      sumOfLikers: page.liker.length,
-      likerIds: this.extractStringIds(likers),
-      seenUserIds: this.extractStringIds(seenUsers),
-      sumOfSeenUsers: page.seenUsers.length,
-      isDeletable,
-      isAbleToDeleteCompletely: false,
-      isRevertible: isTrashPage(page.path),
-      contentAge: page.getContentAge(),
-      descendantCount: page.descendantCount,
-      commentCount: page.commentCount,
-    };
-
-  }
-
-  async constructBasicPageInfoPromise(page: PageDocument, isGuestUser?: boolean): Promise<IPageInfo | IPageInfoForEntity> {
-    let isDeletable = true;
     if (isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path)) {
       isDeletable = false;
-    }
-
-    if (isUsersHomepage(page.path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-
-      if (!isUsersHomepageDeletionEnabled) {
-        isDeletable = false;
-      }
-      else {
-        const User = mongoose.model('User');
-        const username = getUsernameByPath(page.path);
-        const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-        if (userHomepageOwner != null) {
-          isDeletable = false;
-        }
-      }
     }
 
     if (page.isEmpty) {

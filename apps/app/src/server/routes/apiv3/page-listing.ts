@@ -3,7 +3,6 @@ import type {
 } from '@growi/core';
 import { isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import express, { Request, Router } from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
@@ -142,8 +141,7 @@ const routerFactory = (crowi: Crowi): Router => {
 
       const isGuestUser = req.user == null;
 
-      const filteredPages = pages.filter(page => !isUsersHomepage(page.path));
-      for (const page of filteredPages) {
+      for (const page of pages) {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
@@ -159,26 +157,6 @@ const routerFactory = (crowi: Crowi): Router => {
 
         idToPageInfoMap[page._id] = pageInfo;
       }
-
-      const userHomepages = pages.filter(page => isUsersHomepage(page.path));
-      const promiseArray = userHomepages.map(async(page) => {
-        // construct isIPageInfoForListing
-        const basicPageInfo = await pageService.constructBasicPageInfoPromise(page, isGuestUser);
-
-        const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
-          ? basicPageInfo
-          // create IPageInfoForListing
-          : {
-            ...basicPageInfo,
-            isAbleToDeleteCompletely: await pageService.canDeleteCompletelyPromise(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
-            bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
-            revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
-          } as IPageInfoForListing;
-
-        idToPageInfoMap[page._id] = pageInfo;
-      });
-
-      await Promise.all(promiseArray);
 
       return res.apiv3(idToPageInfoMap);
     }
