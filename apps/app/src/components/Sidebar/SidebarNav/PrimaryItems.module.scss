@@ -71,14 +71,25 @@
 .grw-primary-items :global {
   .btn .material-symbols-outlined {
     @keyframes notice {
-      // scaleを追加して強調
-      8% { transform:rotate(6deg) translateX(-2px) scale(1.1, 1.1); }
-      18% { transform:rotate(-6deg) translateX(2px) scale(1.1, 1.1); }
-      28% { transform:rotate(4deg) translateX(-1px) scale(1.1, 1.1); }
-      38% { transform:rotate(-2deg) translateX(1px) scale(1.1, 1.1); }
-      45% { transform:rotate(1deg) translateX(0px) scale(1.1, 1.1) ; }
-      60% { transform:scale(1.0, 1.0) ; }
+      // shintaro-oのFB 拡大と振動を分ける(1.6s)
+      8% { transform:rotate(0deg) translateX(0px) scale(1.1, 1.1); }
+      18% { transform:rotate(0deg) translateX(0px) scale(1.1, 1.1); }
+      23% { transform:rotate(7deg) translateX(-2px) scale(1.1, 1.1); }
+      29% { transform:rotate(-6deg) translateX(2px) scale(1.1, 1.1); }
+      35% { transform:rotate(4deg) translateX(-1px) scale(1.1, 1.1); }
+      41% { transform:rotate(-2deg) translateX(1px) scale(1.1, 1.1); }
+      47% { transform:rotate(1deg) translateX(0px) scale(1.1, 1.1) ; }
+      57% { transform:rotate(0deg) translateX(0px) scale(1.1, 1.1) ; }
+      67% { transform:scale(1.0, 1.0) ; }
     }
+    // @keyframes notice {
+    //  // scaleを追加して強調(1.2s)
+    //  8% { transform:rotate(6deg) translateX(-2px) scale(1.1, 1.1); }
+    //  18% { transform:rotate(-6deg) translateX(2px) scale(1.1, 1.1); }
+    //  28% { transform:rotate(4deg) translateX(-1px) scale(1.1, 1.1); }
+    //  38% { transform:rotate(-2deg) translateX(1px) scale(1.1, 1.1); }
+    //  45% { transform:rotate(1deg) translateX(0px) scale(1.1, 1.1) ; }
+    //  60% { transform:scale(1.0, 1.0) ; }
     // @keyframes notice {
     //   8% { transform:rotate(6deg) translateX(-2px); }
     //   18% { transform:rotate(-6deg) translateX(2px); }
@@ -105,7 +116,7 @@
       &:hover {
         transform-origin: center top;
         // infinite ease both はプレビュー用に繰り返している
-        animation: notice 1.2s infinite ease both;
+        animation: notice 1.6s infinite ease both;
       }
     }
   }
