@@ -1,17 +1,6 @@
 import {
-  isMovablePage, isTopPage, isUsersProtectedPages, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
+  isTopPage, isUsersProtectedPages, convertToNewAffiliationPath, isCreatablePage, omitDuplicateAreaPathFromPaths, getUsernameByPath,
 } from './index';
-
-describe.concurrent('isMovablePage test', () => {
-  test('should decide movable or not', () => {
-    expect(isMovablePage('/')).toBeFalsy();
-    expect(isMovablePage('/hoge')).toBeTruthy();
-    expect(isMovablePage('/user')).toBeFalsy();
-    expect(isMovablePage('/user/xxx')).toBeFalsy();
-    expect(isMovablePage('/user/xxx123')).toBeFalsy();
-    expect(isMovablePage('/user/xxx/hoge')).toBeTruthy();
-  });
-});
 
 describe.concurrent('isTopPage test', () => {
   test('should decide deletable or not', () => {
