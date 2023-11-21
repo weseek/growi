@@ -4,8 +4,11 @@ type TableButtonProps = {
 
 export const TableButton = (props: TableButtonProps): JSX.Element => {
   const { openTabelModal } = props;
+  const openTabelModalHandler = () => {
+    openTabelModal();
+  };
   return (
-    <button type="button" className="btn btn-toolbar-button" onClick={openTabelModal}>
+    <button type="button" className="btn btn-toolbar-button" onClick={openTabelModalHandler}>
       <span className="material-symbols-outlined fs-5">table_chart</span>
     </button>
   );
