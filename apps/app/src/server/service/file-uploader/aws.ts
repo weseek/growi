@@ -287,30 +287,30 @@ module.exports = (crowi) => {
     const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
-    const params = {
+    const contentHeaders = new ContentHeaders(attachment);
+
+    return s3.send(new PutObjectCommand({
       Bucket: awsConfig.bucket,
-      ContentType: attachment.fileFormat,
       Key: filePath,
       Body: fileStream,
       ACL: ObjectCannedACL.public_read,
-    };
-
-    return s3.send(new PutObjectCommand(params));
+      // put type and the file name for reference information when uploading
+      ContentType: contentHeaders.contentType?.value.toString(),
+      ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
+    }));
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
 
-    const params = {
+    return s3.send(new PutObjectCommand({
       Bucket: awsConfig.bucket,
       ContentType: contentType,
       Key: filePath,
       Body: data,
       ACL: ObjectCannedACL.public_read,
-    };
-
-    return s3.send(new PutObjectCommand(params));
+    }));
   };
 
   (lib as any).checkLimit = async function(uploadFileSize) {

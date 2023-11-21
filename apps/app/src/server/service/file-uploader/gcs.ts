@@ -211,11 +211,13 @@ module.exports = function(crowi: Crowi) {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     const filePath = getFilePathOnStorage(attachment);
-    const options = {
-      destination: filePath,
-    };
+    const contentHeaders = new ContentHeaders(attachment);
 
-    return myBucket.upload(fileStream.path, options);
+    return myBucket.upload(fileStream.path, {
+      destination: filePath,
+      // put type and the file name for reference information when uploading
+      contentType: contentHeaders.contentType?.value.toString(),
+    });
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {
