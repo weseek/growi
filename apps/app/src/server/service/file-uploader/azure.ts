@@ -1,5 +1,6 @@
 import { ClientSecretCredential, TokenCredential } from '@azure/identity';
 import {
+  generateBlobSASQueryParameters,
   BlobServiceClient,
   BlobClient,
   BlockBlobClient,
@@ -134,35 +135,51 @@ class AzureFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritDoc
-   * @see https://learn.microsoft.com/en-us/dotnet/api/azure.storage.blobs.blobcontainerclient.generatesasuri?view=azure-dotnet
+   * @see https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blob-create-user-delegation-sas-javascript
    */
   override async generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl> {
     if (!this.getIsUploadable()) {
       throw new Error('Azure Blob is not configured.');
     }
 
-    const containerClient = await getContainerClient();
-    const filePath = getFilePathOnStorage(attachment);
-    const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
     const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'azure:lifetimeSecForTemporaryUrl');
 
-    const now = Date.now();
-    const startsOn = new Date(now - 30 * 1000);
-    const expiresOn = new Date(now + lifetimeSecForTemporaryUrl * 1000);
+    const url = await (async() => {
+      const containerClient = await getContainerClient();
+      const filePath = getFilePathOnStorage(attachment);
+      const blockBlobClient = await containerClient.getBlockBlobClient(filePath);
+      return blockBlobClient.url;
+    })();
 
-    const isDownload = opts?.download ?? false;
-    const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+    const sasToken = await (async() => {
+      const { accountName, containerName } = getAzureConfig();
+      const blobServiceClient = new BlobServiceClient(`https://${accountName}.blob.core.windows.net`, getCredential());
 
-    const signedUrl = await blockBlobClient.generateSasUrl({
+      const now = Date.now();
+      const startsOn = new Date(now - 30 * 1000);
+      const expiresOn = new Date(now + lifetimeSecForTemporaryUrl * 1000);
+      const userDelegationKey = await blobServiceClient.getUserDelegationKey(startsOn, expiresOn);
+
+      const isDownload = opts?.download ?? false;
+      const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
+
       // https://github.com/Azure/azure-sdk-for-js/blob/d4d55f73/sdk/storage/storage-blob/src/ContainerSASPermissions.ts#L24
       // r:read, a:add, c:create, w:write, d:delete, l:list
-      permissions: ContainerSASPermissions.parse('rl'),
-      protocol: SASProtocol.HttpsAndHttp,
-      startsOn,
-      expiresOn,
-      contentType: contentHeaders.contentType?.value.toString(),
-      contentDisposition: contentHeaders.contentDisposition?.value.toString(),
-    });
+      const containerPermissionsForAnonymousUser = 'rl';
+      const sasOptions = {
+        containerName,
+        permissions: ContainerSASPermissions.parse(containerPermissionsForAnonymousUser),
+        protocol: SASProtocol.HttpsAndHttp,
+        startsOn,
+        expiresOn,
+        contentType: contentHeaders.contentType?.value.toString(),
+        contentDisposition: contentHeaders.contentDisposition?.value.toString(),
+      };
+
+      return generateBlobSASQueryParameters(sasOptions, userDelegationKey, accountName).toString();
+    })();
+
+    const signedUrl = `${url}?${sasToken}`;
 
     return {
       url: signedUrl,
@@ -210,7 +227,13 @@ module.exports = (crowi) => {
     const filePath = getFilePathOnStorage(attachment);
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
-    return blockBlobClient.uploadStream(readStream);
+    const contentHeaders = new ContentHeaders(attachment);
+    return blockBlobClient.uploadStream(readStream, undefined, undefined, {
+      blobHTTPHeaders: {
+        blobContentType: contentHeaders.contentType?.value.toString(),
+        blobContentDisposition: contentHeaders.contentDisposition?.value.toString(),
+      },
+    });
   };
 
   lib.saveFile = async function({ filePath, contentType, data }) {
