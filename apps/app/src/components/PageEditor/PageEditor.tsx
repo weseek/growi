@@ -190,7 +190,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     const editor = codeMirrorEditor.view;
     const markdownTable = mtu.getMarkdownTable(editor);
     openHandsontableModal(markdownTable, editor);
-  }, [codeMirrorEditor.view, openHandsontableModal]);
+  }, []);
 
 
   const checkIsConflict = useCallback((data) => {
