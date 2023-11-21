@@ -89,7 +89,7 @@ class MarkdownTableUtil {
    */
   getMarkdownTable(editor) {
     if (!this.isInTable(editor)) {
-      return null;
+      return;
     }
 
     const strFromBotToEot = editor.getDoc().getRange(this.getBot(editor), this.getEot(editor));
