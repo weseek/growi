@@ -241,6 +241,24 @@ module.exports = (crowi) => {
     return [];
   }
 
+  const processCanBeUserHomepageDeletion = async(canDeleteFunction, userHomepages, pagesCanBeDeleted) => {
+    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+    if (isUsersHomepageDeletionEnabled) {
+      const User = mongoose.model('User');
+      const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
+      const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
+
+      const isUserHomepageDeletable = (page) => {
+        const username = getUsernameByPath(page.path);
+        return !existingUsernames.includes(username) && canDeleteFunction(page);
+      };
+
+      const deletableUserHomepages = userHomepages.filter(isUserHomepageDeletable);
+
+      pagesCanBeDeleted.push(...deletableUserHomepages);
+    }
+  };
+
   /**
    * @swagger
    *
@@ -908,8 +926,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    const pagesCanBeDeleted = [];
-
     // Since the decision to delete or not a user's homepage is an asynchronous process,
     // filtering is done here on the user homepages and other pages for performance optimization.
     const { filteredPages, userHomepages } = pagesToDelete.reduce((result, page) => {
@@ -923,53 +939,16 @@ module.exports = (crowi) => {
     },
     { filteredPages: [], userHomepages: [] });
 
-    /*
-     * Delete Completely
-     */
+    const pagesCanBeDeleted = [];
     if (isCompletely) {
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, isRecursively));
-
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (isUsersHomepageDeletionEnabled) {
-        const User = mongoose.model('User');
-        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
-        const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
-
-        const isUserHomepageDeletable = (page) => {
-          const username = getUsernameByPath(page.path);
-          if (existingUsernames.includes(username)) return false;
-
-          return page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
-        };
-
-        const deletableUserHomepages = userHomepages.filter(page => isUserHomepageDeletable(page));
-
-        pagesCanBeDeleted.push(...deletableUserHomepages);
-      }
+      const canDeleteCompletely = page => page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
+      await processCanBeUserHomepageDeletion(canDeleteCompletely, userHomepages, pagesCanBeDeleted);
     }
-    /*
-     * Trash
-     */
     else {
       pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
-
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (isUsersHomepageDeletionEnabled) {
-        const User = mongoose.model('User');
-        const usernameList = userHomepages.map(page => getUsernameByPath(page.path));
-        const existingUsernames = await User.distinct('username', { username: { $in: usernameList } });
-
-        const isUserHomepageDeletable = (page) => {
-          const username = getUsernameByPath(page.path);
-          if (existingUsernames.includes(username)) return false;
-
-          return page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
-        };
-
-        const deletableUserHomepages = userHomepages.filter(page => isUserHomepageDeletable(page));
-
-        pagesCanBeDeleted.push(...deletableUserHomepages);
-      }
+      const canDelete = page => page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
+      await processCanBeUserHomepageDeletion(canDelete, userHomepages, pagesCanBeDeleted);
     }
 
     if (pagesCanBeDeleted.length === 0) {
