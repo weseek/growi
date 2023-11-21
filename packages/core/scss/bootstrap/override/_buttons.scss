@@ -1,0 +1,21 @@
+// @use '../theming/utils/button-outline-variant';
+
+:root[data-bs-theme='light'] {
+  @each $color, $value in $theme-colors {
+    @if $color != 'primary' and $color != 'secondary' {
+      .btn-outline-#{$color} {
+        // @include button-outline-variant.button-outline-variant-light($value);
+      }
+    }
+  }
+}
+
+:root[data-bs-theme='dark'] {
+  @each $color, $value in $theme-colors {
+    @if $color != 'primary' and $color != 'secondary' {
+      .btn-outline-#{$color} {
+        // @include button-outline-variant.button-outline-variant-dark($value);
+      }
+    }
+  }
+}
