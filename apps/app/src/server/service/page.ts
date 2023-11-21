@@ -188,21 +188,19 @@ class PageService {
   }
 
   async canDeleteUserHomepage(path: string): Promise<boolean> {
-    if (isUsersHomepage(path)) {
-      const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-      if (!isUsersHomepageDeletionEnabled) {
-        return false;
-      }
-
-      const User = mongoose.model('User');
-      const username = getUsernameByPath(path);
-      const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-      if (userHomepageOwner != null) {
-        return false;
-      }
+    if (!isUsersHomepage(path)) {
+      return true;
     }
 
-    return true;
+    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+    if (!isUsersHomepageDeletionEnabled) {
+      return false;
+    }
+
+    const User = mongoose.model('User');
+    const username = getUsernameByPath(path);
+    const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
+    return userHomepageOwner === null;
   }
 
   private canDeleteLogic(
