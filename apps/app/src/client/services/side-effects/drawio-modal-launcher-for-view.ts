@@ -30,14 +30,13 @@ export const useDrawioModalLauncherForView = (opts?: {
   const { data: shareLinkId } = useShareLinkId();
 
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: tagsInfo } = useSWRxTagsInfo(currentPage?._id);
 
   const { open: openDrawioModal } = useDrawioModal();
 
   const saveOrUpdate = useSaveOrUpdate();
 
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
-    if (currentPage == null || tagsInfo == null || shareLinkId != null) {
+    if (currentPage == null || shareLinkId != null) {
       return;
     }
 
@@ -50,7 +49,6 @@ export const useDrawioModalLauncherForView = (opts?: {
       grant: currentPage.grant,
       grantUserGroupId: currentPage.grantedGroup?._id,
       grantUserGroupName: currentPage.grantedGroup?.name,
-      pageTags: tagsInfo.tags,
     };
 
     try {
@@ -67,7 +65,7 @@ export const useDrawioModalLauncherForView = (opts?: {
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [currentPage, opts, saveOrUpdate, shareLinkId, tagsInfo]);
+  }, [currentPage, opts, saveOrUpdate, shareLinkId]);
 
 
   // set handler to open DrawioModal

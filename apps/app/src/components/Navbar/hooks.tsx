@@ -35,7 +35,6 @@ export const useOnPageEditorModeButtonClicked = (
           isSlackEnabled: false,
           slackChannels: '',
           grant,
-          pageTags: [],
           grantUserGroupId,
         };
 

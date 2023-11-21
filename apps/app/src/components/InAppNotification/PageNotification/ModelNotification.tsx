@@ -31,7 +31,9 @@ export const ModelNotification: FC<Props> = (props) => {
   return (
     <div className="p-2 overflow-hidden">
       <div className="text-truncate">
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
+        <b>{actionUsers}</b>
+        {actionMsg}
+        <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
       <i className={`${actionIcon} me-2`} />
       <FormattedDistanceDate

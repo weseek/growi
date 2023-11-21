@@ -32,7 +32,7 @@ export type EditorPropsType = {
   isGfmMode?: boolean,
   noCdn?: boolean,
   isUploadable?: boolean,
-  isUploadableFile?: boolean,
+  isUploadAllFileAllowed?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
   editorSettings?: IEditorSettings,
@@ -54,7 +54,7 @@ type DropzoneRef = {
 
 const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props, ref): JSX.Element => {
   const {
-    onUpload, isUploadable, isUploadableFile, indentSize, isGfmMode = true,
+    onUpload, isUploadable, isUploadAllFileAllowed, indentSize, isGfmMode = true,
   } = props;
 
   const [dropzoneActive, setDropzoneActive] = useState(false);
@@ -121,7 +121,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const getAcceptableType = useCallback(() => {
     let accept = 'null'; // reject all
     if (isUploadable) {
-      if (!isUploadableFile) {
+      if (!isUploadAllFileAllowed) {
         accept = 'image/*'; // image only
       }
       else {
@@ -130,7 +130,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     }
 
     return accept;
-  }, [isUploadable, isUploadableFile]);
+  }, [isUploadable, isUploadAllFileAllowed]);
 
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
@@ -191,7 +191,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     else {
       className += ' dropzone-uploadable';
 
-      if (isUploadableFile) {
+      if (isUploadAllFileAllowed) {
         className += ' dropzone-uploadablefile';
       }
     }
@@ -210,7 +210,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     }
 
     return className;
-  }, [isUploadable, isUploading, isUploadableFile]);
+  }, [isUploadable, isUploading, isUploadAllFileAllowed]);
 
   const renderDropzoneOverlay = useCallback(() => {
     return (

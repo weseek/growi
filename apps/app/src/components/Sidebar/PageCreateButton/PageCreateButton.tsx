@@ -10,8 +10,8 @@ import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { DropendMenu } from './DropendMenu';
 import { CreateButton } from './CreateButton';
+import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 
 const logger = loggerFactory('growi:cli:PageCreateButton');
@@ -50,7 +50,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         isSlackEnabled: false,
         slackChannels: '',
         grant: currentPage?.grant || 1,
-        pageTags: [],
         grantUserGroupId: currentPage?.grantedGroup?._id,
         shouldGeneratePath: true,
       };
@@ -82,7 +81,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         isSlackEnabled: false,
         slackChannels: '',
         grant: 1,
-        pageTags: [],
       };
 
       const res = await exist(JSON.stringify([todaysPath]));
@@ -115,7 +113,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         isSlackEnabled: false,
         slackChannels: '',
         grant: currentPage?.grant || 1,
-        pageTags: [],
         grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
@@ -149,7 +146,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         isSlackEnabled: false,
         slackChannels: '',
         grant: currentPage?.grant || 1,
-        pageTags: [],
         grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
