@@ -15,12 +15,15 @@ import styles from './Toolbar.module.scss';
 type Props = {
   editorKey: string,
   onFileOpen: () => void,
-  acceptedFileType: AcceptedUploadFileType
+  acceptedFileType: AcceptedUploadFileType,
+  openTabelModal: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
-  const { editorKey, onFileOpen, acceptedFileType } = props;
+  const {
+    editorKey, onFileOpen, acceptedFileType, openTabelModal,
+  } = props;
 
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
@@ -29,7 +32,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
       <EmojiButton
         editorKey={editorKey}
       />
-      <TableButton editorKey={editorKey} />
+      <TableButton editorKey={editorKey} openTabelModal={openTabelModal} />
       <DiagramButton />
       <TemplateButton />
     </div>
