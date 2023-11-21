@@ -1,10 +1,4 @@
-import { useCallback, useEffect } from 'react';
-
-import { useHandsontableModal } from '../../../stores/use-handosontable';
-
-
 type TableButtonProps = {
-  editorKey: string,
   openTabelModal: () => void;
 }
 
