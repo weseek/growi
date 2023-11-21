@@ -33,10 +33,11 @@ export type WorkflowApproverStatus = typeof WorkflowApproverStatus[keyof typeof 
 export type WorkflowApprovalType = typeof WorkflowApprovalType [keyof typeof WorkflowApprovalType];
 
 
-type IWorkflowApproverHasId = {
+export type IWorkflowApproverHasId = {
   _id: string,
   user: IUserHasId,
   status: WorkflowApproverStatus,
+  updatedAt: Date
 }
 
 export type IWorkflowApproverGroupHasId = {

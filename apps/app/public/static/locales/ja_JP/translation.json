@@ -843,6 +843,7 @@
     "description": "説明",
     "back": "戻る",
     "status": "進行状況",
+    "application": "申請",
     "applicant": "申請者",
     "list": "ワークフロー一覧",
     "list_not_found": "このページにはワークフローがありません。",
@@ -870,6 +871,7 @@
       "CANCEL": "キャンセル"
     },
     "approver_status": {
+      "NONE": "未承認",
       "APPROVE": "承認",
       "REMAND": "差し戻し",
       "DELEGATE": "委譲"

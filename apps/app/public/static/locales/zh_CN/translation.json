@@ -813,6 +813,7 @@
     "description": "描述",
     "back": "返回",
     "status": "进展情况",
+    "application": "应用",
     "applicant": "申请人",
     "list": "工作流程列表",
     "list_not_found": "本页没有工作流程。",
@@ -840,6 +841,7 @@
       "CANCEL": "取消"
     },
     "approver_status": {
+      "NONE": "未经批准",
       "APPROVE": "批准",
       "REMAND": "还押",
       "DELEGATE": "代表们"

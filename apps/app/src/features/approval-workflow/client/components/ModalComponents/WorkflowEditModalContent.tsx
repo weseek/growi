@@ -229,10 +229,14 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button">{t('approval_workflow.cancel')}</button>
         <button
           type="button"
-          onClick={() => clickSaveWorkflowButtonClickHandler()}
+          onClick={onClickWorkflowDetailPageBackButton}
+        >{t('approval_workflow.cancel')}
+        </button>
+        <button
+          type="button"
+          onClick={clickSaveWorkflowButtonClickHandler}
         >{t('approval_workflow.completion')}
         </button>
       </ModalFooter>

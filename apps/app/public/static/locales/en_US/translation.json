@@ -810,6 +810,7 @@
     "description": "Description",
     "back": "Back",
     "status": "Status",
+    "application": "Aapplication",
     "applicant": "Applicant",
     "list": "Workflow List",
     "list_not_found": "There is no workflow on this page.",
@@ -837,6 +838,7 @@
       "CANCEL": "CANCEL"
     },
     "approver_status": {
+      "NONE": "Unapproved",
       "APPROVE": "Approve",
       "REMAND": "Remand",
       "DELEGATE": "Delegate"
