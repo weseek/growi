@@ -1,10 +1,13 @@
 type TableButtonProps = {
-  openTabelModal: () => void;
+  openTabelModal?: () => void;
 }
 
 export const TableButton = (props: TableButtonProps): JSX.Element => {
   const { openTabelModal } = props;
   const openTabelModalHandler = () => {
+    if (openTabelModal == null) {
+      return;
+    }
     openTabelModal();
   };
   return (

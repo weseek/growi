@@ -26,7 +26,7 @@ type Props = {
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
-  openTabelModal: () => void,
+  openTabelModal?: () => void,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {

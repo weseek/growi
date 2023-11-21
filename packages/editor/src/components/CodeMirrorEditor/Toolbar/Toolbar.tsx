@@ -16,7 +16,7 @@ type Props = {
   editorKey: string,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType,
-  openTabelModal: () => void,
+  openTabelModal?: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
