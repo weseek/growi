@@ -1,5 +1,5 @@
 import type {
-  HasObjectId, Ref, IUser,
+  HasObjectId, IUser, IPage,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
@@ -53,7 +53,7 @@ export default class InAppNotificationService {
   initActivityEventListeners(): void {
     // TODO: do not use any type
     // https://redmine.weseek.co.jp/issues/120632
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: any, preNotify: PreNotify) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
@@ -203,7 +203,7 @@ export default class InAppNotificationService {
 
   // TODO: do not use any type
   // https://redmine.weseek.co.jp/issues/120632
-  createInAppNotification = async function(activity: ActivityDocument, target, preNotify: PreNotify): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify): Promise<void> {
 
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
     const snapshot = pageSerializers.stringifySnapshot(target);
