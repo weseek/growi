@@ -54,7 +54,7 @@ export const useDrawioModalLauncherForView = (opts?: {
       isSlackEnabled: false,
       slackChannels: '',
       grant: currentPage.grant,
-      grantUserGroupIds,
+      // grantUserGroupIds,
       // pageTags: tagsInfo.tags,
     };
 
