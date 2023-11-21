@@ -228,8 +228,10 @@ module.exports = (crowi) => {
     const containerClient = await getContainerClient();
     const blockBlobClient: BlockBlobClient = containerClient.getBlockBlobClient(filePath);
     const contentHeaders = new ContentHeaders(attachment);
+
     return blockBlobClient.uploadStream(readStream, undefined, undefined, {
       blobHTTPHeaders: {
+        // put type and the file name for reference information when uploading
         blobContentType: contentHeaders.contentType?.value.toString(),
         blobContentDisposition: contentHeaders.contentDisposition?.value.toString(),
       },
