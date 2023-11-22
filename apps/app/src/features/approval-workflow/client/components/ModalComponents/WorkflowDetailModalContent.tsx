@@ -57,16 +57,27 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
     }
   }, [updateApproverStatus]);
 
+  const getBadgeColor = useCallback(() => {
+    switch (workflow?.status) {
+      case WorkflowStatus.INPROGRESS:
+        return 'text-bg-primary';
+      case WorkflowStatus.APPROVE:
+        return 'text-bg-success';
+      default:
+        return '';
+    }
+  }, [workflow?.status]);
+
   if (workflow == null) {
     return <></>;
   }
 
   return (
     <>
-      <WorkflowModalHeader
-        title={workflow?.name ?? ''}
-        onClickPageBackButton={onClickWorkflowListPageBackButton}
-      />
+      <WorkflowModalHeader onClickPageBackButton={onClickWorkflowListPageBackButton}>
+        <span className={`badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</span>
+        <span className="fw-bold">{workflow.name}</span>
+      </WorkflowModalHeader>
 
       <ModalBody>
         <button type="button" disabled={!isAbleEditButton} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>

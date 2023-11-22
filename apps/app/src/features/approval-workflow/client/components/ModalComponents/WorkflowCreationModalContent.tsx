@@ -67,10 +67,9 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
 
   return (
     <>
-      <WorkflowModalHeader
-        title={t('approval_workflow.create_new')}
-        onClickPageBackButton={() => onClickWorkflowListPageBackButton()}
-      />
+      <WorkflowModalHeader onClickPageBackButton={() => onClickWorkflowListPageBackButton()}>
+        <span className="fw-bold">{t('approval_workflow.create_new')}</span>
+      </WorkflowModalHeader>
 
       <ModalBody>
         <div className="mb-3">

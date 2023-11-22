@@ -92,9 +92,9 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
   return (
     <>
-      <WorkflowModalHeader
-        title={t('approval_workflow.list')}
-      />
+      <WorkflowModalHeader>
+        <span className="fw-bold">{t('approval_workflow.list')}</span>
+      </WorkflowModalHeader>
 
       <ModalBody>
         {(workflows.length === 0) && (
