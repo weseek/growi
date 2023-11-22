@@ -2,8 +2,8 @@ import { FC } from 'react';
 
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 
-import { PagePath } from './PagePath';
-import { PageTitle } from './PageTitle';
+import { PagePathHeader } from './PagePathHeader';
+import { PageTitleHeader } from './PageTitleHeader';
 
 export const PageHeader: FC = () => {
   const { data: currentPagePath } = useCurrentPagePath();
@@ -16,11 +16,11 @@ export const PageHeader: FC = () => {
   return (
     <>
       <div>
-        <PagePath
+        <PagePathHeader
           currentPagePath={currentPagePath}
           currentPage={currentPage}
         />
-        <PageTitle
+        <PageTitleHeader
           currentPagePath={currentPagePath}
           currentPage={currentPage}
         />

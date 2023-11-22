@@ -20,11 +20,12 @@ type Props = {
   currentPage
   stateHandler
   inputValue
+  CustomComponent
 }
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPagePath, currentPage, stateHandler, inputValue,
+    currentPagePath, currentPage, stateHandler, inputValue, CustomComponent
   } = props;
 
   const { t } = useTranslation();
@@ -95,7 +96,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
           />
         </div>
       ) : (
-        <div onClick={onClickInputValueHandler}>{inputValue}</div>
+        <CustomComponent />
       )}
     </>
   );
