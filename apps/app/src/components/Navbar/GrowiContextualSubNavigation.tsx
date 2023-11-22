@@ -11,9 +11,7 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
-import {
-  exportAsMarkdown, updateContentWidth,
-} from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
