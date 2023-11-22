@@ -16,13 +16,13 @@ type Props = {
   editorKey: string,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType,
-  openTableModal?: () => void,
+  onClickTableBtn: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
   const {
-    editorKey, onFileOpen, acceptedFileType, openTableModal,
+    editorKey, onFileOpen, acceptedFileType, onClickTableBtn,
   } = props;
 
   return (
@@ -32,7 +32,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
       <EmojiButton
         editorKey={editorKey}
       />
-      <TableButton openTableModal={openTableModal} />
+      <TableButton onClickTableBtn={onClickTableBtn} />
       <DiagramButton />
       <TemplateButton />
     </div>

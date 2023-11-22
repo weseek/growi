@@ -1,14 +1,11 @@
 type TableButtonProps = {
-  openTableModal?: () => void;
+  onClickTableBtn: () => void;
 }
 
 export const TableButton = (props: TableButtonProps): JSX.Element => {
-  const { openTableModal } = props;
+  const { onClickTableBtn } = props;
   const openTableModalHandler = () => {
-    if (openTableModal == null) {
-      return;
-    }
-    openTableModal();
+    onClickTableBtn();
   };
   return (
     <button type="button" className="btn btn-toolbar-button" onClick={openTableModalHandler}>

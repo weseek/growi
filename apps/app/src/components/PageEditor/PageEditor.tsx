@@ -189,7 +189,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const openTableModalHandler = useCallback(() => {
     const editor = codeMirrorEditor?.view;
     const markdownTable = mtu.getMarkdownTable(editor);
-    if (markdownTable == null) {
+    if (markdownTable == null || openHandsontableModal == null) {
       return;
     }
     openHandsontableModal(markdownTable, editor);
@@ -600,7 +600,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
-            openTableModal={openTableModalHandler}
+            onClickTableBtn={openTableModalHandler}
           />
         </div>
         <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

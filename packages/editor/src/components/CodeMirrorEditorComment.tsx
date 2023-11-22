@@ -18,11 +18,12 @@ type Props = {
   onChange?: (value: string) => void,
   onComment?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
+  onClickTableBtn: () => void,
 }
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    onComment, onChange, acceptedFileType,
+    onComment, onChange, acceptedFileType, onClickTableBtn,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
@@ -63,6 +64,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
       onChange={onChange}
       acceptedFileType={acceptedFileTypeNoOpt}
+      onClickTableBtn={onClickTableBtn}
     />
   );
 };

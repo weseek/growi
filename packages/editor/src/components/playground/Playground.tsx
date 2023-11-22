@@ -48,6 +48,10 @@ export const Playground = (): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
+  const openHandsontableModal = useCallback(() => {
+    console.log('Open Edit Modal');
+  }, []);
+
   return (
     <div className="d-flex flex-column vw-100 flex-expand-vh-100">
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '83px' }}>
@@ -61,6 +65,7 @@ export const Playground = (): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={4}
             acceptedFileType={AcceptedUploadFileType.ALL}
+            onClickTableBtn={openHandsontableModal}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
