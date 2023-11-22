@@ -18,12 +18,15 @@ import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 type Props = {
   workflow?: IWorkflowHasId,
+  onUpdate?: () => void,
   onClickWorkflowEditButton: () => void,
   onClickWorkflowListPageBackButton: () => void,
 }
 
 export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
-  const { workflow, onClickWorkflowEditButton, onClickWorkflowListPageBackButton } = props;
+  const {
+    workflow, onUpdate, onClickWorkflowEditButton, onClickWorkflowListPageBackButton,
+  } = props;
 
   const { t } = useTranslation();
 
@@ -51,11 +54,14 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const approveButtonClickHandler = useCallback(async() => {
     try {
       await updateApproverStatus(WorkflowApproverStatus.APPROVE);
+      if (onUpdate != null) {
+        return onUpdate();
+      }
     }
     catch (err) {
       // TODO: Consider how to display errors
     }
-  }, [updateApproverStatus]);
+  }, [onUpdate, updateApproverStatus]);
 
   const getBadgeColor = useCallback(() => {
     switch (workflow?.status) {
