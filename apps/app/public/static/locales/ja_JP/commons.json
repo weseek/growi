@@ -102,6 +102,13 @@
     }
   },
 
+  "selectable_paste_modal": {
+    "title": "リンクの貼り付け形式を選択",
+    "save": "保存",
+    "cancel": "キャンセル",
+    "done": "完了"
+  },
+
   "questionnaire_modal": {
     "required": "必須",
     "submit": "送信",

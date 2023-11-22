@@ -10,7 +10,7 @@ import urljoin from 'url-join';
 
 import InterceptorManager from '~/services/interceptor-manager';
 import {
-  useHandsontableModal, useDrawioModal, useTemplateModal, useLinkEditModal,
+  useHandsontableModal, useDrawioModal, useTemplateModal, useLinkEditModal, useSelectablePasteModal,
 } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
@@ -31,6 +31,7 @@ import MarkdownTableInterceptor from './MarkdownTableInterceptor';
 import mtu from './MarkdownTableUtil';
 import pasteHelper from './PasteHelper';
 import PreventMarkdownListInterceptor from './PreventMarkdownListInterceptor';
+import selectablePasteHelper from './SelectablePasteHelper';
 import SimpleCheatsheet from './SimpleCheatsheet';
 
 import styles from './CodeMirrorEditor.module.scss';
@@ -157,7 +158,7 @@ class CodeMirrorEditor extends AbstractEditor {
 
     this.showTemplateModal = this.showTemplateModal.bind(this);
     this.showLinkEditModal = this.showLinkEditModal.bind(this);
-
+    this.showSelectablePasteModal = this.showSelectablePasteModal.bind(this);
   }
 
   init() {
@@ -679,6 +680,13 @@ class CodeMirrorEditor extends AbstractEditor {
     }
     // text
     else if (types.includes('text/plain')) {
+      if (selectablePasteHelper.isSelectablePaste(this, event)) {
+        const onSubmit = contents => this.insertText(contents);
+        event.preventDefault();
+        const url = event.clipboardData.getData('text/plain');
+        this.props.onClickSelectablePasteBtn(url, onSubmit);
+        return;
+      }
       pasteHelper.pasteText(this, event);
     }
 
@@ -862,6 +870,12 @@ class CodeMirrorEditor extends AbstractEditor {
     this.props.onClickLinkEditBtn(defaultMarkdownLink, onSubmit);
   }
 
+  showSelectablePasteModal() {
+    const onSubmit = contents => this.insertText(contents);
+
+    this.props.onClickSelectablePasteBtn('', onSubmit);
+  }
+
   // fold draw.io section (``` drawio ~ ```)
   foldDrawioSection() {
     const editor = this.getCodeMirror();
@@ -893,6 +907,12 @@ class CodeMirrorEditor extends AbstractEditor {
       this.getCodeMirror(),
       this.props.editorSettings.autoFormatMarkdownTable,
     );
+  }
+
+  clickSelectablePasteIconHandler() {
+    const onSubmit = contents => this.insertText(contents);
+
+    this.props.onClickSelectablePasteBtn('', onSubmit);
   }
 
   getNavbarItems() {
@@ -1043,6 +1063,15 @@ class CodeMirrorEditor extends AbstractEditor {
         <EditorIcon icon="Emoji" />
       </Button>,
       <Button
+        key="nav-item-selectable-paste"
+        color={null}
+        bssize="small"
+        title="SelectablePaste"
+        onClick={() => this.showSelectablePasteModal()}
+      >
+        <EditorIcon icon="SelectablePaste" />
+      </Button>,
+      <Button
         key="nav-item-template"
         color={null}
         bssize="small"
@@ -1157,6 +1186,7 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
   const { open: openHandsontableModal } = useHandsontableModal();
   const { open: openTemplateModal } = useTemplateModal();
   const { open: openLinkEditModal } = useLinkEditModal();
+  const { open: openSelectablePasteModal } = useSelectablePasteModal();
 
   const openDrawioModalHandler = useCallback((drawioMxFile, onSave) => {
     openDrawioModal(drawioMxFile, onSave);
@@ -1174,6 +1204,10 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
     openLinkEditModal(defaultMarkdownLink, onSubmit);
   }, [openLinkEditModal]);
 
+  const openSelectablePasteModalHandler = useCallback((url, onSubmit) => {
+    openSelectablePasteModal(url, onSubmit);
+  }, [openSelectablePasteModal]);
+
   return (
     <CodeMirrorEditorMemoized
       ref={ref}
@@ -1181,6 +1215,7 @@ const CodeMirrorEditorFc = React.forwardRef((props, ref) => {
       onClickTableBtn={openTableModalHandler}
       onClickTemplateBtn={openTemplateModalHandler}
       onClickLinkEditBtn={openLinkEditModalHandler}
+      onClickSelectablePasteBtn={openSelectablePasteModalHandler}
       {...props}
     />
   );
