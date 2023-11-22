@@ -594,7 +594,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
-            openTabelModal={openTableModalHandler}
+            openTableModal={openTableModalHandler}
           />
         </div>
         <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

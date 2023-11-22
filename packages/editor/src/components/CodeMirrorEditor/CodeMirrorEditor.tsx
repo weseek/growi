@@ -26,7 +26,7 @@ type Props = {
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
-  openTabelModal?: () => void,
+  openTableModal?: () => void,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -36,7 +36,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     onChange,
     onUpload,
     indentSize,
-    openTabelModal,
+    openTableModal,
   } = props;
 
   const containerRef = useRef(null);
@@ -148,7 +148,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} openTabelModal={openTabelModal} />
+        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} openTableModal={openTableModal} />
       </div>
     </div>
   );

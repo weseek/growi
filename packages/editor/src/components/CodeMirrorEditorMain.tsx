@@ -19,12 +19,12 @@ type Props = {
   onUpload?: (files: File[]) => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  openTabelModal?: () => void,
+  openTableModal?: () => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, openTabelModal, acceptedFileType, indentSize,
+    onSave, onChange, onUpload, openTableModal, acceptedFileType, indentSize,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -68,7 +68,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       onUpload={onUpload}
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
-      openTabelModal={openTabelModal}
+      openTableModal={openTableModal}
     />
   );
 };
