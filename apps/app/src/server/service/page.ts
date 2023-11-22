@@ -2,7 +2,7 @@ import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
 import type {
-  Ref, HasObjectId, IUserHasId,
+  Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
 import { PageGrant, PageStatus } from '@growi/core';
@@ -548,7 +548,7 @@ class PageService {
     // update descendants first
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
-      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
       const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
 
@@ -1522,7 +1522,7 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
 
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
     const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
 
@@ -1850,7 +1850,7 @@ class PageService {
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const descendantsSubscribedSets = new Set();
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
     const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
 
@@ -1897,7 +1897,7 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
     const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
 
@@ -2227,7 +2227,7 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
     const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
 
