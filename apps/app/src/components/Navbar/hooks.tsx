@@ -14,8 +14,8 @@ const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 export const useOnPageEditorModeButtonClicked = (
     setIsCreating:React.Dispatch<React.SetStateAction<boolean>>,
     path?: string,
-    grant?: number,
-    grantUserGroupId?: string,
+    // grant?: number,
+    // grantUserGroupId?: string,
 ): (editorMode: EditorMode) => Promise<void> => {
   const router = useRouter();
   const { t } = useTranslation('commons');
@@ -23,7 +23,7 @@ export const useOnPageEditorModeButtonClicked = (
   const { mutate: mutateEditorMode } = useEditorMode();
 
   return useCallback(async(editorMode: EditorMode) => {
-    if (isNotFound == null || path == null || grant == null) {
+    if (isNotFound == null || path == null) {
       return;
     }
 
@@ -34,8 +34,9 @@ export const useOnPageEditorModeButtonClicked = (
         const params = {
           isSlackEnabled: false,
           slackChannels: '',
-          grant,
-          grantUserGroupId,
+          grant: 4,
+          // grant,
+          // grantUserGroupId,
         };
 
         const response = await createPage(path, '', params);
@@ -53,5 +54,5 @@ export const useOnPageEditorModeButtonClicked = (
     }
 
     mutateEditorMode(editorMode);
-  }, [grant, grantUserGroupId, isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
+  }, [isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
 };

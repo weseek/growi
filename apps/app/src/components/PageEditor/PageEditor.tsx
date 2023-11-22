@@ -214,12 +214,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (grantData == null) {
       return;
     }
+    const grantedGroups = grantData.grantedGroups?.map((group) => {
+      return { item: group.id, type: group.type };
+    });
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
-      grantUserGroupId: grantData.grantedGroup?.id,
-      grantUserGroupName: grantData.grantedGroup?.name,
+      // pageTags: pageTags ?? [],
+      grantUserGroupIds: grantedGroups,
     };
     return optionsToSave;
   }, [grantData, isSlackEnabled]);

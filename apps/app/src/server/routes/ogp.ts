@@ -12,6 +12,7 @@ import { param, validationResult, ValidationError } from 'express-validator';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import { Attachment } from '../models';
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');
@@ -38,7 +39,6 @@ module.exports = function(crowi) {
 
     if (isUserImageAttachment(userImageUrlCached)) {
       const { fileUploadService } = crowi;
-      const Attachment = crowi.model('Attachment');
       const attachment = await Attachment.findById(userImageUrlCached);
       const fileStream = await fileUploadService.findDeliveryFile(attachment);
       bufferedUserImage = await convertStreamToBuffer(fileStream);

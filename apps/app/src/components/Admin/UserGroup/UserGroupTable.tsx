@@ -7,6 +7,8 @@ import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
+import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+
 
 type Props = {
   headerLabel?: string,
@@ -17,6 +19,7 @@ type Props = {
   onEdit?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onRemove?: (userGroup: IUserGroupHasId) => void | Promise<void>,
   onDelete?: (userGroup: IUserGroupHasId) => void | Promise<void>,
+  isExternalGroup?: boolean
 };
 
 /*
@@ -53,27 +56,37 @@ const generateGroupIdToChildGroupsMap = (childUserGroups: IUserGroupHasId[]): Re
 };
 
 
-export const UserGroupTable: FC<Props> = (props: Props) => {
+export const UserGroupTable: FC<Props> = ({
+  headerLabel,
+  userGroups,
+  userGroupRelations,
+  childUserGroups,
+  isAclEnabled,
+  onEdit,
+  onRemove,
+  onDelete,
+  isExternalGroup = false,
+}: Props) => {
   const { t } = useTranslation('admin');
 
   /*
    * State
    */
-  const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateGroupIdToUsersMap(props.userGroupRelations));
-  const [groupIdToChildGroupsMap, setGroupIdToChildGroupsMap] = useState(generateGroupIdToChildGroupsMap(props.childUserGroups));
+  const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateGroupIdToUsersMap(userGroupRelations));
+  const [groupIdToChildGroupsMap, setGroupIdToChildGroupsMap] = useState(generateGroupIdToChildGroupsMap(childUserGroups));
 
   /*
    * Function
    */
   const findUserGroup = (e: React.ChangeEvent<HTMLInputElement>): IUserGroupHasId | undefined => {
     const groupId = e.target.getAttribute('data-user-group-id');
-    return props.userGroups.find((group) => {
+    return userGroups.find((group) => {
       return group._id === groupId;
     });
   };
 
   const onClickEdit = async(e) => {
-    if (props.onEdit == null) {
+    if (onEdit == null) {
       return;
     }
 
@@ -82,11 +95,11 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
-    props.onEdit(userGroup);
+    onEdit(userGroup);
   };
 
   const onClickRemove = async(e) => {
-    if (props.onRemove == null) {
+    if (onRemove == null) {
       return;
     }
 
@@ -96,7 +109,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
     }
 
     try {
-      await props.onRemove(userGroup);
+      await onRemove(userGroup);
       userGroup.parent = null;
     }
     catch {
@@ -105,7 +118,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
   };
 
   const onClickDelete = (e) => { // no preventDefault
-    if (props.onDelete == null) {
+    if (onDelete == null) {
       return;
     }
 
@@ -114,24 +127,25 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
       return;
     }
 
-    props.onDelete(userGroup);
+    onDelete(userGroup);
   };
 
   /*
    * useEffect
    */
   useEffect(() => {
-    setGroupIdToUsersMap(generateGroupIdToUsersMap(props.userGroupRelations));
-    setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(props.childUserGroups));
-  }, [props.userGroupRelations, props.childUserGroups]);
+    setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
+    setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
+  }, [userGroupRelations, childUserGroups]);
 
   return (
     <div data-testid="grw-user-group-table">
-      <h2>{props.headerLabel}</h2>
+      <h3>{headerLabel}</h3>
 
       <table className="table table-bordered table-user-list">
         <thead>
           <tr>
+            {isExternalGroup && <th>{t('external_user_group.provider')}</th>}
             <th>{t('Name')}</th>
             <th>{t('Description')}</th>
             <th>{t('User')}</th>
@@ -141,14 +155,15 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
           </tr>
         </thead>
         <tbody>
-          {props.userGroups.map((group) => {
+          {userGroups.map((group) => {
             const users = groupIdToUsersMap[group._id];
 
             return (
               <tr key={group._id}>
-                {props.isAclEnabled
+                {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
+                {isAclEnabled
                   ? (
-                    <td><Link href={`/admin/user-group-detail/${group._id}`}>{group.name}</Link></td>
+                    <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>
                   )
                   : (
                     <td>{group.name}</td>
@@ -166,10 +181,10 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
                   <ul className="list-inline">
                     {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
                       return (
-                        <li key={group._id} className="list-inline-item badge bg-success">
-                          {props.isAclEnabled
+                        <li key={group._id} className="list-inline-item badge badge-success">
+                          {isAclEnabled
                             ? (
-                              <Link href={`/admin/user-group-detail/${group._id}`}>{group.name}</Link>
+                              <Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link>
                             )
                             : (
                               <p>{group.name}</p>
@@ -181,7 +196,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
                   </ul>
                 </td>
                 <td>{dateFnsFormat(new Date(group.createdAt), 'yyyy-MM-dd')}</td>
-                {props.isAclEnabled
+                {isAclEnabled
                   ? (
                     <td>
                       <div className="btn-group admin-group-menu">
@@ -197,9 +212,12 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
                           <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
                             <i className="icon-fw icon-note"></i> {t('Edit')}
                           </button>
-                          <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
-                            <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
-                          </button>
+                          {onRemove != null
+                          && (
+                            <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
+                              <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
+                            </button>
+                          )}
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
                             <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
                           </button>
