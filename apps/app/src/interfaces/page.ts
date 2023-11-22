@@ -1,4 +1,4 @@
-import type { IPageHasId, Nullable } from '@growi/core';
+import type { GroupType, IPageHasId, Nullable } from '@growi/core';
 
 import type { IPageOperationProcessData } from './page-operation';
 
@@ -10,10 +10,11 @@ export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData
 
 export type IPageGrantData = {
   grant: number,
-  grantedGroup?: {
+  grantedGroups?: {
     id: string,
-    name: string
-  }
+    name: string,
+    type: GroupType,
+  }[]
 }
 
 export type IDeleteSinglePageApiv1Result = {
