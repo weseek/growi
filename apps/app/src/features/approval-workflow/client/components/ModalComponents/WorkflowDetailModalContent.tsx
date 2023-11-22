@@ -5,7 +5,11 @@ import { ModalBody, ModalFooter } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores/context';
 
-import { type IWorkflowHasId, WorkflowApproverStatus } from '../../../interfaces/workflow';
+import {
+  type IWorkflowHasId,
+  WorkflowStatus,
+  WorkflowApproverStatus,
+} from '../../../interfaces/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
 import { ApproverGroupCards } from './ApproverGroupCards';
@@ -42,6 +46,9 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
     return false;
   }, [currentUser, workflow]);
 
+  const isAbleEditButton = workflow?.status === WorkflowStatus.INPROGRESS && (currentUser?.admin || isExistApprover());
+  const isAbleApproveButton = workflow?.status === WorkflowStatus.INPROGRESS && isExistApprover();
+
   const approveButtonClickHandler = useCallback(async() => {
     try {
       await updateApproverStatus(WorkflowApproverStatus.APPROVE);
@@ -63,12 +70,12 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
-        <button type="button" disabled={!isExistApprover() && !currentUser?.admin} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>
+        <button type="button" disabled={!isAbleEditButton} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>
         <ApproverGroupCards workflow={workflow} />
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" disabled={!isExistApprover()} onClick={approveButtonClickHandler}>{t('approval_workflow.approver_status.APPROVE')}</button>
+        <button type="button" disabled={!isAbleApproveButton} onClick={approveButtonClickHandler}>{t('approval_workflow.approver_status.APPROVE')}</button>
       </ModalFooter>
     </>
   );
