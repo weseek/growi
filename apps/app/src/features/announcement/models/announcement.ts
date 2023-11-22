@@ -10,18 +10,6 @@ type AnnouncementStatuses = typeof AnnouncementStatuses;
 
 export interface AnnouncementDocument extends IAnnouncement, Document {
   _id: Types.ObjectId
-  sender: Types.ObjectId
-  comment?: string
-  emoji?: string
-  isReadReceiptTrackingEnabled: boolean
-  pageId: Types.ObjectId
-  receivers: [
-    {
-      receiver: Types.ObjectId,
-      updatedAt?: Date,
-      readStatus: AnnouncementStatuses,
-    },
-  ]
 }
 
 export interface AnnouncementModel extends Model<AnnouncementDocument> {
