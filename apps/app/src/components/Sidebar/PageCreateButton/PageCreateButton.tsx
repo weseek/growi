@@ -49,8 +49,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
         shouldGeneratePath: true,
       };
 
@@ -80,7 +81,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 1,
+        grant: 4,
       };
 
       const res = await exist(JSON.stringify([todaysPath]));
@@ -112,8 +113,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
       const res = await exist(JSON.stringify([path]));
@@ -145,8 +147,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: currentPage?.grant || 1,
-        grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
       };
 
       const res = await exist(JSON.stringify([path]));

@@ -25,10 +25,9 @@ type IDataAttachmentList = {
 
 export const useSWRxAttachment = (attachmentId: string): SWRResponseWithUtils<Util, IAttachmentHasId, Error> => {
   const swrResponse = useSWR(
-    ['/attachment', attachmentId],
-    useCallback(async([endpoint, attachmentId]) => {
-      const params = { attachmentId };
-      const res = await apiv3Get(endpoint, params);
+    [`/attachment/${attachmentId}`],
+    useCallback(async([endpoint]) => {
+      const res = await apiv3Get(endpoint);
       return res.data.attachment;
     }, []),
   );
@@ -75,7 +74,7 @@ export const useSWRxAttachments = (pageId?: Nullable<string>, pageNumber?: numbe
       await apiPost('/attachments.remove', body);
       mutate();
       // Mutation for rich attachment rendering
-      mutateUseSWRxAttachment(['/attachment', body.attachment_id], body.attachment_id);
+      mutateUseSWRxAttachment([`/attachment/${body.attachment_id}`], body.attachment_id);
     }
     catch (err) {
       throw err;

@@ -1,5 +1,6 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
+import UserGroupRelation from '~/server/models/user-group-relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:user-group-relation'); // eslint-disable-line no-unused-vars
@@ -22,8 +23,6 @@ const validator = {};
 module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const adminRequired = require('../../middlewares/admin-required')(crowi);
-
-  const { UserGroupRelation } = crowi.models;
 
   validator.list = [
     query('groupIds', 'groupIds is required and must be an array').isArray(),
