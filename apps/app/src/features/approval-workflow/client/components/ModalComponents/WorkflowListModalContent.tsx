@@ -4,13 +4,15 @@ import React, { useState, useCallback } from 'react';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
-  ModalHeader, ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
+  ModalBody, ModalFooter, Dropdown, DropdownMenu, DropdownToggle, DropdownItem, UncontrolledTooltip,
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores/context';
 
 import { type IWorkflowHasId } from '../../../interfaces/workflow';
 import { deleteWorkflow } from '../../services/workflow';
+
+import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 
 type Props = {
@@ -90,9 +92,9 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ModalHeader className="bg-primary">
-        {t('approval_workflow.list')}
-      </ModalHeader>
+      <WorkflowModalHeader
+        title={t('approval_workflow.list')}
+      />
 
       <ModalBody>
         {(workflows.length === 0) && (
