@@ -65,7 +65,7 @@ export const RichAttachment: React.FC<{
                 <i className="icon-cloud-download" />
               </a>
               <a className="ms-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash" />
+                <span className="material-symbols-outlined">delete</span>
               </a>
             </div>
             <div className="d-flex align-items-center">

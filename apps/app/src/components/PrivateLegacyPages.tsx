@@ -368,7 +368,7 @@ const PrivateLegacyPages = (): JSX.Element => {
                 </DropdownItem>
                 <DropdownItem onClick={deleteAllButtonClickedHandler}>
                   <span className="text-danger">
-                    <i className="icon-fw icon-trash"></i>
+                    <span className="material-symbols-outlined">delete</span>
                     {t('search_result.delete_all_selected_page')}
                   </span>
                 </DropdownItem>

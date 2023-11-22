@@ -23,7 +23,7 @@ const ArchiveFilesTableMenu = (props: ArchiveFilesTableMenuProps):JSX.Element =>
           <i className="icon-cloud-download" /> {t('admin:export_management.download')}
         </button>
         <button type="button" className="dropdown-item" role="button" onClick={() => props.onZipFileStatRemove(props.fileName)}>
-          <span className="text-danger"><i className="icon-trash" /> {t('admin:export_management.delete')}</span>
+          <span className="text-danger"><span className="material-symbols-outlined">delete</span> {t('admin:export_management.delete')}</span>
         </button>
       </ul>
     </div>

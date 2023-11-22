@@ -30,7 +30,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash me-1" />
+              <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete_slackbot_settings')}
             </>
           )}
@@ -61,7 +61,7 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash me-1" />
+              <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete')}
             </>
           )}
