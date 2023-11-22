@@ -75,14 +75,14 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   return (
     <>
       <WorkflowModalHeader onClickPageBackButton={onClickWorkflowListPageBackButton}>
-        <span className={`badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</span>
-        <span className="fw-bold">{workflow.name}</span>
+        <div className={`me-2 badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</div>
+        <div className="fw-bold">{workflow.name}</div>
       </WorkflowModalHeader>
 
       <ModalBody>
         <button type="button" disabled={!isAbleEditButton} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>
         <ApproverGroupCards workflow={workflow} />
-        <div className="mt-4 text-center">{t(`approval_workflow.detail_modal_content_message.${workflow.status}`)}</div>
+        <div className="text-center">{t(`approval_workflow.detail_modal_content_message.${workflow.status}`)}</div>
       </ModalBody>
 
       <ModalFooter>
