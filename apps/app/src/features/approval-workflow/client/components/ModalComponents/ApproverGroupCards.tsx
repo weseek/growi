@@ -82,10 +82,14 @@ const ApproverGroupCard = (props: ApproverGroupCardProps): JSX.Element => {
   const { approverGroup } = props;
 
   const approvers = approverGroup.approvers;
+  const isApproved = approverGroup.isApproved;
 
   return (
-    <div className="card rounded my-3">
+    <div className="card rounded my-4">
       <div className="card-body">
+        { isApproved && (
+          <span className="material-symbols-outlined fs-2 position-absolute top-0 start-0 translate-middle text-success">check_circle</span>
+        )}
         { approvers.map(approver => (
           <>
             <CreatorOrApproverItem
