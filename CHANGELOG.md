@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.3](https://github.com/weseek/growi/compare/v6.2.2...v6.2.3) - 2023-11-13
+
+### 🚀 Improvement
+
+- imprv: Certify shared page attachment middleware (#8211) @yuki-takei
+- imprv: Printing styles 2 (#8203) @yuki-takei
 
 ## [v6.2.2](https://github.com/weseek/growi/compare/v6.2.1...v6.2.2) - 2023-10-30
 

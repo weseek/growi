@@ -39,6 +39,20 @@ export type IResAppSettings = {
   envGcsBucket: string,
   envGcsUploadNamespace: string,
 
+  azureUseOnlyEnvVars: boolean,
+  azureTenantId: string,
+  azureClientId: string,
+  azureClientSecret: string,
+  azureStorageAccountName: string,
+  azureStorageContainerName: string,
+  azureReferenceFileWithRelayMode: string,
+
+  envAzureTenantId: string,
+  envAzureClientId: string,
+  envAzureClientSecret: string,
+  envAzureStorageAccountName: string,
+  envAzureStorageContainerName: string,
+
   isEnabledPlugins: boolean,
 
   isQuestionnaireEnabled: boolean,

@@ -1,5 +1,9 @@
 import { randomUUID } from 'crypto';
 
+import type { Response } from 'express';
+
+import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
+import { Attachment, type IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
@@ -18,19 +22,27 @@ export type CheckLimitResult = {
   errorMessage?: string,
 }
 
+export type TemporaryUrl = {
+  url: string,
+  lifetimeSec: number,
+}
+
 export interface FileUploader {
   getIsUploadable(): boolean,
   isWritable(): Promise<boolean>,
   getIsReadable(): boolean,
   isValidUploadSettings(): boolean,
   getFileUploadEnabled(): boolean,
+  listFiles(): any,
   saveFile(param: SaveFileParam): Promise<any>,
   deleteFiles(): void,
   getFileUploadTotalLimit(): number,
   getTotalFileSize(): Promise<number>,
   doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
-  canRespond(): boolean
-  respond(res: Response, attachment: Response): void,
+  determineResponseMode(): ResponseMode,
+  respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
+  findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
+  generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -84,6 +96,8 @@ export abstract class AbstractFileUploader implements FileUploader {
     return !!configManager.getConfig('crowi', 'app:fileUpload');
   }
 
+  abstract listFiles();
+
   abstract saveFile(param: SaveFileParam);
 
   abstract deleteFiles();
@@ -107,8 +121,6 @@ export abstract class AbstractFileUploader implements FileUploader {
    * @returns Total file size
    */
   async getTotalFileSize() {
-    const Attachment = this.crowi.model('Attachment');
-
     // Get attachment total file size
     const res = await Attachment.aggregate().group({
       _id: null,
@@ -137,15 +149,25 @@ export abstract class AbstractFileUploader implements FileUploader {
   }
 
   /**
-   * Checks if Uploader can respond to the HTTP request.
+   * Determine ResponseMode
    */
-  canRespond(): boolean {
-    return false;
+  determineResponseMode(): ResponseMode {
+    return ResponseMode.RELAY;
   }
 
   /**
    * Respond to the HTTP request.
    */
-  abstract respond(res: Response, attachment: Response): void;
+  abstract respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void;
+
+  /**
+   * Find the file and Return ReadStream
+   */
+  abstract findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>;
+
+  /**
+   * Generate temporaryUrl that is valid for a very short time
+   */
+  abstract generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>;
 
 }
