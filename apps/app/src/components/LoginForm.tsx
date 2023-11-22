@@ -573,7 +573,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={switchForm}
                     >
-                      <i className="ti ti-check-box"></i> {t('Sign up is here')}
+                      <span className="material-symbols-outlined">check_box</span> {t('Sign up is here')}
                     </a>
                   </div>
                 )}

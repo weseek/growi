@@ -201,7 +201,7 @@ export const UserGroupTable: FC<Props> = (props: Props) => {
                             <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
                           </button>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
-                            <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                            <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                           </button>
                         </div>
                       </div>

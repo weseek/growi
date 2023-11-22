@@ -113,7 +113,7 @@ class GlobalNotificationList extends React.Component {
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
                     <li className="list-inline-item badge rounded-pill bg-danger">
-                      <i className="icon-fire"></i> DELETE
+                      <span className="material-symbols-outlined">delete_forever</span>DELETE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
@@ -150,7 +150,7 @@ class GlobalNotificationList extends React.Component {
                       <i className="icon-fw icon-note"></i> {t('Edit')}
                     </a>
                     <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
-                      <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                      <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                     </button>
                   </div>
                 </div>

@@ -274,7 +274,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.DELETE)}
               >
                 <span className="badge rounded-pill bg-danger">
-                  <i className="icon-fire me-1" />DELETE
+                  <span className="material-symbols-outlined">delete_forever</span>DELETE
                 </span>
               </TriggerEventCheckBox>
             </div>

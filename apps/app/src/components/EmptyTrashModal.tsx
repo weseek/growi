@@ -61,7 +61,7 @@ const EmptyTrashModal: FC = () => {
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal">
       <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="bg-danger text-light">
-        <i className="icon-fw icon-fire"></i>
+        <span className="material-symbols-outlined">delete_forever</span>
         {t('modal_empty.empty_the_trash')}
       </ModalHeader>
       <ModalBody>
@@ -80,7 +80,7 @@ const EmptyTrashModal: FC = () => {
           className="btn btn-danger"
           onClick={emptyTrashButtonHandler}
         >
-          <i className="me-1 icon-fire" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span>
           {t('modal_empty.empty_the_trash_button')}
         </button>
       </ModalFooter>

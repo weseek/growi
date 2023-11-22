@@ -58,7 +58,7 @@ const DeleteBookmarkFolderModal: FC = () => {
           className="btn btn-danger"
           onClick={onClickDeleteButton}
         >
-          <i className="me-1 icon-trash" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">delete</span>
           {t('bookmark_folder.delete_modal.modal_footer_button')}
         </button>
       </ModalFooter>
