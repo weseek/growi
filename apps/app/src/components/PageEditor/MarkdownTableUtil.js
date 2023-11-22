@@ -71,16 +71,16 @@ class MarkdownTableUtil {
    * return strings from BOT(beginning of table) to the cursor position
    */
   getStrFromBot(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.sliceDoc(this.getBot(editor), curPos);
+    const curPos = editor.getCursor();
+    return editor.getDoc().getRange(this.getBot(editor), curPos);
   }
 
   /**
    * return strings from the cursor position to EOT(end of table)
    */
   getStrToEot(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.sliceDoc(curPos, this.getEot(editor));
+    const curPos = editor.getCursor();
+    return editor.getDoc().getRange(curPos, this.getEot(editor));
   }
 
   /**
@@ -105,8 +105,8 @@ class MarkdownTableUtil {
    * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
-    const curPos = editor.state.selection.main.head;
-    return (curPos === editor.state.doc.line(curPos.line + 1).length);
+    const curPos = editor.getCursor();
+    return (curPos.ch === editor.getDoc().getLine(curPos.line).length);
   }
 
   /**
