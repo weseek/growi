@@ -20,7 +20,7 @@ const MenuLabel = ({ menu }: { menu: string }) => {
     case 'importer':                 return <><i className="me-1 icon-fw icon-cloud-upload"></i>{    t('importer_management.import_data') }</>;
     case 'export':                   return <><i className="me-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
     case 'data-transfer':            return <><i className="me-1 icon-fw icon-plane"></i>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
-    case 'notification':             return <><i className="me-1 icon-fw icon-bell"></i>{            t('external_notification.external_notification')}</>;
+    case 'notification':             return <><span className="material-symbols-outlined">notifications</span>{            t('external_notification.external_notification')}</>;
     case 'slack-integration':        return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration.slack_integration') }</>;
     case 'slack-integration-legacy': return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
     case 'users':                    return <><i className="me-1 icon-fw icon-user"></i>{            t('user_management.user_management') }</>;
