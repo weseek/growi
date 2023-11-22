@@ -516,7 +516,7 @@ type HandsontableModalStatus = {
 
 type HandsontableModalStatusUtils = {
   open(
-    table: MarkdownTable,
+    table: MarkdownTable | null,
     editor?: any,
     autoFormatMarkdownTable?: boolean,
     onSave?: HandsonTableModalSaveHandler
