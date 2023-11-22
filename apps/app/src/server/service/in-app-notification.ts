@@ -5,10 +5,8 @@ import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns';
 import { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
-import { AllEssentialActions, SupportedTargetModel } from '~/interfaces/activity';
+import { AllEssentialActions } from '~/interfaces/activity';
 import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
-import * as userSerializers from '~/models/serializers/in-app-notification-snapshot/user';
 import { ActivityDocument } from '~/server/models/activity';
 import {
   InAppNotification,
@@ -16,14 +14,13 @@ import {
 } from '~/server/models/in-app-notification';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
-import { getDelegator } from '~/server/service/in-app-notification/in-app-notification-delegator';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
-import { generateInitialPreNotifyProps, type PreNotify, type PreNotifyProps } from './preNotify';
+import { generateInitialPreNotifyProps, type PreNotify } from './preNotify';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
@@ -52,8 +49,6 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    // TODO: do not use any type
-    // https://redmine.weseek.co.jp/issues/120632
     this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
@@ -202,8 +197,6 @@ export default class InAppNotificationService {
     return;
   };
 
-  // TODO: do not use any type
-  // https://redmine.weseek.co.jp/issues/120632
   createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify): Promise<void> {
 
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
