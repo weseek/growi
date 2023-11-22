@@ -1552,7 +1552,6 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    // a protected page is not deletable regardless of the configuration settings in v4
     if (!isMovablePage(page.path)) {
       throw new Error('Page is not deletable.');
     }
