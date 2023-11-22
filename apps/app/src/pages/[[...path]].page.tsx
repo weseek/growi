@@ -400,17 +400,20 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 // apply parent page grant fot creating page
 async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroup');
+  await ancestor.populate('grantedGroups.item');
   const grant = {
     grant: ancestor.grant,
   };
-  const grantedGroup = ancestor.grantedGroup ? {
-    grantedGroup: {
-      id: ancestor.grantedGroup.id,
-      name: ancestor.grantedGroup.name,
-    },
+  const grantedGroups = ancestor.grantedGroups ? {
+    grantedGroups: ancestor.grantedGroups.map((group) => {
+      return {
+        id: group.item._id,
+        name: group.item.name,
+        type: group.type,
+      };
+    }),
   } : {};
-  props.grantData = Object.assign(grant, grantedGroup);
+  props.grantData = Object.assign(grant, grantedGroups);
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -473,7 +476,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply pagrent page grant
+    // apply parent page grant
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       await applyGrantToPage(props, ancestor);
@@ -603,7 +606,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
