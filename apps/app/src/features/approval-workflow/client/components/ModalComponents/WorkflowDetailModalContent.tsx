@@ -1,8 +1,9 @@
-// TODO: https://redmine.weseek.co.jp/issues/130337
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
+
+import { useCurrentUser } from '~/stores/context';
 
 import { type IWorkflowHasId, WorkflowApproverStatus } from '../../../interfaces/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
@@ -18,10 +19,28 @@ type Props = {
 }
 
 export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
+  const { workflow, onClickWorkflowEditButton, onClickWorkflowListPageBackButton } = props;
+
   const { t } = useTranslation();
 
-  const { workflow, onClickWorkflowEditButton, onClickWorkflowListPageBackButton } = props;
+  const { data: currentUser } = useCurrentUser();
   const { updateApproverStatus } = useSWRxWorkflow(workflow?._id);
+
+  const isExistApprover = useCallback(() => {
+    if (workflow == null || currentUser == null) {
+      return false;
+    }
+
+    for (const approverGroup of workflow.approverGroups) {
+      for (const approver of approverGroup.approvers) {
+        if (approver.user._id === currentUser._id) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }, [currentUser, workflow]);
 
   const approveButtonClickHandler = useCallback(async() => {
     try {
@@ -44,12 +63,12 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       />
 
       <ModalBody>
-        <button type="button" onClick={() => { onClickWorkflowEditButton() }}>{t('approval_workflow.edit')}</button>
+        <button type="button" disabled={!isExistApprover() && !currentUser?.admin} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>
         <ApproverGroupCards workflow={workflow} />
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={approveButtonClickHandler}>{t('approval_workflow.approver_status.APPROVE')}</button>
+        <button type="button" disabled={!isExistApprover()} onClick={approveButtonClickHandler}>{t('approval_workflow.approver_status.APPROVE')}</button>
       </ModalFooter>
     </>
   );
