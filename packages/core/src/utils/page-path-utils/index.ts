@@ -45,6 +45,14 @@ export const isUsersProtectedPages = (path: string): boolean => {
 };
 
 /**
+ * Whether path is movable
+ * @param path
+ */
+export const isMovablePage = (path: string): boolean => {
+  return !isTopPage(path) && !isUsersProtectedPages(path);
+};
+
+/**
  * Whether path belongs to the user page
  * @param path
  */
