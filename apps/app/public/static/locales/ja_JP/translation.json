@@ -860,6 +860,10 @@
     "completion_conditions": "完了条件",
     "cannot_change_approval_type": "承認者が1人の時は変更できません",
     "description_for_new_creation": "最後のフローが完了するとワークフローは完了になります",
+    "detail_modal_content_message": {
+      "INPROGRESS": "最後のフローが完了するとワークフローは完了になります",
+      "APPROVE": "ワークフローが完了しました"
+    },
     "approval_type": {
       "AND": "全員が承認",
       "OR": "1人が承認"

@@ -72,6 +72,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
       <ModalBody>
         <button type="button" disabled={!isAbleEditButton} onClick={onClickWorkflowEditButton}>{t('approval_workflow.edit')}</button>
         <ApproverGroupCards workflow={workflow} />
+        <div className="mt-4 text-center">{t(`approval_workflow.detail_modal_content_message.${workflow.status}`)}</div>
       </ModalBody>
 
       <ModalFooter>

@@ -827,6 +827,10 @@
     "completion_conditions": "Completion conditions",
     "cannot_change_approval_type": "Cannot be changed when there is only one approver",
     "description_for_new_creation": "When the final flow is completed, the workflow is marked as finished",
+    "detail_modal_content_message": {
+      "INPROGRESS": "The workflow is complete when the last flow is completed",
+      "APPROVE": "Workflow has been completed"
+    },
     "approval_type": {
       "AND": "Everyone's approval",
       "OR": "One person's approval"
