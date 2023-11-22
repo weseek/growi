@@ -30,24 +30,23 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { updateApproverStatus } = useSWRxWorkflow(workflow?._id);
 
-  const isExistApprover = useCallback(() => {
+  const findApprover = useCallback(() => {
     if (workflow == null || currentUser == null) {
-      return false;
+      return;
     }
 
     for (const approverGroup of workflow.approverGroups) {
       for (const approver of approverGroup.approvers) {
         if (approver.user._id === currentUser._id) {
-          return true;
+          return approver;
         }
       }
     }
-
-    return false;
   }, [currentUser, workflow]);
 
-  const isAbleEditButton = workflow?.status === WorkflowStatus.INPROGRESS && (currentUser?.admin || isExistApprover());
-  const isAbleApproveButton = workflow?.status === WorkflowStatus.INPROGRESS && isExistApprover();
+  const approver = findApprover();
+  const isAbleEditButton = workflow?.status === WorkflowStatus.INPROGRESS && (currentUser?.admin || approver != null);
+  const isAbleApproveButton = workflow?.status === WorkflowStatus.INPROGRESS && approver != null && approver.status === WorkflowApproverStatus.NONE;
 
   const approveButtonClickHandler = useCallback(async() => {
     try {
