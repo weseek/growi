@@ -90,7 +90,7 @@ export const PersonalDropdown = (): JSX.Element => {
               className="dropdown-item"
               onClick={() => setQuestionnaireModalOpen(true)}
             >
-              <i className="icon-fw icon-pencil"></i>{t('personal_dropdown.feedback')}
+              <span className="material-symbols-outlined">edit</span>{t('personal_dropdown.feedback')}
             </button>
           </li>
           <li>
