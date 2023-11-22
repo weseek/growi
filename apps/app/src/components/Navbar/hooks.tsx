@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { LabelType } from '~/interfaces/template';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -57,59 +58,19 @@ export const useOnPageEditorModeButtonClicked = (
   }, [isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
 };
 
-export const useOnTemplateForChildrenButtonClicked = (
+export const useOnTemplateButtonClicked = (
     setIsCreating: React.Dispatch<React.SetStateAction<boolean>>,
     currentPagePath: string,
-): () => Promise<void> => {
+): (label: LabelType) => Promise<void> => {
   const router = useRouter();
 
-  return useCallback(async() => {
+  return useCallback(async(label: LabelType) => {
     try {
       setIsCreating(true);
 
       const path = currentPagePath == null || currentPagePath === '/'
-        ? '/_template'
-        : `${currentPagePath}/_template`;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-      // grant: currentPage?.grant || 1,
-      // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        await createPage(path, '', params);
-      }
-
-      router.push(`${path}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPagePath, router, setIsCreating]);
-};
-
-
-export const useOnTemplateForDescendantsButtonClicked = (
-    setIsCreating: React.Dispatch<React.SetStateAction<boolean>>,
-    currentPagePath: string,
-): () => Promise<void> => {
-  const router = useRouter();
-
-  return useCallback(async() => {
-    try {
-      setIsCreating(true);
-
-      const path = currentPagePath == null || currentPagePath === '/'
-        ? '/__template'
-        : `${currentPagePath}/__template`;
+        ? `/${label}`
+        : `${currentPagePath}/${label}`;
 
       const params = {
         isSlackEnabled: false,

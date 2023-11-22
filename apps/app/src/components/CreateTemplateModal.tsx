@@ -4,10 +4,9 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useOnTemplateForChildrenButtonClicked, useOnTemplateForDescendantsButtonClicked } from './Navbar/hooks';
+import { TargetType, LabelType } from '~/interfaces/template';
 
-type TargetType = 'children' | 'descendants';
-type LabelType = '_template' | '__template';
+import { useOnTemplateButtonClicked } from './Navbar/hooks';
 
 type TemplateCardProps = {
   target: TargetType;
@@ -57,13 +56,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
   const [isPageCreating, setIsPageCreating] = useState(false);
 
-  const onClickTemplateForChildrenButton = useOnTemplateForChildrenButtonClicked(setIsPageCreating, path);
-  const onClickTemplateForDescendantsButton = useOnTemplateForDescendantsButtonClicked(setIsPageCreating, path);
-  const onClickHandler = (target: TargetType) => {
-    return target === 'children'
-      ? onClickTemplateForChildrenButton
-      : onClickTemplateForDescendantsButton;
-  };
+  const onClickTemplateButton = useOnTemplateButtonClicked(setIsPageCreating, path);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -73,7 +66,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         target={target}
         label={label}
         isPageCreating={isPageCreating}
-        onClickHandler={onClickHandler(target)}
+        onClickHandler={() => onClickTemplateButton(label)}
       />
     </div>
   );
