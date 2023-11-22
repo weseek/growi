@@ -136,7 +136,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
-  const { pathUtils } = require('@growi/core/dist/utils');
+  const { pathUtils, pagePathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -766,8 +766,10 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
 
-        if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
-          return res.json(ApiResponse.error('Could not delete user homepage'));
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
         }
 
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively, false, activityParameters);
@@ -787,8 +789,10 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
-        if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
-          return res.json(ApiResponse.error('Could not delete user homepage'));
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!await crowi.pageService.canDeleteUserHomepage(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively, activityParameters);

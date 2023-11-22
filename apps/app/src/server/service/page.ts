@@ -47,7 +47,7 @@ const debug = require('debug')('growi:services:page');
 const logger = loggerFactory('growi:services:page');
 const {
   isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
-  canMoveByPath, isUsersTopPage, isUsersHomepage, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
@@ -188,10 +188,6 @@ class PageService {
   }
 
   async canDeleteUserHomepage(path: string): Promise<boolean> {
-    if (!isUsersHomepage(path)) {
-      return true;
-    }
-
     const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
     if (!isUsersHomepageDeletionEnabled) {
       return false;
@@ -199,8 +195,8 @@ class PageService {
 
     const User = mongoose.model('User');
     const username = getUsernameByPath(path);
-    const userHomepageOwner = await User.findOne<Promise<IUserHasId | null>>({ username });
-    return userHomepageOwner === null;
+    const userExists = await User.exists({ username });
+    return userExists === null;
   }
 
   private canDeleteLogic(
@@ -1406,8 +1402,10 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (!await this.canDeleteUserHomepage(page.path)) {
-      throw new Error('User Homepage is not deletable.');
+    if (isUsersHomepage(page.path)) {
+      if (!await this.canDeleteUserHomepage(page.path)) {
+        throw new Error('User Homepage is not deletable.');
+      }
     }
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -1555,7 +1553,7 @@ class PageService {
     }
 
     // a protected page is not deletable regardless of the configuration settings in v4
-    if (isTopPage(page.path) || isUsersProtectedPages(page.path)) {
+    if (!isMovablePage(page.path)) {
       throw new Error('Page is not deletable.');
     }
 
