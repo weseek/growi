@@ -43,33 +43,35 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
+  const [isInit, setIsInit] = useState(false);
 
   const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
-  // cleanup ydoc and socketIOProvider
+  // Cleanup ydoc and socketIOProvider when the page id changes
   useEffect(() => {
     if (cPageId === pageId) {
       return;
     }
-    if (provider == null || ydoc == null || socket == null) {
-      return;
-    }
 
-    ydoc.destroy();
+    // Cleanup existing ydoc
+    ydoc?.destroy();
     setYdoc(null);
 
-    provider.destroy();
-    provider.disconnect();
+    // Disconnect and destroy the existing socketIOProvider
+    provider?.disconnect();
+    provider?.destroy();
     setProvider(null);
 
+    // Remove the sync event listener
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
-
     socket.off(GlobalSocketEventName.YDocSync);
 
+    // Reset initialization state and update the current pageId
+    setIsInit(false);
     setCPageId(pageId);
   }, [cPageId, pageId, provider, socket, ydoc]);
 
-  // setup ydoc
+  // Setup ydoc when it's not setuped
   useEffect(() => {
     if (ydoc != null) {
       return;
@@ -79,12 +81,13 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     setYdoc(_ydoc);
   }, [ydoc]);
 
-  // setup socketIOProvider and sync ydoc
+  // Setup socketIOProvider and sync to server
   useEffect(() => {
-    if (ydoc == null || provider != null || socket == null) {
+    if (provider != null || ydoc == null || socket == null) {
       return;
     }
 
+    // Create a new SocketIOProvider
     const socketIOProvider = new SocketIOProvider(
       GLOBAL_SOCKET_NS,
       `yjs/${pageId}`,
@@ -92,27 +95,25 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       { autoConnect: true },
     );
 
+    // Set local user information for awareness
     socketIOProvider.awareness.setLocalStateField('user', {
       name: userName ? `${userName}` : `Guest User ${Math.floor(Math.random() * 100)}`,
       color: userColor.color,
       colorLight: userColor.light,
     });
 
+    // Add a sync event listener to initiate synchronization
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
         socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
       }
     });
 
-    // TODO: delete this code
-    socketIOProvider.on('status', ({ status: _status }: { status: string }) => {
-      if (_status) console.log(_status);
-    });
-
+    // Set the new provider
     setProvider(socketIOProvider);
   }, [initialValue, pageId, provider, socket, userName, ydoc]);
 
-  // attach YDoc to CodeMirror
+  // Attach YDoc extensions to CodeMirror
   useEffect(() => {
     if (ydoc == null || provider == null) {
       return;
@@ -128,16 +129,20 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanup;
   }, [codeMirrorEditor, provider, ydoc]);
 
-  // initialize markdown and preview
+  // Initialize markdown and preview
   useEffect(() => {
-    if (ydoc == null || onOpenEditor == null) {
+    if (ydoc == null || onOpenEditor == null || isInit === true) {
       return;
     }
 
     const ytext = ydoc.getText('codemirror');
+
+    // Initialize CodeMirror Doc and Preview value
     codeMirrorEditor?.initDoc(ytext.toString());
     onOpenEditor(ytext.toString());
-  }, [codeMirrorEditor, onOpenEditor, ydoc]);
+
+    setIsInit(true);
+  }, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 
   // setup additional extensions
   useEffect(() => {
