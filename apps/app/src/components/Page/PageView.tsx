@@ -18,7 +18,7 @@ import { useIsMobile } from '~/stores/ui';
 
 import type { CommentsProps } from '../Comments';
 import { PagePathNavSticky } from '../Common/PagePathNav';
-import { PageViewLayout } from '../Layout/PageViewLayout';
+import { PageViewLayout } from '../Common/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';

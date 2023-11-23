@@ -101,7 +101,7 @@ describe('Page', () => {
         path: '/grant/groupacl',
         grant: Page.GRANT_USER_GROUP,
         grantedUsers: [],
-        grantedGroup: testGroup0,
+        grantedGroups: [{ item: testGroup0, type: 'UserGroup' }],
         creator: testUser1,
       },
       {

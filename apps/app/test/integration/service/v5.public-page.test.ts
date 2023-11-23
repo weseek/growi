@@ -453,7 +453,7 @@ describe('PageService page operations with only public pages', () => {
           status: 'published',
           grant: 1,
           grantedUsers: [],
-          grantedGroup: null,
+          grantedGroups: null,
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },
@@ -739,7 +739,6 @@ describe('PageService page operations with only public pages', () => {
     await Comment.insertMany([
       {
         commentPosition: -1,
-        isMarkdown: true,
         page: pageIdForDuplicate11,
         creator: dummyUser1._id,
         revision: revisionIdForDuplicate10,
@@ -982,7 +981,6 @@ describe('PageService page operations with only public pages', () => {
     await Comment.insertMany([
       {
         commentPosition: -1,
-        isMarkdown: true,
         page: pageIdForDeleteCompletely2,
         creator: dummyUser1._id,
         revision: revisionIdForDeleteCompletely4,

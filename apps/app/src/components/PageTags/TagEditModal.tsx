@@ -1,49 +1,62 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState, useCallback, useEffect,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { apiPost } from '~/client/util/apiv1-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
+
 import { TagsInput } from './TagsInput';
 
-type Props = {
-  tags: string[],
-  isOpen: boolean,
-  onClose?: () => void,
-  onTagsUpdated?: (tags: string[]) => Promise<void> | void,
-};
+type TagEditModalSubstanceProps = {
+  tagEditModalData: TagEditModalStatus,
+  closeTagEditModal: () => void,
+}
 
-function TagEditModal(props: Props): JSX.Element {
-  const { onClose, onTagsUpdated } = props;
-
-  const [tags, setTags] = useState<string[]>([]);
+const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagEditModalSubstanceProps) => {
+  const { tagEditModalData, closeTagEditModal } = props;
   const { t } = useTranslation();
 
+  const initTags = tagEditModalData.tags;
+  const isOpen = tagEditModalData.isOpen;
+  const pageId = tagEditModalData.pageId;
+  const revisionId = tagEditModalData.revisionId;
+  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+
+  const [tags, setTags] = useState<string[]>([]);
+
+  // use to take initTags when redirect to other page
   useEffect(() => {
-    setTags(props.tags);
-  }, [props.tags]);
+    setTags(initTags);
+  }, [initTags]);
 
-  const closeModalHandler = useCallback(() => {
-    onClose?.();
-  }, [onClose]);
+  const handleSubmit = useCallback(async() => {
 
-  const handleSubmit = useCallback(() => {
-    if (onTagsUpdated == null) {
-      return;
+    try {
+      await apiPost('/tags.update', { pageId, revisionId, tags });
+      updateStateAfterSave?.();
+
+      toastSuccess('updated tags successfully');
+      closeTagEditModal();
     }
-
-    onTagsUpdated(tags);
-    closeModalHandler();
-  }, [closeModalHandler, onTagsUpdated, tags]);
+    catch (err) {
+      toastError(err);
+    }
+  }, [closeTagEditModal, tags, pageId, revisionId, updateStateAfterSave]);
 
   return (
-    <Modal isOpen={props.isOpen} toggle={closeModalHandler} id="edit-tag-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeModalHandler} className="bg-primary text-light">
+    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>
+      <ModalHeader tag="h4" toggle={closeTagEditModal} className="bg-primary text-light">
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
-        <TagsInput tags={tags} onTagsUpdated={tags => setTags(tags)} autoFocus />
+        <TagsInput tags={initTags} onTagsUpdated={tags => setTags(tags)} autoFocus />
       </ModalBody>
       <ModalFooter>
         <button type="button" className="btn btn-primary" onClick={handleSubmit}>
@@ -53,6 +66,14 @@ function TagEditModal(props: Props): JSX.Element {
     </Modal>
   );
 
-}
+};
 
-export default TagEditModal;
+export const TagEditModal: React.FC = () => {
+  const { data: tagEditModalData, close: closeTagEditModal } = useTagEditModal();
+
+  if (!tagEditModalData?.isOpen) {
+    return <></>;
+  }
+
+  return <TagEditModalSubstance tagEditModalData={tagEditModalData} closeTagEditModal={closeTagEditModal} />;
+};

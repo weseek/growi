@@ -204,6 +204,8 @@ export const useSWRxPageChildren = (
     }),
     {
       keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnRecconect: false,
     },
   );
 };

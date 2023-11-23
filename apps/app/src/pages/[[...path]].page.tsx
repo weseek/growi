@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage, useEditorModeClassName } from '~/client/services/layout';
+import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -37,7 +37,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
+  useEditorConfig, useIsAllReplyShown, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -76,6 +76,7 @@ const TemplateModal = dynamic(() => import('../components/TemplateModal').then(m
 const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
+const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -216,8 +217,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
-  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+  useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
@@ -343,21 +344,21 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
+
+const BasicLayoutWithEditor = ({ children }: { children?: ReactNode }): JSX.Element => {
+  const editorModeClassName = useEditorModeClassName();
+  return <BasicLayout className={editorModeClassName}>{children}</BasicLayout>;
+};
+
 type LayoutProps = Props & {
   children?: ReactNode
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
-  const className = useEditorModeClassName();
-
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
-  return (
-    <BasicLayout className={className}>
-      {children}
-    </BasicLayout>
-  );
+  return <BasicLayoutWithEditor>{children}</BasicLayoutWithEditor>;
 };
 
 Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
@@ -376,6 +377,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <QuestionnaireModalManager />
       <TemplateModal />
       <LinkEditModal />
+      <TagEditModal />
     </>
   );
 };
@@ -398,17 +400,20 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 // apply parent page grant fot creating page
 async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroup');
+  await ancestor.populate('grantedGroups.item');
   const grant = {
     grant: ancestor.grant,
   };
-  const grantedGroup = ancestor.grantedGroup ? {
-    grantedGroup: {
-      id: ancestor.grantedGroup.id,
-      name: ancestor.grantedGroup.name,
-    },
+  const grantedGroups = ancestor.grantedGroups ? {
+    grantedGroups: ancestor.grantedGroups.map((group) => {
+      return {
+        id: group.item._id,
+        name: group.item.name,
+        type: group.type,
+      };
+    }),
   } : {};
-  props.grantData = Object.assign(grant, grantedGroup);
+  props.grantData = Object.assign(grant, grantedGroups);
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -471,7 +476,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply pagrent page grant
+    // apply parent page grant
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       await applyGrantToPage(props, ancestor);
@@ -559,8 +564,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
+      isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
@@ -601,7 +606,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);

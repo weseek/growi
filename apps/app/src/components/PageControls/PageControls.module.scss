@@ -1,5 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
 @use './button-styles';
 
 // PageItemControl styles
@@ -13,6 +15,6 @@
 // PageItemControl colors
 .grw-page-controls :global {
   .btn-page-item-control {
-    @include button-styles.btn-color(bs.$gray-500);
+    @include btn-muted.colorize(bs.$gray-500);
   }
 }

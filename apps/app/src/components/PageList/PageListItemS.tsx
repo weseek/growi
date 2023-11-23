@@ -1,8 +1,7 @@
 import React from 'react';
 
 import type { IPageHasId } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 

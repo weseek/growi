@@ -1,0 +1,60 @@
+@use '~/styles/variables' as var;
+
+@use '../button-styles';
+
+.btn-toggle :global {
+  @extend %btn-basis;
+
+  left: 12px;
+  padding: 0;
+
+  .icon {
+    top: 50%;
+    right: 0px;
+    font-size: 22px;
+    transform: translateY(-50%);
+  }
+}
+
+// no caret
+.btn-toggle {
+  &:global {
+    // no caret
+    &::after {
+      display: none !important;
+    }
+  }
+}
+
+// hitarea
+.btn-toggle :global {
+  .hitarea {
+    top: 0;
+    right: -10px;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+// == Colors
+.btn-toggle {
+  background-color: transparent !important;
+}
+
+.btn-toggle :global {
+  svg {
+    fill: var(--grw-primary-400);
+  }
+}
+
+.btn-toggle:hover :global {
+  svg {
+    fill: var(--grw-primary-400);
+  }
+}
+
+.btn-toggle:active :global {
+  svg {
+    fill: var(--grw-primary-600);
+  }
+}

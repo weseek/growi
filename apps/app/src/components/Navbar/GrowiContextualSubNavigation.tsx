@@ -202,50 +202,18 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
 
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // eslint-disable-next-line max-len
-  // const { data: tagsForEditors, mutate: mutatePageTagsForEditors, sync: syncPageTagsForEditors } = usePageTagsForEditors(!isSharedPage ? currentPage?._id : undefined);
-  // const { data: templateTagData } = useTemplateTagData();
-
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
-  const grant = currentPage?.grant ?? grantData?.grant;
-  const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
-
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // useEffect(() => {
-  //   // Run only when tagsInfoData has been updated
-  //   if (templateTagData == null) {
-  //     syncPageTagsForEditors();
-  //   }
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [tagsInfoData?.tags]);
-
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // useEffect(() => {
-  //   if (pageId === null && templateTagData != null) {
-  //     mutatePageTagsForEditors(templateTagData);
-  //   }
-  // }, [pageId, mutatePageTagsForEditors, templateTagData, mutateSWRTagsInfo]);
+  // const grant = currentPage?.grant ?? grantData?.grant;
+  // const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
   const { isLinkSharingDisabled } = props;
-
-  // TODO: implement tags for editor
-  // refs: https://redmine.weseek.co.jp/issues/132125
-  // const tagsUpdatedHandlerForEditMode = useCallback((newTags: string[]): void => {
-  //   // It will not be reflected in the DB until the page is refreshed
-  //   mutatePageTagsForEditors(newTags);
-  //   return;
-  // }, [mutatePageTagsForEditors]);
 
   const duplicateItemClickedHandler = useCallback(async(page: IPageForPageDuplicateModal) => {
     const duplicatedHandler: OnDuplicatedFunction = (fromPath, toPath) => {
@@ -331,35 +299,34 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <div
         className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4
+          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
       >
-        <div className="h-50">
-          {pageId != null && (
-            <PageControls
-              pageId={pageId}
-              revisionId={revisionId}
-              shareLinkId={shareLinkId}
-              path={path ?? currentPathname} // If the page is empty, "path" is undefined
-              expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
-              disableSeenUserInfoPopover={isSharedUser}
-              showPageControlDropdown={isAbleToShowPageManagement}
-              additionalMenuItemRenderer={additionalMenuItemsRenderer}
-              onClickDuplicateMenuItem={duplicateItemClickedHandler}
-              onClickRenameMenuItem={renameItemClickedHandler}
-              onClickDeleteMenuItem={deleteItemClickedHandler}
-              onClickSwitchContentWidth={switchContentWidthHandler}
-            />
-          )}
-        </div>
+        {pageId != null && (
+          <PageControls
+            pageId={pageId}
+            revisionId={revisionId}
+            shareLinkId={shareLinkId}
+            path={path ?? currentPathname} // If the page is empty, "path" is undefined
+            expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+            disableSeenUserInfoPopover={isSharedUser}
+            showPageControlDropdown={isAbleToShowPageManagement}
+            additionalMenuItemRenderer={additionalMenuItemsRenderer}
+            onClickDuplicateMenuItem={duplicateItemClickedHandler}
+            onClickRenameMenuItem={renameItemClickedHandler}
+            onClickDeleteMenuItem={deleteItemClickedHandler}
+            onClickSwitchContentWidth={switchContentWidthHandler}
+          />
+        )}
+
         {isAbleToChangeEditorMode && (
           <PageEditorModeManager
             editorMode={editorMode}
             isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
             path={path}
-            grant={grant}
-            grantUserGroupId={grantUserGroupId}
+            // grant={grant}
+            // grantUserGroupId={grantUserGroupId}
           />
         )}
       </div>

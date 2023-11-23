@@ -1,5 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
 @use './button-styles';
 
 .btn-subscribe :global {
@@ -12,5 +14,5 @@
 
 // == Colors
 .btn-subscribe {
-  @include button-styles.btn-color(bs.$success);
+  @include btn-muted.colorize(bs.$success);
 }

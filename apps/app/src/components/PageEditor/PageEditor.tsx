@@ -8,7 +8,8 @@ import nodePath from 'path';
 import type { IPageHasId } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, AcceptedUploadFileType,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
+  useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -23,7 +24,7 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadableFile, useIsUploadableImage, useIsIndentSizeForced,
+  useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
@@ -48,6 +49,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useNextThemes } from '~/stores/use-next-themes';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
@@ -96,7 +98,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
@@ -108,8 +110,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { data: isUploadableFile } = useIsUploadableFile();
-  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+  const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
@@ -124,9 +126,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateIsConflict } = useIsConflict();
 
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme(resolvedTheme);
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -210,16 +216,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (grantData == null) {
       return;
     }
+    const grantedGroups = grantData.grantedGroups?.map((group) => {
+      return { item: group.id, type: group.type };
+    });
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
-      pageTags: pageTags ?? [],
-      grantUserGroupId: grantData.grantedGroup?.id,
-      grantUserGroupName: grantData.grantedGroup?.name,
+      // pageTags: pageTags ?? [],
+      grantUserGroupIds: grantedGroups,
     };
     return optionsToSave;
-  }, [grantData, isSlackEnabled, pageTags]);
+  }, [grantData, isSlackEnabled]);
 
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
@@ -338,16 +346,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         // refs: https://redmine.weseek.co.jp/issues/126528
         // editorRef.current.insertText(insertText);
         codeMirrorEditor?.insertText(insertText);
-
-        // when if created newly
-        // Not using 'mutateGrant' to inherit the grant of the parent page
-        if (resAdd.pageCreated) {
-          logger.info('Page is created', resAdd.page._id);
-          mutateIsLatestRevision(true);
-          setCreatedPageRevisionIdWithAttachment(resAdd.page.revision);
-          await mutateCurrentPageId(resAdd.page._id);
-          await mutateCurrentPage();
-        }
       }
       catch (e) {
         logger.error('failed to upload', e);
@@ -360,17 +358,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     });
 
-  }, [codeMirrorEditor, currentPagePath, mutateCurrentPage, mutateCurrentPageId, mutateIsLatestRevision, pageId]);
+  }, [codeMirrorEditor, currentPagePath, pageId]);
 
   const acceptedFileType = useMemo(() => {
-    if (!isUploadableFile) {
+    if (!isUploadEnabled) {
       return AcceptedUploadFileType.NONE;
     }
-    if (isUploadableImage) {
-      return AcceptedUploadFileType.IMAGE;
+    if (isUploadAllFileAllowed) {
+      return AcceptedUploadFileType.ALL;
     }
-    return AcceptedUploadFileType.ALL;
-  }, [isUploadableFile, isUploadableImage]);
+    return AcceptedUploadFileType.IMAGE;
+  }, [isUploadAllFileAllowed, isUploadEnabled]);
 
   const scrollPreviewByEditorLine = useCallback((line: number) => {
     if (previewRef.current == null) {
@@ -570,7 +568,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             ref={editorRef}
             value={initialValue}
             isUploadable={isUploadable}
-            isUploadableFile={isUploadableFile}
+            isUploadAllFileAllowed={isUploadAllFileAllowed}
             indentSize={currentIndentSize}
             onScroll={editorScrolledHandler}
             onScrollCursorIntoView={editorScrollCursorIntoViewHandler}

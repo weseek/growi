@@ -50,6 +50,9 @@ export default defineConfig({
         preserveModules: true,
         preserveModulesRoot: 'src',
       },
+      external: [
+        'emoji-mart/css/emoji-mart.css',
+      ],
     },
   },
 });

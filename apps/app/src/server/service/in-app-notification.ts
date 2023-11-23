@@ -35,9 +35,6 @@ export default class InAppNotificationService {
 
   activityEvent!: any;
 
-  commentEvent!: any;
-
-
   constructor(crowi: Crowi) {
     this.crowi = crowi;
     this.activityEvent = crowi.event('activity');

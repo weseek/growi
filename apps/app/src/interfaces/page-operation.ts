@@ -1,3 +1,5 @@
+import type { IGrantedGroup } from '@growi/core';
+
 export const PageActionType = {
   Create: 'Create',
   Update: 'Update',
@@ -31,8 +33,6 @@ export type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;
   grant: number;
-  pageTags: string[] | null;
-  grantUserGroupId?: string | null;
-  grantUserGroupName?: string | null;
-  shouldGeneratePath?: boolean | null;
+  // grantUserGroupIds?: IGrantedGroup[];
+  // isSyncRevisionToHackmd?: boolean;
 };

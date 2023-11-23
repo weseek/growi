@@ -68,6 +68,19 @@
     "feedback": "Feedback"
   },
 
+  "create_page_dropdown": {
+    "new_page": "Create New Page",
+    "todays": {
+      "desc": "Create today's ...",
+      "memo": "memo"
+    },
+    "template": {
+      "desc": "Create/Edit template page",
+      "children": "Template for children",
+      "descendants": "Template for descendants"
+    }
+  },
+
   "copy_to_clipboard": {
     "Copy to clipboard": "Copy to clipboard",
     "Page path": "Page path",

@@ -9,7 +9,7 @@ import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stor
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { apiPost } from '../util/apiv1-client';
+import { apiGet, apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
@@ -202,4 +202,20 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
 
 export const unlink = async(path: string): Promise<void> => {
   await apiPost('/pages.unlink', { path });
+};
+
+
+interface PageExistRequest {
+  pagePaths: string;
+}
+
+interface PageExistResponse {
+  pages: Record<string, boolean>;
+  ok: boolean
+}
+
+export const exist = async(pagePaths: string): Promise<PageExistResponse> => {
+  const request: PageExistRequest = { pagePaths };
+  const res = await apiGet<PageExistResponse>('/pages.exist', request);
+  return res;
 };

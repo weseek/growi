@@ -1,8 +1,9 @@
 import React, { type ReactNode, useCallback, useState } from 'react';
 
+import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { EditorMode, useIsDeviceSmallerThanMd } from '~/stores/ui';
+import { EditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
 import { useOnPageEditorModeButtonClicked } from './hooks';
 
@@ -46,7 +47,8 @@ type Props = {
   isBtnDisabled: boolean,
   path?: string,
   grant?: number,
-  grantUserGroupId?: string
+  // grantUserGroupId?: string
+  grantUserGroupIds?: IGrantedGroup[]
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
@@ -54,16 +56,16 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     editorMode = EditorMode.View,
     isBtnDisabled,
     path,
-    grant,
-    grantUserGroupId,
+    // grant,
+    // grantUserGroupId,
   } = props;
 
   const { t } = useTranslation();
   const [isCreating, setIsCreating] = useState(false);
 
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
-  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path, grant, grantUserGroupId);
+  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path);
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
@@ -82,7 +84,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
       >
-        {(!isDeviceSmallerThanMd || editorMode !== EditorMode.View) && (
+        {(isDeviceLargerThanMd || editorMode !== EditorMode.View) && (
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
@@ -92,7 +94,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
           </PageEditorModeButton>
         )}
-        {(!isDeviceSmallerThanMd || editorMode === EditorMode.View) && (
+        {(isDeviceLargerThanMd || editorMode === EditorMode.View) && (
           <PageEditorModeButton
             currentEditorMode={editorMode}
             editorMode={EditorMode.Editor}

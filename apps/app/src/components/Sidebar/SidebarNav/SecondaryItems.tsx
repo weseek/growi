@@ -29,11 +29,11 @@ const SecondaryItem: FC<SecondaryItemProps> = (props: SecondaryItemProps) => {
   return (
     <Link
       href={href}
-      className="d-block btn btn-primary"
+      className="d-block btn btn-primary d-flex align-items-center justify-content-center"
       target={`${isBlank ? '_blank' : ''}`}
       prefetch={false}
     >
-      <i className="material-symbols-outlined">{iconName}</i>
+      <span className="material-symbols-outlined">{iconName}</span>
     </Link>
   );
 };

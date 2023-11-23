@@ -9,7 +9,7 @@ import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import {
-  useDrawerOpened, useEditorMode, useIsDeviceSmallerThanMd,
+  useDrawerOpened, useEditorMode, useIsDeviceLargerThanLg, useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
 
@@ -31,8 +31,8 @@ const EditorNavbarBottom = (): JSX.Element => {
 
   const { data: editorMode } = useEditorMode();
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
@@ -58,16 +58,6 @@ const EditorNavbarBottom = (): JSX.Element => {
   }, []);
 
 
-  const renderDrawerButton = () => (
-    <button
-      type="button"
-      className="btn btn-outline-secondary border-0"
-      onClick={() => mutateDrawerOpened(true)}
-    >
-      <i className="icon-menu"></i>
-    </button>
-  );
-
   const renderExpandButton = () => (
     <div className="d-md-none ms-2">
       <button
@@ -80,13 +70,13 @@ const EditorNavbarBottom = (): JSX.Element => {
     </div>
   );
 
-  const isCollapsedOptionsSelectorEnabled = isDeviceSmallerThanMd;
+  const isCollapsedOptionsSelectorEnabled = !isDeviceLargerThanLg;
 
   return (
     <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
-        <Collapse isOpen={isSlackExpanded && isDeviceSmallerThanMd === true}>
+        <Collapse isOpen={isSlackExpanded && !isDeviceLargerThanLg}>
           <nav className={`navbar navbar-expand-lg border-top ${moduleClass}`}>
             {isSlackEnabled != null
             && (
@@ -105,13 +95,12 @@ const EditorNavbarBottom = (): JSX.Element => {
       }
       <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${moduleClass}`}>
         <form>
-          { isDeviceSmallerThanMd && renderDrawerButton() }
-          { !isDeviceSmallerThanMd && <OptionsSelector /> }
+          { isDeviceLargerThanMd && <OptionsSelector /> }
         </form>
         <form className="flex-nowrap ms-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
-          {isSlackConfigured && (isDeviceSmallerThanMd ? (
+          {isSlackConfigured && (!isDeviceLargerThanMd ? (
             <Button
               className="grw-btn-slack border me-2"
               onClick={() => (setSlackExpanded(!isSlackExpanded))}

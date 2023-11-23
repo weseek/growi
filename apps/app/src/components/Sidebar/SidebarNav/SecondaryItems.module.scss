@@ -2,15 +2,12 @@
 
 @use '../button-styles';
 
-@use './variables' as sidebarNavVar;
 
 .grw-secondary-items :global {
   .btn {
-    @extend %btn-primary-basis;
+    @extend %btn-basis;
 
-    height: sidebarNavVar.$grw-sidebar-primary-button-height;
-
-    i {
+    span {
       opacity: 0.6;
 
       &:hover,

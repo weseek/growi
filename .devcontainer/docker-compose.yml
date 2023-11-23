@@ -31,16 +31,9 @@ services:
     image: mongo:6.0
     restart: unless-stopped
     ports:
-      - 27018:27017
+      - 27017
     volumes:
       - /data/db
-
-  # ogp:
-  #   image: ghcr.io/weseek/growi-unique-ogp:latest
-  #   ports:
-  #     - 8088:8088
-  #   restart: unless-stopped
-  #   tty: true
 
   # This container requires '../../growi-docker-compose' repository
   #   cloned from https://github.com/weseek/growi-docker-compose.git
@@ -52,7 +45,7 @@ services:
         - version=8.7.0
     restart: unless-stopped
     ports:
-      - 9201:9200
+      - 9200
     environment:
       - bootstrap.memory_lock=true
       - "ES_JAVA_OPTS=-Xms256m -Xmx256m"
@@ -65,33 +58,6 @@ services:
       - /usr/share/elasticsearch/data
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
-  #need to adjust kibana version based on elasticsearch version (use same version as elasticsearch version)
-  # kibana:
-  #   image: docker.elastic.co/kibana/kibana:8.7.0
-  #   restart: unless-stopped
-  #   environment:
-  #     ELASTICSEARCH_HOSTS: 'http://elasticsearch:9200'
-  #   ports:
-  #     - 5601:5601
-  #   depends_on:
-  #     - elasticsearch
-
-  # This container requires '../../growi-docker-compose' repository
-  #   cloned from https://github.com/weseek/growi-docker-compose.git
-  hackmd:
-    build:
-      context: ../../growi-docker-compose/hackmd
-    restart: unless-stopped
-    environment:
-      - GROWI_URI=http://localhost:3000
-      # define 'storage' option value
-      # see https://github.com/sequelize/cli/blob/7160d0/src/helpers/config-helper.js#L192
-      - CMD_DB_URL=sqlite://dummyhost/hackmd/sqlite/codimd.db
-      - CMD_CSP_ENABLE=false
-    ports:
-      - 3011:3000
-    volumes:
-      - /files/sqlite
 volumes:
   node_modules:
   node_modules_app:

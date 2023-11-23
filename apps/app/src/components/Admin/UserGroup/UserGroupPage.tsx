@@ -6,8 +6,10 @@ import { useTranslation } from 'react-i18next';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+
 
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
 const UserGroupModal = dynamic(() => import('./UserGroupModal').then(mod => mod.UserGroupModal), { ssr: false });
@@ -146,6 +148,7 @@ export const UserGroupPage: FC = () => {
 
   return (
     <div data-testid="admin-user-groups">
+      <h2 className="border-bottom">{t('admin:user_group_management.user_group_management')}</h2>
       {
         isAclEnabled ? (
           <div className="mb-3">
@@ -190,6 +193,9 @@ export const UserGroupPage: FC = () => {
         isShow={isDeleteModalShown}
         onHide={hideDeleteModal}
       />
+      <div className="mt-5">
+        <ExternalGroupManagement />
+      </div>
     </div>
   );
 };

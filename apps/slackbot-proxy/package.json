@@ -17,8 +17,10 @@
     "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
     "predev": "yarn cp:bootstrap:dev",
-    "lint": "yarn eslint src --ext .ts",
-    "lint:fix": "yarn eslint src --ext .ts --fix",
+    "lint:js": "yarn eslint src/**/*.{js,ts}",
+    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
+    "lint:typecheck": "tsc",
+    "lint": "run-p lint:*",
     "version": "yarn version --no-git-tag-version --preid=slackbot-proxy"
   },
   "// comments for dependencies": {

@@ -1,57 +1,75 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useImperativeHandle,
+  forwardRef, ForwardRefRenderFunction, useCallback,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import type { IPage, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 
-import FormattedDistanceDate from '../../FormattedDistanceDate';
+import { ModelNotification } from './ModelNotification';
+import { useActionMsgAndIconForPageModelNotification } from './useActionAndMsg';
+
 
 interface Props {
-  notification: IInAppNotification & HasObjectId
-  actionMsg: string
-  actionIcon: string
-  actionUsers: string
+  notification: IInAppNotification<IPage> & HasObjectId
 }
 
 const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props, ref) => {
 
-  const {
-    notification, actionMsg, actionIcon, actionUsers,
-  } = props;
+  const { notification } = props;
+
+  const { actionMsg, actionIcon } = useActionMsgAndIconForPageModelNotification(notification);
 
   const router = useRouter();
 
+  const getActionUsers = useCallback(() => {
+    const latestActionUsers = notification.actionUsers.slice(0, 3);
+    const latestUsers = latestActionUsers.map((user) => {
+      return `@${user.name}`;
+    });
+
+    let actionedUsers = '';
+    const latestUsersCount = latestUsers.length;
+    if (latestUsersCount === 1) {
+      actionedUsers = latestUsers[0];
+    }
+    else if (notification.actionUsers.length >= 4) {
+      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
+    }
+    else {
+      actionedUsers = latestUsers.join(', ');
+    }
+
+    return actionedUsers;
+  }, [notification.actionUsers]);
+
+  const actionUsers = getActionUsers();
+
   // publish open()
-  useImperativeHandle(ref, () => ({
-    open() {
-      if (notification.target != null) {
-        // jump to target page
-        const targetPagePath = notification.target.path;
-        if (targetPagePath != null) {
-          router.push(targetPagePath);
-        }
+  const publishOpen = () => {
+    if (notification.target != null) {
+      // jump to target page
+      const targetPagePath = notification.target.path;
+      if (targetPagePath != null) {
+        router.push(targetPagePath);
       }
-    },
-  }));
+    }
+  };
+
+  notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
 
   return (
-    <div className="p-2 overflow-hidden">
-      <div className="text-truncate">
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
-      </div>
-      <i className={`${actionIcon} me-2`} />
-      <FormattedDistanceDate
-        id={notification._id}
-        date={notification.createdAt}
-        isShowTooltip={false}
-        differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
-      />
-    </div>
+    <ModelNotification
+      notification={notification}
+      actionMsg={actionMsg}
+      actionIcon={actionIcon}
+      actionUsers={actionUsers}
+      publishOpen={publishOpen}
+      ref={ref}
+    />
   );
 };
 

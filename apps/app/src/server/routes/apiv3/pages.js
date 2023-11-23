@@ -240,11 +240,9 @@ module.exports = (crowi) => {
   }
 
   async function generateUniquePath(basePath, index = 1) {
-    const Page = mongoose.model('Page');
     const path = basePath + index;
-    const response = await Page.findByPath(path);
-    const isPathExists = response != null;
-    if (isPathExists) {
+    const existingPageId = await Page.exists({ path, isEmpty: false });
+    if (existingPageId != null) {
       return generateUniquePath(basePath, index + 1);
     }
     return path;
@@ -307,7 +305,8 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      // body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
     } = req.body;
 
     let { path } = req.body;
@@ -345,7 +344,7 @@ module.exports = (crowi) => {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const isNoBodyPage = body === undefined;
