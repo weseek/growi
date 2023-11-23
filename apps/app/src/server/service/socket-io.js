@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import YjsConnectionManager from './yjsConnectionManager';
+import YjsConnectionManager from './yjs-connection-manager';
 
 const expressSession = require('express-session');
 const passport = require('passport');
