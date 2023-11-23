@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
-import type { Nullable } from '@growi/core';
-// TODO: import socket.io-client types wihtout lint error
-// import type { Socket, DefaultEventsMap } from 'socket.io-client';
+import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
+import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
+// see: https://github.com/yjs/y-codemirror.next#example
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { yCollab } from 'y-codemirror.next';
@@ -16,11 +16,6 @@ import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
 
-// TODO: use SocketEventName
-// import { SocketEventName } from '~/interfaces/websocket';
-// TODO: import { GLOBAL_SOCKET_NS } from '~/stores/websocket';
-const GLOBAL_SOCKET_NS = '/';
-
 const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
@@ -31,19 +26,20 @@ type Props = {
   onUpload?: (files: File[]) => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  pageId: Nullable<string>,
   userName?: string,
-  socket?: any, // Socket<DefaultEventsMap, DefaultEventsMap>,
-  initialValue: string,
-  setMarkdownToPreview: React.Dispatch<React.SetStateAction<string>>,
+  pageId?: string,
+  initialValue?: string,
+  onOpenEditor?: (markdown: string) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, acceptedFileType, indentSize, pageId, userName, initialValue, socket, setMarkdownToPreview,
+    onSave, onChange, onUpload, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const { data: socket } = useGlobalSocket();
+
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
   const [cPageId, setCPageId] = useState(pageId);
@@ -55,7 +51,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     if (cPageId === pageId) {
       return;
     }
-    if (!provider || !ydoc || socket == null) {
+    if (provider == null || ydoc == null || socket == null) {
       return;
     }
 
@@ -66,9 +62,9 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     provider.disconnect();
     setProvider(null);
 
-    // TODO: catch ydoc:sync:error
-    // TODO: use SocketEventName
-    socket.off('ydoc:sync');
+    // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
+
+    socket.off(GlobalSocketEventName.YDocSync);
 
     setCPageId(pageId);
   }, [cPageId, pageId, provider, socket, ydoc]);
@@ -81,9 +77,9 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
     const _ydoc = new Y.Doc();
     setYdoc(_ydoc);
-  }, [initialValue, ydoc]);
+  }, [ydoc]);
 
-  // setup socketIOProvider
+  // setup socketIOProvider and sync ydoc
   useEffect(() => {
     if (ydoc == null || provider != null || socket == null) {
       return;
@@ -104,8 +100,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
-        // TODO: use SocketEventName
-        socket.emit('ydoc:sync', { pageId, initialValue });
+        socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
       }
     });
 
@@ -131,21 +126,18 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     ]);
 
     return cleanup;
-  }, [codeMirrorEditor, provider, setMarkdownToPreview, ydoc]);
-
+  }, [codeMirrorEditor, provider, ydoc]);
 
   // initialize markdown and preview
   useEffect(() => {
-    if (ydoc == null) {
+    if (ydoc == null || onOpenEditor == null) {
       return;
     }
 
     const ytext = ydoc.getText('codemirror');
     codeMirrorEditor?.initDoc(ytext.toString());
-    setMarkdownToPreview(ytext.toString());
-    // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
-    // mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, pageId, setMarkdownToPreview, socket, ydoc]);
+    onOpenEditor(ytext.toString());
+  }, [codeMirrorEditor, onOpenEditor, ydoc]);
 
   // setup additional extensions
   useEffect(() => {

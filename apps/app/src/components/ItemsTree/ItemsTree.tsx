@@ -5,6 +5,7 @@ import React, {
 import path from 'path';
 
 import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
@@ -22,7 +23,6 @@ import {
 } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
-import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { ItemNode, SimpleItemProps } from '../TreeItem';

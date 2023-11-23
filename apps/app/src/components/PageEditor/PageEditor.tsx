@@ -6,6 +6,7 @@ import EventEmitter from 'events';
 import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
@@ -50,7 +51,6 @@ import {
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
-import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 
@@ -580,13 +580,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
-            indentSize={currentIndentSize ?? defaultIndentSize}
-            pageId={pageId}
-            userName={user?.name}
-            socket={socket}
-            initialValue={initialValue}
-            setMarkdownToPreview={setMarkdownToPreview}
             acceptedFileType={acceptedFileType}
+            indentSize={currentIndentSize ?? defaultIndentSize}
+            userName={user?.name}
+            pageId={pageId ?? undefined}
+            initialValue={initialValue}
+            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
           />
         </div>
         <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
