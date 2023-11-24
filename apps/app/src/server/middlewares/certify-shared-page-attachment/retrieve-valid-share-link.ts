@@ -15,9 +15,9 @@ export const retrieveValidShareLinkByReferer = async(referer: ValidReferer): Pro
     return null;
   }
 
-  const shareLinkId = referer;
+  const { shareLinkId } = referer;
   const shareLink = await ShareLink.findOne({
-    id: shareLinkId,
+    _id: shareLinkId,
   });
   if (shareLink == null || shareLink.isExpired()) {
     logger.info(`ShareLink ('${shareLinkId}') is not found or has already expired.`);
