@@ -15,87 +15,47 @@ export type GeneratePreNotify = (activity: ActivityDocument, getAditionalTargetU
 
 export type GetAditionalTargetUsers = (activity: ActivityDocument) => Ref<IUser>[];
 
-export const generateInitialPreNotifyProps = (): PreNotifyProps => {
+class PreNotifyService {
 
-  const initialPreNotifyProps: Ref<IUser>[] = [];
+  generateInitialPreNotifyProps = (): PreNotifyProps => {
 
-  return { notificationTargetUsers: initialPreNotifyProps };
-};
+    const initialPreNotifyProps: Ref<IUser>[] = [];
 
-export const generatePreNotify = (activity: ActivityDocument, getAditionalTargetUsers?: GetAditionalTargetUsers): PreNotify => {
-
-  const preNotify = async(props: PreNotifyProps) => {
-    const { notificationTargetUsers } = props;
-
-    const User = getModelSafely('User') || require('~/server/models/user')();
-    const actionUser = activity.user;
-    const target = activity.target;
-    const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-    const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-    const activeNotificationUsers = await User.find({
-      _id: { $in: notificationUsers },
-      status: User.STATUS_ACTIVE,
-    }).distinct('_id');
-
-    if (getAditionalTargetUsers == null) {
-      notificationTargetUsers?.push(...activeNotificationUsers);
-    }
-    else {
-      const aditionalTargetUsers = getAditionalTargetUsers(activity);
-
-      notificationTargetUsers?.push(
-        ...activeNotificationUsers,
-        ...aditionalTargetUsers,
-      );
-    }
-
+    return { notificationTargetUsers: initialPreNotifyProps };
   };
 
-  return preNotify;
-};
+  generatePreNotify = (activity: ActivityDocument, getAditionalTargetUsers?: GetAditionalTargetUsers): PreNotify => {
 
-// export const generateDefaultPreNotify = (activity: ActivityDocument): PreNotify => {
+    const preNotify = async(props: PreNotifyProps) => {
+      const { notificationTargetUsers } = props;
 
-//   const preNotify = async(props: PreNotifyProps) => {
-//     const { notificationTargetUsers } = props;
+      const User = getModelSafely('User') || require('~/server/models/user')();
+      const actionUser = activity.user;
+      const target = activity.target;
+      const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
+      const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
+      const activeNotificationUsers = await User.find({
+        _id: { $in: notificationUsers },
+        status: User.STATUS_ACTIVE,
+      }).distinct('_id');
 
-//     const User = getModelSafely('User') || require('~/server/models/user')();
-//     const actionUser = activity.user;
-//     const target = activity.target;
-//     const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-//     const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-//     const activeNotificationUsers = await User.find({
-//       _id: { $in: notificationUsers },
-//       status: User.STATUS_ACTIVE,
-//     }).distinct('_id');
+      if (getAditionalTargetUsers == null) {
+        notificationTargetUsers?.push(...activeNotificationUsers);
+      }
+      else {
+        const aditionalTargetUsers = getAditionalTargetUsers(activity);
 
-//     notificationTargetUsers?.push(...activeNotificationUsers);
-//   };
+        notificationTargetUsers?.push(
+          ...activeNotificationUsers,
+          ...aditionalTargetUsers,
+        );
+      }
 
-//   return preNotify;
-// };
+    };
 
-// export const generatePreNotifyAlsoDescendants = (activity: ActivityDocument, descendantsSubscribedUsers: Ref<IUser>[]): PreNotify => {
+    return preNotify;
+  };
 
-//   const preNotify = async(props: PreNotifyProps) => {
-//     const { notificationTargetUsers } = props;
+}
 
-//     const User = getModelSafely('User') || require('~/server/models/user')();
-//     const actionUser = activity.user;
-//     const target = activity.target;
-//     const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-//     const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-//     const activeNotificationUsers = await User.find({
-//       _id: { $in: notificationUsers },
-//       status: User.STATUS_ACTIVE,
-//     }).distinct('_id');
-
-//     notificationTargetUsers?.push(
-//       ...activeNotificationUsers,
-//       ...descendantsSubscribedUsers,
-//     );
-
-//   };
-
-//   return preNotify;
-// };
+export const preNotifyService = new PreNotifyService();

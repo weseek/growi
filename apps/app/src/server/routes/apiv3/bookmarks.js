@@ -1,7 +1,7 @@
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
-import { generatePreNotify } from '~/server/service/preNotify';
+import { preNotifyService } from '~/server/service/preNotify';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
@@ -303,7 +303,7 @@ module.exports = (crowi) => {
       action: bool ? SupportedAction.ACTION_PAGE_BOOKMARK : SupportedAction.ACTION_PAGE_UNBOOKMARK,
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
 
     return res.apiv3({ bookmark });
   });

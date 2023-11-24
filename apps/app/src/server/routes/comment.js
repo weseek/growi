@@ -1,11 +1,9 @@
 
 import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
-import Subscription from '~/server/models/subscription';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
-import { generatePreNotify } from '../service/preNotify';
+import { preNotifyService } from '../service/preNotify';
 
 /**
  * @swagger
@@ -277,7 +275,7 @@ module.exports = function(crowi, app) {
       return mentionedUsers;
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify, getAditionalTargetUsers);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify, getAditionalTargetUsers);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
