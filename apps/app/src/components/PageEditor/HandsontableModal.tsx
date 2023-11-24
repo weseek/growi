@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
@@ -34,7 +34,6 @@ export const HandsontableModal = (): JSX.Element => {
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
 
   const isOpened = handsontableModalData?.isOpened ?? false;
-  const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
   const editor = handsontableModalData?.editor;
   const onSave = handsontableModalData?.onSave;
@@ -102,8 +101,9 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
-    setMarkdownTable(table ?? defaultMarkdownTable);
+    const editorMarkdownTable = mtu.getMarkdownTable(editor);
+    const initTableInstance = editorMarkdownTable == null ? defaultMarkdownTable : editorMarkdownTable.clone();
+    setMarkdownTable(editorMarkdownTable ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
     debouncedHandleWindowExpandedChange();
   };

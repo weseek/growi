@@ -15,13 +15,12 @@ type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onFileOpen: () => void,
   acceptedFileType: AcceptedUploadFileType,
-  onClickTableBtn?: () => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
   const {
-    editorKey, onFileOpen, acceptedFileType, onClickTableBtn,
+    editorKey, onFileOpen, acceptedFileType,
   } = props;
 
   return (
@@ -31,7 +30,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
       <EmojiButton
         editorKey={editorKey}
       />
-      { onClickTableBtn && <TableButton onClickTableBtn={onClickTableBtn} /> }
+      <TableButton editorKey={editorKey} />
       <DiagramButton />
       <TemplateButton />
     </div>

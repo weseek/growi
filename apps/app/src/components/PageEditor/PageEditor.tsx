@@ -19,7 +19,6 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
@@ -34,7 +33,7 @@ import {
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
-import { useConflictDiffModal, useHandsontableModal } from '~/stores/modal';
+import { useConflictDiffModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
 } from '~/stores/page';
@@ -128,8 +127,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
-  const { open: openHandsontableModal } = useHandsontableModal();
-
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
@@ -185,12 +182,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-
-  const openTableModalHandler = useCallback(() => {
-    const editor = codeMirrorEditor?.view;
-    const markdownTable = mtu.getMarkdownTable(editor);
-    openHandsontableModal(markdownTable, editor);
-  }, [codeMirrorEditor]);
 
   const checkIsConflict = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
@@ -597,7 +588,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
-            onClickTableBtn={openTableModalHandler}
           />
         </div>
         <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
