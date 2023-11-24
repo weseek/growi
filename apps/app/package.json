@@ -59,6 +59,7 @@
   },
   "dependencies": {
     "@akebifiky/remark-simple-plantuml": "^1.0.2",
+    "@algolia/client-search": "^4.20.0",
     "@aws-sdk/client-s3": "3.454.0",
     "@aws-sdk/s3-request-presigner": "3.454.0",
     "@azure/identity": "^3.3.2",
