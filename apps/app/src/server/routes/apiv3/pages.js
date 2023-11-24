@@ -1,14 +1,11 @@
 
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import {
-  isCreatablePage, isTrashPage, isUserPage, isUsersHomepage, getUsernameByPath,
-} from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -240,23 +237,6 @@ module.exports = (crowi) => {
 
     return [];
   }
-
-  const addDeletableUserHomepages = async(canDeleteFunction, userHomepages, pagesCanBeDeleted) => {
-    if (this.canDeleteUserHomepageByConfig()) {
-      const User = mongoose.model('User');
-      const usernames = userHomepages.map(page => getUsernameByPath(page.path));
-      const existingUsernames = await User.distinct('username', { username: { $in: usernames } });
-
-      const isUserHomepageDeletable = (page) => {
-        const username = getUsernameByPath(page.path);
-        return !existingUsernames.includes(username) && canDeleteFunction(page);
-      };
-
-      const deletableUserHomepages = userHomepages.filter(isUserHomepageDeletable);
-
-      pagesCanBeDeleted.push(...deletableUserHomepages);
-    }
-  };
 
   /**
    * @swagger
