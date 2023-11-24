@@ -160,9 +160,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       };
       await updateWorkflow(updateData);
 
-      if (onUpdated != null) {
-        onUpdated();
-      }
+      onUpdated?.();
     }
     catch (err) {
       // TODO: Consider how to display errors
@@ -172,10 +170,9 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
 
   return (
     <>
-      <WorkflowModalHeader
-        title={t('approval_workflow.edit_workflow')}
-        onClickPageBackButton={onClickWorkflowDetailPageBackButton}
-      />
+      <WorkflowModalHeader onClickPageBackButton={onClickWorkflowDetailPageBackButton}>
+        <span className="fw-bold">{t('approval_workflow.edit_workflow')} </span>
+      </WorkflowModalHeader>
 
       <ModalBody>
         <div className="mb-3">
