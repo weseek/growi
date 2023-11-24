@@ -30,7 +30,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
       <EmojiButton
         editorKey={editorKey}
       />
-      <TableButton editorKey={editorKey} />
+      <TableButton />
       <DiagramButton />
       <TemplateButton />
     </div>
