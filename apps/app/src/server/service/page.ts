@@ -231,12 +231,45 @@ class PageService {
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
+  private async addDeletableUserHomepages(userHomepages: PageDocument[]): Promise<PageDocument[]> {
+    if (!this.canDeleteUserHomepageByConfig()) {
+      return [];
+    }
+
+    const User = mongoose.model('User');
+    const usernames = userHomepages.map(page => getUsernameByPath(page.path)) as string[];
+    const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
+
+    const isUserHomepageDeletable = (page: PageDocument) => {
+      const username = getUsernameByPath(page.path);
+      return !existingUsernames.includes(username);
+    };
+
+    return userHomepages.filter(isUserHomepageDeletable);
   }
 
-  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
+  private async filterPages(
+      pages: PageDocument[],
+      user: IUserHasId,
+      isRecursively: boolean,
+      canDeleteFunction: (path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean) => boolean,
+  ): Promise<PageDocument[]> {
+    const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
+
+    const userHomepages = filteredPages.filter(p => isUsersHomepage(p.path));
+    const deletableUserHomepages = await this.addDeletableUserHomepages(userHomepages);
+
+    return filteredPages
+      .filter(p => !isUsersHomepage(p.path))
+      .concat(deletableUserHomepages);
+  }
+
+  async filterPagesByCanDeleteCompletely(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
+    return this.filterPages(pages, user, isRecursively, this.canDeleteCompletely);
+  }
+
+  async filterPagesByCanDelete(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
+    return this.filterPages(pages, user, isRecursively, this.canDelete);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types

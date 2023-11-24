@@ -925,33 +925,14 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    // Since the decision to delete or not a user's homepage is an asynchronous process,
-    // filtering is done here on the user homepages and other pages for performance optimization.
-    let { filteredPages, userHomepages } = pagesToDelete.reduce((result, page) => {
-      if (isUsersHomepage(page.path)) {
-        result.userHomepages.push(page);
-      }
-      else {
-        result.filteredPages.push(page);
-      }
-      return result;
-    },
-    { filteredPages: [], userHomepages: [] });
-
-    const pagesCanBeDeleted = [];
-    const canDeleteCompletely = page => page.isEmpty || crowi.pageService.canDeleteCompletely(page.path, page.creator, req.user, isRecursively);
-    const canDelete = page => page.isEmpty || crowi.pageService.canDelete(page.path, page.creator, req.user, isRecursively);
-
+    let pagesCanBeDeleted = [];
     if (isCompletely) {
-      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDeleteCompletely(filteredPages, req.user, isRecursively));
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     else {
-      filteredPages = filteredPages.filter(page => page.isEmpty || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString()));
-      userHomepages = userHomepages.filter(page => page.isEmpty || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString()));
-      pagesCanBeDeleted.push(...crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively));
+      const filteredPages = pagesToDelete.filter(page => page.isEmpty || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString()));
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively);
     }
-
-    await addDeletableUserHomepages(isCompletely ? canDeleteCompletely : canDelete, userHomepages, pagesCanBeDeleted);
 
     if (pagesCanBeDeleted.length === 0) {
       const msg = 'No pages can be deleted.';
