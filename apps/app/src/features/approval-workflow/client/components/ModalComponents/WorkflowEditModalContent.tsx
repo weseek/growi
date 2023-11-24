@@ -160,9 +160,7 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       };
       await updateWorkflow(updateData);
 
-      if (onUpdated != null) {
-        onUpdated();
-      }
+      onUpdated?.();
     }
     catch (err) {
       // TODO: Consider how to display errors

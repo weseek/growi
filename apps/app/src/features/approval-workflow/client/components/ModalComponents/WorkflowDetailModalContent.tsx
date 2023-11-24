@@ -33,7 +33,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
   const { updateApproverStatus } = useSWRxWorkflow(workflow?._id);
 
-  const findApprover = useCallback(() => {
+  const findApprover = () => {
     if (workflow == null || currentUser == null) {
       return;
     }
@@ -45,7 +45,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
         }
       }
     }
-  }, [currentUser, workflow]);
+  };
 
   const approver = findApprover();
   const isAbleEditButton = workflow?.status === WorkflowStatus.INPROGRESS && (currentUser?.admin || approver != null);
@@ -54,9 +54,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const approveButtonClickHandler = useCallback(async() => {
     try {
       await updateApproverStatus(WorkflowApproverStatus.APPROVE);
-      if (onUpdate != null) {
-        return onUpdate();
-      }
+      onUpdate?.();
     }
     catch (err) {
       // TODO: Consider how to display errors
