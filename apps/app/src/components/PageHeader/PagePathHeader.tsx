@@ -44,7 +44,7 @@ export const PagePathHeader: FC<Props> = (props) => {
         )}
       </>
     );
-  }, []);
+  }, [currentPage._id, currentPagePath, isEditorMode]);
 
   return (
     <>
@@ -67,7 +67,11 @@ export const PagePathHeader: FC<Props> = (props) => {
           && (
             <>
               <div className="col-4">
-                <button type="button" onClick={() => setRenameInputShown(true)}>編集ボタン</button>
+                {
+                  isRenameInputShown
+                    ? <button type="button" onClick={() => setRenameInputShown(false)}>完了ボタン</button>
+                    : <button type="button" onClick={() => setRenameInputShown(true)}>編集ボタン</button>
+                }
               </div>
               <div className="col-4">
                 <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
