@@ -18,7 +18,7 @@ type Props = {
   onChange?: (value: string) => void,
   onComment?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
-  onClickTableBtn: () => void,
+  onClickTableBtn?: () => void,
 }
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {

@@ -26,7 +26,7 @@ type Props = {
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
-  onClickTableBtn: () => void,
+  onClickTableBtn?: () => void,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -141,7 +141,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
+  }, [isUploading, acceptedFileType, isDragAccept, isDragReject]);
+
+  if (onClickTableBtn == null) {
+    return <></>;
+  }
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
