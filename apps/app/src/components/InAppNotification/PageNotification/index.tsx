@@ -16,7 +16,9 @@ type ModelNotificationUtils = {
   publishOpen: () => void
 }
 
-export const useModelNotification = (notification: IInAppNotification & HasObjectId, targetModel: string): ModelNotificationUtils => {
+export const useModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils => {
+
+  const targetModel = notification.targetModel;
 
   const router = useRouter();
 
