@@ -2051,6 +2051,12 @@ class PageService {
 
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
+
+    if (userHomepage.parent == null) {
+      const msg = 'user homepage parent is not found.';
+      logger.error(msg);
+      throw new Error(msg);
+    }
     const parentId = isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent;
 
     try {
