@@ -20,7 +20,7 @@ import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
-import { generateInitialPreNotifyProps, type PreNotify } from './preNotify';
+import { preNotifyService, type PreNotify } from './preNotify';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
@@ -206,7 +206,7 @@ export default class InAppNotificationService {
     const snapshot = generateSnapshot(targetModel, target);
 
     if (shouldNotification) {
-      const props = generateInitialPreNotifyProps();
+      const props = preNotifyService.generateInitialPreNotifyProps();
 
       await preNotify(props);
 
