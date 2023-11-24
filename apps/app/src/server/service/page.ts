@@ -195,6 +195,9 @@ class PageService {
   async isUsersHomepageOwnerAbsent(path: string): Promise<boolean> {
     const User = mongoose.model('User');
     const username = getUsernameByPath(path);
+    if (username == null) {
+      throw new Error('Cannot found username by path');
+    }
     const ownerExists = await User.exists({ username });
     return ownerExists === null;
   }
@@ -237,11 +240,16 @@ class PageService {
     }
 
     const User = mongoose.model('User');
-    const usernames = userHomepages.map(page => getUsernameByPath(page.path)) as string[];
+    const usernames = userHomepages
+      .map(page => getUsernameByPath(page.path))
+      .filter(username => username !== null) as string[];
     const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
 
     const isUserHomepageDeletable = (page: PageDocument) => {
       const username = getUsernameByPath(page.path);
+      if (username == null) {
+        throw new Error('Cannot found username by path');
+      }
       return !existingUsernames.includes(username);
     };
 
