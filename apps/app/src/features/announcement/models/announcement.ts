@@ -2,9 +2,9 @@ import {
   Types, Document, Schema, Model,
 } from 'mongoose';
 
+import { IAnnouncement } from '../../../interfaces/announcement';
 import { getOrCreateModel } from '../../../server/util/mongoose-utils';
-import { AnnouncementStatuses } from '../announcement-utils';
-import { IAnnouncement } from '../interfaces/announcement';
+import { AnnouncementStatuses } from '../events/announcement-utils';
 
 type AnnouncementStatuses = typeof AnnouncementStatuses;
 
