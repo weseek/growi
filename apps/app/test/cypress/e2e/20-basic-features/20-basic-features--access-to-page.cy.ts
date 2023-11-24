@@ -303,7 +303,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('open-page-template-modal-btn').filter(':visible').click({force: true});
     cy.getByTestid('page-template-modal').should('be.visible');
 
-    cy.getByTestid('template-button-decendants').click(({force: true}))
+    cy.getByTestid('template-button-descendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('navbar-editor').should('be.visible').then(()=>{

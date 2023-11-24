@@ -168,8 +168,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     }
   }, [currentPage, isLoading, router]);
 
-  // TODO: update button design
-  // https://redmine.weseek.co.jp/issues/132683
   return (
     <div
       className="d-flex flex-row"
