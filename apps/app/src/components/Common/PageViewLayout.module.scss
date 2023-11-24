@@ -8,14 +8,7 @@ $page-view-layout-margin-top: 32px;
 
 .page-view-layout :global {
   $page-content-footer-min-heigh: 130px;
-
-  display: flex;
-  flex-direction: column;
   min-height: calc(100vh - #{$subnavigation-height + $page-view-layout-margin-top + $page-content-footer-min-heigh});
-
-  .content-main {
-    flex-grow: 1;
-  }
 }
 
 // md/lg layout padding

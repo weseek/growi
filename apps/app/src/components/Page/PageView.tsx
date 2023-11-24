@@ -132,7 +132,7 @@ export const PageView = (props: Props): JSX.Element => {
       <>
         <PageContentsUtilities />
 
-        <div>
+        <div className='flex-expand-vert justify-content-between'>
           <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
 
           { !isIdenticalPathPage && !isNotFound && (
@@ -150,6 +150,8 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
+  const mobileClass = isMobile ? styles['page-mobile'] : '';
+
   return (
     <PageViewLayout
       headerContents={headerContents}
@@ -162,7 +164,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+          <div className={`flex-expand-vert ${mobileClass}`}>
             <Contents />
           </div>
         </>
