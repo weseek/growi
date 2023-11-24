@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
@@ -54,9 +54,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const [isPageCreating, setIsPageCreating] = useState(false);
-
-  const onClickTemplateButton = useOnTemplateButtonClicked(setIsPageCreating, path);
+  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 

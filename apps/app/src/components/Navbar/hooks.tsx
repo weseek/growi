@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -59,14 +59,17 @@ export const useOnPageEditorModeButtonClicked = (
 };
 
 export const useOnTemplateButtonClicked = (
-    setIsCreating: React.Dispatch<React.SetStateAction<boolean>>,
     currentPagePath: string,
-): (label: LabelType) => Promise<void> => {
+): {
+  onClickHandler: (label: LabelType) => Promise<void>,
+  isPageCreating: boolean
+} => {
   const router = useRouter();
+  const [isPageCreating, setIsPageCreating] = useState(false);
 
-  return useCallback(async(label: LabelType) => {
+  const onClickHandler = useCallback(async(label: LabelType) => {
     try {
-      setIsCreating(true);
+      setIsPageCreating(true);
 
       const path = currentPagePath == null || currentPagePath === '/'
         ? `/${label}`
@@ -92,7 +95,9 @@ export const useOnTemplateButtonClicked = (
       toastError(err);
     }
     finally {
-      setIsCreating(false);
+      setIsPageCreating(false);
     }
-  }, [currentPagePath, router, setIsCreating]);
+  }, [currentPagePath, router]);
+
+  return { onClickHandler, isPageCreating };
 };
