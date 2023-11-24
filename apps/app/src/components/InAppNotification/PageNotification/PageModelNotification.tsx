@@ -3,7 +3,6 @@ import React, {
 } from 'react';
 
 import type { IPage, HasObjectId } from '@growi/core';
-import { useRouter } from 'next/router';
 
 import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
@@ -17,13 +16,11 @@ interface Props {
   notification: IInAppNotification<IPage> & HasObjectId
 }
 
-const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props, ref) => {
+const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props) => {
 
   const { notification } = props;
 
   const { actionMsg, actionIcon } = useActionMsgAndIconForPageModelNotification(notification);
-
-  const router = useRouter();
 
   const getActionUsers = useCallback(() => {
     const latestActionUsers = notification.actionUsers.slice(0, 3);
@@ -48,17 +45,6 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
 
   const actionUsers = getActionUsers();
 
-  // publish open()
-  const publishOpen = () => {
-    if (notification.target != null) {
-      // jump to target page
-      const targetPagePath = notification.target.path;
-      if (targetPagePath != null) {
-        router.push(targetPagePath);
-      }
-    }
-  };
-
   notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
 
   return (
@@ -67,8 +53,6 @@ const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable
       actionMsg={actionMsg}
       actionIcon={actionIcon}
       actionUsers={actionUsers}
-      publishOpen={publishOpen}
-      ref={ref}
     />
   );
 };
