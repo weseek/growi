@@ -25,6 +25,16 @@ $page-view-layout-margin-top: 32px;
   }
 }
 
+// container padding
+.page-view-layout :global,
+.footer-layout :global {
+  @include bs.media-breakpoint-up(lg) {
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
+  }
+}
+
 .page-view-layout :global {
   .grw-side-contents-container {
     margin-bottom: 1rem;
