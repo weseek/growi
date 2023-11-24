@@ -2,7 +2,7 @@ import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:middlewares:certify-shared-file:validate-referer:retrieve-site-url');
+const logger = loggerFactory('growi:middlewares:certify-shared-page-attachment:validate-referer:retrieve-site-url');
 
 
 export const retrieveSiteUrl = (): URL | null => {
