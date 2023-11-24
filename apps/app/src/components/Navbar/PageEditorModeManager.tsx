@@ -1,5 +1,6 @@
 import React, { type ReactNode, useCallback, useState } from 'react';
 
+import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { EditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -46,7 +47,8 @@ type Props = {
   isBtnDisabled: boolean,
   path?: string,
   grant?: number,
-  grantUserGroupId?: string
+  // grantUserGroupId?: string
+  grantUserGroupIds?: IGrantedGroup[]
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
@@ -54,8 +56,8 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     editorMode = EditorMode.View,
     isBtnDisabled,
     path,
-    grant,
-    grantUserGroupId,
+    // grant,
+    // grantUserGroupId,
   } = props;
 
   const { t } = useTranslation();
@@ -63,7 +65,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
-  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path, grant, grantUserGroupId);
+  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path);
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
   const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {

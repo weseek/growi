@@ -208,8 +208,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
-  const grant = currentPage?.grant ?? grantData?.grant;
-  const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
+  // const grant = currentPage?.grant ?? grantData?.grant;
+  // const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
 
@@ -325,8 +325,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             editorMode={editorMode}
             isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
             path={path}
-            grant={grant}
-            grantUserGroupId={grantUserGroupId}
+            // grant={grant}
+            // grantUserGroupId={grantUserGroupId}
           />
         )}
       </div>
