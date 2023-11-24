@@ -143,9 +143,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return '';
   }, [isUploading, acceptedFileType, isDragAccept, isDragReject]);
 
-  if (onClickTableBtn == null) {
-    return <></>;
-  }
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>

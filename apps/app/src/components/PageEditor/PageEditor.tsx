@@ -189,9 +189,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const openTableModalHandler = useCallback(() => {
     const editor = codeMirrorEditor?.view;
     const markdownTable = mtu.getMarkdownTable(editor);
-    if (markdownTable == null) {
-      return;
-    }
     openHandsontableModal(markdownTable, editor);
   }, [codeMirrorEditor]);
 
