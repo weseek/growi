@@ -231,7 +231,7 @@ class PageService {
     return false;
   }
 
-  private async addDeletableUserHomepages(userHomepages: PageDocument[]): Promise<PageDocument[]> {
+  private async filterDeletableUserHomepages(userHomepages: PageDocument[]): Promise<PageDocument[]> {
     if (!this.canDeleteUserHomepageByConfig()) {
       return [];
     }
@@ -257,7 +257,7 @@ class PageService {
     const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
 
     const userHomepages = filteredPages.filter(p => isUsersHomepage(p.path));
-    const deletableUserHomepages = await this.addDeletableUserHomepages(userHomepages);
+    const deletableUserHomepages = await this.filterDeletableUserHomepages(userHomepages);
 
     return filteredPages
       .filter(p => !isUsersHomepage(p.path))
