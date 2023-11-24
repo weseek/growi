@@ -17,7 +17,11 @@ import axios from '~/utils/axios';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
 
+import type Crowi from '../crowi';
+import { Attachment } from '../models';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
+
+import { configManager } from './config-manager';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
@@ -39,6 +43,10 @@ const UPLOAD_CONFIG_KEYS = [
   'gcs:uploadNamespace',
   'gcs:referenceFileWithRelayMode',
   'gcs:useOnlyEnvVarsForSomeOptions',
+  'azure:storageAccountName',
+  'azure:storageContainerName',
+  'azure:referenceFileWithRelayMode',
+  'azure:useOnlyEnvVarsForSomeOptions',
 ] as const;
 
 /**
@@ -204,7 +212,7 @@ interface Receiver {
  */
 export class G2GTransferPusherService implements Pusher {
 
-  crowi: any;
+  crowi: Crowi;
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(crowi: any) {
@@ -237,7 +245,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
-    const { fileUploadService, configManager } = this.crowi;
+    const { fileUploadService } = this.crowi;
 
     const version = this.crowi.version;
     if (version !== destGROWIInfo.version) {
@@ -318,7 +326,6 @@ export class G2GTransferPusherService implements Pusher {
     const BATCH_SIZE = 100;
     const { fileUploadService, socketIoService } = this.crowi;
     const socket = socketIoService.getAdminSocket();
-    const Attachment = this.crowi.model('Attachment');
     const filesFromSrcGROWI = await this.listFilesInStorage(tk);
 
     /**
@@ -420,7 +427,7 @@ export class G2GTransferPusherService implements Pusher {
     const targetConfigKeys = UPLOAD_CONFIG_KEYS;
 
     const uploadConfigs = Object.fromEntries(targetConfigKeys.map((key) => {
-      return [key, this.crowi.configManager.getConfig('crowi', key)];
+      return [key, configManager.getConfig('crowi', key)];
     }));
 
     let zipFileStream: ReadStream;
@@ -544,6 +551,8 @@ export class G2GTransferReceiverService implements Receiver {
       bucket: undefined,
       customEndpoint: undefined, // for S3
       uploadNamespace: undefined, // for GCS
+      accountName: undefined, // for Azure Blob
+      containerName: undefined,
     };
 
     // put storage location info to check storage identification
@@ -555,6 +564,10 @@ export class G2GTransferReceiverService implements Receiver {
       case 'gcs':
         attachmentInfo.bucket = configManager.getConfig('crowi', 'gcs:bucket');
         attachmentInfo.uploadNamespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
+        break;
+      case 'azure':
+        attachmentInfo.accountName = configManager.getConfig('crowi', 'azure:storageAccountName');
+        attachmentInfo.containerName = configManager.getConfig('crowi', 'azure:storageContainerName');
         break;
       default:
     }

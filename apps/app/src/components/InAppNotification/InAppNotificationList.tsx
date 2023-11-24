@@ -26,7 +26,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     );
   }
 
-  const notifications = inAppNotificationData.docs.filter((notification) => { return notification.parsedSnapshot != null });
+  const notifications = inAppNotificationData.docs;
 
   return (
     <>

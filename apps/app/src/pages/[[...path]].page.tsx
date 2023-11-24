@@ -37,7 +37,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
+  useEditorConfig, useIsAllReplyShown, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsContainerFluid, useIsNotCreatable,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -217,8 +217,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
-  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+  useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
@@ -400,17 +400,20 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 // apply parent page grant fot creating page
 async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroup');
+  await ancestor.populate('grantedGroups.item');
   const grant = {
     grant: ancestor.grant,
   };
-  const grantedGroup = ancestor.grantedGroup ? {
-    grantedGroup: {
-      id: ancestor.grantedGroup.id,
-      name: ancestor.grantedGroup.name,
-    },
+  const grantedGroups = ancestor.grantedGroups ? {
+    grantedGroups: ancestor.grantedGroups.map((group) => {
+      return {
+        id: group.item._id,
+        name: group.item.name,
+        type: group.type,
+      };
+    }),
   } : {};
-  props.grantData = Object.assign(grant, grantedGroup);
+  props.grantData = Object.assign(grant, grantedGroups);
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -473,7 +476,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply pagrent page grant
+    // apply parent page grant
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       await applyGrantToPage(props, ancestor);
@@ -561,8 +564,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
+      isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
+      isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
@@ -603,7 +606,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
