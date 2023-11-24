@@ -905,7 +905,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('The grant of the retrieved page is not restricted'), 500);
     }
 
-    let pagesCanBeDeleted = [];
+    let pagesCanBeDeleted;
     if (isCompletely) {
       pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
