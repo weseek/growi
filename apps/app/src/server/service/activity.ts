@@ -1,4 +1,4 @@
-import type { Ref, IPage, IUser } from '@growi/core';
+import type { IPage } from '@growi/core';
 import mongoose from 'mongoose';
 
 import {
@@ -11,7 +11,7 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
 
-import type { PreNotify } from './preNotify';
+import type { GeneratePreNotify, GetAditionalTargetUsers } from './preNotify';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
@@ -41,7 +41,9 @@ class ActivityService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('update', async(activityId: string, parameters, target: IPage, getPreNotify: (activity: ActivityDocument) => PreNotify) => {
+    this.activityEvent.on('update', async(
+        activityId: string, parameters, target: IPage, generatePreNotify: GeneratePreNotify, getAditionalTargetUsers?: GetAditionalTargetUsers,
+    ) => {
       let activity: ActivityDocument;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
 
@@ -54,7 +56,7 @@ class ActivityService {
           return;
         }
 
-        const preNotify = getPreNotify(activity);
+        const preNotify = generatePreNotify(activity, getAditionalTargetUsers);
 
         this.activityEvent.emit('updated', activity, target, preNotify);
       }

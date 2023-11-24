@@ -5,6 +5,8 @@ import Subscription from '~/server/models/subscription';
 import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
+import { generatePreNotify } from '../service/preNotify';
+
 /**
  * @swagger
  *  tags:
@@ -269,29 +271,13 @@ module.exports = function(crowi, app) {
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
 
-    const generatePreNotify = (activity) => {
+    const getAditionalTargetUsers = async(activity) => {
+      const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
-      const preNotify = async(props) => {
-        const User = getModelSafely('User') || require('~/server/models/user')();
-        const actionUser = activity.user;
-        const target = activity.target;
-        const subscribedUsers = await Subscription.getSubscription(target);
-        const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
-        const activeNotificationUsers = await User.find({
-          _id: { $in: notificationUsers },
-          status: User.STATUS_ACTIVE,
-        }).distinct('_id');
-
-        const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
-
-        props.push(...activeNotificationUsers, ...mentionedUsers);
-
-      };
-
-      return preNotify;
+      return mentionedUsers;
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify, getAditionalTargetUsers);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
