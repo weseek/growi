@@ -14,10 +14,8 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
-import { generateDefaultPreNotify } from '~/server/service/preNotify';
-
+import { generatePreNotify } from '~/server/service/preNotify';
 import { divideByType } from '~/server/util/granted-group';
-
 import loggerFactory from '~/utils/logger';
 
 
@@ -366,7 +364,7 @@ module.exports = (crowi) => {
       action: isLiked ? SupportedAction.ACTION_PAGE_LIKE : SupportedAction.ACTION_PAGE_UNLIKE,
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, generateDefaultPreNotify);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify);
 
 
     res.apiv3({ result });

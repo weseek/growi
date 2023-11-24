@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
-import { generateDefaultPreNotify } from '../service/preNotify';
+import { generatePreNotify } from '../service/preNotify';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -524,7 +524,7 @@ module.exports = function(crowi, app) {
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, generateDefaultPreNotify);
+    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, generatePreNotify);
   };
 
   /**

@@ -46,7 +46,7 @@ import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
 
-import { generateDefaultPreNotify, generatePreNotifyAlsoDescendants } from './preNotify';
+import { generatePreNotify } from './preNotify';
 
 const debug = require('debug')('growi:services:page');
 
@@ -446,7 +446,7 @@ class PageService {
       throw err;
     }
     if (page.descendantCount < 1) {
-      const preNotify = generateDefaultPreNotify(activity);
+      const preNotify = generatePreNotify(activity);
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -555,7 +555,7 @@ class PageService {
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
       const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-      const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+      const preNotify = generatePreNotify(activity, () => { return descendantsSubscribedUsers });
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -1489,7 +1489,7 @@ class PageService {
       })();
     }
     else {
-      const preNotify = generateDefaultPreNotify(activity);
+      const preNotify = generatePreNotify(activity);
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -1529,7 +1529,7 @@ class PageService {
 
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+    const preNotify = generatePreNotify(activity, () => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -1842,7 +1842,7 @@ class PageService {
       })();
     }
     else {
-      const preNotify = generateDefaultPreNotify(activity);
+      const preNotify = generatePreNotify(activity);
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -1855,7 +1855,7 @@ class PageService {
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+    const preNotify = generatePreNotify(activity, () => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -1902,7 +1902,7 @@ class PageService {
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+    const preNotify = generatePreNotify(activity, () => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 
@@ -2182,7 +2182,7 @@ class PageService {
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
 
-      const preNotify = generateDefaultPreNotify(activity);
+      const preNotify = generatePreNotify(activity);
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
@@ -2232,7 +2232,7 @@ class PageService {
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
     const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    const preNotify = generatePreNotifyAlsoDescendants(activity, descendantsSubscribedUsers);
+    const preNotify = generatePreNotify(activity, () => { return descendantsSubscribedUsers });
 
     this.activityEvent.emit('updated', activity, page, preNotify);
 

@@ -6,7 +6,7 @@ import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/d
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { generateDefaultPreNotify } from '~/server/service/preNotify';
+import { generatePreNotify } from '~/server/service/preNotify';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -851,7 +851,7 @@ module.exports = (crowi) => {
         action: SupportedAction.ACTION_PAGE_DUPLICATE,
       };
 
-      activityEvent.emit('update', res.locals.activity._id, parameters, page, generateDefaultPreNotify);
+      activityEvent.emit('update', res.locals.activity._id, parameters, page, generatePreNotify);
 
       return res.apiv3(result);
     });
