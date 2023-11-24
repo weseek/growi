@@ -187,16 +187,16 @@ class PageService {
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  async canDeleteUserHomepage(path: string): Promise<boolean> {
+  canDeleteUserHomepageByConfig(): boolean {
     const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-    if (!isUsersHomepageDeletionEnabled) {
-      return false;
-    }
+    return isUsersHomepageDeletionEnabled;
+  }
 
+  async isUsersHomepageOwnerAbsent(path: string): Promise<boolean> {
     const User = mongoose.model('User');
     const username = getUsernameByPath(path);
-    const userExists = await User.exists({ username });
-    return userExists === null;
+    const ownerExists = await User.exists({ username });
+    return ownerExists === null;
   }
 
   private canDeleteLogic(
@@ -1402,8 +1402,8 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (isUsersHomepage(page.path)) {
-      if (!await this.canDeleteUserHomepage(page.path)) {
+    if (pagePathUtils.isUsersHomepage(page.path) && !this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+      if (!await this.crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
         throw new Error('User Homepage is not deletable.');
       }
     }

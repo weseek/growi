@@ -242,8 +242,7 @@ module.exports = (crowi) => {
   }
 
   const addDeletableUserHomepages = async(canDeleteFunction, userHomepages, pagesCanBeDeleted) => {
-    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-    if (isUsersHomepageDeletionEnabled) {
+    if (this.canDeleteUserHomepageByConfig()) {
       const User = mongoose.model('User');
       const usernames = userHomepages.map(page => getUsernameByPath(page.path));
       const existingUsernames = await User.distinct('username', { username: { $in: usernames } });
