@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
+import {
+  GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
+} from '@growi/editor';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
@@ -11,6 +14,7 @@ import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import mtu from '~/components/PageEditor/MarkdownTableUtil';
+import mtue from '~/components/PageEditor/MarkdownTableUtilForEditor';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -32,11 +36,12 @@ export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const isOpened = handsontableModalData?.isOpened ?? false;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
-  const editor = handsontableModalData?.editor;
   const onSave = handsontableModalData?.onSave;
+  const editor = codeMirrorEditor?.view;
 
   const defaultMarkdownTable = () => {
     return new MarkdownTable(
@@ -101,7 +106,7 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const editorMarkdownTable = mtu.getMarkdownTable(editor);
+    const editorMarkdownTable = mtue.getMarkdownTable(editor);
     const initTableInstance = editorMarkdownTable == null ? defaultMarkdownTable : editorMarkdownTable.clone();
     setMarkdownTable(editorMarkdownTable ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
@@ -163,7 +168,7 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
+    mtue.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
     cancel();
   };
 

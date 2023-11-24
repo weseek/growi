@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores';
-import { useHandsontableModal } from '../../../stores/use-table-modal';
+import { useHandsontableModal } from '../../../stores/use-hands-on-table';
 
 type Props = {
   editorKey: string,
@@ -15,7 +15,6 @@ export const TableButton = (props: Props): JSX.Element => {
 
   const openTableModalHandler = useCallback(() => {
     const editor = codeMirrorEditor?.view;
-    console.log(editor);
     openTableModal(editor);
   }, [codeMirrorEditor]);
 
