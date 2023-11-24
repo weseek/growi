@@ -19,6 +19,7 @@
     "eamodio.gitlens",
     "github.vscode-pull-request-github",
     "cschleiden.vscode-github-actions",
+    "mongodb.mongodb-vscode",
     "msjsdiag.debugger-for-chrome",
     "firefox-devtools.vscode-firefox-debug",
     "editorconfig.editorconfig",
@@ -34,7 +35,7 @@
   // "shutdownAction": "none",
 
   // Use 'postCreateCommand' to run commands after the container is created.
-  "postCreateCommand": "yarn global add turbo node-gyp && yarn install",
+  "postCreateCommand": "git-lfs pull & turbo run bootstrap",
 
   // Uncomment to connect as a non-root user. See https://aka.ms/vscode-remote/containers/non-root.
   "remoteUser": "node"

@@ -1,4 +1,4 @@
-import type { HasObjectId } from '@growi/core';
+import type { IUser, IPage, HasObjectId } from '@growi/core';
 
 import { SupportedAction } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
@@ -8,7 +8,7 @@ export type ActionMsgAndIconType = {
   actionIcon: string
 }
 
-export const useActionMsgAndIconForPageModelNotification = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
+export const useActionMsgAndIconForPageModelNotification = (notification: IInAppNotification<IPage> & HasObjectId): ActionMsgAndIconType => {
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;
@@ -77,7 +77,7 @@ export const useActionMsgAndIconForPageModelNotification = (notification: IInApp
   };
 };
 
-export const useActionMsgAndIconForUserModelNotification = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
+export const useActionMsgAndIconForUserModelNotification = (notification: IInAppNotification<IUser> & HasObjectId): ActionMsgAndIconType => {
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;

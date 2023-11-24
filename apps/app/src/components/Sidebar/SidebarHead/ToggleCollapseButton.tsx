@@ -12,7 +12,7 @@ export const ToggleCollapseButton = memo((): JSX.Element => {
 
   const { isDrawerMode, isCollapsedMode } = useSidebarMode();
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const toggleDrawer = useCallback(() => {

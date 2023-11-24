@@ -1,6 +1,5 @@
-import React, { useMemo } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 
-import type { IUserHasId } from '@growi/core';
 import {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -135,10 +134,24 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-MePage.getLayout = function getLayout(page) {
+
+type LayoutProps = Props & {
+  children?: ReactNode
+}
+
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
   return (
-    <BasicLayout>{page}</BasicLayout>
+    <BasicLayout>
+      {children}
+    </BasicLayout>
   );
+};
+
+MePage.getLayout = function getLayout(page) {
+  return <Layout {...page.props}>{page}</Layout>;
 };
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -193,7 +206,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user, crowi } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -208,7 +221,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   if (user != null) {
     const User = crowi.model('User');
-    const userData = await User.findById(req.user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
+    const userData = await User.findById(user.id).populate({ path: 'imageAttachment', select: 'filePathProxied' });
     props.currentUser = userData.toObject();
   }
 

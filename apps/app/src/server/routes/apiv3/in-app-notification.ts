@@ -1,6 +1,7 @@
 import { SupportedAction } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 
+
 import { IInAppNotification } from '../../../interfaces/in-app-notification';
 
 const express = require('express');

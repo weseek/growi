@@ -76,7 +76,6 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   }
 
   const copyDropdownId = `copydropdown-${pageId}`;
-  const copyDropdownToggleClassName = 'd-block btn-outline-secondary btn-copy border-0 text-muted p-2';
 
   return (
     <div>
@@ -87,7 +86,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
         </h1>
         { pageId != null && !isNotFound && (
           <div className="mx-2">
-            <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName={copyDropdownToggleClassName}>
+            <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
               <i className="ti ti-clipboard"></i>
             </CopyDropdown>
           </div>

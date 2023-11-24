@@ -169,7 +169,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     : undefined;
 
   return (
-    <div className="search-result-base flex-expand-horiz" data-testid="search-result-base">
+    <div className="search-result-base flex-grow-1 d-flex flex-expand-vh-100" data-testid="search-result-base">
 
       <div className="flex-expand-vert border boder-gray search-result-list" id="search-result-list">
 

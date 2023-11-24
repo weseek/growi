@@ -2,19 +2,18 @@
 @use '~/styles/mixins';
 
 .grw-navbar-bottom :global {
-  height: var.$grw-navbar-bottom-height;
-
   // apply transition
   transition-property: bottom;
   @include mixins.apply-navigation-transition();
-}
 
-.grw-navbar-bottom {
-  &:global(.grw-navbar-bottom-drawer-opened) {
-    bottom: #{-1 * var.$grw-navbar-bottom-height};
+  .navbar {
+    height: var.$grw-navbar-bottom-height;
   }
 }
 
+.grw-navbar-bottom-drawer-opened {
+  bottom: #{-1 * var.$grw-navbar-bottom-height};
+}
 
 // centering icons
 .grw-navbar-bottom :global {
@@ -25,7 +24,9 @@
 }
 
 // == Colors
-.grw-navbar-bottom {
-  background-color: rgba(var(--bs-body-bg-rgb), 0.7);
-  backdrop-filter: blur(35px);
+.grw-navbar-bottom :global {
+  .navbar {
+    background-color: rgba(var(--bs-body-bg-rgb), 0.7);
+    backdrop-filter: blur(35px);
+  }
 }

@@ -7,7 +7,7 @@ import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone } from '../../services';
+import { useFileDropzone, FileDropzoneOverlay } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -100,12 +100,54 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor]);
 
-  const { getRootProps, open } = useFileDropzone({ onUpload, acceptedFileType });
+  const {
+    getRootProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+    isUploading,
+    open,
+  } = useFileDropzone({ onUpload, acceptedFileType });
+
+  const fileUploadState = useMemo(() => {
+
+    if (isUploading) {
+      return 'dropzone-uploading';
+    }
+
+    switch (acceptedFileType) {
+      case AcceptedUploadFileType.NONE:
+        return 'dropzone-disabled';
+
+      case AcceptedUploadFileType.IMAGE:
+        if (isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (isDragReject) {
+          return 'dropzone-mismatch-picture';
+        }
+        break;
+
+      case AcceptedUploadFileType.ALL:
+        if (isDragAccept) {
+          return 'dropzone-accepted';
+        }
+        if (isDragReject) {
+          return 'dropzone-rejected';
+        }
+        break;
+    }
+
+    return '';
+  }, [isUploading, isDragAccept,isDragReject, acceptedFileType]);
 
   return (
-    <div {...getRootProps()} className="flex-expand-vert">
-      <CodeMirrorEditorContainer ref={containerRef} />
-      <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
+    <div className={`${style['codemirror-editor']} flex-expand-vert`}>
+      <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+        <FileDropzoneOverlay isEnabled={isDragActive}/>
+        <CodeMirrorEditorContainer ref={containerRef} />
+        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
+      </div>
     </div>
   );
 };

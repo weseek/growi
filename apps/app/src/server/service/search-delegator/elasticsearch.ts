@@ -5,10 +5,12 @@ import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { Comment } from '~/features/comment/server';
 import { SearchDelegatorName } from '~/interfaces/named-query';
 import {
   ISearchResult, ISearchResultData, SORT_AXIS, SORT_ORDER,
 } from '~/interfaces/search';
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import {
@@ -301,7 +303,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       logger.error('error.meta.body', error?.meta?.body);
 
       const socket = this.socketIoService.getAdminSocket();
-      socket.emit('rebuildingFailed', { error: error.message });
+      socket.emit(SocketEventName.RebuildingFailed, { error: error.message });
 
       throw error;
     }
@@ -366,16 +368,18 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       });
     }
 
-    let grantedGroupId = null;
-    if (page.grantedGroup != null) {
-      const groupId = (page.grantedGroup._id == null) ? page.grantedGroup : page.grantedGroup._id;
-      grantedGroupId = groupId.toString();
+    let grantedGroupIds = null;
+    if (page.grantedGroups != null) {
+      grantedGroupIds = page.grantedGroups.map((group) => {
+        const groupId = (group.item._id == null) ? group.item : group.item._id;
+        return groupId.toString();
+      });
     }
 
     return {
       grant: page.grant,
       granted_users: grantedUserIds,
-      granted_group: grantedGroupId,
+      granted_groups: grantedGroupIds,
     };
   }
 
@@ -458,7 +462,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
-    const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
     const socket = shouldEmitProgress ? this.socketIoService.getAdminSocket() : null;
@@ -580,7 +583,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           logger.info(`Adding pages progressing: (count=${count}, errors=${bulkResponse.errors}, took=${bulkResponse.took}ms)`);
 
           if (shouldEmitProgress) {
-            socket?.emit('addPageProgress', { totalCount, count, skipped });
+            socket?.emit(SocketEventName.AddPageProgress, { totalCount, count, skipped });
           }
         }
         catch (err) {
@@ -604,7 +607,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         logger.info(`Adding pages has completed: (totalCount=${totalCount}, skipped=${skipped})`);
 
         if (shouldEmitProgress) {
-          socket?.emit('finishAddPage', { totalCount, count, skipped });
+          socket?.emit(SocketEventName.FinishAddPage, { totalCount, count, skipped });
         }
         callback();
       },
@@ -882,7 +885,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           bool: {
             must: [
               { term: { grant: GRANT_USER_GROUP } },
-              { terms: { granted_group: userGroupIds } },
+              { terms: { granted_groups: userGroupIds } },
             ],
           },
         },

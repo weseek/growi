@@ -6,11 +6,8 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
-import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { apiPost } from '~/client/util/apiv1-client';
-import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
-import { useDescendantsPageListModal } from '~/stores/modal';
+import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';
 
@@ -45,22 +42,14 @@ const Tags = (props: TagsProps): JSX.Element => {
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
+  const { open: openTagEditModal } = useTagEditModal();
 
-  const updateStateAfterSave = useUpdateStateAfterSave(pageId);
-
-  const tagsUpdatedHandler = useCallback(async(newTags: string[]) => {
-    try {
-      await apiPost('/tags.update', { pageId, revisionId, tags: newTags });
-
-      updateStateAfterSave?.();
-
-      toastSuccess('updated tags successfully');
+  const onClickEditTagsButton = useCallback(() => {
+    if (tagsInfoData == null) {
+      return;
     }
-    catch (err) {
-      toastError(err);
-    }
-
-  }, [pageId, revisionId, updateStateAfterSave]);
+    openTagEditModal(tagsInfoData.tags, pageId, revisionId);
+  }, [pageId, revisionId, tagsInfoData, openTagEditModal]);
 
   if (!showTagLabel) {
     return <></>;
@@ -71,7 +60,13 @@ const Tags = (props: TagsProps): JSX.Element => {
   return (
     <div className="grw-taglabels-container">
       { tagsInfoData?.tags != null
-        ? <PageTags tags={tagsInfoData.tags} isTagLabelsDisabled={isTagLabelsDisabled ?? false} tagsUpdateInvoked={tagsUpdatedHandler} />
+        ? (
+          <PageTags
+            tags={tagsInfoData.tags}
+            isTagLabelsDisabled={isTagLabelsDisabled}
+            onClickEditTagsButton={onClickEditTagsButton}
+          />
+        )
         : <PageTagsSkeleton />
       }
     </div>

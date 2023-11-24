@@ -11,7 +11,7 @@ import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 import { PagePathNavSticky } from './Common/PagePathNav';
-import { PageViewLayout } from './Layout/PageViewLayout';
+import { PageViewLayout } from './Common/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
 import type { PageSideContentsProps } from './PageSideContents';
