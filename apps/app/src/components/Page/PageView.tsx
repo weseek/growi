@@ -132,7 +132,7 @@ export const PageView = (props: Props): JSX.Element => {
       <>
         <PageContentsUtilities />
 
-        <div className='flex-expand-vert justify-content-between'>
+        <div className="flex-expand-vert justify-content-between">
           <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
 
           { !isIdenticalPathPage && !isNotFound && (
