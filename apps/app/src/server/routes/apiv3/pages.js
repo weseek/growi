@@ -910,7 +910,7 @@ module.exports = (crowi) => {
       pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
     else {
-      const filteredPages = pagesToDelete.filter(page => page.isEmpty || page.isUpdatable(pageIdToRevisionIdMap[page._id].toString()));
+      const filteredPages = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
       pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively);
     }
 
