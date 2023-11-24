@@ -32,8 +32,7 @@ class UserEvent extends EventEmitter {
 
     // TODO: Make it more type safe
     // Since the type of page.creator is 'any', we resort to the following comparison,
-    // checking if page.creator.toString() is not equal to user._id.toString().
-    // Our code covers null, string, or object types.
+    // checking if page.creator.toString() is not equal to user._id.toString(). Our code covers null, string, or object types.
     if (page != null && page.creator != null && page.creator.toString() !== user._id.toString()) {
       await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
       page = null;

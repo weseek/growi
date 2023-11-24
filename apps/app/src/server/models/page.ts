@@ -65,6 +65,7 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
+  removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
