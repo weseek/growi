@@ -2,6 +2,9 @@ import type { ReactNode } from 'react';
 
 import styles from './PageViewLayout.module.scss';
 
+const pageViewLayoutClass = styles['page-view-layout'] ?? '';
+const footerLayoutClass = styles['footer-layout'] ?? '';
+
 type Props = {
   children?: ReactNode,
   headerContents?: ReactNode,
@@ -16,13 +19,13 @@ export const PageViewLayout = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div id="main" className={`main ${styles['page-view-layout']}`}>
-        <div id="content-main" className="content-main container-lg grw-container-convertible">
+      <div id="main" className={`main ${pageViewLayoutClass} flex-expand-vert`}>
+        <div id="content-main" className="content-main container-lg grw-container-convertible flex-expand-vert">
           { headerContents != null && headerContents }
           { sideContents != null
             ? (
-              <div className="d-flex gap-3">
-                <div className="flex-grow-1 flex-basis-0 mw-0">
+              <div className="flex-expand-horiz gap-3">
+                <div className="flex-expand-vert flex-basis-0 mw-0">
                   {children}
                 </div>
                 <div className="grw-side-contents-container col-lg-3  d-edit-none d-print-none" data-vrt-blackout-side-contents>
@@ -40,7 +43,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
       </div>
 
       { footerContents != null && (
-        <footer className="footer d-edit-none">
+        <footer className={`footer d-edit-none ${footerLayoutClass}`}>
           {footerContents}
         </footer>
       ) }

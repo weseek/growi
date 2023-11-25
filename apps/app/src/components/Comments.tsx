@@ -55,7 +55,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
     // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
     // > You can call observe() multiple times on the same MutationObserver
     // > to watch for changes to different parts of the DOM tree and/or different types of changes.
-  }, [onLoaded]);
+  }, [onLoadedDebounced]);
 
   const isTopPagePath = isTopPage(pagePath);
 
@@ -69,29 +69,26 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   };
 
   return (
-    <div className="page-comments-row mt-5 py-4 d-edit-none d-print-none">
-      <div className="container-lg">
-        <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
-          <PageComment
+    <div className="page-comments-row mt-5 py-4 border-top border-3 d-edit-none d-print-none">
+      <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
+        <PageComment
+          pageId={pageId}
+          pagePath={pagePath}
+          revision={revision}
+          currentUser={currentUser}
+          isReadOnly={false}
+        />
+      </div>
+      {!isDeleted && (
+        <div id="page-comment-write">
+          <CommentEditor
             pageId={pageId}
-            pagePath={pagePath}
-            revision={revision}
-            currentUser={currentUser}
-            isReadOnly={false}
-            titleAlign="left"
+            isForNewComment
+            onCommentButtonClicked={onCommentButtonClickHandler}
+            revisionId={revision._id}
           />
         </div>
-        {!isDeleted && (
-          <div id="page-comment-write">
-            <CommentEditor
-              pageId={pageId}
-              isForNewComment
-              onCommentButtonClicked={onCommentButtonClickHandler}
-              revisionId={revision._id}
-            />
-          </div>
-        )}
-      </div>
+      )}
     </div>
   );
 

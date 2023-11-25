@@ -8,7 +8,6 @@ import dts from 'vite-plugin-dts';
 
 
 const excludeFiles = [
-  '**/@types/*',
   '**/components/playground/*',
   '**/main.tsx',
   '**/vite-env.d.ts',
