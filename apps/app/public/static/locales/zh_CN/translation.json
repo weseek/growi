@@ -240,6 +240,13 @@
       "page_create": "创建页面时订阅页面。"
     }
   },
+  "ui_settings": {
+    "ui_settings": "用户界面设置",
+    "wide_view": {
+      "enable_wide_view": "启用宽视角",
+      "description": "启用 宽视图 后，页面内的内容会扩展到页面的整个宽度"
+    }
+  },
   "editor_settings": {
     "editor_settings": "编辑器设置"
   },

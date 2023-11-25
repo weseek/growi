@@ -250,6 +250,13 @@
       "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
   },
+  "ui_settings": {
+    "ui_settings": "UI設定",
+    "wide_view": {
+      "enable_wide_view": "ワイドビューを有効にする",
+      "description": "ワイドビューを有効にすると、ページ内コンテンツがページの横幅いっぱいに広がります。"
+    }
+  },
   "editor_settings": {
     "editor_settings": "エディター設定",
     "common_settings": {
