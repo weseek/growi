@@ -22,12 +22,15 @@ import superjson from 'superjson';
 
 import { useCurrentGrowiLayoutFluidClassName, useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { ExternalUserGroupRelationModel } from '~/features/external-user-group/server/models/external-user-group-relation';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { UserGroupRelationModel } from '~/server/models/user-group-relation';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -417,22 +420,26 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-// apply parent page grant fot creating page
-async function applyGrantToPage(props: Props, ancestor: any) {
+// apply parent page grant for creating page
+async function applyGrantToPage(props: Props, ancestor: any, userPossessedGroupIds: string[]) {
   await ancestor.populate('grantedGroups.item');
   const grant = {
     grant: ancestor.grant,
   };
-  const grantedGroups = ancestor.grantedGroups ? {
-    grantedGroups: ancestor.grantedGroups.map((group) => {
-      return {
-        id: group.item._id,
-        name: group.item.name,
-        type: group.type,
-      };
-    }),
-  } : {};
-  props.grantData = Object.assign(grant, grantedGroups);
+  let grantData = {};
+  if (ancestor.grantedGroups != null) {
+    const userPossessedGrantedGroups = ancestor.grantedGroups.filter(group => userPossessedGroupIds.includes(group.item._id.toString()));
+    grantData = {
+      grantedGroups: userPossessedGrantedGroups.map((group) => {
+        return {
+          id: group.item._id,
+          name: group.item.name,
+          type: group.type,
+        };
+      }),
+    };
+  }
+  props.grantData = Object.assign(grant, grantData);
 }
 
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -444,6 +451,8 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
+  const UserGroupRelation = mongooseModel('UserGroupRelation') as UserGroupRelationModel;
+  const ExternalUserGroupRelation = mongooseModel('ExternalUserGroupRelation') as ExternalUserGroupRelationModel;
   const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
@@ -498,7 +507,11 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     // apply parent page grant
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
-      await applyGrantToPage(props, ancestor);
+      const userPossessedGroupIds = [
+        ...(await UserGroupRelation.findAllGroupsForUser(req.user)).map(ugr => ugr._id.toString()),
+        ...(await ExternalUserGroupRelation.findAllGroupsForUser(req.user)).map(eugr => eugr._id.toString()),
+      ];
+      await applyGrantToPage(props, ancestor, userPossessedGroupIds);
     }
   }
 
