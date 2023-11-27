@@ -4,12 +4,6 @@ import { apiGet } from '~/client/util/apiv1-client';
 import { IFormattedSearchResult } from '~/interfaces/search';
 
 
-// client
-// https://github.com/meilisearch/meilisearch-js-plugins/blob/main/packages/instant-meilisearch/src/client/instant-meilisearch-client.ts
-
-// inteface
-// https://github.com/meilisearch/meilisearch-js-plugins/blob/main/packages/instant-meilisearch/src/types/types.ts
-
 const search = async <T = Record<string, any>>(requests: readonly MultipleQueriesQuery[]): Promise<{ results: Array<SearchResponse<T>> }> => {
 
   for await (const request of requests) {
