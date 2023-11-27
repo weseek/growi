@@ -2,7 +2,7 @@ import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
 import type {
-  Ref, HasObjectId, IUserHasId,
+  Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
 import { PageGrant, PageStatus } from '@growi/core';
@@ -242,7 +242,7 @@ class PageService {
       return [];
     }
 
-    const User = mongoose.model('User');
+    const User = mongoose.model<IUser>('User');
     const usernames = userHomepages
       .map(page => getUsernameByPath(page.path))
       // see: https://zenn.dev/kimuson/articles/filter_safety_type_guard
