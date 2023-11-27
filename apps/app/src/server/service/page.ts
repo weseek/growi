@@ -5,11 +5,11 @@ import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
-import { PageGrant, PageStatus } from '@growi/core';
+import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { collectAncestorPaths, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -2049,24 +2049,38 @@ class PageService {
    * @throws {Error} - If an error occurs during the deletion process.
    */
   async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
-    const Page = this.crowi.model('Page');
+    if (!isUsersHomepage(userHomepagePath)) {
+      const msg = 'input value is not user homepage path.';
+      logger.error(msg);
+      throw new Error(msg);
+    }
+
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
 
     if (userHomepage == null) {
-      logger.error('user homepage is not found.');
-      return;
+      const msg = 'user homepage is not found.';
+      logger.error(msg);
+      throw new Error(msg);
+    }
+
+    if (userHomepage.parent == null) {
+      const msg = 'user homepage parent is not found.';
+      logger.error(msg);
+      throw new Error(msg);
     }
 
     const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
 
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
+    const parentId = getIdForRef(userHomepage.parent);
 
     try {
       if (!shouldUseV4Process) {
         // Ensure consistency of ancestors
         const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
+        await this.updateDescendantCountOfAncestors(parentId, inc, true);
       }
 
       // Delete the user's homepage
@@ -2074,7 +2088,7 @@ class PageService {
 
       if (!shouldUseV4Process) {
         // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
+        await Page.removeLeafEmptyPagesRecursively(parentId);
       }
 
       if (!userHomepage.isEmpty) {
@@ -2087,7 +2101,7 @@ class PageService {
       // Find descendant pages with system deletion condition
       const builder = new PageQueryBuilder(Page.find(), true)
         .addConditionForSystemDeletion()
-        .addConditionToListOnlyDescendants(userHomepage.path);
+        .addConditionToListOnlyDescendants(userHomepage.path, {});
 
       // Stream processing to delete descendant pages
       // ────────┤ start │─────────
