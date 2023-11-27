@@ -1978,7 +1978,7 @@ class PageService {
       throw new Error(msg);
     }
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const userHomepage = await Page.findByPath(userHomepagePath, true);
 
     if (userHomepage == null) {
