@@ -189,6 +189,9 @@ class PageService {
 
   canDeleteUserHomepageByConfig(): boolean {
     const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+    if (isUsersHomepageDeletionEnabled == null) {
+      return false;
+    }
     return isUsersHomepageDeletionEnabled;
   }
 
@@ -242,7 +245,7 @@ class PageService {
     const User = mongoose.model('User');
     const usernames = userHomepages
       .map(page => getUsernameByPath(page.path))
-      .filter(username => username !== null) as string[];
+      .filter(username => username !== null);
     const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
 
     const isUserHomepageDeletable = (page: PageDocument) => {
@@ -1443,7 +1446,7 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (pagePathUtils.isUsersHomepage(page.path) && !this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+    if (pagePathUtils.isUsersHomepage(page.path) && this.crowi.pageService.canDeleteUserHomepageByConfig()) {
       if (!await this.crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
         throw new Error('User Homepage is not deletable.');
       }

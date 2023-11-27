@@ -766,7 +766,7 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
 
-        if (pagePathUtils.isUsersHomepage(page.path) && !crowi.pageService.canDeleteUserHomepageByConfig()) {
+        if (pagePathUtils.isUsersHomepage(page.path) && crowi.pageService.canDeleteUserHomepageByConfig()) {
           if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
             return res.json(ApiResponse.error('Could not delete user homepage'));
           }
@@ -789,7 +789,7 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
-        if (pagePathUtils.isUsersHomepage(page.path) && !crowi.pageService.canDeleteUserHomepageByConfig()) {
+        if (pagePathUtils.isUsersHomepage(page.path) && crowi.pageService.canDeleteUserHomepageByConfig()) {
           if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
             return res.json(ApiResponse.error('Could not delete user homepage'));
           }
