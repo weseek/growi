@@ -20,7 +20,6 @@ type Props = {
 export const Toolbar = memo((props: Props): JSX.Element => {
 
   const { editorKey, onFileOpen, acceptedFileType } = props;
-
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
