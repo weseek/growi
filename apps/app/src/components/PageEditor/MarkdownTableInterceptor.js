@@ -2,7 +2,9 @@ import { BasicInterceptor } from '@growi/core/dist/utils';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 
-import mtu from './MarkdownTableUtil';
+import {
+  getStrFromBot, addRowToMarkdownTable, getStrToEot, isEndOfLine, mergeMarkdownTable, emptyLineOfTableRE,
+} from './MarkdownTableUtil';
 
 /**
  * Interceptor for markdown table
@@ -27,24 +29,24 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
 
   addRow(cm) {
     // get lines all of table from current position to beginning of table
-    const strFromBot = mtu.getStrFromBot(cm);
+    const strFromBot = getStrFromBot(cm);
     let table = MarkdownTable.fromMarkdownString(strFromBot);
 
-    mtu.addRowToMarkdownTable(table);
+    addRowToMarkdownTable(table);
 
-    const strToEot = mtu.getStrToEot(cm);
+    const strToEot = getStrToEot(cm);
     const tableBottom = MarkdownTable.fromMarkdownString(strToEot);
     if (tableBottom.table.length > 0) {
-      table = mtu.mergeMarkdownTable([table, tableBottom]);
+      table = mergeMarkdownTable([table, tableBottom]);
     }
 
-    mtu.replaceMarkdownTableWithReformed(cm, table);
+    replaceMarkdownTableWithReformed(cm, table);
   }
 
   reformTable(cm) {
-    const tableStr = mtu.getStrFromBot(cm) + mtu.getStrToEot(cm);
+    const tableStr = getStrFromBot(cm) + getStrToEot(cm);
     const table = MarkdownTable.fromMarkdownString(tableStr);
-    mtu.replaceMarkdownTableWithReformed(cm, table);
+    replaceMarkdownTableWithReformed(cm, table);
   }
 
   removeRow(editor) {
@@ -67,16 +69,16 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
 
     const cm = editor.getCodeMirror();
 
-    const isInTable = mtu.isInTable(cm);
-    const isLastRow = mtu.getStrToEot(cm) === editor.getStrToEol();
+    const isInTable = isInTable(cm);
+    const isLastRow = getStrToEot(cm) === editor.getStrToEol();
 
     if (isInTable) {
       // at EOL in the table
-      if (mtu.isEndOfLine(cm)) {
+      if (isEndOfLine(cm)) {
         this.addRow(cm);
       }
       // last empty row
-      else if (isLastRow && mtu.emptyLineOfTableRE.test(editor.getStrFromBol() + editor.getStrToEol())) {
+      else if (isLastRow && emptyLineOfTableRE.test(editor.getStrFromBol() + editor.getStrToEol())) {
         this.removeRow(editor);
       }
       else {
