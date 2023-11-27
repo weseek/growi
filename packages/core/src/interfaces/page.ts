@@ -74,7 +74,6 @@ export type IPageHasId = IPage & HasObjectId;
 export type IPageInfo = {
   isV5Compatible: boolean,
   isEmpty: boolean,
-  isMovable: boolean,
   isDeletable: boolean,
   isAbleToDeleteCompletely: boolean,
   isRevertible: boolean,
