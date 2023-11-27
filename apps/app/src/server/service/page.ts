@@ -236,10 +236,8 @@ class PageService {
     return false;
   }
 
-  private async filterDeletableUserHomepages(userHomepages: PageDocument[]): Promise<PageDocument[]> {
-    if (!this.canDeleteUserHomepageByConfig()) {
-      return [];
-    }
+  private async getAbsenseUserHomeList(pages: PageDocument[]): Promise<string[]> {
+    const userHomepages = pages.filter(p => isUsersHomepage(p.path));
 
     const User = mongoose.model<IUser>('User');
     const usernames = userHomepages
@@ -248,19 +246,13 @@ class PageService {
       .filter((username): username is Exclude<typeof username, null> => username !== null);
     const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
 
-    const isUserHomepageDeletable = (page: PageDocument) => {
+    return userHomepages.filter((page) => {
       const username = getUsernameByPath(page.path);
       if (username == null) {
         throw new Error('Cannot found username by path');
       }
       return !existingUsernames.includes(username);
-    };
-
-    return userHomepages.filter(isUserHomepageDeletable);
-  }
-
-  private getPathsFromPages(pages: PageDocument[]): string[] {
-    return pages.map(p => p.path);
+    }).map(p => p.path);
   }
 
   private async filterPages(
@@ -271,18 +263,23 @@ class PageService {
   ): Promise<PageDocument[]> {
     const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
 
+    if (!this.canDeleteUserHomepageByConfig()) {
+      return filteredPages;
+    }
+
     // Confirmation of deletion of user homepages is an asynchronous process,
     // so it is processed separately for performance optimization.
-    const userHomepages = filteredPages.filter(p => isUsersHomepage(p.path));
-    const deletableUserHomepages = await this.filterDeletableUserHomepages(userHomepages);
-    const deletableUserHomepagePaths = this.getPathsFromPages(deletableUserHomepages);
+    const absenseUserHomeList = await this.getAbsenseUserHomeList(filteredPages);
 
-    const isDeletable = (path: string) => {
-      return !isUsersHomepage(path) || deletableUserHomepagePaths.includes(path);
+    const excludeActiveUserHomepage = (path: string) => {
+      if (!isUsersHomepage(path)) {
+        return true;
+      }
+      return absenseUserHomeList.includes(path);
     };
 
     return filteredPages
-      .filter(p => isDeletable(p.path));
+      .filter(p => excludeActiveUserHomepage(p.path));
   }
 
   async filterPagesByCanDeleteCompletely(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
