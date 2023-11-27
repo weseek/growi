@@ -39,7 +39,7 @@ class MarkdownTableUtil {
 
     const doc = editor.state.doc;
     const firstLine = doc.line(1);
-    let line = doc.lineAt(this.curPos(editor)).number - 1;
+    let line = doc.lineAt(this.curPos(editor)).number;
     for (; line >= firstLine.number; line--) {
       const strLine = doc.line(line);
       if (!this.linePartOfTableRE.test(strLine.text)) {
@@ -61,7 +61,7 @@ class MarkdownTableUtil {
 
     const doc = editor.state.doc;
     const lastLine = doc.line(doc.lines);
-    let line = doc.lineAt(this.curPos(editor)).number + 1;
+    let line = doc.lineAt(this.curPos(editor)).number;
     for (; line <= lastLine.number; line++) {
       const strLine = doc.line(line);
       if (!this.linePartOfTableRE.test(strLine.text)) {
@@ -92,7 +92,7 @@ class MarkdownTableUtil {
    */
   getMarkdownTable(editor) {
     if (!this.isInTable(editor)) {
-      return;
+      return null;
     }
 
     const strFromBotToEot = editor.state.sliceDoc(this.getBot(editor), this.getEot(editor));
