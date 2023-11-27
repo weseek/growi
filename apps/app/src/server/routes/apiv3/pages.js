@@ -4,8 +4,10 @@ import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -317,7 +319,18 @@ module.exports = (crowi) => {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupIds = grantUserGroupIds;
+
+      if (grantUserGroupIds != null) {
+        const userRelatedGroupIds = [
+          ...(await UserGroupRelation.findAllGroupsForUser(req.user)).map(ugr => ugr._id.toString()),
+          ...(await ExternalUserGroupRelation.findAllGroupsForUser(req.user)).map(eugr => eugr._id.toString()),
+        ];
+        const nonUserRelatedGrantedGroupIds = grantUserGroupIds.filter(g => !userRelatedGroupIds.includes(g.item));
+        if (nonUserRelatedGrantedGroupIds.length > 0) {
+          return res.apiv3Err('Cannot grant page permission to non user related group');
+        }
+        options.grantUserGroupIds = grantUserGroupIds;
+      }
     }
 
     const isNoBodyPage = body === undefined;
