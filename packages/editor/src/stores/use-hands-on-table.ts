@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { EditorView } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
@@ -7,12 +8,14 @@ type HandsonTableModalSaveHandler = () => void;
 
 type HandsontableModalStatus = {
   isOpened: boolean,
+  editor?: EditorView,
   // onSave is passed only when editing table directly from the page.
   onSave?: HandsonTableModalSaveHandler
 }
 
 type HandsontableModalStatusUtils = {
   open(
+    editor?: EditorView,
     onSave?: HandsonTableModalSaveHandler
   ): void
   close(): void
@@ -21,20 +24,21 @@ type HandsontableModalStatusUtils = {
 export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
     isOpened: false,
+    editor: undefined,
   };
 
   const swrResponse = useSWRStatic<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
-  const open = useCallback((onSave?: HandsonTableModalSaveHandler): void => {
+  const open = useCallback((editor?: EditorView, onSave?: HandsonTableModalSaveHandler): void => {
     mutate({
-      isOpened: true, onSave,
+      isOpened: true, editor, onSave,
     });
   }, [mutate]);
   const close = useCallback((): void => {
     mutate({
-      isOpened: false, onSave: undefined,
+      isOpened: false, editor: undefined, onSave: undefined,
     });
   }, [mutate]);
 

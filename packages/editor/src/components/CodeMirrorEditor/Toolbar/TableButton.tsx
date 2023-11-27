@@ -1,12 +1,21 @@
 import { useCallback } from 'react';
 
+import { useCodeMirrorEditorIsolated } from '../../../stores';
 import { useHandsontableModal } from '../../../stores/use-hands-on-table';
 
-export const TableButton = (): JSX.Element => {
+
+type Props = {
+  editorKey: string,
+}
+
+export const TableButton = (props: Props): JSX.Element => {
+  const { editorKey } = props;
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { open: openTableModal } = useHandsontableModal();
+  const editor = codeMirrorEditor?.view;
   const openTableModalHandler = useCallback(() => {
-    openTableModal();
-  }, []);
+    openTableModal(editor);
+  }, [editor]);
 
   return (
     <button type="button" className="btn btn-toolbar-button" onClick={openTableModalHandler}>
