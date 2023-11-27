@@ -3342,6 +3342,15 @@ class PageService {
     this.emitUpdateDescCount(updateDescCountData);
   }
 
+  async getUserRelatedGrantedGroups(page, user) {
+    await page.populate('grantedGroups.item');
+    const userRelatedGroupIds = [
+      ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
+      ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
+    ];
+    return page.grantedGroups.filter(group => userRelatedGroupIds.includes(group.item._id.toString()));
+  }
+
   private emitUpdateDescCount(data: UpdateDescCountRawData): void {
     const socket = this.crowi.socketIoService.getDefaultSocket();
 

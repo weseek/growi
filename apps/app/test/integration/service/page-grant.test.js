@@ -532,13 +532,13 @@ describe('PageGrantService', () => {
 
     // parent property of all private pages is null
     test('Any grant is allowed if parent is null', async() => {
-      const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
-      const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
-      const userPossessedGroups = [
-        ...userPossessedUserGroups.map((group) => {
+      const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
+      const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
+      const userRelatedGroups = [
+        ...userRelatedUserGroups.map((group) => {
           return { type: GroupType.userGroup, item: group };
         }),
-        ...userPossessedExternalUserGroups.map((group) => {
+        ...userRelatedExternalUserGroups.map((group) => {
           return { type: GroupType.externalUserGroup, item: group };
         }),
       ];
@@ -551,7 +551,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
 
@@ -563,7 +563,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
 
@@ -575,20 +575,20 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
     });
 
 
     test('Any grant is allowed if parent is public', async() => {
-      const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
-      const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
-      const userPossessedGroups = [
-        ...userPossessedUserGroups.map((group) => {
+      const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user1);
+      const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user1);
+      const userRelatedGroups = [
+        ...userRelatedUserGroups.map((group) => {
           return { type: GroupType.userGroup, item: group };
         }),
-        ...userPossessedExternalUserGroups.map((group) => {
+        ...userRelatedExternalUserGroups.map((group) => {
           return { type: GroupType.externalUserGroup, item: group };
         }),
       ];
@@ -601,7 +601,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
 
@@ -613,7 +613,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
 
@@ -625,7 +625,7 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_PUBLIC]: null,
           [PageGrant.GRANT_RESTRICTED]: null,
           [PageGrant.GRANT_OWNER]: null,
-          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userPossessedGroups },
+          [PageGrant.GRANT_USER_GROUP]: { applicableGroups: userRelatedGroups },
         },
       );
     });

@@ -9,7 +9,7 @@ import {
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageGrantData } from '~/interfaces/page';
-import { ApplicableGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -31,7 +31,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
 
   const [isGroupSelectModalShown, setIsGroupSelectModalShown] = useState(false);
-  const [selectedGroups, setSelectedGroups] = useState<ApplicableGroup[]>([]);
+  const [selectedGroups, setSelectedGroups] = useState<PopulatedGrantedGroup[]>([]);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   }, [isOpen]);
 
-  const groupListItemClickHandler = (group: ApplicableGroup) => {
+  const groupListItemClickHandler = (group: PopulatedGrantedGroup) => {
     if (selectedGroups.find(g => g.item._id === group.item._id) != null) {
       setSelectedGroups(selectedGroups.filter(g => g.item._id !== group.item._id));
     }
