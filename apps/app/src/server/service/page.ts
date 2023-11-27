@@ -260,6 +260,10 @@ class PageService {
     return userHomepages.filter(isUserHomepageDeletable);
   }
 
+  private getPathsFromPages(pages: PageDocument[]): string[] {
+    return pages.map(p => p.path);
+  }
+
   private async filterPages(
       pages: PageDocument[],
       user: IUserHasId,
@@ -268,12 +272,18 @@ class PageService {
   ): Promise<PageDocument[]> {
     const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
 
+    // Confirmation of deletion of user homepages is an asynchronous process,
+    // so it is processed separately for performance optimization.
     const userHomepages = filteredPages.filter(p => isUsersHomepage(p.path));
     const deletableUserHomepages = await this.filterDeletableUserHomepages(userHomepages);
+    const deletableUserHomepagePaths = this.getPathsFromPages(deletableUserHomepages);
+
+    const isDeletable = (path: string) => {
+      return !isUsersHomepage(path) || deletableUserHomepagePaths.includes(path);
+    };
 
     return filteredPages
-      .filter(p => !isUsersHomepage(p.path))
-      .concat(deletableUserHomepages);
+      .filter(p => isDeletable(p.path));
   }
 
   async filterPagesByCanDeleteCompletely(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
