@@ -1,3 +1,6 @@
+import { EditorView } from '@codemirror/view';
+import { string } from 'yargs';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
 
 /**
@@ -9,14 +12,14 @@ const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
 // https://regex101.com/r/1UuWBJ/3
 export const emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
-const curPos = (editor) => {
+const curPos = (editor: EditorView): number => {
   return editor.state.selection.main.head;
 };
 
 /**
    * return boolean value whether the cursor position is in a table
    */
-export const isInTable = (editor) => {
+export const isInTable = (editor: EditorView): boolean => {
   const lineText = editor.state.doc.lineAt(curPos(editor)).text;
   return linePartOfTableRE.test(lineText);
 };
@@ -25,8 +28,8 @@ export const isInTable = (editor) => {
    * return the postion of the BOT(beginning of table)
    * (If the cursor is not in a table, return its position)
    */
-export const getBot = (editor) => {
-  if (!this.isInTable(editor)) {
+export const getBot = (editor: EditorView): number => {
+  if (!isInTable(editor)) {
     return curPos(editor);
   }
 
@@ -47,7 +50,7 @@ export const getBot = (editor) => {
    * return the postion of the EOT(end of table)
    * (If the cursor is not in a table, return its position)
    */
-export const getEot = (editor) => {
+export const getEot = (editor: EditorView): number => {
   if (!isInTable(editor)) {
     return curPos(editor);
   }
@@ -68,14 +71,14 @@ export const getEot = (editor) => {
 /**
    * return strings from BOT(beginning of table) to the cursor position
    */
-export const getStrFromBot = (editor) => {
+export const getStrFromBot = (editor: EditorView): string => {
   return editor.state.sliceDoc(getBot(editor), curPos(editor));
 };
 
 /**
    * return strings from the cursor position to EOT(end of table)
    */
-export const getStrToEot = (editor) => {
+export const getStrToEot = (editor: EditorView): string => {
   return editor.state.sliceDoc(curPos(editor), getEot(editor));
 };
 
@@ -83,7 +86,7 @@ export const getStrToEot = (editor) => {
    * return MarkdownTable instance of the table where the cursor is
    * (If the cursor is not in a table, return null)
    */
-export const getMarkdownTable = (editor) => {
+export const getMarkdownTable = (editor: EditorView): MarkdownTable | undefined => {
   if (!isInTable(editor)) {
     return;
   }
@@ -92,7 +95,7 @@ export const getMarkdownTable = (editor) => {
   return MarkdownTable.fromMarkdownString(strFromBotToEot);
 };
 
-export const getMarkdownTableFromLine = (markdown, bol, eol) => {
+export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: number): MarkdownTable => {
   const tableLines = markdown.split(/\r\n|\r|\n/).slice(bol - 1, eol).join('\n');
   return MarkdownTable.fromMarkdownString(tableLines);
 };
@@ -100,8 +103,8 @@ export const getMarkdownTableFromLine = (markdown, bol, eol) => {
 /**
    * return boolean value whether the cursor position is end of line
    */
-export const isEndOfLine = (editor) => {
-  return (curPos(editor) === editor.state.doc.line(curPos(editor).line + 1).length);
+export const isEndOfLine = (editor: EditorView): boolean => {
+  return (curPos(editor) === editor.state.doc.lineAt(curPos(editor)).number);
 };
 
 /**
@@ -109,9 +112,9 @@ export const isEndOfLine = (editor) => {
    * (This function overwrite directory markdown table specified as argument.)
    * @param {MarkdownTable} markdown table
    */
-export const addRowToMarkdownTable = (mdtable) => {
+export const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
   const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
-  const newRow = [];
+  const newRow: string[] = [];
   (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
   mdtable.table.push(newRow);
 };
@@ -121,7 +124,7 @@ export const addRowToMarkdownTable = (mdtable) => {
    * (The merged markdown table options are used for the first markdown table.)
    * @param {Array} array of markdown table
    */
-export const mergeMarkdownTable = (mdtableList) => {
+export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | undefined => {
   if (mdtableList == null || !(mdtableList instanceof Array)) {
     return undefined;
   }
@@ -139,7 +142,7 @@ export const mergeMarkdownTable = (mdtableList) => {
    * (A replaced table is reformed by markdown-table.)
    * @param {MarkdownTable} table
    */
-export const replaceFocusedMarkdownTableWithEditor = (editor, table) => {
+export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table: MarkdownTable): void => {
   const botPos = getBot(editor);
   const eotPos = getEot(editor);
 
@@ -162,7 +165,7 @@ export const replaceFocusedMarkdownTableWithEditor = (editor, table) => {
    * @param beginLineNumber
    * @param endLineNumber
    */
-export const replaceMarkdownTableInMarkdown = (table, markdown, beginLineNumber, endLineNumber) => {
+export const replaceMarkdownTableInMarkdown = (table: MarkdownTable, markdown: string, beginLineNumber: number, endLineNumber: number): string => {
   const splitMarkdown = markdown.split(/\r\n|\r|\n/);
   const markdownBeforeTable = splitMarkdown.slice(0, beginLineNumber - 1);
   const markdownAfterTable = splitMarkdown.slice(endLineNumber);
