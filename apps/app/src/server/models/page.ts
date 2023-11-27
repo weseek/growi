@@ -1047,19 +1047,6 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   await this.save();
 };
 
-/*
- * get all groups of Page that user is related to
- */
-schema.methods.getUserRelatedGrantedGroups = async function(this: PageDocument, user): Promise<PopulatedGrantedGroup[]> {
-  // eslint-disable-next-line rulesdir/no-populate
-  const populatedPage = await this.populate<{grantedGroups: PopulatedGrantedGroup[] | null}>('grantedGroups.item');
-  const userRelatedGroupIds = [
-    ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
-    ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
-  ];
-  return populatedPage.grantedGroups?.filter(group => userRelatedGroupIds.includes(group.item._id.toString())) || [];
-};
-
 export type PageCreateOptions = {
   format?: string
   grantUserGroupIds?: IGrantedGroup[],
