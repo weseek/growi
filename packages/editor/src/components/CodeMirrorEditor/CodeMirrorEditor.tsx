@@ -139,7 +139,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, acceptedFileType, isDragAccept, isDragReject]);
+  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
