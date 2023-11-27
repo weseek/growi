@@ -1446,7 +1446,10 @@ class PageService {
       throw new Error('Page is not deletable.');
     }
 
-    if (pagePathUtils.isUsersHomepage(page.path) && this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+    if (pagePathUtils.isUsersHomepage(page.path)) {
+      if (!this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+        throw new Error('User Homepage is not deletable.');
+      }
       if (!await this.crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
         throw new Error('User Homepage is not deletable.');
       }
