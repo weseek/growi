@@ -20,6 +20,7 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -2249,6 +2250,18 @@ class PageService {
     await this.updateDescendantCountOfAncestors(newTarget.parent as ObjectIdLike, newTarget.descendantCount + 1, true);
 
     await PageOperation.findByIdAndDelete(pageOpId);
+  }
+
+  /*
+ * get all groups of Page that user is related to
+ */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<PopulatedGrantedGroup[]> {
+    const populatedPage = await page.populate<{grantedGroups: PopulatedGrantedGroup[] | null}>('grantedGroups.item');
+    const userRelatedGroupIds = [
+      ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
+      ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
+    ];
+    return populatedPage.grantedGroups?.filter(group => userRelatedGroupIds.includes(group.item._id.toString())) || [];
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
