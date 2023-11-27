@@ -9,7 +9,6 @@ import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
-import { collectAncestorPaths, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -46,7 +45,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath, collectAncestorPaths,
   canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
