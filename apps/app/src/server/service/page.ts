@@ -187,11 +187,7 @@ class PageService {
   }
 
   canDeleteUserHomepageByConfig(): boolean {
-    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
-    if (isUsersHomepageDeletionEnabled == null) {
-      return false;
-    }
-    return isUsersHomepageDeletionEnabled;
+    return configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled') ?? false;
   }
 
   async isUsersHomepageOwnerAbsent(path: string): Promise<boolean> {
