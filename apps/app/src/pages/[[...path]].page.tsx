@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 
 import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -26,7 +26,6 @@ import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
