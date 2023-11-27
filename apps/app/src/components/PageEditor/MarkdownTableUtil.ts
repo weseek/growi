@@ -8,8 +8,6 @@ import MarkdownTable from '~/client/models/MarkdownTable';
 
 // https://regex101.com/r/7BN2fR/10
 const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
-// https://regex101.com/r/1UuWBJ/3
-export const emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
 const curPos = (editor: EditorView): number => {
   return editor.state.selection.main.head;

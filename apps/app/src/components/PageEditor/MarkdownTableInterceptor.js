@@ -3,7 +3,7 @@ import { BasicInterceptor } from '@growi/core/dist/utils';
 import MarkdownTable from '~/client/models/MarkdownTable';
 
 import {
-  getStrFromBot, addRowToMarkdownTable, getStrToEot, isEndOfLine, mergeMarkdownTable, emptyLineOfTableRE,
+  getStrFromBot, addRowToMarkdownTable, getStrToEot, isEndOfLine, mergeMarkdownTable,
 } from './MarkdownTableUtil';
 
 /**
@@ -61,6 +61,8 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
     const editor = context.editor; // AbstractEditor instance
     // "autoFormatMarkdownTable" may be undefined, so it is compared to true and converted to bool.
     const noIntercept = (context.autoFormatMarkdownTable === false);
+    // https://regex101.com/r/1UuWBJ/3
+    const emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
     // do nothing if editor is not a CodeMirrorEditor or no intercept
     if (editor == null || editor.getCodeMirror() == null || noIntercept) {
