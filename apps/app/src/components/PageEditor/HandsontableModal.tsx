@@ -10,7 +10,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import { replaceFocusedMarkdownTableWithEditor } from '~/components/PageEditor/MarkdownTableUtilForView';
+import { replaceFocusedMarkdownTableWithEditor } from '~/components/PageEditor/MarkdownTableUtil';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';

@@ -4,7 +4,7 @@ import MarkdownTable from '~/client/models/MarkdownTable';
 
 import {
   getStrFromBot, addRowToMarkdownTable, getStrToEot, isEndOfLine, mergeMarkdownTable,
-} from './MarkdownTableUtilForView';
+} from './MarkdownTableUtil';
 
 /**
  * Interceptor for markdown table
