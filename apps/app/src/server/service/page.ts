@@ -5,7 +5,7 @@ import type {
   Ref, HasObjectId, IUserHasId,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
 } from '@growi/core';
-import { PageGrant, PageStatus, isPopulated } from '@growi/core';
+import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -1997,7 +1997,7 @@ class PageService {
 
     const ids = [userHomepage._id];
     const paths = [userHomepage.path];
-    const parentId = isPopulated(userHomepage.parent) ? userHomepage.parent._id : userHomepage.parent;
+    const parentId = getIdForRef(userHomepage.parent);
 
     try {
       if (!shouldUseV4Process) {

@@ -1,6 +1,6 @@
 import EventEmitter from 'events';
 
-import type { IUserHasId } from '@growi/core';
+import type { IPage, IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import mongoose from 'mongoose';
 
@@ -25,7 +25,7 @@ class UserEvent extends EventEmitter {
       return;
     }
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const userHomepagePath = pagePathUtils.userHomepagePath(user);
 
     let page = await Page.findByPath(userHomepagePath, true);
