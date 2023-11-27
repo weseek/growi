@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores';
-import { useHandsontableModal } from '../../../stores/use-hands-on-table';
-
+import { useHandsontableModal } from '../../../stores/use-handsontable';
 
 type Props = {
   editorKey: string,

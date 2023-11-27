@@ -183,6 +183,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
+
   const checkIsConflict = useCallback((data) => {
     const { s2cMessagePageUpdated } = data;
 

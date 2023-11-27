@@ -141,7 +141,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return '';
   }, [isUploading, acceptedFileType, isDragAccept, isDragReject]);
 
-
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
