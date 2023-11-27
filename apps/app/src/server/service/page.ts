@@ -245,7 +245,8 @@ class PageService {
     const User = mongoose.model('User');
     const usernames = userHomepages
       .map(page => getUsernameByPath(page.path))
-      .filter(username => username !== null);
+      // see: https://zenn.dev/kimuson/articles/filter_safety_type_guard
+      .filter((username): username is Exclude<typeof username, null> => username !== null);
     const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
 
     const isUserHomepageDeletable = (page: PageDocument) => {
