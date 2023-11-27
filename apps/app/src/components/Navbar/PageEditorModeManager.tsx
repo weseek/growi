@@ -22,7 +22,7 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
     currentEditorMode, isBtnDisabled, editorMode, children, onClick,
   } = props;
 
-  const classNames = ['btn btn-outline-primary py-1 px-2 d-flex align-items-center justify-content-center'];
+  const classNames = ['btn py-1 px-2 d-flex align-items-center justify-content-center'];
   if (currentEditorMode === editorMode) {
     classNames.push('active');
   }

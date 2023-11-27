@@ -451,7 +451,7 @@
 			"label": "子模板",
 			"desc": "仅应用于模板存在的同一级别页"
 		},
-		"decendants": {
+		"descendants": {
 			"label": "子代模板",
 			"desc": "适用于所有分散页"
 		}
