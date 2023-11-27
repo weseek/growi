@@ -1,5 +1,4 @@
 import { EditorView } from '@codemirror/view';
-import { string } from 'yargs';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 
