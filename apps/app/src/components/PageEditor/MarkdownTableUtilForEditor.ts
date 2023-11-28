@@ -31,16 +31,16 @@ export const getBot = (editor: EditorView): number => {
   }
 
   const doc = editor.state.doc;
-  const firstLine = doc.line(1);
+  const firstLineNum = 1;
   let line = doc.lineAt(curPos(editor)).number - 1;
-  for (; line >= firstLine.number; line--) {
-    const strLine = doc.line(line);
-    if (!linePartOfTableRE.test(strLine.text)) {
+  for (; line >= firstLineNum; line--) {
+    const strLine = doc.line(line).text;
+    if (!linePartOfTableRE.test(strLine)) {
       break;
     }
   }
-  const botLine = doc.line(line + 1);
-  return botLine.from;
+  const botLineNum = Math.max(firstLineNum, line + 1);
+  return doc.line(botLineNum).from;
 };
 
 /**
@@ -53,16 +53,16 @@ export const getEot = (editor: EditorView): number => {
   }
 
   const doc = editor.state.doc;
-  const lastLine = doc.line(doc.lines);
+  const lastLineNum = doc.line(doc.lines).number;
   let line = doc.lineAt(curPos(editor)).number + 1;
-  for (; line <= lastLine.number; line++) {
-    const strLine = doc.line(line);
-    if (!linePartOfTableRE.test(strLine.text)) {
+  for (; line <= lastLineNum; line++) {
+    const strLine = doc.line(line).text;
+    if (!linePartOfTableRE.test(strLine)) {
       break;
     }
   }
-  const eotLine = doc.line(line - 1);
-  return eotLine.to;
+  const eotLineNum = Math.min(line - 1, lastLineNum);
+  return doc.line(eotLineNum).to;
 };
 
 /**

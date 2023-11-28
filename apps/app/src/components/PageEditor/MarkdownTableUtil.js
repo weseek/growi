@@ -14,6 +14,7 @@ class MarkdownTableUtil {
     // https://regex101.com/r/1UuWBJ/3
     this.emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
+    this.curPos = this.curPos.bind(this);
     this.getBot = this.getBot.bind(this);
     this.getEot = this.getEot.bind(this);
     this.getStrFromBot = this.getStrFromBot.bind(this);
@@ -23,27 +24,30 @@ class MarkdownTableUtil {
     this.replaceMarkdownTableWithReformed = this.replaceFocusedMarkdownTableWithEditor; // alias
   }
 
+  curPos(editor) {
+    return editor.state.selection.main.head;
+  }
+
   /**
    * return the postion of the BOT(beginning of table)
    * (If the cursor is not in a table, return its position)
    */
   getBot(editor) {
-    const curPos = editor.state.selection.main.head;
     if (!this.isInTable(editor)) {
-      return curPos;
+      return this.curPos(editor);
     }
 
     const doc = editor.state.doc;
-    const firstLine = doc.line(1);
-    let line = doc.lineAt(curPos).number - 1;
-    for (; line >= firstLine.number; line--) {
-      const strLine = doc.line(line);
-      if (!this.linePartOfTableRE.test(strLine.text)) {
+    const firstLineNum = 1;
+    let line = doc.lineAt(this.curPos(editor)).number - 1;
+    for (; line >= firstLineNum; line--) {
+      const strLine = doc.line(line).text;
+      if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const botLine = doc.line(line + 1);
-    return botLine.from;
+    const botLineNum = Math.max(firstLineNum, line + 1);
+    return doc.line(botLineNum).from;
   }
 
   /**
@@ -51,38 +55,35 @@ class MarkdownTableUtil {
    * (If the cursor is not in a table, return its position)
    */
   getEot(editor) {
-    const curPos = editor.state.selection.main.head;
     if (!this.isInTable(editor)) {
-      return curPos;
+      return this.curPos(editor);
     }
 
     const doc = editor.state.doc;
-    const lastLine = doc.line(doc.lines);
-    let line = doc.lineAt(curPos).number + 1;
-    for (; line <= lastLine.number; line++) {
-      const strLine = doc.line(line);
-      if (!this.linePartOfTableRE.test(strLine.text)) {
+    const lastLineNum = doc.line(doc.lines).number;
+    let line = doc.lineAt(this.curPos(editor)).number + 1;
+    for (; line <= lastLineNum; line++) {
+      const strLine = doc.line(line).text;
+      if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const eotLine = doc.line(line - 1);
-    return eotLine.to;
+    const eotLineNum = Math.min(line - 1, lastLineNum);
+    return doc.line(eotLineNum).to;
   }
 
   /**
    * return strings from BOT(beginning of table) to the cursor position
    */
   getStrFromBot(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.sliceDoc(this.getBot(editor), curPos);
+    return editor.state.sliceDoc(this.getBot(editor), this.curPos(editor));
   }
 
   /**
    * return strings from the cursor position to EOT(end of table)
    */
   getStrToEot(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.sliceDoc(curPos, this.getEot(editor));
+    return editor.state.sliceDoc(this.curPos(editor), this.getEot(editor));
   }
 
   /**
@@ -91,7 +92,7 @@ class MarkdownTableUtil {
    */
   getMarkdownTable(editor) {
     if (!this.isInTable(editor)) {
-      return;
+      return null;
     }
 
     const strFromBotToEot = editor.state.sliceDoc(this.getBot(editor), this.getEot(editor));
@@ -107,16 +108,14 @@ class MarkdownTableUtil {
    * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
-    const curPos = editor.state.selection.main.head;
-    return (curPos === editor.state.doc.line(curPos.line + 1).length);
+    return this.curPos(editor) === editor.state.doc.lineAt(this.curPos(editor)).to;
   }
 
   /**
    * return boolean value whether the cursor position is in a table
    */
   isInTable(editor) {
-    const curPos = editor.state.selection.main.head;
-    const lineText = editor.state.doc.lineAt(curPos).text;
+    const lineText = editor.state.doc.lineAt(this.curPos(editor)).text;
     return this.linePartOfTableRE.test(lineText);
   }
 
@@ -147,7 +146,7 @@ class MarkdownTableUtil {
     mdtableList.forEach((mdtable) => {
       newTable = newTable.concat(mdtable.table);
     });
-    return (new MarkdownTable(newTable, options));
+    return new MarkdownTable(newTable, options);
   }
 
   /**
@@ -158,7 +157,6 @@ class MarkdownTableUtil {
   replaceFocusedMarkdownTableWithEditor(editor, table) {
     const botPos = this.getBot(editor);
     const eotPos = this.getEot(editor);
-    const curPos = editor.state.selection.main.head;
 
     editor.dispatch({
       changes: {
@@ -168,8 +166,9 @@ class MarkdownTableUtil {
       },
     });
     editor.dispatch({
-      selection: { anchor: editor.state.doc.lineAt(curPos).to },
+      selection: { anchor: editor.state.doc.lineAt(eotPos).to },
     });
+    editor.focus();
   }
 
   /**
