@@ -20,84 +20,84 @@ additionalClasses: string
   </>
 );
 
-const renderSidebarModeSwitch = () => {
-  return (
-    <>
-      <div className="d-flex align-items-start">
-        <div className="d-flex align-items-center">
-          <IconWithTooltip
-            id="iwt-sidebar-drawer"
-            label="Drawer"
-            additionalClasses={styles['grw-sidebar-mode-icon']}
-          >
-            <SidebarDrawerIcon />
-          </IconWithTooltip>
-          <div className="form-check form-switch ms-2">
-
-            <input
-              id="swSidebarMode"
-              className="form-check-input"
-              type="checkbox"
-            />
-            <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
-          </div>
-          <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-            <SidebarDockIcon />
-          </IconWithTooltip>
-        </div>
-        <div className="ms-2">
-          <label className="form-label form-check-label" htmlFor="swSidebarMode">
-            サイドバーのモードを設定する
-          </label>
-          <p className="form-text text-muted small">サイドバーを常時開いた状態にするかどうかを設定できます。</p>
-        </div>
-      </div>
-    </>
-  );
-};
-
-const renderEditSidebarModeSwitch = () => {
-  return (
-    <>
-      <div className="d-flex align-items-start">
-        <div className="d-flex align-items-center">
-          <IconWithTooltip
-            id="iwt-sidebar-editor-drawer"
-            label="Drawer"
-            additionalClasses={styles['grw-sidebar-mode-icon']}
-          >
-            <SidebarDrawerIcon />
-          </IconWithTooltip>
-          <div className="form-check form-switch ms-2">
-
-            <input
-              id="swSidebarModeOnEditor"
-              className="form-check-input"
-              type="checkbox"
-            />
-            <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor"></label>
-          </div>
-          <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-            <SidebarDockIcon />
-          </IconWithTooltip>
-        </div>
-        <div className="ms-2">
-          <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor">
-            編集時のサイドバーのモードを設定する
-          </label>
-          <p className="form-text text-muted small">コンテンツ編集時に、サイドバーを常時開いた状態にするかどうかを設定できます。</p>
-        </div>
-      </div>
-    </>
-  );
-};
-
-
 export const UISettings = (): JSX.Element => {
   const { t } = useTranslation();
+
+  const renderSidebarModeSwitch = () => {
+    return (
+      <>
+        <div className="d-flex align-items-start">
+          <div className="d-flex align-items-center">
+            <IconWithTooltip
+              id="iwt-sidebar-drawer"
+              label="Drawer"
+              additionalClasses={styles['grw-sidebar-mode-icon']}
+            >
+              <SidebarDrawerIcon />
+            </IconWithTooltip>
+            <div className="form-check form-switch ms-2">
+
+              <input
+                id="swSidebarMode"
+                className="form-check-input"
+                type="checkbox"
+              />
+              <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
+            </div>
+            <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
+              <SidebarDockIcon />
+            </IconWithTooltip>
+          </div>
+          <div className="ms-2">
+            <label className="form-label form-check-label" htmlFor="swSidebarMode">
+              {t('ui_settings.side_bar_mode.side_bar_mode_setting')}
+            </label>
+            <p className="form-text text-muted small">{t('ui_settings.side_bar_mode.description')}</p>
+          </div>
+        </div>
+      </>
+    );
+  };
+
+  const renderEditSidebarModeSwitch = () => {
+    return (
+      <>
+        <div className="d-flex align-items-start">
+          <div className="d-flex align-items-center">
+            <IconWithTooltip
+              id="iwt-sidebar-editor-drawer"
+              label="Drawer"
+              additionalClasses={styles['grw-sidebar-mode-icon']}
+            >
+              <SidebarDrawerIcon />
+            </IconWithTooltip>
+            <div className="form-check form-switch ms-2">
+
+              <input
+                id="swSidebarModeOnEditor"
+                className="form-check-input"
+                type="checkbox"
+              />
+              <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor"></label>
+            </div>
+            <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
+              <SidebarDockIcon />
+            </IconWithTooltip>
+          </div>
+          <div className="ms-2">
+            <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor">
+              {t('ui_settings.edit_side_bar_mode.side_bar_mode_setting')}
+            </label>
+            <p className="form-text text-muted small">{t('ui_settings.edit_side_bar_mode.description')}</p>
+          </div>
+        </div>
+      </>
+    );
+  };
+
   return (
     <>
-      <h2 className="border-bottom mb-4">UI設定</h2>
+      <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
 
       <div className="row justify-content-center">
         <div className="col-md-6">

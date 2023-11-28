@@ -240,6 +240,17 @@
       "page_create": "创建页面时订阅页面。"
     }
   },
+  "ui_settings": {
+    "ui_settings": "用户界面设置",
+    "side_bar_mode": {
+      "side_bar_mode_setting": "设置侧边栏模式",
+      "description": "您可以设置侧边栏是否始终保持打开状态。"
+    },
+    "edit_side_bar_mode": {
+      "side_bar_mode_setting": "设置编辑时的边栏模式",
+      "description": "您可以设置在编辑内容时是否始终打开侧边栏。"
+    }
+  },
   "editor_settings": {
     "editor_settings": "编辑器设置"
   },
