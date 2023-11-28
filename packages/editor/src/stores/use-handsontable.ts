@@ -16,7 +16,7 @@ type HandsontableModalStatusUtils = {
   close(): void
 }
 
-export const useHandsontableModal = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
+export const useHandsontableModalForEditor = (status?: HandsontableModalStatus): SWRResponse<HandsontableModalStatus, Error> & HandsontableModalStatusUtils => {
   const initialData: HandsontableModalStatus = {
     isOpened: false,
     editor: undefined,

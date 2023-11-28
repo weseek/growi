@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores';
-import { useHandsontableModal } from '../../../stores/use-handsontable';
+import { useHandsontableModalForEditor } from '../../../stores/use-handsontable';
 
 type Props = {
   editorKey: string,
@@ -10,7 +10,7 @@ type Props = {
 export const TableButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
-  const { open: openTableModal } = useHandsontableModal();
+  const { open: openTableModal } = useHandsontableModalForEditor();
   const editor = codeMirrorEditor?.view;
   const openTableModalHandler = useCallback(() => {
     openTableModal(editor);

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
@@ -32,11 +33,13 @@ export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const { data: handsontableModalForEditorData } = useHandsontableModalForEditor();
 
   const isOpened = handsontableModalData?.isOpened ?? false;
+  const isOpendInEditor = handsontableModalForEditorData?.isOpened ?? false;
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
-  const editor = handsontableModalData?.editor;
+  const editor = handsontableModalForEditorData?.editor;
   const onSave = handsontableModalData?.onSave;
 
   const defaultMarkdownTable = () => {
@@ -102,17 +105,8 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    let markdownTableState;
-    if (table == null) {
-      // markdowntable state from Editor
-      markdownTableState = mtu.getMarkdownTable(editor);
-    }
-    else {
-      // markdowntable state from View
-      markdownTableState = table;
-    }
-    const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
-    setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
+    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
+    setMarkdownTable(table ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
     debouncedHandleWindowExpandedChange();
   };
@@ -450,7 +444,7 @@ export const HandsontableModal = (): JSX.Element => {
 
   return (
     <Modal
-      isOpen={isOpened}
+      isOpen={isOpened || isOpendInEditor}
       toggle={cancel}
       backdrop="static"
       keyboard={false}
