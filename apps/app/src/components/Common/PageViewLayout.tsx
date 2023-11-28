@@ -11,16 +11,16 @@ type Props = {
   headerContents?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
-  isLayoutFluid?: boolean,
+  expandContentWidth?: boolean,
 }
 
 export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     children, headerContents, sideContents, footerContents,
-    isLayoutFluid,
+    expandContentWidth,
   } = props;
 
-  const fluidLayoutClass = isLayoutFluid ? _fluidLayoutClass : '';
+  const fluidLayoutClass = expandContentWidth ? _fluidLayoutClass : '';
 
   return (
     <>

@@ -9,14 +9,14 @@ export const useEditorModeClassName = (): string => {
   return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
 };
 
-const useShouldLayoutFluid = (expandContentWidth?: boolean | null): boolean => {
+const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean => {
   const { data: dataIsContainerFluid } = useIsContainerFluid();
 
   const isContainerFluidDefault = dataIsContainerFluid;
   return expandContentWidth ?? isContainerFluidDefault ?? false;
 };
 
-export const useLayoutFluid = (data?: IPage | boolean | null): boolean => {
+export const useShouldExpandContent = (data?: IPage | boolean | null): boolean => {
   const expandContentWidth = (() => {
     // when data is null
     if (data == null) {
@@ -33,5 +33,5 @@ export const useLayoutFluid = (data?: IPage | boolean | null): boolean => {
     return data.expandContentWidth;
   })();
 
-  return useShouldLayoutFluid(expandContentWidth);
+  return useDetermineExpandContent(expandContentWidth);
 };

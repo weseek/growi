@@ -6,7 +6,7 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 
-import { useLayoutFluid } from '~/client/services/layout';
+import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
@@ -71,7 +71,7 @@ export const PageView = (props: Props): JSX.Element => {
   const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
 
-  const isLayoutFluid = useLayoutFluid(page);
+  const shouldExpandContent = useShouldExpandContent(page);
 
 
   // ***************************  Auto Scroll  ***************************
@@ -160,7 +160,7 @@ export const PageView = (props: Props): JSX.Element => {
       headerContents={headerContents}
       sideContents={sideContents}
       footerContents={footerContents}
-      isLayoutFluid={isLayoutFluid}
+      expandContentWidth={shouldExpandContent}
     >
       <PageAlerts />
 
