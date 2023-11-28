@@ -158,7 +158,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
       <div className="container-lg">
         <div className="page-comments">
-          <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
+          <h2 className={commentTitleClasses}><span className="material-symbols-outlined">bubble_chart</span>Comments</h2>
           <div className="page-comments-list" id="page-comments-list">
             {commentsExceptReply.map((comment) => {
 
@@ -184,7 +184,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                             className="btn-comment-reply"
                             onClick={() => onReplyButtonClickHandler(comment._id)}
                           >
-                            <i className="icon-fw icon-action-undo"></i> Reply
+                            <span className="material-symbols-outlined">replay</span> Reply
                           </Button>
                         </NotAvailableForReadOnlyUser>
                       </NotAvailableForGuest>

@@ -84,7 +84,7 @@ const InstallerForm = memo((): JSX.Element => {
   const hasErrorClass = isValidUserName ? '' : ' has-error';
   const unavailableUserId = isValidUserName
     ? ''
-    : <span><i className="icon-fw icon-ban" />{ t('installer.unavaliable_user_id') }</span>;
+    : <span><span className="material-symbols-outlined">block</span>{ t('installer.unavaliable_user_id') }</span>;
 
   return (
     <div data-testid="installerForm" className={`nologin-dialog p-3 mx-auto${hasErrorClass}`}>
@@ -101,7 +101,7 @@ const InstallerForm = memo((): JSX.Element => {
           <div className="dropdown mb-3">
             <div className="input-group">
               <div className=" dropdown-with-icon">
-                <i className="input-group-text icon-bubbles border-0 rounded-0" />
+                <span className="material-symbols-outlined">bubble_chart</span>
               </div>
               <button
                 type="button"
@@ -147,7 +147,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <span className="input-group-text"><i className="icon-user" /></span>
+            <span className="input-group-text"></span><span className="material-symbols-outlined">person</span>
             <input
               data-testid="tiUsername"
               type="text"
@@ -161,7 +161,7 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"><i className="icon-tag" /></span>
+            <span className="input-group-text"></span><span className="material-symbols-outlined">sell</span>
             <input
               data-testid="tiName"
               type="text"
@@ -173,7 +173,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"><i className="icon-envelope" /></span>
+            <span className="input-group-text"></span><span className="material-symbols-outlined">mail</span>
             <input
               data-testid="tiEmail"
               type="email"
@@ -185,7 +185,7 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"><i className="icon-lock" /></span>
+            <span className="input-group-text"></span> <span className="material-symbols-outlined">lock</span>
             <input
               data-testid="tiPassword"
               type="password"

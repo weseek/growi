@@ -359,7 +359,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       content = (
         <div className="text-center">
           <p className="hackmd-status-label">
-            <i className="fa fa-file-text me-2" />
+            <span className="material-symbols-outlined">description</span>
             { t('hackmd.used_for_not_found') }
           </p>
           {/* eslint-disable-next-line react/no-danger */}
@@ -375,12 +375,12 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       content = (
         <div>
-          <p className="text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-center hackmd-status-label"><span className="material-symbols-outlined">description</span> HackMD is READY!</p>
           <p className="text-center"><strong>{t('hackmd.unsaved_draft')}</strong></p>
 
           { isHackmdDocumentOutdated && (
             <div className="card border-warning">
-              <div className="card-header bg-warning text-dark"><i className="icon-fw icon-info"></i> {t('hackmd.draft_outdated')}</div>
+              <div className="card-header bg-warning text-dark"><span className="material-symbols-outlined">info</span> {t('hackmd.draft_outdated')}</div>
               <div className="card-body text-center">
                 {t('hackmd.based_on_revision')}&nbsp;
                 { pageData != null && (
@@ -410,7 +410,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
                 disabled={isInitializing}
                 onClick={resumeToEdit}
               >
-                <span className="btn-label"><i className="icon-fw icon-control-end"></i></span>
+                <span className="btn-label"></span><span className="material-symbols-outlined">skip_next</span>
                 <span className="btn-text">{t('hackmd.resume_to_edit')}</span>
               </button>
             </div>
@@ -422,7 +422,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
               type="button"
               onClick={discardChanges}
             >
-              <span className="btn-label"><i className="icon-fw icon-control-start"></i></span>
+              <span className="btn-label"></span><span className="material-symbols-outlined">play_arrow</span>
               <span className="btn-text">{t('hackmd.discard_changes')}</span>
             </button>
           </div>
@@ -438,7 +438,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
 
       content = (
         <div>
-          <p className="text-muted text-center hackmd-status-label"><i className="fa fa-file-text"></i> HackMD is READY!</p>
+          <p className="text-muted text-center hackmd-status-label"><span className="material-symbols-outlined">description</span> HackMD is READY!</p>
           <div className="text-center hackmd-start-button-container mb-3">
             <button
               className="btn btn-info btn-lg waves-effect waves-light"
@@ -446,7 +446,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
               disabled={isRevisionOutdated || isInitializing}
               onClick={startToEdit}
             >
-              <span className="btn-label"><i className="icon-fw icon-paper-plane"></i></span>
+              <span className="btn-label"></span><span className="material-symbols-outlined">send</span>
               {t('hackmd.start_to_edit')}
             </button>
           </div>
@@ -502,7 +502,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       { hasError && (
         <div className="hackmd-error position-absolute d-flex flex-column justify-content-center align-items-center">
           <div className="bg-box p-5 text-center">
-            <h2 className="text-warning"><i className="icon-fw icon-exclamation"></i> {t('hackmd.integration_failed')}</h2>
+            <h2 className="text-warning"><span className="material-symbols-outlined">error</span> {t('hackmd.integration_failed')}</h2>
             <h4>{errorMessage}</h4>
             <p className="card custom-card text-danger">
               {errorReason}

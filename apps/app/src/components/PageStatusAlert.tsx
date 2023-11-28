@@ -52,7 +52,7 @@ export const PageStatusAlert = (): JSX.Element => {
   //     additionalClasses: ['bg-success', 'd-hackmd-none'],
   //     label:
   // <>
-  //   <i className="icon-fw icon-people"></i>
+  //   <span className="material-symbols-outlined">person</span>
   //   {t('hackmd.someone_editing')}
   // </>,
   //     btn:
@@ -82,7 +82,7 @@ export const PageStatusAlert = (): JSX.Element => {
       btn:
   <>
     <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white me-4">
-      <i className="icon-fw icon-reload me-1"></i>
+      <span className="material-symbols-outlined">refresh</span>
       {t('Load latest')}
     </button>
     { isConflict && (
