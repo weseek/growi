@@ -1,2 +1,9 @@
 .search-result-content :global {
 }
+
+.fluid-layout :global {
+  .grw-container-convertible {
+    width: 100%;
+    max-width: none;
+  }
+}
