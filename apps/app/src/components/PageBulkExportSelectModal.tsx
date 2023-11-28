@@ -1,11 +1,17 @@
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import { toastSuccess } from '~/client/util/toastr';
 import { usePageBulkExportSelectModal } from '~/stores/modal';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: status, close } = usePageBulkExportSelectModal();
+
+  const startBulkExport = () => {
+    close();
+    toastSuccess(t('page_export.bulk_export_started'));
+  };
 
   return (
     <>
@@ -22,8 +28,8 @@ const PageBulkExportSelectModal = (): JSX.Element => {
             </div>
             {t('page_export.choose_export_format')}:
             <div className="d-flex justify-content-center mt-2">
-              <button className="btn btn-primary" type="button">{t('page_export.markdown')}</button>
-              <button className="btn btn-primary ml-2" type="button">PDF</button>
+              <button className="btn btn-primary" type="button" onClick={startBulkExport}>{t('page_export.markdown')}</button>
+              <button className="btn btn-primary ml-2" type="button" onClick={startBulkExport}>PDF</button>
             </div>
           </ModalBody>
         </Modal>

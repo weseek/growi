@@ -604,7 +604,8 @@
     "bulk_export": "Export page and all child pages",
     "bulk_export_notice": "Once a download link is ready, a notification will be sent. If the number of pages is large, it may take a while for preparation.",
     "markdown": "Markdown",
-    "choose_export_format": "Select export format"
+    "choose_export_format": "Select export format",
+    "bulk_export_started": "Please wait a moment..."
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
