@@ -596,11 +596,12 @@
     "discription_heading": "Create Account",
     "discription": "Create an your account with the invited email address"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Failed to export",
     "failed_to_count_pages": "Failed to count pages",
     "export_page_markdown": "Export page as Markdown",
-    "export_page_pdf": "Export page as PDF"
+    "export_page_pdf": "Export page as PDF",
+    "bulk_export": "Export page and all child pages"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",

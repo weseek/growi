@@ -55,7 +55,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       className="grw-page-control-dropdown-item"
     >
       <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
-      {t('export_bulk.export_page_markdown')}
+      {t('page_export.export_page_markdown')}
     </DropdownItem>
   );
 };
