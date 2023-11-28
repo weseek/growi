@@ -32,7 +32,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         <br />
         <br />
         <span className="text-danger">
-          <i className="ti ti-unlink"></i>
+          <span className="material-symbols-outlined">link_off</span>
           {t('admin:app_setting.change_setting')}
         </span>
       </p>
@@ -62,8 +62,8 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
         </div>
         {props.isFixedFileUploadByEnvVar && (
           <p className="alert alert-warning mt-2 text-start offset-3 col-6">
-            <i className="icon-exclamation icon-fw">
-            </i><b>FIXED</b><br />
+            <span className="material-symbols-outlined">help</span>
+            <b>FIXED</b><br />
             {/* eslint-disable-next-line react/no-danger */}
             <b dangerouslySetInnerHTML={{ __html: t('admin:app_setting.fixed_by_env_var', { fileUploadType: props.envFileUploadType }) }} />
           </p>

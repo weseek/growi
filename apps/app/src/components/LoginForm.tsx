@@ -187,7 +187,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
-            <strong><i className="icon-fw icon-info"></i>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
+            <strong><span className="material-symbols-outlined">info</span>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}

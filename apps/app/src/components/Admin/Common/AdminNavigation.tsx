@@ -13,11 +13,11 @@ const MenuLabel = ({ menu }: { menu: string }) => {
 
   switch (menu) {
     /* eslint-disable no-multi-spaces, max-len */
-    case 'app':                      return <><i className="me-1 icon-fw icon-settings"></i>{        t('headers.app_settings', { ns: 'commons' }) }</>;
-    case 'security':                 return <><i className="me-1 icon-fw icon-shield"></i>{          t('security_settings.security_settings') }</>;
-    case 'markdown':                 return <><i className="me-1 icon-fw icon-note"></i>{            t('markdown_settings.markdown_settings') }</>;
-    case 'customize':                return <><i className="me-1 icon-fw icon-wrench"></i>{          t('customize_settings.customize_settings') }</>;
-    case 'importer':                 return <><i className="me-1 icon-fw icon-cloud-upload"></i>{    t('importer_management.import_data') }</>;
+    case 'app':                      return <><span className="material-symbols-outlined">settings</span>{        t('headers.app_settings', { ns: 'commons' }) }</>;
+    case 'security':                 return <><span className="material-symbols-outlined">shield</span>{          t('security_settings.security_settings') }</>;
+    case 'markdown':                 return <><span className="material-symbols-outlined">note</span>{            t('markdown_settings.markdown_settings') }</>;
+    case 'customize':                return <><span className="material-symbols-outlined">construction</span>{          t('customize_settings.customize_settings') }</>;
+    case 'importer':                 return <><span className="material-symbols-outlined">cloud_upload</span>{    t('importer_management.import_data') }</>;
     case 'export':                   return <><i className="me-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
     case 'data-transfer':            return <><i className="me-1 icon-fw icon-plane"></i>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
     case 'notification':             return <><span className="material-symbols-outlined">notifications</span>{            t('external_notification.external_notification')}</>;

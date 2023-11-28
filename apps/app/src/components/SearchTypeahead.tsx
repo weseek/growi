@@ -29,7 +29,7 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
     <span />
   ) : (
     <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={onReset}>
-      <i className="icon-close" />
+      <span className="material-symbols-outlined">close</span>
     </button>
   );
 };

@@ -72,7 +72,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return (
         <>
           <h2 className="text-muted mt-4">
-            <i className="icon-ban" aria-hidden="true" />
+            <span className="material-symbols-outlined" aria-hidden="true">block</span>
             <span> Page is expired</span>
           </h2>
         </>
@@ -99,7 +99,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
         <>
           { isNotFound && (
             <h2 className="text-muted mt-4">
-              <i className="icon-ban" aria-hidden="true" />
+              <span className="material-symbols-outlined" aria-hidden="true">block</span>
               <span> Page is not found</span>
             </h2>
           ) }

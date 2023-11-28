@@ -175,7 +175,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
           disabled={!checked}
           onClick={() => props.onSubmit?.(currentInput)}
         >
-          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
       </ModalFooter>
@@ -363,7 +363,7 @@ const PrivateLegacyPages = (): JSX.Element => {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={convertMenuItemClickedHandler}>
-                  <i className="icon-fw icon-refresh"></i>
+                  <span className="material-symbols-outlined">refresh</span>
                   {t('private_legacy_pages.convert_all_selected_pages')}
                 </DropdownItem>
                 <DropdownItem onClick={deleteAllButtonClickedHandler}>
