@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { ModalHeader } from 'reactstrap';
 
-import { useWorkflowModal } from '../../stores/workflow';
+import ExpandOrContractButton from '~/components/ExpandOrContractButton';
 
+import { useWorkflowModal } from '../../stores/workflow';
 
 type Props = {
   children: React.ReactNode,
@@ -13,10 +14,23 @@ type Props = {
 export const WorkflowModalHeader = (props: Props): JSX.Element => {
   const { children, onClickPageBackButton } = props;
 
-  const { close } = useWorkflowModal();
+  const {
+    data, close, expand, contract,
+  } = useWorkflowModal();
+
+  const rightButtons = useMemo(() => {
+    return (
+      <span className="text-muted">
+        <ExpandOrContractButton isWindowExpanded={data?.isExpanded ?? false} expandWindow={expand} contractWindow={contract} />
+
+        <button type="button" className="btn btn-close" onClick={close} aria-label="Close" />
+      </span>
+    );
+  }, [close, contract, data?.isExpanded, expand]);
+
 
   return (
-    <ModalHeader toggle={close}>
+    <ModalHeader close={rightButtons}>
       <div className="d-flex align-items-center">
         { onClickPageBackButton != null && (
           <button type="button" className="btn d-flex justify-content-center p-0 me-3" onClick={onClickPageBackButton}>

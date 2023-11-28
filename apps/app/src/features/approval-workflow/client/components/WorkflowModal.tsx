@@ -77,6 +77,7 @@ const WorkflowModal = (): JSX.Element => {
       size="lg"
       isOpen={workflowModalData?.isOpened ?? false}
       toggle={() => closeWorkflowModal()}
+      className={workflowModalData.isExpanded ? 'grw-modal-expanded' : ''}
     >
       { pageType === PageType.list && (
         <WorkflowListModalContent
