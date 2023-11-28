@@ -18,18 +18,18 @@ const MenuLabel = ({ menu }: { menu: string }) => {
     case 'markdown':                 return <><span className="material-symbols-outlined">note</span>{            t('markdown_settings.markdown_settings') }</>;
     case 'customize':                return <><span className="material-symbols-outlined">construction</span>{          t('customize_settings.customize_settings') }</>;
     case 'importer':                 return <><span className="material-symbols-outlined">cloud_upload</span>{    t('importer_management.import_data') }</>;
-    case 'export':                   return <><i className="me-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
-    case 'data-transfer':            return <><i className="me-1 icon-fw icon-plane"></i>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
+    case 'export':                   return <><span className="material-symbols-outlined">cloud_download</span>{  t('export_management.export_archive_data') }</>;
+    case 'data-transfer':            return <><span className="material-symbols-outlined">flight</span>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
     case 'notification':             return <><span className="material-symbols-outlined">notifications</span>{            t('external_notification.external_notification')}</>;
-    case 'slack-integration':        return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration.slack_integration') }</>;
-    case 'slack-integration-legacy': return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
-    case 'users':                    return <><i className="me-1 icon-fw icon-user"></i>{            t('user_management.user_management') }</>;
-    case 'user-groups':              return <><i className="me-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
-    case 'audit-log':                return <><i className="me-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
-    case 'plugins':                  return <><i className="me-1 icon-fw icon-puzzle"></i>{          t('plugins.plugins')}</>;
-    case 'search':                   return <><i className="me-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
-    case 'cloud':                    return <><i className="me-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
-    default:                         return <><i className="me-1 icon-fw icon-home"></i>{            t('wiki_management_homepage') }</>;
+    case 'slack-integration':        return <><span className="material-symbols-outlined">shuffle</span>{         t('slack_integration.slack_integration') }</>;
+    case 'slack-integration-legacy': return <><span className="material-symbols-outlined">shuffle</span>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
+    case 'users':                    return <><span className="material-symbols-outlined">person</span>{            t('user_management.user_management') }</>;
+    case 'user-groups':              return <><span className="material-symbols-outlined">group</span>{          t('user_group_management.user_group_management') }</>;
+    case 'audit-log':                return <><span className="material-symbols-outlined">feed</span>{            t('audit_log_management.audit_log')}</>;
+    case 'plugins':                  return <><span className="material-symbols-outlined">extension</span>{          t('plugins.plugins')}</>;
+    case 'search':                   return <><span className="material-symbols-outlined">search</span>{       t('full_text_search_management.full_text_search_management') }</>;
+    case 'cloud':                    return <><span className="material-symbols-outlined">share</span>{       t('cloud_setting_management.to_cloud_settings')} </>;
+    default:                         return <><span className="material-symbols-outlined">home</span>{            t('wiki_management_homepage') }</>;
       /* eslint-enable no-multi-spaces, max-len */
   }
 };

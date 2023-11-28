@@ -98,7 +98,7 @@ class GlobalNotificationList extends React.Component {
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
                     <li className="list-inline-item badge rounded-pill bg-success">
-                      <i className="icon-doc"></i> CREATE
+                      <span className=" material-symbols-outlined">description</span> CREATE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
@@ -108,7 +108,7 @@ class GlobalNotificationList extends React.Component {
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
                     <li className="list-inline-item badge rounded-pill bg-pink">
-                      <i className="icon-action-redo"></i> MOVE
+                      <span className="material-symbols-outlined">redo</span> MOVE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
@@ -118,12 +118,12 @@ class GlobalNotificationList extends React.Component {
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
                     <li className="list-inline-item badge rounded-pill bg-info">
-                      <i className="fa fa-heart-o"></i> LIKE
+                      <span className="material-symbols-outlined">favorite</span> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
                     <li className="list-inline-item badge rounded-pill bg-primary">
-                      <i className="icon-fw icon-bubble"></i> POST
+                      <span className="material-symbols-outlined">bubble_chart</span> POST
                     </li>
                   )}
                 </ul>
@@ -143,11 +143,11 @@ class GlobalNotificationList extends React.Component {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    <i className="icon-settings"></i> <span className="caret"></span>
+                    <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
-                      <i className="icon-fw icon-note"></i> {t('Edit')}
+                      <span className="material-symbols-outlined">note</span> {t('Edit')}
                     </a>
                     <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
                       <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
