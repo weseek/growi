@@ -53,7 +53,7 @@ export const getEot = (editor: EditorView): number => {
   }
 
   const doc = editor.state.doc;
-  const lastLineNum = doc.line(doc.lines).number;
+  const lastLineNum = doc.lines;
   let line = doc.lineAt(curPos(editor)).number + 1;
   for (; line <= lastLineNum; line++) {
     const strLine = doc.line(line).text;
