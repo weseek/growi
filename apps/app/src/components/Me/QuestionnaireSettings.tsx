@@ -52,7 +52,7 @@ export const QuestionnaireSettings = (): JSX.Element => {
       <div className="row">
         <div className="offset-md-3 col-md-6 text-start">
           {!isLoadingCurrentUser && (
-            <div className="form-check form-switch form-check-primary">
+            <div className="form-check form-switch">
               <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
                   type="checkbox"
