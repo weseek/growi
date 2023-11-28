@@ -249,13 +249,6 @@
       "page_create": "Subscribe to the page when you create it."
     }
   },
-  "ui_settings": {
-    "ui_settings": "UI Settings",
-    "wide_view": {
-      "enable_wide_view": "Enable wide view",
-      "description": "When Wide View is enabled, the in-page content expands to the full width of the page."
-    }
-  },
   "editor_settings": {
     "editor_settings": "Editor Settings"
   },
