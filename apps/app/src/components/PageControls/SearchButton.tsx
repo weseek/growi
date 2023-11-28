@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import { useSearchModal } from '~/stores/modal';
+import { useSearchModal } from '../../features/search/client/stores/search';
 
 import styles from './SearchButton.module.scss';
 
