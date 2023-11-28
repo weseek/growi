@@ -108,7 +108,7 @@ class MarkdownTableUtil {
    * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
-    return (this.curPos(editor) === editor.state.doc.line(this.curPos(editor).line + 1).length);
+    return (this.curPos(editor) === editor.state.doc.lineAt(this.curPos(editor)).to);
   }
 
   /**
@@ -166,8 +166,9 @@ class MarkdownTableUtil {
       },
     });
     editor.dispatch({
-      selection: { anchor: editor.state.doc.lineAt(this.curPos(editor)).to },
+      selection: { anchor: editor.state.doc.lineAt(eotPos).to },
     });
+    editor.focus();
   }
 
   /**
