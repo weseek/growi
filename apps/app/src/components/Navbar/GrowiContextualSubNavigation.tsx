@@ -22,7 +22,7 @@ import {
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, usePageBulkExportSelectModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
@@ -85,6 +85,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   return (
     <>
@@ -111,7 +112,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
       {/* Bulk export */}
       <DropdownItem
-        onClick={() => {}}
+        onClick={openPageBulkExportSelectModal}
         className="grw-page-control-dropdown-item"
       >
         <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>

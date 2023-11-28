@@ -634,7 +634,10 @@
     "failed_to_count_pages": "ページ数の取得に失敗しました",
     "export_page_markdown": "マークダウン形式でページをエクスポート",
     "export_page_pdf": "PDF形式でページをエクスポート",
-    "bulk_export": "ページとその配下のページを全てエクスポート"
+    "bulk_export": "ページとその配下のページを全てエクスポート",
+    "bulk_export_notice": "ダウンロードの準備が完了すると、通知が届きます。ページ数が多いと、準備に時間がかかる場合があります。",
+    "markdown": "マークダウン",
+    "choose_export_format": "エクスポート形式を選択してください"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",

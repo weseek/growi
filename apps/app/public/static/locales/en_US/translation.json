@@ -601,7 +601,10 @@
     "failed_to_count_pages": "Failed to count pages",
     "export_page_markdown": "Export page as Markdown",
     "export_page_pdf": "Export page as PDF",
-    "bulk_export": "Export page and all child pages"
+    "bulk_export": "Export page and all child pages",
+    "bulk_export_notice": "Once a download link is ready, a notification will be sent. If the number of pages is large, it may take a while for preparation.",
+    "markdown": "Markdown",
+    "choose_export_format": "Select export format"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
