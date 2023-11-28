@@ -216,6 +216,7 @@
     "handsontable": "v7.0.0 or above is no loger MIT lisence."
   },
   "devDependencies": {
+    "@algolia/client-search": "^4.20.0",
     "@growi/editor": "link:../../packages/editor",
     "@growi/presentation": "link:../../packages/presentation",
     "@growi/ui": "link:../../packages/ui",
