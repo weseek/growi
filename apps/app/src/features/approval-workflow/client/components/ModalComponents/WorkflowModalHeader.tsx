@@ -2,6 +2,8 @@ import React from 'react';
 
 import { ModalHeader } from 'reactstrap';
 
+import { useWorkflowModal } from '../../stores/workflow';
+
 
 type Props = {
   children: React.ReactNode,
@@ -11,8 +13,10 @@ type Props = {
 export const WorkflowModalHeader = (props: Props): JSX.Element => {
   const { children, onClickPageBackButton } = props;
 
+  const { close } = useWorkflowModal();
+
   return (
-    <ModalHeader>
+    <ModalHeader toggle={close}>
       <div className="d-flex align-items-center">
         { onClickPageBackButton != null && (
           <button type="button" className="btn" onClick={onClickPageBackButton}>
