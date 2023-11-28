@@ -20,14 +20,12 @@ export const WorkflowModalHeader = (props: Props): JSX.Element => {
 
   const rightButtons = useMemo(() => {
     return (
-      <span className="text-muted">
+      <span>
         <ExpandOrContractButton isWindowExpanded={data?.isExpanded ?? false} expandWindow={expand} contractWindow={contract} />
-
-        <button type="button" className="btn btn-close" onClick={close} aria-label="Close" />
+        <button type="button" className="me-2 btn btn-close" onClick={close} aria-label="Close" />
       </span>
     );
   }, [close, contract, data?.isExpanded, expand]);
-
 
   return (
     <ModalHeader close={rightButtons}>
