@@ -101,11 +101,13 @@ export const UISettings = (): JSX.Element => {
 
       <div className="row justify-content-center">
         <div className="col-md-6">
-          { renderSidebarModeSwitch() }
-          <div className="mt-5">
 
+          { renderSidebarModeSwitch() }
+
+          <div className="mt-5">
             { renderEditSidebarModeSwitch() }
           </div>
+
           <div>
           </div>
         </div>
