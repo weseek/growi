@@ -18,6 +18,14 @@ $page-view-layout-margin-top: 32px;
   }
 }
 
+// fluid layout
+.fluid-layout :global {
+  .grw-container-convertible {
+    width: 100%;
+    max-width: none;
+  }
+}
+
 .page-view-layout :global {
   .grw-side-contents-container {
     margin-bottom: 1rem;
