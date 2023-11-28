@@ -101,7 +101,7 @@ export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: num
    * return boolean value whether the cursor position is end of line
    */
 export const isEndOfLine = (editor: EditorView): boolean => {
-  return (curPos(editor) === editor.state.doc.lineAt(curPos(editor)).number);
+  return curPos(editor) === editor.state.doc.lineAt(curPos(editor)).to;
 };
 
 /**
@@ -153,6 +153,7 @@ export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table:
   editor.dispatch({
     selection: { anchor: editor.state.doc.lineAt(curPos(editor)).to },
   });
+  editor.focus();
 };
 
 /**
