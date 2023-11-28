@@ -13,3 +13,11 @@ export const getLatestApprovedApproverGroupIndex = (workflow: IWorkflowHasId | I
 
   return null;
 };
+
+export const isWorkflowNameSet = (workflowName?: string): boolean => {
+  if (workflowName == null || workflowName.trim() === '') {
+    return false;
+  }
+
+  return true;
+};

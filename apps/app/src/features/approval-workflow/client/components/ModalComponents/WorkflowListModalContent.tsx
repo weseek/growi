@@ -1,6 +1,8 @@
 // TODO: https://redmine.weseek.co.jp/issues/130336
 import React, { useState, useCallback } from 'react';
 
+import nodePath from 'path';
+
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
@@ -8,8 +10,10 @@ import {
 } from 'reactstrap';
 
 import { useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 
 import { type IWorkflowHasId } from '../../../interfaces/workflow';
+import { isWorkflowNameSet } from '../../../utils/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
@@ -36,6 +40,9 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
   const [isOpenMenu, setIsOpenMenu] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
 
   const createWorkflowButtonClickHandler = useCallback(() => {
     if (onClickCreateWorkflowButton == null) {
@@ -117,7 +124,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                 return (
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
-                      {workflow.name}
+                      { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
                       <div>
                         <span className="text-muted">
                           {formatDate(workflow.createdAt)}
