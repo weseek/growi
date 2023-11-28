@@ -23,7 +23,7 @@ const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
-const SearchModal = dynamic(() => import('../Search/SearchModal'), { ssr: false });
+const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 
 
 type Props = {

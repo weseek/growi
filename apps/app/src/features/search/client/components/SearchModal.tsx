@@ -7,7 +7,7 @@ import {
   ModalFooter,
 } from 'reactstrap';
 
-import { useSearchModal } from '~/stores/modal';
+import { useSearchModal } from '../stores/search';
 
 const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
