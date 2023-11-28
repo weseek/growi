@@ -1,9 +1,13 @@
 import React, { useCallback } from 'react';
 
+import nodePath from 'path';
+
 import { useTranslation } from 'next-i18next';
 import { ModalBody, ModalFooter } from 'reactstrap';
 
+import { isWorkflowNameSet } from '~/features/approval-workflow/utils/workflow';
 import { useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 
 import {
   type IWorkflowHasId,
@@ -31,7 +35,11 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
+  const { data: currentPagePath } = useCurrentPagePath();
+
   const { updateApproverStatus } = useSWRxWorkflow(workflow?._id);
+
+  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
 
   const findApprover = () => {
     if (workflow == null || currentUser == null) {
@@ -80,7 +88,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
     <>
       <WorkflowModalHeader onClickPageBackButton={onClickWorkflowListPageBackButton}>
         <div className={`me-2 badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</div>
-        <div className="fw-bold">{workflow.name}</div>
+        <div className="fw-bold">{isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }</div>
       </WorkflowModalHeader>
 
       <ModalBody>
