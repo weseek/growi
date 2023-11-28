@@ -79,7 +79,7 @@ export const WorkflowDetailModalContent = (props: Props): JSX.Element => {
   return (
     <>
       <WorkflowModalHeader onClickPageBackButton={onClickWorkflowListPageBackButton}>
-        <div className={`me-2 badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</div>
+        <div className={`me-3 badge rounded-pill ${getBadgeColor()}`}>{t(`approval_workflow.workflow_status.${workflow.status}`)}</div>
         <div className="fw-bold">{workflow.name}</div>
       </WorkflowModalHeader>
 
