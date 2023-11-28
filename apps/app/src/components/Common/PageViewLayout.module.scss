@@ -1,5 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/mixins';
 @use '~/styles/variables' as var;
 
 
@@ -21,8 +22,7 @@ $page-view-layout-margin-top: 32px;
 // fluid layout
 .fluid-layout :global {
   .grw-container-convertible {
-    width: 100%;
-    max-width: none;
+    @include mixins.fluid-layout();
   }
 }
 
