@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/PageEditor/MarkdownTableUtil';
+import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/PageEditor/MarkdownTableUtilForView';
 import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal } from '~/stores/modal';
@@ -83,8 +83,6 @@ export const useHandsontableModalLauncherForView = (opts?: {
     const handler = (bol: number, eol: number) => {
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
-      openHandsontableModal(currentMarkdownTable, undefined, false, table => saveByHandsontableModal(table, bol, eol));
-      const currentMarkdownTable = mtu.getMarkdownTableFromLine(markdown, bol, eol);
       openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
