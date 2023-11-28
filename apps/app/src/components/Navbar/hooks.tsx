@@ -59,7 +59,7 @@ export const useOnPageEditorModeButtonClicked = (
 };
 
 export const useOnTemplateButtonClicked = (
-    currentPagePath: string,
+    currentPagePath?: string,
 ): {
   onClickHandler: (label: LabelType) => Promise<void>,
   isPageCreating: boolean

@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
+import { useOnTemplateButtonClicked } from '~/components/Navbar/hooks';
 
 const logger = loggerFactory('growi:cli:PageCreateButton');
 
@@ -20,6 +21,8 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const router = useRouter();
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
+
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
 
   const [isHovered, setIsHovered] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
@@ -100,74 +103,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     }
   }, [currentUser, router, todaysPath]);
 
-  const onClickTemplateForChildrenButtonHandler = useCallback(async() => {
-    if (isLoading) return;
-
-    try {
-      setIsCreating(true);
-
-      const path = currentPage == null || currentPage.path === '/'
-        ? '/_template'
-        : `${currentPage.path}/_template`;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        await createPage(path, '', params);
-      }
-
-      router.push(`${path}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPage, isLoading, router]);
-
-  const onClickTemplateForDescendantsButtonHandler = useCallback(async() => {
-    if (isLoading) return;
-
-    try {
-      setIsCreating(true);
-
-      const path = currentPage == null || currentPage.path === '/'
-        ? '/__template'
-        : `${currentPage.path}/__template`;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        await createPage(path, '', params);
-      }
-
-      router.push(`${path}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPage, isLoading, router]);
-
   return (
     <div
       className="d-flex flex-row"
@@ -178,7 +113,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         <CreateButton
           className="z-2"
           onClick={onClickCreateNewPageButtonHandler}
-          disabled={isCreating}
+          disabled={isCreating || isTemplatePageCreating}
         />
       </div>
       { isHovered && (
@@ -192,8 +127,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
             onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
-            onClickTemplateForChildrenButtonHandler={onClickTemplateForChildrenButtonHandler}
-            onClickTemplateForDescendantsButtonHandler={onClickTemplateForDescendantsButtonHandler}
+            onClickTemplateButtonHandler={onClickTemplateButton}
           />
         </div>
       )}
