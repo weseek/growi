@@ -38,16 +38,16 @@ class MarkdownTableUtil {
     }
 
     const doc = editor.state.doc;
-    const firstLine = doc.line(1);
+    const firstLineNum = 1;
     let line = doc.lineAt(this.curPos(editor)).number - 1;
-    for (; line >= firstLine.number; line--) {
+    for (; line >= firstLineNum; line--) {
       const strLine = doc.line(line).text;
       if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const botLine = Math.max(firstLine.number, doc.line(line + 1).number);
-    return doc.line(botLine).from;
+    const botLineNum = Math.max(firstLineNum, line + 1);
+    return doc.line(botLineNum).from;
   }
 
   /**
@@ -60,16 +60,16 @@ class MarkdownTableUtil {
     }
 
     const doc = editor.state.doc;
-    const lastLine = doc.line(doc.lines);
+    const lastLineNum = doc.line(doc.lines).number;
     let line = doc.lineAt(this.curPos(editor)).number + 1;
-    for (; line <= lastLine.number; line++) {
+    for (; line <= lastLineNum; line++) {
       const strLine = doc.line(line).text;
       if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const eotLine = Math.min(doc.line(line - 1).number, lastLine.number);
-    return doc.line(eotLine).to;
+    const eotLineNum = Math.min(line - 1, lastLineNum);
+    return doc.line(eotLineNum).to;
   }
 
   /**
