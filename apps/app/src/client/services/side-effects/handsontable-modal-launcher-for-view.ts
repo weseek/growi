@@ -84,6 +84,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
       openHandsontableModal(currentMarkdownTable, undefined, false, table => saveByHandsontableModal(table, bol, eol));
+      const currentMarkdownTable = mtu.getMarkdownTableFromLine(markdown, bol, eol);
+      openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
 
