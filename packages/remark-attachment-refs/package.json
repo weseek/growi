@@ -45,7 +45,7 @@
     "@growi/core": "link:../core",
     "@growi/remark-growi-directive": "link:../remark-growi-directive",
     "@growi/ui": "link:../ui",
-    "axios": "^0.24.0",
+    "axios": "^1.6.2",
     "bunyan": "^1.8.15",
     "hast-util-select": "^5.0.5",
     "mongoose": "^6.11.3",
