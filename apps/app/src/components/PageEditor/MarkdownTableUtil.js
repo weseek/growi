@@ -41,13 +41,13 @@ class MarkdownTableUtil {
     const firstLine = doc.line(1);
     let line = doc.lineAt(this.curPos(editor)).number;
     for (; line >= firstLine.number; line--) {
-      const strLine = doc.line(line);
-      if (!this.linePartOfTableRE.test(strLine.text)) {
+      const strLine = doc.line(line).text;
+      if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const botLine = doc.line(line + 1);
-    return botLine.from;
+    const botLine = Math.max(firstLine.number, doc.line(line + 1).number);
+    return doc.line(botLine).from;
   }
 
   /**
@@ -63,13 +63,13 @@ class MarkdownTableUtil {
     const lastLine = doc.line(doc.lines);
     let line = doc.lineAt(this.curPos(editor)).number;
     for (; line <= lastLine.number; line++) {
-      const strLine = doc.line(line);
-      if (!this.linePartOfTableRE.test(strLine.text)) {
+      const strLine = doc.line(line).text;
+      if (!this.linePartOfTableRE.test(strLine)) {
         break;
       }
     }
-    const eotLine = doc.line(line - 1);
-    return eotLine.to;
+    const eotLine = Math.min(doc.line(line - 1).number, lastLine.number);
+    return doc.line(eotLine).to;
   }
 
   /**
@@ -108,7 +108,7 @@ class MarkdownTableUtil {
    * return boolean value whether the cursor position is end of line
    */
   isEndOfLine(editor) {
-    return (this.curPos(editor) === editor.state.doc.lineAt(this.curPos(editor)).to);
+    return this.curPos(editor) === editor.state.doc.lineAt(this.curPos(editor)).to;
   }
 
   /**
@@ -146,7 +146,7 @@ class MarkdownTableUtil {
     mdtableList.forEach((mdtable) => {
       newTable = newTable.concat(mdtable.table);
     });
-    return (new MarkdownTable(newTable, options));
+    return new MarkdownTable(newTable, options);
   }
 
   /**
