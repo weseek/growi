@@ -19,13 +19,13 @@ export interface IPageBulkExportJob {
 }
 
 export interface IPageBulkExportResult {
-  attachment: Ref<IAttachment>, // upload result
+  attachment: Ref<IAttachment>,
   expireAt: Date, // the date at which downloading of result expires
 }
 
 // snapshot of page info to upload
 export interface IPageBulkExportPageInfo {
   pageBulkExportJob: Ref<IPageBulkExportJob>,
-  path: string, // page path when export was executed
-  revision: Ref<IRevision>, // page revision when export was executed
+  path: string, // page path when export was stared
+  revision: Ref<IRevision>, // page revision when export was stared
 }
