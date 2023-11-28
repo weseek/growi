@@ -1,0 +1,12 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.grw-sidebar-mode-icon {
+  width: 20px;
+  height:  20px;
+  :global {
+    svg {
+      display: block;
+      fill: bs.$secondary;
+    }
+  }
+}
