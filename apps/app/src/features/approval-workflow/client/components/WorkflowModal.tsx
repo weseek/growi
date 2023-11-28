@@ -73,7 +73,11 @@ const WorkflowModal = (): JSX.Element => {
   }
 
   return (
-    <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
+    <Modal
+      size="lg"
+      isOpen={workflowModalData?.isOpened ?? false}
+      toggle={() => closeWorkflowModal()}
+    >
       { pageType === PageType.list && (
         <WorkflowListModalContent
           workflows={workflowPaginateResult?.docs ?? []}
