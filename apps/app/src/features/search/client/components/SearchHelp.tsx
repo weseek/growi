@@ -15,7 +15,7 @@ export const SearchHelp = (): JSX.Element => {
           <div className="">
             <span className="material-symbols-outlined">help</span>
             { t('search_help.title') }
-            <span className="material-symbols-outlined">expand_more</span>
+            <span className="material-symbols-outlined">{isOpen ? 'expand_less' : 'expand_more'}</span>
           </div>
         </button>
       </p>
