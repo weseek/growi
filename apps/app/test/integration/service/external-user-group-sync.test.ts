@@ -181,7 +181,15 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     crowi = await getInstance();
     const passportService = new PassportService(crowi);
     instanciate(passportService);
+  });
 
+  beforeEach(async() => {
+    await ExternalUserGroup.create({
+      name: 'nameBeforeEdit',
+      description: 'this is a description before edit',
+      externalId: 'cn=previouslySyncedGroup,ou=groups,dc=example,dc=org',
+      provider: 'ldap',
+    });
     await mongoose.model('Page').insertMany([{
       _id: new Types.ObjectId(),
       path: '/user',
@@ -192,17 +200,16 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     }]);
   });
 
-  beforeEach(async() => {
-    await ExternalUserGroup.create({
-      name: 'nameBeforeEdit',
-      description: 'this is a description before edit',
-      externalId: 'cn=previouslySyncedGroup,ou=groups,dc=example,dc=org',
-      provider: 'ldap',
-    });
-  });
-
   afterEach(async() => {
     await ExternalUserGroup.deleteMany();
+    await mongoose.model('Page').deleteMany([{
+      _id: new Types.ObjectId(),
+      path: '/user',
+      grant: 1,
+      // parent: rootPage._id,
+      status: 1,
+      isEmpty: true,
+    }]);
     await ExternalUserGroupRelation.deleteMany();
     await mongoose.model('User')
       .deleteMany({ username: { $in: ['childGroupUser', 'parentGroupUser', 'grandParentGroupUser', 'previouslySyncedGroupUser'] } });
