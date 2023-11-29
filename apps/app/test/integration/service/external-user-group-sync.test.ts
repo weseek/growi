@@ -177,14 +177,12 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
 describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   let crowi;
 
-  const Page = mongoose.model('Page');
-
   beforeAll(async() => {
     crowi = await getInstance();
     const passportService = new PassportService(crowi);
     instanciate(passportService);
 
-    await Page.insertMany([{
+    await mongoose.model('Page').insertMany([{
       _id: new Types.ObjectId(),
       path: '/user',
       grant: 1,
