@@ -11,7 +11,7 @@ import loggerFactory from '../../utils/logger';
 import Crowi from '../crowi';
 
 
-import type { GeneratePreNotify, GetAditionalTargetUsers } from './preNotify';
+import type { GeneratePreNotify, GetAdditionalTargetUsers } from './preNotify';
 
 const logger = loggerFactory('growi:service:ActivityService');
 
@@ -42,7 +42,7 @@ class ActivityService {
 
   initActivityEventListeners(): void {
     this.activityEvent.on('update', async(
-        activityId: string, parameters, target: IPage, generatePreNotify: GeneratePreNotify, getAditionalTargetUsers?: GetAditionalTargetUsers,
+        activityId: string, parameters, target: IPage, generatePreNotify: GeneratePreNotify, getAdditionalTargetUsers?: GetAdditionalTargetUsers,
     ) => {
       let activity: ActivityDocument;
       const shoudUpdate = this.shoudUpdateActivity(parameters.action);
@@ -56,7 +56,7 @@ class ActivityService {
           return;
         }
 
-        const preNotify = generatePreNotify(activity, getAditionalTargetUsers);
+        const preNotify = generatePreNotify(activity, getAdditionalTargetUsers);
 
         this.activityEvent.emit('updated', activity, target, preNotify);
       }

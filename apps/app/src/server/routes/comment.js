@@ -269,13 +269,13 @@ module.exports = function(crowi, app) {
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
 
-    const getAditionalTargetUsers = async(activity) => {
+    const getAdditionalTargetUsers = async(activity) => {
       const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
 
       return mentionedUsers;
     };
 
-    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify, getAditionalTargetUsers);
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify, getAdditionalTargetUsers);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 

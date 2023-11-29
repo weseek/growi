@@ -11,9 +11,9 @@ export type PreNotifyProps = {
 }
 
 export type PreNotify = (props: PreNotifyProps) => Promise<void>;
-export type GeneratePreNotify = (activity: ActivityDocument, getAditionalTargetUsers?: (activity?: ActivityDocument) => Ref<IUser>[]) => PreNotify;
+export type GeneratePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: (activity?: ActivityDocument) => Ref<IUser>[]) => PreNotify;
 
-export type GetAditionalTargetUsers = (activity: ActivityDocument) => Ref<IUser>[];
+export type GetAdditionalTargetUsers = (activity: ActivityDocument) => Ref<IUser>[];
 
 class PreNotifyService {
 
@@ -24,7 +24,7 @@ class PreNotifyService {
     return { notificationTargetUsers: initialPreNotifyProps };
   };
 
-  generatePreNotify = (activity: ActivityDocument, getAditionalTargetUsers?: GetAditionalTargetUsers): PreNotify => {
+  generatePreNotify = (activity: ActivityDocument, getAdditionalTargetUsers?: GetAdditionalTargetUsers): PreNotify => {
 
     const preNotify = async(props: PreNotifyProps) => {
       const { notificationTargetUsers } = props;
@@ -39,15 +39,15 @@ class PreNotifyService {
         status: User.STATUS_ACTIVE,
       }).distinct('_id');
 
-      if (getAditionalTargetUsers == null) {
+      if (getAdditionalTargetUsers == null) {
         notificationTargetUsers?.push(...activeNotificationUsers);
       }
       else {
-        const aditionalTargetUsers = getAditionalTargetUsers(activity);
+        const AdditionalTargetUsers = getAdditionalTargetUsers(activity);
 
         notificationTargetUsers?.push(
           ...activeNotificationUsers,
-          ...aditionalTargetUsers,
+          ...AdditionalTargetUsers,
         );
       }
 
