@@ -2,19 +2,19 @@ import type {
   IAttachment, IPage, IRevision, IUser, Ref,
 } from '@growi/core';
 
-export const PageBulkExportType = {
+export const PageBulkExportFormat = {
   markdown: 'markdown',
   pdf: 'pdf',
 } as const;
 
-type PageBulkExportType = typeof PageBulkExportType[keyof typeof PageBulkExportType]
+type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
 
 export interface IPageBulkExportJob {
   user: Ref<IUser>, // user that started export job
   page: Ref<IPage>, // the root page of page tree to export
   lastUploadedPagePath: string, // the path of page that was uploaded last
   uploadId: string, // upload ID of multipart upload of S3/GCS
-  type: PageBulkExportType,
+  format: PageBulkExportFormat,
   expireAt: Date, // the date at which job execution expires
 }
 

@@ -2,7 +2,7 @@ import { Document, Model, Schema } from 'mongoose';
 
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
-import { IPageBulkExportJob, PageBulkExportType } from '../../interfaces/page-bulk-export';
+import { IPageBulkExportJob, PageBulkExportFormat } from '../../interfaces/page-bulk-export';
 
 export interface PageBulkExportJobDocument extends IPageBulkExportJob, Document {}
 
@@ -13,7 +13,7 @@ const pageBulkExportJobSchema = new Schema<PageBulkExportJobDocument>({
   page: { type: Schema.Types.ObjectId, ref: 'Page', required: true },
   lastUploadedPagePath: { type: String, required: true },
   uploadId: { type: String, required: true },
-  type: { type: String, enum: Object.values(PageBulkExportType), required: true },
+  format: { type: String, enum: Object.values(PageBulkExportFormat), required: true },
   expireAt: { type: Date, required: true },
 }, { timestamps: true });
 
