@@ -1,9 +1,5 @@
 import MarkdownTable from '~/client/models/MarkdownTable';
 
-/**
- * Utility for markdown table
- */
-
 export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: number): MarkdownTable => {
   const tableLines = markdown.split(/\r\n|\r|\n/).slice(bol - 1, eol).join('\n');
   return MarkdownTable.fromMarkdownString(tableLines);

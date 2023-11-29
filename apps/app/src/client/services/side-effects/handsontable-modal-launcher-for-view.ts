@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/PageEditor/MarkdownTableUtilForView';
+import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/PageEditor/markdown-table-util-for-view';
 import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal } from '~/stores/modal';
