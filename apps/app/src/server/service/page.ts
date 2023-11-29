@@ -46,7 +46,7 @@ import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
 
-import { preNotifyService } from './preNotify';
+import { preNotifyService } from './pre-notify';
 
 const debug = require('debug')('growi:services:page');
 

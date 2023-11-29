@@ -6,7 +6,7 @@ import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/d
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
-import { preNotifyService } from '~/server/service/preNotify';
+import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';

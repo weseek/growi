@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
-import { preNotifyService } from '../service/preNotify';
+import { preNotifyService } from '../service/pre-notify';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');

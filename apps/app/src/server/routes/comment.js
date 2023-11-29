@@ -3,7 +3,7 @@ import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
-import { preNotifyService } from '../service/preNotify';
+import { preNotifyService } from '../service/pre-notify';
 
 /**
  * @swagger

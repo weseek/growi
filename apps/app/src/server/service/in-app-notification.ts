@@ -20,7 +20,7 @@ import Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
-import { preNotifyService, type PreNotify } from './preNotify';
+import { preNotifyService, type PreNotify } from './pre-notify';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;

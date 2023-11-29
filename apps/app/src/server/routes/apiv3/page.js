@@ -14,7 +14,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
-import { preNotifyService } from '~/server/service/preNotify';
+import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
