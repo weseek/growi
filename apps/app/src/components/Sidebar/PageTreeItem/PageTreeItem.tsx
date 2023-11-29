@@ -23,7 +23,7 @@ import { Ellipsis } from './Ellipsis';
 const logger = loggerFactory('growi:cli:Item');
 
 type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
-type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional> & {key};
+type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional>;
 
 export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
@@ -158,7 +158,6 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
 
   return (
     <SimpleItem
-      key={props.key}
       targetPathOrId={props.targetPathOrId}
       itemNode={props.itemNode}
       isOpen
