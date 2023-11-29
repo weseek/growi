@@ -338,19 +338,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.insertText(insertText);
+
         codeMirrorEditor?.insertText(insertText);
       }
       catch (e) {
         logger.error('failed to upload', e);
         toastError(e);
-      }
-      finally {
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.terminateUploadingState();
       }
     });
 
