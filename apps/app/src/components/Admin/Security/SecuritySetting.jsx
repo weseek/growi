@@ -468,8 +468,21 @@ class SecuritySetting extends React.Component {
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>
+            <div className="custom-control custom-switch custom-checkbox-success mt-2">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="is-force-delete-user-homepage-on-user-deletion"
+                checked={adminGeneralSecurityContainer.state.isForceDeleteUserHomepageOnUserDeletion}
+                onChange={() => { adminGeneralSecurityContainer.switchIsForceDeleteUserHomepageOnUserDeletion() }}
+                disabled={!adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
+              />
+              <label className="form-check-label" htmlFor="is-force-delete-user-homepage-on-user-deletion">
+                {t('security_settings.user_homepage_deletion.enable_force_delete_user_homepage_on_user_deletion')}
+              </label>
+            </div>
             <p
-              className="form-text text-muted small"
+              className="form-text text-muted small mt-2"
               dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.desc') }}
             />
           </div>

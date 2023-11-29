@@ -1,6 +1,8 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.4...HEAD)
+
+## [v6.2.4](https://github.com/weseek/growi/compare/v6.2.3...v6.2.4) - 2023-11-29
 
 *Please do not manually update this file. We've automated the process.*
 
