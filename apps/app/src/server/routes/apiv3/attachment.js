@@ -1,12 +1,15 @@
 import { ErrorV3 } from '@growi/core/dist/models';
+import multer from 'multer';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { Attachment } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
+import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
+
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
 const express = require('express');
@@ -30,6 +33,8 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const { attachmentService } = crowi;
+  const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
+  const addActivity = generateAddActivityMiddleware(crowi);
 
   const activityEvent = crowi.event('activity');
 
@@ -221,7 +226,7 @@ module.exports = (crowi) => {
    * @apiParam {String} path
    * @apiParam {File} file
    */
-  router.post('/add', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
+  router.post('/add', uploads.single('file'), accessTokenParser, loginRequired, apiV3FormValidator, addActivity, async(req, res) => {
     const pageId = req.body.page_id || null;
     const pagePath = req.body.path || null;
 
