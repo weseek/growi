@@ -102,7 +102,6 @@ export const isEndOfLine = (editor: EditorView): boolean => {
 /**
    * add a row at the end
    * (This function overwrite directory markdown table specified as argument.)
-   * @param {MarkdownTable} markdown table
    */
 export const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
   const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
@@ -114,7 +113,6 @@ export const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
 /**
    * return markdown table that is merged all of markdown table in array
    * (The merged markdown table options are used for the first markdown table.)
-   * @param {Array} array of markdown table
    */
 export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | undefined => {
   if (mdtableList == null || !(mdtableList instanceof Array)) {
@@ -132,7 +130,6 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | 
 /**
    * replace focused markdown table with editor
    * (A replaced table is reformed by markdown-table.)
-   * @param {MarkdownTable} table
    */
 export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table: MarkdownTable): void => {
   const botPos = getBot(editor);

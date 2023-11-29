@@ -11,10 +11,6 @@ export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: num
 
 /**
    * return markdown where the markdown table specified by line number params is replaced to the markdown table specified by table param
-   * @param {string} markdown
-   * @param {MarkdownTable} table
-   * @param beginLineNumber
-   * @param endLineNumber
    */
 export const replaceMarkdownTableInMarkdown = (table: MarkdownTable, markdown: string, beginLineNumber: number, endLineNumber: number): string => {
   const splitMarkdown = markdown.split(/\r\n|\r|\n/);
