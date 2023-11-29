@@ -10,12 +10,10 @@ export const SearchHelp = (): JSX.Element => {
 
   return (
     <>
-      <button type="button" className="btn border-0 mb-2 ps-1" onClick={() => setIsOpen(!isOpen)}>
-        <div className="text-muted d-flex justify-content-center align-items-center">
-          <span className="material-symbols-outlined me-2">help</span>
-          { t('search_help.title') }
-          <span className="material-symbols-outlined ms-2">{isOpen ? 'expand_less' : 'expand_more'}</span>
-        </div>
+      <button type="button" className="btn border-0 text-muted d-flex justify-content-center align-items-center mb-2 ps-1" onClick={() => setIsOpen(!isOpen)}>
+        <span className="material-symbols-outlined me-2">help</span>
+        { t('search_help.title') }
+        <span className="material-symbols-outlined ms-2">{isOpen ? 'expand_less' : 'expand_more'}</span>
       </button>
       <Collapse isOpen={isOpen}>
         <table className="table m-0">
