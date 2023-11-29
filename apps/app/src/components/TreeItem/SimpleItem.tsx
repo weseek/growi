@@ -253,12 +253,12 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           )}
         </div>
         {SimpleItemContent.map(ItemContent => (
-          <ItemContent {...SimpleItemContentProps} />
+          <ItemContent key={ItemContent.name} {...SimpleItemContentProps} />
         ))}
       </li>
 
       {CustomNextComponents?.map(UnderItemContent => (
-        <UnderItemContent {...SimpleItemContentProps} />
+        <UnderItemContent key={UnderItemContent.name} {...SimpleItemContentProps} />
       ))}
 
       {
