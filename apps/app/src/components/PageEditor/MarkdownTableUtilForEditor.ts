@@ -25,7 +25,7 @@ export const isInTable = (editor: EditorView): boolean => {
    * return the postion of the BOT(beginning of table)
    * (If the cursor is not in a table, return its position)
    */
-export const getBot = (editor: EditorView): number => {
+const getBot = (editor: EditorView): number => {
   if (!isInTable(editor)) {
     return curPos(editor);
   }
@@ -47,7 +47,7 @@ export const getBot = (editor: EditorView): number => {
    * return the postion of the EOT(end of table)
    * (If the cursor is not in a table, return its position)
    */
-export const getEot = (editor: EditorView): number => {
+const getEot = (editor: EditorView): number => {
   if (!isInTable(editor)) {
     return curPos(editor);
   }
@@ -90,11 +90,6 @@ export const getMarkdownTable = (editor: EditorView): MarkdownTable | undefined 
 
   const strFromBotToEot = editor.state.sliceDoc(getBot(editor), getEot(editor));
   return MarkdownTable.fromMarkdownString(strFromBotToEot);
-};
-
-export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: number): MarkdownTable => {
-  const tableLines = markdown.split(/\r\n|\r|\n/).slice(bol - 1, eol).join('\n');
-  return MarkdownTable.fromMarkdownString(tableLines);
 };
 
 /**
@@ -154,28 +149,4 @@ export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table:
     selection: { anchor: editor.state.doc.lineAt(curPos(editor)).to },
   });
   editor.focus();
-};
-
-/**
-   * return markdown where the markdown table specified by line number params is replaced to the markdown table specified by table param
-   * @param {string} markdown
-   * @param {MarkdownTable} table
-   * @param beginLineNumber
-   * @param endLineNumber
-   */
-export const replaceMarkdownTableInMarkdown = (table: MarkdownTable, markdown: string, beginLineNumber: number, endLineNumber: number): string => {
-  const splitMarkdown = markdown.split(/\r\n|\r|\n/);
-  const markdownBeforeTable = splitMarkdown.slice(0, beginLineNumber - 1);
-  const markdownAfterTable = splitMarkdown.slice(endLineNumber);
-
-  let newMarkdown = '';
-  if (markdownBeforeTable.length > 0) {
-    newMarkdown += `${markdownBeforeTable.join('\n')}\n`;
-  }
-  newMarkdown += table;
-  if (markdownAfterTable.length > 0) {
-    newMarkdown += `\n${markdownAfterTable.join('\n')}`;
-  }
-
-  return newMarkdown;
 };
