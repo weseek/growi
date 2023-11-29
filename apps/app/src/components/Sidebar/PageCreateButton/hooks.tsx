@@ -1,15 +1,14 @@
 import { useCallback, useState } from 'react';
 
-import { useRouter } from 'next/router';
 import type { Nullable, IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
+import { useRouter } from 'next/router';
+
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import loggerFactory from '~/utils/logger';
-
-const logger = loggerFactory('growi:cli:PageCreateButton');
 
 export const useOnNewButtonClicked = (
-    currentPage?:  IPagePopulatedToShowRevision | null | undefined,
+    isLoading: boolean,
+    currentPage?: IPagePopulatedToShowRevision | null,
 ): {
   onClickHandler: () => Promise<void>,
   isPageCreating: boolean
@@ -18,7 +17,7 @@ export const useOnNewButtonClicked = (
   const [isPageCreating, setIsPageCreating] = useState(false);
 
   const onClickHandler = useCallback(async() => {
-    // if (isLoading) return;
+    if (isLoading) return;
 
     try {
       setIsPageCreating(true);
@@ -41,23 +40,22 @@ export const useOnNewButtonClicked = (
       router.push(`${response.page.id}#edit`);
     }
     catch (err) {
-      logger.warn(err);
       toastError(err);
     }
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPage, router]);
+  }, [currentPage, isLoading, router]);
 
   return { onClickHandler, isPageCreating };
 };
 
 export const useOnTodaysButtonClicked = (
-  todaysPath: string,
-  currentUser?: Nullable<IUserHasId> | undefined,
+    todaysPath: string,
+    currentUser?: Nullable<IUserHasId> | undefined,
 ): {
-onClickHandler: () => Promise<void>,
-isPageCreating: boolean
+  onClickHandler: () => Promise<void>,
+  isPageCreating: boolean
 } => {
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
@@ -86,7 +84,6 @@ isPageCreating: boolean
       router.push(`${todaysPath}#edit`);
     }
     catch (err) {
-      logger.warn(err);
       toastError(err);
     }
     finally {

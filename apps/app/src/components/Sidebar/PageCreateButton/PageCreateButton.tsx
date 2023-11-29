@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 
+import { useOnTemplateButtonClicked } from '~/hooks/use-on-template-button-clicked';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
-import { useOnTemplateButtonClicked } from '~/components/Navbar/hooks';
-import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks'
+import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
 export const PageCreateButton = React.memo((): JSX.Element => {
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
@@ -22,7 +22,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const todaysPath = `${userHomepagePath}/memo/${now}`;
 
-  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPage);
+  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(isLoading, currentPage);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
   const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
 

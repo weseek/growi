@@ -4,9 +4,9 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import { useOnTemplateButtonClicked } from '~/hooks/use-on-template-button-clicked';
 import { TargetType, LabelType } from '~/interfaces/template';
 
-import { useOnTemplateButtonClicked } from './Navbar/hooks';
 
 type TemplateCardProps = {
   target: TargetType;
