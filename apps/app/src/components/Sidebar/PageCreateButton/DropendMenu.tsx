@@ -60,7 +60,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           onClick={onClickTemplateForDescendantsButtonHandler}
           type="button"
         >
-          {t('create_page_dropdown.template.decendants')}
+          {t('create_page_dropdown.template.descendants')}
         </button>
       </li>
     </ul>

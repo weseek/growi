@@ -201,7 +201,7 @@ export const Sidebar = (): JSX.Element => {
         </DrawerToggler>
       ) }
       { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
-      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
+      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} data-testid="grw-sidebar">
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
