@@ -105,11 +105,21 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
-    setMarkdownTable(table ?? defaultMarkdownTable);
+    let markdownTableState;
+    if (table == null) {
+      // markdowntable state from Editor
+      markdownTableState = mtu.getMarkdownTable(editor);
+    }
+    else {
+      // markdowntable state from View
+      markdownTableState = table;
+    }
+    const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
+    setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
     debouncedHandleWindowExpandedChange();
   };
+
 
   const expandWindow = () => {
     setIsWindowExpanded(true);
