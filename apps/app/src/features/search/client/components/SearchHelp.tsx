@@ -1,23 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { Collapse } from 'reactstrap';
 
 export const SearchHelp = (): JSX.Element => {
   const { t } = useTranslation();
+
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <p>
-        <a data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+        <button type="button" className="btn" onClick={() => setIsOpen(!isOpen)}>
           <div className="">
             <span className="material-symbols-outlined">help</span>
             { t('search_help.title') }
             <span className="material-symbols-outlined">expand_more</span>
           </div>
-
-          {/* <h5 className="h6"><i className="icon-magnifier pe-2 mb-2" />{ t('search_help.title') }</h5> */}
-        </a>
+        </button>
       </p>
-      <div className="collapse" id="collapseExample">
+      <Collapse isOpen={isOpen}>
         <table className="table grw-search-table search-help m-0">
           <tbody>
             <tr>
@@ -56,7 +58,7 @@ export const SearchHelp = (): JSX.Element => {
             </tr>
           </tbody>
         </table>
-      </div>
+      </Collapse>
     </>
   );
 };
