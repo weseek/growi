@@ -7,7 +7,7 @@ function serializeInsecureUserAttributes(userGroupRelation) {
   return userGroupRelation;
 }
 
-function serializeUserGroupRelationSecurely(userGroupRelation) {
+export function serializeUserGroupRelationSecurely(userGroupRelation) {
   let serialized = userGroupRelation;
 
   // invoke toObject if page is a model instance
@@ -19,7 +19,3 @@ function serializeUserGroupRelationSecurely(userGroupRelation) {
 
   return serialized;
 }
-
-module.exports = {
-  serializeUserGroupRelationSecurely,
-};

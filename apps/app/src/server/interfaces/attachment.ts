@@ -5,3 +5,27 @@ export const AttachmentType = {
 } as const;
 
 export type AttachmentType = typeof AttachmentType[keyof typeof AttachmentType];
+
+
+export type ExpressHttpHeader<Field = string> = {
+  field: Field,
+  value: string | string[]
+};
+
+export type IContentHeaders = {
+  contentType?: ExpressHttpHeader<'Content-Type'>;
+  contentLength?: ExpressHttpHeader<'Content-Length'>;
+  contentSecurityPolicy?: ExpressHttpHeader<'Content-Security-Policy'>;
+  contentDisposition?: ExpressHttpHeader<'Content-Disposition'>;
+}
+
+export type RespondOptions = {
+  download?: boolean,
+}
+
+export const ResponseMode = {
+  RELAY: 'relay',
+  REDIRECT: 'redirect',
+  DELEGATE: 'delegate',
+} as const;
+export type ResponseMode = typeof ResponseMode[keyof typeof ResponseMode];
