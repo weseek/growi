@@ -153,6 +153,8 @@ class PageService {
 
     // init
     this.initPageEvent();
+    this.canDeleteCompletely = this.canDeleteCompletely.bind(this);
+    this.canDelete = this.canDelete.bind(this);
   }
 
   private initPageEvent() {
@@ -260,7 +262,7 @@ class PageService {
     const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
 
     if (!this.canDeleteUserHomepageByConfig()) {
-      return filteredPages;
+      return filteredPages.filter(p => !isUsersHomepage(p.path));
     }
 
     // Confirmation of deletion of user homepages is an asynchronous process,
