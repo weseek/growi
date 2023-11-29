@@ -177,10 +177,21 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
 describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   let crowi;
 
+  const Page = mongoose.model('Page');
+
   beforeAll(async() => {
     crowi = await getInstance();
     const passportService = new PassportService(crowi);
     instanciate(passportService);
+
+    await Page.insertMany([{
+      _id: new Types.ObjectId(),
+      path: '/user',
+      grant: 1,
+      // parent: rootPage._id,
+      status: 1,
+      isEmpty: true,
+    }]);
   });
 
   beforeEach(async() => {
@@ -244,7 +255,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
       await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
 
       const groupId = new Types.ObjectId();
-      const userId = '63a8354837e7aa378e16f0b1';
+      const userId = new Types.ObjectId();
 
       await ExternalUserGroup.create({
         _id: groupId,
