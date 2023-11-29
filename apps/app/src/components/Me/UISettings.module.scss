@@ -2,11 +2,6 @@
 
 .grw-sidebar-mode-icon {
   width: 20px;
-  height:  20px;
-  :global {
-    svg {
-      display: block;
-      color: bs.$secondary;
-    }
-  }
+  height: 20px;
+  color: bs.$secondary;
 }
