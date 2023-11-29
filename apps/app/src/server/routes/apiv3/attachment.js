@@ -102,47 +102,6 @@ module.exports = (crowi) => {
     }
   });
 
-  /**
-   * @swagger
-   *
-   *    /attachment/{id}:
-   *      get:
-   *        tags: [Attachment]
-   *        description: Get attachment
-   *        responses:
-   *          200:
-   *            description: Return attachment
-   *        parameters:
-   *          - name: id
-   *            in: path
-   *            required: true
-   *            description: attachment id
-   *            schema:
-   *              type: string
-   */
-  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
-    async(req, res) => {
-      try {
-        const attachmentId = req.params.id;
-
-        const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
-
-        if (attachment == null) {
-          const message = 'Attachment not found';
-          return res.apiv3Err(message, 404);
-        }
-
-        if (attachment.creator != null && attachment.creator instanceof User) {
-          attachment.creator = serializeUserSecurely(attachment.creator);
-        }
-
-        return res.apiv3({ attachment });
-      }
-      catch (err) {
-        logger.error('Attachment retrieval failed', err);
-        return res.apiv3Err(err, 500);
-      }
-    });
 
   /**
    * @swagger
@@ -187,7 +146,6 @@ module.exports = (crowi) => {
     const fileSize = Number(req.query.fileSize);
     return res.apiv3(await fileUploadService.checkLimit(fileSize));
   });
-
 
   /**
    * @swagger
@@ -260,6 +218,7 @@ module.exports = (crowi) => {
    * @apiGroup Attachment
    *
    * @apiParam {String} page_id
+   * @apiParam {String} path
    * @apiParam {File} file
    */
   router.post('/add', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
@@ -267,11 +226,11 @@ module.exports = (crowi) => {
     const pagePath = req.body.path || null;
 
     // check params
-    if (pageId == null && pagePath == null) {
-      return res.apiv3Err('Either page_id or path is required.');
-    }
     if (req.file == null) {
       return res.apiv3Err('File error.');
+    }
+    if (pageId == null && pagePath == null) {
+      return res.apiv3Err('Either page_id or path is required.');
     }
 
     const file = req.file;
@@ -303,6 +262,47 @@ module.exports = (crowi) => {
     }
   });
 
+  /**
+   * @swagger
+   *
+   *    /attachment/{id}:
+   *      get:
+   *        tags: [Attachment]
+   *        description: Get attachment
+   *        responses:
+   *          200:
+   *            description: Return attachment
+   *        parameters:
+   *          - name: id
+   *            in: path
+   *            required: true
+   *            description: attachment id
+   *            schema:
+   *              type: string
+   */
+  router.get('/:id', accessTokenParser, certifySharedPageAttachmentMiddleware, loginRequired, validator.retrieveAttachment, apiV3FormValidator,
+    async(req, res) => {
+      try {
+        const attachmentId = req.params.id;
+
+        const attachment = await Attachment.findById(attachmentId).populate('creator').exec();
+
+        if (attachment == null) {
+          const message = 'Attachment not found';
+          return res.apiv3Err(message, 404);
+        }
+
+        if (attachment.creator != null && attachment.creator instanceof User) {
+          attachment.creator = serializeUserSecurely(attachment.creator);
+        }
+
+        return res.apiv3({ attachment });
+      }
+      catch (err) {
+        logger.error('Attachment retrieval failed', err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   return router;
 };
