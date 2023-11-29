@@ -16,7 +16,7 @@ import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
-  useIsUploadableFile, useIsUploadableImage,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
@@ -71,8 +71,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: isUploadableFile } = useIsUploadableFile();
-  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+  const { data: isUploadEnabled } = useIsUploadEnabled();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
@@ -303,7 +303,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       </Button>
     );
 
-    const isUploadable = isUploadableImage || isUploadableFile;
+    const isUploadable = isUploadEnabled || isUploadAllFileAllowed;
 
     return (
       <>
@@ -315,7 +315,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 ref={editorRef}
                 value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                isUploadAllFileAllowed={isUploadAllFileAllowed}
                 onChange={onChangeHandler}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}

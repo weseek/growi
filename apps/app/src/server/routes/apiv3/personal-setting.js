@@ -10,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import EditorSettings from '../../models/editor-settings';
+import ExternalAccount from '../../models/external-account';
 import InAppNotificationSettings from '../../models/in-app-notification-settings';
 
 
@@ -75,7 +76,7 @@ module.exports = (crowi) => {
   const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  const { User, ExternalAccount } = crowi.models;
+  const { User } = crowi.models;
 
   const activityEvent = crowi.event('activity');
 

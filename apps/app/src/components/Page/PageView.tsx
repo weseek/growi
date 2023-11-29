@@ -112,14 +112,6 @@ export const PageView = (props: Props): JSX.Element => {
   const footerContents = !isIdenticalPathPage && !isNotFound
     ? (
       <>
-        <div id="comments-container" ref={commentsContainerRef}>
-          <Comments
-            pageId={page._id}
-            pagePath={pagePath}
-            revision={page.revision}
-            onLoaded={() => setCommentsLoaded(true)}
-          />
-        </div>
         {(isUsersHomepagePath && page.creator != null) && (
           <UsersHomepageFooter creatorId={page.creator._id} />
         )}
@@ -139,10 +131,26 @@ export const PageView = (props: Props): JSX.Element => {
     return (
       <>
         <PageContentsUtilities />
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+
+        <div className="flex-expand-vert justify-content-between">
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+
+          { !isIdenticalPathPage && !isNotFound && (
+            <div id="comments-container" ref={commentsContainerRef}>
+              <Comments
+                pageId={page._id}
+                pagePath={pagePath}
+                revision={page.revision}
+                onLoaded={() => setCommentsLoaded(true)}
+              />
+            </div>
+          ) }
+        </div>
       </>
     );
   };
+
+  const mobileClass = isMobile ? styles['page-mobile'] : '';
 
   return (
     <PageViewLayout
@@ -156,7 +164,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+          <div className={`flex-expand-vert ${mobileClass}`}>
             <Contents />
           </div>
         </>

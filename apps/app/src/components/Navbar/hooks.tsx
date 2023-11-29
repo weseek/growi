@@ -1,10 +1,11 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { createPage } from '~/client/services/page-operation';
+import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { LabelType } from '~/interfaces/template';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -14,8 +15,8 @@ const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 export const useOnPageEditorModeButtonClicked = (
     setIsCreating:React.Dispatch<React.SetStateAction<boolean>>,
     path?: string,
-    grant?: number,
-    grantUserGroupId?: string,
+    // grant?: number,
+    // grantUserGroupId?: string,
 ): (editorMode: EditorMode) => Promise<void> => {
   const router = useRouter();
   const { t } = useTranslation('commons');
@@ -23,7 +24,7 @@ export const useOnPageEditorModeButtonClicked = (
   const { mutate: mutateEditorMode } = useEditorMode();
 
   return useCallback(async(editorMode: EditorMode) => {
-    if (isNotFound == null || path == null || grant == null) {
+    if (isNotFound == null || path == null) {
       return;
     }
 
@@ -34,9 +35,9 @@ export const useOnPageEditorModeButtonClicked = (
         const params = {
           isSlackEnabled: false,
           slackChannels: '',
-          grant,
-          pageTags: [],
-          grantUserGroupId,
+          grant: 4,
+          // grant,
+          // grantUserGroupId,
         };
 
         const response = await createPage(path, '', params);
@@ -54,5 +55,49 @@ export const useOnPageEditorModeButtonClicked = (
     }
 
     mutateEditorMode(editorMode);
-  }, [grant, grantUserGroupId, isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
+  }, [isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
+};
+
+export const useOnTemplateButtonClicked = (
+    currentPagePath: string,
+): {
+  onClickHandler: (label: LabelType) => Promise<void>,
+  isPageCreating: boolean
+} => {
+  const router = useRouter();
+  const [isPageCreating, setIsPageCreating] = useState(false);
+
+  const onClickHandler = useCallback(async(label: LabelType) => {
+    try {
+      setIsPageCreating(true);
+
+      const path = currentPagePath == null || currentPagePath === '/'
+        ? `/${label}`
+        : `${currentPagePath}/${label}`;
+
+      const params = {
+        isSlackEnabled: false,
+        slackChannels: '',
+        grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
+      };
+
+      const res = await exist(JSON.stringify([path]));
+      if (!res.pages[path]) {
+        await createPage(path, '', params);
+      }
+
+      router.push(`${path}#edit`);
+    }
+    catch (err) {
+      logger.warn(err);
+      toastError(err);
+    }
+    finally {
+      setIsPageCreating(false);
+    }
+  }, [currentPagePath, router]);
+
+  return { onClickHandler, isPageCreating };
 };
