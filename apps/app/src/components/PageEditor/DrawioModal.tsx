@@ -4,6 +4,7 @@ import React, {
   useMemo,
 } from 'react';
 
+import { useDrawioModalForEditor } from '@growi/editor/src/stores/use-drawio';
 import {
   Modal,
   ModalBody,
@@ -47,7 +48,9 @@ export const DrawioModal = (): JSX.Element => {
   });
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
+  const { data: drawioModalDataInEditor } = useDrawioModalForEditor();
   const isOpened = drawioModalData?.isOpened ?? false;
+  const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
 
   const drawioUriWithParams = useMemo(() => {
     if (rendererConfig == null) {
@@ -109,7 +112,7 @@ export const DrawioModal = (): JSX.Element => {
 
   return (
     <Modal
-      isOpen={isOpened}
+      isOpen={isOpened || isOpendInEditor}
       toggle={() => closeDrawioModal()}
       backdrop="static"
       className="drawio-modal grw-body-only-modal-expanded"
