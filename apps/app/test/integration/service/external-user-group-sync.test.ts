@@ -177,6 +177,8 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
 describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   let crowi;
 
+  const id = new Types.ObjectId();
+
   beforeAll(async() => {
     crowi = await getInstance();
     const passportService = new PassportService(crowi);
@@ -191,7 +193,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
       provider: 'ldap',
     });
     await mongoose.model('Page').insertMany([{
-      _id: new Types.ObjectId(),
+      _id: id,
       path: '/user',
       grant: 1,
       // parent: rootPage._id,
@@ -203,7 +205,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   afterEach(async() => {
     await ExternalUserGroup.deleteMany();
     await mongoose.model('Page').deleteMany([{
-      _id: new Types.ObjectId(),
+      _id: id,
       path: '/user',
       grant: 1,
       // parent: rootPage._id,
