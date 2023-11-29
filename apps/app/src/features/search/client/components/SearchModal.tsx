@@ -4,7 +4,6 @@ import {
   Modal,
   ModalHeader,
   ModalBody,
-  ModalFooter,
 } from 'reactstrap';
 
 import { useSearchModal } from '../stores/search';
@@ -15,7 +14,7 @@ const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
 
   return (
-    <Modal isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
+    <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalHeader>
         header
       </ModalHeader>
@@ -23,10 +22,6 @@ const SearchModal = (): JSX.Element => {
       <ModalBody>
         <SearchHelp />
       </ModalBody>
-
-      <ModalFooter>
-        footer
-      </ModalFooter>
     </Modal>
   );
 };
