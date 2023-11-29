@@ -27,10 +27,10 @@ module.exports = {
       {
         loadPath: '/static/locales/{{lng}}/{{ns}}.json',
         addPath: 'static/locales/add/{{lng}}/{{ns}}',
-        projectId: '2ce91e4f-98e9-43a0-8da7-ae5ebd4d2e49',
-        apiKey: '53989b1a-db2d-4084-a765-d33ac45b356e',
-        referenceLng: 'ja_JP',
+        projectId: '18aa0d2c-329a-4c9c-a39e-ce63212684f2',
+        apiKey: 'd73382b5-fa0e-45da-a104-c106e9c1432d',
         version: 'latest',
+        private: true,
       },
     ],
   },
