@@ -3,9 +3,8 @@ import { FC } from 'react';
 import type { HasObjectId, IPage, IUser } from '@growi/core';
 import { useRouter } from 'next/router';
 
-
 import { SupportedTargetModel } from '~/interfaces/activity';
-import { IInAppNotification } from '~/interfaces/in-app-notification';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 
 import PageModelNotification from './PageModelNotification';
