@@ -1,4 +1,5 @@
 import type { IAttachmentHasId } from '@growi/core';
+import { format } from 'date-fns';
 
 import { UserPicture } from './UserPicture';
 
@@ -38,6 +39,9 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
     : '';
   const fileType = <span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span>;
   const fileInUse = (inUse) ? <span className="attachment-in-use badge badge-pill badge-info">In Use</span> : '';
+  // Should UserDate be used like PageRevisionTable ?
+  const formatType = 'yyyy/MM/dd HH:mm:ss';
+  const createdAt = format(new Date(attachment.createdAt), formatType);
 
   return (
     <div className="attachment mb-2">
@@ -48,6 +52,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
         <i className={formatIcon}></i> {attachment.originalName}
       </a>
       <span className="mr-2">{fileType}</span>
+      <span className="mr-2">{createdAt}</span>
       <span className="mr-2">{fileInUse}</span>
       <span className="mr-2">{btnDownload}</span>
       <span className="mr-2">{btnTrash}</span>

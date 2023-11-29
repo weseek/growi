@@ -86,7 +86,8 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     if (onClickRenameMenuItem == null) {
       return;
     }
-    if (!pageInfo?.isMovable) {
+
+    if (!pageInfo?.isDeletable) {
       logger.warn('This page could not be renamed.');
       return;
     }
@@ -177,9 +178,10 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* Move/Rename */}
-        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && (
           <DropdownItem
             onClick={renameItemClickedHandler}
+            disabled={!pageInfo.isDeletable}
             data-testid="open-page-move-rename-modal-btn"
             className="grw-page-control-dropdown-item"
           >
@@ -231,7 +233,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
 
         {/* divider */}
         {/* Delete */}
-        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
+        { !forceHideMenuItems?.includes(MenuItemType.DELETE) && isEnableActions && !isReadOnlyUser && (
           <>
             { showDeviderBeforeDelete && <DropdownItem divider /> }
             <DropdownItem
