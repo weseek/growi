@@ -1,8 +1,91 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.1.12...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.3](https://github.com/weseek/growi/compare/v6.2.2...v6.2.3) - 2023-11-13
+
+### 🚀 Improvement
+
+- imprv: Certify shared page attachment middleware (#8211) @yuki-takei
+- imprv: Printing styles 2 (#8203) @yuki-takei
+
+## [v6.2.2](https://github.com/weseek/growi/compare/v6.2.1...v6.2.2) - 2023-10-30
+
+### 🚀 Improvement
+
+- imprv: Printing styles (#8195) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Show liker counts in lsx (#8194) @yuki-takei
+
+### 🧰 Maintenance
+
+- ci(deps-dev): bump postcss from 8.4.26 to 8.4.31 (#8142) @dependabot
+- ci(deps): bump cypress-io/github-action from 5 to 6 (#8051) @dependabot
+- ci(deps): bump amannn/action-semantic-pull-request from 5.0.2 to 5.3.0 (#8127) @dependabot
+- ci(deps): bump aws-actions/configure-aws-credentials from 2 to 4 (#8128) @dependabot
+
+## [v6.2.1](https://github.com/weseek/growi/compare/v6.2.0...v6.2.1) - 2023-10-03
+
+### BREAKING CHANGES
+
+- support: Omit promster (#8105) @yuki-takei
+
+### 🚀 Improvement
+
+- imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
+- imprv: Admin customize presentation form (#8083) @meiri-k
+- imprv: i18n for marp settings (#8110) @moekumasaka
+- imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
+
+### 🐛 Bug Fixes
+
+- fix: Marp is enabled incorrectly problem (#8100) @reiji-h
+- fix: Do not work img tag if use style property 62x (#8092) @jam411
+
+### 🧰 Maintenance
+
+- support: Internationalization USER_REGISTRATION_APPROVAL_REQUEST label for v62x (#8130) @jam411
+- ci(deps): bump get-func-name from 2.0.0 to 2.0.2 (#8119) @dependabot
+- support: Omit promster (#8105) @yuki-takei
+
+## [v6.2.0](https://github.com/weseek/growi/compare/v6.1.12...v6.2.0) - 2023-09-14
+
+### 💎 Features
+
+- feat: Presentation preview and support Marp  (#8029) @reiji-h
+
+### 🚀 Improvement
+
+- imprv: Able to customize users homepage deletion (#7921) @yuki-takei
+- imprv: Search behavior (#8069) @yuki-takei
+- imprv: Add CSP style-src for Safari and Content-Disposition of attachment (#8049) @ykanematsu
+- imprv: Correct update message (#8040) @reiji-h
+- imprv: Add installed date to questionnaire answer (#7971) @TatsuyaIse
+- imprv: Show modal when you delete plugin (#7875) @soumaeda
+- imprv: i18n resetting password mail body (#8058) @meiri-k
+- imprv: Create Japanese ejs files (#7957) @meiri-k
+- imprv: Clean up old toastr (#7949) @jam411
+- imprv: Persist the installed date in the Config collection (#7936) @TatsuyaIse
+
+### 🐛 Bug Fixes
+
+- fix: Pages can be created under a non-existent user page (#7974) @miya
+- fix: Pages can be created under a non-existent user page (During attachment upload) (#8001) @miya
+- fix: Type safe implementation for objects imported from ElasticsearchClient (#7862) @miya
+- fix: Consider an empty page when renaming and duplicating (#7979) @yuki-takei
+- fix: Remove redundant toastSuccess for pasted attachments (#8044) @jam411
+- fix: Fixing swagger for tag update api (#8010) @miya
+- fix: Modification of links in the docs (#8004) @miya
+
+### 🧰 Maintenance
+
+- support: Omit core-js v2 (#7944) @yuki-takei
+- support: Improve build settings (#7919) @yuki-takei
+- support: Url to join to the slack team (#8073) @WNomunomu
 
 ## [v6.1.15](https://github.com/weseek/growi/compare/v6.1.14...v6.1.15) - 2023-09-11
 

@@ -1,5 +1,7 @@
 @use './bootstrap/init' as bs;
 
+@import './mixins/share-link';
+
 @mixin variable-font-size($basesize) {
   font-size: $basesize * 0.6;
 

@@ -20,7 +20,7 @@ function serializeInsecureUserAttributes(page) {
   return page;
 }
 
-function serializePageSecurely(page) {
+export function serializePageSecurely(page) {
   let serialized = page;
 
   // invoke toObject if page is a model instance
@@ -36,7 +36,3 @@ function serializePageSecurely(page) {
 
   return serialized;
 }
-
-module.exports = {
-  serializePageSecurely,
-};

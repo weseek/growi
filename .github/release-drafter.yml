@@ -7,7 +7,7 @@ filter-by-commitish: true
 categories:
   - title: 'BREAKING CHANGES'
     labels:
-      - 'type/reaking'
+      - 'type/breaking'
   - title: '💎 Features'
     labels:
       - 'type/feature'

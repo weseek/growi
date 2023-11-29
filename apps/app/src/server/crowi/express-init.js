@@ -24,7 +24,6 @@ module.exports = function(crowi, app) {
   const flash = require('connect-flash');
   const mongoSanitize = require('express-mongo-sanitize');
 
-  const promster = require('../middlewares/promster')(crowi, app);
   const registerSafeRedirect = registerSafeRedirectFactory();
   const injectCurrentuserToLocalvars = require('../middlewares/inject-currentuser-to-localvars')();
   const autoReconnectToS2sMsgServer = require('../middlewares/auto-reconnect-to-s2s-msg-server')(crowi);
@@ -133,7 +132,6 @@ module.exports = function(crowi, app) {
   app.use(flash());
   app.use(mongoSanitize());
 
-  app.use(promster);
   app.use(registerSafeRedirect);
   app.use(injectCurrentuserToLocalvars);
   app.use(autoReconnectToS2sMsgServer);

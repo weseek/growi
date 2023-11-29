@@ -2,7 +2,6 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useEditorModeClassName } from '../../client/services/layout';
 import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
@@ -21,10 +20,8 @@ type Props = {
 }
 
 export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
-  const className = useEditorModeClassName();
-
   return (
-    <RawLayout className={className}>
+    <RawLayout className="share-link">
       <GrowiNavbar isGlobalSearchHidden />
 
       <div className="page-wrapper d-flex d-print-block">

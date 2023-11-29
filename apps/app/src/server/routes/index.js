@@ -5,7 +5,6 @@ import { middlewareFactory as rateLimiterFactory } from '~/features/rate-limiter
 
 import { generateAddActivityMiddleware } from '../middlewares/add-activity';
 import apiV1FormValidator from '../middlewares/apiv1-form-validator';
-import { generateCertifyBrandLogoMiddleware } from '../middlewares/certify-brand-logo';
 import { excludeReadOnlyUser } from '../middlewares/exclude-read-only-user';
 import injectResetOrderByTokenMiddleware from '../middlewares/inject-reset-order-by-token-middleware';
 import injectUserRegistrationOrderByTokenMiddleware from '../middlewares/inject-user-registration-order-by-token-middleware';
@@ -14,6 +13,8 @@ import {
   generateUnavailableWhenMaintenanceModeMiddleware, generateUnavailableWhenMaintenanceModeMiddlewareForApi,
 } from '../middlewares/unavailable-when-maintenance-mode';
 
+import * as attachment from './attachment';
+import { routesFactory as attachmentApiRoutesFactory } from './attachment/api';
 import * as forgotPassword from './forgot-password';
 import nextFactory from './next';
 import * as userActivation from './user-activation';
@@ -33,17 +34,14 @@ module.exports = function(crowi, app) {
   const loginRequiredStrictly = require('../middlewares/login-required')(crowi);
   const loginRequired = require('../middlewares/login-required')(crowi, true);
   const adminRequired = require('../middlewares/admin-required')(crowi);
-  const certifySharedFile = require('../middlewares/certify-shared-file')(crowi);
-  const certifyBrandLogo = generateCertifyBrandLogoMiddleware(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const page = require('./page')(crowi, app);
   const login = require('./login')(crowi, app);
   const loginPassport = require('./login-passport')(crowi, app);
-  const me = require('./me')(crowi, app);
   const admin = require('./admin')(crowi, app);
-  const attachment = require('./attachment')(crowi, app);
+  const attachmentApi = attachmentApiRoutesFactory(crowi).api;
   const comment = require('./comment')(crowi, app);
   const tag = require('./tag')(crowi, app);
   const search = require('./search')(crowi, app);
@@ -109,7 +107,8 @@ module.exports = function(crowi, app) {
   app.post('/_api/admin/import/qiita'           , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.importDataFromQiita);
   app.post('/_api/admin/import/testQiitaAPI'    , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.api.testQiitaAPI);
 
-  app.get('/attachment/brand-logo' , certifyBrandLogo, loginRequired, attachment.api.getBrandLogo);
+  // brand logo
+  app.use('/attachment', attachment.getBrandLogoRouterFactory(crowi));
 
   /*
    * Routes below are unavailable when maintenance mode
@@ -121,8 +120,6 @@ module.exports = function(crowi, app) {
   const apiV1Router = express.Router();
 
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
-
-  apiV1Router.get('/me/user-group-relations'  , accessTokenParser , loginRequiredStrictly , me.api.userGroupRelations);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
   apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
@@ -143,11 +140,11 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachment.api.add);
-  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachment.api.uploadProfileImage);
-  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachment.api.remove);
-  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, attachment.api.removeProfileImage);
-  apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachment.api.limit);
+  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, addActivity , attachmentApi.add);
+  apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
+  apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
+  apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
+  apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachmentApi.limit);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
@@ -156,10 +153,9 @@ module.exports = function(crowi, app) {
 
   app.get('/me'                                   , loginRequiredStrictly, next.delegateToNext);
   app.get('/me/*'                                 , loginRequiredStrictly, next.delegateToNext);
-  app.get('/attachment/:id([0-9a-z]{24})' , certifySharedFile , loginRequired, attachment.api.get);
-  app.get('/attachment/profile/:id([0-9a-z]{24})' , loginRequired, attachment.api.get);
-  app.get('/attachment/:pageId/:fileName'       , loginRequired, attachment.api.obsoletedGetForMongoDB); // DEPRECATED: remains for backward compatibility for v3.3.x or below
-  app.get('/download/:id([0-9a-z]{24})'         , loginRequired, attachment.api.download);
+
+  app.use('/attachment', attachment.getRouterFactory(crowi));
+  app.use('/download', attachment.downloadRouterFactory(crowi));
 
   app.get('/_search'                            , loginRequired, next.delegateToNext);
 

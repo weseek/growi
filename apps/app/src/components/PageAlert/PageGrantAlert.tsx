@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { isPopulated } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -12,6 +13,10 @@ export const PageGrantAlert = (): JSX.Element => {
   if (pageData == null || pageData.grant == null || pageData.grant === 1) {
     return <></>;
   }
+
+  const populatedGrantedGroups = () => {
+    return pageData.grantedGroups.filter(group => isPopulated(group.item));
+  };
 
   const renderAlertContent = () => {
     const getGrantLabel = () => {
@@ -32,7 +37,11 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i><strong>{pageData.grantedGroup.name}</strong>
+            <i className="icon-fw icon-organization"></i>
+            <strong>{
+              populatedGrantedGroups().map(g => g.item.name).join(', ')
+            }
+            </strong>
           </>
         );
       }

@@ -1,16 +1,22 @@
+import path from 'path';
+
 import {
   AllSubscriptionStatusType, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import sanitize from 'sanitize-filename';
 
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
+import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -195,7 +201,9 @@ module.exports = (crowi) => {
     updateGrant: [
       param('pageId').isMongoId().withMessage('pageId is required'),
       body('grant').isInt().withMessage('grant is required'),
-      body('grantedGroup').optional().isMongoId().withMessage('grantedGroup must be a mongo id'),
+      body('grantedGroups').optional().isArray().withMessage('grantedGroups must be an array'),
+      body('grantedGroups.*.type').isString().withMessage('grantedGroups type is required'),
+      body('grantedGroups.*.item').isMongoId().withMessage('grantedGroups item is required'),
     ],
     export: [
       query('format').isString().isIn(['md', 'pdf']),
@@ -455,27 +463,30 @@ module.exports = (crowi) => {
     }
 
     const {
-      path, grant, grantedUsers, grantedGroup,
+      path, grant, grantedUsers, grantedGroups,
     } = page;
 
     let isGrantNormalized;
     try {
-      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroup, false, false);
+      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
       return res.apiv3Err(err, 500);
     }
 
-    const currentPageUserGroup = await UserGroup.findOne({ _id: grantedGroup });
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
+    const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
+    const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
+    const grantedUserGroupData = currentPageUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: 'UserGroup' };
+    });
+    const grantedExternalUserGroupData = currentPageExternalUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: 'ExternalUserGroup' };
+    });
     const currentPageGrant = {
       grant,
-      grantedGroup: currentPageUserGroup != null
-        ? {
-          id: currentPageUserGroup._id,
-          name: currentPageUserGroup.name,
-        }
-        : null,
+      grantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
     };
 
     // page doesn't have parent page
@@ -500,15 +511,21 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const parentPageUserGroup = await UserGroup.findOne({ _id: parentPage.grantedGroup });
+    const {
+      grantedUserGroups: parentGrantedUserGroupIds,
+      grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
+    } = divideByType(parentPage.grantedGroups);
+    const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
+    const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
+    const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
+      return { id: group._id, name: group.name };
+    });
+    const parentGrantedExternalUserGroupData = parentPageExternalUserGroups.map((group) => {
+      return { id: group._id, name: group.name };
+    });
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedGroup: parentPageUserGroup != null
-        ? {
-          id: parentPageUserGroup._id,
-          name: parentPageUserGroup.name,
-        }
-        : null,
+      grantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
     };
 
     const grantData = {
@@ -545,7 +562,7 @@ module.exports = (crowi) => {
 
   router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
-    const { grant, grantedGroup } = req.body;
+    const { grant, grantedGroups } = req.body;
 
     const Page = crowi.model('Page');
 
@@ -559,8 +576,8 @@ module.exports = (crowi) => {
     let data;
     try {
       const shouldUseV4Process = false;
-      const grantData = { grant, grantedGroup };
-      data = await this.crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
+      const grantData = { grant, grantedGroups };
+      data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {
       logger.error('Error occurred while processing calcApplicableGrantData.', err);
@@ -585,6 +602,7 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { format, revisionId = null } = req.query;
     let revision;
+    let pagePath;
 
     try {
       const Page = crowi.model('Page');
@@ -603,6 +621,7 @@ module.exports = (crowi) => {
 
       const Revision = crowi.model('Revision');
       revision = await Revision.findById(revisionIdForFind);
+      pagePath = page.path;
 
       // Error if pageId and revison's pageIds do not match
       if (page._id.toString() !== revision.pageId.toString()) {
@@ -614,7 +633,16 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const fileName = revision.id;
+    // replace forbidden characters to '_'
+    // refer to https://kb.acronis.com/node/56475?ckattempt=1
+    let fileName = sanitize(path.basename(pagePath), { replacement: '_' });
+
+
+    // replace root page name to '_top'
+    if (fileName === '') {
+      fileName = '_top';
+    }
+
     let stream;
 
     try {
@@ -626,7 +654,7 @@ module.exports = (crowi) => {
     }
 
     res.set({
-      'Content-Disposition': `attachment;filename*=UTF-8''${fileName}.${format}`,
+      'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(fileName)}.${format}`,
     });
 
     const parameters = {

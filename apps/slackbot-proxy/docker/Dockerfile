@@ -29,6 +29,7 @@ COPY --from=base ${optDir}/out/yarn.lock ./yarn.lock
 
 # setup (with network-timeout = 1 hour)
 RUN yarn config set network-timeout 3600000
+RUN yarn global add node-gyp
 RUN yarn --frozen-lockfile
 
 # make artifacts
