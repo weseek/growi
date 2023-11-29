@@ -205,7 +205,7 @@ module.exports = (crowi) => {
    *                    page:
    *                      $ref: '#/components/schemas/Page'
    *                    attachment:
-   *                      $ref: '#/components/schemas/Attachment'
+   *                      $ref: '#/components/schemas/AttachmentProfile'
    *                    url:
    *                      $ref: '#/components/schemas/Attachment/properties/url'
    *                    pageCreated:
