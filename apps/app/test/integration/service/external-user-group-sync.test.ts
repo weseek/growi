@@ -244,7 +244,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
       await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
 
       const groupId = new Types.ObjectId();
-      const userId = new Types.ObjectId();
+      const userId = '63a8354837e7aa378e16f0b1';
 
       await ExternalUserGroup.create({
         _id: groupId,

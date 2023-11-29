@@ -2062,6 +2062,8 @@ class PageService {
       throw new Error(msg);
     }
 
+    console.log('userHomepage', userHomepage);
+
     if (userHomepage.parent == null) {
       const msg = 'user homepage parent is not found.';
       logger.error(msg);
