@@ -42,6 +42,9 @@ import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
+import { divideByType } from '../util/granted-group';
+
+import { configManager } from './config-manager';
 
 const debug = require('debug')('growi:services:page');
 
