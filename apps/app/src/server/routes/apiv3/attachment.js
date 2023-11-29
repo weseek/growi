@@ -27,6 +27,64 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
  *    name: Attachment
  */
 
+
+/**
+ * @swagger
+ *
+ *  components:
+ *    schemas:
+ *      Attachment:
+ *        description: Attachment
+ *        type: object
+ *        properties:
+ *          _id:
+ *            type: string
+ *            description: attachment ID
+ *            example: 5e0734e072560e001761fa67
+ *          __v:
+ *            type: number
+ *            description: attachment version
+ *            example: 0
+ *          fileFormat:
+ *            type: string
+ *            description: file format in MIME
+ *            example: text/plain
+ *          fileName:
+ *            type: string
+ *            description: file name
+ *            example: 601b7c59d43a042c0117e08dd37aad0aimage.txt
+ *          originalName:
+ *            type: string
+ *            description: original file name
+ *            example: file.txt
+ *          creator:
+ *            $ref: '#/components/schemas/User'
+ *          page:
+ *            type: string
+ *            description: page ID attached at
+ *            example: 5e07345972560e001761fa63
+ *          createdAt:
+ *            type: string
+ *            description: date created at
+ *            example: 2010-01-01T00:00:00.000Z
+ *          fileSize:
+ *            type: number
+ *            description: file size
+ *            example: 3494332
+ *          url:
+ *            type: string
+ *            description: attachment URL
+ *            example: http://localhost/files/5e0734e072560e001761fa67
+ *          filePathProxied:
+ *            type: string
+ *            description: file path proxied
+ *            example: "/attachment/5e0734e072560e001761fa67"
+ *          downloadPathProxied:
+ *            type: string
+ *            description: download path proxied
+ *            example: "/download/5e0734e072560e001761fa67"
+ */
+
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
