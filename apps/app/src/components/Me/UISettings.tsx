@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import SidebarDockIcon from '../Icons/SidebarDockIcon';
-import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
+import SidebarDockIcon from './SidebarDockIcon';
+import SidebarDrawerIcon from './SidebarDrawerIcon';
 
 import styles from './UISettings.module.scss';
 
