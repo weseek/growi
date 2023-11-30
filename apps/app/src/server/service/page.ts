@@ -2058,12 +2058,6 @@ class PageService {
       throw new Error(msg);
     }
 
-    if (userHomepage.parent == null) {
-      const msg = 'user homepage parent is not found.';
-      logger.error(msg);
-      throw new Error(msg);
-    }
-
     const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
 
     const ids = [userHomepage._id];
