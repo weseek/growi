@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 
-import { useOnTemplateButtonClicked } from '~/hooks/use-on-template-button-clicked';
+import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
+import { toastError } from '~/client/util/toastr';
+import { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -25,6 +27,15 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(isLoading, currentPage);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
   const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
+
+  const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
+    try {
+      await onClickTemplateButton(label);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [onClickTemplateButton]);
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);
@@ -58,7 +69,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickNewButton}
             onClickCreateTodaysButtonHandler={onClickTodaysButton}
-            onClickTemplateButtonHandler={onClickTemplateButton}
+            onClickTemplateButtonHandler={onClickTemplateButtonHandler}
           />
         </div>
       )}

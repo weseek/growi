@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useOnTemplateButtonClicked } from '~/hooks/use-on-template-button-clicked';
+import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
+import { toastError } from '~/client/util/toastr';
 import { TargetType, LabelType } from '~/interfaces/template';
 
 
@@ -56,6 +57,15 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
   const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
 
+  const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
+    try {
+      await onClickTemplateButton(label);
+    }
+    catch (err) {
+      toastError(err);
+    }
+  }, [onClickTemplateButton]);
+
   const parentPath = pathUtils.addTrailingSlash(path);
 
   const renderTemplateCard = (target: TargetType, label: LabelType) => (
@@ -64,7 +74,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
         target={target}
         label={label}
         isPageCreating={isPageCreating}
-        onClickHandler={() => onClickTemplateButton(label)}
+        onClickHandler={() => onClickTemplateButtonHandler(label)}
       />
     </div>
   );

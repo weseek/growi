@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
 
 export const useOnTemplateButtonClicked = (
@@ -39,7 +38,7 @@ export const useOnTemplateButtonClicked = (
       router.push(`${path}#edit`);
     }
     catch (err) {
-      toastError(err);
+      throw err;
     }
     finally {
       setIsPageCreating(false);
