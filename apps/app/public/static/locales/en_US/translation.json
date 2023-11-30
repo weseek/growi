@@ -254,10 +254,6 @@
     "side_bar_mode": {
       "side_bar_mode_setting": "Set the sidebar mode",
       "description": "You can set whether the sidebar is always open or not."
-    },
-    "edit_side_bar_mode": {
-      "side_bar_mode_setting": "Set the mode of the sidebar when editing",
-      "description": "You can set whether the sidebar is always open when editing content."
     }
   },
   "editor_settings": {

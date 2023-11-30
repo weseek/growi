@@ -255,10 +255,6 @@
     "side_bar_mode": {
       "side_bar_mode_setting": "サイドバーのモードを設定する",
       "description": "サイドバーを常時開いた状態にするかどうかを設定できます。"
-    },
-    "edit_side_bar_mode": {
-      "side_bar_mode_setting": "編集時のサイドバーのモードを設定する",
-      "description": "コンテンツ編集時に、サイドバーを常時開いた状態にするかどうかを設定できます。"
     }
   },
   "editor_settings": {
