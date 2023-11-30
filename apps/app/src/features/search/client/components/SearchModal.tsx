@@ -38,7 +38,7 @@ const SearchModal = (): JSX.Element => {
           onClickClearButton={clickClearButtonHandler}
         />
         <div className="border-top mt-3 mb-3" />
-        <SearchButtons />
+        <SearchButtons searchText={searchText} />
         <div className="border-top mt-2 mb-2" />
         <SearchHelp />
       </ModalBody>
