@@ -193,11 +193,21 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
   });
 
   afterEach(async() => {
+    const result = await await mongoose.model('Page').find();
+    console.log(result.map(r => r.path));
+
     await ExternalUserGroup.deleteMany();
     await ExternalUserGroupRelation.deleteMany();
     await mongoose.model('User')
       .deleteMany({ username: { $in: ['childGroupUser', 'parentGroupUser', 'grandParentGroupUser', 'previouslySyncedGroupUser'] } });
     await ExternalAccount.deleteMany({ accountId: { $in: ['childGroupUser', 'parentGroupUser', 'grandParentGroupUser', 'previouslySyncedGroupUser'] } });
+    // await mongoose.model('Page').deleteMany({
+    //   path: {
+    //     $in: [
+    //       '/user/childGroupUser', '/user/parentGroupUser', '/user/grandParentGroupUser', '/user/previouslySyncedGroupUser',
+    //     ],
+    //   },
+    // });
   });
 
   describe('When autoGenerateUserOnGroupSync is true', () => {

@@ -14,6 +14,7 @@ import { DropdownItem } from 'reactstrap';
 import { exportAsMarkdown, updateContentWidth, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -22,7 +23,7 @@ import {
 import { usePageTagsForEditors } from '~/stores/editor';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, IPageForPageDuplicateModal,
-  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal, usePageBulkExportSelectModal,
+  usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
   useSWRMUTxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateTagData, useSWRxPageInfo,
@@ -32,6 +33,7 @@ import {
   EditorMode, useDrawerMode, useEditorMode, useIsAbleToShowPageManagement, useIsAbleToShowTagLabel,
   useIsAbleToChangeEditorMode, useIsAbleToShowPageAuthors,
 } from '~/stores/ui';
+
 
 import CreateTemplateModal from '../CreateTemplateModal';
 import AttachmentIcon from '../Icons/AttachmentIcon';

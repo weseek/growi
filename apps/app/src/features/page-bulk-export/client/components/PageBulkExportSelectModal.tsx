@@ -2,7 +2,7 @@ import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { usePageBulkExportSelectModal } from '~/stores/modal';
+import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
