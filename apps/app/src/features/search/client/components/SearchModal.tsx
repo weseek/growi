@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback,
+  useState, useCallback, useEffect,
 } from 'react';
 
 import { Modal, ModalBody } from 'reactstrap';
@@ -21,6 +21,12 @@ const SearchModal = (): JSX.Element => {
   const clickClearButtonHandler = useCallback(() => {
     setSearchText('');
   }, []);
+
+  useEffect(() => {
+    if (!searchModalData?.isOpened) {
+      setSearchText('');
+    }
+  }, [searchModalData?.isOpened]);
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
