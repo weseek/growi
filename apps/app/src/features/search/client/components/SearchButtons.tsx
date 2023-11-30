@@ -22,7 +22,7 @@ export const SearchButtons = (props: Props): JSX.Element => {
               <span className="material-symbols-outlined fs-4 me-3">search</span>
               <span>{searchText}</span>
               <div className="ms-auto">
-                <span>Search in all</span>
+                <span>{t('search_buttons.search_in_all')}</span>
               </div>
             </div>
           </tr>
@@ -34,7 +34,7 @@ export const SearchButtons = (props: Props): JSX.Element => {
             <code>~pagehoge/</code>
             <span className="ms-2">{searchText}</span>
             <div className="ms-auto">
-              <span>{t('header_search_box.item_label.This tree')}</span>
+              <span>{t('search_buttons.only_children_of_this_tree')}</span>
             </div>
           </div>
         </tr>
@@ -45,7 +45,7 @@ export const SearchButtons = (props: Props): JSX.Element => {
               <span className="material-symbols-outlined fs-4 me-3">search</span>
               <span>{`"${searchText}"`}</span>
               <div className="ms-auto">
-                <span>Exact match</span>
+                <span>{t('search_buttons.exact_mutch')}</span>
               </div>
             </div>
           </tr>
