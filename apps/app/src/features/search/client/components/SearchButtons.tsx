@@ -39,7 +39,6 @@ export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
               <span>{t('search_buttons.search_in_all')}</span>
             </div>
           </SearchButton>
-
         )}
 
         <SearchButton>
