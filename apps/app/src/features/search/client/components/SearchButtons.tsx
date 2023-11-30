@@ -2,11 +2,28 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-type Props = {
+
+type SearchButtonProps = {
+  children: React.ReactNode
+}
+const SearchButton = (props: SearchButtonProps): JSX.Element => {
+  const { children } = props;
+
+  return (
+    <tr>
+      <div className="text-muted ps-1 d-flex">
+        <span className="material-symbols-outlined fs-4 me-3">search</span>
+        { children }
+      </div>
+    </tr>
+  );
+};
+
+
+type SearchButtonsProps = {
   searchText: string
 }
-
-export const SearchButtons = (props: Props): JSX.Element => {
+export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
   const { t } = useTranslation('commons');
   const { searchText } = props;
 
@@ -15,42 +32,33 @@ export const SearchButtons = (props: Props): JSX.Element => {
   return (
     <table className="table">
       <tbody>
-
         { shouldShowButton && (
-          <tr>
-            <div className="text-muted ps-1 d-flex">
-              <span className="material-symbols-outlined fs-4 me-3">search</span>
-              <span>{searchText}</span>
-              <div className="ms-auto">
-                <span>{t('search_buttons.search_in_all')}</span>
-              </div>
+          <SearchButton>
+            <span>{searchText}</span>
+            <div className="ms-auto">
+              <span>{t('search_buttons.search_in_all')}</span>
             </div>
-          </tr>
+          </SearchButton>
+
         )}
 
-        <tr>
-          <div className="text-muted ps-1 d-flex">
-            <span className="material-symbols-outlined fs-4 me-3">search</span>
-            <code>~pagehoge/</code>
-            <span className="ms-2">{searchText}</span>
-            <div className="ms-auto">
-              <span>{t('search_buttons.only_children_of_this_tree')}</span>
-            </div>
+        <SearchButton>
+          <code>~pagehoge/</code>
+          <span className="ms-2">{searchText}</span>
+          <div className="ms-auto">
+            <span>{t('search_buttons.only_children_of_this_tree')}</span>
           </div>
-        </tr>
+        </SearchButton>
+
 
         { shouldShowButton && (
-          <tr>
-            <div className="text-muted ps-1 d-flex">
-              <span className="material-symbols-outlined fs-4 me-3">search</span>
-              <span>{`"${searchText}"`}</span>
-              <div className="ms-auto">
-                <span>{t('search_buttons.exact_mutch')}</span>
-              </div>
+          <SearchButton>
+            <span>{`"${searchText}"`}</span>
+            <div className="ms-auto">
+              <span>{t('search_buttons.exact_mutch')}</span>
             </div>
-          </tr>
+          </SearchButton>
         ) }
-
       </tbody>
     </table>
   );
