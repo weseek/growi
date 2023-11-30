@@ -1,14 +1,18 @@
-import React, { useCallback, forwardRef } from 'react';
+import React, {
+  useCallback, useRef, useEffect,
+} from 'react';
 
 type Props = {
   searchText: string,
   onChangeSearchText?: (text: string) => void,
   onClickClearButton?: () => void,
 }
-export const SearchForm = forwardRef<HTMLInputElement, Props>((props, ref): JSX.Element => {
+export const SearchForm = (props: Props): JSX.Element => {
   const {
     searchText, onChangeSearchText, onClickClearButton,
   } = props;
+
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const changeSearchTextHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChangeSearchText != null) {
@@ -22,12 +26,19 @@ export const SearchForm = forwardRef<HTMLInputElement, Props>((props, ref): JSX.
     }
   }, [onClickClearButton]);
 
+  useEffect(() => {
+    if (inputRef.current != null) {
+      inputRef.current.focus();
+    }
+  });
+
   return (
     <div className="text-muted d-flex justify-content-center align-items-center ps-1">
       <span className="material-symbols-outlined fs-4 me-3">search</span>
 
       <input
-        ref={ref}
+        ref={inputRef}
+        type="text"
         className="form-control"
         placeholder="Search..."
         value={searchText}
@@ -43,4 +54,4 @@ export const SearchForm = forwardRef<HTMLInputElement, Props>((props, ref): JSX.
       </button>
     </div>
   );
-});
+};

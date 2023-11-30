@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useRef,
+  useState, useCallback,
 } from 'react';
 
 import { Modal, ModalBody } from 'reactstrap';
@@ -11,8 +11,6 @@ import { SearchHelp } from './SearchHelp';
 
 const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
-
-  const inputRef = useRef<HTMLInputElement>(null);
 
   const [searchText, setSearchText] = useState('');
 
@@ -28,7 +26,6 @@ const SearchModal = (): JSX.Element => {
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
         <SearchForm
-          ref={inputRef}
           searchText={searchText}
           onChangeSearchText={changeSearchTextHandler}
           onClickClearButton={clickClearButtonHandler}
