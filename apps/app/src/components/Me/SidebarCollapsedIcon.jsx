@@ -1,6 +1,6 @@
 import React from 'react';
 
-const SidebarDrawerIcon = () => (
+const SidebarCollapsedIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 23 23"
@@ -22,4 +22,4 @@ const SidebarDrawerIcon = () => (
   </svg>
 );
 
-export default SidebarDrawerIcon;
+export default SidebarCollapsedIcon;

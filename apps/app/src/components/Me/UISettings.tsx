@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import SidebarCollapsedIcon from './SidebarCollapsedIcon';
 import SidebarDockIcon from './SidebarDockIcon';
-import SidebarDrawerIcon from './SidebarDrawerIcon';
 
 import styles from './UISettings.module.scss';
 
@@ -29,11 +29,11 @@ export const UISettings = (): JSX.Element => {
         <div className="d-flex align-items-start">
           <div className="d-flex align-items-center">
             <IconWithTooltip
-              id="iwt-sidebar-drawer"
-              label="Drawer"
+              id="iwt-sidebar-collapsed"
+              label="Collapsed"
               additionalClasses={styles['grw-sidebar-mode-icon']}
             >
-              <SidebarDrawerIcon />
+              <SidebarCollapsedIcon />
             </IconWithTooltip>
             <div className="form-check form-switch ms-2">
 
