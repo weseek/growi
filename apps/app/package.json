@@ -125,6 +125,7 @@
     "i18next-chained-backend": "^4.0.0",
     "i18next-http-backend": "^2.0.0",
     "i18next-localstorage-backend": "^4.0.0",
+    "i18next-locize-backend": "^6.4.1",
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
     "ldapjs": "^3.0.2",
