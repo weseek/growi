@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { scheduleToPut } from '~/client/services/user-ui-settings';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
 
 import SidebarCollapsedIcon from './SidebarCollapsedIcon';
@@ -29,13 +31,24 @@ export const UISettings = (): JSX.Element => {
   const {
     data: sidebarMode, isDrawerMode, isDockMode, isCollapsedMode,
   } = useSidebarMode();
-  const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
   const toggleCollapsed = useCallback(() => {
     mutatePreferCollapsedMode(!isCollapsedMode());
     mutateCollapsedContentsOpened(false);
-  }, [isCollapsedMode, mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
+  }, [mutatePreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
+
+  const updateButtonHandler = useCallback(() => {
+    try {
+      scheduleToPut({ preferCollapsedModeByUser: isCollapsedMode() });
+      toastSuccess(t('toaster.update_successed', { target: t('ui_settings.side_bar_mode.settings'), ns: 'commons' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [isCollapsedMode, t]);
 
   const renderSidebarModeSwitch = () => {
     return (
@@ -93,7 +106,7 @@ export const UISettings = (): JSX.Element => {
 
           <div className="row my-3">
             <div className="offset-4 col-5">
-              <button data-testid="" type="button" className="btn btn-primary" onClick={() => {}}>
+              <button data-testid="" type="button" className="btn btn-primary" onClick={updateButtonHandler}>
                 {t('Update')}
               </button>
             </div>
