@@ -13,7 +13,6 @@ import { instanciate } from '../../../src/server/service/external-account';
 import PassportService from '../../../src/server/service/passport';
 import { getInstance } from '../setup-crowi';
 
-
 // dummy class to implement generateExternalUserGroupTrees which returns test data
 class TestExternalUserGroupSyncService extends ExternalUserGroupSyncService {
 
