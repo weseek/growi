@@ -59,42 +59,6 @@ export const UISettings = (): JSX.Element => {
     );
   };
 
-  const renderEditSidebarModeSwitch = () => {
-    return (
-      <>
-        <div className="d-flex align-items-start">
-          <div className="d-flex align-items-center">
-            <IconWithTooltip
-              id="iwt-sidebar-editor-drawer"
-              label="Drawer"
-              additionalClasses={styles['grw-sidebar-mode-icon']}
-            >
-              <SidebarDrawerIcon />
-            </IconWithTooltip>
-            <div className="form-check form-switch ms-2">
-
-              <input
-                id="swSidebarModeOnEditor"
-                className="form-check-input"
-                type="checkbox"
-              />
-              <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor"></label>
-            </div>
-            <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-              <SidebarDockIcon />
-            </IconWithTooltip>
-          </div>
-          <div className="ms-2">
-            <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor">
-              {t('ui_settings.edit_side_bar_mode.side_bar_mode_setting')}
-            </label>
-            <p className="form-text text-muted small">{t('ui_settings.edit_side_bar_mode.description')}</p>
-          </div>
-        </div>
-      </>
-    );
-  };
-
   return (
     <>
       <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
@@ -103,10 +67,6 @@ export const UISettings = (): JSX.Element => {
         <div className="col-md-6">
 
           { renderSidebarModeSwitch() }
-
-          <div className="mt-5">
-            { renderEditSidebarModeSwitch() }
-          </div>
 
           <div>
           </div>
