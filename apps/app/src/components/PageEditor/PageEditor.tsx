@@ -309,7 +309,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const uploadHandler = useCallback((files: File[]) => {
     files.forEach(async(file) => {
       try {
-        const { data: resLimit }: any = await apiv3Get('/attachment/limit', { fileSize: file.size });
+        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);
@@ -327,7 +327,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
         }
 
-        const { data: resAdd }: any = await apiv3PostForm('/attachment/add', formData);
+        const { data: resAdd } = await apiv3PostForm('/attachment/add', formData);
 
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
