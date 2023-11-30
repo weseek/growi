@@ -90,6 +90,8 @@ export const UISettings = (): JSX.Element => {
 
   return (
     <>
+      {/* TODO: Only sidebar settings should be hidden, not all UI settings.
+    https://github.com/weseek/growi/pull/8288/files#r1410147053 */}
       { sidebarMode != null && !isDrawerMode() && (
         <>
           <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
