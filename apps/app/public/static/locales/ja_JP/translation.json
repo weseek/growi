@@ -253,6 +253,7 @@
   "ui_settings": {
     "ui_settings": "UI設定",
     "side_bar_mode": {
+      "settings": "サイドバーモードの設定",
       "side_bar_mode_setting": "サイドバーのモードを設定する",
       "description": "サイドバーを常時開いた状態にするかどうかを設定できます。"
     }

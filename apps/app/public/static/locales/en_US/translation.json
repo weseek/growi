@@ -252,6 +252,7 @@
   "ui_settings": {
     "ui_settings": "UI Settings",
     "side_bar_mode": {
+      "settings": "Sidebar mode settings",
       "side_bar_mode_setting": "Set the sidebar mode",
       "description": "You can set whether the sidebar is always open or not."
     }
