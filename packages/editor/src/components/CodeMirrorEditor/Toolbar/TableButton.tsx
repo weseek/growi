@@ -14,7 +14,7 @@ export const TableButton = (props: Props): JSX.Element => {
   const editor = codeMirrorEditor?.view;
   const openTableModalHandler = useCallback(() => {
     openTableModal(editor);
-  }, [editor]);
+  }, [editor, openTableModal]);
 
   return (
     <button type="button" className="btn btn-toolbar-button" onClick={openTableModalHandler}>

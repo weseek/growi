@@ -11,7 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
+import { replaceFocusedMarkdownTableWithEditor } from '~/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -176,7 +176,10 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
+    if (editor == null) {
+      return;
+    }
+    replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
     cancel();
   };
 
