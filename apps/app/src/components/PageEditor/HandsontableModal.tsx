@@ -11,7 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import { replaceFocusedMarkdownTableWithEditor } from '~/components/PageEditor/markdown-table-util-for-editor';
+import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -108,7 +108,7 @@ export const HandsontableModal = (): JSX.Element => {
     let markdownTableState;
     if (table == null) {
       // markdowntable state from Editor
-      markdownTableState = mtu.getMarkdownTable(editor);
+      markdownTableState = getMarkdownTable(editor);
     }
     else {
       // markdowntable state from View
