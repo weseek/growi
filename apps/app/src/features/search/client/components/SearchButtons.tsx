@@ -47,7 +47,7 @@ export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
         )}
 
         <SearchButton onClick={() => {}}>
-          <code>{currentPagePath}</code>
+          <code>prefix: {currentPagePath}</code>
           <span className="ms-2">{searchKeyword}</span>
           <div className="ms-auto">
             <span>{t('search_buttons.only_children_of_this_tree')}</span>
