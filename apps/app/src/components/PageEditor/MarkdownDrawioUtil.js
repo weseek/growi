@@ -14,13 +14,13 @@ class MarkdownDrawioUtil {
    */
   getBod(editor) {
     const curPos = editor.state.selection.main.head;
+    const doc = editor.state.doc;
     const firstLine = 1;
 
-    if (this.lineBeginPartOfDrawioRE.test(editor.getDoc().getLine(curPos.line))) {
-      return { line: curPos.line, ch: 0 };
+    if (this.lineBeginPartOfDrawioRE.test(doc.lineAt(curPos)).text) {
+      return doc.lineAt(curPos).from;
     }
 
-    const doc = editor.state.doc;
     let line = doc.lineAt(curPos(editor)).number - 1;
     let isFound = false;
     for (; line >= firstLine; line--) {
@@ -53,8 +53,8 @@ class MarkdownDrawioUtil {
     const doc = editor.state.doc;
     const lastLine = doc.lines;
 
-    if (this.lineEndPartOfDrawioRE.test(editor.getDoc().getLine(curPos.line))) {
-      return { line: curPos.line, ch: editor.getDoc().getLine(curPos.line).length };
+    if (this.lineEndPartOfDrawioRE.test(doc.lineAt(curPos)).text) {
+      return doc.lineAt(curPos).to;
     }
 
     let line = doc.lineAt(curPos(editor)).number + 1;
