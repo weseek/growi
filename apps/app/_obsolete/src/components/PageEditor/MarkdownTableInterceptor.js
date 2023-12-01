@@ -5,7 +5,7 @@ import MarkdownTable from '~/client/models/MarkdownTable';
 import {
   getStrFromBot, addRowToMarkdownTable, getStrToEot, isEndOfLine, mergeMarkdownTable, replaceFocusedMarkdownTableWithEditor,
   isInTable, emptyLineOfTableRE,
-} from './markdown-table-util-for-editor';
+} from '../../../../src/components/PageEditor/markdown-table-util-for-editor';
 
 /**
  * Interceptor for markdown table
