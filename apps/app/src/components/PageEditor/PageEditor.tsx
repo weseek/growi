@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
@@ -57,11 +58,11 @@ import loggerFactory from '~/utils/logger';
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 // import { ConflictDiffModal } from './ConflictDiffModal';
 // import Editor from './Editor';
+import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import EditorNavbarBottom from './EditorNavbarBottom';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -126,6 +127,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
@@ -585,6 +588,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
+            expandContentWidth={shouldExpandContent}
             // TODO: implement
             // refs: https://redmine.weseek.co.jp/issues/126519
             // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
