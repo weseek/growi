@@ -245,7 +245,7 @@
     "side_bar_mode": {
       "settings": "侧边栏模式设置",
       "side_bar_mode_setting": "设置侧边栏模式",
-      "description": "您可以设置侧边栏是否始终保持打开状态。"
+      "description": "您可以设置当屏幕宽度较大时，侧边栏是否始终打开。 如果屏幕宽度较小，侧边栏将始终关闭。"
     }
   },
   "editor_settings": {

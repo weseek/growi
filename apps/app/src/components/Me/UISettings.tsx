@@ -90,32 +90,25 @@ export const UISettings = (): JSX.Element => {
 
   return (
     <>
-      {/* TODO: Only sidebar settings should be hidden, not all UI settings.
-    https://github.com/weseek/growi/pull/8288/files#r1410147053 */}
-      { sidebarMode != null && !isDrawerMode() && (
-        <>
-          <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
+      <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
 
-          <div className="row justify-content-center">
-            <div className="col-md-6">
+      <div className="row justify-content-center">
+        <div className="col-md-6">
 
-              { renderSidebarModeSwitch() }
+          { renderSidebarModeSwitch() }
 
-              <div>
-              </div>
-            </div>
+          <div>
           </div>
+        </div>
+      </div>
 
-          <div className="row my-3">
-            <div className="offset-4 col-5">
-              <button data-testid="" type="button" className="btn btn-primary" onClick={updateButtonHandler}>
-                {t('Update')}
-              </button>
-            </div>
-          </div>
-        </>
-      ) }
-
+      <div className="row my-3">
+        <div className="offset-4 col-5">
+          <button data-testid="" type="button" className="btn btn-primary" onClick={updateButtonHandler}>
+            {t('Update')}
+          </button>
+        </div>
+      </div>
     </>
   );
 };
