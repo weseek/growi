@@ -32,7 +32,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     }
     return (
       <span>
-        <span className="material-symbols-outlined">delete_foe\rever</span>
+        <span className="material-symbols-outlined">delete_forever</span>
         Delete comment?
       </span>
     );
