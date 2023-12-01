@@ -20,7 +20,14 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const { notification } = props;
 
-  const { Notification, publishOpen } = useModelNotification(notification);
+  const modelNotificationUtils = useModelNotification(notification);
+
+  const Notification = modelNotificationUtils?.Notification;
+  const publishOpen = modelNotificationUtils?.publishOpen;
+
+  if (Notification == null || publishOpen == null) {
+    return <></>;
+  }
 
   const clickHandler = async(notification: IInAppNotification & HasObjectId): Promise<void> => {
     if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {

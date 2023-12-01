@@ -1,64 +1,19 @@
-import { FC } from 'react';
+import type { HasObjectId } from '@growi/core';
 
-import type { HasObjectId, IPage, IUser } from '@growi/core';
-import { useRouter } from 'next/router';
-
-import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 
-import PageModelNotification from './PageModelNotification';
-import UserModelNotification from './UserModelNotification';
+import { usePageModelNotification, type ModelNotificationUtils } from './PageModelNotification';
+import { useUserModelNotification } from './UserModelNotification';
 
-type ModelNotificationUtils = {
-  Notification: FC
-  publishOpen: () => void
-}
 
-export const useModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils => {
+export const useModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
-  const targetModel = notification.targetModel;
+  const pageModelNotificationUtils = usePageModelNotification(notification);
+  const userModelNotificationUtils = useUserModelNotification(notification);
 
-  const router = useRouter();
+  const modelNotificationUtils = pageModelNotificationUtils ?? userModelNotificationUtils;
 
-  let Notification;
-  let publishOpen;
 
-  switch (targetModel) {
-    case SupportedTargetModel.MODEL_PAGE:
-
-      Notification = () => {
-        return <PageModelNotification notification={notification as IInAppNotification<IPage> & HasObjectId} />;
-      };
-
-      publishOpen = () => {
-        if (notification.target != null) {
-          // jump to target page
-          const targetPagePath = (notification.target as IPage).path;
-          if (targetPagePath != null) {
-            router.push(targetPagePath);
-          }
-        }
-      };
-
-      break;
-
-    case SupportedTargetModel.MODEL_USER:
-
-      Notification = () => {
-        return <UserModelNotification notification={notification as IInAppNotification<IUser> & HasObjectId} />;
-      };
-
-      publishOpen = () => {
-        router.push('/admin/users');
-      };
-
-      break;
-  }
-
-  return {
-    Notification,
-    publishOpen,
-  };
-
+  return modelNotificationUtils;
 };

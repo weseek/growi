@@ -1,35 +1,49 @@
-import React, {
-  forwardRef, ForwardRefRenderFunction,
-} from 'react';
+import React from 'react';
 
 import type { IUser, HasObjectId } from '@growi/core';
+import { useRouter } from 'next/router';
 
-import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
-import { useActionMsgAndIconForUserModelNotification } from './useActionAndMsg';
+import { ModelNotificationUtils } from './PageModelNotification';
+import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
-interface Props {
-  notification: IInAppNotification<IUser> & HasObjectId
-}
 
-const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props) => {
+export const useUserModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
-  const { notification } = props;
+  const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
+  const router = useRouter();
 
-  const { actionMsg, actionIcon } = useActionMsgAndIconForUserModelNotification(notification);
+  const isUserModelNotification = (notification: IInAppNotification & HasObjectId): notification is IInAppNotification<IUser> & HasObjectId => {
+    return notification.targetModel === SupportedTargetModel.MODEL_USER;
+  };
+
+  if (!isUserModelNotification(notification)) {
+    return null;
+  }
 
   const actionUsers = notification.target.username;
 
-  return (
-    <ModelNotification
-      notification={notification}
-      actionMsg={actionMsg}
-      actionIcon={actionIcon}
-      actionUsers={actionUsers}
-    />
-  );
-};
+  const Notification = () => {
+    return (
+      <ModelNotification
+        notification={notification}
+        actionMsg={actionMsg}
+        actionIcon={actionIcon}
+        actionUsers={actionUsers}
+      />
+    );
+  };
 
-export default forwardRef(UserModelNotification);
+  const publishOpen = () => {
+    router.push('/admin/users');
+  };
+
+  return {
+    Notification,
+    publishOpen,
+  };
+
+};
