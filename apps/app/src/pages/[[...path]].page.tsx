@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 
 import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -20,7 +20,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
+import { useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
@@ -249,8 +249,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(pageWithMeta?.data);
-
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
     if (!props.skipSSR) {
@@ -323,7 +321,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
+      <div className="dynamic-layout-root justify-content-between">
         <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>

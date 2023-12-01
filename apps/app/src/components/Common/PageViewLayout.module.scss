@@ -1,5 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '~/styles/mixins';
 @use '~/styles/variables' as var;
 
 
@@ -15,6 +16,23 @@ $page-view-layout-margin-top: 32px;
 .page-view-layout :global {
   @include bs.media-breakpoint-between(md, xl) {
     padding-left: var.$grw-sidebar-nav-width;
+  }
+}
+
+// container padding
+.page-view-layout :global,
+.footer-layout :global {
+  @include bs.media-breakpoint-up(lg) {
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
+  }
+}
+
+// fluid layout
+.fluid-layout :global {
+  .grw-container-convertible {
+    @include mixins.fluid-layout();
   }
 }
 
