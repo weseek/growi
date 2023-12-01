@@ -25,7 +25,7 @@ type Props = {
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPagePath, currentPage, stateHandler, inputValue, CustomComponent
+    currentPagePath, currentPage, stateHandler, inputValue, CustomComponent,
   } = props;
 
   const { t } = useTranslation();
@@ -33,10 +33,6 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-
-  const onClickInputValueHandler = () => {
-    setRenameInputShown(true);
-  };
 
   const page = currentPage;
 
