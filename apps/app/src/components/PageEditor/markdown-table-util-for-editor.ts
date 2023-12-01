@@ -1,4 +1,4 @@
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 
