@@ -3,13 +3,13 @@ import React, {
 } from 'react';
 
 type Props = {
-  searchText: string,
+  searchKeyword: string,
   onChangeSearchText?: (text: string) => void,
   onClickClearButton?: () => void,
 }
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchText, onChangeSearchText, onClickClearButton,
+    searchKeyword, onChangeSearchText, onClickClearButton,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -41,8 +41,8 @@ export const SearchForm = (props: Props): JSX.Element => {
         type="text"
         className="form-control"
         placeholder="Search..."
-        value={searchText}
-        onChange={(Element) => { changeSearchTextHandler(Element) }}
+        value={searchKeyword}
+        onChange={(e) => { changeSearchTextHandler(e) }}
       />
 
       <button

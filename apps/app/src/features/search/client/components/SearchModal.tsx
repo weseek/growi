@@ -13,19 +13,19 @@ import { SearchHelp } from './SearchHelp';
 const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
 
-  const [searchText, setSearchText] = useState('');
+  const [searchKeyword, setSearchKeyword] = useState('');
 
   const changeSearchTextHandler = useCallback((searchText: string) => {
-    setSearchText(searchText);
+    setSearchKeyword(searchText);
   }, []);
 
   const clickClearButtonHandler = useCallback(() => {
-    setSearchText('');
+    setSearchKeyword('');
   }, []);
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
-      setSearchText('');
+      setSearchKeyword('');
     }
   }, [searchModalData?.isOpened]);
 
@@ -33,7 +33,7 @@ const SearchModal = (): JSX.Element => {
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
         <SearchForm
-          searchText={searchText}
+          searchKeyword={searchKeyword}
           onChangeSearchText={changeSearchTextHandler}
           onClickClearButton={clickClearButtonHandler}
         />
