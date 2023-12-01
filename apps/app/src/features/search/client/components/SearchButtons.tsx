@@ -6,9 +6,10 @@ import { useCurrentPagePath } from '~/stores/page';
 
 type SearchButtonProps = {
   children: React.ReactNode
+  onClick: () => void
 }
 const SearchButton = (props: SearchButtonProps): JSX.Element => {
-  const { children } = props;
+  const { children, onClick } = props;
 
   return (
     <tr>
@@ -27,9 +28,9 @@ type SearchButtonsProps = {
 export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
   const { t } = useTranslation('commons');
 
-  const { searchKeyword } = props;
-
   const { data: currentPagePath } = useCurrentPagePath();
+
+  const { searchKeyword } = props;
 
   const shouldShowButton = searchKeyword.length > 0;
 
@@ -37,7 +38,7 @@ export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
     <table className="table">
       <tbody>
         { shouldShowButton && (
-          <SearchButton>
+          <SearchButton onClick={() => {}}>
             <span>{searchKeyword}</span>
             <div className="ms-auto">
               <span>{t('search_buttons.search_in_all')}</span>
@@ -45,7 +46,7 @@ export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
           </SearchButton>
         )}
 
-        <SearchButton>
+        <SearchButton onClick={() => {}}>
           <code>{currentPagePath}</code>
           <span className="ms-2">{searchKeyword}</span>
           <div className="ms-auto">
@@ -53,9 +54,8 @@ export const SearchButtons = (props: SearchButtonsProps): JSX.Element => {
           </div>
         </SearchButton>
 
-
         { shouldShowButton && (
-          <SearchButton>
+          <SearchButton onClick={() => {}}>
             <span>{`"${searchKeyword}"`}</span>
             <div className="ms-auto">
               <span>{t('search_buttons.exact_mutch')}</span>
