@@ -120,7 +120,6 @@ export const HandsontableModal = (): JSX.Element => {
     debouncedHandleWindowExpandedChange();
   };
 
-
   const expandWindow = () => {
     setIsWindowExpanded(true);
     debouncedHandleWindowExpandedChange();
