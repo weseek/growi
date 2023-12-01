@@ -15,7 +15,9 @@ const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable
 const express = require('express');
 
 const router = express.Router();
-const { query, param } = require('express-validator');
+const {
+  query, param, body,
+} = require('express-validator');
 
 const { serializePageSecurely } = require('../../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
@@ -104,6 +106,9 @@ module.exports = (crowi) => {
       query('pageId').isMongoId().withMessage('pageId is required'),
       query('pageNumber').optional().isInt().withMessage('pageNumber must be a number'),
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
+    ],
+    retrieveFileLimit: [
+      query('fileSize').isNumeric().withMessage('fileSize is required'),
     ],
   };
 
@@ -204,10 +209,16 @@ module.exports = (crowi) => {
    * @apiName AddAttachment
    * @apiGroup Attachment
    */
-  router.get('/limit', accessTokenParser, loginRequired, apiV3FormValidator, async(req, res) => {
+  router.get('/limit', accessTokenParser, loginRequired, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
-    return res.apiv3(await fileUploadService.checkLimit(fileSize));
+    try {
+      return res.apiv3(await fileUploadService.checkLimit(fileSize));
+    }
+    catch (err) {
+      logger.error('File limit retrieval failed', err);
+      return res.apiv3Err(err, 500);
+    }
   });
 
   /**
@@ -284,46 +295,50 @@ module.exports = (crowi) => {
    * @apiParam {String} path
    * @apiParam {File} file
    */
-  router.post('/add', uploads.single('file'), accessTokenParser, loginRequired, apiV3FormValidator, addActivity, async(req, res) => {
-    const pageId = req.body.page_id || null;
-    const pagePath = req.body.path || null;
+  router.post('/add', uploads.single('file'), accessTokenParser, loginRequired, validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+    async(req, res) => {
 
-    // check params
-    if (req.file == null) {
-      return res.apiv3Err('File error.');
-    }
-    if (pageId == null && pagePath == null) {
-      return res.apiv3Err('Either page_id or path is required.');
-    }
+      const pageId = req.body.page_id || null;
+      const pagePath = req.body.path || null;
+      console.log(req);
 
-    const file = req.file;
 
-    try {
-      const page = await Page.findById(pageId);
-
-      // check the user is accessible
-      const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
-      if (!isAccessible) {
-        return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
+      // check params
+      if (req.file == null) {
+        return res.apiv3Err('File error.');
+      }
+      if (pageId == null && pagePath == null) {
+        return res.apiv3Err('Either page_id or path is required.');
       }
 
-      const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+      const file = req.file;
 
-      const result = {
-        page: serializePageSecurely(page),
-        revision: serializeRevisionSecurely(page.revision),
-        attachment: attachment.toObject({ virtuals: true }),
-      };
+      try {
+        const page = await Page.findById(pageId);
 
-      activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
+        // check the user is accessible
+        const isAccessible = await Page.isAccessiblePageByViewer(page.id, req.user);
+        if (!isAccessible) {
+          return res.apiv3Err(`Forbidden to access to the page '${page.id}'`);
+        }
 
-      res.apiv3(result);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(err.message);
-    }
-  });
+        const attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+
+        const result = {
+          page: serializePageSecurely(page),
+          revision: serializeRevisionSecurely(page.revision),
+          attachment: attachment.toObject({ virtuals: true }),
+        };
+
+        activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ATTACHMENT_ADD });
+
+        res.apiv3(result);
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err.message);
+      }
+    });
 
   /**
    * @swagger
