@@ -13,17 +13,18 @@ class MarkdownDrawioUtil {
    * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
    */
   getBod(editor) {
-    const curPos = editor.getCursor();
-    const firstLine = editor.getDoc().firstLine();
+    const curPos = editor.state.selection.main.head;
+    const firstLine = 1;
 
     if (this.lineBeginPartOfDrawioRE.test(editor.getDoc().getLine(curPos.line))) {
       return { line: curPos.line, ch: 0 };
     }
 
-    let line = curPos.line - 1;
+    const doc = editor.state.doc;
+    let line = doc.lineAt(curPos(editor)).number - 1;
     let isFound = false;
     for (; line >= firstLine; line--) {
-      const strLine = editor.getDoc().getLine(line);
+      const strLine = doc.line(line).text;
       if (this.lineBeginPartOfDrawioRE.test(strLine)) {
         isFound = true;
         break;
@@ -39,8 +40,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const bodLine = Math.max(firstLine, line);
-    return { line: bodLine, ch: 0 };
+    const botLine = Math.max(firstLine, line);
+    return doc.line(botLine).from;
   }
 
   /**
