@@ -19,8 +19,8 @@ export const SearchResults = (props: Props): JSX.Element => {
     <>
       <table>
         <tbody>
-          {searchResult.data?.map((pageWithMeta, index) => (
-            <tr>
+          {searchResult.data?.map(pageWithMeta => (
+            <tr key={pageWithMeta.data._id}>
               <div className="ps-1 mb-2">
                 <UserPicture />
                 <span className="ms-3 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
