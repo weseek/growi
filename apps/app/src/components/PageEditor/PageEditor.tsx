@@ -317,9 +317,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
         const formData = new FormData();
         formData.append('file', file);
-        if (currentPagePath != null) {
-          formData.append('path', currentPagePath);
-        }
         if (pageId != null) {
           formData.append('page_id', pageId);
         }
@@ -347,7 +344,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       }
     });
 
-  }, [codeMirrorEditor, currentPagePath, pageId]);
+  }, [codeMirrorEditor, pageId]);
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadEnabled) {

@@ -108,7 +108,10 @@ module.exports = (crowi) => {
       query('limit').optional().isInt({ max: 100 }).withMessage('You should set less than 100 or not to set limit.'),
     ],
     retrieveFileLimit: [
-      query('fileSize').isNumeric().withMessage('fileSize is required'),
+      query('fileSize').isNumeric().exists({ checkNull: true }).withMessage('fileSize is required'),
+    ],
+    retrieveAddAttachment: [
+      body('page_id').isString().exists({ checkNull: true }).withMessage('page_id is required'),
     ],
   };
 
@@ -298,20 +301,13 @@ module.exports = (crowi) => {
   router.post('/add', uploads.single('file'), accessTokenParser, loginRequired, validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 
-      const pageId = req.body.page_id || null;
-      const pagePath = req.body.path || null;
-      console.log(req);
-
+      const pageId = req.body.page_id;
 
       // check params
-      if (req.file == null) {
+      const file = req.file || null;
+      if (file == null) {
         return res.apiv3Err('File error.');
       }
-      if (pageId == null && pagePath == null) {
-        return res.apiv3Err('Either page_id or path is required.');
-      }
-
-      const file = req.file;
 
       try {
         const page = await Page.findById(pageId);
