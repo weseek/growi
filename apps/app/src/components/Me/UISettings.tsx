@@ -3,8 +3,9 @@ import { useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { scheduleToPut } from '~/client/services/user-ui-settings';
+import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { IUserUISettings } from '~/interfaces/user-ui-settings';
 import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
 
 import SidebarCollapsedIcon from './SidebarCollapsedIcon';
@@ -29,7 +30,7 @@ additionalClasses: string
 export const UISettings = (): JSX.Element => {
   const { t } = useTranslation();
   const {
-    data: sidebarMode, isDrawerMode, isDockMode, isCollapsedMode,
+    isDockMode, isCollapsedMode,
   } = useSidebarMode();
   const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
@@ -39,9 +40,9 @@ export const UISettings = (): JSX.Element => {
     mutateCollapsedContentsOpened(false);
   }, [mutatePreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
 
-  const updateButtonHandler = useCallback(() => {
+  const updateButtonHandler = useCallback(async() => {
     try {
-      scheduleToPut({ preferCollapsedModeByUser: isCollapsedMode() });
+      await apiv3Put<IUserUISettings>('/user-ui-settings', { settings: { preferCollapsedModeByUser: isCollapsedMode() } });
       toastSuccess(t('toaster.update_successed', { target: t('ui_settings.side_bar_mode.settings'), ns: 'commons' }));
     }
     catch (err) {
