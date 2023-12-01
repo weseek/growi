@@ -11,11 +11,12 @@ import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId, useIsContainerFluid,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
@@ -28,7 +29,6 @@ import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
-  useSelectedGrant,
 } from '~/stores/ui';
 
 import { CreateTemplateModal } from '../CreateTemplateModal';
@@ -196,8 +196,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
-  const { data: isContainerFluid } = useIsContainerFluid();
-  const { data: grantData } = useSelectedGrant();
+
+  const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
@@ -299,7 +299,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <div
         className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 py-1 gap-2 gap-md-4 d-print-none
+          d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
       >
@@ -309,7 +309,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             revisionId={revisionId}
             shareLinkId={shareLinkId}
             path={path ?? currentPathname} // If the page is empty, "path" is undefined
-            expandContentWidth={currentPage?.expandContentWidth ?? isContainerFluid}
+            expandContentWidth={shouldExpandContent}
             disableSeenUserInfoPopover={isSharedUser}
             showPageControlDropdown={isAbleToShowPageManagement}
             additionalMenuItemRenderer={additionalMenuItemsRenderer}
