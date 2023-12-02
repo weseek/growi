@@ -8,7 +8,7 @@ import type { IFormattedSearchResult } from '~/interfaces/search';
 type Props = {
   searchResult?: IFormattedSearchResult
 }
-export const SearchResults = (props: Props): JSX.Element => {
+export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchResult } = props;
 
   if (searchResult == null || searchResult.data.length === 0) {
