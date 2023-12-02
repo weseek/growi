@@ -6,9 +6,9 @@ import { Modal, ModalBody } from 'reactstrap';
 
 import { useSearchModal } from '../stores/search';
 
-import { SearchButtons } from './SearchButtons';
 import { SearchForm } from './SearchForm';
 import { SearchHelp } from './SearchHelp';
+import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 
 const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
@@ -38,7 +38,7 @@ const SearchModal = (): JSX.Element => {
           onClickClearButton={clickClearButtonHandler}
         />
         <div className="border-top mt-3 mb-3" />
-        <SearchButtons searchKeyword={searchKeyword} />
+        <SearchMethodMenuItem searchKeyword={searchKeyword} />
         <div className="border-top mt-2 mb-2" />
         <SearchHelp />
       </ModalBody>
