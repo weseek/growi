@@ -2,14 +2,16 @@ import React from 'react';
 
 import { PagePathLabel, UserPicture } from '@growi/ui/dist/components';
 
-import type { IFormattedSearchResult } from '~/interfaces/search';
+import { useSWRxSearch } from '~/stores/search';
 
 
 type Props = {
-  searchResult?: IFormattedSearchResult
+  searchKeyword: string,
 }
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
-  const { searchResult } = props;
+  const { searchKeyword } = props;
+
+  const { data: searchResult } = useSWRxSearch(searchKeyword, null, { limit: 10 });
 
   if (searchResult == null || searchResult.data.length === 0) {
     return <></>;
