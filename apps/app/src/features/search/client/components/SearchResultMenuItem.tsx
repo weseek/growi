@@ -12,10 +12,13 @@ type Props = {
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchKeyword } = props;
 
-  const debouncedKeyword = useDebounce(searchKeyword, 500);
-  const { data: searchResult } = useSWRxSearch(debouncedKeyword, null, { limit: 10 });
+  const isEmptyKeyword = searchKeyword.trim() === '';
 
-  if (searchResult == null || searchResult.data.length === 0) {
+  const debouncedKeyword = useDebounce(searchKeyword, 500);
+
+  const { data: searchResult } = useSWRxSearch(isEmptyKeyword ? null : debouncedKeyword, null, { limit: 10 });
+
+  if (isEmptyKeyword || searchResult == null || searchResult.data.length === 0) {
     return <></>;
   }
 
@@ -34,7 +37,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
           ))}
         </tbody>
       </table>
-      <div className="border-top mt-2 mb-2" />
+      <div className="border-top mb-2" />
     </>
   );
 };
