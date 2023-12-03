@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { PagePathLabel, UserPicture } from '@growi/ui/dist/components';
+import { useDebounce } from 'usehooks-ts';
 
 import { useSWRxSearch } from '~/stores/search';
 
@@ -11,7 +12,8 @@ type Props = {
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchKeyword } = props;
 
-  const { data: searchResult } = useSWRxSearch(searchKeyword, null, { limit: 10 });
+  const debouncedKeyword = useDebounce(searchKeyword, 500);
+  const { data: searchResult } = useSWRxSearch(debouncedKeyword, null, { limit: 10 });
 
   if (searchResult == null || searchResult.data.length === 0) {
     return <></>;
