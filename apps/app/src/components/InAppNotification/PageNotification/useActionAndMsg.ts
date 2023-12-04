@@ -8,7 +8,7 @@ export type ActionMsgAndIconType = {
   actionIcon: string
 }
 
-export const useActionMsgAndIconForPageModelNotification = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
+export const useActionMsgAndIconForModelNotification = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
   const actionType: string = notification.action;
   let actionMsg: string;
   let actionIcon: string;
@@ -66,23 +66,6 @@ export const useActionMsgAndIconForPageModelNotification = (notification: IInApp
       actionMsg = 'commented on';
       actionIcon = 'icon-bubble';
       break;
-    default:
-      actionMsg = '';
-      actionIcon = '';
-  }
-
-  return {
-    actionMsg,
-    actionIcon,
-  };
-};
-
-export const useActionMsgAndIconForUserModelNotification = (notification: IInAppNotification & HasObjectId): ActionMsgAndIconType => {
-  const actionType: string = notification.action;
-  let actionMsg: string;
-  let actionIcon: string;
-
-  switch (actionType) {
     case SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST:
       actionMsg = 'requested registration approval';
       actionIcon = 'icon-bubble';

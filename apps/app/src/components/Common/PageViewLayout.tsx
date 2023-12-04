@@ -2,27 +2,35 @@ import type { ReactNode } from 'react';
 
 import styles from './PageViewLayout.module.scss';
 
+const pageViewLayoutClass = styles['page-view-layout'] ?? '';
+const footerLayoutClass = styles['footer-layout'] ?? '';
+const _fluidLayoutClass = styles['fluid-layout'] ?? '';
+
 type Props = {
   children?: ReactNode,
   headerContents?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
+  expandContentWidth?: boolean,
 }
 
 export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     children, headerContents, sideContents, footerContents,
+    expandContentWidth,
   } = props;
+
+  const fluidLayoutClass = expandContentWidth ? _fluidLayoutClass : '';
 
   return (
     <>
-      <div id="main" className={`main ${styles['page-view-layout']}`}>
-        <div id="content-main" className="content-main container-lg grw-container-convertible">
+      <div id="main" className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert`}>
+        <div id="content-main" className="content-main container-lg grw-container-convertible flex-expand-vert">
           { headerContents != null && headerContents }
           { sideContents != null
             ? (
-              <div className="d-flex gap-3">
-                <div className="flex-grow-1 flex-basis-0 mw-0">
+              <div className="flex-expand-horiz gap-3">
+                <div className="flex-expand-vert flex-basis-0 mw-0">
                   {children}
                 </div>
                 <div className="grw-side-contents-container col-lg-3  d-edit-none d-print-none" data-vrt-blackout-side-contents>
@@ -40,7 +48,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
       </div>
 
       { footerContents != null && (
-        <footer className="footer d-edit-none">
+        <footer className={`footer d-edit-none ${footerLayoutClass} ${fluidLayoutClass}`}>
           {footerContents}
         </footer>
       ) }

@@ -10,6 +10,8 @@ import next from 'next';
 
 import pkg from '^/package.json';
 
+import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
+import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -18,91 +20,101 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import UserEvent from '../events/user';
-import Activity from '../models/activity';
-import PageRedirect from '../models/page-redirect';
-import Tag from '../models/tag';
-import UserGroup from '../models/user-group';
+import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
+import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
-const models = require('../models');
 
 const sep = path.sep;
 
-function Crowi() {
-  this.version = pkg.version;
-  this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
+class Crowi {
 
-  this.publicDir = path.join(projectRoot, 'public') + sep;
-  this.resourceDir = path.join(projectRoot, 'resource') + sep;
-  this.localeDir = path.join(this.resourceDir, 'locales') + sep;
-  this.viewsDir = path.resolve(__dirname, '../views') + sep;
-  this.tmpDir = path.join(projectRoot, 'tmp') + sep;
-  this.cacheDir = path.join(this.tmpDir, 'cache');
+  /** @type {AppService} */
+  appService;
 
-  this.express = null;
+  /** @type {FileUploader} */
+  fileUploadService;
 
-  this.config = {};
-  this.configManager = null;
-  this.s2sMessagingService = null;
-  this.g2gTransferPusherService = null;
-  this.g2gTransferReceiverService = null;
-  this.mailService = null;
-  this.passportService = null;
-  this.globalNotificationService = null;
-  this.userNotificationService = null;
-  this.xssService = null;
-  this.aclService = null;
-  this.appService = null;
-  this.fileUploadService = null;
-  this.restQiitaAPIService = null;
-  this.growiBridgeService = null;
-  this.exportService = null;
-  this.importService = null;
-  this.pluginService = null;
-  this.searchService = null;
-  this.socketIoService = null;
-  this.pageService = null;
-  this.syncPageStatusService = null;
-  this.cdnResourcesService = new CdnResourcesService();
-  this.slackIntegrationService = null;
-  this.inAppNotificationService = null;
-  this.activityService = null;
-  this.commentService = null;
-  this.xss = new Xss();
-  this.questionnaireService = null;
-  this.questionnaireCronService = null;
+  constructor() {
+    this.version = pkg.version;
+    this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-  this.tokens = null;
+    this.publicDir = path.join(projectRoot, 'public') + sep;
+    this.resourceDir = path.join(projectRoot, 'resource') + sep;
+    this.localeDir = path.join(this.resourceDir, 'locales') + sep;
+    this.viewsDir = path.resolve(__dirname, '../views') + sep;
+    this.tmpDir = path.join(projectRoot, 'tmp') + sep;
+    this.cacheDir = path.join(this.tmpDir, 'cache');
 
-  this.models = {};
+    this.express = null;
 
-  this.env = process.env;
-  this.node_env = this.env.NODE_ENV || 'development';
+    this.config = {};
+    this.configManager = null;
+    this.s2sMessagingService = null;
+    this.g2gTransferPusherService = null;
+    this.g2gTransferReceiverService = null;
+    this.mailService = null;
+    this.passportService = null;
+    this.globalNotificationService = null;
+    this.userNotificationService = null;
+    this.xssService = null;
+    this.aclService = null;
+    this.appService = null;
+    this.fileUploadService = null;
+    this.restQiitaAPIService = null;
+    this.growiBridgeService = null;
+    this.exportService = null;
+    this.importService = null;
+    this.pluginService = null;
+    this.searchService = null;
+    this.socketIoService = null;
+    this.pageService = null;
+    this.syncPageStatusService = null;
+    this.cdnResourcesService = new CdnResourcesService();
+    this.slackIntegrationService = null;
+    this.inAppNotificationService = null;
+    this.activityService = null;
+    this.commentService = null;
+    this.xss = new Xss();
+    this.questionnaireService = null;
+    this.questionnaireCronService = null;
 
-  this.port = this.env.PORT || 3000;
+    this.tokens = null;
 
-  this.events = {
-    user: new UserEvent(this),
-    page: new (require('../events/page'))(this),
-    activity: new (require('../events/activity'))(this),
-    bookmark: new (require('../events/bookmark'))(this),
-    tag: new (require('../events/tag'))(this),
-    admin: new (require('../events/admin'))(this),
-  };
+    this.models = {};
+
+    this.env = process.env;
+    this.node_env = this.env.NODE_ENV || 'development';
+
+    this.port = this.env.PORT || 3000;
+
+    this.events = {
+      user: new UserEvent(this),
+      page: new (require('../events/page'))(this),
+      activity: new (require('../events/activity'))(this),
+      bookmark: new (require('../events/bookmark'))(this),
+      tag: new (require('../events/tag'))(this),
+      admin: new (require('../events/admin'))(this),
+    };
+  }
+
 }
 
 Crowi.prototype.init = async function() {
@@ -150,10 +162,13 @@ Crowi.prototype.init = async function() {
     this.setUpCustomize(), // depends on pluginService
   ]);
 
-  // globalNotification depends on slack and mailer
   await Promise.all([
+    // globalNotification depends on slack and mailer
     this.setUpGlobalNotification(),
     this.setUpUserNotification(),
+    // depends on passport service
+    this.setupExternalAccountService(),
+    this.setupExternalUserGroupSyncService(),
   ]);
 
   await this.autoInstall();
@@ -292,19 +307,15 @@ Crowi.prototype.setupSocketIoService = async function() {
 };
 
 Crowi.prototype.setupModels = async function() {
-  let allModels = {};
+  Object.keys(modelsDependsOnCrowi).forEach((key) => {
+    const factory = modelsDependsOnCrowi[key];
 
-  // include models that dependent on crowi
-  allModels = models;
+    if (!(factory instanceof Function)) {
+      logger.warn(`modelsDependsOnCrowi['${key}'] is not a function. skipped.`);
+      return;
+    }
 
-  // include models that independent from crowi
-  allModels.Activity = Activity;
-  allModels.Tag = Tag;
-  allModels.UserGroup = UserGroup;
-  allModels.PageRedirect = PageRedirect;
-
-  Object.keys(allModels).forEach((key) => {
-    return this.model(key, models[key](this));
+    return this.model(key, modelsDependsOnCrowi[key](this));
   });
 
 };
@@ -357,7 +368,6 @@ Crowi.prototype.setupPassport = async function() {
   logger.debug('Passport is enabled');
 
   // initialize service
-  const PassportService = require('../service/passport');
   if (this.passportService == null) {
     this.passportService = new PassportService(this);
   }
@@ -630,7 +640,7 @@ Crowi.prototype.setUpApp = async function() {
  */
 Crowi.prototype.setUpFileUpload = async function(isForceUpdate = false) {
   if (this.fileUploadService == null || isForceUpdate) {
-    this.fileUploadService = require('../service/file-uploader')(this);
+    this.fileUploadService = getUploader(this);
   }
 };
 
@@ -666,7 +676,6 @@ Crowi.prototype.setUpRestQiitaAPI = async function() {
 };
 
 Crowi.prototype.setupUserGroupService = async function() {
-  const UserGroupService = require('../service/user-group');
   if (this.userGroupService == null) {
     this.userGroupService = new UserGroupService(this);
     return this.userGroupService.init();
@@ -767,6 +776,17 @@ Crowi.prototype.setupG2GTransferService = async function() {
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
   }
+};
+
+// execute after setupPassport
+Crowi.prototype.setupExternalAccountService = function() {
+  instanciateExternalAccountService(this.passportService);
+};
+
+// execute after setupPassport, s2sMessagingService, socketIoService
+Crowi.prototype.setupExternalUserGroupSyncService = function() {
+  this.ldapUserGroupSyncService = new LdapUserGroupSyncService(this.passportService, this.s2sMessagingService, this.socketIoService);
+  this.keycloakUserGroupSyncService = new KeycloakUserGroupSyncService(this.s2sMessagingService, this.socketIoService);
 };
 
 export default Crowi;

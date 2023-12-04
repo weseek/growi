@@ -73,7 +73,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <div className="grw-container-convertible container-lg mb-5 pb-5" data-testid="tags-page">
+        <div className="container-lg mb-5 pb-5" data-testid="tags-page">
           <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
           <div className="px-3 mb-5 text-center">
             <TagCloudBox tags={tagData} minSize={20} />
@@ -151,7 +151,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
   const result = await getServerSideCommonProps(context);
 

@@ -464,7 +464,7 @@
       "label": "Template for children",
       "desc": "Applies only to the same level pages which the template exists"
     },
-    "decendants": {
+    "descendants": {
       "label": "Template for descendants",
       "desc": "Applies to all decendant pages"
     }

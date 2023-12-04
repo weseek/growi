@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -43,6 +44,8 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   const { data: isNotFoundMeta } = useIsNotFound();
 
   const { data: viewOptions } = useViewOptions();
+
+  const shouldExpandContent = useShouldExpandContent(page);
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
@@ -93,6 +96,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     <PageViewLayout
       headerContents={headerContents}
       sideContents={sideContents}
+      expandContentWidth={shouldExpandContent}
     >
       { specialContents }
       { specialContents == null && (
