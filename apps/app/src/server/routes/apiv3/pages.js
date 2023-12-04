@@ -298,6 +298,11 @@ module.exports = (crowi) => {
       body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     let { path } = req.body;
 
     // check whether path starts slash
@@ -788,6 +793,11 @@ module.exports = (crowi) => {
       }
 
       const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
+
+      // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+      if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+        return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+      }
 
       const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
       if (page == null || isEmptyAndNotRecursively) {

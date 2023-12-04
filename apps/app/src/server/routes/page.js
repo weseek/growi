@@ -330,6 +330,11 @@ module.exports = function(crowi, app) {
     const slackChannels = req.body.slackChannels || null;
     const pageTags = req.body.pageTags || undefined;
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
@@ -457,6 +462,11 @@ module.exports = function(crowi, app) {
     const slackChannels = req.body.slackChannels || null;
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const pageTags = req.body.pageTags || undefined;
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -928,6 +938,11 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+    if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
 
     // check whether path starts slash
