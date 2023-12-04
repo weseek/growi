@@ -28,10 +28,17 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
         <tbody>
           {searchResult.data?.map(pageWithMeta => (
             <tr key={pageWithMeta.data._id}>
-              <div className="ps-1 mb-2">
-                <UserPicture />
-                <span className="ms-3 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
-                <span className="ms-3">{pageWithMeta.data.seenUsers.length}</span>
+              <div className="ps-1 mb-2 d-flex">
+                <UserPicture user={pageWithMeta.data.creator} />
+
+                <span className="ms-3 text-break text-wrap">
+                  <PagePathLabel path={pageWithMeta.data.path} />
+                </span>
+
+                <span className="ms-2 text-muted d-flex justify-content-center align-items-center">
+                  <span className="material-symbols-outlined fs-5">footprint</span>
+                  <span>{pageWithMeta.data.seenUsers.length}</span>
+                </span>
               </div>
             </tr>
           ))}
