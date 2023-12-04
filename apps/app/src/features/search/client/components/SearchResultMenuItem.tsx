@@ -12,11 +12,11 @@ type Props = {
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchKeyword } = props;
 
-  const isEmptyKeyword = searchKeyword.trim() === '';
-
   const debouncedKeyword = useDebounce(searchKeyword, 500);
 
-  const { data: searchResult } = useSWRxSearch(isEmptyKeyword ? null : debouncedKeyword, null, { limit: 10 });
+  const isEmptyKeyword = debouncedKeyword.trim() === '';
+
+  const { data: searchResult } = useSWRxSearch(isEmptyKeyword ? null : searchKeyword, null, { limit: 10 });
 
   if (isEmptyKeyword || searchResult == null || searchResult.data.length === 0) {
     return <></>;
