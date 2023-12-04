@@ -26,7 +26,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(isLoading, currentPage);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(isLoading, currentPage?.path);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
