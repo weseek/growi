@@ -8395,6 +8395,11 @@ get-symbol-description@^1.0.0:
   resolved "https://registry.yarnpkg.com/@unts/get-tsconfig/-/get-tsconfig-4.1.1.tgz#f2d308a0c9e56a73b815b0525d4bf37a28914cdd"
   integrity sha512-8mPf1bBzF2S+fyuyYOQWjDcaJTTgJ14UAnXW9I3KwrqioRWG1byRXHwciYdqXpbdOiu7Fg4WJbymBIakGk+aMA==
 
+get-xpath@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/get-xpath/-/get-xpath-3.1.0.tgz#e25c17703ad9f2c426a361a446bdfe8e13f31c33"
+  integrity sha512-R/52dpa+WO8bO/df5VivWIf+VoI++iPVEPrAKRUSQHOBEK1cxKMmTxbhCoGUNIH+znE9ZvU5rFd188QkV4Q6QA==
+
 getos@^3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/getos/-/getos-3.2.1.tgz#0134d1f4e00eb46144c5a9c0ac4dc087cbb27dc5"
@@ -15602,6 +15607,11 @@ test-exclude@^6.0.0:
     "@istanbuljs/schema" "^0.1.2"
     glob "^7.1.4"
     minimatch "^3.0.4"
+
+text-annotator-v2@^1.1.9:
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/text-annotator-v2/-/text-annotator-v2-1.1.9.tgz#6c67f23aab227ca98fed0ede061f42bc7a260c65"
+  integrity sha512-ncgoIXm4axzMYraHCbK2c60XcXwwr/3o6sJXLZFMD/ztvB9P/HOS/vmIubniRqRd0MQ1hBcKUDSWIfsES5jy7Q==
 
 text-table@^0.2.0:
   version "0.2.0"
