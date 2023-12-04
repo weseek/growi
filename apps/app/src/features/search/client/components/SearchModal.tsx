@@ -8,6 +8,7 @@ import { useSearchModal } from '../stores/search';
 
 import { SearchForm } from './SearchForm';
 import { SearchHelp } from './SearchHelp';
+import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 
 const SearchModal = (): JSX.Element => {
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
@@ -36,7 +37,9 @@ const SearchModal = (): JSX.Element => {
           onChangeSearchText={changeSearchTextHandler}
           onClickClearButton={clickClearButtonHandler}
         />
-        <div className="border-top mt-4 mb-3" />
+        <div className="border-top mt-3 mb-3" />
+        <SearchMethodMenuItem searchKeyword={searchKeyword} />
+        <div className="border-top mt-2 mb-2" />
         <SearchHelp />
       </ModalBody>
     </Modal>

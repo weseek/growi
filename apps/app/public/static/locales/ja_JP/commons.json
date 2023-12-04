@@ -44,6 +44,12 @@
     }
   },
 
+  "search_method_menu_item": {
+    "search_in_all": "全てのページ",
+    "only_children_of_this_tree": "この階層下の子ページのみ",
+    "exact_mutch": "キーワードに完全一致した文字を含むページのみ"
+  },
+
   "share_links": {
     "Share Link": "共有用リンク",
     "Page Path": "ページパス",
