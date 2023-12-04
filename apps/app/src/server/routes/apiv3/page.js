@@ -564,6 +564,11 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { grant, grantedGroups } = req.body;
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136137
+    if (grantedGroups != null && grantedGroups.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     const Page = crowi.model('Page');
 
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
