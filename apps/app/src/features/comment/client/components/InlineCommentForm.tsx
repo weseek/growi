@@ -1,6 +1,9 @@
 import { useCallback, useState } from 'react';
 
 import getXPath from 'get-xpath';
+import { createPortal } from 'react-dom';
+import { createRoot } from 'react-dom/client';
+import JSXStyle from 'styled-jsx/style';
 import TextAnnotator from 'text-annotator-v2';
 
 import type { TextAnnotatorInterface } from '../@types/text-annotator-v2';
@@ -22,6 +25,13 @@ const retrieveFirstLevelElement = (target: Node, root: Element): Node | null => 
 
 const getElementByXpath = (xpath: string): Node | null => {
   return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+};
+
+
+const Annotated = ({ children }: { children?: React.ReactNode }): JSX.Element => {
+  return (
+    <span className="fs-3">{ children }</span>
+  );
 };
 
 type Props = {
@@ -60,12 +70,21 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
           wikiElemXpath, xpath, xpathRelative, annotated,
         });
 
-        // WIP: restore annotated html from xpathRelative
         const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
         if (targetElement != null && isElement(targetElement)) {
+          // WIP: restore annotated html from xpathRelative
           console.log('replace innerHTML');
           targetElement.innerHTML = annotated;
+
+          // WIP: react rendering
+          const annotatedElem = targetElement.getElementsByClassName('annotation-0');
+          console.log({ annotatedElem });
+          createPortal(
+            <p>aaaaa</p>,
+            annotatedElem[0],
+          );
         }
+
       }
     }
 
