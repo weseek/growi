@@ -37,7 +37,7 @@ export const useOnNewButtonClicked = (
 
       const response = await createPage(parentPath, '', params);
 
-      router.push(`${response.page.id}#edit`);
+      router.push(`${response.page.path}#edit`);
     }
     catch (err) {
       toastError(err);
