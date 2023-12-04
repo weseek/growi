@@ -41,7 +41,7 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
           <MenuItem onClick={() => {}}>
             <span>{searchKeyword}</span>
             <div className="ms-auto">
-              <span>{t('search_buttons.search_in_all')}</span>
+              <span>{t('search_method_menu_item.search_in_all')}</span>
             </div>
           </MenuItem>
         )}
@@ -50,7 +50,7 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
           <code>prefix: {currentPagePath}</code>
           <span className="ms-2">{searchKeyword}</span>
           <div className="ms-auto">
-            <span>{t('search_buttons.only_children_of_this_tree')}</span>
+            <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
         </MenuItem>
 
@@ -58,7 +58,7 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
           <MenuItem onClick={() => {}}>
             <span>{`"${searchKeyword}"`}</span>
             <div className="ms-auto">
-              <span>{t('search_buttons.exact_mutch')}</span>
+              <span>{t('search_method_menu_item.exact_mutch')}</span>
             </div>
           </MenuItem>
         ) }

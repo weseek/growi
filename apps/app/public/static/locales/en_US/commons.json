@@ -42,7 +42,7 @@
     }
   },
 
-  "search_buttons": {
+  "search_method_menu_item": {
     "search_in_all": "Search in all",
     "only_children_of_this_tree": "Only children of this tree",
     "exact_mutch": "Exact match"
