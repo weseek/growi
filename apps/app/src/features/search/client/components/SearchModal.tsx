@@ -9,11 +9,12 @@ import { useSearchModal } from '../stores/search';
 import { SearchForm } from './SearchForm';
 import { SearchHelp } from './SearchHelp';
 import { SearchMethodMenuItem } from './SearchMethodMenuItem';
+import { SearchResultMenuItem } from './SearchResultMenuItem';
 
 const SearchModal = (): JSX.Element => {
-  const { data: searchModalData, close: closeSearchModal } = useSearchModal();
-
   const [searchKeyword, setSearchKeyword] = useState('');
+
+  const { data: searchModalData, close: closeSearchModal } = useSearchModal();
 
   const changeSearchTextHandler = useCallback((searchText: string) => {
     setSearchKeyword(searchText);
@@ -40,6 +41,7 @@ const SearchModal = (): JSX.Element => {
         <div className="border-top mt-3 mb-3" />
         <SearchMethodMenuItem searchKeyword={searchKeyword} />
         <div className="border-top mt-2 mb-2" />
+        <SearchResultMenuItem searchKeyword={searchKeyword} />
         <SearchHelp />
       </ModalBody>
     </Modal>
