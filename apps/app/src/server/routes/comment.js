@@ -38,10 +38,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  *            type: string
  *            description: comment
  *            example: good
- *          commentPosition:
- *            type: number
- *            description: comment position
- *            example: 0
  *          createdAt:
  *            type: string
  *            description: date created at
@@ -153,7 +149,6 @@ module.exports = function(crowi, app) {
       body('commentForm.page_id').exists(),
       body('commentForm.revision_id').exists(),
       body('commentForm.comment').exists(),
-      body('commentForm.comment_position').isInt(),
       body('commentForm.is_markdown').isBoolean(),
       body('commentForm.replyTo').exists().custom((value) => {
         if (value === '') {
@@ -190,8 +185,6 @@ module.exports = function(crowi, app) {
    *                        $ref: '#/components/schemas/Revision/properties/_id'
    *                      comment:
    *                        $ref: '#/components/schemas/Comment/properties/comment'
-   *                      comment_position:
-   *                        $ref: '#/components/schemas/Comment/properties/commentPosition'
    *                required:
    *                  - commentForm
    *        responses:
@@ -218,7 +211,6 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    * @apiParam {String} comment Comment body
-   * @apiParam {Number} comment_position=-1 Line number of the comment
    */
   api.add = async function(req, res) {
     const { commentForm, slackNotificationForm } = req.body;
@@ -232,7 +224,6 @@ module.exports = function(crowi, app) {
     const pageId = commentForm.page_id;
     const revisionId = commentForm.revision_id;
     const comment = commentForm.comment;
-    const position = commentForm.comment_position || -1;
     const replyTo = commentForm.replyTo;
 
     // check whether accessible
@@ -243,7 +234,7 @@ module.exports = function(crowi, app) {
 
     let createdComment;
     try {
-      createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
+      createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, replyTo);
       commentEvent.emit(CommentEvent.CREATE, createdComment);
     }
     catch (err) {

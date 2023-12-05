@@ -1,6 +1,7 @@
 import type { IUser } from '@growi/core/dist/interfaces';
 import {
-  Types, Document, Model, Schema, Query,
+  Document, Schema,
+  type Types, type Model, type Query,
 } from 'mongoose';
 
 import { IComment } from '~/interfaces/comment';
@@ -20,7 +21,6 @@ type Add = (
   creatorId: Types.ObjectId,
   revisionId: Types.ObjectId,
   comment: string,
-  commentPosition: number,
   replyTo?: Types.ObjectId | null,
 ) => Promise<CommentDocument>;
 type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
@@ -43,7 +43,6 @@ const commentSchema = new Schema<CommentDocument, CommentModel>({
   creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   revision: { type: Schema.Types.ObjectId, ref: 'Revision', index: true },
   comment: { type: String, required: true },
-  commentPosition: { type: Number, default: -1 },
   replyTo: { type: Schema.Types.ObjectId },
 }, {
   timestamps: true,
@@ -55,7 +54,6 @@ const add: Add = async function(
     creatorId,
     revisionId,
     comment,
-    commentPosition,
     replyTo?,
 ): Promise<CommentDocument> {
   try {
@@ -64,7 +62,6 @@ const add: Add = async function(
       creator: creatorId.toString(),
       revision: revisionId.toString(),
       comment,
-      commentPosition,
       replyTo,
     });
     logger.debug('Comment saved.', data);
