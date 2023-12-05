@@ -27,3 +27,7 @@ export type IInlineComment = Omit<IComment, 'inline'> & {
   resolvedBy?: Ref<IUser>,
   resolvedAt?: Date,
 };
+
+export const isInlineComment = (comment: IComment): comment is IInlineComment => {
+  return comment.inline === true;
+};
