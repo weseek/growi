@@ -6,10 +6,11 @@ import mongoose from 'mongoose';
 import loggerFactory from '~/utils/logger';
 
 import { AddInlineComment } from '../../../interfaces';
+import { InlineCommentDocument } from '../../models';
 
 const logger = loggerFactory('growi:comment:services:addInlineComment');
 
-export const addInlineComment = async(revision: Ref<IRevision>, params: AddInlineComment): Promise<InlineCommentRelationDocument | void> => {
+export const addInlineComment = async(revision: Ref<IRevision>, params: AddInlineComment): Promise<InlineCommentDocument | void> => {
   const Revision = mongoose.model<IRevision>('Revision');
 
   const revisionDoc = isPopulated(revision)

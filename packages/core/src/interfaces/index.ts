@@ -1,4 +1,5 @@
 export * from './attachment';
+export * from './comment';
 export * from './color-scheme';
 export * from './color-scheme';
 export * from './common';

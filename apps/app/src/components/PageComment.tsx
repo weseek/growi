@@ -2,7 +2,10 @@ import React, {
   FC, useState, useMemo, memo, useCallback,
 } from 'react';
 
-import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
+import {
+  isPopulated, getIdForRef,
+  type IRevisionHasId, type ICommentHasId, type ICommentHasIdList,
+} from '@growi/core';
 import { Button } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
@@ -11,7 +14,6 @@ import { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
-import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';

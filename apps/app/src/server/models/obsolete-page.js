@@ -274,21 +274,20 @@ export const getPageSchema = (crowi) => {
   };
 
 
-  pageSchema.statics.updateCommentCount = function(pageId) {
-    validateCrowi();
+  pageSchema.statics.updateCommentCount = async function(pageId) {
+    const { Comment } = require('~/features/comment/server');
 
-    const self = this;
-    return Comment.countCommentByPageId(pageId)
-      .then((count) => {
-        self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
-          if (err) {
-            debug('Update commentCount Error', err);
-            throw err;
-          }
+    const count = await Comment.countCommentByPageId(pageId);
 
-          return data;
-        });
-      });
+    try {
+      await this.update({ _id: pageId }, { commentCount: count }, {});
+    }
+    catch (err) {
+      if (err != null) {
+        debug('Update commentCount Error', err);
+        throw err;
+      }
+    }
   };
 
   pageSchema.statics.getDeletedPageName = function(path) {

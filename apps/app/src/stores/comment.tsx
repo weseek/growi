@@ -1,9 +1,9 @@
-import type { Nullable } from '@growi/core';
+import type { Nullable, ICommentHasIdList } from '@growi/core';
 import useSWR, { SWRResponse } from 'swr';
 
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 
-import { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
+import type { ICommentPostArgs } from '../interfaces/comment';
 
 import { useStaticSWR } from './use-static-swr';
 

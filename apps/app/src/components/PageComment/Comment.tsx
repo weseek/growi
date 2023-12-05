@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { isPopulated, type IUser } from '@growi/core';
+import { isPopulated, type IUser, type ICommentHasId } from '@growi/core';
 import * as pathUtils from '@growi/core/dist/utils/path-utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
@@ -12,7 +12,6 @@ import urljoin from 'url-join';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 
-import { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
 import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';

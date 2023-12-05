@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { isPopulated } from '@growi/core';
+import { isPopulated, type ICommentHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { ICommentHasId } from '../../interfaces/comment';
 import { Username } from '../User/Username';
 
 import styles from './DeleteCommentModal.module.scss';

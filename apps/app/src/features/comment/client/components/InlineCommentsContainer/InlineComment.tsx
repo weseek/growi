@@ -1,7 +1,7 @@
-import type { IComment } from '~/interfaces/comment';
+import type { IInlineComment } from '@growi/core';
 
 type Props = {
-  inlineComment: IComment;
+  inlineComment: IInlineComment;
 }
 
 export const InlineComment = (props: Props): JSX.Element => {

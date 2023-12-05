@@ -1,10 +1,9 @@
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser, IComment } from '@growi/core/dist/interfaces';
 import {
   Document, Schema,
   type Types, type Model, type Query,
 } from 'mongoose';
 
-import { IComment } from '~/interfaces/comment';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -29,7 +28,7 @@ type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>
 type GetPageIdToCommentMap = (pageIds: Types.ObjectId[]) => Promise<Record<string, CommentDocument[]>>
 type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>
 
-export interface CommentModel extends Model<CommentDocument> {
+export interface CommentModel<D extends CommentDocument = CommentDocument> extends Model<D> {
   add: Add
   findCommentsByPageId: FindCommentsByPageId
   findCommentsByRevisionId: FindCommentsByRevisionId

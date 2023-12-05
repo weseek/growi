@@ -1,12 +1,11 @@
+import type { IInlineComment } from '@growi/core/dist/interfaces';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import { SWRResponse } from 'swr';
 
-import { IComment } from '~/interfaces/comment';
-
-export const useInlineComments = (): SWRResponse<IComment[]> => {
+export const useInlineComments = (): SWRResponse<IInlineComment[]> => {
   const key = 'inlineComments';
 
-  return useSWRStatic<IComment[], Error>(key, [], {
+  return useSWRStatic<IInlineComment[], Error>(key, [], {
     keepPreviousData: true,
   });
 };

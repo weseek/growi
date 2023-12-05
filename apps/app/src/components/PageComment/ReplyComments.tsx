@@ -1,12 +1,11 @@
 
 import React, { useState } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUser, ICommentHasId, ICommentHasIdList } from '@growi/core';
 import { Collapse } from 'reactstrap';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
-import type { ICommentHasId, ICommentHasIdList } from '../../interfaces/comment';
 import { useIsAllReplyShown } from '../../stores/context';
 
 import { Comment } from './Comment';
