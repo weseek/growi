@@ -12,12 +12,12 @@ export const TableButton = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { open: openTableModal } = useHandsontableModalForEditor();
   const editor = codeMirrorEditor?.view;
-  const onClickTableButton = useCallback(() => {
+  const openTableModalHandler = useCallback(() => {
     openTableModal(editor);
   }, [editor, openTableModal]);
 
   return (
-    <button type="button" className="btn btn-toolbar-button" onClick={onClickTableButton}>
+    <button type="button" className="btn btn-toolbar-button" onClick={openTableModalHandler}>
       <span className="material-symbols-outlined fs-5">table_chart</span>
     </button>
   );
