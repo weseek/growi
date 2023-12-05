@@ -252,12 +252,9 @@
   "ui_settings": {
     "ui_settings": "UI Settings",
     "side_bar_mode": {
+      "settings": "Sidebar mode settings",
       "side_bar_mode_setting": "Set the sidebar mode",
-      "description": "You can set whether the sidebar is always open or not."
-    },
-    "edit_side_bar_mode": {
-      "side_bar_mode_setting": "Set the mode of the sidebar when editing",
-      "description": "You can set whether the sidebar is always open when editing content."
+      "description": "You can set whether or not the sidebar will always be open when the screen width is large. If the screen width is small, the sidebar will always be closed."
     }
   },
   "editor_settings": {

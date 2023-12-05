@@ -1,8 +1,14 @@
+import { useCallback } from 'react';
+
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import { updateUserUISettings } from '~/client/services/user-ui-settings';
+import { toastError, toastSuccess } from '~/client/util/toastr';
+import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
+
+import SidebarCollapsedIcon from './SidebarCollapsedIcon';
 import SidebarDockIcon from './SidebarDockIcon';
-import SidebarDrawerIcon from './SidebarDrawerIcon';
 
 import styles from './UISettings.module.scss';
 
@@ -22,6 +28,27 @@ additionalClasses: string
 
 export const UISettings = (): JSX.Element => {
   const { t } = useTranslation();
+  const {
+    isDockMode, isCollapsedMode,
+  } = useSidebarMode();
+  const { mutate: mutatePreferCollapsedMode } = usePreferCollapsedMode();
+  const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
+
+  const toggleCollapsed = useCallback(() => {
+    mutatePreferCollapsedMode(!isCollapsedMode());
+    mutateCollapsedContentsOpened(false);
+  }, [mutatePreferCollapsedMode, isCollapsedMode, mutateCollapsedContentsOpened]);
+
+  const updateButtonHandler = useCallback(async() => {
+    try {
+      await updateUserUISettings({ preferCollapsedModeByUser: isCollapsedMode() });
+      toastSuccess(t('toaster.update_successed', { target: t('ui_settings.side_bar_mode.settings'), ns: 'commons' }));
+    }
+    catch (err) {
+      toastError(err);
+    }
+
+  }, [isCollapsedMode, t]);
 
   const renderSidebarModeSwitch = () => {
     return (
@@ -29,11 +56,11 @@ export const UISettings = (): JSX.Element => {
         <div className="d-flex align-items-start">
           <div className="d-flex align-items-center">
             <IconWithTooltip
-              id="iwt-sidebar-drawer"
-              label="Drawer"
+              id="iwt-sidebar-collapsed"
+              label="Collapsed"
               additionalClasses={styles['grw-sidebar-mode-icon']}
             >
-              <SidebarDrawerIcon />
+              <SidebarCollapsedIcon />
             </IconWithTooltip>
             <div className="form-check form-switch ms-2">
 
@@ -41,6 +68,8 @@ export const UISettings = (): JSX.Element => {
                 id="swSidebarMode"
                 className="form-check-input"
                 type="checkbox"
+                checked={isDockMode()}
+                onChange={toggleCollapsed}
               />
               <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
             </div>
@@ -59,42 +88,6 @@ export const UISettings = (): JSX.Element => {
     );
   };
 
-  const renderEditSidebarModeSwitch = () => {
-    return (
-      <>
-        <div className="d-flex align-items-start">
-          <div className="d-flex align-items-center">
-            <IconWithTooltip
-              id="iwt-sidebar-editor-drawer"
-              label="Drawer"
-              additionalClasses={styles['grw-sidebar-mode-icon']}
-            >
-              <SidebarDrawerIcon />
-            </IconWithTooltip>
-            <div className="form-check form-switch ms-2">
-
-              <input
-                id="swSidebarModeOnEditor"
-                className="form-check-input"
-                type="checkbox"
-              />
-              <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor"></label>
-            </div>
-            <IconWithTooltip id="iwt-sidebar-editor-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-              <SidebarDockIcon />
-            </IconWithTooltip>
-          </div>
-          <div className="ms-2">
-            <label className="form-label form-check-label" htmlFor="swSidebarModeOnEditor">
-              {t('ui_settings.edit_side_bar_mode.side_bar_mode_setting')}
-            </label>
-            <p className="form-text text-muted small">{t('ui_settings.edit_side_bar_mode.description')}</p>
-          </div>
-        </div>
-      </>
-    );
-  };
-
   return (
     <>
       <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
@@ -104,10 +97,6 @@ export const UISettings = (): JSX.Element => {
 
           { renderSidebarModeSwitch() }
 
-          <div className="mt-5">
-            { renderEditSidebarModeSwitch() }
-          </div>
-
           <div>
           </div>
         </div>
@@ -115,7 +104,7 @@ export const UISettings = (): JSX.Element => {
 
       <div className="row my-3">
         <div className="offset-4 col-5">
-          <button data-testid="" type="button" className="btn btn-primary" onClick={() => {}}>
+          <button data-testid="" type="button" className="btn btn-primary" onClick={updateButtonHandler}>
             {t('Update')}
           </button>
         </div>

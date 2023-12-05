@@ -243,12 +243,9 @@
   "ui_settings": {
     "ui_settings": "用户界面设置",
     "side_bar_mode": {
+      "settings": "侧边栏模式设置",
       "side_bar_mode_setting": "设置侧边栏模式",
-      "description": "您可以设置侧边栏是否始终保持打开状态。"
-    },
-    "edit_side_bar_mode": {
-      "side_bar_mode_setting": "设置编辑时的边栏模式",
-      "description": "您可以设置在编辑内容时是否始终打开侧边栏。"
+      "description": "您可以设置当屏幕宽度较大时，侧边栏是否始终打开。 如果屏幕宽度较小，侧边栏将始终关闭。"
     }
   },
   "editor_settings": {
