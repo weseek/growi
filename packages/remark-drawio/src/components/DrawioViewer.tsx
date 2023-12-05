@@ -43,6 +43,7 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
   const [error, setError] = useState<Error>();
+  const [elementWidth, setElementWidth] = useState(0);
 
   const renderDrawio = useCallback(() => {
     if (drawioContainerRef.current == null) {
@@ -56,16 +57,22 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
       return;
     }
 
-    const mxgraphs = drawioContainerRef.current.getElementsByClassName('mxgraph');
+    const mxgraphs = drawioContainerRef.current.getElementsByClassName('mxgraph') as HTMLCollectionOf<HTMLElement>;
     if (mxgraphs.length > 0) {
       // This component should have only one '.mxgraph' element
       const div = mxgraphs[0];
 
       if (div != null) {
         div.innerHTML = '';
+        div.style.width = '';
+        div.style.height = '';
 
         // render diagram with createViewerForElement
         try {
+          GraphViewer.useResizeSensor = false;
+          GraphViewer.prototype.checkVisibleState = false;
+          GraphViewer.prototype.lightboxZIndex = 1200;
+          GraphViewer.prototype.toolbarZIndex = 1200;
           GraphViewer.createViewerForElement(div);
         }
         catch (err) {
@@ -73,6 +80,16 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
         }
       }
     }
+
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach((el) => {
+        setElementWidth(el.contentRect.width);
+      });
+    });
+    observer.observe(drawioContainerRef.current);
+    return () => {
+      observer.disconnect();
+    };
   }, []);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
@@ -106,7 +123,7 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
       onRenderingStart?.();
       renderDrawioWithDebounce();
     }
-  }, [mxgraphHtml, onRenderingStart, renderDrawioWithDebounce]);
+  }, [mxgraphHtml, onRenderingStart, renderDrawioWithDebounce, elementWidth]);
 
   useEffect(() => {
     if (error != null) {
