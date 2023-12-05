@@ -8,33 +8,6 @@ import { generateInlineCommentAttributes, type InlineCommentAttributes } from '.
 const logger = loggerFactory('growi:components:InlineCommentForm');
 
 
-const isElement = (node: Node): node is Element => {
-  return 'innerHTML' in node;
-};
-
-const retrieveFirstLevelElement = (target: Node, root: Element): Node | null => {
-  if (target === root || target.parentElement == null) {
-    return null;
-  }
-  if (target.parentElement === root) {
-    return target;
-  }
-
-  return retrieveFirstLevelElement(target.parentElement, root);
-};
-
-const getElementByXpath = (xpath: string): Node | null => {
-  return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-};
-
-
-const Annotated = ({ children }: { children?: React.ReactNode }): JSX.Element => {
-  return (
-    <span className="fs-3">{ children }</span>
-  );
-};
-
-
 type Props = {
   range: Range,
   onExit?: () => void,
@@ -63,6 +36,7 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
     }
 
     console.log({ inlineCommentAttributes });
+
     // const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
     // if (targetElement != null && isElement(targetElement)) {
     //   // WIP: restore annotated html from xpathRelative
