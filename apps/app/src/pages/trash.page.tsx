@@ -68,7 +68,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           TODO: implement navigation for /trash
         </nav>
 
-        <div className="content-main container-lg grw-container-convertible mb-5 pb-5">
+        <div className="content-main container-lg mb-5 pb-5">
           <PagePathNavSticky pagePath="/trash" />
           <TrashPageList />
         </div>
