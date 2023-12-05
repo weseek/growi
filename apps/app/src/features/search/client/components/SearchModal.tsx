@@ -38,10 +38,13 @@ const SearchModal = (): JSX.Element => {
           onChangeSearchText={changeSearchTextHandler}
           onClickClearButton={clickClearButtonHandler}
         />
-        <div className="border-top mt-3 mb-3" />
+
+        <div className="border-top mt-3 mb-2" />
         <SearchMethodMenuItem searchKeyword={searchKeyword} />
+
         <div className="border-top mt-2 mb-2" />
         <SearchResultMenuItem searchKeyword={searchKeyword} />
+
         <SearchHelp />
       </ModalBody>
     </Modal>
