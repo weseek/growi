@@ -114,7 +114,7 @@ class MarkdownDrawioUtil {
       // skip block begin sesion("``` drawio")
       this.doc(editor).lineAt(bod).number++;
       // skip block end sesion("```")
-      this.doc.lineAt(eod).number--;
+      this.doc(editor).lineAt(eod).number--;
 
       return editor.state.sliceDoc(bod, eod);
     }
@@ -131,8 +131,8 @@ class MarkdownDrawioUtil {
       endPos = this.getEod(editor);
     }
     else {
-      beginPos = this.doc(editor).lineAt(this.curPos(editor));
-      endPos = this.doc(editor).lineAt(this.curPos(editor));
+      beginPos = this.doc(editor).lineAt(this.curPos(editor)).from;
+      endPos = this.doc(editor).lineAt(this.curPos(editor)).to;
     }
 
     editor.dispatch({
