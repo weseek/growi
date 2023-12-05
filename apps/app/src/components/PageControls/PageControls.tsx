@@ -16,6 +16,7 @@ import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
@@ -31,6 +32,9 @@ import SubscribeButton from './SubscribeButton';
 
 
 import styles from './PageControls.module.scss';
+
+const logger = loggerFactory('growi:components/PageControls');
+
 
 type TagsProps = {
   onClickEditTagsButton: () => void,
@@ -199,6 +203,11 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
     if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
+      logger.warn('Could not switch content width', {
+        onClickSwitchContentWidth: onClickSwitchContentWidth == null ? 'null' : 'not null',
+        isGuestUser,
+        isReadOnlyUser,
+      });
       return;
     }
     if (!isIPageInfoForEntity(pageInfo)) {

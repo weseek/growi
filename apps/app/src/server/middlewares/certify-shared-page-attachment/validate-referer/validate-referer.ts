@@ -7,7 +7,7 @@ import { ValidReferer } from '../interfaces';
 import { retrieveSiteUrl } from './retrieve-site-url';
 
 
-const logger = loggerFactory('growi:middlewares:certify-shared-file:validate-referer');
+const logger = loggerFactory('growi:middlewares:certify-shared-page-attachment:validate-referer');
 
 
 export const validateReferer = (referer: string | undefined): ValidReferer | false => {
@@ -51,7 +51,10 @@ export const validateReferer = (referer: string | undefined): ValidReferer | fal
   // validate pathname
   // https://regex101.com/r/M5Bp6E/1
   const match = refererUrl.pathname.match(/^\/share\/(?<shareLinkId>[a-f0-9]{24})$/i);
-  if (match == null || match.groups?.shareLinkId == null) {
+  if (match == null) {
+    return false;
+  }
+  if (match.groups?.shareLinkId == null) {
     logger.warn(`The pathname ('${refererUrl.pathname}') is invalid.`, match);
     return false;
   }

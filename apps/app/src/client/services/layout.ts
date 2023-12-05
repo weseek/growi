@@ -9,20 +9,29 @@ export const useEditorModeClassName = (): string => {
   return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
 };
 
-export const useLayoutFluidClassName = (expandContentWidth?: boolean | null): string => {
+const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean => {
   const { data: dataIsContainerFluid } = useIsContainerFluid();
 
   const isContainerFluidDefault = dataIsContainerFluid;
-  const isContainerFluid = expandContentWidth ?? isContainerFluidDefault;
-
-  return isContainerFluid ? 'growi-layout-fluid' : '';
+  return expandContentWidth ?? isContainerFluidDefault ?? false;
 };
 
-export const useLayoutFluidClassNameByPage = (initialPage?: IPage): string => {
-  const page = initialPage;
-  const expandContentWidth = page == null || !('expandContentWidth' in page)
-    ? null
-    : page.expandContentWidth;
+export const useShouldExpandContent = (data?: IPage | boolean | null): boolean => {
+  const expandContentWidth = (() => {
+    // when data is null
+    if (data == null) {
+      return null;
+    }
+    // when data is boolean
+    if (data === true || data === false) {
+      return data;
+    }
+    // when IPage does not have expandContentWidth
+    if (!('expandContentWidth' in data)) {
+      return null;
+    }
+    return data.expandContentWidth;
+  })();
 
-  return useLayoutFluidClassName(expandContentWidth);
+  return useDetermineExpandContent(expandContentWidth);
 };

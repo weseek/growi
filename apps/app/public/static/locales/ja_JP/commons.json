@@ -79,7 +79,7 @@
     "template": {
       "desc": "テンプレートページの作成/編集",
       "children": "同一階層テンプレート",
-      "decendants": "下位層テンプレート"
+      "descendants": "下位層テンプレート"
     }
   },
 
