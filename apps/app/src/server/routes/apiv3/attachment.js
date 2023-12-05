@@ -4,13 +4,13 @@ import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
-import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { Attachment } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { certifySharedPageAttachmentMiddleware } from '../../middlewares/certify-shared-page-attachment';
+import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
 
 
 const logger = loggerFactory('growi:routes:apiv3:attachment'); // eslint-disable-line no-unused-vars
@@ -92,7 +92,7 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
+  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const { attachmentService } = crowi;
