@@ -215,7 +215,7 @@ module.exports = (crowi) => {
    * @apiName AddAttachment
    * @apiGroup Attachment
    */
-  router.get('/limit', accessTokenParser, loginRequired, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
+  router.get('/limit', accessTokenParser, loginRequiredStrictly, validator.retrieveFileLimit, apiV3FormValidator, async(req, res) => {
     const { fileUploadService } = crowi;
     const fileSize = Number(req.query.fileSize);
     try {
