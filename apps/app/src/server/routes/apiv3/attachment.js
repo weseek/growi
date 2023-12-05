@@ -1,8 +1,10 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import multer from 'multer';
+import autoReap from 'multer-autoreap';
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { Attachment } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -90,6 +92,7 @@ const { serializeUserSecurely } = require('../../models/serializers/user-seriali
 module.exports = (crowi) => {
   const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
   const loginRequired = require('../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const { attachmentService } = crowi;
@@ -298,7 +301,8 @@ module.exports = (crowi) => {
    * @apiParam {String} path
    * @apiParam {File} file
    */
-  router.post('/add', uploads.single('file'), accessTokenParser, loginRequired, validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
+  router.post('/add', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
+    validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 
       const pageId = req.body.page_id;
