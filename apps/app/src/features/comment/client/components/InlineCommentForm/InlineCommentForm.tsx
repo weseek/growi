@@ -1,12 +1,12 @@
 import { useCallback, useState } from 'react';
 
-import getXPath from 'get-xpath';
-import { createPortal } from 'react-dom';
-import { createRoot } from 'react-dom/client';
-import JSXStyle from 'styled-jsx/style';
-import TextAnnotator from 'text-annotator-v2';
+import loggerFactory from '~/utils/logger';
 
-import type { TextAnnotatorInterface } from '../@types/text-annotator-v2';
+import { generateInlineCommentAttributes, type InlineCommentAttributes } from './utils';
+
+
+const logger = loggerFactory('growi:components:InlineCommentForm');
+
 
 const isElement = (node: Node): node is Element => {
   return 'innerHTML' in node;
@@ -34,6 +34,7 @@ const Annotated = ({ children }: { children?: React.ReactNode }): JSX.Element =>
   );
 };
 
+
 type Props = {
   range: Range,
   onExit?: () => void,
@@ -47,49 +48,38 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
   const submitHandler = useCallback(() => {
     const wikiElements = document.getElementsByClassName('wiki');
 
-    if (wikiElements.length === 0) return;
-
-    const firstLevelElement = retrieveFirstLevelElement(range.commonAncestorContainer, wikiElements[0]);
-
-    if (firstLevelElement == null) {
-      onExit?.();
+    if (wikiElements.length === 0) {
+      logger.error("'.wiki' element could not be found.");
+      return;
     }
 
-    console.log({ input, range, firstLevelElement });
-
-    if (firstLevelElement != null && isElement(firstLevelElement)) {
-      const annotator: TextAnnotatorInterface = new TextAnnotator(firstLevelElement.innerHTML);
-      const annotationIndex = annotator.search(range.toString());
-
-      if (annotationIndex > -1) {
-        const annotated = annotator.annotate(annotationIndex);
-        const wikiElemXpath = getXPath(wikiElements[0]);
-        const xpath = getXPath(firstLevelElement);
-        const xpathRelative = xpath.slice(wikiElemXpath.length);
-        console.log({
-          wikiElemXpath, xpath, xpathRelative, annotated,
-        });
-
-        const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
-        if (targetElement != null && isElement(targetElement)) {
-          // WIP: restore annotated html from xpathRelative
-          console.log('replace innerHTML');
-          targetElement.innerHTML = annotated;
-
-          // WIP: react rendering
-          const annotatedElem = targetElement.getElementsByClassName('annotation-0');
-          console.log({ annotatedElem });
-          createPortal(
-            <p>aaaaa</p>,
-            annotatedElem[0],
-          );
-        }
-
-      }
+    let inlineCommentAttributes: InlineCommentAttributes;
+    try {
+      inlineCommentAttributes = generateInlineCommentAttributes(range, wikiElements[0]);
     }
+    catch (err) {
+      logger.error('Generating InlineCommntAttributes failed.', err);
+      return;
+    }
+
+    console.log({ inlineCommentAttributes });
+    // const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
+    // if (targetElement != null && isElement(targetElement)) {
+    //   // WIP: restore annotated html from xpathRelative
+    //   console.log('replace innerHTML');
+    //   targetElement.innerHTML = annotated;
+
+    //   // WIP: react rendering
+    //   const annotatedElem = targetElement.getElementsByClassName('annotation-0');
+    //   console.log({ annotatedElem });
+    //   createPortal(
+    //     <p>aaaaa</p>,
+    //     annotatedElem[0],
+    //   );
+    // }
 
     onExit?.();
-  }, [input, range, onExit]);
+  }, [range, onExit]);
 
   return (
     <form onSubmit={submitHandler}>
