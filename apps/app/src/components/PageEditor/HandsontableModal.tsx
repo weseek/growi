@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 
+import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
 import Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
@@ -10,7 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
+import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -32,11 +33,13 @@ export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const { data: handsontableModalForEditorData } = useHandsontableModalForEditor();
 
   const isOpened = handsontableModalData?.isOpened ?? false;
+  const isOpendInEditor = handsontableModalForEditorData?.isOpened ?? false;
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
-  const editor = handsontableModalData?.editor;
+  const editor = handsontableModalForEditorData?.editor;
   const onSave = handsontableModalData?.onSave;
 
   const defaultMarkdownTable = () => {
@@ -102,8 +105,9 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
-    setMarkdownTable(table ?? defaultMarkdownTable);
+    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor) : table;
+    const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
+    setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
     debouncedHandleWindowExpandedChange();
   };
@@ -163,7 +167,10 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
+    if (editor == null) {
+      return;
+    }
+    replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
     cancel();
   };
 
@@ -441,7 +448,7 @@ export const HandsontableModal = (): JSX.Element => {
 
   return (
     <Modal
-      isOpen={isOpened}
+      isOpen={isOpened || isOpendInEditor}
       toggle={cancel}
       backdrop="static"
       keyboard={false}
