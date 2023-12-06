@@ -20,7 +20,7 @@ class MarkdownDrawioUtil {
     return editor.state.doc;
   }
 
-  // get first line numbet
+  // get first line number
   firstLine() {
     return 1;
   }
@@ -30,6 +30,7 @@ class MarkdownDrawioUtil {
     return this.doc(editor).lines;
   }
 
+  // get line information
   getLine(editor, lineNum) {
     return this.doc(editor).line(lineNum);
   }
