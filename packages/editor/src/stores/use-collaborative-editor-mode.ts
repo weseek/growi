@@ -34,9 +34,9 @@ export const useCollaborativeEditorMode = (
     ydoc?.destroy();
     setYdoc(null);
 
-    provider?.disconnect();
-    provider?.destroy();
-    setProvider(null);
+    // NOTICE: Destorying the provider leaves awareness in the other user's connection,
+    // so only awareness is destoryed here
+    provider?.awareness.destroy();
 
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
     socket.off(GlobalSocketEventName.YDocSync);
@@ -49,6 +49,11 @@ export const useCollaborativeEditorMode = (
     if (ydoc != null) {
       return;
     }
+
+    // NOTICE: Old provider destory at the time of ydoc setup,
+    // because the awareness destroying is not sync to other clients
+    provider?.destroy();
+    setProvider(null);
 
     const _ydoc = new Y.Doc();
     setYdoc(_ydoc);
@@ -109,7 +114,7 @@ export const useCollaborativeEditorMode = (
   };
 
   useEffect(cleanupYDocAndProvider, [cPageId, pageId, provider, socket, ydoc]);
-  useEffect(setupYDoc, [ydoc]);
+  useEffect(setupYDoc, [provider, ydoc]);
   useEffect(setupProvider, [initialValue, pageId, provider, socket, userName, ydoc]);
   useEffect(attachYDocExtensionsToCodeMirror, [codeMirrorEditor, provider, ydoc]);
   useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
