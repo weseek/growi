@@ -11,6 +11,7 @@ import {
 } from 'reactstrap';
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
+import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
 import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
@@ -51,6 +52,7 @@ export const DrawioModal = (): JSX.Element => {
   const { data: drawioModalDataInEditor } = useDrawioModalForEditor();
   const isOpened = drawioModalData?.isOpened ?? false;
   const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
+  const editor = drawioModalDataInEditor?.editor;
 
   const drawioUriWithParams = useMemo(() => {
     if (rendererConfig == null) {
@@ -81,20 +83,26 @@ export const DrawioModal = (): JSX.Element => {
       return undefined;
     }
 
+    const save = editor != null ? (drawioMxFile: string) => {
+      mdu.replaceFocusedDrawioWithEditor(editor, drawioMxFile);
+    } : drawioModalData?.onSave;
+    // TODO: Fold the section after the drawio section (```drawio) has been updated.
+
     return new DrawioCommunicationHelper(
       rendererConfig.drawioUri,
       drawioConfig,
-      { onClose: closeDrawioModal, onSave: drawioModalData?.onSave },
+      { onClose: closeDrawioModal, onSave: save },
     );
-  }, [closeDrawioModal, drawioModalData?.onSave, rendererConfig]);
+  }, [closeDrawioModal, drawioModalData?.onSave, editor, rendererConfig]);
 
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {
       return;
     }
 
-    drawioCommunicationHelper?.onReceiveMessage(event, drawioModalData.drawioMxFile);
-  }, [drawioCommunicationHelper, drawioModalData]);
+    const drawioMxFile = editor != null ? mdu.getMarkdownDrawioMxfile(editor) : drawioModalData.drawioMxFile;
+    drawioCommunicationHelper?.onReceiveMessage(event, drawioMxFile);
+  }, [drawioCommunicationHelper, drawioModalData, editor]);
 
   useEffect(() => {
     if (isOpened) {
