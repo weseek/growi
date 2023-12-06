@@ -323,9 +323,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         if (pageId != null) {
           formData.append('page_id', pageId);
         }
-        if (pageId == null) {
-          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-        }
 
         const { data: resAdd } = await apiv3PostForm('/attachment/add', formData);
 
