@@ -178,11 +178,11 @@ class MarkdownDrawioUtil {
   findAllDrawioSection(editor) {
     const lineNumbers = [];
     // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
-    for (let i = 1, e = this.doc(editor).lines; i <= e; i++) {
-      const line = this.doc(editor).line(i + 1).text;
-      const match = this.lineBeginPartOfDrawioRE.exec(line);
+    for (let firstLine = 1, lastLine = this.doc(editor).lines; firstLine <= lastLine; firstLine++) {
+      const lineText = this.doc(editor).line(firstLine + 1).text;
+      const match = this.lineBeginPartOfDrawioRE.exec(lineText);
       if (match) {
-        lineNumbers.push(i);
+        lineNumbers.push(firstLine);
       }
     }
     return lineNumbers;
