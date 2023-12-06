@@ -20,13 +20,25 @@ class MarkdownDrawioUtil {
     return editor.state.doc;
   }
 
+  // get first line numbet
+  firstLine() {
+    return 1;
+  }
+
+  // get list line number
+  lastLine(editor) {
+    return this.doc(editor).lines;
+  }
+
+  getLine(editor, lineNum) {
+    return this.doc(editor).line(lineNum);
+  }
+
   /**
    * return the postion of the BOD(beginning of drawio)
    * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
    */
   getBod(editor) {
-    const firstLine = 1;
-
     if (this.lineBeginPartOfDrawioRE.test(this.doc(editor).lineAt(this.curPos(editor))).text) {
       // get the beginning of the line where the cursor is located
       return this.doc(editor).lineAt(this.curPos(editor)).from;
@@ -34,8 +46,8 @@ class MarkdownDrawioUtil {
 
     let line = this.doc(editor).lineAt(this.curPos(editor)).number - 1;
     let isFound = false;
-    for (; line >= firstLine; line--) {
-      const strLine = this.doc(editor).line(line).text;
+    for (; line >= this.firstLine; line--) {
+      const strLine = this.getLine(editor, line).text;
       if (this.lineBeginPartOfDrawioRE.test(strLine)) {
         isFound = true;
         break;
@@ -51,8 +63,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const botLine = Math.max(firstLine, line);
-    return this.doc(editor).line(botLine).from;
+    const botLine = Math.max(this.firstLine, line);
+    return this.getLineText(editor, botLine).from;
   }
 
   /**
@@ -60,8 +72,6 @@ class MarkdownDrawioUtil {
    * (If the EOD is not found after the cursor or the BOD is found before the EOD, return null)
    */
   getEod(editor) {
-    const lastLine = this.doc(editor).lines;
-
     if (this.lineEndPartOfDrawioRE.test(this.doc(editor).lineAt(this.curPos(editor))).text) {
       // get the end of the line where the cursor is located
       return this.doc(editor).lineAt(this.curPos(editor)).to;
@@ -69,8 +79,8 @@ class MarkdownDrawioUtil {
 
     let line = this.doc(editor).lineAt(this.curPos(editor)).number + 1;
     let isFound = false;
-    for (; line <= lastLine; line++) {
-      const strLine = this.doc(editor).line(line).text;
+    for (; line <= this.lastLine(editor); line++) {
+      const strLine = this.getLine(editor, line).text;
       if (this.lineEndPartOfDrawioRE.test(strLine)) {
         isFound = true;
         break;
@@ -86,8 +96,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const eodLine = Math.min(line, lastLine);
-    return this.doc(editor).line(eodLine).to;
+    const eodLine = Math.min(line, this.lastLine(editor));
+    return this.getLine(editor, eodLine).to;
   }
 
   /**
@@ -113,10 +123,10 @@ class MarkdownDrawioUtil {
 
       // skip block begin sesion("``` drawio")
       const bodLineNum = this.doc(editor).lineAt(bod).number + 1;
-      const bodLine = this.doc(editor).line(bodLineNum).from;
+      const bodLine = this.getLine(editor, bodLineNum).from;
       // skip block end sesion("```")
       const eodLineNum = this.doc(editor).lineAt(eod).number - 1;
-      const eodLine = this.doc(editor).line(eodLineNum).to;
+      const eodLine = this.getLine(editor, eodLineNum).to;
 
       return editor.state.sliceDoc(bodLine, eodLine);
     }
@@ -177,9 +187,11 @@ class MarkdownDrawioUtil {
    */
   findAllDrawioSection(editor) {
     const lineNumbers = [];
+    const lastLine = this.lastLine(editor);
+    let firstLine = this.firstLine;
     // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
-    for (let firstLine = 1, lastLine = this.doc(editor).lines; firstLine <= lastLine; firstLine++) {
-      const lineText = this.doc(editor).line(firstLine + 1).text;
+    for (firstLine, lastLine; firstLine <= lastLine; firstLine++) {
+      const lineText = this.getLine(editor, firstLine + 1).text;
       const match = this.lineBeginPartOfDrawioRE.exec(lineText);
       if (match) {
         lineNumbers.push(firstLine);
