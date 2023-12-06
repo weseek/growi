@@ -1,0 +1,39 @@
+.workflow-modal {
+  width: 720px;
+}
+
+.create-workflow-button {
+  width: 158px;
+  height: 32px;
+
+  margin: 0 auto;
+
+  background: var(--primary-500-007eb0) 0% 0% no-repeat padding-box;
+  background: #007EB0 0% 0% no-repeat padding-box;
+  border: 1px solid var(--primary-600);
+  border: 1px solid #006590;
+  border-radius: 2px;
+  opacity: 1;
+
+  .title {
+    padding: 6px, 16px;
+  }
+}
+
+.workflow-status {
+  width: 52px;
+  height: 20px;
+  font: normal normal normal 12px/20px Hiragino Sans;
+
+  color: var(--dark-500);
+  color: #9A9898;
+  text-align: center;
+  letter-spacing: 0px;
+
+  background: var(--gray-200-efeeed) 0% 0% no-repeat padding-box;
+  background: #EFEEED 0% 0% no-repeat padding-box;
+  border: 1px solid var(--gray-400-d8d7d5);
+  border: 1px solid #D8D7D5;
+  border-radius: 10px;
+  opacity: 1;
+}

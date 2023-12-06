@@ -18,6 +18,7 @@ import { deleteWorkflow } from '../../services/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
+import styles from './WorkflowListModalContent.module.scss';
 
 type Props = {
   workflows: IWorkflowHasId[]
@@ -100,6 +101,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
   return (
     <>
       <WorkflowModalHeader>
+        <i className="fa fa-fw icon-organization grw-page-control-dropdown-icon"></i>
         <span className="fw-bold">{t('approval_workflow.list')}</span>
       </WorkflowModalHeader>
 
@@ -116,6 +118,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                 <th scope="col">{t('approval_workflow.name')}</th>
                 <th scope="col">{t('approval_workflow.status')}</th>
                 <th scope="col">{t('approval_workflow.applicant')}</th>
+                <th scope="col"></th>
               </tr>
             </thead>
 
@@ -125,18 +128,20 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
                       { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
-                      <div>
-                        <span className="text-muted">
+                      <div className="d-flex align-items-center">
+                        <span className="text-muted flex-grow-1">
                           {formatDate(workflow.createdAt)}
                         </span>
-                        <span className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                        <span className="btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
                           {t('approval_workflow.show_detail')}
                           <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
                         </span>
                       </div>
                     </td>
                     <td>
-                      {t(`approval_workflow.workflow_status.${workflow.status}`)}
+                      <div className={styles['workflow-status']}>
+                        {t(`approval_workflow.workflow_status.${workflow.status}`)}
+                      </div>
                     </td>
                     <td>
                       {workflow.creator.username}
@@ -178,8 +183,10 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={createWorkflowButtonClickHandler}>
-          {t('approval_workflow.create')}
+        <button className={styles['create-workflow-button']} type="button" onClick={createWorkflowButtonClickHandler}>
+          <div className="title">
+            {t('approval_workflow.create')}
+          </div>
         </button>
       </ModalFooter>
     </>
