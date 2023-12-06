@@ -8,6 +8,8 @@ import {
   WorkflowListModalContent, WorkflowCreationModalContent, WorkflowDetailModalContent, WorkflowEditModalContent,
 } from './ModalComponents';
 
+import styles from './ModalComponents/WorkflowListModalContent.module.scss';
+
 const PageType = {
   list: 'LIST',
   creation: 'CREATION',
@@ -73,7 +75,7 @@ const WorkflowModal = (): JSX.Element => {
   }
 
   return (
-    <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()}>
+    <Modal isOpen={workflowModalData?.isOpened ?? false} toggle={() => closeWorkflowModal()} size="lg">
       { pageType === PageType.list && (
         <WorkflowListModalContent
           workflows={workflowPaginateResult?.docs ?? []}
