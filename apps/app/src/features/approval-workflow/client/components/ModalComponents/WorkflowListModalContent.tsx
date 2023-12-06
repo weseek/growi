@@ -183,7 +183,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button className={styles['create-workflow-button']} type="button" onClick={createWorkflowButtonClickHandler}>
+        <button className="btn btn-primary mx-auto" type="button" onClick={createWorkflowButtonClickHandler}>
           <div className="title">
             {t('approval_workflow.create')}
           </div>
