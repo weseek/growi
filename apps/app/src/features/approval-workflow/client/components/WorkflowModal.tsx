@@ -8,8 +8,6 @@ import {
   WorkflowListModalContent, WorkflowCreationModalContent, WorkflowDetailModalContent, WorkflowEditModalContent,
 } from './ModalComponents';
 
-import styles from './ModalComponents/WorkflowListModalContent.module.scss';
-
 const PageType = {
   list: 'LIST',
   creation: 'CREATION',
