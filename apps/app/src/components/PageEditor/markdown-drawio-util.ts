@@ -110,11 +110,13 @@ export const getMarkdownDrawioMxfile = (editor: EditorView): string | undefined 
     }
 
     // skip block begin sesion("``` drawio")
-    const botLine = doc(editor).lineAt(bod).number + 1;
+    const bodLineNum = doc(editor).lineAt(bod).number + 1;
+    const bodLine = doc(editor).line(bodLineNum).from;
     // skip block end sesion("```")
-    const eodLine = doc(editor).lineAt(eod).number - 1;
+    const eodLineNum = doc(editor).lineAt(eod).number - 1;
+    const eodLine = doc(editor).line(eodLineNum).to;
 
-    return editor.state.sliceDoc(botLine, eodLine);
+    return editor.state.sliceDoc(bodLine, eodLine);
   }
   return null;
 };
