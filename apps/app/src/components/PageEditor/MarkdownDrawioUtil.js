@@ -113,12 +113,12 @@ class MarkdownDrawioUtil {
 
       // skip block begin sesion("``` drawio")
       const bodLineNum = this.doc(editor).lineAt(bod).number + 1;
-      const bodLine = this.doc(editor).line(bodLineNum);
+      const bodLine = this.doc(editor).line(bodLineNum).from;
       // skip block end sesion("```")
       const eodLineNum = this.doc(editor).lineAt(eod).number - 1;
-      const eodLine = this.doc(editor).line(eodLineNum);
+      const eodLine = this.doc(editor).line(eodLineNum).to;
 
-      return editor.state.sliceDoc(bodLine.from, eodLine.to);
+      return editor.state.sliceDoc(bodLine, eodLine);
     }
     return null;
   }
