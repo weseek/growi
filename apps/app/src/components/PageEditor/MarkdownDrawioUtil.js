@@ -47,7 +47,7 @@ class MarkdownDrawioUtil {
 
     let line = this.doc(editor).lineAt(this.curPos(editor)).number - 1;
     let isFound = false;
-    for (; line >= this.firstLine; line--) {
+    for (; line >= this.firstLine(); line--) {
       const strLine = this.getLine(editor, line).text;
       if (this.lineBeginPartOfDrawioRE.test(strLine)) {
         isFound = true;
@@ -64,8 +64,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const botLine = Math.max(this.firstLine, line);
-    return this.getLineText(editor, botLine).from;
+    const botLine = Math.max(this.firstLine(), line);
+    return this.getLine(editor, botLine).from;
   }
 
   /**
@@ -189,7 +189,7 @@ class MarkdownDrawioUtil {
   findAllDrawioSection(editor) {
     const lineNumbers = [];
     const lastLine = this.lastLine(editor);
-    let firstLine = this.firstLine;
+    let firstLine = this.firstLine();
     // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
     for (firstLine, lastLine; firstLine <= lastLine; firstLine++) {
       const lineText = this.getLine(editor, firstLine + 1).text;
