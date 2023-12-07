@@ -101,6 +101,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             disabled={!isCreatableTopApporverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
           >
+            <span className="material-symbols-outlined">add</span>
             {t('approval_workflow.add_flow')}
           </button>
         </div>
