@@ -20,12 +20,12 @@ class MarkdownDrawioUtil {
     return editor.state.doc;
   }
 
-  // get first line number(numeber)
+  // get first line number(number)
   firstLineNum() {
     return 1;
   }
 
-  // get last line number(numeber)
+  // get last line number(number)
   lastLineNum(editor) {
     return this.doc(editor).lines;
   }
