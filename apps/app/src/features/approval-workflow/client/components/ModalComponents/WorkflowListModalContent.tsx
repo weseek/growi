@@ -101,7 +101,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
   return (
     <>
       <WorkflowModalHeader>
-        <i className="fa fa-fw icon-organization grw-page-control-dropdown-icon"></i>
+        <span className="material-symbols-outlined">account_tree</span>
         <span className="fw-bold">{t('approval_workflow.list')}</span>
       </WorkflowModalHeader>
 
