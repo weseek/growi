@@ -69,7 +69,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const botLine = Math.max(this.firstLineNum(), line);
+    const firstLineNum = this.firstLineNum();
+    const botLine = Math.max(firstLineNum, line);
     return this.getLine(editor, botLine).from;
   }
 
@@ -102,7 +103,8 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const eodLine = Math.min(line, this.lastLineNum(editor));
+    const lastLineNum = this.lastLineNum(editor);
+    const eodLine = Math.min(line, lastLineNum);
     return this.getLine(editor, eodLine).to;
   }
 
@@ -195,7 +197,7 @@ class MarkdownDrawioUtil {
     const lineNumbers = [];
     // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
     for (let i = this.firstLineNum(), e = this.lastLineNum(editor); i <= e; i++) {
-      const lineText = this.getLine(editor, i + 1).text;
+      const lineText = this.getLine(editor, i).text;
       const match = this.lineBeginPartOfDrawioRE.exec(lineText);
       if (match) {
         lineNumbers.push(i);
