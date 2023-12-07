@@ -12,7 +12,7 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
-import { postComment, updateComment } from '~/features/comment/client';
+import { usePostComment, updateComment } from '~/features/comment/client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxEditingCommentsNum, useSWRxPageComment } from '~/stores/comment';
 import {
@@ -80,6 +80,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const postComment = usePostComment();
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme(resolvedTheme);
@@ -164,14 +166,12 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     try {
       if (currentCommentId != null) {
         // update current comment
-        await updateComment(currentCommentId, revisionId, 'test');
+        await updateComment(currentCommentId, revisionId, comment);
       }
       else {
         // post new comment
         await postComment({
           commentForm: {
-            pageId,
-            revisionId,
             comment,
             replyTo,
           },
@@ -194,7 +194,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
-  }, [currentCommentId, mutateComments, initializeEditor, onCommentButtonClicked, comment, revisionId, pageId, replyTo, isSlackEnabled, slackChannels]);
+  }, [currentCommentId, mutateComments, initializeEditor, onCommentButtonClicked, revisionId, postComment, comment, replyTo, isSlackEnabled, slackChannels]);
 
   const ctrlEnterHandler = useCallback((event) => {
     if (event != null) {

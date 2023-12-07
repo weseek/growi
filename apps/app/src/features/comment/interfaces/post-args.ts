@@ -1,8 +1,8 @@
 export interface ICommentPostArgs {
   commentForm: {
-    pageId: string,
-    revisionId: string,
     comment: string,
+    pageId?: string,
+    revisionId?: string,
     replyTo?: string,
     inline?: boolean,
   },
