@@ -72,59 +72,62 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
       </WorkflowModalHeader>
 
       <ModalBody>
-        <div className="mb-3">
-          <div className="row align-items-center">
-            <label htmlFor="name" className="col-md-4 col-form-label">
-              {t('approval_workflow.name')}
-            </label>
-            <div className="col-md-8 mb-3">
-              <div className="row">
-                <div className="col">
-                  <input
-                    className="form-control"
-                    type="text"
-                    name="name"
-                    value={editingWorkflowName}
-                    onChange={workflowNameChangeHandler}
-                    required
-                  />
+        <div className="col-9 mx-auto">
+          <div className="mb-3">
+            <div className="row align-items-center">
+              <label htmlFor="name" className="col-md-4 col-form-label align-items-center">
+                {t('approval_workflow.name')}
+              </label>
+              <div className="col-md-8 mb-3">
+                <div className="row">
+                  <div className="col">
+                    <input
+                      className="form-control"
+                      type="text"
+                      name="name"
+                      value={editingWorkflowName}
+                      onChange={workflowNameChangeHandler}
+                      required
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="row">
+              <label htmlFor="description" className="col-md-4 col-form-label align-items-center">
+                {t('approval_workflow.description')}
+              </label>
+              <div className="col-md-8">
+                <div className="row">
+                  <div className="col">
+                    <textarea
+                      className="form-control"
+                      name="description"
+                      value={editingWorkflowDescription}
+                      onChange={workflowDescriptionChangeHandler}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="row">
-            <label htmlFor="description" className="col-md-4 col-form-label">
-              {t('approval_workflow.description')}
-            </label>
-            <div className="col-md-8">
-              <div className="row">
-                <div className="col">
-                  <textarea
-                    className="form-control"
-                    name="description"
-                    value={editingWorkflowDescription}
-                    onChange={workflowDescriptionChangeHandler}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+          <EditableApproverGroupCards
+            editingApproverGroups={editingApproverGroups}
+            excludedSearchUserIds={excludedSearchUserIds}
+            onUpdateApproverGroups={updateApproverGroupHandler}
+            onClickAddApproverGroupCard={addApproverGroupHandler}
+            onClickRemoveApproverGroupCard={removeApproverGroupHandler}
+          />
+
+          <p className="my-3 text-muted text-center">{t('approval_workflow.description_for_new_creation')}</p>
         </div>
-
-        <EditableApproverGroupCards
-          editingApproverGroups={editingApproverGroups}
-          excludedSearchUserIds={excludedSearchUserIds}
-          onUpdateApproverGroups={updateApproverGroupHandler}
-          onClickAddApproverGroupCard={addApproverGroupHandler}
-          onClickRemoveApproverGroupCard={removeApproverGroupHandler}
-        />
-
-        <p className="my-3 text-muted text-center">{t('approval_workflow.description_for_new_creation')}</p>
       </ModalBody>
 
       <ModalFooter>
         <button
+          className="btn btn-primary mx-auto"
           type="button"
           disabled={!isCreatableWorkflow}
           onClick={createWorkflowButtonClickHandler}

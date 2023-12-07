@@ -100,7 +100,11 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             type="button"
             disabled={!isCreatableTopApporverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
-          >{t('approval_workflow.add_flow')}
+          >
+            <div>
+              <i className="fa-solid fa-plus"></i>
+            </div>
+            {t('approval_workflow.add_flow')}
           </button>
         </div>
       )}
@@ -120,7 +124,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             />
 
             { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
-              <button type="button" className="btn-close" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
+              <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
             )}
           </div>
 
@@ -170,7 +174,11 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             type="button"
             disabled={!isCreatableButtomApproverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
-          >{t('approval_workflow.add_flow')}
+          >
+            <div>
+              <i className="fa-solid fa-plus"></i>
+            </div>
+            {t('approval_workflow.add_flow')}
           </button>
         </div>
       )}
