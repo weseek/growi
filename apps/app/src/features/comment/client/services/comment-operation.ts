@@ -1,6 +1,7 @@
 import { useCallback } from 'react';
 
 import { type IComment, getIdForRef } from '@growi/core';
+import deepmerge from 'ts-deepmerge';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -28,10 +29,7 @@ export const usePostComment = (): PostComment => {
     : null;
 
   const postComment = useCallback((args) => {
-    const { commentForm, slackNotificationForm } = args;
-    const {
-      comment, replyTo, inline,
-    } = commentForm;
+    const { commentForm } = args;
 
     const pageId = commentForm.pageId ?? currentPageId;
     const revisionId = commentForm.revisionId ?? currentRevisionId;
@@ -43,16 +41,12 @@ export const usePostComment = (): PostComment => {
       throw new Error("'revisionId' is null. Both 'pageId' and 'revisionId' must be specified.");
     }
 
-    return apiPost<IComment>('/comments.add', {
+    return apiPost<IComment>('/comments.add', deepmerge(args, {
       commentForm: {
-        comment,
-        page_id: pageId,
-        revision_id: revisionId,
-        replyTo,
-        inline,
+        pageId,
+        revisionId,
       },
-      slackNotificationForm,
-    });
+    }));
   }, [currentPageId, currentRevisionId]);
 
   return postComment;

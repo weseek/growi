@@ -1,3 +1,4 @@
+import type { IInlineCommentAttributes } from '@growi/core';
 import { createPatch } from 'diff';
 import getXPath from 'get-xpath';
 import TextAnnotator from 'text-annotator-v2';
@@ -31,12 +32,7 @@ const getRelativeXpath = (target: Element, from: Element): string => {
 };
 
 
-export type InlineCommentAttributes = {
-  firstLevelBlockXpath: string,
-  innerHtmlDiff: string,
-}
-
-export const generateInlineCommentAttributes = (range: Range, rootElement: Element): InlineCommentAttributes => {
+export const generateInlineCommentAttributes = (range: Range, rootElement: Element): IInlineCommentAttributes => {
   const firstLevelNode = retrieveFirstLevelNode(range.commonAncestorContainer, rootElement);
 
   if (firstLevelNode == null || !(firstLevelNode instanceof Element)) {

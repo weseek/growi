@@ -6,7 +6,7 @@ export interface ICommentPostArgs {
     replyTo?: string,
     inline?: boolean,
   },
-  slackNotificationForm: {
+  slackNotificationForm?: {
     isSlackEnabled?: boolean,
     slackChannels?: string,
   },

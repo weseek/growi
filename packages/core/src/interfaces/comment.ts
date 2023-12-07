@@ -20,13 +20,19 @@ export type IComment = {
 export type ICommentHasId = IComment & HasObjectId;
 export type ICommentHasIdList = ICommentHasId[];
 
-export type IInlineComment = Omit<IComment, 'inline'> & {
-  inline: true,
+export type IInlineCommentAttributes = {
   firstLevelBlockXpath: string,
   innerHtmlDiff: string,
+}
+
+type IInlineCommentResolvableAttributes = {
   resolvedBy?: Ref<IUser>,
   resolvedAt?: Date,
-};
+}
+
+export type IInlineComment = Omit<IComment, 'inline'> & { inline: true }
+  & IInlineCommentAttributes
+  & IInlineCommentResolvableAttributes;
 
 export const isInlineComment = (comment: IComment): comment is IInlineComment => {
   return comment.inline === true;

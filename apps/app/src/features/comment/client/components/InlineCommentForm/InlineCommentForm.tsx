@@ -1,8 +1,13 @@
 import { useCallback, useState } from 'react';
 
+import { IInlineCommentAttributes } from '@growi/core';
+
+import { toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
 
-import { generateInlineCommentAttributes, type InlineCommentAttributes } from './utils';
+import { usePostComment } from '../../services';
+
+import { generateInlineCommentAttributes } from './utils';
 
 
 const logger = loggerFactory('growi:components:InlineCommentForm');
@@ -18,7 +23,9 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
 
   const [input, setInput] = useState('');
 
-  const submitHandler = useCallback(() => {
+  const postComment = usePostComment();
+
+  const submitHandler = useCallback(async() => {
     const wikiElements = document.getElementsByClassName('wiki');
 
     if (wikiElements.length === 0) {
@@ -26,7 +33,7 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
       return;
     }
 
-    let inlineCommentAttributes: InlineCommentAttributes;
+    let inlineCommentAttributes: IInlineCommentAttributes;
     try {
       inlineCommentAttributes = generateInlineCommentAttributes(range, wikiElements[0]);
     }
@@ -35,7 +42,20 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
       return;
     }
 
-    console.log({ inlineCommentAttributes });
+    try {
+      await postComment({
+        commentForm: {
+          comment: 'inline comment test',
+          inline: true,
+          ...inlineCommentAttributes,
+        },
+      });
+    }
+    catch (err) {
+      toastError(err);
+      logger.error(err);
+      return;
+    }
 
     // const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
     // if (targetElement != null && isElement(targetElement)) {
@@ -53,7 +73,7 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
     // }
 
     onExit?.();
-  }, [range, onExit]);
+  }, [onExit, range, postComment]);
 
   return (
     <form onSubmit={submitHandler}>
