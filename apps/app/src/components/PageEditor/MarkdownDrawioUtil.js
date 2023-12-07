@@ -50,9 +50,10 @@ class MarkdownDrawioUtil {
       return this.getCursorLine(editor).from;
     }
 
+    const firstLineNum = this.firstLineNum();
     let line = this.getCursorLine(editor).number - 1;
     let isFound = false;
-    for (; line >= this.firstLineNum(); line--) {
+    for (; line >= firstLineNum; line--) {
       const strLine = this.getLine(editor, line).text;
       if (this.lineBeginPartOfDrawioRE.test(strLine)) {
         isFound = true;
@@ -69,7 +70,6 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const firstLineNum = this.firstLineNum();
     const botLine = Math.max(firstLineNum, line);
     return this.getLine(editor, botLine).from;
   }
@@ -84,9 +84,10 @@ class MarkdownDrawioUtil {
       return this.getCursorLine(editor).to;
     }
 
+    const lastLineNum = this.lastLineNum(editor);
     let line = this.getCursorLine(editor).number + 1;
     let isFound = false;
-    for (; line <= this.lastLineNum(editor); line++) {
+    for (; line <= lastLineNum; line++) {
       const strLine = this.getLine(editor, line).text;
       if (this.lineEndPartOfDrawioRE.test(strLine)) {
         isFound = true;
@@ -103,7 +104,6 @@ class MarkdownDrawioUtil {
       return null;
     }
 
-    const lastLineNum = this.lastLineNum(editor);
     const eodLine = Math.min(line, lastLineNum);
     return this.getLine(editor, eodLine).to;
   }
