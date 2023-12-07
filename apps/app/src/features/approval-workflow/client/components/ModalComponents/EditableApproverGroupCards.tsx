@@ -101,15 +101,15 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             disabled={!isCreatableTopApporverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
           >
-            <div>
-              <i className="fa-solid fa-plus"></i>
-            </div>
             {t('approval_workflow.add_flow')}
           </button>
         </div>
       )}
 
       <div className="card rounded">
+        <span className="material-symbols-outlined">
+          drag_indicator
+        </span>
         <div className="card-body">
 
           <div className="d-flex justify-content-center align-items-center">
@@ -175,9 +175,6 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             disabled={!isCreatableButtomApproverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
           >
-            <div>
-              <i className="fa-solid fa-plus"></i>
-            </div>
             {t('approval_workflow.add_flow')}
           </button>
         </div>
