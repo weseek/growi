@@ -4,10 +4,7 @@ import { useInlineComments } from '../../stores/inline-comments';
 
 import { InlineComment } from './InlineComment';
 
-type Props = {
-}
-
-export const InlineCommentsContainer = (props: Props): JSX.Element => {
+export const InlineCommentsContainer = (): JSX.Element => {
 
   const { data: inlineComments = [] } = useInlineComments();
 
