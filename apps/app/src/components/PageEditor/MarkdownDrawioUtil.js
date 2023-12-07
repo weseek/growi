@@ -10,32 +10,32 @@ class MarkdownDrawioUtil {
     this.doc = this.doc.bind(this);
   }
 
-  // get cursor position from editor
+  // get cursor position(number)
   curPos(editor) {
     return editor.state.selection.main.head;
   }
 
-  // get doc from editor
+  // get doc(Text)
   doc(editor) {
     return editor.state.doc;
   }
 
-  // get first line number
+  // get first line number(numeber)
   firstLineNum() {
     return 1;
   }
 
-  // get last line number
+  // get last line number(numeber)
   lastLineNum(editor) {
     return this.doc(editor).lines;
   }
 
-  // get cursor line
-  cursorLine(editor) {
+  // get cursor line(line)
+  getCursorLine(editor) {
     return this.doc(editor).lineAt(this.curPos(editor));
   }
 
-  // get line
+  // get line(line)
   getLine(editor, lineNum) {
     return this.doc(editor).line(lineNum);
   }
@@ -45,12 +45,12 @@ class MarkdownDrawioUtil {
    * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
    */
   getBod(editor) {
-    if (this.lineBeginPartOfDrawioRE.test(this.cursorLine(editor)).text) {
+    if (this.lineBeginPartOfDrawioRE.test(this.getCursorLine(editor).text)) {
       // get the beginning of the line where the cursor is located
-      return this.cursorLine(editor).from;
+      return this.getCursorLine(editor).from;
     }
 
-    let line = this.cursorLine(editor).number - 1;
+    let line = this.getCursorLine(editor).number - 1;
     let isFound = false;
     for (; line >= this.firstLineNum(); line--) {
       const strLine = this.getLine(editor, line).text;
@@ -78,12 +78,12 @@ class MarkdownDrawioUtil {
    * (If the EOD is not found after the cursor or the BOD is found before the EOD, return null)
    */
   getEod(editor) {
-    if (this.lineEndPartOfDrawioRE.test(this.cursorLine(editor)).text) {
+    if (this.lineEndPartOfDrawioRE.test(this.getCursorLine(editor).text)) {
       // get the end of the line where the cursor is located
-      return this.cursorLine(editor).to;
+      return this.getCursorLine(editor).to;
     }
 
-    let line = this.cursorLine(editor).number + 1;
+    let line = this.getCursorLine(editor).number + 1;
     let isFound = false;
     for (; line <= this.lastLineNum(editor); line++) {
       const strLine = this.getLine(editor, line).text;
@@ -149,8 +149,8 @@ class MarkdownDrawioUtil {
       endPos = this.getEod(editor);
     }
     else {
-      beginPos = this.cursorLine(editor).from;
-      endPos = this.cursorLine(editor).to;
+      beginPos = this.getCursorLine(editor).from;
+      endPos = this.getCursorLine(editor).to;
     }
 
     editor.dispatch({
