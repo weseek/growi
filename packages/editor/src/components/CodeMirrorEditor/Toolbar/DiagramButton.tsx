@@ -3,7 +3,6 @@ import { useCallback } from 'react';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 import { useDrawioModalForEditor } from '../../../stores/use-drawio';
 
-
 type Props = {
   editorKey: string,
 }
