@@ -20,12 +20,12 @@ class MarkdownDrawioUtil {
     return editor.state.doc;
   }
 
-  // get first line number(numeber)
+  // get first line number(number)
   firstLineNum() {
     return 1;
   }
 
-  // get last line number(numeber)
+  // get last line number(number)
   lastLineNum(editor) {
     return this.doc(editor).lines;
   }
@@ -151,8 +151,8 @@ class MarkdownDrawioUtil {
       endPos = this.getEod(editor);
     }
     else {
-      beginPos = this.getCursorLine(editor).from;
-      endPos = this.getCursorLine(editor).to;
+      beginPos = this.curPos(editor);
+      endPos = this.curPos(editor);
     }
 
     editor.dispatch({
