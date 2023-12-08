@@ -16,7 +16,16 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
 
   const isEmptyKeyword = debouncedKeyword.trim() === '';
 
-  const { data: searchResult } = useSWRxSearch(isEmptyKeyword ? null : searchKeyword, null, { limit: 10 });
+  const { data: searchResult, isLoading } = useSWRxSearch(isEmptyKeyword ? null : searchKeyword, null, { limit: 10 });
+
+  if (isLoading) {
+    return (
+      <>
+        Searching...
+        <div className="border-top mt-2" />
+      </>
+    );
+  }
 
   if (isEmptyKeyword || searchResult == null || searchResult.data.length === 0) {
     return <></>;
