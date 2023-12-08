@@ -101,7 +101,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
   return (
     <>
       <WorkflowModalHeader>
-        <span className="material-symbols-outlined">account_tree</span>
+        <span className="material-symbols-outlined me-3">account_tree</span>
         <span className="fw-bold">{t('approval_workflow.list')}</span>
       </WorkflowModalHeader>
 
@@ -139,7 +139,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                       </div>
                     </td>
                     <td>
-                      <div className={styles['workflow-status']}>
+                      <div className={`${styles['workflow-status']} ${styles[workflow.status]}`}>
                         {t(`approval_workflow.workflow_status.${workflow.status}`)}
                       </div>
                     </td>
