@@ -3,15 +3,19 @@
   height: 20px;
   font: normal normal normal 12px/20px Hiragino Sans;
 
-  color: var(--dark-500);
-  color: #9A9898;
-  text-align: center;
-  letter-spacing: 0px;
+  &.APPROVE {
 
-  background: var(--gray-200-efeeed) 0% 0% no-repeat padding-box;
-  background: #EFEEED 0% 0% no-repeat padding-box;
-  border: 1px solid var(--gray-400-d8d7d5);
-  border: 1px solid #D8D7D5;
+  }
+
+  &.INPROGRESS {
+    color: #6AC3AE;
+    letter-spacing: 0px;
+    background: #EDFDFC 0% 0% no-repeat padding-box;
+    border: 1px solid #6AC3AE;
+  }
+
+  text-align: center; // これは残す
+
   border-radius: 10px;
   opacity: 1;
 }
