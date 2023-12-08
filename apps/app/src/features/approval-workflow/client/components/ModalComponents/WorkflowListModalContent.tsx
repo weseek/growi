@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
+import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
@@ -17,6 +18,7 @@ import { isWorkflowNameSet } from '../../../utils/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
+
 
 type Props = {
   workflows: IWorkflowHasId[]
@@ -38,19 +40,21 @@ const WorkflowStatusBadge = (props: { status: string }) => {
 
   switch (status) {
     case WorkflowStatus.APPROVE:
-      className = 'badge bg-success-subtle border border-success-subtle text-success-emphasis rounded-pill';
+      className = 'bg-success-subtle border border-success-subtle text-success-emphasis';
       break;
     case WorkflowStatus.INPROGRESS:
-      className = 'badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill';
+      className = 'bg-info-subtle border border-info-subtle text-info-emphasis';
       break;
     default:
       return <></>;
   }
 
   return (
-    <span className={className}>
-      {t(`approval_workflow.workflow_status.${status}`)}
-    </span>
+    <h5>
+      <span className={`badge ${className} rounded-pill`}>
+        {t(`approval_workflow.workflow_status.${status}`)}
+      </span>
+    </h5>
   );
 
 };
@@ -151,26 +155,38 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                 return (
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td>
-                      { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
-                      <div className="d-flex align-items-center">
-                        <span className="text-muted flex-grow-1">
-                          {formatDate(workflow.createdAt)}
-                        </span>
-                        <span className="btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
-                          {t('approval_workflow.show_detail')}
-                          <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
-                        </span>
+                      <div className="my-2 border-end">
+                        { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
+                        <div className="d-flex align-items-center">
+                          <span className="text-muted flex-grow-1">
+                            {formatDate(workflow.createdAt)}
+                          </span>
+                          <span className="btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                            {t('approval_workflow.show_detail')}
+                            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="text-center">
+                      <div className="my-2 border-end">
+                        <WorkflowStatusBadge status={workflow.status} />
                       </div>
                     </td>
                     <td>
-                      <WorkflowStatusBadge status={workflow.status} />
-                    </td>
-                    <td>
-                      {workflow.creator.username}
+                      <div className="my-2 border-end">
+                        <div className="d-inline-block pe-2">
+                          <UserPicture user={workflow.creator} noLink noTooltip />
+                        </div>
+                        {workflow.creator.username}
+                      </div>
                     </td>
                     <td>
                       <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
-                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
+                        <DropdownToggle
+                          color="transparent"
+                          className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center"
+                        >
                           <i className="icon-options"></i>
                         </DropdownToggle>
 
