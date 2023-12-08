@@ -230,11 +230,11 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /attachment/add:
+   *    /attachment:
    *      post:
    *        tags: [Attachment, CrowiCompatibles]
    *        operationId: addAttachment
-   *        summary: /attachment/add
+   *        summary: /attachment
    *        description: Add attachment to the page
    *        requestBody:
    *          content:
@@ -293,7 +293,7 @@ module.exports = (crowi) => {
    *            $ref: '#/components/responses/500'
    */
   /**
-   * @api {post} /attachment/add Add attachment to the page
+   * @api {post} /attachment Add attachment to the page
    * @apiName AddAttachment
    * @apiGroup Attachment
    *
@@ -301,7 +301,7 @@ module.exports = (crowi) => {
    * @apiParam {String} path
    * @apiParam {File} file
    */
-  router.post('/add', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
+  router.post('/', uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser,
     validator.retrieveAddAttachment, apiV3FormValidator, addActivity,
     async(req, res) => {
 

@@ -324,7 +324,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           formData.append('page_id', pageId);
         }
 
-        const { data: resAdd } = await apiv3PostForm('/attachment/add', formData);
+        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
 
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
