@@ -10,12 +10,12 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { useLayoutFluidClassName } from '~/client/services/layout';
+import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -32,9 +32,10 @@ import type { PageContentFooterProps } from '../PageContentFooter';
 import styles from './SearchResultContent.module.scss';
 
 const moduleClass = styles['search-result-content'];
+const _fluidLayoutClass = styles['fluid-layout'];
 
 
-const SubNavButtons = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
+const PageControls = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
@@ -123,12 +124,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const { data: currentUser } = useCurrentUser();
-  const { data: isContainerFluid } = useIsContainerFluid();
 
-  const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
-
-  // TODO: determine className by the 'expandContentWidth' from the updated page
-  const growiLayoutFluidClass = useLayoutFluidClassName(isExpandContentWidth);
+  const shouldExpandContent = useShouldExpandContent(page);
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -176,7 +173,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     await updateContentWidth(pageId, value);
-    setIsExpandContentWidth(value);
+
+    // TODO: revalidate page data and update shouldExpandContent
   }, []);
 
   const RightComponent = useCallback(() => {
@@ -188,11 +186,11 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
-        <SubNavButtons
+        <PageControls
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
-          expandContentWidth={isExpandContentWidth ?? isContainerFluid}
+          expandContentWidth={shouldExpandContent}
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
@@ -203,16 +201,18 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
       </div>
     );
-  }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems, isContainerFluid,
+  }, [page, shouldExpandContent, showPageControlDropdown, forceHideMenuItems,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
   const isRenderable = page != null && rendererOptions != null;
+
+  const fluidLayoutClass = shouldExpandContent ? _fluidLayoutClass : '';
 
   return (
     <div
       key={page._id}
       data-testid="search-result-content"
-      className={`dynamic-layout-root ${growiLayoutFluidClass} ${moduleClass}`}
+      className={`dynamic-layout-root ${moduleClass} ${fluidLayoutClass}`}
     >
       <RightComponent />
 
