@@ -2,7 +2,7 @@ import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
 import type {
-  Ref, HasObjectId, IUserHasId,
+  Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
 import { PageGrant, PageStatus } from '@growi/core';
@@ -29,6 +29,7 @@ import {
   type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -44,6 +45,8 @@ import Subscription from '../models/subscription';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
+
+import { preNotifyService } from './pre-notify';
 
 const debug = require('debug')('growi:services:page');
 
@@ -443,7 +446,9 @@ class PageService {
       throw err;
     }
     if (page.descendantCount < 1) {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     return renamedPage;
   }
@@ -548,8 +553,11 @@ class PageService {
     // update descendants first
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
-      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+      const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     catch (err) {
       logger.warn(err);
@@ -1481,7 +1489,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return deletedPage;
@@ -1517,8 +1527,11 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
 
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1829,7 +1842,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return;
@@ -1838,8 +1853,11 @@ class PageService {
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const descendantsSubscribedSets = new Set();
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1882,9 +1900,11 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     return pages;
   }
@@ -2161,7 +2181,10 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
-      this.activityEvent.emit('updated', activity, page);
+
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     else {
       let pageOp;
@@ -2207,8 +2230,11 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages
