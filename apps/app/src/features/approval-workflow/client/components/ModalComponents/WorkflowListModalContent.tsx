@@ -12,13 +12,11 @@ import {
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath } from '~/stores/page';
 
-import { type IWorkflowHasId } from '../../../interfaces/workflow';
+import { type IWorkflowHasId, WorkflowStatus } from '../../../interfaces/workflow';
 import { isWorkflowNameSet } from '../../../utils/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
 import { WorkflowModalHeader } from './WorkflowModalHeader';
-
-import styles from './WorkflowListModalContent.module.scss';
 
 type Props = {
   workflows: IWorkflowHasId[]
@@ -29,6 +27,32 @@ type Props = {
 
 const formatDate = (date: Date) => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm');
+};
+
+const WorkflowStatusBadge = (props: { status: string }) => {
+  const { status } = props;
+
+  const { t } = useTranslation();
+
+  let className: string;
+
+  switch (status) {
+    case WorkflowStatus.APPROVE:
+      className = 'badge bg-success-subtle border border-success-subtle text-success-emphasis rounded-pill';
+      break;
+    case WorkflowStatus.INPROGRESS:
+      className = 'badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill';
+      break;
+    default:
+      return <></>;
+  }
+
+  return (
+    <span className={className}>
+      {t(`approval_workflow.workflow_status.${status}`)}
+    </span>
+  );
+
 };
 
 export const WorkflowListModalContent = (props: Props): JSX.Element => {
@@ -139,9 +163,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                       </div>
                     </td>
                     <td>
-                      <div className={`${styles['workflow-status']} ${styles[workflow.status]}`}>
-                        {t(`approval_workflow.workflow_status.${workflow.status}`)}
-                      </div>
+                      <WorkflowStatusBadge status={workflow.status} />
                     </td>
                     <td>
                       {workflow.creator.username}
