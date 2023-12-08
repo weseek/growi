@@ -4,7 +4,7 @@ import EventEmitter from 'events';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
+import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/PageEditor/markdown-table-util-for-view';
 import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal } from '~/stores/modal';
@@ -40,7 +40,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
     }
 
     const currentMarkdown = currentPage.revision.body;
-    const newMarkdown = mtu.replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
+    const newMarkdown = replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
 
     const grantUserGroupIds = currentPage.grantedGroups.map((g) => {
       return {
@@ -82,8 +82,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
 
     const handler = (bol: number, eol: number) => {
       const markdown = currentPage.revision.body;
-      const currentMarkdownTable = mtu.getMarkdownTableFromLine(markdown, bol, eol);
-      openHandsontableModal(currentMarkdownTable, undefined, false, table => saveByHandsontableModal(table, bol, eol));
+      const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
+      openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));
     };
     globalEmitter.on('launchHandsonTableModal', handler);
 
