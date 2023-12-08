@@ -86,7 +86,6 @@ export const DrawioModal = (): JSX.Element => {
     const save = editor != null ? (drawioMxFile: string) => {
       mdu.replaceFocusedDrawioWithEditor(editor, drawioMxFile);
     } : drawioModalData?.onSave;
-    // TODO: Fold the section after the drawio section (```drawio) has been updated.
 
     return new DrawioCommunicationHelper(
       rendererConfig.drawioUri,
