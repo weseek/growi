@@ -24,7 +24,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
     return (
       <div onClick={() => setRenameInputShown(true)}>{pageName}</div>
     );
-  }, []);
+  }, [pageName]);
 
   return (
     <TextInputForPageTitleAndPath
