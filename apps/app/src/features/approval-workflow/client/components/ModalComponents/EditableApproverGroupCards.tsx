@@ -107,12 +107,13 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
         </div>
       )}
 
-      <div className="card rounded">
-        <span className="material-symbols-outlined">
-          drag_indicator
-        </span>
-        <div className="card-body">
-
+      <div className="card rounded row">
+        <div className="col-2">
+          <span className="material-symbols-outlined">
+            drag_indicator
+          </span>
+        </div>
+        <div className="col-10">
           <div className="d-flex justify-content-center align-items-center">
             <SearchUserTypeahead
               isEditable={isEditable}
