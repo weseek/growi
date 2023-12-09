@@ -1185,7 +1185,7 @@ class PageService {
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
-    const createdPage = await this.crowi.pageService.create(
+    const createdPage = await this.create(
       newPagePath, page.revision.body, user, options,
     );
     this.pageEvent.emit('duplicate', page, user);
@@ -1461,10 +1461,10 @@ class PageService {
     }
 
     if (pagePathUtils.isUsersHomepage(page.path)) {
-      if (!this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+      if (!this.canDeleteUserHomepageByConfig()) {
         throw new Error('User Homepage is not deletable.');
       }
-      if (!await this.crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+      if (!await this.isUsersHomepageOwnerAbsent(page.path)) {
         throw new Error('User Homepage is not deletable.');
       }
     }
@@ -4061,14 +4061,12 @@ class PageService {
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
     const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(clonedPageData.path))}`), parent: { $ne: null } });
 
-    const { pageService, pageGrantService } = this.crowi;
-
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         // eslint-disable-next-line max-len
-        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
+        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants, false, pageData.grantedGroups);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
@@ -4079,8 +4077,8 @@ class PageService {
       }
 
       if (options.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
-        const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
+        const updateGrantInfo = await this.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
+        const canOverwriteDescendants = await this.pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
           throw Error('Cannot overwrite scopes of descendants.');
@@ -4088,7 +4086,7 @@ class PageService {
       }
 
       if (!wasOnTree) {
-        const newParent = await pageService.getParentAndFillAncestorsByUser(user, newPageData.path);
+        const newParent = await this.getParentAndFillAncestorsByUser(user, newPageData.path);
         newPageData.parent = newParent._id;
       }
     }
