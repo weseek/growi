@@ -17,7 +17,7 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
       tag="a"
       href={href}
       onClick={() => { router.push(href) }}
-      className="border-0 text-muted p-1 d-flex"
+      className="search-menu-item border-0 text-muted p-1 d-flex"
     >
       { children }
     </ListGroupItem>

@@ -21,7 +21,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   const shouldShowMenuItem = searchKeyword.length > 0;
 
   return (
-    <div>
+    <>
       { shouldShowMenuItem && (
         <SearchMenuItem href={`/_search?q=${searchKeyword}`}>
           <span className="material-symbols-outlined fs-4 me-3">search</span>
@@ -50,6 +50,6 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           </div>
         </SearchMenuItem>
       ) }
-    </div>
+    </>
   );
 };

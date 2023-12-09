@@ -39,23 +39,23 @@ const SearchModal = (): JSX.Element => {
     return newIndex;
   }, []);
 
-  const arrorKeydownHandler = useCallback((arrowKey: 'ArrowUp' | 'ArrowDown') => {
-    // get all menu items
-    const menuItemsElm = document.getElementById('search-menu')?.getElementsByClassName('list-group-item');
-    const menuItemsLength = menuItemsElm?.length ?? 0;
+  const arrowKeydownHandler = useCallback((arrowKey: 'ArrowUp' | 'ArrowDown') => {
+    // Get all search-menu-item
+    const menuItemElements = document.getElementsByClassName('search-menu-item');
+    const menuItemsLength = menuItemElements?.length ?? 0;
 
-    // remove active class of MenuItem of old activeIndex
-    menuItemsElm?.[activeIndex]?.classList.remove('active');
+    // Remove the active class from the MenuItem with the old activeIndex
+    menuItemElements?.[activeIndex]?.classList.remove('active');
 
-    // add active class of MenuItem the new activeIndex
+    // Add the active class to the MenuItem with the new activeIndex
     const newActiveIndex = getUpdatedActiveIndex(activeIndex, menuItemsLength, arrowKey);
-    menuItemsElm?.[newActiveIndex]?.classList.add('active');
+    menuItemElements?.[newActiveIndex]?.classList.add('active');
     setActiveIndex(newActiveIndex);
 
   }, [activeIndex, getUpdatedActiveIndex]);
 
   const enterKeyDownHandler = useCallback(() => {
-    const activeMenuItem = document.getElementById('search-menu')?.getElementsByClassName('list-group-item active')[0];
+    const activeMenuItem = document.getElementsByClassName('search-menu-item')[0];
 
     if (activeMenuItem != null) {
       const url = activeMenuItem.getAttribute('href');
@@ -80,12 +80,12 @@ const SearchModal = (): JSX.Element => {
         break;
       case 'ArrowUp':
       case 'ArrowDown':
-        arrorKeydownHandler(event.key);
+        arrowKeydownHandler(event.key);
         break;
       default:
         break;
     }
-  }, [arrorKeydownHandler, enterKeyDownHandler]);
+  }, [arrowKeydownHandler, enterKeyDownHandler]);
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
@@ -96,9 +96,9 @@ const SearchModal = (): JSX.Element => {
 
   // Clear active Index when SearchKeyword changes
   useEffect(() => {
-    const menuItemsElm = document.getElementById('search-menu')?.getElementsByClassName('list-group-item');
-    const menuItemsElmArray = Array.from(menuItemsElm ?? []);
-    menuItemsElmArray.forEach((elm) => {
+    const menuItemElements = document.getElementsByClassName('search-menu-item');
+    const menuItemElementsArray = Array.from(menuItemElements ?? []);
+    menuItemElementsArray.forEach((elm) => {
       elm.classList.remove('active');
     });
 

@@ -28,7 +28,7 @@ export const SearchForm = (props: Props): JSX.Element => {
   }, [onClickClearButton]);
 
   const keydownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Do not call props.onKeydownHandler when IME is not confirmed
+    // Do not call props.onKeydownHandler if event is being converted
     if (e.key === 'Enter' && e.nativeEvent.isComposing) {
       return;
     }
