@@ -55,7 +55,7 @@ const SearchModal = (): JSX.Element => {
   }, [activeIndex, getUpdatedActiveIndex]);
 
   const enterKeyDownHandler = useCallback(() => {
-    const activeMenuItem = document.getElementsByClassName('search-menu-item')[0];
+    const activeMenuItem = document.getElementsByClassName('search-menu-item active')[0];
 
     if (activeMenuItem != null) {
       const url = activeMenuItem.getAttribute('href');
@@ -70,7 +70,6 @@ const SearchModal = (): JSX.Element => {
       router.push(`/_search?q=${searchKeyword}`);
       closeSearchModal();
     }
-
   }, [closeSearchModal, router, searchKeyword]);
 
   const keydownHandler = useCallback((event: React.KeyboardEvent<HTMLInputElement>) => {
@@ -96,13 +95,18 @@ const SearchModal = (): JSX.Element => {
 
   // Clear active Index when SearchKeyword changes
   useEffect(() => {
-    const menuItemElements = document.getElementsByClassName('search-menu-item');
-    const menuItemElementsArray = Array.from(menuItemElements ?? []);
-    menuItemElementsArray.forEach((elm) => {
+    setActiveIndex(-1);
+
+    const allActiveMenuItemElements = document.getElementsByClassName('search-menu-item active');
+    const allActiveMenuItemElementsArray = Array.from(allActiveMenuItemElements ?? []);
+
+    if (allActiveMenuItemElementsArray.length === 0) {
+      return;
+    }
+
+    allActiveMenuItemElementsArray.forEach((elm) => {
       elm.classList.remove('active');
     });
-
-    setActiveIndex(-1);
   }, [searchKeyword]);
 
   return (
@@ -117,9 +121,9 @@ const SearchModal = (): JSX.Element => {
 
         <ListGroup id="search-menu">
           <div className="border-top mt-3 mb-2" />
-          <SearchMethodMenuItem searchKeyword={searchKeyword} />
+          <SearchMethodMenuItem searchKeyword={searchKeyword} onClickMenuItem={closeSearchModal} />
           <div className="border-top mt-2 mb-2" />
-          <SearchResultMenuItem searchKeyword={searchKeyword} />
+          <SearchResultMenuItem searchKeyword={searchKeyword} onClickMenuItem={closeSearchModal} />
         </ListGroup>
 
         <SearchHelp />

@@ -9,10 +9,11 @@ import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
   searchKeyword: string
+  onClickMenuItem?: () => void
 }
 
 export const SearchMethodMenuItem = (props: Props): JSX.Element => {
-  const { searchKeyword } = props;
+  const { searchKeyword, onClickMenuItem } = props;
 
   const { t } = useTranslation('commons');
 
@@ -23,7 +24,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   return (
     <>
       { shouldShowMenuItem && (
-        <SearchMenuItem href={`/_search?q=${searchKeyword}`}>
+        <SearchMenuItem href={`/_search?q=${searchKeyword}`} onClick={onClickMenuItem}>
           <span className="material-symbols-outlined fs-4 me-3">search</span>
           <span>{searchKeyword}</span>
           <div className="ms-auto">
@@ -32,7 +33,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
         </SearchMenuItem>
       )}
 
-      <SearchMenuItem href={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}>
+      <SearchMenuItem href={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`} onClick={onClickMenuItem}>
         <span className="material-symbols-outlined fs-4 me-3">search</span>
         <code>prefix: {currentPagePath}</code>
         <span className="ms-2">{searchKeyword}</span>
@@ -42,7 +43,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
       </SearchMenuItem>
 
       { shouldShowMenuItem && (
-        <SearchMenuItem href={`/_search?q="${searchKeyword}"`}>
+        <SearchMenuItem href={`/_search?q="${searchKeyword}"`} onClick={onClickMenuItem}>
           <span className="material-symbols-outlined fs-4 me-3">search</span>
           <span>{`"${searchKeyword}"`}</span>
           <div className="ms-auto">

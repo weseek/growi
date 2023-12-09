@@ -28,6 +28,10 @@ export const SearchForm = (props: Props): JSX.Element => {
   }, [onClickClearButton]);
 
   const keydownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'Enter' && e.key !== 'ArrowUp' && e.key !== 'ArrowDown') {
+      return;
+    }
+
     // Do not call props.onKeydownHandler if event is being converted
     if (e.key === 'Enter' && e.nativeEvent.isComposing) {
       return;

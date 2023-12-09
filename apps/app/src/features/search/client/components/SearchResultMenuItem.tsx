@@ -10,10 +10,11 @@ import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
   searchKeyword: string,
+  onClickMenuItem?: () => void
 }
 
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
-  const { searchKeyword } = props;
+  const { searchKeyword, onClickMenuItem } = props;
 
   const debouncedKeyword = useDebounce(searchKeyword, 500);
 
@@ -38,7 +39,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
     <>
       <>
         {searchResult.data?.map(pageWithMeta => (
-          <SearchMenuItem href={pageWithMeta.data._id} key={pageWithMeta.data._id}>
+          <SearchMenuItem key={pageWithMeta.data._id} href={pageWithMeta.data._id} onClick={onClickMenuItem}>
             <div className="mb-1 d-flex">
               <UserPicture user={pageWithMeta.data.creator} />
 
