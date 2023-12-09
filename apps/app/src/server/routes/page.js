@@ -463,11 +463,6 @@ module.exports = function(crowi, app) {
     const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
     const pageTags = req.body.pageTags || undefined;
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }
