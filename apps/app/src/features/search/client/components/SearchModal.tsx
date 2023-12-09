@@ -10,18 +10,6 @@ import { SearchHelp } from './SearchHelp';
 import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 import { SearchResultMenuItem } from './SearchResultMenuItem';
 
-const SearchMenu = (props: { searchKeyword: string }) => {
-  const { searchKeyword } = props;
-  return (
-    <ListGroup id="search-menu" tabindex="0">
-      <div className="border-top mt-3 mb-2" />
-      <SearchMethodMenuItem searchKeyword={searchKeyword} />
-      <div className="border-top mt-2 mb-2" />
-      <SearchResultMenuItem searchKeyword={searchKeyword} />
-    </ListGroup>
-  );
-};
-
 const SearchModal = (): JSX.Element => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -127,7 +115,12 @@ const SearchModal = (): JSX.Element => {
           onKeydownHandler={keydownHandler}
         />
 
-        <SearchMenu searchKeyword={searchKeyword} />
+        <ListGroup id="search-menu">
+          <div className="border-top mt-3 mb-2" />
+          <SearchMethodMenuItem searchKeyword={searchKeyword} />
+          <div className="border-top mt-2 mb-2" />
+          <SearchResultMenuItem searchKeyword={searchKeyword} />
+        </ListGroup>
 
         <SearchHelp />
       </ModalBody>

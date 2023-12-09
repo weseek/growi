@@ -28,14 +28,14 @@ export const SearchForm = (props: Props): JSX.Element => {
   }, [onClickClearButton]);
 
   const keydownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    // Do not change cursor position
-    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
-      e.preventDefault();
-    }
-
     // Do not call props.onKeydownHandler when IME is not confirmed
     if (e.key === 'Enter' && e.nativeEvent.isComposing) {
       return;
+    }
+
+    // Do not change cursor position
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
     }
 
     if (onKeydownHandler != null) {
