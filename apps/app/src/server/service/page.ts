@@ -4176,6 +4176,7 @@ class PageService {
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
     // TODO 136137: validate multiple group grant before save using pageData and options
+    await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
 
     await this.validateAppliedScope(user, grant, grantUserGroupIds);
     pageData.applyScope(user, grant, grantUserGroupIds);

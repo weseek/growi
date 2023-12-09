@@ -449,6 +449,7 @@ class PageGrantService {
    * @param includeNotMigratedPages Whether or not to use unmigrated pages for validation
    * @param previousGrantedGroupIds
    *   Previously granted groups of the page. Specific validation is required when previous grant is multiple group grant.
+   *   Apply when page grant change needs to be validated.
    *   see: https://dev.growi.org/656745fa52eafe1cf1879508#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE-grant-%E3%81%AE%E6%9B%B4%E6%96%B0
    * @returns Promise<boolean>
    */
