@@ -220,18 +220,24 @@ class PageGrantService {
    * @param grant The grant to be changed to
    * @param grantedGroupIds The groups to be granted
    */
-  async validateGrantChange(user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]): Promise<void> {
+  async validateGrantChange(user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]): Promise<boolean> {
     const userRelatedGroupIds = (await this.getUserRelatedGroups(user)).map(g => g.item._id);
-    const userBelongsToAllPreviousGrantedGroups = excludeTestIdsFromTargetIds(userRelatedGroupIds, previousGrantedGroupIds.map(g => getIdForRef(g.item)));
+    const userBelongsToAllPreviousGrantedGroups = excludeTestIdsFromTargetIds(
+      previousGrantedGroupIds.map(g => getIdForRef(g.item)),
+      userRelatedGroupIds,
+    ).length === 0;
+
     if (!userBelongsToAllPreviousGrantedGroups) {
       if (grant !== PageGrant.GRANT_USER_GROUP) {
-        throw Error("cannot change group grant to other grant if the user doesn't belong to all granted groups");
+        return false;
       }
       const pageGrantIncludesUserRelatedGroup = includesObjectIds(grantedGroupIds?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
       if (!pageGrantIncludesUserRelatedGroup) {
-        throw Error("page grant doesn't include user related group");
+        return false;
       }
     }
+
+    return true;
   }
 
   /**
@@ -469,7 +475,10 @@ class PageGrantService {
     }
 
     if (previousGrantedGroupIds != null) {
-      this.validateGrantChange(user, previousGrantedGroupIds, grant, grantedGroupIds);
+      const isGrantChangeable = await this.validateGrantChange(user, previousGrantedGroupIds, grant, grantedGroupIds);
+      if (!isGrantChangeable) {
+        return false;
+      }
     }
 
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
