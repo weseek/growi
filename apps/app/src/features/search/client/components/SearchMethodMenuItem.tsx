@@ -12,17 +12,17 @@ type Props = {
 }
 
 export const SearchMethodMenuItem = (props: Props): JSX.Element => {
+  const { searchKeyword } = props;
+
   const { t } = useTranslation('commons');
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const { searchKeyword } = props;
-
-  const shouldShowButton = searchKeyword.length > 0;
+  const shouldShowMenuItem = searchKeyword.length > 0;
 
   return (
     <div>
-      { shouldShowButton && (
+      { shouldShowMenuItem && (
         <SearchMenuItem href={`/_search?q=${searchKeyword}`}>
           <span className="material-symbols-outlined fs-4 me-3">search</span>
           <span>{searchKeyword}</span>
@@ -41,7 +41,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
         </div>
       </SearchMenuItem>
 
-      { shouldShowButton && (
+      { shouldShowMenuItem && (
         <SearchMenuItem href={`/_search?q="${searchKeyword}"`}>
           <span className="material-symbols-outlined fs-4 me-3">search</span>
           <span>{`"${searchKeyword}"`}</span>

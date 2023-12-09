@@ -4,22 +4,22 @@ import React, {
 
 type Props = {
   searchKeyword: string
-  onChangeSearchText?: (text: string) => void
+  onChangeSearchKeyword?: (text: string) => void
   onClickClearButton?: () => void
   onKeydownHandler?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
 }
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, onChangeSearchText, onClickClearButton, onKeydownHandler,
+    searchKeyword, onChangeSearchKeyword, onClickClearButton, onKeydownHandler,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const changeSearchTextHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChangeSearchText != null) {
-      onChangeSearchText(e.target.value);
+    if (onChangeSearchKeyword != null) {
+      onChangeSearchKeyword(e.target.value);
     }
-  }, [onChangeSearchText]);
+  }, [onChangeSearchKeyword]);
 
   const clickClearButtonHandler = useCallback(() => {
     if (onClickClearButton != null) {

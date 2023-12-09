@@ -18,7 +18,7 @@ const SearchModal = (): JSX.Element => {
 
   const router = useRouter();
 
-  const changeSearchTextHandler = useCallback((searchText: string) => {
+  const changeSearchKeywordHandler = useCallback((searchText: string) => {
     setSearchKeyword(searchText);
   }, []);
 
@@ -94,7 +94,7 @@ const SearchModal = (): JSX.Element => {
     }
   }, [searchModalData?.isOpened]);
 
-  // remove all active class
+  // Clear active Index when SearchKeyword changes
   useEffect(() => {
     const menuItemsElm = document.getElementById('search-menu')?.getElementsByClassName('list-group-item');
     const menuItemsElmArray = Array.from(menuItemsElm ?? []);
@@ -110,7 +110,7 @@ const SearchModal = (): JSX.Element => {
       <ModalBody>
         <SearchForm
           searchKeyword={searchKeyword}
-          onChangeSearchText={changeSearchTextHandler}
+          onChangeSearchKeyword={changeSearchKeywordHandler}
           onClickClearButton={clickClearButtonHandler}
           onKeydownHandler={keydownHandler}
         />
