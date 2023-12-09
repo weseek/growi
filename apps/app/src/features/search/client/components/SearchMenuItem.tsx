@@ -13,7 +13,12 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
   const router = useRouter();
 
   return (
-    <ListGroupItem className="border-0 text-muted p-1 d-flex" tag="a" href={href} onClick={() => { router.push(href) }}>
+    <ListGroupItem
+      tag="a"
+      href={href}
+      onClick={() => { router.push(href) }}
+      className="border-0 text-muted p-1 d-flex"
+    >
       { children }
     </ListGroupItem>
   );
