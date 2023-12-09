@@ -1,7 +1,8 @@
 import React from 'react';
 
 import { PagePathLabel, UserPicture } from '@growi/ui/dist/components';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { useRouter } from 'next/router';
+import { ListGroupItem } from 'reactstrap';
 import { useDebounce } from 'usehooks-ts';
 
 import { useSWRxSearch } from '~/stores/search';
@@ -13,6 +14,8 @@ type Props = {
 
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchKeyword } = props;
+
+  const router = useRouter();
 
   const debouncedKeyword = useDebounce(searchKeyword, 500);
 
@@ -26,9 +29,15 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
 
   return (
     <>
-      <ListGroup>
+      <>
         {searchResult.data?.map(pageWithMeta => (
-          <ListGroupItem key={pageWithMeta.data._id} className='border-0 text-muted p-1 d-flex"'>
+          <ListGroupItem
+            key={pageWithMeta.data._id}
+            tag="a"
+            className="border-0 text-muted p-1 d-flex"
+            href={pageWithMeta.data._id}
+            onClick={() => { router.push(pageWithMeta.data._id) }}
+          >
             <div className="mb-1 d-flex">
               <UserPicture user={pageWithMeta.data.creator} />
 
@@ -43,7 +52,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
             </div>
           </ListGroupItem>
         ))}
-      </ListGroup>
+      </>
       <div className="border-top mb-2" />
     </>
   );

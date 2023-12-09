@@ -1,21 +1,23 @@
 import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { useRouter } from 'next/router';
+import { ListGroupItem } from 'reactstrap';
 
 import { useCurrentPagePath } from '~/stores/page';
 
 
 type MenuItemProps = {
   children: React.ReactNode
-  onClick: () => void
+  href: string
 }
 
 const MenuItem = (props: MenuItemProps): JSX.Element => {
-  const { children, onClick } = props;
+  const { children, href } = props;
+  const router = useRouter();
 
   return (
-    <ListGroupItem className="border-0 text-muted p-1 d-flex" onClick={onClick}>
+    <ListGroupItem className="border-0 text-muted p-1 d-flex" tag="a" href={href} onClick={() => { router.push(href) }}>
       <span className="material-symbols-outlined fs-4 me-3">search</span>
       { children }
     </ListGroupItem>
@@ -37,9 +39,9 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
   const shouldShowButton = searchKeyword.length > 0;
 
   return (
-    <ListGroup>
+    <div>
       { shouldShowButton && (
-        <MenuItem onClick={() => {}}>
+        <MenuItem href={`/_search?q=${searchKeyword}`}>
           <span>{searchKeyword}</span>
           <div className="ms-auto">
             <span>{t('search_method_menu_item.search_in_all')}</span>
@@ -47,7 +49,7 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
         </MenuItem>
       )}
 
-      <MenuItem onClick={() => {}}>
+      <MenuItem href={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}>
         <code>prefix: {currentPagePath}</code>
         <span className="ms-2">{searchKeyword}</span>
         <div className="ms-auto">
@@ -56,13 +58,13 @@ export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Elem
       </MenuItem>
 
       { shouldShowButton && (
-        <MenuItem onClick={() => {}}>
+        <MenuItem href={`/_search?q="${searchKeyword}"`}>
           <span>{`"${searchKeyword}"`}</span>
           <div className="ms-auto">
             <span>{t('search_method_menu_item.exact_mutch')}</span>
           </div>
         </MenuItem>
       ) }
-    </ListGroup>
+    </div>
   );
 };

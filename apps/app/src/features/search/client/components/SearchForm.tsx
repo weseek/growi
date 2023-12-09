@@ -3,13 +3,14 @@ import React, {
 } from 'react';
 
 type Props = {
-  searchKeyword: string,
-  onChangeSearchText?: (text: string) => void,
-  onClickClearButton?: () => void,
+  searchKeyword: string
+  onChangeSearchText?: (text: string) => void
+  onClickClearButton?: () => void
+  onKeydownHandler?: (e: React.KeyboardEvent<HTMLInputElement>) => void,
 }
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, onChangeSearchText, onClickClearButton,
+    searchKeyword, onChangeSearchText, onClickClearButton, onKeydownHandler,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,6 +26,22 @@ export const SearchForm = (props: Props): JSX.Element => {
       onClickClearButton();
     }
   }, [onClickClearButton]);
+
+  const keydownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Do not change cursor position
+    if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault();
+    }
+
+    // Do not call props.onKeydownHandler when IME is not confirmed
+    if (e.key === 'Enter' && e.nativeEvent.isComposing) {
+      return;
+    }
+
+    if (onKeydownHandler != null) {
+      onKeydownHandler(e);
+    }
+  }, [onKeydownHandler]);
 
   useEffect(() => {
     if (inputRef.current != null) {
@@ -43,6 +60,7 @@ export const SearchForm = (props: Props): JSX.Element => {
         placeholder="Search..."
         value={searchKeyword}
         onChange={(e) => { changeSearchTextHandler(e) }}
+        onKeyDown={(e) => { keydownHandler(e) }}
       />
 
       <button
