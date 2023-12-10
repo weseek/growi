@@ -10,6 +10,8 @@ import { SearchHelp } from './SearchHelp';
 import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 import { SearchResultMenuItem } from './SearchResultMenuItem';
 
+
+type ArrowKey = 'ArrowUp' | 'ArrowDown';
 const SearchModal = (): JSX.Element => {
   const [searchKeyword, setSearchKeyword] = useState('');
   const [activeIndex, setActiveIndex] = useState(-1);
@@ -26,7 +28,7 @@ const SearchModal = (): JSX.Element => {
     setSearchKeyword('');
   }, []);
 
-  const getUpdatedActiveIndex = useCallback((activeIndex: number, menuItemsLength: number, arrowKey: 'ArrowUp' | 'ArrowDown'): number => {
+  const getUpdatedActiveIndex = useCallback((activeIndex: number, menuItemsLength: number, arrowKey: ArrowKey): number => {
     const newIndex = arrowKey === 'ArrowUp' ? activeIndex - 1 : activeIndex + 1;
     if (newIndex < -1) {
       return menuItemsLength - 1;
@@ -39,7 +41,7 @@ const SearchModal = (): JSX.Element => {
     return newIndex;
   }, []);
 
-  const arrowKeydownHandler = useCallback((arrowKey: 'ArrowUp' | 'ArrowDown') => {
+  const arrowKeydownHandler = useCallback((arrowKey: ArrowKey) => {
     // Get all search-menu-item
     const menuItemElements = document.getElementsByClassName('search-menu-item');
     const menuItemsLength = menuItemElements?.length ?? 0;
@@ -119,7 +121,7 @@ const SearchModal = (): JSX.Element => {
           onKeydownHandler={keydownHandler}
         />
 
-        <ListGroup id="search-menu">
+        <ListGroup>
           <div className="border-top mt-3 mb-2" />
           <SearchMethodMenuItem searchKeyword={searchKeyword} onClickMenuItem={closeSearchModal} />
           <div className="border-top mt-2 mb-2" />

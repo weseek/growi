@@ -15,7 +15,7 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const changeSearchTextHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeSearchKeywordHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     if (onChangeSearchKeyword != null) {
       onChangeSearchKeyword(e.target.value);
     }
@@ -63,7 +63,7 @@ export const SearchForm = (props: Props): JSX.Element => {
         className="form-control"
         placeholder="Search..."
         value={searchKeyword}
-        onChange={(e) => { changeSearchTextHandler(e) }}
+        onChange={(e) => { changeSearchKeywordHandler(e) }}
         onKeyDown={(e) => { keydownHandler(e) }}
       />
 
