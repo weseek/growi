@@ -43,7 +43,6 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
   const drawioContainerRef = useRef<HTMLDivElement>(null);
 
   const [error, setError] = useState<Error>();
-  const [elementWidth, setElementWidth] = useState(0);
 
   const renderDrawio = useCallback(() => {
     if (drawioContainerRef.current == null) {
@@ -80,16 +79,6 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
         }
       }
     }
-
-    const observer = new ResizeObserver((entries) => {
-      entries.forEach((el) => {
-        setElementWidth(el.contentRect.width);
-      });
-    });
-    observer.observe(drawioContainerRef.current);
-    return () => {
-      observer.disconnect();
-    };
   }, []);
 
   const renderDrawioWithDebounce = useMemo(() => debounce(200, renderDrawio), [renderDrawio]);
@@ -123,7 +112,7 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
       onRenderingStart?.();
       renderDrawioWithDebounce();
     }
-  }, [mxgraphHtml, onRenderingStart, renderDrawioWithDebounce, elementWidth]);
+  }, [mxgraphHtml, onRenderingStart, renderDrawioWithDebounce]);
 
   useEffect(() => {
     if (error != null) {
@@ -154,6 +143,26 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
       observer.disconnect();
     };
   }, [onRenderingUpdated]);
+  // *******************************  end  *******************************
+
+  // *******************  detect container is resized  *******************
+  useEffect(() => {
+    if (drawioContainerRef.current == null) {
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach(() => {
+        // setElementWidth(el.contentRect.width);
+        onRenderingStart?.();
+        renderDrawioWithDebounce();
+      });
+    });
+    observer.observe(drawioContainerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [onRenderingStart, renderDrawioWithDebounce]);
   // *******************************  end  *******************************
 
   return (
