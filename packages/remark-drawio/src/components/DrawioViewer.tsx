@@ -71,8 +71,8 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
         try {
           GraphViewer.useResizeSensor = false;
           GraphViewer.prototype.checkVisibleState = false;
-          GraphViewer.prototype.lightboxZIndex = 1200;
-          GraphViewer.prototype.toolbarZIndex = 1200;
+          GraphViewer.prototype.lightboxZIndex = 1055; // set $zindex-modal
+          GraphViewer.prototype.toolbarZIndex = 1055; // set $zindex-modal
           GraphViewer.createViewerForElement(div);
         }
         catch (err) {
