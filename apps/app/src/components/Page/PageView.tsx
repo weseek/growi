@@ -6,6 +6,7 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import dynamic from 'next/dynamic';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
@@ -70,6 +71,8 @@ export const PageView = (props: Props): JSX.Element => {
   const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
 
+  const shouldExpandContent = useShouldExpandContent(page);
+
 
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
@@ -112,14 +115,6 @@ export const PageView = (props: Props): JSX.Element => {
   const footerContents = !isIdenticalPathPage && !isNotFound
     ? (
       <>
-        <div id="comments-container" ref={commentsContainerRef}>
-          <Comments
-            pageId={page._id}
-            pagePath={pagePath}
-            revision={page.revision}
-            onLoaded={() => setCommentsLoaded(true)}
-          />
-        </div>
         {(isUsersHomepagePath && page.creator != null) && (
           <UsersHomepageFooter creatorId={page.creator._id} />
         )}
@@ -139,16 +134,33 @@ export const PageView = (props: Props): JSX.Element => {
     return (
       <>
         <PageContentsUtilities />
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+
+        <div className="flex-expand-vert justify-content-between">
+          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+
+          { !isIdenticalPathPage && !isNotFound && (
+            <div id="comments-container" ref={commentsContainerRef}>
+              <Comments
+                pageId={page._id}
+                pagePath={pagePath}
+                revision={page.revision}
+                onLoaded={() => setCommentsLoaded(true)}
+              />
+            </div>
+          ) }
+        </div>
       </>
     );
   };
+
+  const mobileClass = isMobile ? styles['page-mobile'] : '';
 
   return (
     <PageViewLayout
       headerContents={headerContents}
       sideContents={sideContents}
       footerContents={footerContents}
+      expandContentWidth={shouldExpandContent}
     >
       <PageAlerts />
 
@@ -156,7 +168,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`mb-5 ${isMobile ? `page-mobile ${styles['page-mobile']}` : ''}`}>
+          <div className={`flex-expand-vert ${mobileClass}`}>
             <Contents />
           </div>
         </>

@@ -2,14 +2,12 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  height: 100%;
 }
 
 .flex-expand-vert {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100%;
 }
 
 .flex-expand-vh-100 {
@@ -17,6 +15,7 @@
 
   .flex-expand-horiz,
   .flex-expand-vert {
+    height: 100%;
     overflow-y: auto;
   }
 }

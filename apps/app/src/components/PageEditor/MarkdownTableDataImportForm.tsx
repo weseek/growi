@@ -56,7 +56,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
         <label htmlFor="data-import-form-type-select" className="form-label">{t('select_data_format')}</label>
         <select
           id="data-import-form-type-select"
-          className="form-control"
+          className="form-select"
           placeholder="select"
           value={dataFormat}
           onChange={(e) => { return setDataFormat(e.target.value) }}

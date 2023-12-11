@@ -26,20 +26,17 @@ export const certifySharedPageAttachmentMiddleware = async(req: RequestToAllowSh
 
   const validReferer = validateReferer(referer);
   if (!validReferer) {
-    logger.info('invalid referer.');
     return next();
   }
 
-  logger.info('referer is valid.');
-
   const shareLink = await retrieveValidShareLinkByReferer(validReferer);
   if (shareLink == null) {
-    logger.info(`No valid ShareLink document found by the referer (${validReferer.referer}})`);
+    logger.warn(`No valid ShareLink document found by the referer (${validReferer.referer}})`);
     return next();
   }
 
   if (!(await validateAttachment(fileId, shareLink))) {
-    logger.info(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
+    logger.warn(`No valid ShareLink document found by the fileId (${fileId}) and referer (${validReferer.referer}})`);
     return next();
   }
 
