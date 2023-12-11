@@ -33,7 +33,8 @@ type IInlineCommentResolvableAttributes = {
 export type IInlineComment = Omit<IComment, 'inline'> & { inline: true }
   & IInlineCommentAttributes
   & IInlineCommentResolvableAttributes;
+export type IInlineCommentHasId = IInlineComment & HasObjectId;
 
-export const isInlineComment = (comment: IComment): comment is IInlineComment => {
+export const isInlineComment = <T = object>(comment: IComment & T): comment is IInlineComment & T => {
   return comment.inline === true;
 };

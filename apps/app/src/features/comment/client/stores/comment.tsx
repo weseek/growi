@@ -1,8 +1,11 @@
-import type { Nullable, ICommentHasIdList } from '@growi/core';
+import {
+  type Nullable, type ICommentHasIdList, type IInlineCommentHasId, isInlineComment,
+} from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import useSWR, { type SWRResponse } from 'swr';
 
 import { apiGet } from '~/client/util/apiv1-client';
+import { useCurrentPageId } from '~/stores/page';
 
 type IResponseComment = {
   comments: ICommentHasIdList,
@@ -15,6 +18,24 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
   return useSWR(
     shouldFetch ? ['/comments.get', pageId] : null,
     ([endpoint, pageId]) => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
+    { keepPreviousData: true },
+  );
+};
+
+export const useSWRxInlineComment = (): SWRResponse<IInlineCommentHasId[] | null, Error> => {
+  const { data: currentPageId } = useCurrentPageId();
+
+  const swrResponse = useSWRxPageComment(currentPageId);
+
+  const shouldFetch: boolean = currentPageId != null && swrResponse.data != null;
+
+  return useSWR(
+    shouldFetch ? ['inlineComment', currentPageId] : null,
+    () => {
+      return swrResponse.data != null
+        ? swrResponse.data.filter<IInlineCommentHasId>(isInlineComment)
+        : null;
+    },
   );
 };
 

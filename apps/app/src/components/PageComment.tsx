@@ -14,7 +14,7 @@ import { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
-import { useSWRxPageComment } from '../stores/comment';
+import { useSWRxPageComment } from '../features/comment/client';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from './NotAvailableForReadOnlyUser';

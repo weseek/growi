@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
 import { type PageCommentProps } from '~/components/PageComment';
-import { useSWRxPageComment } from '~/stores/comment';
+import { useSWRxPageComment } from '~/features/comment/client';
 import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';

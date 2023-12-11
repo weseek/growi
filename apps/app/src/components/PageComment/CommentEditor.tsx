@@ -12,9 +12,8 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
-import { usePostComment, updateComment } from '~/features/comment/client';
+import { usePostComment, updateComment, useSWRxEditingCommentsNum, useSWRxPageComment } from '~/features/comment/client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
-import { useSWRxEditingCommentsNum, useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
