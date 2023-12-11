@@ -41,7 +41,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-
+const InlineCommentsContainer = dynamic(() => import('~/features/comment/client').then(mod => mod.InlineCommentsContainer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -140,6 +140,10 @@ export const PageView = (props: Props): JSX.Element => {
           <TextSelectableContainer>
             <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
           </TextSelectableContainer>
+
+          { !isIdenticalPathPage && !isNotFound && (
+            <InlineCommentsContainer />
+          ) }
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>
