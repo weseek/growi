@@ -1,6 +1,4 @@
 
-import { isInlineComment } from '@growi/core';
-
 import {
   Comment, CommentEvent, InlineComment, commentEvent,
 } from '~/features/comment/server';
