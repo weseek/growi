@@ -4,22 +4,27 @@ import styles from './PageViewLayout.module.scss';
 
 const pageViewLayoutClass = styles['page-view-layout'] ?? '';
 const footerLayoutClass = styles['footer-layout'] ?? '';
+const _fluidLayoutClass = styles['fluid-layout'] ?? '';
 
 type Props = {
   children?: ReactNode,
   headerContents?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
+  expandContentWidth?: boolean,
 }
 
 export const PageViewLayout = (props: Props): JSX.Element => {
   const {
     children, headerContents, sideContents, footerContents,
+    expandContentWidth,
   } = props;
+
+  const fluidLayoutClass = expandContentWidth ? _fluidLayoutClass : '';
 
   return (
     <>
-      <div id="main" className={`main ${pageViewLayoutClass} flex-expand-vert`}>
+      <div id="main" className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert`}>
         <div id="content-main" className="content-main container-lg grw-container-convertible flex-expand-vert">
           { headerContents != null && headerContents }
           { sideContents != null
@@ -43,7 +48,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
       </div>
 
       { footerContents != null && (
-        <footer className={`footer d-edit-none ${footerLayoutClass}`}>
+        <footer className={`footer d-edit-none ${footerLayoutClass} ${fluidLayoutClass}`}>
           {footerContents}
         </footer>
       ) }

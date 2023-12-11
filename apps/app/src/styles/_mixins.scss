@@ -2,6 +2,7 @@
 @use './variables' as var;
 
 @import './mixins/editing';
+@import './mixins/fluid-layout';
 @import './mixins/share-link';
 
 @mixin variable-font-size($basesize) {

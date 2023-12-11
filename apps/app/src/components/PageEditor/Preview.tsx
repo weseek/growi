@@ -9,13 +9,14 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 
 import styles from './Preview.module.scss';
 
-const moduleClass = styles['page-editor-preview-body'];
+const moduleClass = styles['page-editor-preview-body'] ?? '';
 
 
 type Props = {
   rendererOptions: RendererOptions,
   markdown?: string,
   pagePath?: string | null,
+  expandContentWidth?: boolean,
   onScroll?: (scrollTop: number) => void,
 }
 
@@ -24,11 +25,14 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
   const {
     rendererOptions,
     markdown, pagePath,
+    expandContentWidth,
   } = props;
+
+  const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';
 
   return (
     <div
-      className={`${moduleClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
+      className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       ref={ref}
       onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
         if (props.onScroll != null) {
