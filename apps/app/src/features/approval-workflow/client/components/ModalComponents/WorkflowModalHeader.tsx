@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import { ModalHeader } from 'reactstrap';
 
+import ExpandOrContractButton from '~/components/ExpandOrContractButton';
+
+import { useWorkflowModal } from '../../stores/workflow';
 
 type Props = {
   children: React.ReactNode,
@@ -11,12 +14,25 @@ type Props = {
 export const WorkflowModalHeader = (props: Props): JSX.Element => {
   const { children, onClickPageBackButton } = props;
 
+  const {
+    data, close, expand, contract,
+  } = useWorkflowModal();
+
+  const rightButtons = useMemo(() => {
+    return (
+      <span>
+        <ExpandOrContractButton isWindowExpanded={data?.isExpanded ?? false} expandWindow={expand} contractWindow={contract} />
+        <button type="button" className="me-2 btn btn-close" onClick={close} aria-label="Close" />
+      </span>
+    );
+  }, [close, contract, data?.isExpanded, expand]);
+
   return (
-    <ModalHeader>
+    <ModalHeader close={rightButtons}>
       <div className="d-flex align-items-center">
         { onClickPageBackButton != null && (
-          <button type="button" className="btn" onClick={onClickPageBackButton}>
-            <i className="fa fa-fw fa-chevron-left" aria-hidden="true" />
+          <button type="button" className="btn d-flex justify-content-center p-0 me-3" onClick={onClickPageBackButton}>
+            <span className="fs-1 material-symbols-outlined" aria-hidden="true">chevron_left</span>
           </button>
         ) }
 

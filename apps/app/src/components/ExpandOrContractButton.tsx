@@ -24,9 +24,10 @@ const ExpandOrContractButton: FC<Props> = (props: Props) => {
   return (
     <button
       type="button"
-      className={`btn ${isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen'}`}
+      className="btn pb-0"
       onClick={isWindowExpanded ? clickContractButtonHandler : clickExpandButtonHandler}
     >
+      <span className="material-symbols-outlined">{isWindowExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
     </button>
   );
 };

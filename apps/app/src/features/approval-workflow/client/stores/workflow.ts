@@ -23,16 +23,19 @@ import {
 type WorkflowModalStatus = {
   pageId?: string,
   isOpened: boolean,
+  isExpanded: boolean,
 }
 
 type WorkflowModalUtils = {
-  open(pageId: string): void,
-  close(): void,
+  open:(pageId: string) => void,
+  close: () => void,
+  expand: () => void,
+  contract: () => void,
 }
 
 export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & WorkflowModalUtils => {
 
-  const initialStatus: WorkflowModalStatus = { isOpened: false };
+  const initialStatus: WorkflowModalStatus = { isOpened: false, isExpanded: false };
   const swrResponse = useStaticSWR<WorkflowModalStatus, Error>('workflowModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
@@ -41,6 +44,12 @@ export const useWorkflowModal = (): SWRResponse<WorkflowModalStatus, Error> & Wo
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });
+    },
+    expand: () => {
+      swrResponse.mutate({ ...swrResponse.data, isExpanded: true });
+    },
+    contract: () => {
+      swrResponse.mutate({ ...swrResponse.data, isExpanded: false });
     },
   });
 };
