@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { IInlineCommentAttributes } from '@growi/core';
+import type { IInlineCommentAttributes } from '@growi/core';
 
 import { toastError } from '~/client/util/toastr';
 import loggerFactory from '~/utils/logger';
