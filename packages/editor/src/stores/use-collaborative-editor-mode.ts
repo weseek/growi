@@ -86,7 +86,7 @@ export const useCollaborativeEditorMode = (
     setProvider(socketIOProvider);
   };
 
-  const attachYDocExtensionsToCodeMirror = () => {
+  const setupYDocExtensions = () => {
     if (ydoc == null || provider == null) {
       return;
     }
@@ -116,6 +116,6 @@ export const useCollaborativeEditorMode = (
   useEffect(cleanupYDocAndProvider, [cPageId, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
   useEffect(setupProvider, [initialValue, pageId, provider, socket, userName, ydoc]);
-  useEffect(attachYDocExtensionsToCodeMirror, [codeMirrorEditor, provider, ydoc]);
+  useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
   useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 };

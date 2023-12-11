@@ -9,6 +9,10 @@ import { keymap, EditorView } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
+// see: https://github.com/yjs/y-codemirror.next#example
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { yUndoManagerKeymap } from 'y-codemirror.next';
 
 import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
 
@@ -56,6 +60,7 @@ const defaultExtensions: Extension[] = [
   syntaxHighlighting(markdownHighlighting),
   Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
   emojiAutocompletionSettings,
+  keymap.of(yUndoManagerKeymap),
 ];
 
 
@@ -78,6 +83,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         basicSetup: {
           defaultKeymap: false,
           dropCursor: false,
+          // Disabled react-codemirror history for Y.UndoManager
+          history: false,
         },
         // ------- End -------
       },
