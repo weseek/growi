@@ -140,7 +140,10 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
         {/* TODO: Allow infinite scrolling */}
         {(workflows.length >= 1 && (
-          <table className="table">
+          <table
+            className="table h-100"
+            style={{ borderSpacing: '0 10px', borderCollapse: 'separate' }}
+          >
             <thead>
               <tr>
                 <th scope="col">{t('approval_workflow.name')}</th>
@@ -149,68 +152,69 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                 <th scope="col"></th>
               </tr>
             </thead>
-
             <tbody>
               {workflows.map((workflow) => {
                 return (
                   <tr data-testid="activity-table" key={workflow._id}>
-                    <td>
-                      <div className="my-2 border-end">
+                    <td className="align-middle border-end border-secondary-subtle border-bottom-0">
+                      <div className="h-75">
                         { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
                         <div className="d-flex align-items-center">
                           <span className="text-muted flex-grow-1">
                             {formatDate(workflow.createdAt)}
                           </span>
-                          <span className="btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                          <span className="py-0 btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
                             {t('approval_workflow.show_detail')}
                             <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
                           </span>
                         </div>
                       </div>
                     </td>
-                    <td className="text-center">
-                      <div className="my-2 border-end">
+                    <td className="text-center border-end border-secondary-subtle align-middle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
                         <WorkflowStatusBadge status={workflow.status} />
                       </div>
                     </td>
-                    <td>
-                      <div className="my-2 border-end">
+                    <td className="align-middle border-end border-secondary-subtle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
                         <div className="d-inline-block pe-2">
                           <UserPicture user={workflow.creator} noLink noTooltip />
                         </div>
                         {workflow.creator.username}
                       </div>
                     </td>
-                    <td>
-                      <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
-                        <DropdownToggle
-                          color="transparent"
-                          className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center"
-                        >
-                          <i className="icon-options"></i>
-                        </DropdownToggle>
+                    <td className="align-middle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
+                        <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
+                          <DropdownToggle
+                            color="transparent"
+                            className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center"
+                          >
+                            <i className="icon-options"></i>
+                          </DropdownToggle>
 
-                        <DropdownMenu>
-                          <div id="delete-workflow-button">
-                            <DropdownItem
-                              className={isDeletable(workflow) ? 'text-danger' : ''}
-                              disabled={!isDeletable(workflow)}
-                              onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
-                            >{t('approval_workflow.delete')}
-                            </DropdownItem>
-                            {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                            { !isDeletable(workflow) && (
-                              <UncontrolledTooltip
-                                target="delete-workflow-button"
-                                placement="bottom"
-                                fade={false}
-                              >
-                                {t('approval_workflow.delete_button_tooltip')}
-                              </UncontrolledTooltip>
-                            )}
-                          </div>
-                        </DropdownMenu>
-                      </Dropdown>
+                          <DropdownMenu>
+                            <div id="delete-workflow-button">
+                              <DropdownItem
+                                className={isDeletable(workflow) ? 'text-danger' : ''}
+                                disabled={!isDeletable(workflow)}
+                                onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
+                              >{t('approval_workflow.delete')}
+                              </DropdownItem>
+                              {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                              { !isDeletable(workflow) && (
+                                <UncontrolledTooltip
+                                  target="delete-workflow-button"
+                                  placement="bottom"
+                                  fade={false}
+                                >
+                                  {t('approval_workflow.delete_button_tooltip')}
+                                </UncontrolledTooltip>
+                              )}
+                            </div>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
                     </td>
                   </tr>
                 );
