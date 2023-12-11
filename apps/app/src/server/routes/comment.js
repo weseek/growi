@@ -247,7 +247,8 @@ module.exports = function(crowi, app) {
       comment.replyTo = commentForm.replyTo;
 
       // set inline comment attributes
-      if (isInlineComment(comment)) {
+      if (commentForm.inline) {
+        comment.inline = true;
         comment.firstLevelBlockXpath = commentForm.firstLevelBlockXpath;
         comment.innerHtmlDiff = commentForm.innerHtmlDiff;
       }
