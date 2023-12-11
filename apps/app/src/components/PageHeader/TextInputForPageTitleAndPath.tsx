@@ -30,54 +30,8 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-
-  const page = currentPage;
-
-  const onRenamed = useCallback((fromPath: string | undefined, toPath: string) => {
-    mutatePageTree();
-    mutateSearching();
-    mutatePageList();
-
-    if (currentPagePath === fromPath || currentPagePath === toPath) {
-      mutateCurrentPage();
-    }
-  }, [currentPagePath, mutateCurrentPage]);
-
-  if (currentPage == null) {
-    return <></>;
-  }
-
-  const onPressEnterForRenameHandler = async(inputText: string) => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-
-    if (newPagePath === page.path) {
-      setRenameInputShown(false);
-      return;
-    }
-
-    try {
-      setRenameInputShown(false);
-      await apiv3Put('/pages/rename', {
-        pageId: page._id,
-        revisionId: page.revision._id,
-        newPagePath,
-      });
-
-      if (onRenamed != null) {
-        onRenamed(page.path, newPagePath);
-      }
-
-      toastSuccess(t('renamed_pages', { path: page.path }));
-    }
-    catch (err) {
-      setRenameInputShown(true);
-      toastError(err);
-    }
-  };
 
   return (
     <>
@@ -87,7 +41,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
             value={inputValue}
             placeholder={t('Input page name')}
             onClickOutside={() => { setRenameInputShown(false) }}
-            onPressEnter={onPressEnterForRenameHandler}
+            // onPressEnter={onPressEnterForRenameHandler}
             validationTarget={ValidationTarget.PAGE}
           />
         </div>
