@@ -5,6 +5,8 @@ import {
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { preNotifyService } from '../service/pre-notify';
+
 /**
  * @swagger
  *  tags:
@@ -274,7 +276,14 @@ module.exports = function(crowi, app) {
       event: createdComment,
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+    const getAdditionalTargetUsers = async(activity) => {
+      const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
+
+      return mentionedUsers;
+    };
+
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify, getAdditionalTargetUsers);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
