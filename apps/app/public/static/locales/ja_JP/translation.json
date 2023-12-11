@@ -250,6 +250,14 @@
       "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
   },
+  "ui_settings": {
+    "ui_settings": "UI設定",
+    "side_bar_mode": {
+      "settings": "サイドバーモードの設定",
+      "side_bar_mode_setting": "サイドバーのモードを設定する",
+      "description": "画面幅が大きい場合に、サイドバーを常時開いた状態にするかどうかを設定できます。画面幅が小さい場合はサイドバーは常に閉じた状態となります。"
+    }
+  },
   "editor_settings": {
     "editor_settings": "エディター設定",
     "common_settings": {

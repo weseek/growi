@@ -2,12 +2,13 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { LabelType } from '~/interfaces/template';
+
 type DropendMenuProps = {
   todaysPath: string,
   onClickCreateNewPageButtonHandler: () => Promise<void>
   onClickCreateTodaysButtonHandler: () => Promise<void>
-  onClickTemplateForChildrenButtonHandler: () => Promise<void>
-  onClickTemplateForDescendantsButtonHandler: () => Promise<void>
+  onClickTemplateButtonHandler: (label: LabelType) => Promise<void>
 }
 
 export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => {
@@ -15,8 +16,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
     todaysPath,
     onClickCreateNewPageButtonHandler,
     onClickCreateTodaysButtonHandler,
-    onClickTemplateForChildrenButtonHandler,
-    onClickTemplateForDescendantsButtonHandler,
+    onClickTemplateButtonHandler,
   } = props;
 
   const { t } = useTranslation('commons');
@@ -48,7 +48,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       <li>
         <button
           className="dropdown-item"
-          onClick={onClickTemplateForChildrenButtonHandler}
+          onClick={() => onClickTemplateButtonHandler('_template')}
           type="button"
         >
           {t('create_page_dropdown.template.children')}
@@ -57,7 +57,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       <li>
         <button
           className="dropdown-item"
-          onClick={onClickTemplateForDescendantsButtonHandler}
+          onClick={() => onClickTemplateButtonHandler('__template')}
           type="button"
         >
           {t('create_page_dropdown.template.descendants')}
