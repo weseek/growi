@@ -1,6 +1,9 @@
-import { Server } from 'socket.io';
+import { Namespace, Server, Socket } from 'socket.io';
 
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
+
+import { setupSessionConfig } from '../crowi/setup-session-config';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const expressSession = require('express-session');
@@ -14,10 +17,13 @@ const logger = loggerFactory('growi:service:socket-io');
  */
 class SocketIoService {
 
-  constructor(crowi) {
-    this.crowi = crowi;
-    this.configManager = crowi.configManager;
+  guestClients: Set<unknown>;
 
+  io: Server;
+
+  adminNamespace: Namespace;
+
+  constructor() {
     this.guestClients = new Set();
   }
 
@@ -68,16 +74,17 @@ class SocketIoService {
    * use passport session
    * @see https://socket.io/docs/v4/middlewares/#Compatibility-with-Express-middleware
    */
-  setupSessionMiddleware() {
+  async setupSessionMiddleware() {
     const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+    const sessionConfig = await setupSessionConfig();
 
-    this.io.use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.io.use(wrap(expressSession(sessionConfig)));
     this.io.use(wrap(passport.initialize()));
     this.io.use(wrap(passport.session()));
 
     // express and passport session on main socket doesn't shared to child namespace socket
     // need to define the session for specific namespace
-    this.getAdminSocket().use(wrap(expressSession(this.crowi.sessionConfig)));
+    this.getAdminSocket().use(wrap(expressSession(sessionConfig)));
     this.getAdminSocket().use(wrap(passport.initialize()));
     this.getAdminSocket().use(wrap(passport.session()));
   }
@@ -86,7 +93,7 @@ class SocketIoService {
    * use loginRequired middleware
    */
   setupLoginRequiredMiddleware() {
-    const loginRequired = require('../middlewares/login-required')(this.crowi, true, (req, res, next) => {
+    const loginRequired = require('../middlewares/login-required')(null, true, (req, res, next) => {
       next(new Error('Login is required to connect.'));
     });
 
@@ -100,7 +107,7 @@ class SocketIoService {
    * use adminRequired middleware
    */
   setupAdminRequiredMiddleware() {
-    const adminRequired = require('../middlewares/admin-required')(this.crowi, (req, res, next) => {
+    const adminRequired = require('../middlewares/admin-required')(null, (req, res, next) => {
       next(new Error('Admin priviledge is required to connect.'));
     });
 
@@ -120,7 +127,7 @@ class SocketIoService {
   }
 
   setupStoreGuestIdEventHandler() {
-    this.io.on('connection', (socket) => {
+    this.io.on('connection', (socket: Socket & { request: { user?: any } }) => {
       if (socket.request.user == null) {
         this.guestClients.add(socket.id);
 
@@ -132,7 +139,7 @@ class SocketIoService {
   }
 
   setupLoginedUserRoomsJoinOnConnection() {
-    this.io.on('connection', (socket) => {
+    this.io.on('connection', (socket: Socket & { request: { user?: any } }) => {
       const user = socket.request.user;
       if (user == null) {
         logger.debug('Socket io: An anonymous user has connected');
@@ -156,11 +163,11 @@ class SocketIoService {
 
     if (namespaceName === '/admin') {
       const clients = await this.getAdminSocket().allSockets();
-      const clientsCount = clients.length;
+      const clientsCount = clients.size;
 
       logger.debug('Current count of clients for \'/admin\':', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForAdmin');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for '/admin' is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -179,7 +186,7 @@ class SocketIoService {
 
       logger.debug('Current count of clients for guests:', clientsCount);
 
-      const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
+      const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimitForGuest');
       if (limit <= clientsCount) {
         const msg = `The connection was refused because the current count of clients for guests is ${clientsCount} and exceeds the limit`;
         logger.warn(msg);
@@ -202,11 +209,11 @@ class SocketIoService {
     }
 
     const clients = await this.getDefaultSocket().allSockets();
-    const clientsCount = clients.length;
+    const clientsCount = clients.size;
 
     logger.debug('Current count of clients for \'/\':', clientsCount);
 
-    const limit = this.configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
+    const limit = configManager.getConfig('crowi', 's2cMessagingPubsub:connectionsLimit');
     if (limit <= clientsCount) {
       const msg = `The connection was refused because the current count of clients for '/' is ${clientsCount} and exceeds the limit`;
       logger.warn(msg);
@@ -219,4 +226,4 @@ class SocketIoService {
 
 }
 
-module.exports = SocketIoService;
+export const socketIoService = new SocketIoService();

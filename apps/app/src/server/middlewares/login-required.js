@@ -1,3 +1,6 @@
+import mongoose from 'mongoose';
+
+import { aclService } from '~/server/service/acl';
 import { createRedirectToForUnauthenticated } from '~/server/util/createRedirectToForUnauthenticated';
 import loggerFactory from '~/utils/logger';
 
@@ -13,7 +16,7 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
 
   return function(req, res, next) {
 
-    const User = crowi.model('User');
+    const User = mongoose.model('User');
 
     // check the user logged in
     if (req.user != null && (req.user instanceof Object) && '_id' in req.user) {
@@ -27,7 +30,7 @@ module.exports = (crowi, isGuestAllowed = false, fallback = null) => {
     }
 
     // check the route config and ACL
-    if (isGuestAllowed && crowi.aclService.isGuestAllowedToRead()) {
+    if (isGuestAllowed && aclService.isGuestAllowedToRead()) {
       logger.debug('Allowed to read: ', req.path);
       return next();
     }

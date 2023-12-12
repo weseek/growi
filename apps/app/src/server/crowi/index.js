@@ -87,7 +87,7 @@ class Crowi {
     this.importService = null;
     this.pluginService = null;
     this.searchService = null;
-    this.socketIoService = null;
+    this.socketIoService = socketIoService;
     this.pageService = null;
     this.syncPageStatusService = null;
     this.cdnResourcesService = new CdnResourcesService();
@@ -125,12 +125,10 @@ Crowi.prototype.init = async function() {
   await this.setupDatabase();
   await this.setupModels();
   await this.setupConfigManager();
-  await this.setupSessionConfig();
   this.setupCron();
 
   // setup messaging services
   await this.setupS2sMessagingService();
-  await this.setupSocketIoService();
 
   // customizeService depends on AppService and XssService
   // passportService depends on appService
@@ -240,52 +238,6 @@ Crowi.prototype.setupDatabase = function() {
   return mongoose.connect(mongoUri, mongoOptions);
 };
 
-Crowi.prototype.setupSessionConfig = async function() {
-  const session = require('express-session');
-  const sessionMaxAge = this.configManager.getConfig('crowi', 'security:sessionMaxAge') || 2592000000; // default: 30days
-  const redisUrl = this.env.REDISTOGO_URL || this.env.REDIS_URI || this.env.REDIS_URL || null;
-  const uid = require('uid-safe').sync;
-
-  // generate pre-defined uid for healthcheck
-  const healthcheckUid = uid(24);
-
-  const sessionConfig = {
-    rolling: true,
-    secret: this.env.SECRET_TOKEN || 'this is default session secret',
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: sessionMaxAge,
-    },
-    genid(req) {
-      // return pre-defined uid when healthcheck
-      if (req.path === '/_api/v3/healthcheck') {
-        return healthcheckUid;
-      }
-      return uid(24);
-    },
-  };
-
-  if (this.env.SESSION_NAME) {
-    sessionConfig.name = this.env.SESSION_NAME;
-  }
-
-  // use Redis for session store
-  if (redisUrl) {
-    const redis = require('redis');
-    const redisClient = redis.createClient({ url: redisUrl });
-    const RedisStore = require('connect-redis')(session);
-    sessionConfig.store = new RedisStore({ client: redisClient });
-  }
-  // use MongoDB for session store
-  else {
-    const MongoStore = require('connect-mongo');
-    sessionConfig.store = MongoStore.create({ client: mongoose.connection.getClient() });
-  }
-
-  this.sessionConfig = sessionConfig;
-};
-
 Crowi.prototype.setupConfigManager = async function() {
   this.configManager = configManagerSingletonInstance;
   return this.configManager.loadConfigs();
@@ -300,13 +252,6 @@ Crowi.prototype.setupS2sMessagingService = async function() {
     s2sMessagingService.addMessageHandler(this.configManager);
 
     this.s2sMessagingService = s2sMessagingService;
-  }
-};
-
-Crowi.prototype.setupSocketIoService = async function() {
-  const SocketIoService = require('../service/socket-io');
-  if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService();
   }
 };
 
