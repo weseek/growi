@@ -686,7 +686,7 @@ module.exports = (crowi) => {
         await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'aws:s3SecretAccessKey': s3SecretAccessKey }, true);
       }
 
-      await crowi.setUpFileUpload(true);
+      // await crowi.setUpFileUpload(true);
       crowi.fileUploaderSwitchService.publishUpdatedMessage();
 
       const responseParams = {

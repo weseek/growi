@@ -44,7 +44,7 @@ class FileUploaderSwitch implements S2sMessageHandlable {
 
     logger.info('Reset fileupload service by pubsub notification');
     await configManager.loadConfigs();
-    await this.crowi.setUpFileUpload(true);
+    // await this.crowi.setUpFileUpload(true);
   }
 
   async publishUpdatedMessage() {

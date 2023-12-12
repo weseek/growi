@@ -662,7 +662,7 @@ export class G2GTransferReceiverService implements Receiver {
       await configManager.updateConfigsInTheSameNamespace('crowi', sourceGROWIUploadConfigs);
     }
 
-    await this.crowi.setUpFileUpload(true);
+    // await this.crowi.setUpFileUpload(true);
     await appService.setupAfterInstall();
   }
 
@@ -680,7 +680,7 @@ export class G2GTransferReceiverService implements Receiver {
 
     await configManager.removeConfigsInTheSameNamespace('crowi', Object.keys(fileUploadConfigs));
     await configManager.updateConfigsInTheSameNamespace('crowi', fileUploadConfigs);
-    await this.crowi.setUpFileUpload(true);
+    // await this.crowi.setUpFileUpload(true);
     await appService.setupAfterInstall();
   }
 
