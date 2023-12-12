@@ -137,24 +137,20 @@ export const PageView = (props: Props): JSX.Element => {
         <PageContentsUtilities />
 
         <div className="flex-expand-vert justify-content-between">
-          <TextSelectableContainer>
-            <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-          </TextSelectableContainer>
+          <InlineCommentsContainer>
+            <TextSelectableContainer>
+              <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+            </TextSelectableContainer>
+          </InlineCommentsContainer>
 
-          { !isIdenticalPathPage && !isNotFound && (
-            <InlineCommentsContainer />
-          ) }
-
-          { !isIdenticalPathPage && !isNotFound && (
-            <div id="comments-container" ref={commentsContainerRef}>
-              <Comments
-                pageId={page._id}
-                pagePath={pagePath}
-                revision={page.revision}
-                onLoaded={() => setCommentsLoaded(true)}
-              />
-            </div>
-          ) }
+          <div id="comments-container" ref={commentsContainerRef}>
+            <Comments
+              pageId={page._id}
+              pagePath={pagePath}
+              revision={page.revision}
+              onLoaded={() => setCommentsLoaded(true)}
+            />
+          </div>
         </div>
       </>
     );

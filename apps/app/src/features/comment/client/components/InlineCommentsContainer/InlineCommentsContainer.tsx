@@ -1,20 +1,16 @@
-import { useRef } from 'react';
+import { type ReactNode, useRef } from 'react';
 
 import { useSWRxInlineComment } from '../../stores';
 
 import { InlineComment } from './InlineComment';
 
-export const InlineCommentsContainer = (): JSX.Element => {
+export const InlineCommentsContainer = ({ children }: { children?: ReactNode }): JSX.Element => {
 
   const { data: inlineComments } = useSWRxInlineComment();
 
   const ref = useRef<HTMLDivElement>(null);
 
-  if (inlineComments == null) {
-    return <></>;
-  }
-
-  const comments = inlineComments.map((inlineComment) => {
+  const comments = (inlineComments ?? []).map((inlineComment) => {
     if (ref.current == null) {
       return <></>;
     }
@@ -24,6 +20,7 @@ export const InlineCommentsContainer = (): JSX.Element => {
 
   return (
     <div ref={ref}>
+      {children}
       {comments}
     </div>
   );
