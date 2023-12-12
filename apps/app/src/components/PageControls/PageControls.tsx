@@ -15,7 +15,7 @@ import {
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
@@ -124,6 +124,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: editorMode } = useEditorMode();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -251,7 +252,9 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
-      <SearchButton />
+      { isDeviceLargerThanMd && (
+        <SearchButton />
+      )}
       {revisionId != null && !isViewMode && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
