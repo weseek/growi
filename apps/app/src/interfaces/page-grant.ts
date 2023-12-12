@@ -8,9 +8,9 @@ import { IPageGrantData } from './page';
 
 type UserGroupType = typeof GroupType.userGroup;
 type ExternalUserGroupType = typeof GroupType.externalUserGroup;
-export type ApplicableGroup = {type: UserGroupType, item: UserGroupDocument } | {type: ExternalUserGroupType, item: ExternalUserGroupDocument }
+export type PopulatedGrantedGroup = {type: UserGroupType, item: UserGroupDocument } | {type: ExternalUserGroupType, item: ExternalUserGroupDocument }
 export type IDataApplicableGroup = {
-  applicableGroups?: ApplicableGroup[]
+  applicableGroups?: PopulatedGrantedGroup[]
 }
 
 export type IDataApplicableGrant = null | IDataApplicableGroup;
