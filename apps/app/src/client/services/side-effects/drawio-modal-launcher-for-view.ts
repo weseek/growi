@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { replaceDrawioInMarkdown } from '~/components/PageEditor/markdown-drawio-util';
+import { replaceDrawioInMarkdown } from '~/components/PageEditor/markdown-drawio-util-for-view';
 import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
