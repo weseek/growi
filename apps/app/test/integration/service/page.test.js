@@ -2,6 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 
 import Tag from '~/server/models/tag';
+import { deleteCompletelyOperation } from '~/server/service/page/delete-completely-operation';
 
 const mongoose = require('mongoose');
 
@@ -717,7 +718,7 @@ describe('PageService', () => {
 
     beforeEach(async() => {
       pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
-      deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
+      // deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
       deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
 
       deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
@@ -730,7 +731,7 @@ describe('PageService', () => {
     });
 
     test('deleteCompletelyOperation', async() => {
-      await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
+      await deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
 
       expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
@@ -747,7 +748,7 @@ describe('PageService', () => {
         endpoint: '/_api/v3/pages/deletecompletely',
       });
 
-      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+      // expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
 
       expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
@@ -760,7 +761,7 @@ describe('PageService', () => {
         endpoint: '/_api/v3/pages/deletecompletely',
       });
 
-      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+      // expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
       expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
 
       expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);

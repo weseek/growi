@@ -13,7 +13,7 @@ import loggerFactory from '~/utils/logger';
 
 import { deleteCompletelyOperation } from './delete-completely-operation';
 import { deleteMultipleCompletely } from './delete-multiple-completely';
-import { BULK_REINDEX_SIZE } from './page';
+import { BULK_REINDEX_SIZE } from '.';
 import { shouldUseV4Process } from './should-use-v4-process';
 import { updateDescendantCountOfAncestors } from './update-descendant-count-of-ancestors';
 
