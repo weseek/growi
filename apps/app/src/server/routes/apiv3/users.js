@@ -8,6 +8,7 @@ import Activity from '~/server/models/activity';
 import ExternalAccount from '~/server/models/external-account';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
+import { deleteCompletelyUserHomeBySystem } from '~/server/service/page/delete-completely-user-home-by-system';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -819,7 +820,7 @@ module.exports = (crowi) => {
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
       if (isUsersHomepageDeletionEnabled && isForceDeleteUserHomepageOnUserDeletion) {
-        crowi.pageService.deleteCompletelyUserHomeBySystem(homepagePath);
+        deleteCompletelyUserHomeBySystem(homepagePath);
       }
 
       return res.apiv3({ user: serializedUser });

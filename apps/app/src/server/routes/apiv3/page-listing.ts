@@ -13,7 +13,7 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
-import PageService from '../../service/page';
+import PageService from '../../service/page/page';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 

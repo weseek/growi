@@ -7,6 +7,9 @@ import mongoose from 'mongoose';
 import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
+import { deleteCompletelyUserHomeBySystem } from '../service/page/delete-completely-user-home-by-system';
+
+
 const logger = loggerFactory('growi:events:user');
 
 class UserEvent extends EventEmitter {
@@ -30,7 +33,7 @@ class UserEvent extends EventEmitter {
       // Since the type of page.creator is 'any', we resort to the following comparison,
       // checking if page.creator.toString() is not equal to user._id.toString(). Our code covers null, string, or object types.
       if (page != null && page.creator != null && page.creator.toString() !== user._id.toString()) {
-        await this.crowi.pageService.deleteCompletelyUserHomeBySystem(userHomepagePath);
+        await deleteCompletelyUserHomeBySystem(userHomepagePath);
         page = null;
       }
 

@@ -5,7 +5,7 @@ import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
-import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
+import { PageGrant, PageStatus } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -23,7 +23,7 @@ import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
 import {
   CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
@@ -31,20 +31,22 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { Attachment } from '../models';
-import { PathAlreadyExistsError } from '../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../models/page-operation';
-import { PageRedirectModel } from '../models/page-redirect';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import ShareLink from '../models/share-link';
-import Subscription from '../models/subscription';
-import UserGroupRelation from '../models/user-group-relation';
-import { V5ConversionError } from '../models/vo/v5-conversion-error';
-import { divideByType } from '../util/granted-group';
+import { ObjectIdLike } from '../../interfaces/mongoose-utils';
+import { PathAlreadyExistsError } from '../../models/errors';
+import { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
+import PageOperation, { PageOperationDocument } from '../../models/page-operation';
+import { PageRedirectModel } from '../../models/page-redirect';
+import { serializePageSecurely } from '../../models/serializers/page-serializer';
+import Subscription from '../../models/subscription';
+import UserGroupRelation from '../../models/user-group-relation';
+import { V5ConversionError } from '../../models/vo/v5-conversion-error';
+import { divideByType } from '../../util/granted-group';
+import { configManager } from '../config-manager';
 
-import { configManager } from './config-manager';
+import { deleteCompletelyOperation } from './delete-completely-operation';
+import { deleteMultipleCompletely } from './delete-multiple-completely';
+import { shouldUseV4Process } from './should-use-v4-process';
+import { updateDescendantCountOfAncestors } from './update-descendant-count-of-ancestors';
 
 const debug = require('debug')('growi:services:page');
 
@@ -56,7 +58,7 @@ const {
 
 const { addTrailingSlash } = pathUtils;
 
-const BULK_REINDEX_SIZE = 100;
+export const BULK_REINDEX_SIZE = 100;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
@@ -371,20 +373,6 @@ class PageService {
     };
   }
 
-  private shouldUseV4Process(page): boolean {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    const isTrashPage = page.status === Page.STATUS_DELETED;
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-
-    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
-
-    return shouldUseV4Process;
-  }
-
   private shouldUseV4ProcessForRevert(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -453,8 +441,8 @@ class PageService {
     }
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
@@ -627,11 +615,11 @@ class PageService {
     await Page.incrementDescendantCountOfPageIds([renamedPage.parent], nToReduceForOperationInterruption);
 
     const nToReduce = -1 * ((page.isEmpty ? 0 : 1) + page.descendantCount);
-    await this.updateDescendantCountOfAncestors(exParentId, nToReduce, true);
+    await updateDescendantCountOfAncestors(exParentId, nToReduce, true);
 
     // increase ancestore's descendantCount
     const nToIncrease = (renamedPage.isEmpty ? 0 : 1) + page.descendantCount;
-    await this.updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
+    await updateDescendantCountOfAncestors(renamedPage._id, nToIncrease, false);
 
     // Remove leaf empty pages if not moving to under the ex-target position
     if (!this.isRenamingToUnderTarget(page.path, newPagePath)) {
@@ -1014,8 +1002,8 @@ class PageService {
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
 
@@ -1163,7 +1151,7 @@ class PageService {
       throw Error('No duplicated page found. Something might have gone wrong in duplicateRecursivelyMainOperation.');
     }
 
-    await this.updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
+    await updateDescendantCountOfAncestors(newTarget._id, nDuplicatedPages, false);
 
     await PageOperation.findByIdAndDelete(pageOpId);
   }
@@ -1439,7 +1427,7 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
+    const isShouldUseV4Process = shouldUseV4Process(page);
     if (shouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
@@ -1506,11 +1494,11 @@ class PageService {
     // 1. Update descendantCount
     if (isRecursively) {
       const inc = page.isEmpty ? -page.descendantCount : -(page.descendantCount + 1);
-      await this.updateDescendantCountOfAncestors(page.parent, inc, true);
+      await updateDescendantCountOfAncestors(page.parent, inc, true);
     }
     else {
       // update descendantCount of ancestors'
-      await this.updateDescendantCountOfAncestors(page.parent, -1, true);
+      await updateDescendantCountOfAncestors(page.parent, -1, true);
     }
     // 2. Delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
@@ -1761,44 +1749,6 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
-    const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
-    const Revision = this.crowi.model('Revision');
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-
-    const { attachmentService } = this.crowi;
-    const attachments = await Attachment.find({ page: { $in: pageIds } });
-
-    return Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
-      Comment.deleteMany({ page: { $in: pageIds } }),
-      PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
-      ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
-      Revision.deleteMany({ pageId: { $in: pageIds } }),
-      Page.deleteMany({ _id: { $in: pageIds } }),
-      PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
-      attachmentService.removeAllAttachments(attachments),
-    ]);
-  }
-
-  // delete multiple pages
-  private async deleteMultipleCompletely(pages, user, options = {}) {
-    const ids = pages.map(page => (page._id));
-    const paths = pages.map(page => (page.path));
-
-    logger.debug('Deleting completely', paths);
-
-    await this.deleteCompletelyOperation(ids, paths);
-
-    this.pageEvent.emit('syncDescendantsDelete', pages, user); // update as renamed page
-
-    return;
-  }
-
   async deleteCompletely(page, user, options = {}, isRecursively = false, preventEmitting = false, activityParameters) {
     /*
      * Common Operation
@@ -1814,8 +1764,8 @@ class PageService {
     }
 
     // v4 compatible process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
     }
 
@@ -1846,7 +1796,7 @@ class PageService {
     // 1. update descendantCount
     if (isRecursively) {
       const inc = page.isEmpty ? -page.descendantCount : -(page.descendantCount + 1);
-      await this.updateDescendantCountOfAncestors(page.parent, inc, true);
+      await updateDescendantCountOfAncestors(page.parent, inc, true);
     }
     else {
       // replace with an empty page
@@ -1855,10 +1805,10 @@ class PageService {
       if (shouldReplace) {
         pageToUpdateDescendantCount = await Page.replaceTargetWithPage(page);
       }
-      await this.updateDescendantCountOfAncestors(pageToUpdateDescendantCount.parent, -1, true);
+      await updateDescendantCountOfAncestors(pageToUpdateDescendantCount.parent, -1, true);
     }
     // 2. then delete target completely
-    await this.deleteCompletelyOperation(ids, paths);
+    await deleteCompletelyOperation(ids, paths);
 
     // delete leaf empty pages
     await Page.removeLeafEmptyPagesRecursively(page.parent);
@@ -1924,7 +1874,7 @@ class PageService {
 
     logger.debug('Deleting completely', paths);
 
-    await this.deleteCompletelyOperation(ids, paths);
+    await deleteCompletelyOperation(ids, paths);
 
     if (isRecursively) {
       this.deleteCompletelyDescendantsWithStream(page, user, options);
@@ -1978,7 +1928,6 @@ class PageService {
     let count = 0;
     let nDeletedNonEmptyPages = 0; // used for updating descendantCount
 
-    const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
@@ -2038,105 +1987,6 @@ class PageService {
     }
   }
 
-  /**
-   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
-   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
-   *
-   * @param {string} userHomepagePath - The path of the user's homepage.
-   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
-   * @throws {Error} - If an error occurs during the deletion process.
-   */
-  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
-    if (!isUsersHomepage(userHomepagePath)) {
-      const msg = 'input value is not user homepage path.';
-      logger.error(msg);
-      throw new Error(msg);
-    }
-
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    const userHomepage = await Page.findByPath(userHomepagePath, true);
-
-    if (userHomepage == null) {
-      const msg = 'user homepage is not found.';
-      logger.error(msg);
-      throw new Error(msg);
-    }
-
-    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
-
-    const ids = [userHomepage._id];
-    const paths = [userHomepage.path];
-    const parentId = getIdForRef(userHomepage.parent);
-
-    try {
-      if (!shouldUseV4Process) {
-        // Ensure consistency of ancestors
-        const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(parentId, inc, true);
-      }
-
-      // Delete the user's homepage
-      await this.deleteCompletelyOperation(ids, paths);
-
-      if (!shouldUseV4Process) {
-        // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(parentId);
-      }
-
-      if (!userHomepage.isEmpty) {
-        // Emit an event for the search service
-        this.pageEvent.emit('deleteCompletely', userHomepage);
-      }
-
-      const { PageQueryBuilder } = Page;
-
-      // Find descendant pages with system deletion condition
-      const builder = new PageQueryBuilder(Page.find(), true)
-        .addConditionForSystemDeletion()
-        .addConditionToListOnlyDescendants(userHomepage.path, {});
-
-      // Stream processing to delete descendant pages
-      // ────────┤ start │─────────
-      const readStream = await builder
-        .query
-        .lean()
-        .cursor({ batchSize: BULK_REINDEX_SIZE });
-
-      let count = 0;
-
-      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
-      const writeStream = new Writable({
-        objectMode: true,
-        async write(batch, encoding, callback) {
-          try {
-            count += batch.length;
-            // Delete multiple pages completely
-            await deleteMultipleCompletely(batch, null, {});
-            logger.debug(`Adding pages progressing: (count=${count})`);
-          }
-          catch (err) {
-            logger.error('addAllPages error on add anyway: ', err);
-          }
-          callback();
-        },
-        final(callback) {
-          logger.debug(`Adding pages has completed: (totalCount=${count})`);
-          callback();
-        },
-      });
-
-      readStream
-        .pipe(createBatchStream(BULK_REINDEX_SIZE))
-        .pipe(writeStream);
-
-      await streamToPromise(writeStream);
-      // ────────┤ end │─────────
-    }
-    catch (err) {
-      logger.error('Error occurred while deleting user homepage and subpages.', err);
-      throw err;
-    }
-  }
 
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
@@ -2240,7 +2090,7 @@ class PageService {
     this.pageEvent.emit('revert', page, updatedPage, user);
 
     if (!isRecursively) {
-      await this.updateDescendantCountOfAncestors(parent._id, 1, true);
+      await updateDescendantCountOfAncestors(parent._id, 1, true);
       this.activityEvent.emit('updated', activity, page);
     }
     else {
@@ -2326,7 +2176,7 @@ class PageService {
     }
 
     // update descendantCount of ancestors'
-    await this.updateDescendantCountOfAncestors(newTarget.parent as ObjectIdLike, newTarget.descendantCount + 1, true);
+    await updateDescendantCountOfAncestors(newTarget.parent as ObjectIdLike, newTarget.descendantCount + 1, true);
 
     await PageOperation.findByIdAndDelete(pageOpId);
   }
@@ -2469,7 +2319,7 @@ class PageService {
         await Page.publicizePages(pages);
         break;
       case 'delete':
-        return this.deleteMultipleCompletely(pages, user);
+        return deleteMultipleCompletely(pages, user);
       case 'transfer':
         await Page.transferPagesToGroup(pages, transferToUserGroup);
         break;
@@ -2803,7 +2653,7 @@ class PageService {
 
     // Update descendantCount
     const inc = 1;
-    await this.updateDescendantCountOfAncestors(normalizedPage.parent, inc, true);
+    await updateDescendantCountOfAncestors(normalizedPage.parent, inc, true);
 
     return normalizedPage;
   }
@@ -2951,7 +2801,7 @@ class PageService {
       if (!isAlreadyConverted) {
         inc += 1;
       }
-      await this.updateDescendantCountOfAncestors(page._id, inc, false);
+      await updateDescendantCountOfAncestors(page._id, inc, false);
     }
     catch (err) {
       logger.error('Failed to update descendantCount after normalizing parent:', err);
@@ -3420,24 +3270,6 @@ class PageService {
     await streamToPromise(recountWriteStream);
   }
 
-  // update descendantCount of all pages that are ancestors of a provided pageId by count
-  async updateDescendantCountOfAncestors(pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean): Promise<void> {
-    const Page = this.crowi.model('Page');
-    const ancestors = await Page.findAncestorsUsingParentRecursively(pageId, shouldIncludeTarget);
-    const ancestorPageIds = ancestors.map(p => p._id);
-
-    await Page.incrementDescendantCountOfPageIds(ancestorPageIds, inc);
-
-    const updateDescCountData: UpdateDescCountRawData = Object.fromEntries(ancestors.map(p => [p._id.toString(), p.descendantCount + inc]));
-    this.emitUpdateDescCount(updateDescCountData);
-  }
-
-  private emitUpdateDescCount(data: UpdateDescCountRawData): void {
-    const socket = this.crowi.socketIoService.getDefaultSocket();
-
-    socket.emit(SocketEventName.UpdateDescCount, data);
-  }
-
   /**
    * Build the base aggregation pipeline for fillAncestors--- methods
    * @param onlyMigratedAsExistingPages Determine whether to include non-migrated pages as existing pages. If a page exists,
@@ -3802,7 +3634,7 @@ class PageService {
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     // Update descendantCount
-    await this.updateDescendantCountOfAncestors(page._id, 1, false);
+    await updateDescendantCountOfAncestors(page._id, 1, false);
 
     // Delete PageRedirect if exists
     try {
@@ -3957,7 +3789,7 @@ class PageService {
     savedPage = await pushRevision(savedPage, newRevision, dummyUser);
 
     // Update descendantCount
-    await this.updateDescendantCountOfAncestors(savedPage._id, 1, false);
+    await updateDescendantCountOfAncestors(savedPage._id, 1, false);
 
     // Emit create event
     this.pageEvent.emit('create', savedPage, dummyUser);
@@ -4002,14 +3834,14 @@ class PageService {
     const shouldPlusDescCount = !wasOnTree && shouldBeOnTree;
     const shouldMinusDescCount = wasOnTree && !shouldBeOnTree;
     if (shouldPlusDescCount) {
-      await this.updateDescendantCountOfAncestors(currentPage._id, 1, false);
+      await updateDescendantCountOfAncestors(currentPage._id, 1, false);
       const newDescendantCount = await Page.recountDescendantCount(currentPage._id);
       await Page.updateOne({ _id: currentPage._id }, { descendantCount: newDescendantCount });
     }
     else if (shouldMinusDescCount) {
       // Update from parent. Parent is null if currentPage.grant is RESTRECTED.
       if (currentPage.grant === PageGrant.GRANT_RESTRICTED) {
-        await this.updateDescendantCountOfAncestors(exParent, -1, true);
+        await updateDescendantCountOfAncestors(exParent, -1, true);
       }
     }
 
