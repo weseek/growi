@@ -2,8 +2,7 @@
 import { advanceTo } from 'jest-date-mock';
 
 import Tag from '~/server/models/tag';
-
-import { deleteCompletelyOperation } from '../../../src/server/service/page/delete-completely-operation';
+import { deleteCompletelyOperation } from '~/server/service/page/delete-completely-operation';
 
 const mongoose = require('mongoose');
 
