@@ -1,7 +1,7 @@
 import loggerFactory from '~/utils/logger';
 
-import { AttachmentType } from '../interfaces/attachment';
-import { Attachment } from '../models';
+import { AttachmentType } from '../../interfaces/attachment';
+import { Attachment } from '../../models';
 
 const fs = require('fs');
 
@@ -48,24 +48,24 @@ class AttachmentService {
     return attachment;
   }
 
-  async removeAllAttachments(attachments) {
-    const { fileUploadService } = this.crowi;
-    const attachmentsCollection = mongoose.connection.collection('attachments');
-    const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
+  // async removeAllAttachments(attachments) {
+  //   const { fileUploadService } = this.crowi;
+  //   const attachmentsCollection = mongoose.connection.collection('attachments');
+  //   const unorderAttachmentsBulkOp = attachmentsCollection.initializeUnorderedBulkOp();
 
-    if (attachments.length === 0) {
-      return;
-    }
+  //   if (attachments.length === 0) {
+  //     return;
+  //   }
 
-    attachments.forEach((attachment) => {
-      unorderAttachmentsBulkOp.find({ _id: attachment._id }).delete();
-    });
-    await unorderAttachmentsBulkOp.execute();
+  //   attachments.forEach((attachment) => {
+  //     unorderAttachmentsBulkOp.find({ _id: attachment._id }).delete();
+  //   });
+  //   await unorderAttachmentsBulkOp.execute();
 
-    await fileUploadService.deleteFiles(attachments);
+  //   await fileUploadService.deleteFiles(attachments);
 
-    return;
-  }
+  //   return;
+  // }
 
   async removeAttachment(attachmentId) {
     const { fileUploadService } = this.crowi;

@@ -10,6 +10,7 @@ import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { Attachment } from '~/server/models';
+import { removeAllAttachments } from '~/server/service/attachment/remove-all-attachments';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -729,7 +730,7 @@ module.exports = (crowi) => {
       // Check if previous attachment exists and remove it
       const attachments = await Attachment.find({ attachmentType: AttachmentType.BRAND_LOGO });
       if (attachments != null) {
-        await attachmentService.removeAllAttachments(attachments);
+        await removeAllAttachments(attachments);
       }
 
       let attachment;
@@ -753,7 +754,7 @@ module.exports = (crowi) => {
     }
 
     try {
-      await attachmentService.removeAllAttachments(attachments);
+      await removeAllAttachments(attachments);
     }
     catch (err) {
       logger.error(err);

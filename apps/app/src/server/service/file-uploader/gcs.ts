@@ -1,7 +1,6 @@
 import { Storage } from '@google-cloud/storage';
 import urljoin from 'url-join';
 
-import type Crowi from '~/server/crowi';
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
@@ -164,8 +163,8 @@ class GcsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi: Crowi) {
-  const lib = new GcsFileUploader(crowi);
+module.exports = function() {
+  const lib = new GcsFileUploader();
 
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'gcs:apiKeyJsonPath') != null

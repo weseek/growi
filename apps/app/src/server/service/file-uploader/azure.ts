@@ -191,7 +191,7 @@ class AzureFileUploader extends AbstractFileUploader {
 }
 
 module.exports = (crowi) => {
-  const lib = new AzureFileUploader(crowi);
+  const lib = new AzureFileUploader();
 
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'azure:storageAccountName') != null

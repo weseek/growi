@@ -26,7 +26,6 @@ export const deleteCompletelyOperation = async(pageIds: ObjectIdLike[], pagePath
     Revision.deleteMany({ pageId: { $in: pageIds } }),
     Page.deleteMany({ _id: { $in: pageIds } }),
     PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
-    // TODO: Remove from crowi dependence
-    // removeAllAttachments(attachments),
+    removeAllAttachments(attachments),
   ]);
 };

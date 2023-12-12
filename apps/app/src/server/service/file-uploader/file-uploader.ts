@@ -47,12 +47,6 @@ export interface FileUploader {
 
 export abstract class AbstractFileUploader implements FileUploader {
 
-  private crowi;
-
-  constructor(crowi) {
-    this.crowi = crowi;
-  }
-
   getIsUploadable() {
     return !configManager.getConfig('crowi', 'app:fileUploadDisabled') && this.isValidUploadSettings();
   }

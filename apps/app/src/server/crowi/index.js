@@ -23,18 +23,19 @@ import UserEvent from '../events/user';
 import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
-import AttachmentService from '../service/attachment';
+import AttachmentService from '../service/attachment/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
 import { instanciate as instanciateExternalAccountService } from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
-import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PageService from '../service/page/page';
 import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
+import { socketIoService } from '../service/socket-io';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
@@ -43,6 +44,8 @@ const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
 
 const sep = path.sep;
+
+export const publicDir = path.join(projectRoot, 'public') + sep;
 
 class Crowi {
 
@@ -56,7 +59,7 @@ class Crowi {
     this.version = pkg.version;
     this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
 
-    this.publicDir = path.join(projectRoot, 'public') + sep;
+    this.publicDir = publicDir;
     this.resourceDir = path.join(projectRoot, 'resource') + sep;
     this.localeDir = path.join(this.resourceDir, 'locales') + sep;
     this.viewsDir = path.resolve(__dirname, '../views') + sep;
@@ -303,7 +306,7 @@ Crowi.prototype.setupS2sMessagingService = async function() {
 Crowi.prototype.setupSocketIoService = async function() {
   const SocketIoService = require('../service/socket-io');
   if (this.socketIoService == null) {
-    this.socketIoService = new SocketIoService(this);
+    this.socketIoService = new SocketIoService();
   }
 };
 

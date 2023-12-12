@@ -2,6 +2,7 @@ import { Readable } from 'stream';
 
 import type { Response } from 'express';
 
+import { publicDir } from '~/server/crowi';
 import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
@@ -95,9 +96,9 @@ class LocalFileUploader extends AbstractFileUploader {
 }
 
 module.exports = function(crowi) {
-  const lib = new LocalFileUploader(crowi);
+  const lib = new LocalFileUploader();
 
-  const basePath = path.posix.join(crowi.publicDir, 'uploads');
+  const basePath = path.posix.join(publicDir, 'uploads');
 
   function getFilePathOnStorage(attachment) {
     const dirName = (attachment.page != null)
@@ -214,7 +215,7 @@ module.exports = function(crowi) {
   lib.respond = function(res, attachment, opts) {
     // Responce using internal redirect of nginx or Apache.
     const storagePath = getFilePathOnStorage(attachment);
-    const relativePath = path.relative(crowi.publicDir, storagePath);
+    const relativePath = path.relative(publicDir, storagePath);
     const internalPathRoot = configManager.getConfig('crowi', 'fileUpload:local:internalRedirectPath');
     const internalPath = urljoin(internalPathRoot, relativePath);
 

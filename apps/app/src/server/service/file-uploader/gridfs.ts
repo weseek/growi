@@ -71,8 +71,8 @@ class GridfsFileUploader extends AbstractFileUploader {
 }
 
 
-module.exports = function(crowi) {
-  const lib = new GridfsFileUploader(crowi);
+module.exports = function() {
+  const lib = new GridfsFileUploader();
   const COLLECTION_NAME = 'attachmentFiles';
   const CHUNK_COLLECTION_NAME = `${COLLECTION_NAME}.chunks`;
 
