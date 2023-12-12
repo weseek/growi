@@ -4,6 +4,7 @@ import React, {
   useMemo,
 } from 'react';
 
+import { useCodeMirrorEditorIsolated } from '@growi/editor';
 import { useDrawioModalForEditor } from '@growi/editor/src/stores/use-drawio';
 import {
   Modal,
@@ -52,7 +53,9 @@ export const DrawioModal = (): JSX.Element => {
   const { data: drawioModalDataInEditor } = useDrawioModalForEditor();
   const isOpened = drawioModalData?.isOpened ?? false;
   const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
-  const editor = drawioModalDataInEditor?.editor;
+  const editorKey = drawioModalDataInEditor?.editorKey;
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
+  const editor = codeMirrorEditor?.view;
 
   const drawioUriWithParams = useMemo(() => {
     if (rendererConfig == null) {

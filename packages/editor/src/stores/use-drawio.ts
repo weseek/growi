@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 
-import type { EditorView } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
@@ -8,13 +7,13 @@ type DrawioModalSaveHandler = () => void;
 
 type DrawioModalStatus = {
   isOpened: boolean,
-  editor?: EditorView,
+  editorKey?: string,
   onSave?: DrawioModalSaveHandler,
 }
 
 type DrawioModalStatusUtils = {
   open(
-    editor?: EditorView,
+    editorKey?: string,
     onSave?: DrawioModalSaveHandler,
   ): void,
   close(): void,
@@ -28,12 +27,12 @@ export const useDrawioModalForEditor = (status?: DrawioModalStatus): SWRResponse
 
   const { mutate } = swrResponse;
 
-  const open = useCallback((editor?: EditorView, onSave?: DrawioModalSaveHandler): void => {
-    mutate({ isOpened: true, editor, onSave });
+  const open = useCallback((editorKey?: string, onSave?: DrawioModalSaveHandler): void => {
+    mutate({ isOpened: true, editorKey, onSave });
   }, [mutate]);
 
   const close = useCallback((): void => {
-    mutate({ isOpened: false, editor: undefined, onSave: undefined });
+    mutate({ isOpened: false, editorKey: undefined, onSave: undefined });
   }, [mutate]);
 
   return {
