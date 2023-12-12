@@ -29,7 +29,6 @@ import {
   type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
-import { getModelSafely } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -45,6 +44,9 @@ import Subscription from '../models/subscription';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
+
+import { configManager } from './config-manager';
+import { preNotifyService } from './pre-notify';
 
 const debug = require('debug')('growi:services:page');
 
