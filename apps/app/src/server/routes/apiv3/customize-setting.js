@@ -10,7 +10,7 @@ import { GrowiPlugin } from '~/features/growi-plugin/server/models';
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { Attachment } from '~/server/models';
-import { removeAllAttachments } from '~/server/service/attachment/remove-all-attachments';
+import { createAttachment, removeAllAttachments } from '~/server/service/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -103,7 +103,7 @@ module.exports = (crowi) => {
 
   const activityEvent = crowi.event('activity');
 
-  const { customizeService, attachmentService } = crowi;
+  const { customizeService } = crowi;
   const uploads = multer({ dest: `${crowi.tmpDir}uploads` });
   const validator = {
     layout: [
@@ -735,7 +735,7 @@ module.exports = (crowi) => {
 
       let attachment;
       try {
-        attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
+        attachment = await createAttachment(file, req.user, null, AttachmentType.BRAND_LOGO);
       }
       catch (err) {
         logger.error(err);

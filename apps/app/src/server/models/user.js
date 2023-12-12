@@ -6,6 +6,8 @@ import { i18n } from '^/config/next-i18next.config';
 import { generateGravatarSrc } from '~/utils/gravatar';
 import loggerFactory from '~/utils/logger';
 
+import { removeAttachment } from '../service/attachment';
+
 import { Attachment } from './attachment';
 
 
@@ -230,8 +232,7 @@ module.exports = function(crowi) {
     this.image = undefined;
 
     if (this.imageAttachment != null) {
-      const { attachmentService } = crowi;
-      attachmentService.removeAttachment(this.imageAttachment._id);
+      removeAttachment(this.imageAttachment._id);
     }
 
     this.imageAttachment = undefined;

@@ -18,7 +18,6 @@ const initCrowi = async(crowi) => {
 
   await Promise.all([
     crowi.setupPassport(),
-    crowi.setupAttachmentService(),
     crowi.setUpAcl(),
     crowi.setupPageService(),
     crowi.setupInAppNotificationService(),

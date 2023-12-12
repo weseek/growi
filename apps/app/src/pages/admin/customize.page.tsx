@@ -10,6 +10,7 @@ import { Container, Provider } from 'unstated';
 import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import { isBrandLogoExist } from '~/server/service/attachment';
 import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -63,7 +64,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const { crowi } = req;
 
   props.customizeTitle = crowi.configManager.getConfig('crowi', 'customize:title');
-  props.isCustomizedLogoUploaded = await crowi.attachmentService.isBrandLogoExist();
+  props.isCustomizedLogoUploaded = await isBrandLogoExist();
 };
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

@@ -13,6 +13,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
+import { isBrandLogoExist } from '~/server/service/attachment';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser, useSidebarCollapsed,
 } from '~/stores/ui';
@@ -45,7 +46,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const req = context.req as CrowiRequest;
   const { crowi, user } = req;
   const {
-    appService, configManager, customizeService, attachmentService,
+    appService, configManager, customizeService,
   } = crowi;
 
   const url = new URL(context.resolvedUrl, 'http://example.com');
@@ -73,7 +74,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination = null;
   }
 
-  const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
+  const isCustomizedLogoUploaded = await isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
 

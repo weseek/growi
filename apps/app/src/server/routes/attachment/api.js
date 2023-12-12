@@ -2,6 +2,7 @@ import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-ut
 
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
+import { createAttachment, removeAttachment } from '~/server/service/attachment';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
@@ -137,7 +138,7 @@ export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
-  const { attachmentService, globalNotificationService } = crowi;
+  const { globalNotificationService } = crowi;
 
   const activityEvent = crowi.event('activity');
 
@@ -347,7 +348,7 @@ export const routesFactory = (crowi) => {
 
     let attachment;
     try {
-      attachment = await attachmentService.createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
+      attachment = await createAttachment(file, req.user, pageId, AttachmentType.WIKI_PAGE);
     }
     catch (err) {
       logger.error(err);
@@ -456,7 +457,7 @@ export const routesFactory = (crowi) => {
     let attachment;
     try {
       req.user.deleteImage();
-      attachment = await attachmentService.createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
+      attachment = await createAttachment(file, req.user, null, AttachmentType.PROFILE_IMAGE);
       await req.user.updateImage(attachment);
     }
     catch (err) {
@@ -525,7 +526,7 @@ export const routesFactory = (crowi) => {
     }
 
     try {
-      await attachmentService.removeAttachment(attachment);
+      await removeAttachment(attachment);
     }
     catch (err) {
       logger.error(err);
