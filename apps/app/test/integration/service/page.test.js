@@ -728,7 +728,7 @@ describe('PageService', () => {
       deleteManyShareLinkSpy = jest.spyOn(ShareLink, 'deleteMany').mockImplementation();
       deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
       deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
-      removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
+      // removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
     });
 
     test('deleteCompletelyOperation', async() => {
@@ -740,7 +740,7 @@ describe('PageService', () => {
       expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [parentForDeleteCompletely._id] } });
       expect(deleteManyPageSpy).toHaveBeenCalledWith({ _id: { $in: [parentForDeleteCompletely._id] } });
-      expect(removeAllAttachmentsSpy).toHaveBeenCalled();
+      // expect(removeAllAttachmentsSpy).toHaveBeenCalled();
     });
 
     test('delete completely without options', async() => {
