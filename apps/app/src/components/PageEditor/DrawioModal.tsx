@@ -53,7 +53,7 @@ export const DrawioModal = (): JSX.Element => {
   const { data: drawioModalDataInEditor } = useDrawioModalForEditor();
   const isOpened = drawioModalData?.isOpened ?? false;
   const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
-  const editorKey = drawioModalDataInEditor?.editorKey;
+  const editorKey = drawioModalDataInEditor?.editorKey ?? null;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const editor = codeMirrorEditor?.view;
 
