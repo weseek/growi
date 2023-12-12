@@ -95,7 +95,7 @@ class LocalFileUploader extends AbstractFileUploader {
 
 }
 
-module.exports = function(crowi) {
+module.exports = function() {
   const lib = new LocalFileUploader();
 
   const basePath = path.posix.join(publicDir, 'uploads');

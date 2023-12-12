@@ -7,6 +7,7 @@ import { body } from 'express-validator';
 import multer from 'multer';
 
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
+import { getUploader } from '~/server/service/file-uploader';
 import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
@@ -39,6 +40,8 @@ module.exports = (crowi: Crowi): Router => {
     g2gTransferPusherService, g2gTransferReceiverService, exportService, importService,
     growiBridgeService, configManager,
   } = crowi;
+  const fileUploadService = getUploader();
+
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
     || growiBridgeService == null || configManager == null) {
     throw Error('GROWI is not ready for g2g transfer');
@@ -125,7 +128,7 @@ module.exports = (crowi: Crowi): Router => {
 
   // eslint-disable-next-line max-len
   receiveRouter.get('/files', validateTransferKey, async(req: Request, res: ApiV3Response) => {
-    const files = await crowi.fileUploadService.listFiles();
+    const files = await fileUploadService.listFiles();
     return res.apiv3({ files });
   });
 

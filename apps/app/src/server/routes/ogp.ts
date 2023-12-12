@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
 import { Attachment } from '../models';
+import { getUploader } from '../service/file-uploader';
 import { convertStreamToBuffer } from '../util/stream';
 
 const logger = loggerFactory('growi:routes:ogp');
@@ -38,8 +39,15 @@ module.exports = function(crowi) {
     let bufferedUserImage: Buffer;
 
     if (isUserImageAttachment(userImageUrlCached)) {
-      const { fileUploadService } = crowi;
+      const fileUploadService = getUploader();
       const attachment = await Attachment.findById(userImageUrlCached);
+
+      if (attachment == null) {
+        const message = `attachment document is null, ${userImageUrlCached}`;
+        logger.err(message);
+        throw new Error(message);
+      }
+
       const fileStream = await fileUploadService.findDeliveryFile(attachment);
       bufferedUserImage = await convertStreamToBuffer(fileStream);
       return bufferedUserImage;
@@ -105,7 +113,8 @@ module.exports = function(crowi) {
   const pageIdRequired = param('pageId').not().isEmpty().withMessage('page id is not included in the parameter');
 
   const ogpValidator = async(req:Request, res:Response, next:NextFunction) => {
-    const { aclService, fileUploadService, configManager } = crowi;
+    const { aclService, configManager } = crowi;
+    const fileUploadService = getUploader();
 
     const ogpUri = configManager.getConfig('crowi', 'app:ogpUri');
 

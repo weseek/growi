@@ -50,9 +50,6 @@ class Crowi {
   /** @type {AppService} */
   appService;
 
-  /** @type {FileUploader} */
-  fileUploadService;
-
   constructor() {
     this.version = pkg.version;
     this.runtimeVersions = undefined; // initialized by scanRuntimeVersions()
@@ -78,7 +75,6 @@ class Crowi {
     this.xssService = null;
     this.aclService = null;
     this.appService = null;
-    this.fileUploadService = null;
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
     this.exportService = null;
@@ -146,7 +142,6 @@ Crowi.prototype.init = async function() {
     this.setupMailer(),
     this.setupSlackIntegrationService(),
     this.setupG2GTransferService(),
-    this.setUpFileUpload(),
     this.setUpFileUploaderSwitchService(),
     this.setUpAcl(),
     this.setUpRestQiitaAPI(),
@@ -633,15 +628,6 @@ Crowi.prototype.setUpApp = async function() {
     if (this.s2sMessagingService != null && !isInstalled) {
       this.s2sMessagingService.addMessageHandler(this.appService);
     }
-  }
-};
-
-/**
- * setup FileUploadService
- */
-Crowi.prototype.setUpFileUpload = async function(isForceUpdate = false) {
-  if (this.fileUploadService == null || isForceUpdate) {
-    this.fileUploadService = getUploader(this);
   }
 };
 

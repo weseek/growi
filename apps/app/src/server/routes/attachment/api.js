@@ -3,6 +3,7 @@ import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-ut
 import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import { createAttachment, removeAttachment } from '~/server/service/attachment';
+import { getUploader } from '~/server/service/file-uploader';
 import loggerFactory from '~/utils/logger';
 
 import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
@@ -218,7 +219,7 @@ export const routesFactory = (crowi) => {
    * @apiGroup Attachment
    */
   api.limit = async function(req, res) {
-    const { fileUploadService } = crowi;
+    const fileUploadService = getUploader();
     const fileSize = Number(req.query.fileSize);
     return res.json(ApiResponse.success(await fileUploadService.checkLimit(fileSize)));
   };

@@ -22,6 +22,7 @@ import { Attachment } from '../models';
 import { G2GTransferError, G2GTransferErrorCode } from '../models/vo/g2g-transfer-error';
 
 import { configManager } from './config-manager';
+import { getUploader } from './file-uploader';
 
 const logger = loggerFactory('growi:service:g2g-transfer');
 
@@ -245,7 +246,7 @@ export class G2GTransferPusherService implements Pusher {
   }
 
   public async getTransferability(destGROWIInfo: IDataGROWIInfo): Promise<Transferability> {
-    const { fileUploadService } = this.crowi;
+    const fileUploadService = getUploader();
 
     const version = this.crowi.version;
     if (version !== destGROWIInfo.version) {
@@ -324,7 +325,8 @@ export class G2GTransferPusherService implements Pusher {
 
   public async transferAttachments(tk: TransferKey): Promise<void> {
     const BATCH_SIZE = 100;
-    const { fileUploadService, socketIoService } = this.crowi;
+    const { socketIoService } = this.crowi;
+    const fileUploadService = getUploader();
     const socket = socketIoService.getAdminSocket();
     const filesFromSrcGROWI = await this.listFilesInStorage(tk);
 
@@ -539,7 +541,8 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async answerGROWIInfo(): Promise<IDataGROWIInfo> {
-    const { version, configManager, fileUploadService } = this.crowi;
+    const { version, configManager } = this.crowi;
+    const fileUploadService = getUploader();
     const userUpperLimit = configManager.getConfig('crowi', 'security:userUpperLimit');
     const fileUploadDisabled = configManager.getConfig('crowi', 'app:fileUploadDisabled');
     const fileUploadTotalLimit = fileUploadService.getFileUploadTotalLimit();
@@ -682,7 +685,7 @@ export class G2GTransferReceiverService implements Receiver {
   }
 
   public async receiveAttachment(content: Readable, attachmentMap): Promise<void> {
-    const { fileUploadService } = this.crowi;
+    const fileUploadService = getUploader();
     return fileUploadService.uploadAttachment(content, attachmentMap);
   }
 

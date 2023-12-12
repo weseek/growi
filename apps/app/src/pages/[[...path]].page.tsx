@@ -29,6 +29,7 @@ import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { getUploader } from '~/server/service/file-uploader';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -558,6 +559,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   const {
     searchService, configManager, aclService,
   } = crowi;
+  const fileUploadService = getUploader();
 
   props.isSearchServiceConfigured = searchService.isConfigured;
   props.isSearchServiceReachable = searchService.isReachable;
@@ -577,8 +579,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.editorConfig = {
     upload: {
-      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
+      isUploadableFile: fileUploadService.getFileUploadEnabled(),
+      isUploadableImage: fileUploadService.getIsUploadable(),
     },
   };
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');

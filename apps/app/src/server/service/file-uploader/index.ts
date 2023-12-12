@@ -17,6 +17,7 @@ const envToModuleMappings = {
   azure:   'azure',
 };
 
+// TODO: return correct uploader type by each method
 export const getUploader = (): any => {
   const method = envToModuleMappings[configManager.getConfig('crowi', 'app:fileUploadType')];
   const modulePath = `./${method}`;

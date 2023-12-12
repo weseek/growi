@@ -5,7 +5,7 @@ import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PageRedirectModel } from '../../models/page-redirect';
 import ShareLink from '../../models/share-link';
-// import { removeAllAttachments } from '../attachment/remove-all-attachments';
+import { removeAllAttachments } from '../attachment/remove-all-attachments';
 
 export const deleteCompletelyOperation = async(pageIds: ObjectIdLike[], pagePaths: string[]): Promise<any[]> => {
   // Delete Bookmarks, Attachments, Revisions, Pages and emit delete

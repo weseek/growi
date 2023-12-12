@@ -11,7 +11,7 @@ import type { CrowiProperties, CrowiRequest } from '~/interfaces/crowi-request';
 import { ResponseMode, type ExpressHttpHeader, type RespondOptions } from '~/server/interfaces/attachment';
 import {
   type FileUploader,
-  toExpressHttpHeaders, ContentHeaders, applyHeaders,
+  toExpressHttpHeaders, ContentHeaders, applyHeaders, getUploader,
 } from '~/server/service/file-uploader';
 import loggerFactory from '~/utils/logger';
 
@@ -137,7 +137,7 @@ export const getActionFactory = (crowi: Crowi, attachment: IAttachmentDocument) 
       return;
     }
 
-    const { fileUploadService } = crowi;
+    const fileUploadService = getUploader();
 
     const responseMode = fileUploadService.determineResponseMode();
     switch (responseMode) {
