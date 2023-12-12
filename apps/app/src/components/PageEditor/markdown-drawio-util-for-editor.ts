@@ -2,6 +2,7 @@ import { EditorView } from '@codemirror/view';
 
 const lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
 const lineEndPartOfDrawioRE = /^```$/;
+const firstLineNum = 1;
 
 // get cursor position
 const curPos = (editor: EditorView) => {
@@ -12,9 +13,6 @@ const curPos = (editor: EditorView) => {
 const doc = (editor: EditorView) => {
   return editor.state.doc;
 };
-
-// get first line number
-const firstLineNum = 1;
 
 // get last line number
 const lastLineNum = (editor: EditorView) => {
