@@ -1428,7 +1428,7 @@ class PageService {
 
     // Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    if (isShouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
     // Validate
