@@ -252,13 +252,15 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-        {SimpleItemContent.map(ItemContent => (
-          <ItemContent {...SimpleItemContentProps} />
+        {SimpleItemContent.map((ItemContent, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <ItemContent key={index} {...SimpleItemContentProps} />
         ))}
       </li>
 
-      {CustomNextComponents?.map(UnderItemContent => (
-        <UnderItemContent {...SimpleItemContentProps} />
+      {CustomNextComponents?.map((UnderItemContent, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <UnderItemContent key={index} {...SimpleItemContentProps} />
       ))}
 
       {

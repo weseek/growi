@@ -139,11 +139,9 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/comments.update'    , comment.api.validators.add(), accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.update);
   apiV1Router.post('/comments.remove'    , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, comment.api.remove);
 
-  apiV1Router.post('/attachments.add'                  , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, addActivity , attachmentApi.add);
   apiV1Router.post('/attachments.uploadProfileImage'   , uploads.single('file'), autoReap, accessTokenParser, loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.uploadProfileImage);
   apiV1Router.post('/attachments.remove'               , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity ,attachmentApi.remove);
   apiV1Router.post('/attachments.removeProfileImage'   , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, attachmentApi.removeProfileImage);
-  apiV1Router.get('/attachments.limit'   , accessTokenParser , loginRequiredStrictly, attachmentApi.limit);
 
   // API v1
   app.use('/_api', unavailableWhenMaintenanceModeForApi, apiV1Router);
