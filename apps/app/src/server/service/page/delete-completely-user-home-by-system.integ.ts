@@ -67,7 +67,7 @@ describe('delete-completely-user-home-by-system test', () => {
         parent: user1HomepageId,
       },
       {
-        path: '/user/user1//subpage2',
+        path: '/user/user1/subpage2',
         grant: Page.GRANT_PUBLIC,
         creator: user1,
         lastUpdateUser: user1,
@@ -109,8 +109,8 @@ describe('delete-completely-user-home-by-system test', () => {
 
     it('should throw error if userHomepage is not exists', async() => {
       // when
-      const nonExistsUserHomepagePath = '/user/not_exists_user';
-      const deleteUserHomepageFunction = deleteCompletelyUserHomeBySystem(nonExistsUserHomepagePath, mockPageService);
+      const notExistsUserHomepagePath = '/user/not_exists_user';
+      const deleteUserHomepageFunction = deleteCompletelyUserHomeBySystem(notExistsUserHomepagePath, mockPageService);
 
       // then
       expect(deleteUserHomepageFunction).rejects.toThrow('user homepage is not found.');
