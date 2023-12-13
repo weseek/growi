@@ -1,6 +1,6 @@
 /**
-   * return markdown where the drawioData specified by line number params is replaced to the drawioData specified by drawioData param
-   */
+ * return markdown where the drawioData specified by line number params is replaced to the drawioData specified by drawioData param
+ */
 export const replaceDrawioInMarkdown = (drawioData: string, markdown: string, beginLineNumber: number, endLineNumber: number): string => {
   const splitMarkdown = markdown.split(/\r\n|\r|\n/);
   const markdownBeforeDrawio = splitMarkdown.slice(0, beginLineNumber - 1);

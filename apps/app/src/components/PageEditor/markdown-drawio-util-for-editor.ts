@@ -4,35 +4,30 @@ const lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
 const lineEndPartOfDrawioRE = /^```$/;
 const firstLineNum = 1;
 
-// get cursor position
 const curPos = (editor: EditorView) => {
   return editor.state.selection.main.head;
 };
 
-// get doc
 const doc = (editor: EditorView) => {
   return editor.state.doc;
 };
 
-// get last line number
 const lastLineNum = (editor: EditorView) => {
   return doc(editor).lines;
 };
 
-// get cursor line
 const getCursorLine = (editor: EditorView) => {
   return doc(editor).lineAt(curPos(editor));
 };
 
-// get line
 const getLine = (editor: EditorView, lineNum: number) => {
   return doc(editor).line(lineNum);
 };
 
 /**
-   * return the postion of the BOD(beginning of drawio)
-   * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
-   */
+ * return the postion of the BOD(beginning of drawio)
+ * (If the BOD is not found after the cursor or the EOD is found before the BOD, return null)
+ */
 const getBod = (editor: EditorView) => {
   const strLine = getCursorLine(editor).text;
   if (lineBeginPartOfDrawioRE.test(strLine)) {
@@ -64,9 +59,9 @@ const getBod = (editor: EditorView) => {
 };
 
 /**
-   * return the postion of the EOD(end of drawio)
-   * (If the EOD is not found after the cursor or the BOD is found before the EOD, return null)
-   */
+ * return the postion of the EOD(end of drawio)
+ * (If the EOD is not found after the cursor or the BOD is found before the EOD, return null)
+ */
 const getEod = (editor: EditorView) => {
   const lastLine = lastLineNum(editor);
 
@@ -100,8 +95,8 @@ const getEod = (editor: EditorView) => {
 };
 
 /**
-   * return boolean value whether the cursor position is in a drawio
-   */
+ * return boolean value whether the cursor position is in a drawio
+ */
 const isInDrawioBlock = (editor: EditorView) => {
   const bod = getBod(editor);
   const eod = getEod(editor);
@@ -112,9 +107,9 @@ const isInDrawioBlock = (editor: EditorView) => {
 };
 
 /**
-   * return drawioData instance where the cursor is
-   * (If the cursor is not in a drawio block, return null)
-   */
+ * return drawioData instance where the cursor is
+ * (If the cursor is not in a drawio block, return null)
+ */
 export const getMarkdownDrawioMxfile = (editor: EditorView): string | null => {
   if (isInDrawioBlock(editor)) {
     const bod = getBod(editor);
@@ -159,17 +154,18 @@ export const replaceFocusedDrawioWithEditor = (editor: EditorView, drawioData: s
 };
 
 /**
-   * return an array of the starting line numbers of the drawio sections found in markdown
-   */
-export const findAllDrawioSection = (editor: EditorView): number[] => {
-  const lineNumbers: number[] = [];
-  // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
-  for (let i = firstLineNum, e = lastLineNum(editor); i <= e; i++) {
-    const lineTxt = getLine(editor, i).text;
-    const match = lineBeginPartOfDrawioRE.exec(lineTxt);
-    if (match) {
-      lineNumbers.push(i);
-    }
-  }
-  return lineNumbers;
-};
+ * return an array of the starting line numbers of the drawio sections found in markdown
+ */
+// TODO: https://redmine.weseek.co.jp/issues/136473
+// export const findAllDrawioSection = (editor: EditorView): number[] => {
+//   const lineNumbers: number[] = [];
+//   // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
+//   for (let i = firstLineNum, e = lastLineNum(editor); i <= e; i++) {
+//     const lineTxt = getLine(editor, i).text;
+//     const match = lineBeginPartOfDrawioRE.exec(lineTxt);
+//     if (match) {
+//       lineNumbers.push(i);
+//     }
+//   }
+//   return lineNumbers;
+// };
