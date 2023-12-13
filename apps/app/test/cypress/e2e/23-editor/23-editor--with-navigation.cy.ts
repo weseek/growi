@@ -106,7 +106,7 @@ context('Editor while uploading to a new page', () => {
 
 });
 
-context.skip('Editor while navigation', () => {
+context('Editor while navigation', () => {
 
   const ssPrefix = 'editor-while-navigation-';
 
