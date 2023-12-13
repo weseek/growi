@@ -1,6 +1,11 @@
 import mongoose from 'mongoose';
 import { vi } from 'vitest';
 
+import { getPageSchema } from '~/server/models/obsolete-page';
+import { configManager } from '~/server/service/config-manager';
+
+import pageModel from '../../models/page';
+
 import { deleteCompletelyUserHomeBySystem } from './delete-completely-user-home-by-system';
 
 import PageService from '.';
@@ -17,12 +22,63 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 describe('delete-completely-user-home-by-system test', () => {
+  let Page;
+
+  const initialEnv = process.env;
+
   const userId1 = new mongoose.Types.ObjectId();
+  const user1HomepageId = new mongoose.Types.ObjectId();
 
   beforeAll(async() => {
-    await User.create({
+    // setup page model
+    getPageSchema(null);
+    pageModel(null);
+    Page = mongoose.model('Page');
+
+    // setup config
+    await configManager.loadConfigs();
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
+    const isV5Compatible = configManager.getConfig('crowi', 'app:isV5Compatible');
+    expect(isV5Compatible).toBeTruthy();
+
+    // setup user documents
+    const user1 = await User.create({
       _id: userId1, name: 'user1', username: 'user1', email: 'user1@example.com',
     });
+
+    // setup page documents
+    await Page.insertMany([
+      {
+        _id: user1HomepageId,
+        path: '/user/user1',
+        grant: Page.GRANT_PUBLIC,
+        creator: user1,
+        lastUpdateUser: user1,
+        parent: new mongoose.Types.ObjectId(),
+        descendantCount: 2,
+        isEmpty: false,
+        status: 'published',
+      },
+      {
+        path: '/user/user1/subpage1',
+        grant: Page.GRANT_PUBLIC,
+        creator: user1,
+        lastUpdateUser: user1,
+        parent: user1HomepageId,
+      },
+      {
+        path: '/user/user1//subpage2',
+        grant: Page.GRANT_PUBLIC,
+        creator: user1,
+        lastUpdateUser: user1,
+        parent: user1HomepageId,
+      },
+    ]);
+  });
+
+  afterAll(() => {
+    process.env = initialEnv;
+    Page.deleteMany({});
   });
 
   describe('deleteCompletelyUserHomeBySystem()', () => {
@@ -39,25 +95,25 @@ describe('delete-completely-user-home-by-system test', () => {
       deleteMultipleCompletely: mockDeleteMultipleCompletely,
     } as unknown as PageService;
 
-    it('should call page service functions', async() => {
+    it('should call used page service functions', async() => {
       // when
-      await deleteCompletelyUserHomeBySystem('/user/user1', mockPageService);
+      const existsUserHomepagePath = '/user/user1';
+      await deleteCompletelyUserHomeBySystem(existsUserHomepagePath, mockPageService);
 
       // then
       expect(mockUpdateDescendantCountOfAncestors).toHaveBeenCalled();
       expect(mockDeleteCompletelyOperation).toHaveBeenCalled();
-      expect(mockPageEvent).toHaveBeenCalled();
+      expect(mockPageEvent.emit).toHaveBeenCalled();
       expect(mockDeleteMultipleCompletely).toHaveBeenCalled();
     });
 
     it('should throw error if userHomepage is not exists', async() => {
       // when
-      const throwError = async() => {
-        await deleteCompletelyUserHomeBySystem('/user/not_exists_user', mockPageService);
-      };
+      const nonExistsUserHomepagePath = '/user/not_exists_user';
+      const deleteUserHomepageFunction = deleteCompletelyUserHomeBySystem(nonExistsUserHomepagePath, mockPageService);
 
       // then
-      expect(throwError).toThrowError();
+      expect(deleteUserHomepageFunction).rejects.toThrow('user homepage is not found.');
     });
   });
 });

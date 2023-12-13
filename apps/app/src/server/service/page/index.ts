@@ -45,6 +45,7 @@ import { V5ConversionError } from '../../models/vo/v5-conversion-error';
 import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
 
+import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
 import { shouldUseV4Process } from './should-use-v4-process';
 
 const debug = require('debug')('growi:services:page');
@@ -56,9 +57,6 @@ const {
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
-
-export const BULK_REINDEX_SIZE = 100;
-const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {

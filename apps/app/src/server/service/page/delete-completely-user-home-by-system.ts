@@ -10,9 +10,10 @@ import type { PageModel } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
+import { BULK_REINDEX_SIZE } from './consts';
 import { shouldUseV4Process } from './should-use-v4-process';
 
-import PageService, { BULK_REINDEX_SIZE } from '.';
+import PageService from '.';
 
 const logger = loggerFactory('growi:services:page');
 
