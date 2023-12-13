@@ -95,59 +95,39 @@ const getEod = (editor: EditorView) => {
 };
 
 /**
- * return boolean value whether the cursor position is in a drawio
- */
-const isInDrawioBlock = (editor: EditorView) => {
-  const bod = getBod(editor);
-  const eod = getEod(editor);
-  if (bod === null || eod === null) {
-    return false;
-  }
-  return JSON.stringify(bod) !== JSON.stringify(eod);
-};
-
-/**
  * return drawioData instance where the cursor is
  * (If the cursor is not in a drawio block, return null)
  */
 export const getMarkdownDrawioMxfile = (editor: EditorView): string | null => {
-  if (isInDrawioBlock(editor)) {
-    const bod = getBod(editor);
-    const eod = getEod(editor);
-    if (bod == null || eod == null) {
-      return null;
-    }
-
-    // skip block begin sesion("``` drawio")
-    const bodLineNum = doc(editor).lineAt(bod).number + 1;
-    const bodLine = getLine(editor, bodLineNum).from;
-    // skip block end sesion("```")
-    const eodLineNum = doc(editor).lineAt(eod).number - 1;
-    const eodLine = getLine(editor, eodLineNum).to;
-
-    return editor.state.sliceDoc(bodLine, eodLine);
+  const bod = getBod(editor);
+  const eod = getEod(editor);
+  if (bod == null || eod == null || JSON.stringify(bod) === JSON.stringify(eod)) {
+    return null;
   }
-  return null;
+
+  // skip block begin sesion("``` drawio")
+  const bodLineNum = doc(editor).lineAt(bod).number + 1;
+  const bodLine = getLine(editor, bodLineNum).from;
+  // skip block end sesion("```")
+  const eodLineNum = doc(editor).lineAt(eod).number - 1;
+  const eodLine = getLine(editor, eodLineNum).to;
+
+  return editor.state.sliceDoc(bodLine, eodLine);
 };
 
 export const replaceFocusedDrawioWithEditor = (editor: EditorView, drawioData: string): void => {
   const drawioBlock = ['``` drawio', drawioData.toString(), '```'].join('\n');
-  let beginPos;
-  let endPos;
-
-  if (isInDrawioBlock(editor)) {
-    beginPos = getBod(editor);
-    endPos = getEod(editor);
-  }
-  else {
-    beginPos = curPos(editor);
-    endPos = curPos(editor);
+  let bod = getBod(editor);
+  let eod = getEod(editor);
+  if (bod == null || eod == null || JSON.stringify(bod) === JSON.stringify(eod)) {
+    bod = curPos(editor);
+    eod = curPos(editor);
   }
 
   editor.dispatch({
     changes: {
-      from: beginPos,
-      to: endPos,
+      from: bod,
+      to: eod,
       insert: drawioBlock,
     },
   });
