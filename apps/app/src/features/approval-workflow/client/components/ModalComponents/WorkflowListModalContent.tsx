@@ -31,34 +31,6 @@ const formatDate = (date: Date) => {
   return format(new Date(date), 'yyyy/MM/dd HH:mm');
 };
 
-const WorkflowStatusBadge = (props: { status: string }) => {
-  const { status } = props;
-
-  const { t } = useTranslation();
-
-  let className: string;
-
-  switch (status) {
-    case WorkflowStatus.APPROVE:
-      className = 'bg-success-subtle border border-success-subtle text-success-emphasis';
-      break;
-    case WorkflowStatus.INPROGRESS:
-      className = 'bg-info-subtle border border-info-subtle text-info-emphasis';
-      break;
-    default:
-      return <></>;
-  }
-
-  return (
-    <h5>
-      <span className={`badge ${className} rounded-pill`}>
-        {t(`approval_workflow.workflow_status.${status}`)}
-      </span>
-    </h5>
-  );
-
-};
-
 export const WorkflowListModalContent = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
@@ -126,6 +98,17 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
   }, [currentUser]);
 
+  const getBadgeStyle = useCallback((workflow: IWorkflowHasId) => {
+    switch (workflow.status) {
+      case WorkflowStatus.INPROGRESS:
+        return 'bg-info-subtle border border-info-subtle text-info-emphasis';
+      case WorkflowStatus.APPROVE:
+        return 'bg-success-subtle border border-success-subtle text-success-emphasis';
+      default:
+        return '';
+    }
+  }, []);
+
   return (
     <>
       <WorkflowModalHeader>
@@ -158,7 +141,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                   <tr data-testid="activity-table" key={workflow._id}>
                     <td className="align-middle border-end border-secondary-subtle border-bottom-0">
                       <div className="h-75">
-                        { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
+                        {isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle}
                         <div className="d-flex align-items-center">
                           <span className="text-muted flex-grow-1">
                             {formatDate(workflow.createdAt)}
@@ -172,7 +155,11 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                     </td>
                     <td className="text-center border-end border-secondary-subtle align-middle border-bottom-0">
                       <div className="h-75 d-flex align-items-center justify-content-center">
-                        <WorkflowStatusBadge status={workflow.status} />
+                        <h5>
+                          <span className={`badge rounded-pill ${getBadgeStyle(workflow)}`}>
+                            {t(`approval_workflow.workflow_status.${workflow.status}`)}
+                          </span>
+                        </h5>
                       </div>
                     </td>
                     <td className="align-middle border-end border-secondary-subtle border-bottom-0">
@@ -202,7 +189,7 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
                               >{t('approval_workflow.delete')}
                               </DropdownItem>
                               {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                              { !isDeletable(workflow) && (
+                              {!isDeletable(workflow) && (
                                 <UncontrolledTooltip
                                   target="delete-workflow-button"
                                   placement="bottom"
