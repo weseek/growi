@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useState } from 'react';
+import { memo, useEffect } from 'react';
 
 import type { IInlineComment } from '@growi/core';
 import { applyPatch } from 'diff';
-import { createPortal } from 'react-dom';
 
 import loggerFactory from '~/utils/logger';
 
@@ -11,18 +10,25 @@ import { getElementByXpath } from './utils';
 const logger = loggerFactory('growi:components:InlineComment');
 
 
-const ModalPortal = ({ firstLevelBlock, children }) => {
+const findAnnotatedElem = (firstLevelBlock: Element | undefined): Element | undefined => {
   if (firstLevelBlock == null) {
-    console.log('parent is null');
-    return <></>;
+    return undefined;
   }
 
   const annotatedElems = firstLevelBlock.getElementsByClassName('annotation-0');
-  if (annotatedElems.length !== 1) {
+  if (annotatedElems.length === 0) {
+    return;
+  }
+  return annotatedElems[0];
+};
+
+
+const ModalPortal = ({ annotatedElem }) => {
+  if (annotatedElem == null) {
     return <></>;
   }
 
-  return createPortal(children, annotatedElems[0]);
+  return <>ModalPortal</>;
 };
 
 
@@ -31,16 +37,15 @@ type Props = {
   wikiElementXpath: string;
 }
 
-export const InlineComment = (props: Props): JSX.Element => {
+export const InlineComment = memo((props: Props): JSX.Element => {
   const { inlineComment, wikiElementXpath } = props;
   const { firstLevelBlockXpath, innerHtmlDiff } = inlineComment;
 
-  const [showPortal, setShowPortal] = useState(false);
-
   const firstLevelBlock = getElementByXpath(wikiElementXpath + firstLevelBlockXpath);
+  const annotatedElem = findAnnotatedElem(firstLevelBlock);
 
   useEffect(() => {
-    if (firstLevelBlock == null || showPortal) {
+    if (firstLevelBlock == null || annotatedElem != null) {
       return;
     }
 
@@ -49,7 +54,7 @@ export const InlineComment = (props: Props): JSX.Element => {
     const annotated = applyPatch(orgInnerHTML, innerHtmlDiff);
 
     if (!annotated) {
-      logger.debug('apply patch has failed.', {
+      logger.warn('apply patch has failed.', {
         xpath: firstLevelBlockXpath,
       });
       return;
@@ -57,15 +62,11 @@ export const InlineComment = (props: Props): JSX.Element => {
 
     firstLevelBlock.innerHTML = annotated;
 
-    setShowPortal(true);
-    console.log('set showPotal true');
+  }, [annotatedElem, firstLevelBlock, firstLevelBlockXpath, innerHtmlDiff, wikiElementXpath]);
 
-  }, [firstLevelBlock, firstLevelBlockXpath, innerHtmlDiff, showPortal, wikiElementXpath]);
-
-  console.log({ showPortal });
   return (
     <>
-      { showPortal && <ModalPortal firstLevelBlock={firstLevelBlock}>foobar</ModalPortal> }
+      <ModalPortal annotatedElem={annotatedElem}></ModalPortal>
     </>
   );
-};
+});

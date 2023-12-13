@@ -1,5 +1,5 @@
 import {
-  type ReactNode, useRef, useMemo, RefObject,
+  type ReactNode, useRef, useMemo, RefObject, memo,
 } from 'react';
 
 import { useRenderedObserver } from '@growi/ui/dist/utils';
@@ -29,7 +29,7 @@ const findWikiElement = (containerRef: RefObject<Element>): Element | undefined 
   return wikiElements[0];
 };
 
-export const InlineCommentsContainer = ({ children }: { children?: ReactNode }): JSX.Element => {
+export const InlineCommentsContainer = memo(({ children }: { children?: ReactNode }): JSX.Element => {
 
   const { data: inlineComments } = useSWRxInlineComment();
 
@@ -48,7 +48,6 @@ export const InlineCommentsContainer = ({ children }: { children?: ReactNode }):
 
     const wikiElementXpath = getXPath(wikiElement);
     return (inlineComments ?? []).map((inlineComment) => {
-      console.log('render InlineComment');
       return <InlineComment key={inlineComment._id} inlineComment={inlineComment} wikiElementXpath={wikiElementXpath} />;
     });
   }, [inlineComments, isRendering]);
@@ -61,4 +60,4 @@ export const InlineCommentsContainer = ({ children }: { children?: ReactNode }):
       {inlineCommentComponents}
     </>
   );
-};
+});
