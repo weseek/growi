@@ -12,6 +12,7 @@ type ClosableTextInputProps = {
   validationTarget?: string,
   onPressEnter?(inputText: string | null): void
   onClickOutside?(): void
+  handleInputChange?: (string) => void
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
@@ -38,6 +39,11 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     createValidation(inputText);
     setInputText(inputText);
     setIsAbleToShowAlert(true);
+
+    if (props.handleInputChange != null) {
+      props.handleInputChange(inputText);
+    }
+
   };
 
   const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {

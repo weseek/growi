@@ -9,7 +9,7 @@ import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
-
+import { usePagePathSubmitHandler } from './page-header-utils';
 
 type Props = {
   currentPagePath: string
@@ -21,9 +21,11 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
+  const [inputText, setInputText] = useState('');
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+  const pagePathSubmitHandler = usePagePathSubmitHandler(currentPage, currentPagePath, setRenameInputShown);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -46,21 +48,29 @@ export const PagePathHeader: FC<Props> = (props) => {
     );
   }, [currentPage._id, currentPagePath, isEditorMode]);
 
+  const handleInputChange = (inputText: string) => {
+    setInputText(inputText);
+  };
+
+  console.log(inputText);
+
   return (
     <>
-      <div className="container">
+      <div onMouseLeave={() => setButtonShown(false)}>
         <div
           className="row"
-          onMouseEnter={() => setButtonShown(true)}
-          onMouseLeave={() => setButtonShown(false)}
         >
-          <div className="col-4">
+          <div
+            className="col-4"
+            onMouseEnter={() => setButtonShown(true)}
+          >
             <TextInputForPageTitleAndPath
               currentPagePath={currentPagePath}
               currentPage={currentPage}
               stateHandler={stateHandler}
               inputValue={currentPagePath}
               CustomComponent={PagePath}
+              handleInputChange={handleInputChange}
             />
           </div>
           { isButtonsShown
@@ -69,7 +79,7 @@ export const PagePathHeader: FC<Props> = (props) => {
               <div className="col-4">
                 {
                   isRenameInputShown
-                    ? <button type="button" onClick={() => setRenameInputShown(false)}>完了ボタン</button>
+                    ? <button type="button" onClick={() => console.log('完了！')}>完了ボタン</button>
                     : <button type="button" onClick={() => setRenameInputShown(true)}>編集ボタン</button>
                 }
               </div>
