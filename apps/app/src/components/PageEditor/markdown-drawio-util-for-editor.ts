@@ -115,12 +115,12 @@ const isInDrawioBlock = (editor: EditorView) => {
    * return drawioData instance where the cursor is
    * (If the cursor is not in a drawio block, return null)
    */
-export const getMarkdownDrawioMxfile = (editor: EditorView): string | undefined | null => {
+export const getMarkdownDrawioMxfile = (editor: EditorView): string | null => {
   if (isInDrawioBlock(editor)) {
     const bod = getBod(editor);
     const eod = getEod(editor);
     if (bod == null || eod == null) {
-      return;
+      return null;
     }
 
     // skip block begin sesion("``` drawio")
