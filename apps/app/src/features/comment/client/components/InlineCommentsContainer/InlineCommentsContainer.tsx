@@ -1,4 +1,8 @@
-import { type ReactNode, useRef } from 'react';
+import {
+  type ReactNode, useRef, useMemo,
+} from 'react';
+
+import { useRenderedObserver } from '@growi/ui/dist/utils';
 
 import { useSWRxInlineComment } from '../../stores';
 
@@ -8,16 +12,24 @@ export const InlineCommentsContainer = ({ children }: { children?: ReactNode }):
 
   const { data: inlineComments } = useSWRxInlineComment();
 
-  const ref = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const comments = (inlineComments ?? []).map((inlineComment) => {
-    return <InlineComment inlineComment={inlineComment} />;
-  });
+  const { isRendering } = useRenderedObserver(containerRef);
+
+  const inlineCommentComponents = useMemo(() => {
+    if (isRendering !== false) return <></>;
+
+    return (inlineComments ?? []).map((inlineComment) => {
+      return <InlineComment key={inlineComment._id} inlineComment={inlineComment} />;
+    });
+  }, [inlineComments, isRendering]);
 
   return (
-    <div ref={ref}>
-      {children}
-      {comments}
-    </div>
+    <>
+      <div ref={containerRef}>
+        {children}
+      </div>
+      {inlineCommentComponents}
+    </>
   );
 };
