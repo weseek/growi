@@ -25,7 +25,7 @@ type RenderedObserver = {
   isRendering: boolean | undefined,
 }
 
-export const useRenderedObserver = <T extends Element>(ref: RefObject<T>, opts?: Opts): RenderedObserver => {
+export const useRenderedObserver = <T extends Element>(ref: RefObject<T> | null, opts?: Opts): RenderedObserver => {
 
   const [isRendering, setRendering] = useState<boolean>();
 
@@ -41,7 +41,7 @@ export const useRenderedObserver = <T extends Element>(ref: RefObject<T>, opts?:
   ), [delay, opts]);
 
   useEffect(() => {
-    const element = ref.current;
+    const element = ref?.current;
     if (element == null) return;
 
     const observer = new MutationObserver((records) => {

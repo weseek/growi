@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import type { IRevisionHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { useRenderedObserver } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
-import { debounce } from 'throttle-debounce';
 
 import { type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/features/comment/client';
@@ -40,22 +40,9 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   const pageCommentParentRef = useRef<HTMLDivElement>(null);
 
-  const onLoadedDebounced = useMemo(() => debounce(500, () => onLoaded?.()), [onLoaded]);
-
-  useEffect(() => {
-    const parent = pageCommentParentRef.current;
-    if (parent == null) return;
-
-    const observer = new MutationObserver(() => {
-      onLoadedDebounced();
-    });
-    observer.observe(parent, { childList: true, subtree: true });
-
-    // no cleanup function -- 2023.07.31 Yuki Takei
-    // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
-    // > You can call observe() multiple times on the same MutationObserver
-    // > to watch for changes to different parts of the DOM tree and/or different types of changes.
-  }, [onLoadedDebounced]);
+  useRenderedObserver(pageCommentParentRef, {
+    onRendered: onLoaded,
+  });
 
   const isTopPagePath = isTopPage(pagePath);
 
