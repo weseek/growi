@@ -11,10 +11,6 @@ export const InlineCommentsContainer = ({ children }: { children?: ReactNode }):
   const ref = useRef<HTMLDivElement>(null);
 
   const comments = (inlineComments ?? []).map((inlineComment) => {
-    if (ref.current == null) {
-      return <></>;
-    }
-
     return <InlineComment inlineComment={inlineComment} />;
   });
 
