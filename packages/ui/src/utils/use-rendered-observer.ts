@@ -22,6 +22,9 @@ const defaultOpts = {
 };
 
 type RenderedObserver = {
+  // The first state is undefined,
+  //  then will be switched to true,
+  //  and finally will be switched to false
   isRendering: boolean | undefined,
 }
 
