@@ -16,10 +16,6 @@ const retrieveFirstLevelNode = (target: Node, root: Element): Node | null => {
   return retrieveFirstLevelNode(target.parentElement, root);
 };
 
-const getElementByXpath = (xpath: string): Node | null => {
-  return document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
-};
-
 const getRelativeXpath = (target: Element, from: Element): string => {
   const fromXpath = getXPath(from);
   const xpath = getXPath(target);

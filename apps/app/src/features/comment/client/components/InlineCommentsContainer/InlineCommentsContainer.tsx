@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import { useRenderedObserver } from '@growi/ui/dist/utils';
+import getXPath from 'get-xpath';
 
 import loggerFactory from '~/utils/logger';
 
@@ -45,10 +46,10 @@ export const InlineCommentsContainer = ({ children }: { children?: ReactNode }):
       return <></>;
     }
 
-    console.log({ wikiElement });
-
+    const wikiElementXpath = getXPath(wikiElement);
     return (inlineComments ?? []).map((inlineComment) => {
-      return <InlineComment key={inlineComment._id} inlineComment={inlineComment} />;
+      console.log('render InlineComment');
+      return <InlineComment key={inlineComment._id} inlineComment={inlineComment} wikiElementXpath={wikiElementXpath} />;
     });
   }, [inlineComments, isRendering]);
 

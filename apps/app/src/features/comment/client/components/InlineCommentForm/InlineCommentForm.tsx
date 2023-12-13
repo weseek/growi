@@ -57,21 +57,6 @@ export const InlineCommentForm = (props: Props): JSX.Element => {
       return;
     }
 
-    // const targetElement = getElementByXpath(wikiElemXpath + xpathRelative);
-    // if (targetElement != null && isElement(targetElement)) {
-    //   // WIP: restore annotated html from xpathRelative
-    //   console.log('replace innerHTML');
-    //   targetElement.innerHTML = annotated;
-
-    //   // WIP: react rendering
-    //   const annotatedElem = targetElement.getElementsByClassName('annotation-0');
-    //   console.log({ annotatedElem });
-    //   createPortal(
-    //     <p>aaaaa</p>,
-    //     annotatedElem[0],
-    //   );
-    // }
-
     onExit?.();
   }, [onExit, range, postComment]);
 
