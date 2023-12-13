@@ -2,11 +2,16 @@ import { useCallback } from 'react';
 
 import { useDrawioModalForEditor } from '../../../stores/use-drawio';
 
-export const DiagramButton = (): JSX.Element => {
+type Props = {
+  editorKey: string,
+}
+
+export const DiagramButton = (props: Props): JSX.Element => {
+  const { editorKey } = props;
   const { open: openDrawioModal } = useDrawioModalForEditor();
   const onClickDiagramButton = useCallback(() => {
-    openDrawioModal();
-  }, [openDrawioModal]);
+    openDrawioModal(editorKey);
+  }, [editorKey, openDrawioModal]);
   return (
     <button type="button" className="btn btn-toolbar-button" onClick={onClickDiagramButton}>
       <span className="material-symbols-outlined fs-5">lan</span>
