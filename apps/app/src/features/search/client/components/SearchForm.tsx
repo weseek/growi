@@ -6,10 +6,11 @@ type Props = {
   searchKeyword: string,
   onChangeSearchText?: (text: string) => void,
   onClickClearButton?: () => void,
+  getInputProps: any
 }
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, onChangeSearchText, onClickClearButton,
+    searchKeyword, onChangeSearchText, onClickClearButton, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -33,16 +34,18 @@ export const SearchForm = (props: Props): JSX.Element => {
   });
 
   return (
-    <div className="text-muted d-flex justify-content-center align-items-center ps-1">
+    <div className="text-muted d-flex justify-content-center align-items-center">
       <span className="material-symbols-outlined fs-4 me-3">search</span>
 
       <input
-        ref={inputRef}
-        type="text"
+        {...getInputProps({
+          ref: inputRef,
+          type: 'text',
+          placeholder: 'Search...',
+          value: searchKeyword,
+        })}
         className="form-control"
-        placeholder="Search..."
-        value={searchKeyword}
-        onChange={(e) => { changeSearchTextHandler(e) }}
+        onChange={changeSearchTextHandler}
       />
 
       <button

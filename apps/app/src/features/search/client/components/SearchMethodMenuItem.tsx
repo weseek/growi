@@ -4,65 +4,90 @@ import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/stores/page';
 
-type MenuItemProps = {
-  children: React.ReactNode
-  onClick: () => void
-}
-const MenuItem = (props: MenuItemProps): JSX.Element => {
-  const { children, onClick } = props;
+import { SearchMenuItem } from './SearchMenuItem';
 
-  return (
-    <tr>
-      <div className="text-muted ps-1 d-flex">
+type ComponentType = 'nomal' | 'tree' | 'exact';
+
+type SearchMethodMenuItemSubstanceProps = {
+  componentType: ComponentType
+  index: number
+  highlightedIndex: number | null
+  getItemProps: any
+  searchKeyword: string
+}
+
+const SearchMethodMenuItemSubstance = (props: SearchMethodMenuItemSubstanceProps): JSX.Element => {
+  const {
+    componentType, getItemProps, index, highlightedIndex, searchKeyword,
+  } = props;
+  const { t } = useTranslation('commons');
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  if (componentType === 'nomal') {
+    return (
+      <SearchMenuItem index={index} highlightedIndex={highlightedIndex} getItemProps={getItemProps} url={`/_search?q=${searchKeyword}`}>
         <span className="material-symbols-outlined fs-4 me-3">search</span>
-        { children }
-      </div>
-    </tr>
-  );
+        <span>{searchKeyword}</span>
+        <div className="ms-auto">
+          <span>{t('search_method_menu_item.search_in_all')}</span>
+        </div>
+      </SearchMenuItem>
+    );
+  }
+
+  if (componentType === 'tree') {
+    return (
+      <SearchMenuItem
+        index={index}
+        highlightedIndex={highlightedIndex}
+        getItemProps={getItemProps}
+        url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
+      >
+        <span className="material-symbols-outlined fs-4 me-3">search</span>
+        <code>prefix: {currentPagePath}</code>
+        <span className="ms-2">{searchKeyword}</span>
+        <div className="ms-auto">
+          <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
+        </div>
+      </SearchMenuItem>
+    );
+  }
+
+  if (componentType === 'exact') {
+    return (
+      <SearchMenuItem index={index} highlightedIndex={highlightedIndex} getItemProps={getItemProps} url={`/_search?q="${searchKeyword}"`}>
+        <span className="material-symbols-outlined fs-4 me-3">search</span>
+        <span>{`"${searchKeyword}"`}</span>
+        <div className="ms-auto">
+          <span>{t('search_method_menu_item.exact_mutch')}</span>
+        </div>
+      </SearchMenuItem>
+    );
+  }
+
+  return (<></>);
 };
 
 
-type SearchMethodMenuItemProps = {
-  searchKeyword: string
-}
-export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Element => {
-  const { t } = useTranslation('commons');
+type SearchMethodMenuItemProps = Omit<SearchMethodMenuItemSubstanceProps, 'componentType' | 'index'> & { searchKeyword: string }
 
-  const { data: currentPagePath } = useCurrentPagePath();
+export const SearchMethodMenuItem = (props: SearchMethodMenuItemProps): JSX.Element => {
 
   const { searchKeyword } = props;
 
-  const shouldShowButton = searchKeyword.length > 0;
+  const isEmptyKeyword = searchKeyword.trim().length === 0;
+
+  const searchMethodMenuItemData: Array<{ componentType: ComponentType }> = isEmptyKeyword
+    ? [{ componentType: 'tree' }]
+    : [{ componentType: 'nomal' }, { componentType: 'tree' }, { componentType: 'exact' }];
 
   return (
-    <table className="table">
-      <tbody>
-        { shouldShowButton && (
-          <MenuItem onClick={() => {}}>
-            <span>{searchKeyword}</span>
-            <div className="ms-auto">
-              <span>{t('search_method_menu_item.search_in_all')}</span>
-            </div>
-          </MenuItem>
-        )}
-
-        <MenuItem onClick={() => {}}>
-          <code>prefix: {currentPagePath}</code>
-          <span className="ms-2">{searchKeyword}</span>
-          <div className="ms-auto">
-            <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
-          </div>
-        </MenuItem>
-
-        { shouldShowButton && (
-          <MenuItem onClick={() => {}}>
-            <span>{`"${searchKeyword}"`}</span>
-            <div className="ms-auto">
-              <span>{t('search_method_menu_item.exact_mutch')}</span>
-            </div>
-          </MenuItem>
-        ) }
-      </tbody>
-    </table>
+    <>
+      { searchMethodMenuItemData
+        .map((item, index) => (
+          <SearchMethodMenuItemSubstance key={item.componentType} index={index} componentType={item.componentType} {...props} />
+        ))
+      }
+    </>
   );
 };
