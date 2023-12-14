@@ -18,13 +18,16 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import { UserGroupDocument } from './user-group';
 import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
@@ -71,6 +74,7 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
+  removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
 
   PageQueryBuilder: typeof PageQueryBuilder
 

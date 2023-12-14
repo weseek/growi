@@ -25,3 +25,9 @@ export const scheduleToPut = (settings: Partial<IUserUISettings>): void => {
 
   _putUserUISettingsInBulkDebounced();
 };
+
+export const updateUserUISettings = async(settings: Partial<IUserUISettings>): Promise<AxiosResponse<IUserUISettings>> => {
+  const result = await apiv3Put<IUserUISettings>('/user-ui-settings', { settings });
+
+  return result;
+};
