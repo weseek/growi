@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.5](https://github.com/weseek/growi/compare/v6.2.4...v6.2.5) - 2023-12-14
+
+### 🐛 Bug Fixes
+
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
 
 ## [v6.2.4](https://github.com/weseek/growi/compare/v6.2.3...v6.2.4) - 2023-11-29
 
