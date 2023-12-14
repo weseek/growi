@@ -43,7 +43,9 @@ const SearchModal = (): JSX.Element => {
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
-        <Downshift onChange={(selectedItem: DownshiftItem) => { selectSearchMenuItemHandler(selectedItem.url) }}>
+        <Downshift
+          onSelect={(selectedItem: DownshiftItem) => { selectSearchMenuItemHandler(selectedItem.url) }}
+        >
           {({
             getInputProps,
             getItemProps,
