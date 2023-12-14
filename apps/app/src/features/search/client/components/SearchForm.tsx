@@ -31,13 +31,14 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   const inputOption = useMemo(() => {
     return ({
-      ref: inputRef,
       type: 'text',
-      value: searchKeyword,
       placeholder: 'Search...',
       className: 'form-control',
+      ref: inputRef,
+      value: searchKeyword,
+      onChange: changeSearchTextHandler,
     });
-  }, [searchKeyword]);
+  }, [changeSearchTextHandler, searchKeyword]);
 
   useEffect(() => {
     if (inputRef.current != null) {
@@ -51,7 +52,6 @@ export const SearchForm = (props: Props): JSX.Element => {
 
       <input
         {...getInputProps(inputOption)}
-        onChange={changeSearchTextHandler}
       />
 
       <button
