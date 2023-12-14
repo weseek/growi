@@ -13,6 +13,7 @@ export const GrowiAttachmentType = {
   aws: 'aws',
   gcs: 'gcs',
   gcp: 'gcp',
+  azure: 'azure',
   gridfs: 'gridfs',
   mongo: 'mongo',
   mongodb: 'mongodb',

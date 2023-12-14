@@ -14,6 +14,7 @@ import NamedQuery from '../models/named-query';
 import { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
 import { SearchError } from '../models/vo/search-error';
+import { hasIntersection } from '../util/compare-objectId';
 
 import ElasticsearchDelegator from './search-delegator/elasticsearch';
 import PrivateLegacyPagesDelegator from './search-delegator/private-legacy-pages';
@@ -491,7 +492,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
 
     const testGrant = pageData.grant;
     const testGrantedUser = pageData.grantedUsers?.[0];
-    const testGrantedGroup = pageData.grantedGroup;
+    const testGrantedGroups = pageData.grantedGroups;
 
     if (testGrant === Page.GRANT_RESTRICTED) {
       return false;
@@ -506,7 +507,7 @@ class SearchService implements SearchQueryParser, SearchResolver {
     if (testGrant === Page.GRANT_USER_GROUP) {
       if (userGroups == null) return false;
 
-      return userGroups.map(id => id.toString()).includes(testGrantedGroup.toString());
+      return hasIntersection(userGroups.map(id => id.toString()), testGrantedGroups);
     }
 
     return true;

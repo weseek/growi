@@ -36,6 +36,7 @@ module.exports = (crowi, app) => {
   routerForAdmin.use('/notification-setting', require('./notification-setting')(crowi));
   routerForAdmin.use('/users', require('./users')(crowi));
   routerForAdmin.use('/user-groups', require('./user-group')(crowi));
+  routerForAdmin.use('/external-user-groups', require('~/features/external-user-group/server/routes/apiv3/external-user-group')(crowi));
   routerForAdmin.use('/export', require('./export')(crowi));
   routerForAdmin.use('/import', importRoute(crowi));
   routerForAdmin.use('/search', require('./search')(crowi));
@@ -77,7 +78,7 @@ module.exports = (crowi, app) => {
   router.use('/personal-setting', require('./personal-setting')(crowi));
 
   router.use('/user-group-relations', require('./user-group-relation')(crowi));
-  router.use('/user-group-relations', require('./user-group-relation')(crowi));
+  router.use('/external-user-group-relations', require('~/features/external-user-group/server/routes/apiv3/external-user-group-relation')(crowi));
 
   router.use('/statistics', require('./statistics')(crowi));
 
@@ -116,6 +117,8 @@ module.exports = (crowi, app) => {
   router.use('/bookmark-folder', require('./bookmark-folder')(crowi));
   router.use('/questionnaire', require('~/features/questionnaire/server/routes/apiv3/questionnaire')(crowi));
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
+
+  router.use('/me', require('./me')(crowi));
 
   return [router, routerForAdmin, routerForAuth];
 };

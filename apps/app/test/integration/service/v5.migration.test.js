@@ -37,8 +37,22 @@ describe('V5 page migration', () => {
   const onlyPublic = filter => ({ grant: Page.GRANT_PUBLIC, ...filter });
   const ownedByTestUser1 = filter => ({ grant: Page.GRANT_OWNER, grantedUsers: [testUser1._id], ...filter });
   const root = filter => ({ grantedUsers: [rootUser._id], ...filter });
-  const rootUserGroup = filter => ({ grantedGroup: rootUserGroupId, ...filter });
-  const testUser1Group = filter => ({ grantedGroup: testUser1GroupId, ...filter });
+  const rootUserGroup = filter => ({
+    grantedGroups: {
+      $elemMatch: {
+        item: rootUserGroupId,
+      },
+    },
+    ...filter,
+  });
+  const testUser1Group = filter => ({
+    grantedGroups: {
+      $elemMatch: {
+        item: testUser1GroupId,
+      },
+    },
+    ...filter,
+  });
 
   const normalized = { parent: { $ne: null } };
   const notNormalized = { parent: null };
@@ -160,14 +174,14 @@ describe('V5 page migration', () => {
         path: '/normalize_1/normalize_2',
         parent: pageId1,
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
         _id: pageId3,
         path: '/normalize_1',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
@@ -182,34 +196,34 @@ describe('V5 page migration', () => {
         path: '/normalize_4/normalize_5',
         parent: pageId4,
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
         _id: pageId6,
         path: '/normalize_4',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdIsolate,
+        grantedGroups: [{ item: groupIdIsolate, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
         path: '/normalize_7/normalize_8_gA',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
         path: '/normalize_7/normalize_8_gA/normalize_9_gB',
         grant: Page.GRANT_USER_GROUP,
         creator: testUser1,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
         path: '/normalize_7/normalize_8_gC',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdC,
+        grantedGroups: [{ item: groupIdC, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
       },
       {
@@ -231,13 +245,13 @@ describe('V5 page migration', () => {
         _id: pageId9, // not v5
         path: '/normalize_10/normalize_11_gA',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdA,
+        grantedGroups: [{ item: groupIdA, type: 'UserGroup' }],
       },
       {
         _id: pageId10,
         path: '/normalize_10/normalize_11_gA/normalize_11_gB',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdB,
+        grantedGroups: [{ item: groupIdB, type: 'UserGroup' }],
         parent: pageId8,
         descendantCount: 0,
       },
@@ -245,7 +259,7 @@ describe('V5 page migration', () => {
         _id: pageId11,
         path: '/normalize_10/normalize_12_gC',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: groupIdC,
+        grantedGroups: [{ item: groupIdC, type: 'UserGroup' }],
         grantedUsers: [testUser1._id],
         parent: pageId7,
         descendantCount: 0,
@@ -431,13 +445,13 @@ describe('V5 page migration', () => {
         {
           path: '/deep_path/normalize_a',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
           parent: null,
         },
         {
           path: '/deep_path/normalize_c',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
           parent: null,
         },
 
@@ -451,19 +465,19 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_d',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
           parent: null,
         },
         {
           path: '/normalize_d/normalize_e',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
           parent: id2,
         },
         {
           path: '/normalize_f',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
           parent: null,
         },
 
@@ -694,7 +708,7 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_13_owned/normalize_14_owned/normalize_15_owned/normalize_16_group',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: testUser1GroupId,
+          grantedGroups: [{ item: testUser1GroupId, type: 'UserGroup' }],
         },
 
         // 2
@@ -729,7 +743,7 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_17_owned/normalize_18_owned/normalize_19_owned/normalize_20_group',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: rootUserGroupId,
+          grantedGroups: [{ item: rootUserGroupId, type: 'UserGroup' }],
         },
 
         // 3
@@ -773,7 +787,7 @@ describe('V5 page migration', () => {
         {
           path: '/normalize_21_owned/normalize_22_owned/normalize_23_owned/normalize_24_rootGroup',
           grant: Page.GRANT_USER_GROUP,
-          grantedGroup: rootUserGroupId,
+          grantedGroups: [{ item: rootUserGroupId, type: 'UserGroup' }],
         },
       ]);
     });
@@ -1047,7 +1061,7 @@ describe('V5 page migration', () => {
       expect(page3AM.parent).toStrictEqual(rootPage._id);
     });
 
-    test('should throw error if a page with isolated group becomes the parent of other page with different gourp after normalizing', async() => {
+    test('should throw error if a page with isolated group becomes the parent of other page with different group after normalizing', async() => {
       const page4 = await Page.findOne({ _id: pageId4, path: '/normalize_4', isEmpty: true });
       const page5 = await Page.findOne({ _id: pageId5, path: '/normalize_4/normalize_5', parent: page4._id });
       const page6 = await Page.findOne({ _id: pageId6, path: '/normalize_4' }); // NOT v5

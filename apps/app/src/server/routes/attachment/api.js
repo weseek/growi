@@ -4,14 +4,14 @@ import { SupportedAction } from '~/interfaces/activity';
 import { AttachmentType } from '~/server/interfaces/attachment';
 import loggerFactory from '~/utils/logger';
 
+import { Attachment, serializePageSecurely, serializeRevisionSecurely } from '../../models';
+
 /* eslint-disable no-use-before-define */
 
 
 const logger = loggerFactory('growi:routes:attachment');
 
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
-const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-const ApiResponse = require('../util/apiResponse');
+const ApiResponse = require('../../util/apiResponse');
 
 /**
  * @swagger
@@ -133,28 +133,13 @@ const ApiResponse = require('../util/apiResponse');
  *            example: "/download/5e0734e072560e001761fa67"
  */
 
-module.exports = function(crowi, app) {
-  const Attachment = crowi.model('Attachment');
+export const routesFactory = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const { attachmentService, globalNotificationService } = crowi;
 
   const activityEvent = crowi.event('activity');
-
-  /**
-   * Check the user is accessible to the related page
-   *
-   * @param {User} user
-   * @param {Attachment} attachment
-   */
-  async function isAccessibleByViewer(user, attachment) {
-    if (attachment.page != null) {
-      // eslint-disable-next-line no-return-await
-      return await Page.isAccessiblePageByViewer(attachment.page, user);
-    }
-    return true;
-  }
 
   /**
    * Check the user is accessible to the related page
@@ -177,160 +162,19 @@ module.exports = function(crowi, app) {
     return await Page.isAccessiblePageByViewer(attachment.page, user);
   }
 
-  /**
-   * Common method to response
-   *
-   * @param {Request} req
-   * @param {Response} res
-   * @param {User} user
-   * @param {Attachment} attachment
-   * @param {boolean} forceDownload
-   */
-  async function responseForAttachment(req, res, attachment, forceDownload) {
-    const { fileUploadService } = crowi;
-
-    if (attachment == null) {
-      return res.json(ApiResponse.error('attachment not found'));
-    }
-
-    const user = req.user;
-    const isAccessible = await isAccessibleByViewer(user, attachment);
-    if (!isAccessible) {
-      return res.json(ApiResponse.error(`Forbidden to access to the attachment '${attachment.id}'. This attachment might belong to other pages.`));
-    }
-
-    // add headers before evaluating 'req.fresh'
-    setHeaderToRes(res, attachment, forceDownload);
-
-    // return 304 if request is "fresh"
-    // see: http://expressjs.com/en/5x/api.html#req.fresh
-    if (req.fresh) {
-      return res.sendStatus(304);
-    }
-
-    if (fileUploadService.canRespond()) {
-      return fileUploadService.respond(res, attachment);
-    }
-
-    let fileStream;
-    try {
-      fileStream = await fileUploadService.findDeliveryFile(attachment);
-    }
-    catch (e) {
-      logger.error(e);
-      return res.json(ApiResponse.error(e.message));
-    }
-
-    const parameters = {
-      ip:  req.ip,
-      endpoint: req.originalUrl,
-      action: SupportedAction.ACTION_ATTACHMENT_DOWNLOAD,
-      user: req.user?._id,
-      snapshot: {
-        username: req.user?.username,
-      },
-    };
-    await crowi.activityService.createActivity(parameters);
-
-    return fileStream.pipe(res);
-  }
-
-  /**
-   * set http response header
-   *
-   * @param {Response} res
-   * @param {Attachment} attachment
-   * @param {boolean} forceDownload
-   */
-  function setHeaderToRes(res, attachment, forceDownload) {
-    res.set({
-      ETag: `Attachment-${attachment._id}`,
-      'Last-Modified': attachment.createdAt.toUTCString(),
-    });
-
-    if (attachment.fileSize) {
-      res.set({
-        'Content-Length': attachment.fileSize,
-      });
-    }
-
-    // download
-    if (forceDownload) {
-      res.set({
-        'Content-Disposition': `attachment;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
-    }
-    // reference
-    else {
-      res.set({
-        'Content-Type': attachment.fileFormat,
-        // eslint-disable-next-line max-len
-        'Content-Security-Policy': "script-src 'unsafe-hashes'; style-src 'self' 'unsafe-inline'; object-src 'none'; require-trusted-types-for 'script'; media-src 'self'; default-src 'none';",
-        'Content-Disposition': `inline;filename*=UTF-8''${encodeURIComponent(attachment.originalName)}`,
-      });
-    }
-  }
-
 
   const actions = {};
   const api = {};
 
   actions.api = api;
 
-  api.download = async function(req, res) {
-    const id = req.params.id;
+  // api.download = async function(req, res) {
+  //   const id = req.params.id;
 
-    const attachment = await Attachment.findById(id);
+  //   const attachment = await Attachment.findById(id);
 
-    return responseForAttachment(req, res, attachment, true);
-  };
-
-  /**
-   * @api {get} /attachments.get get attachments
-   * @apiName get
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} id
-   */
-  api.get = async function(req, res) {
-    const id = req.params.id;
-
-    const attachment = await Attachment.findById(id);
-
-    return responseForAttachment(req, res, attachment);
-  };
-
-  api.getBrandLogo = async function(req, res) {
-    const brandLogoAttachment = await Attachment.findOne({ attachmentType: AttachmentType.BRAND_LOGO });
-
-    if (brandLogoAttachment == null) {
-      return res.status(404).json(ApiResponse.error('Brand logo does not exist'));
-    }
-
-    return responseForAttachment(req, res, brandLogoAttachment);
-  };
-
-  /**
-   * @api {get} /attachments.obsoletedGetForMongoDB get attachments from mongoDB
-   * @apiName get
-   * @apiGroup Attachment
-   *
-   * @apiParam {String} pageId, fileName
-   */
-  api.obsoletedGetForMongoDB = async function(req, res) {
-    if (crowi.configManager.getConfig('crowi', 'app:fileUploadType') !== 'mongodb') {
-      return res.status(400);
-    }
-
-    const pageId = req.params.pageId;
-    const fileName = req.params.fileName;
-    const filePath = `attachment/${pageId}/${fileName}`;
-
-    const attachment = await Attachment.findOne({ filePath });
-
-    return responseForAttachment(req, res, attachment);
-  };
-
+  //   return responseForAttachment(req, res, attachment, true);
+  // };
 
   /**
    * @swagger

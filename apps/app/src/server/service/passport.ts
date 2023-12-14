@@ -849,6 +849,11 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const { field, term } = luceneRule;
+
+    if (field == null) {
+      return true;
+    }
+
     const unescapedField = this.literalUnescape(field);
     if (unescapedField === '<implicit>') {
       return attributes[term] != null;
@@ -984,4 +989,4 @@ class PassportService implements S2sMessageHandlable {
 
 }
 
-module.exports = PassportService;
+export default PassportService;

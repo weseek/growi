@@ -235,7 +235,7 @@ class LdapSecuritySettingContents extends React.Component {
             </div>
 
             <h3 className="alert-anchor border-bottom">
-              Attribute Mapping ({t('security_settings.optional')})
+              Attribute Mapping ({t('optional')})
             </h3>
 
             <div className="form-group row">
@@ -325,7 +325,7 @@ class LdapSecuritySettingContents extends React.Component {
 
 
             <h3 className="alert-anchor border-bottom">
-              {t('security_settings.ldap.group_search_filter')} ({t('security_settings.optional')})
+              {t('security_settings.ldap.group_search_filter')} ({t('optional')})
             </h3>
 
             <div className="form-group row">

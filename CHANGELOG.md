@@ -1,8 +1,29 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.2.5](https://github.com/weseek/growi/compare/v6.2.4...v6.2.5) - 2023-12-14
+
+### 🐛 Bug Fixes
+
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
+
+## [v6.2.4](https://github.com/weseek/growi/compare/v6.2.3...v6.2.4) - 2023-11-29
+
+### 💎 Features
+* feat: Show create date in Attachment Data list (#8229) @sakazuki
+
+### 🚀 Improvement
+
+* imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
+* imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
+
+### 🧰 Maintenance
+
+* support: Refactor deleteCompletelyUserHomeBySystem (#8262) @jam411
+
 
 ## [v6.2.3](https://github.com/weseek/growi/compare/v6.2.2...v6.2.3) - 2023-11-13
 

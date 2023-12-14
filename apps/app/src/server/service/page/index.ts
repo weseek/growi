@@ -1,24 +1,26 @@
+import type EventEmitter from 'events';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
 import type {
-  Ref, HasObjectId, IUserHasId,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta,
+  Ref, HasObjectId, IUserHasId, IUser,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
 import { PageGrant, PageStatus } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
+import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -30,28 +32,36 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { PathAlreadyExistsError } from '../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../models/page-operation';
-import { PageRedirectModel } from '../models/page-redirect';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import ShareLink from '../models/share-link';
-import Subscription from '../models/subscription';
-import { V5ConversionError } from '../models/vo/v5-conversion-error';
+import { ObjectIdLike } from '../../interfaces/mongoose-utils';
+import { Attachment } from '../../models';
+import { PathAlreadyExistsError } from '../../models/errors';
+import { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
+import PageOperation, { PageOperationDocument } from '../../models/page-operation';
+import { PageRedirectModel } from '../../models/page-redirect';
+import { serializePageSecurely } from '../../models/serializers/page-serializer';
+import ShareLink from '../../models/share-link';
+import Subscription from '../../models/subscription';
+import UserGroupRelation from '../../models/user-group-relation';
+import { V5ConversionError } from '../../models/vo/v5-conversion-error';
+import { divideByType } from '../../util/granted-group';
+import { configManager } from '../config-manager';
+
+import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
+import { IPageService } from './page-service';
+import { shouldUseV4Process } from './should-use-v4-process';
+
+export * from './page-service';
+
 
 const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages,
-  isMovablePage, canMoveByPath, isUsersProtectedPages, hasSlash, generateChildrenRegExp,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath, collectAncestorPaths,
+  canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
-
-const BULK_REINDEX_SIZE = 100;
-const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -134,11 +144,16 @@ class PageCursorsForDescendantsFactory {
 
 }
 
-class PageService {
+
+class PageService implements IPageService {
 
   crowi: any;
 
-  pageEvent: any;
+  pageEvent: EventEmitter & {
+    onCreate,
+    onCreateMany,
+    onAddSeenUsers,
+  };
 
   tagEvent: any;
 
@@ -152,6 +167,8 @@ class PageService {
 
     // init
     this.initPageEvent();
+    this.canDeleteCompletely = this.canDeleteCompletely.bind(this);
+    this.canDelete = this.canDelete.bind(this);
   }
 
   private initPageEvent() {
@@ -163,8 +180,12 @@ class PageService {
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
+  getEventEmitter(): EventEmitter {
+    return this.pageEvent;
+  }
+
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersProtectedPages(path)) return false;
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
@@ -175,7 +196,7 @@ class PageService {
   }
 
   canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isUsersProtectedPages(path) || isTopPage(path)) return false;
+    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
@@ -183,6 +204,20 @@ class PageService {
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
     return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  canDeleteUserHomepageByConfig(): boolean {
+    return configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled') ?? false;
+  }
+
+  async isUsersHomepageOwnerAbsent(path: string): Promise<boolean> {
+    const User = mongoose.model('User');
+    const username = getUsernameByPath(path);
+    if (username == null) {
+      throw new Error('Cannot found username by path');
+    }
+    const ownerExists = await User.exists({ username });
+    return ownerExists === null;
   }
 
   private canDeleteLogic(
@@ -217,12 +252,58 @@ class PageService {
     return false;
   }
 
-  filterPagesByCanDeleteCompletely(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDeleteCompletely(p.path, p.creator, user, isRecursively));
+  private async getAbsenseUserHomeList(pages: PageDocument[]): Promise<string[]> {
+    const userHomepages = pages.filter(p => isUsersHomepage(p.path));
+
+    const User = mongoose.model<IUser>('User');
+    const usernames = userHomepages
+      .map(page => getUsernameByPath(page.path))
+      // see: https://zenn.dev/kimuson/articles/filter_safety_type_guard
+      .filter((username): username is Exclude<typeof username, null> => username !== null);
+    const existingUsernames = await User.distinct<string>('username', { username: { $in: usernames } });
+
+    return userHomepages.filter((page) => {
+      const username = getUsernameByPath(page.path);
+      if (username == null) {
+        throw new Error('Cannot found username by path');
+      }
+      return !existingUsernames.includes(username);
+    }).map(p => p.path);
   }
 
-  filterPagesByCanDelete(pages, user, isRecursively: boolean) {
-    return pages.filter(p => p.isEmpty || this.canDelete(p.path, p.creator, user, isRecursively));
+  private async filterPages(
+      pages: PageDocument[],
+      user: IUserHasId,
+      isRecursively: boolean,
+      canDeleteFunction: (path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean) => boolean,
+  ): Promise<PageDocument[]> {
+    const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
+
+    if (!this.canDeleteUserHomepageByConfig()) {
+      return filteredPages.filter(p => !isUsersHomepage(p.path));
+    }
+
+    // Confirmation of deletion of user homepages is an asynchronous process,
+    // so it is processed separately for performance optimization.
+    const absenseUserHomeList = await this.getAbsenseUserHomeList(filteredPages);
+
+    const excludeActiveUserHomepage = (path: string) => {
+      if (!isUsersHomepage(path)) {
+        return true;
+      }
+      return absenseUserHomeList.includes(path);
+    };
+
+    return filteredPages
+      .filter(p => excludeActiveUserHomepage(p.path));
+  }
+
+  async filterPagesByCanDeleteCompletely(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
+    return this.filterPages(pages, user, isRecursively, this.canDeleteCompletely);
+  }
+
+  async filterPagesByCanDelete(pages: PageDocument[], user: IUserHasId, isRecursively: boolean): Promise<PageDocument[]> {
+    return this.filterPages(pages, user, isRecursively, this.canDelete);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -250,7 +331,6 @@ class PageService {
         meta: {
           isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
-          isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
           isRevertible: false,
@@ -302,20 +382,6 @@ class PageService {
         subscriptionStatus: subscription?.status,
       },
     };
-  }
-
-  private shouldUseV4Process(page): boolean {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    const isTrashPage = page.status === Page.STATUS_DELETED;
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-
-    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
-
-    return shouldUseV4Process;
   }
 
   private shouldUseV4ProcessForRevert(page): boolean {
@@ -386,8 +452,8 @@ class PageService {
     }
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
@@ -454,7 +520,7 @@ class PageService {
     // use the parent's grant when target page is an empty page
     let grant;
     let grantedUserIds;
-    let grantedGroupId;
+    let grantedGroupIds;
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -462,18 +528,18 @@ class PageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupId = parent.grantedGroup;
+      grantedGroupIds = parent.grantedGroups;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupId = page.grantedGroup;
+      grantedGroupIds = page.grantedGroups;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupIds, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when renaming`, err);
@@ -947,8 +1013,8 @@ class PageService {
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
 
@@ -961,7 +1027,7 @@ class PageService {
     // use the parent's grant when target page is an empty page
     let grant;
     let grantedUserIds;
-    let grantedGroupId;
+    let grantedGroupIds;
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -969,18 +1035,18 @@ class PageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupId = parent.grantedGroup;
+      grantedGroupIds = parent.grantedGroups;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupId = page.grantedGroup;
+      grantedGroupIds = page.grantedGroups;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
       let isGrantNormalized = false;
       try {
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupId, false);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, newPagePath, grant, grantedUserIds, grantedGroupIds, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${newPagePath}" when duplicating`, err);
@@ -997,7 +1063,7 @@ class PageService {
     // 3. Duplicate target
     const options: PageCreateOptions = {
       grant: page.grant,
-      grantUserGroupId: page.grantedGroup,
+      grantUserGroupIds: page.grantedGroups,
     };
     let duplicatedTarget;
     if (page.isEmpty) {
@@ -1109,7 +1175,7 @@ class PageService {
     // create option
     const options: any = { page };
     options.grant = page.grant;
-    options.grantUserGroupId = page.grantedGroup;
+    options.grantUserGroupIds = page.grantedGroups;
     options.grantedUserIds = page.grantedUsers;
 
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
@@ -1210,7 +1276,7 @@ class PageService {
           path: newPagePath,
           creator: user._id,
           grant: page.grant,
-          grantedGroup: page.grantedGroup,
+          grantedGroups: page.grantedGroups,
           grantedUsers: page.grantedUsers,
           lastUpdateUser: user._id,
           revision: revisionId,
@@ -1256,7 +1322,7 @@ class PageService {
         path: newPagePath,
         creator: user._id,
         grant: page.grant,
-        grantedGroup: page.grantedGroup,
+        grantedGroups: page.grantedGroups,
         grantedUsers: page.grantedUsers,
         lastUpdateUser: user._id,
         revision: revisionId,
@@ -1372,8 +1438,8 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
     // Validate
@@ -1385,8 +1451,17 @@ class PageService {
       throw new Error('This method does NOT support deleting trashed pages.');
     }
 
-    if (!isMovablePage(page.path)) {
+    if (isTopPage(page.path) || isUsersTopPage(page.path)) {
       throw new Error('Page is not deletable.');
+    }
+
+    if (pagePathUtils.isUsersHomepage(page.path)) {
+      if (!this.crowi.pageService.canDeleteUserHomepageByConfig()) {
+        throw new Error('User Homepage is not deletable.');
+      }
+      if (!await this.crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+        throw new Error('User Homepage is not deletable.');
+      }
     }
 
     const newPath = Page.getDeletedPageName(page.path);
@@ -1685,20 +1760,19 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
+  async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
-    const Attachment = this.crowi.model('Attachment');
     const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    return Promise.all([
+    await Promise.all([
       Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1711,7 +1785,7 @@ class PageService {
   }
 
   // delete multiple pages
-  private async deleteMultipleCompletely(pages, user, options = {}) {
+  async deleteMultipleCompletely(pages, user) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
 
@@ -1739,8 +1813,8 @@ class PageService {
     }
 
     // v4 compatible process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
     }
 
@@ -1911,7 +1985,7 @@ class PageService {
 
         try {
           count += batch.length;
-          await deleteMultipleCompletely(batch, user, options);
+          await deleteMultipleCompletely(batch, user);
           const subscribedUsers = await Subscription.getSubscriptions(batch);
           subscribedUsers.forEach((eachUser) => {
             descendantsSubscribedSets.add(eachUser);
@@ -1960,98 +2034,6 @@ class PageService {
       for await (const page of pages) {
         await this.deletePage(page, user, {}, isRecursively, activityParameters);
       }
-    }
-  }
-
-  /**
-   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
-   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
-   *
-   * @param {string} userHomepagePath - The path of the user's homepage.
-   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
-   * @throws {Error} - If an error occurs during the deletion process.
-   */
-  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
-    const Page = this.crowi.model('Page');
-    const userHomepage = await Page.findByPath(userHomepagePath, true);
-
-    if (userHomepage == null) {
-      logger.error('user homepage is not found.');
-      return;
-    }
-
-    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
-
-    const ids = [userHomepage._id];
-    const paths = [userHomepage.path];
-
-    try {
-      if (!shouldUseV4Process) {
-        // Ensure consistency of ancestors
-        const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(userHomepage.parent, inc, true);
-      }
-
-      // Delete the user's homepage
-      await this.deleteCompletelyOperation(ids, paths);
-
-      if (!shouldUseV4Process) {
-        // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(userHomepage.parent);
-      }
-
-      if (!userHomepage.isEmpty) {
-        // Emit an event for the search service
-        this.pageEvent.emit('deleteCompletely', userHomepage);
-      }
-
-      const { PageQueryBuilder } = Page;
-
-      // Find descendant pages with system deletion condition
-      const builder = new PageQueryBuilder(Page.find(), true)
-        .addConditionForSystemDeletion()
-        .addConditionToListOnlyDescendants(userHomepage.path);
-
-      // Stream processing to delete descendant pages
-      // ────────┤ start │─────────
-      const readStream = await builder
-        .query
-        .lean()
-        .cursor({ batchSize: BULK_REINDEX_SIZE });
-
-      let count = 0;
-
-      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
-      const writeStream = new Writable({
-        objectMode: true,
-        async write(batch, encoding, callback) {
-          try {
-            count += batch.length;
-            // Delete multiple pages completely
-            await deleteMultipleCompletely(batch, null, {});
-            logger.debug(`Adding pages progressing: (count=${count})`);
-          }
-          catch (err) {
-            logger.error('addAllPages error on add anyway: ', err);
-          }
-          callback();
-        },
-        final(callback) {
-          logger.debug(`Adding pages has completed: (totalCount=${count})`);
-          callback();
-        },
-      });
-
-      readStream
-        .pipe(createBatchStream(BULK_REINDEX_SIZE))
-        .pipe(writeStream);
-
-      await streamToPromise(writeStream);
-      // ────────┤ end │─────────
-    }
-    catch (err) {
-      logger.error('Error occurred while deleting user homepage and subpages.', err);
-      throw err;
     }
   }
 
@@ -2248,6 +2230,18 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  /*
+ * get all groups of Page that user is related to
+ */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<PopulatedGrantedGroup[]> {
+    const populatedPage = await page.populate<{grantedGroups: PopulatedGrantedGroup[] | null}>('grantedGroups.item');
+    const userRelatedGroupIds = [
+      ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
+      ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
+    ];
+    return populatedPage.grantedGroups?.filter(group => userRelatedGroupIds.includes(group.item._id.toString())) || [];
+  }
+
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
@@ -2359,9 +2353,15 @@ class PageService {
   }
 
 
-  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroupId, user) {
+  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: IGrantedGroup, user) {
     const Page = this.crowi.model('Page');
-    const pages = await Page.find({ grantedGroup: { $in: groupsToDelete } });
+    const pages = await Page.find({
+      grantedGroups: {
+        $elemMatch: {
+          item: { $in: groupsToDelete },
+        },
+      },
+    });
 
     switch (action) {
       case 'public':
@@ -2370,7 +2370,7 @@ class PageService {
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':
-        await Page.transferPagesToGroup(pages, transferToUserGroupId);
+        await Page.transferPagesToGroup(pages, transferToUserGroup);
         break;
       default:
         throw new Error('Unknown action for private pages');
@@ -2384,13 +2384,12 @@ class PageService {
   }
 
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
-    const isMovable = isGuestUser ? false : isMovablePage(page.path);
+    const isDeletable = !(isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path));
 
     if (page.isEmpty) {
       return {
         isV5Compatible: true,
         isEmpty: true,
-        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
         isRevertible: false,
@@ -2407,8 +2406,7 @@ class PageService {
       likerIds: this.extractStringIds(likers),
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
-      isMovable,
-      isDeletable: isMovable,
+      isDeletable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
       contentAge: page.getContentAge(),
@@ -2423,11 +2421,10 @@ class PageService {
     const MAX_LENGTH = 350;
 
     // aggregation options
-    let userGroups;
-    if (user != null && userGroups == null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // Typescriptize model
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
     const viewerCondition = Page.generateGrantCondition(user, userGroups);
     const filterByIds = {
       _id: { $in: pageIds },
@@ -2532,7 +2529,7 @@ class PageService {
 
       const options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] | undefined } = {
         grant: notEmptyParent.grant,
-        grantUserGroupId: notEmptyParent.grantedGroup,
+        grantUserGroupIds: notEmptyParent.grantedGroups,
         grantedUsers: notEmptyParent.grantedUsers,
       };
 
@@ -2549,7 +2546,7 @@ class PageService {
 
     const grant = page.grant;
     const grantedUserIds = page.grantedUsers;
-    const grantedGroupId = page.grantedGroup;
+    const grantedGroupIds = page.grantedGroups;
 
     /*
      * UserGroup & Owner validation
@@ -2558,7 +2555,7 @@ class PageService {
     try {
       const shouldCheckDescendants = true;
 
-      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+      isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
     }
     catch (err) {
       logger.error(`Failed to validate grant of page at "${path}"`, err);
@@ -2658,7 +2655,7 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const {
-      path, grant, grantedUsers: grantedUserIds, grantedGroup: grantedGroupId,
+      path, grant, grantedUsers: grantedUserIds, grantedGroups: grantedGroupIds,
     } = page;
 
     // check if any page exists at target path already
@@ -2675,7 +2672,7 @@ class PageService {
       try {
         const shouldCheckDescendants = true;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}"`, err);
@@ -2974,11 +2971,10 @@ class PageService {
     pathAndRegExpsToNormalize.push(...paths);
 
     // determine UserGroup condition
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
 
@@ -3377,11 +3373,10 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const pipeline = this.buildBasePipelineToCreateEmptyPages(paths, onlyMigratedAsExistingPages, andFilter);
-    let userGroups = null;
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
     const grantCondition = Page.generateGrantCondition(user, userGroups);
     pipeline.push({ $match: grantCondition });
 
@@ -3527,14 +3522,15 @@ class PageService {
     pageDocument.status = Page.STATUS_PUBLISHED;
   }
 
-  private async validateAppliedScope(user, grant, grantUserGroupId) {
-    if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupId == null) {
-      throw new Error('grant userGroupId is not specified');
+  private async validateAppliedScope(user, grant, grantUserGroupIds: IGrantedGroup[]) {
+    if (grant === PageGrant.GRANT_USER_GROUP && grantUserGroupIds == null) {
+      throw new Error('grantUserGroupIds is not specified');
     }
 
     if (grant === PageGrant.GRANT_USER_GROUP) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any;
-      const count = await UserGroupRelation.countByGroupIdAndUser(grantUserGroupId, user);
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantUserGroupIds);
+      const count = await UserGroupRelation.countByGroupIdsAndUser(grantedUserGroupIds, user)
+        + await ExternalUserGroupRelation.countByGroupIdsAndUser(grantedExternalUserGroupIds, user);
 
       if (count === 0) {
         throw new Error('no relations were exist for group and user.');
@@ -3547,7 +3543,7 @@ class PageService {
       grantData: {
         grant: number,
         grantedUserIds?: ObjectIdLike[],
-        grantUserGroupId?: ObjectIdLike,
+        grantUserGroupIds?: IGrantedGroup[],
       },
       shouldValidateGrant: boolean,
       user?,
@@ -3570,7 +3566,7 @@ class PageService {
     }
 
     // UserGroup & Owner validation
-    const { grant, grantedUserIds, grantUserGroupId } = grantData;
+    const { grant, grantedUserIds, grantUserGroupIds } = grantData;
     if (shouldValidateGrant) {
       if (user == null) {
         throw Error('user is required to validate grant');
@@ -3582,7 +3578,7 @@ class PageService {
         const isEmptyPageAlreadyExist = await Page.count({ path, isEmpty: true }) > 0;
         const shouldCheckDescendants = isEmptyPageAlreadyExist && !options?.overwriteScopesOfDescendants;
 
-        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await this.crowi.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -3593,7 +3589,7 @@ class PageService {
       }
 
       if (options?.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
+        const updateGrantInfo = await this.crowi.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
         const canOverwriteDescendants = await this.crowi.pageGrantService.canOverwriteDescendants(path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
@@ -3622,13 +3618,13 @@ class PageService {
     // eslint-disable-next-line no-param-reassign
     path = this.crowi.xss.process(path); // sanitize path
     const {
-      format = 'markdown', grantUserGroupId,
+      format = 'markdown', grantUserGroupIds,
     } = options;
     const grant = isTopPage(path) ? Page.GRANT_PUBLIC : options.grant;
     const grantData = {
       grant,
       grantedUserIds: grant === Page.GRANT_OWNER ? [user._id] : undefined,
-      grantUserGroupId,
+      grantUserGroupIds,
     };
 
     const isGrantRestricted = grant === Page.GRANT_RESTRICTED;
@@ -3648,7 +3644,7 @@ class PageService {
     this.setFieldExceptForGrantRevisionParent(page, path, user);
 
     // Apply scope
-    page.applyScope(user, grant, grantUserGroupId);
+    page.applyScope(user, grant, grantUserGroupIds);
 
     // Set parent
     if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
@@ -3733,7 +3729,7 @@ class PageService {
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const format = options.format || 'markdown';
-    const grantUserGroupId = options.grantUserGroupId || null;
+    const grantUserGroupIds = options.grantUserGroupIds || null;
     const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
@@ -3759,8 +3755,8 @@ class PageService {
     if (expandContentWidth != null) {
       page.expandContentWidth = expandContentWidth;
     }
-    await this.validateAppliedScope(user, grant, grantUserGroupId);
-    page.applyScope(user, grant, grantUserGroupId);
+    await this.validateAppliedScope(user, grant, grantUserGroupIds);
+    page.applyScope(user, grant, grantUserGroupIds);
 
     let savedPage = await page.save();
     const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
@@ -3809,7 +3805,7 @@ class PageService {
     path = this.crowi.xss.process(path); // sanitize path
 
     const {
-      format = 'markdown', grantUserGroupId, grantedUsers,
+      format = 'markdown', grantUserGroupIds, grantedUsers,
     } = options;
     const grant = isTopPage(path) ? Page.GRANT_PUBLIC : options.grant;
 
@@ -3819,7 +3815,7 @@ class PageService {
     const grantData = {
       grant,
       grantedUserIds: isGrantOwner ? grantedUsers : undefined,
-      grantUserGroupId,
+      grantUserGroupIds,
     };
 
     // Validate
@@ -3839,7 +3835,7 @@ class PageService {
     this.setFieldExceptForGrantRevisionParent(page, path);
 
     // Apply scope
-    page.applyScope({ _id: grantedUsers?.[0] }, grant, grantUserGroupId);
+    page.applyScope({ _id: grantedUsers?.[0] }, grant, grantUserGroupIds);
 
     // Set parent
     if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
@@ -3879,12 +3875,12 @@ class PageService {
    * @param {UserDocument} user
    * @param options
    */
-  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroup: ObjectIdLike}): Promise<PageDocument> {
-    const { grant, grantedGroup } = grantData;
+  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: IGrantedGroup[]}): Promise<PageDocument> {
+    const { grant, grantedGroups } = grantData;
 
     const options = {
       grant,
-      grantUserGroupId: grantedGroup,
+      grantUserGroupIds: grantedGroups,
       isSyncRevisionToHackmd: false,
     };
 
@@ -3954,7 +3950,7 @@ class PageService {
     const newPageData = pageData;
 
     const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
-    const grantUserGroupId: undefined | ObjectIdLike = options.grantUserGroupId ?? clonedPageData.grantedGroup?._id.toString();
+    const grantUserGroupIds = options.grantUserGroupIds ?? clonedPageData.grantedGroups;
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
@@ -3967,7 +3963,7 @@ class PageService {
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         // eslint-disable-next-line max-len
-        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupId, shouldCheckDescendants);
+        isGrantNormalized = await pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
@@ -3978,7 +3974,7 @@ class PageService {
       }
 
       if (options.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupId);
+        const updateGrantInfo = await pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
         const canOverwriteDescendants = await pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
@@ -4005,7 +4001,7 @@ class PageService {
       newPageData.descendantCount = 0;
     }
 
-    newPageData.applyScope(user, grant, grantUserGroupId);
+    newPageData.applyScope(user, grant, grantUserGroupIds);
 
     // update existing page
     let savedPage = await newPageData.save();
@@ -4068,16 +4064,16 @@ class PageService {
   }
 
 
-  async updatePageV4(pageData, body, previousBody, user, options: any = {}): Promise<PageDocument> {
+  async updatePageV4(pageData, body, previousBody, user, options: IOptionsForUpdate = {}): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
     const grant = options.grant || pageData.grant; // use the previous data if absence
-    const grantUserGroupId = options.grantUserGroupId || pageData.grantUserGroupId; // use the previous data if absence
+    const grantUserGroupIds = options.grantUserGroupIds || pageData.grantUserGroupIds; // use the previous data if absence
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
-    await this.validateAppliedScope(user, grant, grantUserGroupId);
-    pageData.applyScope(user, grant, grantUserGroupId);
+    await this.validateAppliedScope(user, grant, grantUserGroupIds);
+    pageData.applyScope(user, grant, grantUserGroupIds);
 
     // update existing page
     let savedPage = await pageData.save();

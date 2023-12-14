@@ -295,8 +295,13 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
     } = req.body;
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
 
     let { path } = req.body;
 
@@ -317,7 +322,7 @@ module.exports = (crowi) => {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const isNoBodyPage = body === undefined;
@@ -789,6 +794,11 @@ module.exports = (crowi) => {
 
       const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
+      // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+      if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+        return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+      }
+
       const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
       if (page == null || isEmptyAndNotRecursively) {
         res.code = 'Page is not found';
@@ -906,18 +916,12 @@ module.exports = (crowi) => {
     }
 
     let pagesCanBeDeleted;
-    /*
-     * Delete Completely
-     */
     if (isCompletely) {
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
-    /*
-     * Trash
-     */
     else {
-      pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
+      const filteredPages = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively);
     }
 
     if (pagesCanBeDeleted.length === 0) {
