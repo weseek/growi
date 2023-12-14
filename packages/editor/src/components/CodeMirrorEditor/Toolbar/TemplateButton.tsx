@@ -1,8 +1,7 @@
 import { useCallback } from 'react';
 
-
 import { useCodeMirrorEditorIsolated } from '../../../stores';
-import { useTemplateModal } from '../../../stores/use-template';
+import { useTemplateModal } from '../../../stores/use-template-modal';
 
 type Props = {
   editorKey: string,
