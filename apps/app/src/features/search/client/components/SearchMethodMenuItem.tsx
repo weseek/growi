@@ -23,7 +23,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const shouldShowMenuItem = searchKeyword.length > 0;
+  const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
   return (
     <>
