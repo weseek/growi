@@ -11,9 +11,8 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 
 import { BULK_REINDEX_SIZE } from './consts';
+import type { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
-
-import PageService from '.';
 
 const logger = loggerFactory('growi:services:page');
 
@@ -25,7 +24,7 @@ const logger = loggerFactory('growi:services:page');
    * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
    * @throws {Error} - If an error occurs during the deletion process.
    */
-export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, pageService: PageService): Promise<void> => {
+export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, pageService: IPageService): Promise<void> => {
   if (!isUsersHomepage(userHomepagePath)) {
     const msg = 'input value is not user homepage path.';
     logger.error(msg);
@@ -89,7 +88,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
         try {
           count += batch.length;
           // Delete multiple pages completely
-          await pageService.deleteMultipleCompletely(batch, undefined, {});
+          await pageService.deleteMultipleCompletely(batch, undefined);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {

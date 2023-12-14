@@ -1,5 +1,8 @@
+import type EventEmitter from 'events';
+
 import mongoose from 'mongoose';
 import { vi } from 'vitest';
+import { mock } from 'vitest-mock-extended';
 
 import { getPageSchema } from '~/server/models/obsolete-page';
 import { configManager } from '~/server/service/config-manager';
@@ -7,8 +10,7 @@ import { configManager } from '~/server/service/config-manager';
 import pageModel from '../../models/page';
 
 import { deleteCompletelyUserHomeBySystem } from './delete-completely-user-home-by-system';
-
-import PageService from '.';
+import type { IPageService } from './page-service';
 
 // TODO: use actual user model after ~/server/models/user.js becomes importable in vitest
 // ref: https://github.com/vitest-dev/vitest/issues/846
@@ -85,15 +87,15 @@ describe('delete-completely-user-home-by-system test', () => {
     // setup
     const mockUpdateDescendantCountOfAncestors = vi.fn().mockImplementation(() => Promise.resolve());
     const mockDeleteCompletelyOperation = vi.fn().mockImplementation(() => Promise.resolve());
-    const mockPageEvent = { emit: vi.fn().mockImplementation(() => {}) };
+    const mockPageEvent = mock<EventEmitter>();
     const mockDeleteMultipleCompletely = vi.fn().mockImplementation(() => Promise.resolve());
 
-    const mockPageService = {
+    const mockPageService: IPageService = {
       updateDescendantCountOfAncestors: mockUpdateDescendantCountOfAncestors,
       deleteCompletelyOperation: mockDeleteCompletelyOperation,
-      pageEvent: mockPageEvent,
+      getEventEmitter: () => mockPageEvent,
       deleteMultipleCompletely: mockDeleteMultipleCompletely,
-    } as unknown as PageService;
+    };
 
     it('should call used page service functions', async() => {
       // when

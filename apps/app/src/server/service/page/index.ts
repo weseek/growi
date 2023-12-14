@@ -1,3 +1,4 @@
+import type EventEmitter from 'events';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
@@ -46,7 +47,11 @@ import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
 
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
+import { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
+
+export * from './page-service';
+
 
 const debug = require('debug')('growi:services:page');
 
@@ -139,11 +144,16 @@ class PageCursorsForDescendantsFactory {
 
 }
 
-class PageService {
+
+class PageService implements IPageService {
 
   crowi: any;
 
-  pageEvent: any;
+  pageEvent: EventEmitter & {
+    onCreate,
+    onCreateMany,
+    onAddSeenUsers,
+  };
 
   tagEvent: any;
 
@@ -168,6 +178,10 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
+  }
+
+  getEventEmitter(): EventEmitter {
+    return this.pageEvent;
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
@@ -1746,7 +1760,7 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  async deleteCompletelyOperation(pageIds, pagePaths) {
+  async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Comment = this.crowi.model('Comment');
@@ -1758,7 +1772,7 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    return Promise.all([
+    await Promise.all([
       Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1771,7 +1785,7 @@ class PageService {
   }
 
   // delete multiple pages
-  async deleteMultipleCompletely(pages, user, options = {}) {
+  async deleteMultipleCompletely(pages, user) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
 
@@ -1971,7 +1985,7 @@ class PageService {
 
         try {
           count += batch.length;
-          await deleteMultipleCompletely(batch, user, options);
+          await deleteMultipleCompletely(batch, user);
           const subscribedUsers = await Subscription.getSubscriptions(batch);
           subscribedUsers.forEach((eachUser) => {
             descendantsSubscribedSets.add(eachUser);
