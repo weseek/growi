@@ -6,13 +6,16 @@ import { GetInputProps } from '../interfaces/downshift';
 
 type Props = {
   searchKeyword: string,
+  highlightedIndex: number | null,
   onChangeSearchText?: (text: string) => void,
   onClickClearButton?: () => void,
+  onEnterKeyDownHandler?: () => void,
   getInputProps: GetInputProps,
 }
+
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, onChangeSearchText, onClickClearButton, getInputProps,
+    searchKeyword, highlightedIndex, onChangeSearchText, onClickClearButton, onEnterKeyDownHandler, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -29,16 +32,24 @@ export const SearchForm = (props: Props): JSX.Element => {
     }
   }, [onClickClearButton]);
 
+  const enterKeyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const shouldExecuteHandler = e.key === 'Enter' && !e.nativeEvent.isComposing && highlightedIndex == null && searchKeyword.trim().length !== 0;
+    if (shouldExecuteHandler) {
+      onEnterKeyDownHandler?.();
+    }
+  }, [highlightedIndex, onEnterKeyDownHandler, searchKeyword]);
+
   const inputOption = useMemo(() => {
-    return ({
+    return {
       type: 'text',
       placeholder: 'Search...',
       className: 'form-control',
       ref: inputRef,
       value: searchKeyword,
       onChange: changeSearchTextHandler,
-    });
-  }, [changeSearchTextHandler, searchKeyword]);
+      onKeyDown: enterKeyDownHandler,
+    };
+  }, [changeSearchTextHandler, enterKeyDownHandler, searchKeyword]);
 
   useEffect(() => {
     if (inputRef.current != null) {

@@ -30,9 +30,14 @@ const SearchModal = (): JSX.Element => {
   }, []);
 
   const selectSearchMenuItemHandler = useCallback((url: string) => {
-    closeSearchModal();
     router.push(url);
+    closeSearchModal();
   }, [closeSearchModal, router]);
+
+  const enterKeyDownHandler = useCallback(() => {
+    router.push(`/_search?q=${searchKeyword}`);
+    closeSearchModal();
+  }, [closeSearchModal, router, searchKeyword]);
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
@@ -54,9 +59,11 @@ const SearchModal = (): JSX.Element => {
           }) => (
             <div>
               <SearchForm
+                highlightedIndex={highlightedIndex}
                 searchKeyword={searchKeyword}
                 onChangeSearchText={changeSearchTextHandler}
                 onClickClearButton={clickClearButtonHandler}
+                onEnterKeyDownHandler={enterKeyDownHandler}
                 getInputProps={getInputProps}
               />
 
