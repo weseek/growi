@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 
 import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
-import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
+import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
@@ -87,7 +87,7 @@ export const DrawioModal = (): JSX.Element => {
     }
 
     const save = editor != null ? (drawioMxFile: string) => {
-      mdu.replaceFocusedDrawioWithEditor(editor, drawioMxFile);
+      replaceFocusedDrawioWithEditor(editor, drawioMxFile);
     } : drawioModalData?.onSave;
 
     return new DrawioCommunicationHelper(
@@ -102,7 +102,7 @@ export const DrawioModal = (): JSX.Element => {
       return;
     }
 
-    const drawioMxFile = editor != null ? mdu.getMarkdownDrawioMxfile(editor) : drawioModalData.drawioMxFile;
+    const drawioMxFile = editor != null ? getMarkdownDrawioMxfile(editor) : drawioModalData.drawioMxFile;
     drawioCommunicationHelper?.onReceiveMessage(event, drawioMxFile);
   }, [drawioCommunicationHelper, drawioModalData, editor]);
 
