@@ -26,7 +26,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
   /**
    *  SearchMenu is a combination of a list of SearchMethodMenuItem and SearchResultMenuItem (this component).
    *  If no keywords are entered into SearchForm, SearchMethodMenuItem returns a single item. Conversely, when keywords are entered, three items are returned.
-   *  The above means that the starting index value changes depending on whether or not input is received.
+   *  For these reasons, the starting index of SearchResultMemuItem changes depending on the presence or absence of the searchKeyword.
    */
   const getFiexdIndex = useCallback((index: number) => {
     return (isEmptyKeyword ? 1 : 3) + index;
