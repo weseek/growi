@@ -1,11 +1,13 @@
 
 import React from 'react';
 
+import type { GetItemProps } from '../interfaces/downshift';
+
 type Props = {
   url: string
   index: number
   highlightedIndex: number | null
-  getItemProps: any
+  getItemProps: GetItemProps
   children: React.ReactNode
 }
 
@@ -17,12 +19,11 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
   const option = {
     index,
     item: { url },
-    className: 'mb-2 d-flex',
     style: { backgroundColor: highlightedIndex === index ? 'lightgray' : 'white', pointer: 'cursor' },
   };
 
   return (
-    <li className="text-muted d-flex" {...getItemProps(option)}>
+    <li className="text-muted mb-2 d-flex" {...getItemProps(option)}>
       { children }
     </li>
   );

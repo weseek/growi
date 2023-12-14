@@ -2,11 +2,14 @@ import React, {
   useCallback, useRef, useEffect,
 } from 'react';
 
+import { GetInputProps } from '../interfaces/downshift';
+
+
 type Props = {
   searchKeyword: string,
   onChangeSearchText?: (text: string) => void,
   onClickClearButton?: () => void,
-  getInputProps: any
+  getInputProps: GetInputProps,
 }
 export const SearchForm = (props: Props): JSX.Element => {
   const {

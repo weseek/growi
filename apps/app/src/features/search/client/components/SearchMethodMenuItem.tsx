@@ -4,6 +4,8 @@ import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/stores/page';
 
+import type { GetItemProps } from '../interfaces/downshift';
+
 import { SearchMenuItem } from './SearchMenuItem';
 
 type ComponentType = 'nomal' | 'tree' | 'exact';
@@ -12,7 +14,7 @@ type SearchMethodMenuItemSubstanceProps = {
   componentType: ComponentType
   index: number
   highlightedIndex: number | null
-  getItemProps: any
+  getItemProps: GetItemProps
   searchKeyword: string
 }
 

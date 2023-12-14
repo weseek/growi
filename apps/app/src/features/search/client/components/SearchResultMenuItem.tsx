@@ -5,11 +5,13 @@ import { useDebounce } from 'usehooks-ts';
 
 import { useSWRxSearch } from '~/stores/search';
 
+import type { GetItemProps } from '../interfaces/downshift';
+
 import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
   searchKeyword: string,
-  getItemProps: any,
+  getItemProps: GetItemProps,
   highlightedIndex: number | null,
 }
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
