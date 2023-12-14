@@ -25,10 +25,6 @@ const SearchModal = (): JSX.Element => {
     setSearchKeyword(searchText);
   }, []);
 
-  const clickClearButtonHandler = useCallback(() => {
-    setSearchKeyword('');
-  }, []);
-
   const selectSearchMenuItemHandler = useCallback((url: string) => {
     router.push(url);
     closeSearchModal();
@@ -62,7 +58,7 @@ const SearchModal = (): JSX.Element => {
                 highlightedIndex={highlightedIndex}
                 searchKeyword={searchKeyword}
                 onChangeSearchText={changeSearchTextHandler}
-                onClickClearButton={clickClearButtonHandler}
+                onClickCloseModalButton={closeSearchModal}
                 onEnterKeyDownHandler={enterKeyDownHandler}
                 getInputProps={getInputProps}
               />

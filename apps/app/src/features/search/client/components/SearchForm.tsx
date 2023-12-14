@@ -8,14 +8,14 @@ type Props = {
   searchKeyword: string,
   highlightedIndex: number | null,
   onChangeSearchText?: (text: string) => void,
-  onClickClearButton?: () => void,
+  onClickCloseModalButton?: () => void,
   onEnterKeyDownHandler?: () => void,
   getInputProps: GetInputProps,
 }
 
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, highlightedIndex, onChangeSearchText, onClickClearButton, onEnterKeyDownHandler, getInputProps,
+    searchKeyword, highlightedIndex, onChangeSearchText, onClickCloseModalButton, onEnterKeyDownHandler, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -26,11 +26,9 @@ export const SearchForm = (props: Props): JSX.Element => {
     }
   }, [onChangeSearchText]);
 
-  const clickClearButtonHandler = useCallback(() => {
-    if (onClickClearButton != null) {
-      onClickClearButton();
-    }
-  }, [onClickClearButton]);
+  const clickCloseModalButtonHandler = useCallback(() => {
+    onClickCloseModalButton?.();
+  }, [onClickCloseModalButton]);
 
   const enterKeyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     const shouldExecuteHandler = e.key === 'Enter' && !e.nativeEvent.isComposing && highlightedIndex == null && searchKeyword.trim().length !== 0;
@@ -41,7 +39,7 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   const inputOption = useMemo(() => {
     return {
-      type: 'text',
+      type: 'search',
       placeholder: 'Search...',
       className: 'form-control',
       ref: inputRef,
@@ -68,7 +66,7 @@ export const SearchForm = (props: Props): JSX.Element => {
       <button
         type="button"
         className="btn border-0 d-flex justify-content-center p-0"
-        onClick={clickClearButtonHandler}
+        onClick={clickCloseModalButtonHandler}
       >
         <span className="material-symbols-outlined fs-4 ms-3">close</span>
       </button>
