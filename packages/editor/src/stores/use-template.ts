@@ -14,7 +14,7 @@ type TemplateModalUtils = {
   close(): void,
 }
 
-export const useTemplateModalForEditor = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
+export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
 
   const initialStatus: TemplateModalStatus = { isOpened: false };
   const swrResponse = useSWRStatic<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
