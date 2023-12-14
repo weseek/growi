@@ -1,7 +1,7 @@
 import { Writable } from 'stream';
 
 import { getIdForRef } from '@growi/core';
-import type { IPage } from '@growi/core';
+import type { IPage, Ref } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -15,6 +15,13 @@ import type { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
 
 const logger = loggerFactory('growi:services:page');
+
+
+type IPageUnderV5 = Omit<IPage, 'parent'> & { parent: Ref<IPage> }
+
+const _shouldUseV5Process = (page: IPage): page is IPageUnderV5 => {
+  return !shouldUseV4Process(page);
+};
 
 /**
    * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
@@ -40,30 +47,29 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     throw new Error(msg);
   }
 
-  const isShouldUseV4Process = shouldUseV4Process(userHomepage);
+  const shouldUseV5Process = _shouldUseV5Process(userHomepage);
 
   const ids = [userHomepage._id];
   const paths = [userHomepage.path];
-  const parentId = getIdForRef(userHomepage.parent);
 
   try {
-    if (!isShouldUseV4Process) {
+    if (shouldUseV5Process) {
       // Ensure consistency of ancestors
       const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-      await pageService.updateDescendantCountOfAncestors(parentId, inc, true);
+      await pageService.updateDescendantCountOfAncestors(getIdForRef(userHomepage.parent), inc, true);
     }
 
     // Delete the user's homepage
     await pageService.deleteCompletelyOperation(ids, paths);
 
-    if (!isShouldUseV4Process) {
+    if (shouldUseV5Process) {
       // Remove leaf empty pages
-      await Page.removeLeafEmptyPagesRecursively(parentId);
+      await Page.removeLeafEmptyPagesRecursively(getIdForRef(userHomepage.parent));
     }
 
     if (!userHomepage.isEmpty) {
       // Emit an event for the search service
-      pageService.pageEvent.emit('deleteCompletely', userHomepage);
+      pageService.getEventEmitter().emit('deleteCompletely', userHomepage);
     }
 
     const { PageQueryBuilder } = Page;
