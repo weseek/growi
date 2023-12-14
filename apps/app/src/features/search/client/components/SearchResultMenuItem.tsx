@@ -23,11 +23,12 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
 
   const { data: searchResult, isLoading } = useSWRxSearch(isEmptyKeyword ? null : debouncedKeyword, null, { limit: 10 });
 
-  const getFiexdIndex = useCallback((index: number | null) => {
-    if (index == null) {
-      return -1;
-    }
-
+  /**
+   *  SearchMenu is a combination of a list of SearchMethodMenuItem and SearchResultMenuItem (this component).
+   *  If no keywords are entered into SearchForm, SearchMethodMenuItem returns a single item. Conversely, when keywords are entered, three items are returned.
+   *  The above means that the starting index value changes depending on whether or not input is received.
+   */
+  const getFiexdIndex = useCallback((index: number) => {
     return (isEmptyKeyword ? 1 : 3) + index;
   }, [isEmptyKeyword]);
 
