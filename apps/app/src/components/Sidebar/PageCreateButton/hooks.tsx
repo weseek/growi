@@ -7,8 +7,8 @@ import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 
 export const useOnNewButtonClicked = (
-    isLoading: boolean,
-    currentPage?: IPagePopulatedToShowRevision | null,
+  currentPage?: IPagePopulatedToShowRevision | null,
+  isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
   isPageCreating: boolean
@@ -37,7 +37,7 @@ export const useOnNewButtonClicked = (
 
       const response = await createPage(parentPath, '', params);
 
-      router.push(`${response.page.path}#edit`);
+      router.push(`/${response.page.id}#edit`);
     }
     catch (err) {
       toastError(err);

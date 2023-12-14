@@ -55,7 +55,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(undefined, path);
+  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
