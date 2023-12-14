@@ -11,8 +11,8 @@ import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
   searchKeyword: string,
-  getItemProps: GetItemProps,
   highlightedIndex: number | null,
+  getItemProps: GetItemProps,
 }
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
   const { searchKeyword, highlightedIndex, getItemProps } = props;

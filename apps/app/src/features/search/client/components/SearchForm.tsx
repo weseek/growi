@@ -1,9 +1,8 @@
 import React, {
-  useCallback, useRef, useEffect,
+  useCallback, useRef, useEffect, useMemo,
 } from 'react';
 
 import { GetInputProps } from '../interfaces/downshift';
-
 
 type Props = {
   searchKeyword: string,
@@ -30,6 +29,16 @@ export const SearchForm = (props: Props): JSX.Element => {
     }
   }, [onClickClearButton]);
 
+  const inputOption = useMemo(() => {
+    return ({
+      ref: inputRef,
+      type: 'text',
+      value: searchKeyword,
+      placeholder: 'Search...',
+      className: 'form-control',
+    });
+  }, [searchKeyword]);
+
   useEffect(() => {
     if (inputRef.current != null) {
       inputRef.current.focus();
@@ -41,13 +50,7 @@ export const SearchForm = (props: Props): JSX.Element => {
       <span className="material-symbols-outlined fs-4 me-3">search</span>
 
       <input
-        {...getInputProps({
-          ref: inputRef,
-          type: 'text',
-          placeholder: 'Search...',
-          value: searchKeyword,
-        })}
-        className="form-control"
+        {...getInputProps(inputOption)}
         onChange={changeSearchTextHandler}
       />
 

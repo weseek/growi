@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import type { GetItemProps } from '../interfaces/downshift';
 
@@ -16,14 +16,17 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
     url, getItemProps, index, highlightedIndex, children,
   } = props;
 
-  const option = {
-    index,
-    item: { url },
-    style: { backgroundColor: highlightedIndex === index ? 'lightgray' : 'white', pointer: 'cursor' },
-  };
+  const itemMenuOption = useMemo(() => {
+    return {
+      index,
+      item: { url },
+      style: { backgroundColor: highlightedIndex === index ? 'lightgray' : 'white', cursor: 'pointer' },
+      className: 'text-muted mb-2 d-flex',
+    };
+  }, [highlightedIndex, index, url]);
 
   return (
-    <li className="text-muted mb-2 d-flex" {...getItemProps(option)}>
+    <li {...getItemProps(itemMenuOption)}>
       { children }
     </li>
   );

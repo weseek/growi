@@ -6,13 +6,13 @@ import Downshift from 'downshift';
 import { useRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 
+import type { DownshiftItem } from '../interfaces/downshift';
 import { useSearchModal } from '../stores/search';
 
 import { SearchForm } from './SearchForm';
 import { SearchHelp } from './SearchHelp';
 import { SearchMethodMenuItem } from './SearchMethodMenuItem';
 import { SearchResultMenuItem } from './SearchResultMenuItem';
-
 
 const SearchModal = (): JSX.Element => {
   const [searchKeyword, setSearchKeyword] = useState('');
@@ -30,8 +30,8 @@ const SearchModal = (): JSX.Element => {
   }, []);
 
   const selectSearchMenuItemHandler = useCallback((url: string) => {
-    router.push(url);
     closeSearchModal();
+    router.push(url);
   }, [closeSearchModal, router]);
 
   useEffect(() => {
@@ -40,11 +40,10 @@ const SearchModal = (): JSX.Element => {
     }
   }, [searchModalData?.isOpened]);
 
-
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
-        <Downshift itemToString={undefined} onChange={(selectedItem: { url: string }) => { selectSearchMenuItemHandler(selectedItem.url) }}>
+        <Downshift onChange={(selectedItem: DownshiftItem) => { selectSearchMenuItemHandler(selectedItem.url) }}>
           {({
             getInputProps,
             getItemProps,

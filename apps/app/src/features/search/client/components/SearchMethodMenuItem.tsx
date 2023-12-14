@@ -11,16 +11,16 @@ import { SearchMenuItem } from './SearchMenuItem';
 type ComponentType = 'nomal' | 'tree' | 'exact';
 
 type SearchMethodMenuItemSubstanceProps = {
-  componentType: ComponentType
   index: number
   highlightedIndex: number | null
-  getItemProps: GetItemProps
   searchKeyword: string
+  componentType: ComponentType
+  getItemProps: GetItemProps
 }
 
 const SearchMethodMenuItemSubstance = (props: SearchMethodMenuItemSubstanceProps): JSX.Element => {
   const {
-    componentType, getItemProps, index, highlightedIndex, searchKeyword,
+    index, highlightedIndex, searchKeyword, getItemProps, componentType,
   } = props;
   const { t } = useTranslation('commons');
   const { data: currentPagePath } = useCurrentPagePath();
