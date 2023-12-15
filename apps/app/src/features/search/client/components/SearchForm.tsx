@@ -30,13 +30,13 @@ export const SearchForm = (props: Props): JSX.Element => {
     onClickCloseModalButton?.();
   }, [onClickCloseModalButton]);
 
-  const enterKeyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const shouldExecuteHandler = e.key === 'Enter'
+  const keyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+    const shouldExecuteEnterKeyDownHandler = e.key === 'Enter'
     && !e.nativeEvent.isComposing // see: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/isComposing
     && highlightedIndex == null
     && searchKeyword.trim().length !== 0;
 
-    if (shouldExecuteHandler) {
+    if (shouldExecuteEnterKeyDownHandler) {
       onEnterKeyDownHandler?.();
     }
   }, [highlightedIndex, onEnterKeyDownHandler, searchKeyword]);
@@ -49,9 +49,9 @@ export const SearchForm = (props: Props): JSX.Element => {
       ref: inputRef,
       value: searchKeyword,
       onChange: changeSearchTextHandler,
-      onKeyDown: enterKeyDownHandler,
+      onKeyDown: keyDownHandler,
     });
-  }, [changeSearchTextHandler, enterKeyDownHandler, getInputProps, searchKeyword]);
+  }, [getInputProps, searchKeyword, changeSearchTextHandler, keyDownHandler]);
 
   useEffect(() => {
     if (inputRef.current != null) {
