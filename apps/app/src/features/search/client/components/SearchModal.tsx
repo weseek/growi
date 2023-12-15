@@ -31,7 +31,7 @@ const SearchModal = (): JSX.Element => {
     closeSearchModal();
   }, [closeSearchModal, router]);
 
-  const enterKeyDownHandler = useCallback(() => {
+  const enterKeyDownHandlerWithoutSelectedItem = useCallback(() => {
     router.push(`/_search?q=${searchKeyword}`);
     closeSearchModal();
   }, [closeSearchModal, router, searchKeyword]);
@@ -61,7 +61,7 @@ const SearchModal = (): JSX.Element => {
                 searchKeyword={searchKeyword}
                 onChangeSearchText={changeSearchTextHandler}
                 onClickCloseModalButton={closeSearchModal}
-                onEnterKeyDownHandler={enterKeyDownHandler}
+                onEnterKeyDownHandler={enterKeyDownHandlerWithoutSelectedItem}
                 getInputProps={getInputProps}
               />
 
