@@ -16,7 +16,7 @@ import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
 const generateTodaysPath = (currentUser?: Nullable<IUserHasId>, isGuestUser?: boolean) => {
-  if (isGuestUser) {
+  if (isGuestUser || currentUser == null) {
     return null;
   }
 
