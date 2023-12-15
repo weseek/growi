@@ -10,6 +10,9 @@ export const DiagramButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
   const { open: openDrawioModal } = useDrawioModalForEditor();
   const onClickDiagramButton = useCallback(() => {
+    if (editorKey == null) {
+      return;
+    }
     openDrawioModal(editorKey);
   }, [editorKey, openDrawioModal]);
   return (
