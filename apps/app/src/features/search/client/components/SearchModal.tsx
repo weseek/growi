@@ -1,3 +1,4 @@
+
 import React, {
   useState, useCallback, useEffect,
 } from 'react';
@@ -48,12 +49,13 @@ const SearchModal = (): JSX.Element => {
           onSelect={(selectedItem: DownshiftItem) => { selectSearchMenuItemHandler(selectedItem.url) }}
         >
           {({
+            getRootProps,
             getInputProps,
             getItemProps,
             getMenuProps,
             highlightedIndex,
           }) => (
-            <div>
+            <div {...getRootProps({}, { suppressRefError: true })}>
               <SearchForm
                 highlightedIndex={highlightedIndex}
                 searchKeyword={searchKeyword}
@@ -65,9 +67,17 @@ const SearchModal = (): JSX.Element => {
 
               <ul {...getMenuProps()} className="list-unstyled">
                 <div className="border-top mt-3 mb-3" />
-                <SearchMethodMenuItem searchKeyword={searchKeyword} getItemProps={getItemProps} highlightedIndex={highlightedIndex} />
+                <SearchMethodMenuItem
+                  searchKeyword={searchKeyword}
+                  highlightedIndex={highlightedIndex}
+                  getItemProps={getItemProps}
+                />
                 <div className="border-top mt-3 mb-3" />
-                <SearchResultMenuItem searchKeyword={searchKeyword} getItemProps={getItemProps} highlightedIndex={highlightedIndex} />
+                <SearchResultMenuItem
+                  searchKeyword={searchKeyword}
+                  highlightedIndex={highlightedIndex}
+                  getItemProps={getItemProps}
+                />
               </ul>
             </div>
           )}

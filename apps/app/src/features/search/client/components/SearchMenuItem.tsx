@@ -13,20 +13,20 @@ type Props = {
 
 export const SearchMenuItem = (props: Props): JSX.Element => {
   const {
-    url, getItemProps, index, highlightedIndex, children,
+    url, index, highlightedIndex, getItemProps, children,
   } = props;
 
-  const itemMenuOption = useMemo(() => {
-    return {
+  const itemMenuOptions = useMemo(() => {
+    return getItemProps({
       index,
       item: { url },
       style: { backgroundColor: highlightedIndex === index ? 'lightgray' : 'white', cursor: 'pointer' },
       className: 'text-muted mb-2 d-flex',
-    };
-  }, [highlightedIndex, index, url]);
+    });
+  }, [getItemProps, highlightedIndex, index, url]);
 
   return (
-    <li {...getItemProps(itemMenuOption)}>
+    <li {...itemMenuOptions}>
       { children }
     </li>
   );

@@ -31,14 +31,18 @@ export const SearchForm = (props: Props): JSX.Element => {
   }, [onClickCloseModalButton]);
 
   const enterKeyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const shouldExecuteHandler = e.key === 'Enter' && !e.nativeEvent.isComposing && highlightedIndex == null && searchKeyword.trim().length !== 0;
+    const shouldExecuteHandler = e.key === 'Enter'
+    && !e.nativeEvent.isComposing // see: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/isComposing
+    && highlightedIndex == null
+    && searchKeyword.trim().length !== 0;
+
     if (shouldExecuteHandler) {
       onEnterKeyDownHandler?.();
     }
   }, [highlightedIndex, onEnterKeyDownHandler, searchKeyword]);
 
-  const inputOption = useMemo(() => {
-    return {
+  const inputOptions = useMemo(() => {
+    return getInputProps({
       type: 'search',
       placeholder: 'Search...',
       className: 'form-control',
@@ -46,8 +50,8 @@ export const SearchForm = (props: Props): JSX.Element => {
       value: searchKeyword,
       onChange: changeSearchTextHandler,
       onKeyDown: enterKeyDownHandler,
-    };
-  }, [changeSearchTextHandler, enterKeyDownHandler, searchKeyword]);
+    });
+  }, [changeSearchTextHandler, enterKeyDownHandler, getInputProps, searchKeyword]);
 
   useEffect(() => {
     if (inputRef.current != null) {
@@ -59,9 +63,7 @@ export const SearchForm = (props: Props): JSX.Element => {
     <div className="text-muted d-flex justify-content-center align-items-center">
       <span className="material-symbols-outlined fs-4 me-3">search</span>
 
-      <input
-        {...getInputProps(inputOption)}
-      />
+      <input {...inputOptions} />
 
       <button
         type="button"
