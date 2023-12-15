@@ -1,0 +1,37 @@
+.grw-resizable-area :global {
+  will-change: width;
+}
+
+.grw-resizable-area:not(:global .dragging) {
+  transition: width 100ms cubic-bezier(0.2, 0, 0, 1) 0s;
+}
+
+
+.grw-navigation-draggable :global {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  left: 100%;
+
+  .grw-navigation-draggable-hitarea {
+    position: absolute;
+    left: -4px;
+    width: 24px;
+    height: 100%;
+    cursor: ew-resize;
+  }
+  .grw-navigation-draggable-line {
+    position: absolute;
+    left: -1px;
+    display: none;
+    width: 3px;
+    height: 100%;
+    background-color: rgb(76, 154, 255);
+  }
+}
+
+.grw-navigation-draggable:hover :global {
+  .grw-navigation-draggable-line {
+    display: block;
+  }
+}

@@ -14,9 +14,6 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox#headers');
     cy.collapseSidebar(true);
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
     // assert the element is in viewport
     cy.get('#headers').should('be.inViewport');
 

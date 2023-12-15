@@ -49,7 +49,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                     <>
                       <UserPicture user={activity.user} />
                       <a
-                        className="ml-2"
+                        className="ms-2"
                         href={pagePathUtils.userHomepagePath(activity.user)}
                       >
                         {activity.snapshot?.username}

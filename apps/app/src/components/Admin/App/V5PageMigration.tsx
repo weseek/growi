@@ -133,7 +133,7 @@ const V5PageMigration: FC<Props> = (props: Props) => {
         onConfirm={onConfirm}
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
-      <p className="card well">
+      <p className="card custom-card">
         {t('admin:v5_page_migration.migration_desc')}
         <br />
         <br />

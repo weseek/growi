@@ -1,0 +1,118 @@
+@use '~/styles/variables' as var;
+@use '~/styles/bootstrap/init' as bs;
+@use '~/styles/mixins';
+
+.grw-navbar :global {
+
+  .confidential {
+    font-weight: bold;
+  }
+
+}
+
+.grw-navbar :global {
+  top: #{-1 * var.$grw-navbar-height} !important;
+
+  z-index: var.$grw-navbar-z-index !important;
+  max-height: var.$grw-navbar-height + var.$grw-navbar-border-width;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: var.$grw-navbar-border-width solid;
+  border-left: 0;
+
+  .grw-app-title {
+    @include mixins.variable-font-size(24px);
+  }
+
+  .grw-navbar-search {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0%);
+  }
+
+  .nav-link,
+  .nav-item.confidential {
+    display: flex;
+    align-items: center;
+    min-height: var.$grw-navbar-height;
+    padding: 0 1rem;
+  }
+
+  .nav-link {
+    &:hover {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    &:focus {
+      background: rgba(0, 0, 0, 0);
+    }
+  }
+  .nav-item.confidential {
+    :not(i) {
+      @include mixins.variable-font-size(14px);
+    }
+
+    @include bs.media-breakpoint-only(md) {
+      max-width: 100px;
+    }
+
+    max-width: 120px;
+    max-height: var.$grw-navbar-height;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  .grw-email-sm {
+    font-size: 0.75em;
+  }
+
+  .grw-notification-dropdown {
+    .dropdown-menu {
+      max-width: 70vw;
+    }
+  }
+}
+
+// layout for GlobalSearch
+.grw-navbar :global {
+  .grw-global-search-container {
+    // centering on navbar
+    top: var.$grw-navbar-height / 2;
+    left: 50vw;
+    z-index: bs.$zindex-fixed + 1;
+    transform: translate(-50%, -50%);
+
+    .rbt-input.form-control {
+      width: 200px;
+      transition: 0.3s ease-out;
+
+      // focus
+      &.focus {
+        width: 300px;
+      }
+
+      @include bs.media-breakpoint-up(md) {
+        width: 300px;
+      }
+      @include bs.media-breakpoint-up(lg) {
+        // focus
+        &.focus {
+          width: 400px;
+        }
+      }
+      @include bs.media-breakpoint-up(xl) {
+        width: 350px;
+        // focus
+        &.focus {
+          width: 450px;
+        }
+      }
+    }
+  }
+}
+
+.grw-notification-badge {
+  position: absolute;
+  top: 6px;
+  right: 3.5px;
+}

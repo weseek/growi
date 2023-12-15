@@ -14,7 +14,7 @@ const ForbiddenPage = React.memo((props: Props): JSX.Element => {
       <div className="row not-found-message-row mb-4">
         <div className="col-lg-12">
           <h2 className="text-muted">
-            <i className="icon-ban mr-2" aria-hidden="true" />
+            <i className="icon-ban me-2" aria-hidden="true" />
             Forbidden
           </h2>
         </div>

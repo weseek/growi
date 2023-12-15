@@ -45,10 +45,10 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
 
   return (
     <div className="attachment mb-2">
-      <span className="mr-1 attachment-userpicture">
+      <span className="me-1 attachment-userpicture">
         <UserPicture user={attachment.creator} size="sm"></UserPicture>
       </span>
-      <a className="mr-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
+      <a className="me-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
         <i className={formatIcon}></i> {attachment.originalName}
       </a>
       <span className="mr-2">{fileType}</span>

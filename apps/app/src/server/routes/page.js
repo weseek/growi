@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
+import { preNotifyService } from '../service/pre-notify';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -328,7 +329,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136136
     if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
@@ -356,16 +356,9 @@ module.exports = function(crowi, app) {
 
     const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
-    let savedTags;
-    if (pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
     const result = {
       page: serializePageSecurely(createdPage),
       revision: serializeRevisionSecurely(createdPage.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
@@ -460,8 +453,6 @@ module.exports = function(crowi, app) {
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const isSyncRevisionToHackmd = !!req.body.isSyncRevisionToHackmd; // cast to boolean
-    const pageTags = req.body.pageTags || undefined;
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -487,7 +478,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
     }
 
-    const options = { isSyncRevisionToHackmd, overwriteScopesOfDescendants };
+    const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
       options.grantUserGroupIds = grantUserGroupIds;
@@ -502,18 +493,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    let savedTags;
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(pageId, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
-      tagEvent.emit('update', page, savedTags);
-    }
 
     const result = {
       page: serializePageSecurely(page),
       revision: serializeRevisionSecurely(page.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
@@ -545,7 +528,10 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
+
+    activityEvent.emit(
+      'update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, preNotifyService.generatePreNotify,
+    );
   };
 
   /**

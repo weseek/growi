@@ -1,0 +1,23 @@
+@use '../../bootstrap/init' as bs;
+@use '../hsl-functions' as hsl;
+
+// @mixin badge-variant($bg) {
+@mixin badge-variant($bg) {
+  color: hsl.contrast($bg);
+  background-color: $bg;
+
+  @at-root a#{&} {
+    // TODO: hover-focus() dropped in bootstrap v5
+    // https://redmine.weseek.co.jp/issues/128307
+    // @include bs.hover-focus() {
+    //   color: hsl.contrast($bg);
+    //   background-color: hsl.darken($bg, 10%);
+    // }
+
+    &:focus,
+    &.focus {
+      outline: 0;
+      // box-shadow: 0 0 0 $badge-focus-width hsl.alpha($bg, 50%);
+    }
+  }
+}

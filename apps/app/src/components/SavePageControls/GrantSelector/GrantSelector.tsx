@@ -151,7 +151,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <div className="form-group grw-grant-selector mb-0" data-testid="grw-grant-selector">
+      <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
         <UncontrolledDropdown direction="up">
           <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}

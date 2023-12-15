@@ -87,13 +87,13 @@ export const GlobalSearch = (props: GlobalSearchProps): JSX.Element => {
   }
 
   return (
-    <div className={`grw-global-search ${styles['grw-global-search']} form-group mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
+    <div className={`grw-global-search ${styles['grw-global-search']} mb-0 d-print-none ${isSearchServiceReachable ? '' : 'has-error'}`}>
       <div className="input-group flex-nowrap">
-        <div className={`input-group-prepend ${dropup ? 'dropup' : ''}`}>
+        <div className={` ${dropup ? 'dropup' : ''}`}>
           <button
             className="btn btn-secondary dropdown-toggle py-0"
             type="button"
-            data-toggle="dropdown"
+            data-bs-toggle="dropdown"
             aria-haspopup="true"
             data-testid="select-search-scope"
           >

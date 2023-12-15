@@ -180,7 +180,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       <>
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
-        <div className="sr-only">
+        <div className="visually-hidden">
           <i className="fa fa-spinner fa-pulse" />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
@@ -195,11 +195,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-user"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-user"></i>
+            </span>
             <input
               type="text"
               className="form-control rounded-0"
@@ -209,20 +207,16 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               name="usernameForLogin"
             />
             {isLdapStrategySetup && (
-              <div className="input-group-append">
-                <small className="input-group-text text-success">
-                  <i className="icon-fw icon-check"></i> LDAP
-                </small>
-              </div>
+              <small className="input-group-text text-success">
+                <i className="icon-fw icon-check"></i> LDAP
+              </small>
             )}
           </div>
 
           <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-lock"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-lock"></i>
+            </span>
             <input
               type="password"
               className="form-control rounded-0"
@@ -243,7 +237,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-login'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-login'} />
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -282,7 +276,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </span>
           <span className="btn-label-text">{t('Sign in')}</span>
         </button>
-        <div className="small text-right">by {auth} Account</div>
+        <div className="small text-end">by {auth} Account</div>
       </div>
     );
   }, [handleLoginWithExternalAuth, t]);
@@ -310,8 +304,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <button
             type="button"
             className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
-            data-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
-            data-target="#external-auth"
+            data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
+            data-bs-target="#external-auth"
             aria-expanded="false"
             aria-controls="external-auth"
           >
@@ -421,11 +415,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="icon-user"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-user"></i>
+                </span>
                 {/* username */}
                 <input
                   type="text"
@@ -441,11 +433,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="icon-tag"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-tag"></i>
+                </span>
                 {/* name */}
                 <input
                   type="text"
@@ -461,11 +451,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <div className="input-group-prepend">
-              <span className="input-group-text">
-                <i className="icon-envelope"></i>
-              </span>
-            </div>
+            <span className="input-group-text">
+              <i className="icon-envelope"></i>
+            </span>
             {/* email */}
             <input
               type="email"
@@ -497,11 +485,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <div className="input-group-prepend">
-                  <span className="input-group-text">
-                    <i className="icon-lock"></i>
-                  </span>
-                </div>
+                <span className="input-group-text">
+                  <i className="icon-lock"></i>
+                </span>
                 {/* Password */}
                 <input
                   type="password"
@@ -525,7 +511,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                <i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} />
+                <i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} />
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -535,7 +521,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <div className="border-bottom"></div>
 
         <div className="row">
-          <div className="text-right col-12 mt-2 py-2">
+          <div className="text-end col-12 mt-2 py-2">
             <a
               href="#login"
               id="login"
@@ -569,7 +555,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-right mb-2">
+                  <div className="text-end mb-2">
                     <a href="/forgot-password" className="d-block link-switch">
                       <i className="icon-key"></i> {t('forgot_password.forgot_password')}
                     </a>
@@ -577,7 +563,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="text-right mb-2">
+                  <div className="text-end mb-2">
                     <a
                       href="#register"
                       id="register"
@@ -597,7 +583,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </ReactCardFlip>
           </div>
         </div>
-        <a href="https://growi.org" className="link-growi-org pl-3">
+        <a href="https://growi.org" className="link-growi-org ps-3">
           <span className="growi">GROWI</span>.<span className="org">org</span>
         </a>
       </div>

@@ -46,8 +46,6 @@ context('Access User settings', () => {
     });
     cy.visit('/me');
     cy.collapseSidebar(true, true);
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {

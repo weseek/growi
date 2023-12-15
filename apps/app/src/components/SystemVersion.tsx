@@ -28,7 +28,7 @@ const SystemVersion = (props: Props): JSX.Element => {
           <a href="https://growi.org">GROWI</a> {growiVersion}
         </span>
         { showShortcutsButton && (
-          <button type="button" className="btn btn-link ml-2 p-0" onClick={() => openShortcutsModal()}>
+          <button type="button" className="btn btn-link ms-2 p-0" onClick={() => openShortcutsModal()}>
             <i className="fa fa-keyboard-o"></i>&nbsp;<span className={`cmd-key ${os}`}></span>-/
           </button>
         ) }

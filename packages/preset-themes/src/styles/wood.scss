@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -24,7 +25,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] {
+:root[data-bs-theme='light'] {
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 55,31%;
   --primary-l: 52%;
@@ -41,7 +42,7 @@
   --bgcolor-global-l: 100%;
   --bgcolor-card: #ece8de;
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),30%)};
-  --bgcolor-keyword-highlighted: #{$grw-marker-blue};
+  --bgcolor-keyword-highlighted: #{var.$grw-marker-blue};
 
   // Font colors
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
@@ -67,7 +68,7 @@
   // List Group colors
   // --color-list: var(--color-global);
   --bgcolor-list: transparent;
-  --color-list-hover: #{$gray-100};
+  --color-list-hover: #{bs.$gray-100};
   --bgcolor-list-hover: #{hsl.lighten(var(--primary), 40%)};
   // --color-list-active: var(--color-reversal);
   --bgcolor-list-active: #{hsl.lighten(var(--primary), 30%)};
@@ -75,7 +76,7 @@
   // Table colors
   // --color-table: #; // optional
   // --bgcolor-table: #; // optional
-  --border-color-table: #{$gray-400}; // optional
+  --border-color-table: #{bs.$gray-400}; // optional
   // --color-table-hover: #; // optional
   // --bgcolor-table-hover: #; // optional
 
@@ -118,11 +119,11 @@
   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
 
   // Border colors
-  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
   --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
-  --bgcolor-dropdown-link-active: #{$growi-blue};
+  --bgcolor-dropdown-link-active: #{var.$growi-blue};
 
   // admin theme box
   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};

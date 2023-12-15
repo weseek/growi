@@ -1,4 +1,4 @@
-import * as urljoin from 'url-join';
+import urljoin from 'url-join';
 
 import axios from '~/utils/axios';
 

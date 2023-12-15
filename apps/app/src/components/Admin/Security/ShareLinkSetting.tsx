@@ -116,20 +116,20 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
       <h4>{t('security_settings.share_link_rights')}</h4>
       <div className="row mb-5">
         <div className="col-6 offset-3">
-          <div className="custom-control custom-switch custom-checkbox-success">
+          <div className="form-check form-switch form-check-success">
             <input
               type="checkbox"
-              className="custom-control-input"
+              className="form-check-input"
               id="disableLinkSharing"
               checked={!disableLinkSharing}
               onChange={() => switchDisableLinkSharing()}
             />
-            <label className="custom-control-label" htmlFor="disableLinkSharing">
+            <label className="form-label form-check-label" htmlFor="disableLinkSharing">
               {t('security_settings.enable_link_sharing')}
             </label>
           </div>
           {!setupStrategies.includes('local') && disableLinkSharing && (
-            <div className="badge badge-warning">{t('security_settings.setup_is_not_yet_complete')}</div>
+            <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>
           )}
         </div>
       </div>

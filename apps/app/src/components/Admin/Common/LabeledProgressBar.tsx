@@ -21,7 +21,7 @@ const LabeledProgressBar = (props: Props): JSX.Element => {
     <>
       <h6 className="my-1">
         {header}
-        <div className="float-right">{currentCount} / {totalCount}</div>
+        <div className="float-end">{currentCount} / {totalCount}</div>
       </h6>
       <Progress multi>
         <Progress bar max={totalCount} color={progressingColor} striped={isInProgress} animated={isInProgress} value={currentCount} />

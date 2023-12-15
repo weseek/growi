@@ -4,7 +4,7 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:remove-presentation-configurations');
+const logger = loggerFactory('growi:migrate:remove-presentation-configurations');
 
 const mongoose = require('mongoose');
 

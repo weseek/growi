@@ -1,44 +1,15 @@
-@import './bootstrap/init' ;
-@import './variables' ;
-@import './mixins' ;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
+
 @import './organisms/wiki-custom-sidebar';
 
 // global imported
 .layout-root.editing {
-  overflow-y: hidden !important;
-
-  .grw-navbar {
-    position: fixed !important;
-    width: 100vw;
-  }
-
-  // restrict height of subnav
-  .grw-subnav {
-    height: $grw-subnav-height-on-edit;
-    min-height: unset;
-    padding-top: 0;
-    padding-right: 15px;
-    padding-left: 15px;
-
-    @include media-breakpoint-up(lg) {
-      height: $grw-subnav-height-lg-on-edit;
-    }
-  }
+  overflow: hidden !important;
 
   .page-wrapper {
-    position: relative;
-    top: $grw-navbar-border-width;
-    height: calc(100vh - #{$grw-navbar-border-width});
-  }
-
-  // calculate margin
-  $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-on-edit;
-  @include expand-editor($editor-margin-top);
-
-  @include media-breakpoint-up(lg) {
-    // calculate margin
-    $editor-margin-top: $grw-navbar-border-width + $grw-subnav-height-lg-on-edit;
-    @include expand-editor($editor-margin-top);
+    height: 100vh;
   }
 
   // show
@@ -51,122 +22,15 @@
     display: none !important;
   }
 
-  // hide when HackMD view
-  &.hackmd .d-hackmd-none {
-    display: none;
-  }
-
-  // show only either Edit button or HackMD button
-  &.hackmd .nav-tab-edit {
-    display: none;
-  }
-
-  &.hackmd .grw-nav-item-edit {
-    display: none;
-  }
-
-  &:not(.hackmd) .nav-tab-hackmd {
-    display: none;
-  }
-
 
   /*****************
    * Expand Editor
    *****************/
-  .grw-editor-navbar-bottom {
-    height: $grw-editor-navbar-bottom-height;
-
-    .grw-grant-selector {
-      @include media-breakpoint-down(sm) {
-        .btn .label {
-          display: none;
-        }
-      }
-      @include media-breakpoint-up(md) {
-        .dropdown-toggle {
-          min-width: 100px;
-
-          // caret
-          &::after {
-            margin-left: 1em;
-          }
-        }
-      }
-    }
-
-    .btn-submit {
-      width: 100px;
-    }
-
-    .btn-expand {
-      // rotate icon
-      i {
-        display: inline-block;
-        transition: transform 200ms;
-      }
-      &.expand i {
-        transform: rotate(-180deg);
-      }
-    }
+  .dynamic-layout-root {
+    width: calc(100vw - var.$grw-sidebar-nav-width);
+    @extend .flex-expand-vh-100;
   }
 
-  /*********************
-   * Navigation styles
-   */
-  .grw-subnav {
-    padding-bottom: 0;
-
-    h1 {
-      font-size: 16px;
-    }
-
-    .grw-drawer-toggler {
-      width: 38px;
-      height: 38px;
-      font-size: 18px;
-    }
-
-    .grw-taglabels-container {
-      margin-bottom: 0;
-
-      // To scroll tags horizontally
-      .grw-tag-labels.form-inline {
-        flex-flow: row nowrap;
-        width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        scrollbar-width: thin;
-      }
-    }
-  }
-
-  // ellipsis .grw-page-path-hierarchical-link
-  .grw-subnav-left-side {
-    overflow: hidden;
-    .grw-path-nav-container {
-      margin-right: 1rem;
-      overflow: hidden;
-      .grw-page-path-nav {
-        white-space: nowrap;
-
-        .grw-page-path-hierarchical-link {
-          width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        h1 {
-          overflow: hidden;
-        }
-      }
-    }
-  }
-
-  .grw-copy-dropdown {
-    .btn-copy {
-      padding: 3px !important; // overwrite padding
-    }
-  }
 
   &.builtin-editor {
     /*****************
@@ -216,11 +80,13 @@
     }
 
     .page-editor-preview-body {
+      flex-grow: 1;
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
     // editing /Sidebar
     .page-editor-preview-body.preview-sidebar {
+      flex-grow: 0;
       width: 320px;
       margin-right: auto;
       margin-left: auto;
@@ -242,36 +108,6 @@
 
   // .builtin-editor .tab-pane#edit
 
-  &.hackmd {
-    .hackmd-preinit,
-    #iframe-hackmd-container > iframe {
-      border: none;
-    }
-
-    .hackmd-error {
-      top: 0;
-      background-color: rgba($gray-800, 0.8);
-    }
-
-    .hackmd-status-label {
-      font-size: 3em;
-    }
-
-    .hackmd-resume-button-container,
-    .hackmd-discard-button-container {
-      .btn-text {
-        display: inline-block;
-        min-width: 230px;
-      }
-    }
-
-    .btn-view-outdated-draft {
-      text-decoration: underline;
-      vertical-align: unset;
-    }
-  }
-
-
   /*****************
    *     Toastr
    *****************/
@@ -281,29 +117,15 @@
 
 }
 
-.layout-root.editing {
-  &:not(.growi-layout-fluid) .page-editor-preview-body {
-    .wiki {
-      max-width: 980px;
-      margin: 0 auto;
-    }
-  }
-  &.growi-layout-fluid .page-editor-preview-body {
-    .wiki {
-      margin: 0 auto;
-    }
-  }
-}
-
 // TODO: Never used this id class
 #tag-edit-button-tooltip {
   .tooltip-inner {
     color: black;
     background-color: white;
-    border: 1px solid $gray-300;
+    border: 1px solid bs.$gray-300;
   }
 
   .tooltip-arrow {
-    border-bottom: 5px solid $gray-300;
+    border-bottom: 5px solid bs.$gray-300;
   }
 }

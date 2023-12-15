@@ -35,7 +35,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
         </svg>
       </a>
       <span className="theme-option-name"><b>{ name }</b></span>
-      { !isPresetTheme && <span className="theme-option-badge badge badge-primary mt-1">Plugin</span> }
+      { !isPresetTheme && <span className="theme-option-badge badge bg-primary mt-1">Plugin</span> }
     </div>
   );
 

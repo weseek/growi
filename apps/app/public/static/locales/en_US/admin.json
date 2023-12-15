@@ -496,8 +496,8 @@
       "enable_marp_desc": "Marp can be used in presentation preview. This option may make you vulnerable to XSS.",
       "marp_official_site": "The Marp Official Site",
       "marp_official_site_link": "https://marp.app",
-      "presentation_docs" : "GROWI Docs - Create slides for a presentation",
-      "presentation_docs_link": "https://docs.growi.org/en/guide/features/presentation.html"
+      "marp_in_growi" : "GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "Custom title",
     "custom_title_detail": "You can customize <code>&lt;title&gt;</code> tag. Following placeholders will be automatically replaced:",
@@ -565,10 +565,6 @@
           "initialize_meta_datas": {
             "label": "Initialize page's like, read users and comment count",
             "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "Initialize HackMD related data",
-            "desc": "Recommended to check this unless there is important drafts on HackMD."
           }
         },
         "revisions": {
@@ -748,7 +744,7 @@
       "description1":"Temporarily issue new users by email addresses.",
       "description2":"A temporary password will be generated for the first login.",
       "invite_thru_email": "Send invitation email",
-      "mail_setting_link":"<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
+      "mail_setting_link":"<i class='icon-settings me-2'></i><a href='/admin/app'>Email settings</a>",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",

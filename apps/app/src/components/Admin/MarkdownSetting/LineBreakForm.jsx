@@ -43,15 +43,15 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="col">
-        <div className="custom-control custom-checkbox custom-checkbox-success">
+        <div className="form-check form-check-success">
           <input
             type="checkbox"
-            className="custom-control-input"
+            className="form-check-input"
             id="isEnabledLinebreaks"
             checked={isEnabledLinebreaks}
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaks: !isEnabledLinebreaks }) }}
           />
-          <label className="custom-control-label" htmlFor="isEnabledLinebreaks">
+          <label className="form-label form-check-label" htmlFor="isEnabledLinebreaks">
             {t('markdown_settings.lineBreak_options.enable_lineBreak') }
           </label>
         </div>
@@ -68,15 +68,15 @@ class LineBreakForm extends React.Component {
 
     return (
       <div className="col">
-        <div className="custom-control custom-checkbox custom-checkbox-success">
+        <div className="form-check form-check-success">
           <input
             type="checkbox"
-            className="custom-control-input"
+            className="form-check-input"
             id="isEnabledLinebreaksInComments"
             checked={isEnabledLinebreaksInComments}
             onChange={() => { adminMarkDownContainer.setState({ isEnabledLinebreaksInComments: !isEnabledLinebreaksInComments }) }}
           />
-          <label className="custom-control-label" htmlFor="isEnabledLinebreaksInComments">
+          <label className="form-label form-check-label" htmlFor="isEnabledLinebreaksInComments">
             {t('markdown_settings.lineBreak_options.enable_lineBreak_for_comment') }
           </label>
         </div>
@@ -90,7 +90,7 @@ class LineBreakForm extends React.Component {
 
     return (
       <React.Fragment>
-        <fieldset className="form-group row row-cols-1 row-cols-md-2 mx-3">
+        <fieldset className="row row-cols-1 row-cols-md-2 mx-3">
           {this.renderLineBreakOption()}
           {this.renderLineBreakInCommentOption()}
         </fieldset>

@@ -3,20 +3,18 @@ import React, {
   ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
-
 import type {
   IPageInfoAll, IPageWithMeta, IPageInfoForListing,
 } from '@growi/core';
 import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
-import { CustomInput } from 'reactstrap';
+import { Input } from 'reactstrap';
 
 import { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
@@ -30,11 +28,11 @@ import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import {
   usePageRenameModal, usePageDuplicateModal, usePageDeleteModal, usePutBackPageModal,
 } from '~/stores/modal';
-import { useIsDeviceSmallerThanLg } from '~/stores/ui';
+import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
 import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import PagePathHierarchicalLink from '../PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
 
 type Props = {
   page: IPageWithSearchMeta | IPageWithMeta<IPageInfoForListing & IPageSearchMeta>,
@@ -84,7 +82,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     },
   }));
 
-  const { data: isDeviceSmallerThanLg } = useIsDeviceSmallerThanLg();
+  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -118,14 +116,14 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
   // click event handler
   const clickHandler = useCallback(() => {
     // do nothing if mobile
-    if (isDeviceSmallerThanLg) {
+    if (!isDeviceLargerThanLg) {
       return;
     }
 
     if (onClickItem != null) {
       onClickItem(pageData._id);
     }
-  }, [isDeviceSmallerThanLg, onClickItem, pageData._id]);
+  }, [isDeviceLargerThanLg, onClickItem, pageData._id]);
 
   const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
     const bookmarkOperation = _newValue ? bookmark : unbookmark;
@@ -175,9 +173,9 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [onPagePutBacked, openPutBackPageModal, pageData]);
 
-  const styleListGroupItem = (!isDeviceSmallerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
+  const styleListGroupItem = (isDeviceLargerThanLg && onClickItem != null) ? 'list-group-item-action' : '';
   // background color of list item changes when class "active" exists under 'list-group-item'
-  const styleActive = !isDeviceSmallerThanLg && isSelected ? 'active' : '';
+  const styleActive = isDeviceLargerThanLg && isSelected ? 'active' : '';
 
   const shouldDangerouslySetInnerHTMLForPaths = elasticSearchResult != null && elasticSearchResult.highlightedPath != null;
 
@@ -198,7 +196,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
           {/* checkbox */}
           {onCheckboxChanged != null && (
             <div className="d-flex align-items-center justify-content-center">
-              <CustomInput
+              <Input
                 type="checkbox"
                 id={`cbSelect-${pageData._id}`}
                 data-testid="cb-select"
@@ -221,7 +219,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
             </div>
             <div className="d-flex align-items-center mb-1">
               {/* Picture */}
-              <span className="mr-2 d-none d-md-block">
+              <span className="me-2 d-none d-md-block">
                 <UserPicture user={pageData.lastUpdateUser} size="md" />
               </span>
               {/* page title */}
@@ -251,16 +249,16 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               </Clamp>
 
               {/* page meta */}
-              <div className="d-none d-md-flex py-0 px-1 ml-2 text-nowrap">
+              <div className="d-none d-md-flex py-0 px-1 ms-2 text-nowrap">
                 <PageListMeta page={pageData} likerCount={likerCount} bookmarkCount={bookmarkCount} shouldSpaceOutIcon />
               </div>
 
               {/* doropdown icon includes page control buttons */}
               {hasBrowsingRights
                 && (
-                  <div className="ml-auto">
+                  <div className="ms-auto">
                     <PageItemControl
-                      alignRight
+                      alignEnd
                       pageId={pageData._id}
                       pageInfo={isIPageInfoForListing(pageMeta) ? pageMeta : undefined}
                       isEnableActions={isEnableActions}

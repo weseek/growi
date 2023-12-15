@@ -49,15 +49,15 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
   }, [onNavSelected]);
 
   return (
-    <div className="grw-custom-nav-dropdown btn-group btn-block">
+    <div className="grw-custom-nav-dropdown btn-group">
       <button
-        className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-right"
+        className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"
-        data-toggle="dropdown"
+        data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span className="float-left">
+        <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>

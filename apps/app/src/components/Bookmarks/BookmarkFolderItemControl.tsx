@@ -27,7 +27,6 @@ export const BookmarkFolderItemControl: React.FC<{
         </DropdownToggle>
       ) }
       <DropdownMenu
-        modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
         container="body"
         style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
       >

@@ -1,0 +1,46 @@
+@use '~/styles/variables' as var;
+
+@use '../button-styles';
+
+.btn-create :global {
+  @extend %btn-basis;
+
+  // centering
+  .icon {
+    top: 50%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+  }
+}
+
+// pointer-events
+.btn-create :global {
+  pointer-events: none;
+
+  svg .background {
+    pointer-events: fill;
+  }
+}
+
+// == Colors
+.btn-create {
+  background-color: transparent !important;
+}
+
+.btn-create :global {
+  svg {
+    fill: var(--bs-btn-bg);
+  }
+}
+
+.btn-create:hover :global {
+  svg {
+    fill: var(--bs-btn-hover-bg);
+  }
+}
+
+.btn-create:active :global {
+  svg {
+    fill: var(--bs-btn-active-bg);
+  }
+}

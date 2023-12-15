@@ -44,7 +44,7 @@ export const PageRedirectedAlert = React.memo((): JSX.Element => {
       <span>
         <strong>{ t('Redirected') }:</strong> { t('page_page.notice.redirected')} <code>{redirectFrom}</code> {t('page_page.notice.redirected_period')}
       </span>
-      <button type="button" id="unlink-page-button" onClick={unlinkButtonClickHandler} className="btn btn-outline-dark btn-sm float-right">
+      <button type="button" id="unlink-page-button" onClick={unlinkButtonClickHandler} className="btn btn-outline-dark btn-sm float-end">
         <i className="ti ti-unlink" aria-hidden="true"></i>
         {t('unlink_redirection')}
       </button>

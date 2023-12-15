@@ -82,11 +82,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       <form role="form" onSubmit={submitHandler} id="invited-form">
         {/* Email Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-envelope"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-envelope"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -99,11 +97,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-user"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-user"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -115,11 +111,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Name Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-tag"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-tag"></i>
+          </span>
           <input
             type="text"
             className="form-control"
@@ -131,11 +125,9 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         </div>
         {/* Password Form */}
         <div className="input-group">
-          <div className="input-group-prepend">
-            <span className="input-group-text">
-              <i className="icon-lock"></i>
-            </span>
-          </div>
+          <span className="input-group-text">
+            <i className="icon-lock"></i>
+          </span>
           <input
             type="password"
             className="form-control"
@@ -149,7 +141,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
             <div className="eff"></div>
-            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse mr-1' : 'icon-user-follow'} /></span>
+            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>

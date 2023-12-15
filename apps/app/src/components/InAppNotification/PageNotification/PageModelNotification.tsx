@@ -1,58 +1,85 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction, useImperativeHandle,
+  FC, useCallback,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
-import { PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import type { IPage, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
-import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 
-import FormattedDistanceDate from '../../FormattedDistanceDate';
+import { ModelNotification } from './ModelNotification';
+import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
-interface Props {
-  notification: IInAppNotification & HasObjectId
-  actionMsg: string
-  actionIcon: string
-  actionUsers: string
+
+export interface ModelNotificationUtils {
+  Notification: FC
+  publishOpen: () => void
 }
 
-const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props, ref) => {
-
-  const {
-    notification, actionMsg, actionIcon, actionUsers,
-  } = props;
+export const usePageModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
   const router = useRouter();
+  const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
 
-  // publish open()
-  useImperativeHandle(ref, () => ({
-    open() {
-      if (notification.target != null) {
-        // jump to target page
-        const targetPagePath = notification.target.path;
-        if (targetPagePath != null) {
-          router.push(targetPagePath);
-        }
-      }
-    },
-  }));
+  const getActionUsers = useCallback(() => {
+    const latestActionUsers = notification.actionUsers.slice(0, 3);
+    const latestUsers = latestActionUsers.map((user) => {
+      return `@${user.name}`;
+    });
 
-  return (
-    <div className="p-2 overflow-hidden">
-      <div className="text-truncate">
-        <b>{actionUsers}</b> {actionMsg} <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
-      </div>
-      <i className={`${actionIcon} mr-2`} />
-      <FormattedDistanceDate
-        id={notification._id}
-        date={notification.createdAt}
-        isShowTooltip={false}
-        differenceForAvoidingFormat={Number.POSITIVE_INFINITY}
+    let actionedUsers = '';
+    const latestUsersCount = latestUsers.length;
+    if (latestUsersCount === 1) {
+      actionedUsers = latestUsers[0];
+    }
+    else if (notification.actionUsers.length >= 4) {
+      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
+    }
+    else {
+      actionedUsers = latestUsers.join(', ');
+    }
+
+    return actionedUsers;
+  }, [notification.actionUsers]);
+
+  const isPageModelNotification = (notification: IInAppNotification & HasObjectId): notification is IInAppNotification<IPage> & HasObjectId => {
+    return notification.targetModel === SupportedTargetModel.MODEL_PAGE;
+  };
+
+  if (!isPageModelNotification(notification)) {
+    return null;
+  }
+
+  const actionUsers = getActionUsers();
+
+  notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
+
+  const Notification = () => {
+    return (
+      <ModelNotification
+        notification={notification}
+        actionMsg={actionMsg}
+        actionIcon={actionIcon}
+        actionUsers={actionUsers}
       />
-    </div>
-  );
-};
+    );
+  };
 
-export default forwardRef(PageModelNotification);
+  const publishOpen = () => {
+    if (notification.target != null) {
+      // jump to target page
+      const targetPagePath = (notification.target as IPage).path;
+      if (targetPagePath != null) {
+        router.push(targetPagePath);
+      }
+    }
+  };
+
+  return {
+    Notification,
+    publishOpen,
+  };
+
+};

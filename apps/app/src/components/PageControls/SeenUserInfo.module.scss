@@ -1,0 +1,25 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '@growi/ui/scss/atoms/btn-muted';
+
+@use './button-styles';
+
+.grw-seen-user-info :global {
+  .btn-seen-user {
+    @extend %btn-basis;
+  }
+  .total-counts {
+    @extend %text-total-counts-basis;
+  }
+}
+
+
+// == Colors
+
+.grw-seen-user-info :global {
+  $color: #549c79;
+
+  .btn-seen-user {
+    @include btn-muted.colorize($color);
+  }
+}

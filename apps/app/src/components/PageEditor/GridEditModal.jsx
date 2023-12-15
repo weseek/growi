@@ -92,16 +92,16 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     const output = Object.entries(resSizeObj).map((responsiveSizeForMap) => {
       return (
-        <div key={responsiveSizeForMap[0]} className="custom-control custom-radio custom-control-inline">
+        <div key={responsiveSizeForMap[0]} className="form-check form-check-inline">
           <input
             type="radio"
-            className="custom-control-input"
+            className="form-check-input"
             id={responsiveSizeForMap[1].displayText}
             value={responsiveSizeForMap[1].displayText}
             checked={this.state.responsiveSize === responsiveSizeForMap[0]}
             onChange={e => this.checkResposiveSize(responsiveSizeForMap[0])}
           />
-          <label className="custom-control-label" htmlFor={responsiveSizeForMap[1].displayText}>
+          <label className="form-label form-check-label" htmlFor={responsiveSizeForMap[1].displayText}>
             {t(responsiveSizeForMap[1].displayText)}
           </label>
         </div>
@@ -198,9 +198,9 @@ class GridEditModal extends React.Component {
           <div className="row">
             <div className="col-12">
               <h3 className="grw-modal-head">{t('grid_edit.grid_settings')}</h3>
-              <form className="form-group mb-0">
-                <div className="form-group row my-3">
-                  <label className="col-sm-3" htmlFor="gridPattern">
+              <form className="mb-0">
+                <div className="row my-3">
+                  <label className="form-label col-sm-3" htmlFor="gridPattern">
                     {t('grid_edit.grid_pattern')}
                   </label>
                   <div className="col-sm-9">
@@ -208,7 +208,7 @@ class GridEditModal extends React.Component {
                       className="btn btn-outline-secondary dropdown-toggle"
                       type="button"
                       id="dropdownMenuButton"
-                      data-toggle="dropdown"
+                      data-bs-toggle="dropdown"
                       aria-haspopup="true"
                       aria-expanded="false"
                     >
@@ -219,8 +219,8 @@ class GridEditModal extends React.Component {
                     </div>
                   </div>
                 </div>
-                <div className="form-group row">
-                  <label className="col-sm-3" htmlFor="breakPoint">
+                <div className="row">
+                  <label className="form-label col-sm-3" htmlFor="breakPoint">
                     {t('grid_edit.break_point')}
                   </label>
                   <div className="col-sm-9">
@@ -236,8 +236,8 @@ class GridEditModal extends React.Component {
           </div>
         </ModalBody>
         <ModalFooter className="grw-modal-footer">
-          <div className="ml-auto">
-            <button type="button" className="mr-2 btn btn-secondary" onClick={this.cancel}>
+          <div className="ms-auto">
+            <button type="button" className="me-2 btn btn-secondary" onClick={this.cancel}>
               Cancel
             </button>
             <button type="button" className="btn btn-primary" onClick={this.pasteCodedGrid}>

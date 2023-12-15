@@ -20,13 +20,13 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
         </div>
       </div>
     );
   }
 
-  const notifications = inAppNotificationData.docs.filter((notification) => { return notification.parsedSnapshot != null });
+  const notifications = inAppNotificationData.docs;
 
   return (
     <>

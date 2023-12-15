@@ -47,18 +47,18 @@ const BotTypeCard = (props) => {
               ${isBotTypeOfficial ? 'd-flex align-items-center justify-content-center' : 'text-center'}
               ${props.isActive ? 'bg-primary grw-botcard-title-active' : ''}`}
         >
-          <span className="mr-2">
+          <span className="me-2">
             {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].botTypeCategory}`)}
           </span>
 
           {/*  A recommended badge is shown on official bot card, supplementary names are shown on Custom bot cards   */}
           { isBotTypeOfficial
             ? (
-              <span className="badge badge-info mr-2">
+              <span className="badge bg-info me-2">
                 {t('admin:slack_integration.selecting_bot_types.recommended')}
               </span>
             ) : (
-              <span className="supplementary-bot-name mr-2">
+              <span className="supplementary-bot-name me-2">
                 {t(`admin:slack_integration.selecting_bot_types.${botDetails[props.botType].supplementaryBotName}`)}
               </span>
             )}

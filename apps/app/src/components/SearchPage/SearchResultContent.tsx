@@ -10,11 +10,12 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { useCurrentUser, useIsContainerFluid } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
 } from '~/stores/modal';
@@ -23,17 +24,18 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import type { GrowiSubNavigationProps } from '../Navbar/GrowiSubNavigation';
-import type { SubNavButtonsProps } from '../Navbar/SubNavButtons';
+import { PagePathNav } from '../Common/PagePathNav';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import { type PageCommentProps } from '../PageComment';
 import type { PageContentFooterProps } from '../PageContentFooter';
 
 import styles from './SearchResultContent.module.scss';
 
+const moduleClass = styles['search-result-content'];
+const _fluidLayoutClass = styles['fluid-layout'];
 
-const GrowiSubNavigation = dynamic<GrowiSubNavigationProps>(() => import('../Navbar/GrowiSubNavigation').then(mod => mod.GrowiSubNavigation), { ssr: false });
-const SubNavButtons = dynamic<SubNavButtonsProps>(() => import('../Navbar/SubNavButtons').then(mod => mod.SubNavButtons), { ssr: false });
+
+const PageControls = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic<PageCommentProps>(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
@@ -122,9 +124,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
   const { open: openDeleteModal } = usePageDeleteModal();
   const { data: rendererOptions } = useSearchResultOptions(pageWithMeta.data.path, highlightKeywords);
   const { data: currentUser } = useCurrentUser();
-  const { data: isContainerFluid } = useIsContainerFluid();
 
-  const [isExpandContentWidth, setIsExpandContentWidth] = useState(page.expandContentWidth);
+  const shouldExpandContent = useShouldExpandContent(page);
 
   const duplicateItemClickedHandler = useCallback(async(pageToDuplicate) => {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -172,7 +173,8 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     await updateContentWidth(pageId, value);
-    setIsExpandContentWidth(value);
+
+    // TODO: revalidate page data and update shouldExpandContent
   }, []);
 
   const RightComponent = useCallback(() => {
@@ -183,16 +185,15 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     const revisionId = getIdForRef(page.revision);
 
     return (
-      <div className="d-flex flex-column align-items-end justify-content-center py-md-2">
-        <SubNavButtons
+      <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
+        <PageControls
           pageId={page._id}
           revisionId={revisionId}
           path={page.path}
-          expandContentWidth={isExpandContentWidth ?? isContainerFluid}
+          expandContentWidth={shouldExpandContent}
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
           additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
-          isCompactMode
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -200,25 +201,32 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
         />
       </div>
     );
-  }, [page, isExpandContentWidth, showPageControlDropdown, forceHideMenuItems, isContainerFluid,
+  }, [page, shouldExpandContent, showPageControlDropdown, forceHideMenuItems,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
 
   const isRenderable = page != null && rendererOptions != null;
 
+  const fluidLayoutClass = shouldExpandContent ? _fluidLayoutClass : '';
+
   return (
-    <div key={page._id} data-testid="search-result-content" className={`search-result-content ${styles['search-result-content']} d-flex flex-column`}>
-      <div className="grw-page-path-text-muted-container">
-        { isRenderable && (
-          <GrowiSubNavigation
-            pagePath={page.path}
-            pageId={page._id}
-            rightComponent={RightComponent}
-            isCompactMode
-            additionalClasses={['px-4']}
-          />
-        ) }
-      </div>
-      <div id="search-result-content-body-container" className="search-result-content-body-container" ref={scrollElementRef}>
+    <div
+      key={page._id}
+      data-testid="search-result-content"
+      className={`dynamic-layout-root ${moduleClass} ${fluidLayoutClass}`}
+    >
+      <RightComponent />
+
+      { isRenderable && (
+        <div className="container-lg grw-container-convertible pt-2 pb-2">
+          <PagePathNav pageId={page._id} pagePath={page.path} formerLinkClassName="small" latterLinkClassName="fs-3" />
+        </div>
+      ) }
+
+      <div
+        id="search-result-content-body-container"
+        ref={scrollElementRef}
+        className="search-result-content-body-container container-lg grw-container-convertible overflow-y-scroll"
+      >
         { isRenderable && (
           <RevisionLoader
             rendererOptions={rendererOptions}

@@ -19,7 +19,7 @@ export const BookmarkFolderMenuItem: React.FC<{
         onChange={e => e.stopPropagation()}
         onClick={e => e.stopPropagation()}
       />
-      <label htmlFor={`bookmark-folder-menu-item-${itemId}`} className="p-2 m-0">
+      <label htmlFor={`bookmark-folder-menu-item-${itemId}`} className="p-2 m-0 form-label">
         {itemName}
       </label>
     </div>

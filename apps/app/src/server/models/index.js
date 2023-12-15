@@ -6,7 +6,6 @@ export const modelsDependsOnCrowi = {
   User: require('./user'),
   Revision: require('./revision'),
   Bookmark: require('./bookmark'),
-  Comment: require('./comment'),
   GlobalNotificationSetting: require('./GlobalNotificationSetting'),
   GlobalNotificationMailSetting: require('./GlobalNotificationSetting/GlobalNotificationMailSetting'),
   GlobalNotificationSlackSetting: require('./GlobalNotificationSetting/GlobalNotificationSlackSetting'),

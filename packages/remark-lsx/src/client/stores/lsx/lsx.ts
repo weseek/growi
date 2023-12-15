@@ -27,7 +27,7 @@ export const useSWRxLsx = (
           : null;
       }
       catch (err) {
-        parseError = err;
+        parseError = err as Error;
       }
 
       // the first loading

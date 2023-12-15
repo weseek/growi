@@ -95,7 +95,6 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
     },
   }],
   format: { type: String },
-  isSyncRevisionToHackmd: { type: Boolean },
   overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });
 

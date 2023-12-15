@@ -9,7 +9,7 @@ import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stor
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { apiPost } from '../util/apiv1-client';
+import { apiGet, apiPost } from '../util/apiv1-client';
 import { apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
@@ -88,7 +88,7 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
 };
 
 // TODO: define return type
-const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
+export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
   // clone
   const params = Object.assign(tmpParams, {
     path: pagePath,
@@ -135,23 +135,6 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
     const { path, pageId, revisionId } = pageInfo;
 
     const options: OptionsToSave = Object.assign({}, optionsToSave);
-    /*
-    * Note: variable "markdown" will be received from params
-    * please delete the following code after implemating HackMD editor function
-    */
-    // let markdown;
-    // if (editorMode === EditorMode.HackMD) {
-    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    // markdown = await pageEditorByHackmd.getMarkdown();
-    // // set option to sync
-    // options.isSyncRevisionToHackmd = true;
-    // revisionId = this.state.revisionIdHackmdSynced;
-    // }
-    // else {
-    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    // const pageEditor = getComponentInstance('PageEditor');
-    // markdown = pageEditor.getMarkdown();
-    // }
 
     let res;
     if (pageId == null || revisionId == null) {
@@ -165,10 +148,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
       res = await updatePage(pageId, revisionId, markdown, options);
     }
 
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
+    mutateIsEnabledUnsavedWarning(false);
 
     return res;
   }, [mutateIsEnabledUnsavedWarning]);
@@ -212,8 +192,6 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       remoteRevisionBody: updatedPage.revision.body,
       remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
       remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced?.toString(),
-      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
     };
 
     setRemoteLatestPageData(remoterevisionData);
@@ -224,4 +202,20 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
 
 export const unlink = async(path: string): Promise<void> => {
   await apiPost('/pages.unlink', { path });
+};
+
+
+interface PageExistRequest {
+  pagePaths: string;
+}
+
+interface PageExistResponse {
+  pages: Record<string, boolean>;
+  ok: boolean
+}
+
+export const exist = async(pagePaths: string): Promise<PageExistResponse> => {
+  const request: PageExistRequest = { pagePaths };
+  const res = await apiGet<PageExistResponse>('/pages.exist', request);
+  return res;
 };

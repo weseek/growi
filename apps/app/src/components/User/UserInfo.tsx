@@ -26,9 +26,9 @@ export const UserInfo = (props: UserInfoProps): JSX.Element => {
           {author.name}
         </h1>
         <div className="user-page-meta mt-3 mb-0">
-          <span className="user-page-username mr-4"><i className="icon-user mr-1"></i>{author.username}</span>
-          <span className="user-page-email mr-2">
-            <i className="icon-envelope mr-1"></i>
+          <span className="user-page-username me-4"><i className="icon-user me-1"></i>{author.username}</span>
+          <span className="user-page-email me-2">
+            <i className="icon-envelope me-1"></i>
             { author.isEmailPublished
               ? author.email
               : '*****'

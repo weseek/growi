@@ -1,9 +1,9 @@
-@use './variables' as var;
-@use './bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
-.dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
-  width: 100%;
-  max-width: none;
+@use './variables' as var;
+
+.dynamic-layout-root {
+  @extend .flex-expand-vert;
 }
 
 .grw-bg-image-wrapper {
@@ -26,6 +26,11 @@
   overflow-y: scroll;
 }
 
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 // padding settings for GrowiNavbarBottom
 .page-wrapper {
   padding-bottom: var.$grw-navbar-bottom-height;
@@ -41,22 +46,6 @@
   @include bs.media-breakpoint-up(lg) {
     margin-top: 2rem;
   }
-}
-
-.grw-side-contents-container {
-  margin-bottom: 1rem;
-
-  @include bs.media-breakpoint-up(lg) {
-    width: 250px;
-    min-width: 250px;
-    margin-left: 30px;
-  }
-}
-
-.grw-side-contents-sticky-container {
-  position: sticky;
-  // growisubnavigation + grw-navbar-boder + some spacing
-  top: calc(100px + 4px + 20px);
 }
 
 // printable style

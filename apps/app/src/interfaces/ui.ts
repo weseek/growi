@@ -1,5 +1,13 @@
 import type { Nullable } from '@growi/core';
 
+
+export const SidebarMode = {
+  DRAWER: 'drawer',
+  COLLAPSED: 'collapsed',
+  DOCK: 'dock',
+} as const;
+export type SidebarMode = typeof SidebarMode[keyof typeof SidebarMode];
+
 export const SidebarContentsType = {
   CUSTOM: 'custom',
   RECENT: 'recent',
@@ -26,3 +34,4 @@ export type OnRenamedFunction = (path: string) => void;
 export type OnDuplicatedFunction = (fromPath: string, toPath: string) => void;
 export type OnPutBackedFunction = (path: string) => void;
 export type onDeletedBookmarkFolderFunction = (bookmarkFolderId: string) => void;
+export type OnSelectedFunction = () => void;

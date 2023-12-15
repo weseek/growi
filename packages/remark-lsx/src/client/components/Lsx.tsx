@@ -55,7 +55,7 @@ const LsxSubstance = React.memo(({
         <summary className="text-warning">
           <i className="fa fa-exclamation-triangle fa-fw"></i> {lsxContext.toString()}
         </summary>
-        <small className="ml-3 text-muted">{errorMessage}</small>
+        <small className="ms-3 text-muted">{errorMessage}</small>
       </details>
     );
   }, [errorMessage, hasError, lsxContext]);
@@ -71,7 +71,7 @@ const LsxSubstance = React.memo(({
     return (
       <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
         <small>
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <i className="fa fa-spinner fa-pulse me-1"></i>
           {lsxContext.toString()}
         </small>
       </div>
@@ -111,11 +111,11 @@ const LsxSubstance = React.memo(({
         <div className="col-12 col-sm-8 d-flex flex-column align-items-center lsx-load-more-container">
           <button
             type="button"
-            className="btn btn btn-block btn-outline-secondary btn-load-more"
+            className="btn btn btn-outline-secondary btn-load-more"
             onClick={() => setSize(size => size + 1)}
           >
             Load more<br />
-            <span className="text-muted small left-items-label">({leftItemsNum} pages left)</span>
+            <span className="text-muted small start-items-label">({leftItemsNum} pages left)</span>
           </button>
         </div>
       </div>

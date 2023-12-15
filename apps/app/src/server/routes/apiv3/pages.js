@@ -6,6 +6,7 @@ import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/d
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -175,6 +176,7 @@ module.exports = (crowi) => {
       body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
       body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
       body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+      body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
     ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
@@ -238,6 +240,15 @@ module.exports = (crowi) => {
     return [];
   }
 
+  async function generateUniquePath(basePath, index = 1) {
+    const path = basePath + index;
+    const existingPageId = await Page.exists({ path, isEmpty: false });
+    if (existingPageId != null) {
+      return generateUniquePath(basePath, index + 1);
+    }
+    return path;
+  }
+
   /**
    * @swagger
    *
@@ -266,9 +277,9 @@ module.exports = (crowi) => {
    *                    type: array
    *                    items:
    *                      $ref: '#/components/schemas/Tag'
-   *                  createFromPageTree:
+   *                  shouldGeneratePath:
    *                    type: boolean
-   *                    description: Whether the page was created from the page tree or not
+   *                    description: Determine whether a new path should be generated
    *                required:
    *                  - body
    *                  - path
@@ -295,7 +306,8 @@ module.exports = (crowi) => {
    */
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
-      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags,
+      // body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
     } = req.body;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136136
@@ -307,6 +319,22 @@ module.exports = (crowi) => {
 
     // check whether path starts slash
     path = addHeadingSlash(path);
+
+    if (shouldGeneratePath) {
+      try {
+        const rootPath = '/';
+        const defaultTitle = '/Untitled';
+        const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
+        path = await generateUniquePath(basePath);
+
+        if (!isCreatablePage(path)) {
+          path = await generateUniquePath(defaultTitle);
+        }
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
+      }
+    }
 
     if (!isCreatablePage(path)) {
       return res.apiv3Err(`Could not use the path '${path}'`);
@@ -832,7 +860,8 @@ module.exports = (crowi) => {
         target: page,
         action: SupportedAction.ACTION_PAGE_DUPLICATE,
       };
-      activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+      activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
 
       return res.apiv3(result);
     });

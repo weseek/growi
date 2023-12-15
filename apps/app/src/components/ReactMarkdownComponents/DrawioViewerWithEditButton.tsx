@@ -65,7 +65,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
           className="btn btn-outline-secondary btn-edit-drawio"
           onClick={editButtonClickHandler}
         >
-          <i className="icon-note mr-1"></i>{t('Edit')}
+          <i className="icon-note me-1"></i>{t('Edit')}
         </button>
       ) }
       <DrawioViewer {...props} onRenderingStart={renderingStartHandler} onRenderingUpdated={renderingUpdatedHandler} />

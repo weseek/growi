@@ -26,13 +26,13 @@ export const NoLoginLayout = ({
 
   return (
     <RawLayout className={`nologin ${commonStyles.nologin} ${classNames}`}>
-      <div className="page-wrapper">
+      <div className="page-wrapper flex-row">
         <div className="main container-fluid">
 
           <div className="row">
 
-            <div className="col-md-12">
-              <div className="nologin-header mx-auto">
+            <div className="col-md-12 position-relative">
+              <div className="nologin-header mx-auto flex-column">
                 <GrowiLogo />
                 <h1 className="my-3">{ appTitle ?? 'GROWI' }</h1>
                 <div className="noLogin-form-errors px-3"></div>

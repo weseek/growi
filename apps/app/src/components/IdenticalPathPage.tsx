@@ -32,7 +32,7 @@ const IdenticalPathAlert : FC<IdenticalPathAlertProps> = (props: IdenticalPathAl
 
   return (
     <div className="alert alert-warning py-3">
-      <h5 className="font-weight-bold mt-1">{t('duplicated_page_alert.same_page_name_exists', { pageName: _pageName })}</h5>
+      <h5 className="fw-bold mt-1">{t('duplicated_page_alert.same_page_name_exists', { pageName: _pageName })}</h5>
       <p>
         {t('duplicated_page_alert.same_page_name_exists_at_path',
           { path: _path, pageName: _pageName })}<br />

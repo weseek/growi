@@ -13,6 +13,7 @@ import escapeStringRegexp from 'escape-string-regexp';
 import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { Comment } from '~/features/comment/server';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -21,11 +22,11 @@ import {
 } from '~/interfaces/page-delete-config';
 import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
-  IPageOperationProcessInfo, IPageOperationProcessData, PageActionStage, PageActionType,
+  type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
-import { PageMigrationErrorData, SocketEventName, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import {
-  CreateMethod, PageCreateOptions, PageModel, PageDocument, pushRevision, PageQueryBuilder,
+  type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
@@ -34,9 +35,9 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { Attachment } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../models/page-operation';
-import { PageRedirectModel } from '../models/page-redirect';
+import type { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
+import PageOperation, { type PageOperationDocument } from '../models/page-operation';
+import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
@@ -46,6 +47,7 @@ import { divideByType } from '../util/granted-group';
 
 import { configManager } from './config-manager';
 import PageGrantService from './page-grant';
+import { preNotifyService } from './pre-notify';
 
 const debug = require('debug')('growi:services:page');
 
@@ -509,7 +511,9 @@ class PageService {
       throw err;
     }
     if (page.descendantCount < 1) {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     return renamedPage;
   }
@@ -614,8 +618,11 @@ class PageService {
     // update descendants first
       const descendantsSubscribedSets = new Set();
       await this.renameDescendantsWithStream(page, newPagePath, user, options, false, descendantsSubscribedSets);
-      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-      this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+      const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+      const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     catch (err) {
       logger.warn(err);
@@ -1556,7 +1563,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return deletedPage;
@@ -1592,8 +1601,11 @@ class PageService {
     const descendantsSubscribedSets = new Set();
     await this.deleteDescendantsWithStream(page, user, false, descendantsSubscribedSets);
 
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1768,7 +1780,6 @@ class PageService {
   private async deleteCompletelyOperation(pageIds, pagePaths) {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
-    const Comment = this.crowi.model('Comment');
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
@@ -1905,7 +1916,9 @@ class PageService {
       })();
     }
     else {
-      this.activityEvent.emit('updated', activity, page);
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
     return;
@@ -1914,8 +1927,11 @@ class PageService {
   async deleteCompletelyRecursivelyMainOperation(page, user, options, pageOpId: ObjectIdLike, activity?): Promise<void> {
     const descendantsSubscribedSets = new Set();
     await this.deleteCompletelyDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     await PageOperation.findByIdAndDelete(pageOpId);
 
@@ -1958,9 +1974,11 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     const pages = await this.deleteCompletelyDescendantsWithStream(page, user, options, true, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
 
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     return pages;
   }
@@ -2245,7 +2263,10 @@ class PageService {
 
     if (!isRecursively) {
       await this.updateDescendantCountOfAncestors(parent._id, 1, true);
-      this.activityEvent.emit('updated', activity, page);
+
+      const preNotify = preNotifyService.generatePreNotify(activity);
+
+      this.activityEvent.emit('updated', activity, page, preNotify);
     }
     else {
       let pageOp;
@@ -2291,8 +2312,11 @@ class PageService {
 
     const descendantsSubscribedSets = new Set();
     await this.revertDeletedDescendantsWithStream(page, user, options, false, descendantsSubscribedSets);
-    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets);
-    this.activityEvent.emit('updated', activity, page, descendantsSubscribedUsers);
+    const descendantsSubscribedUsers = Array.from(descendantsSubscribedSets) as Ref<IUser>[];
+
+    const preNotify = preNotifyService.generatePreNotify(activity, () => { return descendantsSubscribedUsers });
+
+    this.activityEvent.emit('updated', activity, page, preNotify);
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     // normalize parent of descendant pages
@@ -3738,7 +3762,7 @@ class PageService {
     const shouldValidateGrant = !isGrantRestricted;
     const canProcessCreate = await this.canProcessCreate(path, grantData, shouldValidateGrant, user, options);
     if (!canProcessCreate) {
-      throw Error('Cannnot process create');
+      throw Error('Cannot process create');
     }
 
     // Prepare a page document
@@ -3929,7 +3953,7 @@ class PageService {
     }
     const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
     if (!canProcessForceCreateBySystem) {
-      throw Error('Cannnot process forceCreateBySystem');
+      throw Error('Cannot process forceCreateBySystem');
     }
 
     // Prepare a page document
@@ -3983,7 +4007,7 @@ class PageService {
   async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: IGrantedGroup[]}): Promise<PageDocument> {
     const { grant, grantedGroups } = grantData;
 
-    const options = {
+    const options: IOptionsForUpdate = {
       grant,
       grantUserGroupIds: grantedGroups,
       isSyncRevisionToHackmd: false,
@@ -4110,17 +4134,12 @@ class PageService {
     let savedPage = await newPageData.save();
 
     // Update body
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
     const isBodyPresent = body != null && previousBody != null;
     const shouldUpdateBody = isBodyPresent;
     if (shouldUpdateBody) {
       const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
-
-      if (isSyncRevisionToHackmd) {
-        savedPage = await Page.syncRevisionToHackmd(savedPage);
-      }
     }
 
 
@@ -4191,10 +4210,6 @@ class PageService {
       const newRevision = await Revision.prepareRevision(pageData, body, previousBody, user);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
-
-      if (isSyncRevisionToHackmd) {
-        savedPage = await Page.syncRevisionToHackmd(savedPage);
-      }
     }
 
     // update scopes for descendants

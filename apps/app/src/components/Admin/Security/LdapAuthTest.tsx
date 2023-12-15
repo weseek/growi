@@ -89,7 +89,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
     <React.Fragment>
       {successMessage !== '' && <div className="alert alert-success">{successMessage}</div>}
       {errorMessage !== '' && <div className="alert alert-warning">{errorMessage}</div>}
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="username" className="col-3 col-form-label">{t('username')}</label>
         <div className="col-6">
           <input
@@ -101,7 +101,7 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
           />
         </div>
       </div>
-      <div className="form-group row">
+      <div className="row">
         <label htmlFor="password" className="col-3 col-form-label">{t('Password')}</label>
         <div className="col-6">
           <input
@@ -115,8 +115,8 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group">
-        <label><h5>Logs</h5></label>
+      <div>
+        <label className="form-label"><h5>Logs</h5></label>
         <textarea id="taLogs" className="col form-control" rows={4} value={logs} readOnly />
       </div>
 

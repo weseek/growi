@@ -3,7 +3,7 @@ import React from 'react';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
-import CopyDropdown from '../../Page/CopyDropdown';
+import { CopyDropdown } from '../../Common/CopyDropdown';
 
 
 type ShareLinkTrProps = {

@@ -37,11 +37,11 @@ export const AuditLogSettings: FC = () => {
 
       <h4 className="mt-4">
         {t('admin:audit_log_management.available_action_list')}
-        <span className="badge badge-pill badge-secondary ml-2">
+        <span className="badge rounded-pill bg-primary ms-2">
           {`${availableActions.length} / ${AllSupportedActions.length}`}
         </span>
         <a
-          className="ml-2"
+          className="ms-2"
           href={t('admin:audit_log_management.docs_url.log_type')}
           target="_blank"
           rel="noopener noreferrer"

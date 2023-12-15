@@ -24,7 +24,7 @@ export const PageAttachmentList = (props: Props): JSX.Element => {
 
   return (
     <div>
-      <ul className="pl-2">
+      <ul className="ps-2">
         {attachments.map((attachment) => {
           return (
             <Attachment

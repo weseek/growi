@@ -2,6 +2,7 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
+import { useResolvedThemeForEditor } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -15,10 +16,11 @@ import { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
-  useIsUploadableFile, useIsUploadableImage,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
+import { useNextThemes } from '~/stores/use-next-themes';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
@@ -69,13 +71,17 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: isUploadableFile } = useIsUploadableFile();
-  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+  const { data: isUploadEnabled } = useIsUploadEnabled();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme(resolvedTheme);
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -273,7 +279,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
-    const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
+    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
         outline
@@ -297,7 +303,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       </Button>
     );
 
-    const isUploadable = isUploadableImage || isUploadableFile;
+    const isUploadable = isUploadEnabled || isUploadAllFileAllowed;
 
     return (
       <>
@@ -309,7 +315,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 ref={editorRef}
                 value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                isUploadAllFileAllowed={isUploadAllFileAllowed}
                 onChange={onChangeHandler}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
@@ -335,7 +341,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="form-inline align-self-center mr-md-2">
+                <div className="align-self-center me-md-2">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}
@@ -347,13 +353,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               )
             }
             <div className="d-none d-sm-block">
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
           <div className="d-block d-sm-none mt-2">
             <div className="d-flex justify-content-end">
               {error && errorMessage}
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
         </div>

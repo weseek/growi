@@ -10,7 +10,6 @@ import {
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
-import { TriangleIcon } from '~/components/Icons/TriangleIcon';
 import {
   BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
 } from '~/interfaces/bookmark-info';
@@ -222,7 +221,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDropable}
       >
         <li
-          className="list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center"
+          className="list-group-item list-group-item-action border-0 py-0 pe-3 d-flex align-items-center"
           onClick={loadChildFolder}
           style={{ paddingLeft }}
         >
@@ -234,7 +233,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
                 onClick={loadChildFolder}
               >
                 <div className="d-flex justify-content-center">
-                  <TriangleIcon />
+                  <span className="material-symbols-outlined">arrow_right</span>
                 </div>
               </button>
             )}
@@ -250,7 +249,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             />
           ) : (
             <>
-              <div className="grw-foldertree-title-anchor pl-2">
+              <div className="grw-foldertree-title-anchor ps-2">
                 <p className="text-truncate m-auto ">{name}</p>
               </div>
             </>
@@ -266,7 +265,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
                 }
               >
                 <div onClick={e => e.stopPropagation()}>
-                  <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+                  <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
                     <i className="icon-options fa fa-rotate-90 p-1"></i>
                   </DropdownToggle>
                 </div>

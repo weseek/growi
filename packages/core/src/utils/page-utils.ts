@@ -1,3 +1,5 @@
+import { IPage } from '..';
+
 import { isTopPage } from './page-path-utils/is-top-page';
 
 // const GRANT_PUBLIC = 1;
@@ -14,8 +16,7 @@ const STATUS_DELETED = 'deleted';
  * @param page Page
  * @returns boolean
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const isOnTree = (page): boolean => {
+export const isOnTree = (page: IPage): boolean => {
   const { path, parent } = page;
 
   if (isTopPage(path)) {
@@ -38,8 +39,7 @@ export const isOnTree = (page): boolean => {
  * @param page PageDocument
  * @returns boolean
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const isPageNormalized = (page): boolean => {
+export const isPageNormalized = (page: IPage): boolean => {
   const { grant, status } = page;
 
   if (grant === GRANT_RESTRICTED || grant === GRANT_SPECIFIED) {

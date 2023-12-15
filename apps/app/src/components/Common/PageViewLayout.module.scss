@@ -1,0 +1,59 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '~/styles/mixins';
+@use '~/styles/variables' as var;
+
+
+$subnavigation-height: 50px;
+$page-view-layout-margin-top: 32px;
+
+.page-view-layout :global {
+  $page-content-footer-min-heigh: 130px;
+  min-height: calc(100vh - #{$subnavigation-height + $page-view-layout-margin-top + $page-content-footer-min-heigh});
+}
+
+// md/lg layout padding
+.page-view-layout :global {
+  @include bs.media-breakpoint-between(md, xl) {
+    padding-left: var.$grw-sidebar-nav-width;
+  }
+}
+
+// container padding
+.page-view-layout :global,
+.footer-layout :global {
+  @include bs.media-breakpoint-up(lg) {
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
+  }
+}
+
+// fluid layout
+.fluid-layout :global {
+  .grw-container-convertible {
+    @include mixins.fluid-layout();
+  }
+}
+
+.page-view-layout :global {
+  .grw-side-contents-container {
+    margin-bottom: 1rem;
+
+    @include bs.media-breakpoint-up(lg) {
+      width: 250px;
+      min-width: 250px;
+      margin-left: 30px;
+    }
+  }
+}
+
+// sticky side contents
+.page-view-layout :global {
+  .grw-side-contents-sticky-container {
+    position: sticky;
+
+    $page-path-nav-height: 99px;
+    top: calc($subnavigation-height + $page-view-layout-margin-top + $page-path-nav-height + 4px);
+  }
+}

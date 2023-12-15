@@ -10,8 +10,10 @@ GROWI Official docker image
 Supported tags and respective Dockerfile links
 ------------------------------------------------
 
-* [`6.3.0`, `6.3`, `6`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v6.3.0/apps/app/docker/Dockerfile)
+* [`7.0.0`, `7.0`, `7`, `latest` (Dockerfile)](https://github.com/weseek/growi/blob/v7.0.0/apps/app/docker/Dockerfile)
+* [`6.3.0`, `6.3`, `6` (Dockerfile)](https://github.com/weseek/growi/blob/v6.3.0/apps/app/docker/Dockerfile)
 * [`6.2.4`, `6.2` (Dockerfile)](https://github.com/weseek/growi/blob/v6.2.4/apps/app/docker/Dockerfile)
+* [`6.1.15`, `6.1` (Dockerfile)](https://github.com/weseek/growi/blob/v6.1.15/apps/app/docker/Dockerfile)
 
 
 What is GROWI?

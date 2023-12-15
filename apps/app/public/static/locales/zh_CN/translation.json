@@ -111,8 +111,6 @@
 	"Disclose E-mail": "显示邮箱",
 	"page exists": "页面已存在",
 	"Error occurred": "Error occurred",
-	"Create today's": "Create today's ...",
-	"Memo": "memo",
 	"Input page name": "Input page name",
 	"Input page name (optional)": "Input page name (optional)",
 	"New Page": "新页面",
@@ -240,6 +238,14 @@
     "subscribe_settings": "自动订阅（接收通知）页面的设置",
     "default_subscribe_rules": {
       "page_create": "创建页面时订阅页面。"
+    }
+  },
+  "ui_settings": {
+    "ui_settings": "用户界面设置",
+    "side_bar_mode": {
+      "settings": "侧边栏模式设置",
+      "side_bar_mode_setting": "设置侧边栏模式",
+      "description": "您可以设置当屏幕宽度较大时，侧边栏是否始终打开。 如果屏幕宽度较小，侧边栏将始终关闭。"
     }
   },
   "editor_settings": {
@@ -453,7 +459,7 @@
 			"label": "子模板",
 			"desc": "仅应用于模板存在的同一级别页"
 		},
-		"decendants": {
+		"descendants": {
 			"label": "子代模板",
 			"desc": "适用于所有分散页"
 		}
@@ -489,27 +495,6 @@
 		"insert_image": "插入图像",
 		"open_sandbox": "开放式沙箱"
 	},
-	"hackmd": {
-    "hack_md": "HackMD",
-    "not_set_up": "HackMD is not set up.",
-    "used_for_not_found": "Can not use HackMD to a page that does not exist.",
-		"start_to_edit": "Start to edit with HackMD",
-		"clone_page_content": "Click to clone page content and start to edit.",
-		"unsaved_draft": "HackMD has unsaved draft.",
-		"draft_outdated": "DRAFT MAY BE OUTDATED",
-		"based_on_revision": "The current draft on HackMD is based on",
-		"view_outdated_draft": "View the outdated draft on HackMD",
-		"resume_to_edit": "Resume to edit with HackMD",
-		"discard_changes": "Discard changes of HackMD",
-		"integration_failed": "HackMD Integration failed",
-		"fail_to_connect": "GROWI client failed to connect to GROWI agent for HackMD.",
-		"check_configuration": "Check your configuration following <a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>the manual</a>.",
-		"not_initialized": "HackmdEditor component has not initialized",
-		"someone_editing": "Someone editing this page on HackMD",
-    "this_page_has_draft": "This page has a draft on HackMD",
-    "need_to_associate_with_growi_to_use_hackmd_refer_to_this": "若要使用HackMD的多人同时编辑功能，请先关联HackMD和GROWI。详情请参考<a href='https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html'>这里</a>。",
-    "need_to_make_page": "To use HackMD, please make a new page from the <a href='#edit'>built-in editor.</a>"
-  },
   "slack_notification": {
     "popover_title": "Slack Notification",
     "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
@@ -740,7 +725,7 @@
         "isForbidden": "无权查看的机构",
         "currentPageGrantLabel": "本页的权限: ",
         "parentPageGrantLabel": "父页的权限: ",
-        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html'>此链接</a>"
+        "docLink": "关于修改授权的更多信息，请参见此<a href='https://docs.growi.org/en/guide/features/authority.html#permissions-for-subordinate-pages'>此链接</a>"
       },
       "radio_btn": {
         "restrected": "只有那些知道链接的人",

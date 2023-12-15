@@ -33,7 +33,7 @@ const ApiSettings = React.memo((): JSX.Element => {
       <h2 className="border-bottom my-4">{ t('API Token Settings') }</h2>
 
       <div className="row mb-3">
-        <label htmlFor="apiToken" className="col-md-3 text-md-right">{t('Current API Token')}</label>
+        <label htmlFor="apiToken" className="col-md-3 text-md-end form-label">{t('Current API Token')}</label>
         <div className="col-md-6">
           {personalSettingsData?.apiToken != null
             ? (

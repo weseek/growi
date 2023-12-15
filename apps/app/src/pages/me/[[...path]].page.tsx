@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { type ReactNode, useMemo } from 'react';
 
 import {
   GetServerSideProps, GetServerSidePropsContext,
@@ -125,7 +125,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className="main">
-          <div id="content-main" className="content-main container-lg grw-container-convertible">
+          <div id="content-main" className="content-main container-lg">
             {targetPage.component}
           </div>
         </div>
@@ -134,10 +134,24 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   );
 };
 
-MePage.getLayout = function getLayout(page) {
+
+type LayoutProps = Props & {
+  children?: ReactNode
+}
+
+const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
+  // init sidebar config with UserUISettings and sidebarConfig
+  useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
+
   return (
-    <BasicLayout>{page}</BasicLayout>
+    <BasicLayout>
+      {children}
+    </BasicLayout>
   );
+};
+
+MePage.getLayout = function getLayout(page) {
+  return <Layout {...page.props}>{page}</Layout>;
 };
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
@@ -157,8 +171,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 
   props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
   };
 
   props.rendererConfig = {

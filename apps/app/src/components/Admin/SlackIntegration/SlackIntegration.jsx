@@ -187,7 +187,7 @@ const SlackIntegration = () => {
   if (isLoading) {
     return (
       <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
       </div>
     );
   }
@@ -210,8 +210,8 @@ const SlackIntegration = () => {
       <div className="selecting-bot-type mb-5">
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
-          <a className="ml-2 btn-link small" href={t('admin:slack_integration.docs_url.slack_integration')} target="_blank" rel="noopener noreferrer">
-            <i className="icon icon-question ml-1" aria-hidden="true"></i>
+          <a className="ms-2 btn-link small" href={t('admin:slack_integration.docs_url.slack_integration')} target="_blank" rel="noopener noreferrer">
+            <i className="icon icon-question ms-1" aria-hidden="true"></i>
           </a>
         </h2>
 

@@ -4,7 +4,7 @@ import { getMongoUri, mongoOptions } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:remove-basic-auth-related-config');
+const logger = loggerFactory('growi:migrate:remove-basic-auth-related-config');
 
 const mongoose = require('mongoose');
 

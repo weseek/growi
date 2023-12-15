@@ -157,13 +157,13 @@ const PageDuplicateModal = (): JSX.Element => {
 
     return (
       <>
-        <div className="form-group"><label>{t('modal_duplicate.label.Current page name')}</label><br />
+        <div><label className="form-label">{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
-        <div className="form-group">
-          <label htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
+        <div>
+          <label className="form-label" htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
-            <div className="input-group-prepend">
+            <div>
               <span className="input-group-text">{siteUrl}</span>
             </div>
             <div className="flex-fill">
@@ -193,32 +193,32 @@ const PageDuplicateModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        <div className="custom-control custom-checkbox custom-checkbox-warning mb-3">
+        <div className="form-check form-check-warning mb-3">
           <input
-            className="custom-control-input"
+            className="form-check-input"
             name="recursively"
             id="cbDuplicateRecursively"
             type="checkbox"
             checked={isDuplicateRecursively}
             onChange={changeIsDuplicateRecursivelyHandler}
           />
-          <label className="custom-control-label" htmlFor="cbDuplicateRecursively">
+          <label className="form-label form-check-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Recursively') }
             <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
 
           <div>
             {isDuplicateRecursively && existingPaths.length !== 0 && (
-              <div className="custom-control custom-checkbox custom-checkbox-warning">
+              <div className="form-check form-check-warning">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="withoutExistRecursively"
                   id="cbDuplicatewithoutExistRecursively"
                   type="checkbox"
                   checked={isDuplicateRecursivelyWithoutExistPath}
                   onChange={() => setIsDuplicateRecursivelyWithoutExistPath(!isDuplicateRecursivelyWithoutExistPath)}
                 />
-                <label className="custom-control-label" htmlFor="cbDuplicatewithoutExistRecursively">
+                <label className="form-label form-check-label" htmlFor="cbDuplicatewithoutExistRecursively">
                   { t('modal_duplicate.label.Duplicate without exist path') }
                 </label>
               </div>

@@ -34,14 +34,14 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_css')}</h2>
 
-          <Card className="card well my-3">
+          <Card className="card custom-card my-3">
             <CardBody className="px-0 py-2">
               { t('admin:customize_settings.write_css') }<br />
               { t('admin:customize_settings.reflect_change') }
             </CardBody>
           </Card>
 
-          <div className="form-group">
+          <div>
             <textarea
               className="form-control"
               name="customizeCss"
@@ -50,7 +50,7 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
               onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
             />
             {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <p className="form-text text-muted text-right">
+            <p className="form-text text-muted text-end">
               <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
               {t('admin:customize_settings.ctrl_space')}
             </p>

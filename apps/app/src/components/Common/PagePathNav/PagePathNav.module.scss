@@ -1,0 +1,28 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '@growi/ui/scss/atoms/btn-muted';
+
+.grw-mr-02em {
+  margin-right: 0.2em;
+}
+
+.grw-page-path-nav-sticky :global {
+  min-height: 75px;
+
+  .sticky-inner-wrapper {
+    z-index: bs.$zindex-sticky;
+  }
+
+  // set smaller font-size when sticky
+  .sticky-inner-wrapper.active {
+    h1 {
+      font-size: 1.75rem !important;
+    }
+  }
+}
+
+.grw-page-path-nav :global {
+  .btn-copy {
+    @include btn-muted.colorize(bs.$orange);
+  }
+}

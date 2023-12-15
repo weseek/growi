@@ -173,7 +173,7 @@ export const UserGroupTable: FC<Props> = ({
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge badge-pill badge-warning">{user.username}</li>;
+                      return <li key={user._id} className="list-inline-item badge rounded-pill bg-warning text-dark">{user.username}</li>;
                     })}
                   </ul>
                 </td>
@@ -204,7 +204,7 @@ export const UserGroupTable: FC<Props> = ({
                           type="button"
                           id={`admin-group-menu-button-${group._id}`}
                           className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                          data-toggle="dropdown"
+                          data-bs-toggle="dropdown"
                         >
                           <i className="icon-settings"></i>
                         </button>

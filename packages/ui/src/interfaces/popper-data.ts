@@ -13,16 +13,3 @@ export interface PopperData {
     arrow: { top: number; left: number };
   };
 }
-
-export interface CustomModifiers {
-  applyStyle?: {
-    enabled: boolean
-  }
-  computeStyle?: {
-    enabled: boolean,
-    fn: (data: PopperData) => PopperData
-  }
-  preventOverflow: {
-    boundariesElement: string
-  }
-}

@@ -20,9 +20,10 @@ import { IEditorMethods } from '../../interfaces/editor-methods';
 
 import AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
-import CodeMirrorEditor from './CodeMirrorEditor';
+// import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
 import TextAreaEditor from './TextAreaEditor';
+
 
 import styles from './Editor.module.scss';
 
@@ -31,7 +32,7 @@ export type EditorPropsType = {
   isGfmMode?: boolean,
   noCdn?: boolean,
   isUploadable?: boolean,
-  isUploadableFile?: boolean,
+  isUploadAllFileAllowed?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
   editorSettings?: IEditorSettings,
@@ -53,7 +54,7 @@ type DropzoneRef = {
 
 const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props, ref): JSX.Element => {
   const {
-    onUpload, isUploadable, isUploadableFile, indentSize, isGfmMode = true,
+    onUpload, isUploadable, isUploadAllFileAllowed, indentSize, isGfmMode = true,
   } = props;
 
   const [dropzoneActive, setDropzoneActive] = useState(false);
@@ -120,7 +121,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const getAcceptableType = useCallback(() => {
     let accept = 'null'; // reject all
     if (isUploadable) {
-      if (!isUploadableFile) {
+      if (!isUploadAllFileAllowed) {
         accept = 'image/*'; // image only
       }
       else {
@@ -129,7 +130,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     }
 
     return accept;
-  }, [isUploadable, isUploadableFile]);
+  }, [isUploadable, isUploadAllFileAllowed]);
 
   const pasteFilesHandler = useCallback((event) => {
     const items = event.clipboardData.items || event.clipboardData.files || [];
@@ -190,7 +191,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     else {
       className += ' dropzone-uploadable';
 
-      if (isUploadableFile) {
+      if (isUploadAllFileAllowed) {
         className += ' dropzone-uploadablefile';
       }
     }
@@ -209,7 +210,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     }
 
     return className;
-  }, [isUploadable, isUploading, isUploadableFile]);
+  }, [isUploadable, isUploading, isUploadAllFileAllowed]);
 
   const renderDropzoneOverlay = useCallback(() => {
     return (
@@ -218,7 +219,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <span className="overlay-content">
               <div className="speeding-wheel d-inline-block"></div>
-              <span className="sr-only">Uploading...</span>
+              <span className="visually-hidden">Uploading...</span>
             </span>
           )
         }
@@ -230,7 +231,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
   const renderNavbar = () => {
     return (
       <div className="m-0 navbar navbar-default navbar-editor" data-testid="navbar-editor" style={{ minHeight: 'unset' }}>
-        <ul className="pl-2 nav nav-navbar">
+        <ul className="ps-2 nav nav-navbar">
           { navBarItems.map((item, idx) => {
             // eslint-disable-next-line react/no-array-index-key
             return <li key={`navbarItem-${idx}`}>{item}</li>;
@@ -304,17 +305,18 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
 
                 {/* for PC */}
                 { !isMobile && (
-                  <CodeMirrorEditor
-                    ref={cmEditorRef}
-                    indentSize={indentSize ?? defaultIndentSize}
-                    onPasteFiles={pasteFilesHandler}
-                    onDragEnter={dragEnterHandler}
-                    onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
-                    onAddAttachmentButtonClicked={addAttachmentHandler}
-                    editorSettings={editorSettings}
-                    isGfmMode={isGfmMode}
-                    {...props}
-                  />
+                  // <CodeMirrorEditor
+                  //   ref={cmEditorRef}
+                  //   indentSize={indentSize ?? defaultIndentSize}
+                  //   onPasteFiles={pasteFilesHandler}
+                  //   onDragEnter={dragEnterHandler}
+                  //   onMarkdownHelpButtonClicked={() => { setIsCheatsheetModalShown(true) }}
+                  //   onAddAttachmentButtonClicked={addAttachmentHandler}
+                  //   editorSettings={editorSettings}
+                  //   isGfmMode={isGfmMode}
+                  //   {...props}
+                  // />
+                  <></>
                 )}
 
                 {/* for mobile */}
@@ -337,7 +339,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
           && (
             <button
               type="button"
-              className="btn btn-outline-secondary btn-block btn-open-dropzone"
+              className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
               <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;

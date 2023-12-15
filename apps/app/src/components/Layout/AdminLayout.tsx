@@ -3,7 +3,6 @@ import React, { ReactNode } from 'react';
 import dynamic from 'next/dynamic';
 
 import { AdminNavigation } from '../Admin/Common/AdminNavigation';
-import { GrowiNavbar } from '../Navbar/GrowiNavbar';
 
 import { RawLayout } from './RawLayout';
 
@@ -28,10 +27,9 @@ const AdminLayout = ({
   return (
     <RawLayout>
       <div className={`admin-page ${styles['admin-page']}`}>
-        <GrowiNavbar isGlobalSearchHidden />
 
         <header className="py-0 container-fluid">
-          <h1 className="title px-3">{componentTitle}</h1>
+          <h1 className="p-3 fs-2">{componentTitle}</h1>
         </header>
         <div id="main" className="main">
           <div className="container-fluid">

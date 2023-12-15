@@ -138,17 +138,17 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     return (
       <>
         <ModalBody>
-          <div className="form-group">
+          <div>
             {/* eslint-disable-next-line react/no-danger */}
             <p className="mb-2" dangerouslySetInnerHTML={{ __html: t('fix_page_grant.modal.need_to_fix_grant') }} />
 
             {/* grant data label */}
             {renderGrantDataLabel()}
 
-            <div className="ml-2">
-              <div className="custom-control custom-radio mb-3">
+            <div className="ms-2">
+              <div className="form-check mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantRestricted"
                   id="grantRestricted"
                   type="radio"
@@ -156,13 +156,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_RESTRICTED}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_RESTRICTED)}
                 />
-                <label className="custom-control-label" htmlFor="grantRestricted">
+                <label className="form-label form-check-label" htmlFor="grantRestricted">
                   { t('fix_page_grant.modal.radio_btn.restrected') }
                 </label>
               </div>
-              <div className="custom-control custom-radio mb-3">
+              <div className="form-check mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantUser"
                   id="grantUser"
                   type="radio"
@@ -170,13 +170,13 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_OWNER}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_OWNER)}
                 />
-                <label className="custom-control-label" htmlFor="grantUser">
+                <label className="form-label form-check-label" htmlFor="grantUser">
                   { t('fix_page_grant.modal.radio_btn.only_me') }
                 </label>
               </div>
-              <div className="custom-control custom-radio d-flex mb-3">
+              <div className="form-check d-flex mb-3">
                 <input
-                  className="custom-control-input"
+                  className="form-check-input"
                   name="grantUserGroup"
                   id="grantUserGroup"
                   type="radio"
@@ -184,17 +184,17 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                   checked={selectedGrant === PageGrant.GRANT_USER_GROUP}
                   onChange={() => setSelectedGrant(PageGrant.GRANT_USER_GROUP)}
                 />
-                <label className="custom-control-label" htmlFor="grantUserGroup">
+                <label className="form-label form-check-label" htmlFor="grantUserGroup">
                   { t('fix_page_grant.modal.radio_btn.grant_group') }
                 </label>
-                <div className="dropdown ml-2">
+                <div className="dropdown ms-2">
                   <button
                     type="button"
                     className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                     onClick={() => setIsGroupSelectModalShown(true)}
                   >
-                    <span className="float-left ml-2">
+                    <span className="float-start ms-2">
                       {
                         selectedGroups.length === 0
                           ? t('fix_page_grant.modal.select_group_default_text')
@@ -295,9 +295,9 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ml-1" aria-hidden="true" />
+          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

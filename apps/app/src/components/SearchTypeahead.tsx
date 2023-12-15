@@ -3,8 +3,7 @@ import React, {
   KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
 } from 'react';
 
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
 import { IFocusable } from '~/client/interfaces/focusable';
@@ -210,7 +209,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
           <MenuItem key={pageWithMeta.data._id} option={pageWithMeta} position={index}>
             <span>
               <UserPicture user={pageWithMeta.data.lastUpdateUser} size="sm" noLink />
-              <span className="ml-1 mr-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
+              <span className="ms-1 me-2 text-break text-wrap"><PagePathLabel path={pageWithMeta.data.path} /></span>
               <PageListMeta page={pageWithMeta.data} />
             </span>
           </MenuItem>

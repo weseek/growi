@@ -1,0 +1,30 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.btn-page-accessories :global {
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+
+  .grw-labels {
+    flex-grow: 1;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+// apply larger font when smaller than lg
+@include bs.media-breakpoint-down(lg) {
+  .btn-page-accessories :global {
+    .material-symbols-outlined {
+      font-size: 2em;
+    }
+  }
+}
+
+// expand when larger than lg
+@include bs.media-breakpoint-up(lg) {
+  .btn-page-accessories :global {
+    flex-grow: 1;
+    padding: 1px 5px 1px 10px;
+  }
+}
