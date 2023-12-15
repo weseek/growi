@@ -7,7 +7,7 @@ import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-bu
 import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
@@ -15,7 +15,7 @@ import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
 export const PageCreateButton = React.memo((): JSX.Element => {
-  const { data: currentPage, isLoading } = useSWRxCurrentPage();
+  const { data: currentPagePath, isLoading } = useCurrentPagePath();
   const { data: currentUser } = useCurrentUser();
 
   const [isHovered, setIsHovered] = useState(false);
@@ -24,9 +24,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
   const todaysPath = `${userHomepagePath}/memo/${now}`;
 
-  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPage, isLoading);
+  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPagePath, isLoading);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path, isLoading);
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoading);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {

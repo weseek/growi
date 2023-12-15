@@ -7,8 +7,8 @@ import { createPage, exist } from '~/client/services/page-operation';
 import { LabelType } from '~/interfaces/template';
 
 export const useOnTemplateButtonClicked = (
-  currentPagePath?: string,
-  isLoading?: boolean,
+    currentPagePath?: string,
+    isLoading?: boolean,
 ): {
   onClickHandler: (label: LabelType) => Promise<void>,
   isPageCreating: boolean
