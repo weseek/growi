@@ -13,6 +13,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
 import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferCollapsedMode,
 } from '~/stores/ui';
@@ -164,6 +165,10 @@ export const generateCustomTitleForPage = (props: CommonProps, pagePath: string)
 };
 
 export const useInitSidebarConfig = (sidebarConfig: ISidebarConfig, userUISettings?: IUserUISettings): void => {
+  const { mutate } = useSWRxCurrentPage();
+  // clear 'currentPage' cache for page create button
+  mutate(undefined, { revalidate: false });
+
   // UserUISettings
   usePreferCollapsedMode(userUISettings?.preferCollapsedModeByUser ?? sidebarConfig.isSidebarCollapsedMode);
   useCurrentSidebarContents(userUISettings?.currentSidebarContents);
