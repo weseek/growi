@@ -57,14 +57,25 @@ const SearchModal = (): JSX.Element => {
             setHighlightedIndex,
           }) => (
             <div {...getRootProps({}, { suppressRefError: true })}>
-              <SearchForm
-                highlightedIndex={highlightedIndex}
-                searchKeyword={searchKeyword}
-                onChangeSearchText={changeSearchTextHandler}
-                onClickCloseModalButton={closeSearchModal}
-                onEnterKeyDownHandler={enterKeyDownHandlerWithoutSelectedItem}
-                getInputProps={getInputProps}
-              />
+
+              <div className="text-muted d-flex justify-content-center align-items-center">
+                <span className="material-symbols-outlined fs-4 me-3">search</span>
+                <SearchForm
+                  highlightedIndex={highlightedIndex}
+                  searchKeyword={searchKeyword}
+                  onChangeSearchText={changeSearchTextHandler}
+                  onEnterKeyDownHandler={enterKeyDownHandlerWithoutSelectedItem}
+                  getInputProps={getInputProps}
+                />
+
+                <button
+                  type="button"
+                  className="btn border-0 d-flex justify-content-center p-0"
+                  onClick={closeSearchModal}
+                >
+                  <span className="material-symbols-outlined fs-4 ms-3">close</span>
+                </button>
+              </div>
 
               {/* see: https://github.com/downshift-js/downshift/issues/582#issuecomment-423592531 */}
               <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">

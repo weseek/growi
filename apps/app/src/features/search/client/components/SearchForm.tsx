@@ -8,14 +8,13 @@ type Props = {
   searchKeyword: string,
   highlightedIndex: number | null,
   onChangeSearchText?: (text: string) => void,
-  onClickCloseModalButton?: () => void,
   onEnterKeyDownHandler?: () => void,
   getInputProps: GetInputProps,
 }
 
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, highlightedIndex, onChangeSearchText, onClickCloseModalButton, onEnterKeyDownHandler, getInputProps,
+    searchKeyword, highlightedIndex, onChangeSearchText, onEnterKeyDownHandler, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -25,10 +24,6 @@ export const SearchForm = (props: Props): JSX.Element => {
       onChangeSearchText(e.target.value);
     }
   }, [onChangeSearchText]);
-
-  const clickCloseModalButtonHandler = useCallback(() => {
-    onClickCloseModalButton?.();
-  }, [onClickCloseModalButton]);
 
   const keyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
     const shouldExecuteEnterKeyDownHandler = e.key === 'Enter'
@@ -60,18 +55,6 @@ export const SearchForm = (props: Props): JSX.Element => {
   });
 
   return (
-    <div className="text-muted d-flex justify-content-center align-items-center">
-      <span className="material-symbols-outlined fs-4 me-3">search</span>
-
-      <input {...inputOptions} />
-
-      <button
-        type="button"
-        className="btn border-0 d-flex justify-content-center p-0"
-        onClick={clickCloseModalButtonHandler}
-      >
-        <span className="material-symbols-outlined fs-4 ms-3">close</span>
-      </button>
-    </div>
+    <input {...inputOptions} />
   );
 };
