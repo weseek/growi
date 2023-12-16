@@ -6,35 +6,32 @@ import { GetInputProps } from '../interfaces/downshift';
 
 type Props = {
   searchKeyword: string,
-  highlightedIndex: number | null,
-  onChangeSearchText?: (text: string) => void,
-  onEnterKeyDownHandler?: () => void,
+  onChange?: (text: string) => void,
+  onSubmit?: () => void,
   getInputProps: GetInputProps,
 }
 
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, highlightedIndex, onChangeSearchText, onEnterKeyDownHandler, getInputProps,
+    searchKeyword, onChange, onSubmit, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const changeSearchTextHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChangeSearchText != null) {
-      onChangeSearchText(e.target.value);
-    }
-  }, [onChangeSearchText]);
+    onChange?.(e.target.value);
+  }, [onChange]);
 
-  const keyDownHandler = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-    const shouldExecuteEnterKeyDownHandler = e.key === 'Enter'
-    && !e.nativeEvent.isComposing // see: https://developer.mozilla.org/en-US/docs/Web/API/KeyboardEvent/isComposing
-    && highlightedIndex == null
-    && searchKeyword.trim().length !== 0;
+  const submitHandler = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    if (shouldExecuteEnterKeyDownHandler) {
-      onEnterKeyDownHandler?.();
+    const isEmptyKeyword = searchKeyword.trim().length === 0;
+    if (isEmptyKeyword) {
+      return;
     }
-  }, [highlightedIndex, onEnterKeyDownHandler, searchKeyword]);
+
+    onSubmit?.();
+  }, [searchKeyword, onSubmit]);
 
   const inputOptions = useMemo(() => {
     return getInputProps({
@@ -44,9 +41,8 @@ export const SearchForm = (props: Props): JSX.Element => {
       ref: inputRef,
       value: searchKeyword,
       onChange: changeSearchTextHandler,
-      onKeyDown: keyDownHandler,
     });
-  }, [getInputProps, searchKeyword, changeSearchTextHandler, keyDownHandler]);
+  }, [getInputProps, searchKeyword, changeSearchTextHandler]);
 
   useEffect(() => {
     if (inputRef.current != null) {
@@ -55,6 +51,8 @@ export const SearchForm = (props: Props): JSX.Element => {
   });
 
   return (
-    <input {...inputOptions} />
+    <form className="w-100" onSubmit={submitHandler}>
+      <input {...inputOptions} />
+    </form>
   );
 };

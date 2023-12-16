@@ -31,7 +31,7 @@ const SearchModal = (): JSX.Element => {
     closeSearchModal();
   }, [closeSearchModal, router]);
 
-  const enterKeyDownHandlerWithoutSelectedItem = useCallback(() => {
+  const submitHandler = useCallback(() => {
     router.push(`/_search?q=${searchKeyword}`);
     closeSearchModal();
   }, [closeSearchModal, router, searchKeyword]);
@@ -57,17 +57,14 @@ const SearchModal = (): JSX.Element => {
             setHighlightedIndex,
           }) => (
             <div {...getRootProps({}, { suppressRefError: true })}>
-
               <div className="text-muted d-flex justify-content-center align-items-center">
                 <span className="material-symbols-outlined fs-4 me-3">search</span>
                 <SearchForm
-                  highlightedIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
-                  onChangeSearchText={changeSearchTextHandler}
-                  onEnterKeyDownHandler={enterKeyDownHandlerWithoutSelectedItem}
+                  onChange={changeSearchTextHandler}
+                  onSubmit={submitHandler}
                   getInputProps={getInputProps}
                 />
-
                 <button
                   type="button"
                   className="btn border-0 d-flex justify-content-center p-0"
