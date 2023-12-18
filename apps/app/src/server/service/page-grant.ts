@@ -79,7 +79,6 @@ type OperatorGrantInfo = {
 
 export interface IPageGrantService {
   isGrantNormalized: (
-    // eslint-disable-next-line max-len
     user,
     targetPath: string,
     grant?: PageGrant,
@@ -480,7 +479,6 @@ class PageGrantService implements IPageGrantService {
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      // eslint-disable-next-line max-len
       user,
       targetPath: string,
       grant?: PageGrant,
