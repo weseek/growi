@@ -107,65 +107,67 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
         </div>
       )}
 
-      <div className="card rounded row">
-        <div className="col-2">
-          <span className="material-symbols-outlined">
-            drag_indicator
-          </span>
-        </div>
-        <div className="col-10">
-          <div className="d-flex justify-content-center align-items-center">
-            <SearchUserTypeahead
-              isEditable={isEditable}
-              selectedUsers={selectedUsers}
-              approvedApproverIds={approvedApproverIds}
-              excludedSearchUserIds={excludedSearchUserIds}
-              onChange={updateApproversHandler}
-              onRemoveApprover={removeApproverHandler}
-              onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
-            />
-
-            { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
-              <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
-            )}
-          </div>
-
-          <div className="d-flex justify-content-center align-items-center mt-3">
-
-            <span className="text-muted">
-              {t('approval_workflow.completion_conditions')}
+      <div className="card rounded">
+        <div className="container row p-0 mx-auto">
+          <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
+            <span className="material-symbols-outlined">
+              drag_indicator
             </span>
+          </div>
+          <div className="col-11 py-3">
+            <div className="d-flex justify-content-center align-items-center">
+              <SearchUserTypeahead
+                isEditable={isEditable}
+                selectedUsers={selectedUsers}
+                approvedApproverIds={approvedApproverIds}
+                excludedSearchUserIds={excludedSearchUserIds}
+                onChange={updateApproversHandler}
+                onRemoveApprover={removeApproverHandler}
+                onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
+              />
 
-            <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
-              <div id="change-approval-type-button">
-                <DropdownToggle
-                  className="btn btn-light btn-sm rounded-pill dropdown-toggle"
-                  disabled={!isChangeableApprovealType}
-                >
-                  {t(`approval_workflow.approval_type.${editingApprovalType}`)}
-                </DropdownToggle>
-                {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                { !isChangeableApprovealType && (
-                  <UncontrolledTooltip
-                    target="change-approval-type-button"
-                    placement="bottom"
-                    fade={false}
+              { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
+                <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
+              )}
+            </div>
+
+            <div className="d-flex justify-content-center align-items-center mt-3">
+
+              <span className="text-muted">
+                {t('approval_workflow.completion_conditions')}
+              </span>
+
+              <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
+                <div id="change-approval-type-button">
+                  <DropdownToggle
+                    className="btn btn-light btn-sm rounded-pill dropdown-toggle"
+                    disabled={!isChangeableApprovealType}
                   >
-                    {t('approval_workflow.cannot_change_approval_type')}
-                  </UncontrolledTooltip>
-                )}
-              </div>
+                    {t(`approval_workflow.approval_type.${editingApprovalType}`)}
+                  </DropdownToggle>
+                  {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                  { !isChangeableApprovealType && (
+                    <UncontrolledTooltip
+                      target="change-approval-type-button"
+                      placement="bottom"
+                      fade={false}
+                    >
+                      {t('approval_workflow.cannot_change_approval_type')}
+                    </UncontrolledTooltip>
+                  )}
+                </div>
 
-              <DropdownMenu>
-                <DropdownItem
-                  onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
-                >  { isApprovalTypeAnd
-                    ? <>{t('approval_workflow.approval_type.OR')}</>
-                    : <>{t('approval_workflow.approval_type.AND')}</>
-                  }
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+                <DropdownMenu>
+                  <DropdownItem
+                    onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
+                  >  { isApprovalTypeAnd
+                      ? <>{t('approval_workflow.approval_type.OR')}</>
+                      : <>{t('approval_workflow.approval_type.AND')}</>
+                    }
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
         </div>
       </div>
