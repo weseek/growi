@@ -22,6 +22,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
   const [inputText, setInputText] = useState('');
+  const [isEditButton, setEditButton] = useState(true);
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -37,7 +38,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const PagePath = useCallback(() => {
     return (
       <>
-        { currentPagePath != null && (
+        {currentPagePath != null && (
           <PagePathNav
             pageId={currentPage._id}
             pagePath={currentPagePath}
@@ -52,14 +53,14 @@ export const PagePathHeader: FC<Props> = (props) => {
     setInputText(inputText);
   };
 
-  console.log(inputText);
+  const handleFinishButtonClick = () => {
+    pagePathSubmitHandler(inputText);
+  };
 
   return (
     <>
       <div onMouseLeave={() => setButtonShown(false)}>
-        <div
-          className="row"
-        >
+        <div className="row">
           <div
             className="col-4"
             onMouseEnter={() => setButtonShown(true)}
@@ -73,25 +74,25 @@ export const PagePathHeader: FC<Props> = (props) => {
               handleInputChange={handleInputChange}
             />
           </div>
-          { isButtonsShown
-          && (
-            <>
-              <div className="col-4">
-                {
-                  isRenameInputShown
-                    ? <button type="button" onClick={() => console.log('完了！')}>完了ボタン</button>
-                    : <button type="button" onClick={() => setRenameInputShown(true)}>編集ボタン</button>
-                }
-              </div>
-              <div className="col-4">
-                <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
-              </div>
-            </>
-          )}
-          { isOpened
-          && (
-            <PageSelectModal />
-          )}
+          {isButtonsShown
+            && (
+              <>
+                <div className="col-4">
+                  {
+                    isEditButton
+                      ? <button type="button" onClick={() => { setRenameInputShown(true); setEditButton(false) }}>編集ボタン</button>
+                      : <button type="button" onClick={() => { setEditButton(true); handleFinishButtonClick() }}>完了ボタン</button>
+                  }
+                </div>
+                <div className="col-4">
+                  <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
+                </div>
+              </>
+            )}
+          {isOpened
+            && (
+              <PageSelectModal />
+            )}
         </div>
       </div>
     </>
