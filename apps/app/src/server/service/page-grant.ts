@@ -77,7 +77,26 @@ type OperatorGrantInfo = {
   userGroupIds: Set<ObjectIdLike>,
 };
 
-class PageGrantService {
+export interface IPageGrantService {
+  isGrantNormalized: (
+    user,
+    targetPath: string,
+    grant?: PageGrant,
+    grantedUserIds?: ObjectIdLike[],
+    grantedGroupIds?: IGrantedGroup[],
+    shouldCheckDescendants?: boolean,
+    includeNotMigratedPages?: boolean,
+    previousGrantedGroupIds?: IGrantedGroup[]
+  ) => Promise<boolean>,
+  separateNormalizableAndNotNormalizablePages: (user, pages) => Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]>,
+  generateUpdateGrantInfoToOverwriteDescendants: (
+    operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
+  ) => Promise<UpdateGrantInfo>,
+  canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>,
+  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>
+}
+
+class PageGrantService implements IPageGrantService {
 
   crowi!: any;
 
@@ -460,7 +479,6 @@ class PageGrantService {
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      // eslint-disable-next-line max-len
       user,
       targetPath: string,
       grant?: PageGrant,

@@ -51,7 +51,7 @@ import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
 
 import { configManager } from './config-manager';
-import PageGrantService from './page-grant';
+import { IPageGrantService } from './page-grant';
 import { preNotifyService } from './pre-notify';
 
 const debug = require('debug')('growi:services:page');
@@ -158,7 +158,7 @@ class PageService {
 
   activityEvent: any;
 
-  pageGrantService: PageGrantService;
+  pageGrantService: IPageGrantService;
 
   constructor(crowi) {
     this.crowi = crowi;
