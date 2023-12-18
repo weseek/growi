@@ -58,7 +58,7 @@ const SearchModal = (): JSX.Element => {
             setHighlightedIndex,
           }) => (
             <div {...getRootProps({}, { suppressRefError: true })}>
-              <div className="text-muted d-flex justify-content-center align-items-center">
+              <div className="text-muted d-flex justify-content-center align-items-center p-1">
                 <span className="material-symbols-outlined fs-4 me-3">search</span>
                 <SearchForm
                   searchKeyword={searchKeyword}
@@ -76,14 +76,14 @@ const SearchModal = (): JSX.Element => {
               </div>
 
               {/* see: https://github.com/downshift-js/downshift/issues/582#issuecomment-423592531 */}
-              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-group">
-                <div className="border-top mt-3 mb-3" />
+              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">
+                <div className="border-top mt-3 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
-                <div className="border-top mt-3 mb-3" />
+                <div className="border-top mt-2 mb-2" />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}

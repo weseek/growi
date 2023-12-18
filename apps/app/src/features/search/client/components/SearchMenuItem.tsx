@@ -20,7 +20,7 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
       index,
       item: { url },
       style: { backgroundColor: isActive ? 'lightblue' : 'white', cursor: 'pointer' },
-      className: 'text-muted mb-2 d-flex',
+      className: 'text-muted d-flex p-1',
     })
   );
 
