@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { FC } from 'react';
 
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -13,7 +13,7 @@ import { ItemsTree } from '../ItemsTree';
 import { TreeItemForModal } from './TreeItemForModal';
 
 
-export const PageSelectModal = () => {
+export const PageSelectModal: FC = () => {
   const {
     data: PageSelectModalData,
     close: closeModal,
@@ -40,8 +40,9 @@ export const PageSelectModal = () => {
       isOpen={isOpened}
       toggle={() => closeModal()}
       centered
+      size="sm"
     >
-      <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
+      <ModalHeader toggle={() => closeModal()}>ページの場所を選択</ModalHeader>
       <ModalBody>
         <ItemsTree
           CustomTreeItem={TreeItemForModal}
@@ -53,12 +54,9 @@ export const PageSelectModal = () => {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="primary">
-          Do Something
+        <Button color="primary" onClick={closeModal}>
+          完了
         </Button>{' '}
-        <Button color="secondary">
-          Cancel
-        </Button>
       </ModalFooter>
     </Modal>
   );
