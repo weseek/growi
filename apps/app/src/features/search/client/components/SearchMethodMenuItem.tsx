@@ -9,14 +9,14 @@ import type { GetItemProps } from '../interfaces/downshift';
 import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
-  highlightedIndex: number | null
+  activeIndex: number | null
   searchKeyword: string
   getItemProps: GetItemProps
 }
 
 export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   const {
-    highlightedIndex, searchKeyword, getItemProps,
+    activeIndex, searchKeyword, getItemProps,
   } = props;
 
   const { t } = useTranslation('commons');
@@ -30,7 +30,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
       { shouldShowMenuItem && (
         <SearchMenuItem
           index={0}
-          highlightedIndex={highlightedIndex}
+          isActive={activeIndex === 0}
           getItemProps={getItemProps}
           url={`/_search?q=${searchKeyword}`}
         >
@@ -44,7 +44,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
       <SearchMenuItem
         index={shouldShowMenuItem ? 1 : 0}
-        highlightedIndex={highlightedIndex}
+        isActive={activeIndex === (shouldShowMenuItem ? 1 : 0)}
         getItemProps={getItemProps}
         url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
       >
@@ -59,7 +59,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
       { shouldShowMenuItem && (
         <SearchMenuItem
           index={2}
-          highlightedIndex={highlightedIndex}
+          isActive={activeIndex === 2}
           getItemProps={getItemProps}
           url={`/_search?q="${searchKeyword}"`}
         >

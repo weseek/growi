@@ -76,16 +76,16 @@ const SearchModal = (): JSX.Element => {
               </div>
 
               {/* see: https://github.com/downshift-js/downshift/issues/582#issuecomment-423592531 */}
-              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">
+              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-group">
                 <div className="border-top mt-3 mb-3" />
                 <SearchMethodMenuItem
-                  highlightedIndex={highlightedIndex}
+                  activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
                 <div className="border-top mt-3 mb-3" />
                 <SearchResultMenuItem
-                  highlightedIndex={highlightedIndex}
+                  activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />

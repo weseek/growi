@@ -10,12 +10,12 @@ import type { GetItemProps } from '../interfaces/downshift';
 import { SearchMenuItem } from './SearchMenuItem';
 
 type Props = {
+  activeIndex: number | null,
   searchKeyword: string,
-  highlightedIndex: number | null,
   getItemProps: GetItemProps,
 }
 export const SearchResultMenuItem = (props: Props): JSX.Element => {
-  const { searchKeyword, highlightedIndex, getItemProps } = props;
+  const { activeIndex, searchKeyword, getItemProps } = props;
 
   const debouncedKeyword = useDebounce(searchKeyword, 500);
 
@@ -49,7 +49,13 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
     <>
       {searchResult?.data
         .map((item, index) => (
-          <SearchMenuItem key={item.data._id} index={getFiexdIndex(index)} highlightedIndex={highlightedIndex} getItemProps={getItemProps} url={item.data._id}>
+          <SearchMenuItem
+            key={item.data._id}
+            index={getFiexdIndex(index)}
+            isActive={getFiexdIndex(index) === activeIndex}
+            getItemProps={getItemProps}
+            url={item.data._id}
+          >
             <UserPicture user={item.data.creator} />
 
             <span className="ms-3 text-break text-wrap">
