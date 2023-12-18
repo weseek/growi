@@ -19,6 +19,7 @@ type Props = {
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
+  isLastApproverGroup: boolean
 }
 
 const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
@@ -31,6 +32,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
     onUpdateApproverGroups,
     onClickAddApproverGroupCard,
     onClickRemoveApproverGroupCard,
+    isLastApproverGroup,
   } = props;
 
   const { t } = useTranslation();
@@ -95,15 +97,29 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
   return (
     <>
       {onClickAddApproverGroupCard != null && groupIndex === 0 && (
-        <div className="text-center my-2">
-          <button
-            type="button"
-            disabled={!isCreatableTopApporverGroup}
-            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
-          >
-            <span className="material-symbols-outlined">add</span>
-            {t('approval_workflow.add_flow')}
-          </button>
+        <div className="d-flex justify-content-center my-2">
+          <div className="row w-75">
+            <div className="col-5"></div>
+            <div className="col-7">
+              <button
+                type="button"
+                disabled={!isCreatableTopApporverGroup}
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                className="btn btn-link w-100 p-0"
+              >
+                <div className="container">
+                  <div className="row">
+                    <div className="col-2">
+                      <span className="material-symbols-outlined">add_circle</span>
+                    </div>
+                    <div className="col-10 ps-2 text-start">
+                      {t('approval_workflow.add_flow')}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
@@ -172,14 +188,47 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
         </div>
       </div>
 
-      {onClickAddApproverGroupCard != null && (
-        <div className="text-center my-2">
+      {onClickAddApproverGroupCard != null && !isLastApproverGroup && (
+        <div className="d-flex justify-content-center my-2">
+          <div className="row w-75">
+            <div className="col-5"></div>
+            <div className="col-7">
+              <button
+                type="button"
+                disabled={!isCreatableTopApporverGroup}
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                className="btn btn-link w-100 p-0"
+              >
+                <div className="container">
+                  <div className="row">
+                    <div className="col-2">
+                      <span className="material-symbols-outlined">add_circle</span>
+                    </div>
+                    <div className="col-10 ps-2 text-start">
+                      {t('approval_workflow.add_flow')}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {onClickAddApproverGroupCard != null && isLastApproverGroup && (
+        <div className="rounded bg-dark mt-5">
           <button
             type="button"
-            disabled={!isCreatableButtomApproverGroup}
-            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
+            className="btn btn-link w-100 my-2"
+            disabled={!isCreatableTopApporverGroup}
+            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
           >
-            {t('approval_workflow.add_flow')}
+            <div className="container d-flex justify-content-center">
+              <span className="material-symbols-outlined">add</span>
+              <div>
+                {t('approval_workflow.add_flow')}
+              </div>
+            </div>
           </button>
         </div>
       )}
@@ -188,13 +237,21 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
 };
 
 export const EditableApproverGroupCards = (props: Props): JSX.Element => {
+
+  const { editingApproverGroups } = props;
+
+  const editingApproverGroupsLength = editingApproverGroups.length;
+
+  const isLastApproverGroup = useCallback(groupIndex => editingApproverGroupsLength - 1 === groupIndex, [editingApproverGroupsLength]);
+
   return (
     <>
-      {props.editingApproverGroups?.map((data, index) => (
+      {editingApproverGroups?.map((data, index) => (
         <EditableApproverGroupCard
           key={data.uuidForRenderList}
           groupIndex={index}
           {...props}
+          isLastApproverGroup={isLastApproverGroup(index)}
         />
       ))}
     </>
