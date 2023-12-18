@@ -50,12 +50,16 @@ export const DrawioModal = (): JSX.Element => {
   });
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
-  const { data: drawioModalDataInEditor } = useDrawioModalForEditor();
+  const { data: drawioModalDataInEditor, close: closeDrawioModalInEdior } = useDrawioModalForEditor();
   const isOpened = drawioModalData?.isOpened ?? false;
   const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
   const editorKey = drawioModalDataInEditor?.editorKey ?? null;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const editor = codeMirrorEditor?.view;
+
+  if ((isOpened || isOpendInEditor) && editorKey == null && drawioModalData?.onSave == null) {
+    closeDrawioModalInEdior();
+  }
 
   const drawioUriWithParams = useMemo(() => {
     if (rendererConfig == null) {
