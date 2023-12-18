@@ -493,14 +493,14 @@ class PageGrantService {
       [PageGrant.GRANT_RESTRICTED]: null, // any page can be restricted
     };
 
-    const userPossessedGroups = await this.getUserPossessedGroups(user);
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
 
     // -- Any grant is allowed if parent is null
     const isAnyGrantApplicable = page.parent == null;
     if (isAnyGrantApplicable) {
       data[PageGrant.GRANT_PUBLIC] = null;
       data[PageGrant.GRANT_OWNER] = null;
-      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userPossessedGroups };
+      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userRelatedGroups };
       return data;
     }
 
@@ -516,7 +516,7 @@ class PageGrantService {
     if (grant === PageGrant.GRANT_PUBLIC) {
       data[PageGrant.GRANT_PUBLIC] = null;
       data[PageGrant.GRANT_OWNER] = null;
-      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userPossessedGroups };
+      data[PageGrant.GRANT_USER_GROUP] = { applicableGroups: userRelatedGroups };
     }
     else if (grant === PageGrant.GRANT_OWNER) {
       const grantedUser = grantedUsers[0];
@@ -568,14 +568,14 @@ class PageGrantService {
     return data;
   }
 
-  async getUserPossessedGroups(user) {
-    const userPossessedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
-    const userPossessedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
+  async getUserRelatedGroups(user) {
+    const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
+    const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
     return [
-      ...userPossessedUserGroups.map((group) => {
+      ...userRelatedUserGroups.map((group) => {
         return { type: GroupType.userGroup, item: group };
       }),
-      ...userPossessedExternalUserGroups.map((group) => {
+      ...userRelatedExternalUserGroups.map((group) => {
         return { type: GroupType.externalUserGroup, item: group };
       }),
     ];
