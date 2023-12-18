@@ -89,7 +89,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
         )
       }
 
-      <UncontrolledButtonDropdown direction="up">
+      <UncontrolledButtonDropdown direction="up" isOpen>
         <Button
           id="caret"
           data-testid="save-page-btn"

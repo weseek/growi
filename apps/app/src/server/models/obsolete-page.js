@@ -638,30 +638,6 @@ export const getPageSchema = (crowi) => {
     return { templateBody, templateTags };
   };
 
-  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
-    const builder = new this.PageQueryBuilder(this.find());
-    builder.addConditionToListOnlyDescendants(parentPage.path);
-
-    if (isV4) {
-      builder.addConditionAsRootOrNotOnTree();
-    }
-    else {
-      builder.addConditionAsOnTree();
-    }
-
-    // add grant conditions
-    await addConditionToFilteringByViewerToEdit(builder, user);
-
-    const grant = parentPage.grant;
-
-    await builder.query.updateMany({}, {
-      grant,
-      grantedGroups: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroups : null,
-      grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
-    });
-
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);

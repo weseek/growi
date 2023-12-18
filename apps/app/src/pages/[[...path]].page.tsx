@@ -3,8 +3,9 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfoForEntity, isPopulated } from '@growi/core';
 import type {
+  GroupType,
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
@@ -29,6 +30,7 @@ import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import PageService from '~/server/service/page';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
@@ -460,16 +462,21 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
+      ancestor.populate('grantedGroups.item');
       const userRelatedGrantedGroups = await pageService.getUserRelatedGrantedGroups(ancestor, user);
-      props.grantData = {
-        grant: ancestor.grant,
-        grantedGroups: userRelatedGrantedGroups.map((group) => {
+      const grantedGroupsInfo = userRelatedGrantedGroups.map((group) => {
+        if (isPopulated(group.item)) {
           return {
             id: group.item._id,
             name: group.item.name,
             type: group.type,
           };
-        }),
+        }
+        return null;
+      }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
+      props.grantData = {
+        grant: ancestor.grant,
+        grantedGroups: grantedGroupsInfo,
       };
     }
   }

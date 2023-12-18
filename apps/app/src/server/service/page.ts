@@ -5,7 +5,10 @@ import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
-import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
+import {
+  GroupType,
+  PageGrant, PageStatus, getIdForRef, isPopulated,
+} from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -14,6 +17,7 @@ import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -41,6 +45,7 @@ import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
+import UserGroup from '../models/user-group';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
@@ -2360,15 +2365,19 @@ class PageService {
   }
 
   /*
- * get all groups of Page that user is related to
- */
-  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<PopulatedGrantedGroup[]> {
-    const populatedPage = await page.populate<{grantedGroups: PopulatedGrantedGroup[] | null}>('grantedGroups.item');
-    const userRelatedGroupIds = [
+   * get all groups of Page that user is related to
+   */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroupIds: string[] = [
       ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
       ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
     ];
-    return populatedPage.grantedGroups?.filter(group => userRelatedGroupIds.includes(group.item._id.toString())) || [];
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return userRelatedGroupIds.includes(group.item._id.toString());
+      }
+      return userRelatedGroupIds.includes(group.item);
+    }) || [];
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
@@ -2398,6 +2407,47 @@ class PageService {
     this.pageEvent.emit('revert', page, updatedPage, user);
 
     return updatedPage;
+  }
+
+  private async applyScopesToDescendantsAsyncronously(parentPage, user, isV4 = false) {
+    const Page = this.crowi.model('Page');
+    const builder = new Page.PageQueryBuilder(Page.find());
+    builder.addConditionToListOnlyDescendants(parentPage.path);
+
+    if (isV4) {
+      builder.addConditionAsRootOrNotOnTree();
+    }
+    else {
+      builder.addConditionAsOnTree();
+    }
+
+    // add grant conditions
+    await Page.addConditionToFilteringByViewerToEdit(builder, user);
+
+    const grant = parentPage.grant;
+
+    if (grant === PageGrant.GRANT_USER_GROUP) {
+      const userRelatedParentGrantedGroups = await this.getUserRelatedGrantedGroups(parentPage, user);
+      const childPages = await builder.query;
+      const childPageUpdatePromises = childPages.map((childPage) => {
+        return (async() => {
+          const childGrantedGroups = childPage.grantedGroups || [];
+          const userRelatedChildGrantedGroupIds = (await this.getUserRelatedGrantedGroups(childPage, user)).map(g => getIdForRef(g.item));
+          const userUnrelatedChildGrantedGroups = childGrantedGroups.filter(g => userRelatedChildGrantedGroupIds.includes(getIdForRef(g.item)));
+          const newChildGrantedGroups = [...userUnrelatedChildGrantedGroups, ...userRelatedParentGrantedGroups];
+          childPage.grantedGroups = newChildGrantedGroups;
+          childPage.save();
+        })();
+      });
+      await Promise.all(childPageUpdatePromises);
+    }
+    else {
+      await builder.query.updateMany({}, {
+        grant,
+        grantedGroups: null,
+        grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
+      });
+    }
   }
 
   /**
@@ -3844,7 +3894,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await Page.applyScopesToDescendantsAsyncronously(page, user);
+      await this.applyScopesToDescendantsAsyncronously(page, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -3896,7 +3946,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendantsAsyncronously(savedPage, user, true);
     }
 
     return savedPage;
@@ -4049,7 +4099,7 @@ class PageService {
 
     // 3. Update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await Page.applyScopesToDescendantsAsyncronously(currentPage, user);
+      await this.applyScopesToDescendantsAsyncronously(currentPage, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -4214,7 +4264,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendantsAsyncronously(savedPage, user, true);
     }
 
 
