@@ -454,11 +454,6 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }

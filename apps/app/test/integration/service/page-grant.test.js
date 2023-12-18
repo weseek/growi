@@ -33,6 +33,7 @@ describe('PageGrantService', () => {
 
   let groupParent;
   let groupChild;
+  let differentTreeGroup;
 
   let externalGroupParent;
   let externalGroupChild;
@@ -51,10 +52,13 @@ describe('PageGrantService', () => {
   const emptyPagePath2 = '/E2';
   const emptyPagePath3 = '/E3';
 
+  let multipleGroupTreesAndUsersPage;
+
   let pageRootPublic;
   let pageRootGroupParent;
   const pageRootPublicPath = '/Public';
   const pageRootGroupParentPath = '/GroupParent';
+  const pageMultipleGroupTreesAndUsersPath = '/MultipleGroupTreesAndUsers';
 
   const v4PageRootOnlyMePagePath = '/v4OnlyMe';
   const v4PageRootAnyoneWithTheLinkPagePath = '/v4AnyoneWithTheLink';
@@ -102,10 +106,15 @@ describe('PageGrantService', () => {
         name: 'GroupChild',
         parent: userGroupIdParent,
       },
+      {
+        name: 'DifferentTreeGroup',
+        parent: null,
+      },
     ]);
 
     groupParent = await UserGroup.findOne({ name: 'GroupParent' });
     groupChild = await UserGroup.findOne({ name: 'GroupChild' });
+    differentTreeGroup = await UserGroup.findOne({ name: 'DifferentTreeGroup' });
 
     // UserGroupRelations
     await UserGroupRelation.insertMany([
@@ -119,6 +128,10 @@ describe('PageGrantService', () => {
       },
       {
         relatedGroup: groupChild._id,
+        relatedUser: user1._id,
+      },
+      {
+        relatedGroup: differentTreeGroup._id,
         relatedUser: user1._id,
       },
     ]);
@@ -198,7 +211,18 @@ describe('PageGrantService', () => {
         grantedGroups: [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }],
         parent: rootPage._id,
       },
+      {
+        path: pageMultipleGroupTreesAndUsersPath,
+        grant: Page.GRANT_USER_GROUP,
+        creator: user1,
+        lastUpdateUser: user1,
+        grantedUsers: null,
+        grantedGroups: [{ item: groupParent._id, type: GroupType.userGroup }, { item: differentTreeGroup._id, type: GroupType.userGroup }],
+        parent: null,
+      },
     ]);
+
+    multipleGroupTreesAndUsersPage = await Page.findOne({ path: pageMultipleGroupTreesAndUsersPath });
 
     await Page.insertMany([
       // Root Page
@@ -505,7 +529,7 @@ describe('PageGrantService', () => {
       expect(result).toBe(true);
     });
 
-    test('Should return false when Target: owned by UserA, Descendant: public', async() => {
+    test('Should return false when Target: owned by User1, Descendant: public', async() => {
       const targetPath = emptyPagePath1;
       const grant = Page.GRANT_OWNER;
       const grantedUserIds = [user1._id];
@@ -518,6 +542,49 @@ describe('PageGrantService', () => {
     });
   });
 
+  describe('Test isGrantNormalized method with previousGrantedGroupIds given', () => {
+    test('Should return true when Target: completely owned by User1 (belongs to all groups)', async() => {
+      const targetPath = pageMultipleGroupTreesAndUsersPath;
+      const grant = Page.GRANT_PUBLIC;
+      const grantedUserIds = null;
+      const grantedGroupIds = null;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(
+        user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      );
+
+      expect(result).toBe(true);
+    });
+
+    test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to public grant', async() => {
+      const targetPath = pageMultipleGroupTreesAndUsersPath;
+      const grant = Page.GRANT_PUBLIC;
+      const grantedUserIds = null;
+      const grantedGroupIds = null;
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(
+        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    test('Should return false when Target: partially owned by User2, and change to group grant without any groups of user2', async() => {
+      const targetPath = pageMultipleGroupTreesAndUsersPath;
+      const grant = Page.GRANT_USER_GROUP;
+      const grantedUserIds = null;
+      const grantedGroupIds = [{ item: differentTreeGroup._id, type: GroupType.userGroup }];
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(
+        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      );
+
+      expect(result).toBe(false);
+    });
+  });
 
   describe('Test for calcApplicableGrantData', () => {
     test('Only Public is Applicable in case of top page', async() => {

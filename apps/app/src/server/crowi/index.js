@@ -712,11 +712,12 @@ Crowi.prototype.setupGrowiPluginService = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  if (this.pageService == null) {
-    this.pageService = new PageService(this);
-  }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
+  }
+  // initialize after pageGrantService since pageService uses pageGrantService in constructor
+  if (this.pageService == null) {
+    this.pageService = new PageService(this);
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
