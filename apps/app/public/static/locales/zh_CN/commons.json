@@ -80,7 +80,7 @@
   "create_page_dropdown": {
     "new_page": "新页面",
     "todays": {
-      "desc": "Create today's ...",
+      "desc": "Create today's memo",
       "memo": "memo"
     },
     "template": {

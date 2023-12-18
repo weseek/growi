@@ -79,7 +79,7 @@
   "create_page_dropdown": {
     "new_page": "新規ページ作成",
     "todays": {
-      "desc": "今日の◯◯を作成",
+      "desc": "今日のメモを作成",
       "memo": "メモ"
     },
     "template": {
