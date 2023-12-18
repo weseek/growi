@@ -19,10 +19,9 @@ type Props = {
   onUpdateApproverGroups?: (groupIndex: number, updateApproverGroupData: EditingApproverGroup) => void
   onClickAddApproverGroupCard?: (groupIndex: number) => void
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
-  isLastApproverGroup: boolean
 }
 
-const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
+const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastApproverGroup: boolean }): JSX.Element => {
   const {
     groupIndex,
     approvedApproverIds,
@@ -196,7 +195,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
               <button
                 type="button"
                 disabled={!isCreatableTopApporverGroup}
-                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
                 className="btn btn-link w-100 p-0"
               >
                 <div className="container">
@@ -221,7 +220,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
             type="button"
             className="btn btn-link w-100 my-2"
             disabled={!isCreatableTopApporverGroup}
-            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
           >
             <div className="container d-flex justify-content-center">
               <span className="material-symbols-outlined">add</span>
