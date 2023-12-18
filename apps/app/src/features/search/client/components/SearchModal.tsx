@@ -26,8 +26,8 @@ const SearchModal = (): JSX.Element => {
     setSearchKeyword(searchText);
   }, []);
 
-  const selectSearchMenuItemHandler = useCallback((url: string) => {
-    router.push(url);
+  const selectSearchMenuItemHandler = useCallback((selectedItem: DownshiftItem) => {
+    router.push(selectedItem.url);
     closeSearchModal();
   }, [closeSearchModal, router]);
 
@@ -46,7 +46,8 @@ const SearchModal = (): JSX.Element => {
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
         <Downshift
-          onSelect={(selectedItem: DownshiftItem) => { selectSearchMenuItemHandler(selectedItem.url) }}
+          onSelect={selectSearchMenuItemHandler}
+          defaultIsOpen
         >
           {({
             getRootProps,
@@ -78,14 +79,14 @@ const SearchModal = (): JSX.Element => {
               <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">
                 <div className="border-top mt-3 mb-3" />
                 <SearchMethodMenuItem
-                  searchKeyword={searchKeyword}
                   highlightedIndex={highlightedIndex}
+                  searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
                 <div className="border-top mt-3 mb-3" />
                 <SearchResultMenuItem
-                  searchKeyword={searchKeyword}
                   highlightedIndex={highlightedIndex}
+                  searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
               </ul>
