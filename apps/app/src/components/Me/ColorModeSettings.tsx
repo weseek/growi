@@ -1,23 +1,8 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { UncontrolledTooltip } from 'reactstrap';
-
 
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
-
-import MoonIcon from '../Icons/MoonIcon';
-import SunIcon from '../Icons/SunIcon';
-
-
-const IconWithTooltip = ({
-  id, label, children, additionalClasses,
-}) => (
-  <>
-    <div id={id} className={`px-2 grw-icon-container ${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
-    <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
-  </>
-);
 
 export const ColorModeSettings = (): JSX.Element => {
   const { t } = useTranslation('commons');
@@ -42,15 +27,14 @@ export const ColorModeSettings = (): JSX.Element => {
   return (
     <>
       <h2 className="border-bottom mb-4">{t('personal_dropdown.color_mode')}</h2>
-      <form className="px-4">
-        <div className="justify-content-center">
-          <div className="col-auto d-flex align-items-center">
 
-            <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-              <SunIcon />
-            </IconWithTooltip>
+      <form className="row justify-content-center">
 
-            <div className="form-check form-switch form-check-secondary ms-2">
+        <div className="col-md-6">
+
+          <div className="d-flex align-items-center mb-3">
+            <span className="material-symbols-outlined me-2">light_mode</span>
+            <div className="form-check form-switch">
               <input
                 id="swUserPreference"
                 className="form-check-input"
@@ -59,30 +43,25 @@ export const ColorModeSettings = (): JSX.Element => {
                 disabled={useOsSettings}
                 onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
               />
-              <label className="form-label form-check-label" htmlFor="swUserPreference"></label>
             </div>
+            <span className="material-symbols-outlined">dark_mode</span>
 
-            <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-              <MoonIcon />
-            </IconWithTooltip>
+            <label className="form-label form-check-label ms-2 mt-2" htmlFor="swUserPreference">
+              カラーモードを選択する
+            </label>
+          </div>
+
+          <div className="form-check">
+            <input
+              id="cbFollowOs"
+              className="form-check-input"
+              type="checkbox"
+              checked={useOsSettings}
+              onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
+            />
+            <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
           </div>
         </div>
-
-        <div>
-          <div className="col-auto">
-            <div className="form-check">
-              <input
-                id="cbFollowOs"
-                className="form-check-input"
-                type="checkbox"
-                checked={useOsSettings}
-                onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
-              />
-              <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
-            </div>
-          </div>
-        </div>
-
       </form>
     </>
   );
