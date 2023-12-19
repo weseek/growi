@@ -7,7 +7,7 @@ const OtherSettings = (): JSX.Element => {
   return (
     <>
       <div className="mt-4">
-        <QuestionnaireSettings />
+        <ColorModeSettings />
       </div>
 
       <div className="mt-4">
@@ -15,7 +15,7 @@ const OtherSettings = (): JSX.Element => {
       </div>
 
       <div className="mt-4">
-        <ColorModeSettings />
+        <QuestionnaireSettings />
       </div>
     </>
   );
