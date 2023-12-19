@@ -57,7 +57,7 @@ export const DrawioModal = (): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const editor = codeMirrorEditor?.view;
 
-  if ((isOpened || isOpendInEditor) && editorKey == null && drawioModalData?.onSave == null) {
+  if (isOpendInEditor && editor == null) {
     closeDrawioModalInEdior();
   }
 
