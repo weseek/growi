@@ -7,7 +7,7 @@ import { Themes, useNextThemes } from '~/stores/use-next-themes';
 import { IconWithTooltip } from './IconWIthTooltip';
 
 export const ColorModeSettings = (): JSX.Element => {
-  const { t } = useTranslation('commons');
+  const { t } = useTranslation();
 
   const {
     setTheme, resolvedTheme, useOsSettings, isDarkMode,
@@ -28,7 +28,7 @@ export const ColorModeSettings = (): JSX.Element => {
 
   return (
     <>
-      <h2 className="border-bottom mb-4">{t('personal_dropdown.color_mode')}</h2>
+      <h2 className="border-bottom mb-4">{t('ui_settings.color_mode.settings')}</h2>
 
       <form className="row justify-content-center">
 
@@ -53,7 +53,7 @@ export const ColorModeSettings = (): JSX.Element => {
             </IconWithTooltip>
 
             <label className="form-label form-check-label ms-2 mt-2" htmlFor="swUserPreference">
-              カラーモードを選択する
+              {t('ui_settings.color_mode.description')}
             </label>
           </div>
 
@@ -65,7 +65,7 @@ export const ColorModeSettings = (): JSX.Element => {
               checked={useOsSettings}
               onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
             />
-            <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('personal_dropdown.use_os_settings')}</label>
+            <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('ui_settings.color_mode.use_os_settings')}</label>
           </div>
         </div>
       </form>
