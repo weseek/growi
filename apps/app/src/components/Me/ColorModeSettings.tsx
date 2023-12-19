@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
+import { IconWithTooltip } from './IconWIthTooltip';
+
 export const ColorModeSettings = (): JSX.Element => {
   const { t } = useTranslation('commons');
 
@@ -33,7 +35,9 @@ export const ColorModeSettings = (): JSX.Element => {
         <div className="col-md-6">
 
           <div className="d-flex align-items-center mb-3">
-            <span className="material-symbols-outlined me-2">light_mode</span>
+            <IconWithTooltip id="iwt-light" label="Light">
+              <span className="material-symbols-outlined me-2">light_mode</span>
+            </IconWithTooltip>
             <div className="form-check form-switch">
               <input
                 id="swUserPreference"
@@ -44,7 +48,9 @@ export const ColorModeSettings = (): JSX.Element => {
                 onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
               />
             </div>
-            <span className="material-symbols-outlined">dark_mode</span>
+            <IconWithTooltip id="iwt-dark" label="Dark">
+              <span className="material-symbols-outlined">dark_mode</span>
+            </IconWithTooltip>
 
             <label className="form-label form-check-label ms-2 mt-2" htmlFor="swUserPreference">
               カラーモードを選択する
