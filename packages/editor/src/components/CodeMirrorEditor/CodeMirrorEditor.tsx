@@ -25,6 +25,7 @@ type Props = {
   acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
+  onScroll?: (line: number) => void,
   indentSize?: number,
 }
 
@@ -34,6 +35,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     acceptedFileType,
     onChange,
     onUpload,
+    onScroll,
     indentSize,
   } = props;
 
@@ -99,6 +101,23 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor]);
+
+  useEffect(() => {
+
+    const handleScroll = () => {
+      if (onScroll != null && codeMirrorEditor?.view?.documentTop != null) {
+        onScroll(codeMirrorEditor.view.documentTop);
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      scroll: handleScroll,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [onScroll, codeMirrorEditor]);
 
   const {
     getRootProps,
