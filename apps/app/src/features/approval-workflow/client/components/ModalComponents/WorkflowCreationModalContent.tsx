@@ -138,7 +138,6 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         >
           {t('approval_workflow.create')}
         </button>
-        <button type="button">ボタン！</button>
       </ModalFooter>
     </>
   );
