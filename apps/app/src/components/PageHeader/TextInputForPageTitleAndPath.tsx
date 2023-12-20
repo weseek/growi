@@ -20,7 +20,7 @@ type Props = {
   currentPage: IPagePopulatedToShowRevision
   stateHandler: StateHandler
   inputValue: string
-  CustomComponent: () => JSX.Element
+  CustomComponent: JSX.Element
   handleInputChange?: (string) => void
 }
 
@@ -49,7 +49,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
           />
         </div>
       ) : (
-        <CustomComponent />
+        { CustomComponent }
       )}
     </>
   );

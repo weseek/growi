@@ -1,4 +1,6 @@
-import { FC, useCallback, useState } from 'react';
+import {
+  FC, useMemo, useState,
+} from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 
@@ -35,19 +37,17 @@ export const PagePathHeader: FC<Props> = (props) => {
   const isViewMode = editorMode === EditorMode.View;
   const isEditorMode = !isViewMode;
 
-  const PagePath = useCallback(() => {
-    return (
-      <>
-        {currentPagePath != null && (
-          <PagePathNav
-            pageId={currentPage._id}
-            pagePath={currentPagePath}
-            isSingleLineMode={isEditorMode}
-          />
-        )}
-      </>
-    );
-  }, [currentPage._id, currentPagePath, isEditorMode]);
+  const PagePath = useMemo(() => (
+    <>
+      {currentPagePath != null && (
+        <PagePathNav
+          pageId={currentPage._id}
+          pagePath={currentPagePath}
+          isSingleLineMode={isEditorMode}
+        />
+      )}
+    </>
+  ), [currentPage._id, currentPagePath, isEditorMode]);
 
   const handleInputChange = (inputText: string) => {
     setInputText(inputText);

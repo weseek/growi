@@ -1,4 +1,4 @@
-import { FC, useState, useCallback } from 'react';
+import { FC, useState, useMemo } from 'react';
 
 import nodePath from 'path';
 
@@ -20,11 +20,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
-  const PageTitle = useCallback(() => {
-    return (
-      <div onClick={() => setRenameInputShown(true)}>{pageName}</div>
-    );
-  }, [pageName]);
+  const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageName}</div>), [pageName]);
 
   return (
     <TextInputForPageTitleAndPath
