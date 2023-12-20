@@ -246,12 +246,14 @@
       "settings": "侧边栏模式设置",
       "side_bar_mode_setting": "设置侧边栏模式",
       "description": "您可以设置当屏幕宽度较大时，侧边栏是否始终打开。 如果屏幕宽度较小，侧边栏将始终关闭。"
-    },
-    "color_mode": {
-      "settings": "色彩模式设置",
-      "use_os_settings": "使用操作系统设置",
-      "description": "选择颜色模式"
     }
+  },
+  "color_mode_settings": {
+    "light": "灯光",
+    "dark": "暗处",
+    "system": "系统",
+    "settings": "色彩模式设置",
+    "description": "选择是以浅色模式、深色模式还是系统特定的显示方式显示。<br>只能切换支持的主题。"
   },
   "editor_settings": {
     "editor_settings": "编辑器设置"

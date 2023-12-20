@@ -4,71 +4,57 @@ import { useTranslation } from 'react-i18next';
 
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
-import { IconWithTooltip } from './IconWIthTooltip';
-
 export const ColorModeSettings = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const {
-    setTheme, resolvedTheme, useOsSettings, isDarkMode,
-  } = useNextThemes();
+  const { setTheme, theme } = useNextThemes();
 
-  const userPreferenceSwitchModifiedHandler = useCallback((isDarkMode: boolean) => {
-    setTheme(isDarkMode ? Themes.DARK : Themes.LIGHT);
-  }, [setTheme]);
-
-  const followOsCheckboxModifiedHandler = useCallback((isChecked: boolean) => {
-    if (isChecked) {
-      setTheme(Themes.SYSTEM);
-    }
-    else {
-      setTheme(resolvedTheme ?? Themes.LIGHT);
-    }
-  }, [resolvedTheme, setTheme]);
+  const isActive = useCallback((targetTheme: Themes) => {
+    return targetTheme === theme;
+  }, [theme]);
 
   return (
     <>
-      <h2 className="border-bottom mb-4">{t('ui_settings.color_mode.settings')}</h2>
+      <h2 className="border-bottom mb-4">{t('color_mode_settings.settings')}</h2>
 
-      <form className="row justify-content-center">
+      <div className="offset-md-3">
+        <div className="d-flex">
+          <button
+            type="button"
+            onClick={() => { setTheme(Themes.LIGHT) }}
+            // eslint-disable-next-line max-len
+            className={`btn py-2 px-4 me-3 d-flex align-items-center justify-content-center ${isActive(Themes.LIGHT) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
+          >
+            <span className="material-symbols-outlined fs-5 me-1">light_mode</span>
+            <span>{t('color_mode_settings.light')}</span>
+          </button>
 
-        <div className="col-md-6">
+          <button
+            type="button"
+            onClick={() => { setTheme(Themes.DARK) }}
+            // eslint-disable-next-line max-len
+            className={`btn py-2 px-4 me-3 d-flex align-items-center justify-content-center ${isActive(Themes.DARK) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
+          >
+            <span className="material-symbols-outlined fs-5 me-1">dark_mode</span>
+            <span>{t('color_mode_settings.dark')}</span>
+          </button>
 
-          <div className="d-flex align-items-center mb-3">
-            <IconWithTooltip id="iwt-light" label="Light">
-              <span className="material-symbols-outlined me-2">light_mode</span>
-            </IconWithTooltip>
-            <div className="form-check form-switch">
-              <input
-                id="swUserPreference"
-                className="form-check-input"
-                type="checkbox"
-                checked={isDarkMode}
-                disabled={useOsSettings}
-                onChange={e => userPreferenceSwitchModifiedHandler(e.target.checked)}
-              />
-            </div>
-            <IconWithTooltip id="iwt-dark" label="Dark">
-              <span className="material-symbols-outlined">dark_mode</span>
-            </IconWithTooltip>
-
-            <label className="form-label form-check-label ms-2 mt-2" htmlFor="swUserPreference">
-              {t('ui_settings.color_mode.description')}
-            </label>
-          </div>
-
-          <div className="form-check">
-            <input
-              id="cbFollowOs"
-              className="form-check-input"
-              type="checkbox"
-              checked={useOsSettings}
-              onChange={e => followOsCheckboxModifiedHandler(e.target.checked)}
-            />
-            <label className="form-label form-check-label text-nowrap" htmlFor="cbFollowOs">{t('ui_settings.color_mode.use_os_settings')}</label>
-          </div>
+          <button
+            type="button"
+            onClick={() => { setTheme(Themes.SYSTEM) }}
+            // eslint-disable-next-line max-len
+            className={`btn py-2 px-4 d-flex align-items-center justify-content-center ${isActive(Themes.SYSTEM) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
+          >
+            <span className="material-symbols-outlined fs-5 me-1">devices</span>
+            <span>{t('color_mode_settings.system')}</span>
+          </button>
         </div>
-      </form>
+
+        <div className="mt-3 text-muted">
+          {/* eslint-disable-next-line react/no-danger */}
+          <span dangerouslySetInnerHTML={{ __html: t('color_mode_settings.description') }} />
+        </div>
+      </div>
     </>
   );
 };
