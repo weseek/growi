@@ -258,6 +258,13 @@
       "description": "画面幅が大きい場合に、サイドバーを常時開いた状態にするかどうかを設定できます。画面幅が小さい場合はサイドバーは常に閉じた状態となります。"
     }
   },
+  "color_mode_settings": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム",
+    "settings": "カラーモードの設定",
+    "description": "ライトモードかダークモード、もしくはシステム合わせた表示をするか選択します。<br>対応したテーマのみ切り替えることができます。"
+  },
   "editor_settings": {
     "editor_settings": "エディター設定",
     "common_settings": {

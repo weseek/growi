@@ -257,6 +257,13 @@
       "description": "You can set whether or not the sidebar will always be open when the screen width is large. If the screen width is small, the sidebar will always be closed."
     }
   },
+  "color_mode_settings": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "settings": "Color mode settings",
+    "description": "Select whether to display in light mode, dark mode, or a system-specific display.<br>Only supported themes can be switched."
+  },
   "editor_settings": {
     "editor_settings": "Editor Settings"
   },
