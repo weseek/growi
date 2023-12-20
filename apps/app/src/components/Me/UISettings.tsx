@@ -1,18 +1,30 @@
 import { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import { updateUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
 
-import { IconWithTooltip } from './IconWIthTooltip';
 import SidebarCollapsedIcon from './SidebarCollapsedIcon';
 import SidebarDockIcon from './SidebarDockIcon';
 
-
 import styles from './UISettings.module.scss';
 
+const IconWithTooltip = ({
+  id, label, children, additionalClasses,
+}: {
+id: string,
+label: string,
+children: JSX.Element,
+additionalClasses: string
+}) => (
+  <>
+    <div id={id} className={`${additionalClasses != null ? additionalClasses : ''}`}>{children}</div>
+    <UncontrolledTooltip placement="bottom" fade={false} target={id}>{label}</UncontrolledTooltip>
+  </>
+);
 
 export const UISettings = (): JSX.Element => {
   const { t } = useTranslation();
@@ -43,7 +55,6 @@ export const UISettings = (): JSX.Element => {
       <>
         <div className="d-flex align-items-start">
           <div className="d-flex align-items-center">
-
             <IconWithTooltip
               id="iwt-sidebar-collapsed"
               label="Collapsed"
