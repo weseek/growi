@@ -49,6 +49,9 @@
 * imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
 * imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
 
+### 🐛 Bug Fixes
+* fix: Certify shared page attachment middleware (6.2.x) (#8256) @yuki-takei
+
 ### 🧰 Maintenance
 
 * support: Refactor deleteCompletelyUserHomeBySystem (#8262) @jam411
