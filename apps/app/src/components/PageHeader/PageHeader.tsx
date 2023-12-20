@@ -15,16 +15,14 @@ export const PageHeader: FC = () => {
 
   return (
     <>
-      <div>
-        <PagePathHeader
-          currentPagePath={currentPagePath}
-          currentPage={currentPage}
-        />
-        <PageTitleHeader
-          currentPagePath={currentPagePath}
-          currentPage={currentPage}
-        />
-      </div>
+      <PagePathHeader
+        currentPagePath={currentPagePath}
+        currentPage={currentPage}
+      />
+      <PageTitleHeader
+        currentPagePath={currentPagePath}
+        currentPage={currentPage}
+      />
     </>
   );
 };
