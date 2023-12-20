@@ -12,6 +12,8 @@ import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 import { EditableApproverGroupCards } from './EditableApproverGroupCards';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
+import styles from './WorkflowCreationModalContent.module.scss';
+
 type Props = {
   pageId: string,
   onCreated?: () => void
@@ -75,7 +77,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         <div className="col-9 mx-auto">
           <div className="mb-3">
             <div className="row align-items-center">
-              <label htmlFor="name" className="col-md-4 col-form-label align-items-center">
+              <label htmlFor="name" className="col-md-4 col-form-label text-center">
                 {t('approval_workflow.name')}
               </label>
               <div className="col-md-8 mb-3">
@@ -95,7 +97,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
             </div>
 
             <div className="row">
-              <label htmlFor="description" className="col-md-4 col-form-label align-items-center">
+              <label htmlFor="description" className="col-md-4 col-form-label text-center">
                 {t('approval_workflow.description')}
               </label>
               <div className="col-md-8">
@@ -113,13 +115,15 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
             </div>
           </div>
 
-          <EditableApproverGroupCards
-            editingApproverGroups={editingApproverGroups}
-            excludedSearchUserIds={excludedSearchUserIds}
-            onUpdateApproverGroups={updateApproverGroupHandler}
-            onClickAddApproverGroupCard={addApproverGroupHandler}
-            onClickRemoveApproverGroupCard={removeApproverGroupHandler}
-          />
+          <div className={styles['workflow-creation-modal-content']}>
+            <EditableApproverGroupCards
+              editingApproverGroups={editingApproverGroups}
+              excludedSearchUserIds={excludedSearchUserIds}
+              onUpdateApproverGroups={updateApproverGroupHandler}
+              onClickAddApproverGroupCard={addApproverGroupHandler}
+              onClickRemoveApproverGroupCard={removeApproverGroupHandler}
+            />
+          </div>
 
           <p className="my-3 text-muted text-center">{t('approval_workflow.description_for_new_creation')}</p>
         </div>
@@ -134,6 +138,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
         >
           {t('approval_workflow.create')}
         </button>
+        <button type="button">ボタン！</button>
       </ModalFooter>
     </>
   );

@@ -104,12 +104,12 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
                 type="button"
                 disabled={!isCreatableTopApporverGroup}
                 onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
-                className="btn btn-link w-100 p-0"
+                className="btn btn-link w-100 p-0 border-0 opacity-100"
               >
                 <div className="container">
                   <div className="row">
                     <div className="col-2">
-                      <span className="material-symbols-outlined">add_circle</span>
+                      <span className="material-symbols-outlined text-light bg-secondary rounded-circle">add</span>
                     </div>
                     <div className="col-10 ps-2 text-start">
                       {t('approval_workflow.add_flow')}
@@ -141,27 +141,28 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
                 onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
               />
 
-              { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
+              {isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
                 <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
               )}
             </div>
 
             <div className="d-flex justify-content-center align-items-center mt-3">
 
-              <span className="text-muted">
+              <span className="text-muted me-2">
                 {t('approval_workflow.completion_conditions')}
               </span>
 
               <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
                 <div id="change-approval-type-button">
                   <DropdownToggle
-                    className="btn btn-light btn-sm rounded-pill dropdown-toggle"
+                    className="btn btn-sm rounded-pill dropdown-toggle px-3 border border-dark-subtle"
                     disabled={!isChangeableApprovealType}
+                    color="light"
                   >
                     {t(`approval_workflow.approval_type.${editingApprovalType}`)}
                   </DropdownToggle>
                   {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                  { !isChangeableApprovealType && (
+                  {!isChangeableApprovealType && (
                     <UncontrolledTooltip
                       target="change-approval-type-button"
                       placement="bottom"
@@ -175,7 +176,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
                 <DropdownMenu>
                   <DropdownItem
                     onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
-                  >  { isApprovalTypeAnd
+                  >  {isApprovalTypeAnd
                       ? <>{t('approval_workflow.approval_type.OR')}</>
                       : <>{t('approval_workflow.approval_type.AND')}</>
                     }
@@ -195,13 +196,13 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
               <button
                 type="button"
                 disabled={!isCreatableTopApporverGroup}
-                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
-                className="btn btn-link w-100 p-0"
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                className="btn btn-link w-100 p-0 border-0 opacity-100"
               >
                 <div className="container">
                   <div className="row">
                     <div className="col-2">
-                      <span className="material-symbols-outlined">add_circle</span>
+                      <span className="material-symbols-outlined text-light bg-secondary rounded-circle">add</span>
                     </div>
                     <div className="col-10 ps-2 text-start">
                       {t('approval_workflow.add_flow')}
@@ -215,7 +216,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
       )}
 
       {onClickAddApproverGroupCard != null && isLastApproverGroup && (
-        <div className="rounded bg-dark mt-5">
+        <div className="rounded bg-light-subtle mt-5">
           <button
             type="button"
             className="btn btn-link w-100 my-2"
