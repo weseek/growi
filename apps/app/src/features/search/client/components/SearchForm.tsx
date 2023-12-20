@@ -1,30 +1,48 @@
 import React, {
-  useCallback, useRef, useEffect,
+  useCallback, useRef, useEffect, useMemo,
 } from 'react';
+
+import { GetInputProps } from '../interfaces/downshift';
 
 type Props = {
   searchKeyword: string,
-  onChangeSearchText?: (text: string) => void,
-  onClickClearButton?: () => void,
+  onChange?: (text: string) => void,
+  onSubmit?: () => void,
+  getInputProps: GetInputProps,
 }
+
 export const SearchForm = (props: Props): JSX.Element => {
   const {
-    searchKeyword, onChangeSearchText, onClickClearButton,
+    searchKeyword, onChange, onSubmit, getInputProps,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
 
   const changeSearchTextHandler = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    if (onChangeSearchText != null) {
-      onChangeSearchText(e.target.value);
-    }
-  }, [onChangeSearchText]);
+    onChange?.(e.target.value);
+  }, [onChange]);
 
-  const clickClearButtonHandler = useCallback(() => {
-    if (onClickClearButton != null) {
-      onClickClearButton();
+  const submitHandler = useCallback((e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const isEmptyKeyword = searchKeyword.trim().length === 0;
+    if (isEmptyKeyword) {
+      return;
     }
-  }, [onClickClearButton]);
+
+    onSubmit?.();
+  }, [searchKeyword, onSubmit]);
+
+  const inputOptions = useMemo(() => {
+    return getInputProps({
+      type: 'search',
+      placeholder: 'Search...',
+      className: 'form-control',
+      ref: inputRef,
+      value: searchKeyword,
+      onChange: changeSearchTextHandler,
+    });
+  }, [getInputProps, searchKeyword, changeSearchTextHandler]);
 
   useEffect(() => {
     if (inputRef.current != null) {
@@ -33,25 +51,8 @@ export const SearchForm = (props: Props): JSX.Element => {
   });
 
   return (
-    <div className="text-muted d-flex justify-content-center align-items-center ps-1">
-      <span className="material-symbols-outlined fs-4 me-3">search</span>
-
-      <input
-        ref={inputRef}
-        type="text"
-        className="form-control"
-        placeholder="Search..."
-        value={searchKeyword}
-        onChange={(e) => { changeSearchTextHandler(e) }}
-      />
-
-      <button
-        type="button"
-        className="btn border-0 d-flex justify-content-center p-0"
-        onClick={clickClearButtonHandler}
-      >
-        <span className="material-symbols-outlined fs-4 ms-3">close</span>
-      </button>
-    </div>
+    <form className="w-100" onSubmit={submitHandler}>
+      <input {...inputOptions} />
+    </form>
   );
 };

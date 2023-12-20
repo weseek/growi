@@ -1,9 +1,13 @@
+
 import React, {
   useState, useCallback, useEffect,
 } from 'react';
 
+import Downshift from 'downshift';
+import { useRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 
+import type { DownshiftItem } from '../interfaces/downshift';
 import { useSearchModal } from '../stores/search';
 
 import { SearchForm } from './SearchForm';
@@ -16,13 +20,21 @@ const SearchModal = (): JSX.Element => {
 
   const { data: searchModalData, close: closeSearchModal } = useSearchModal();
 
+  const router = useRouter();
+
   const changeSearchTextHandler = useCallback((searchText: string) => {
     setSearchKeyword(searchText);
   }, []);
 
-  const clickClearButtonHandler = useCallback(() => {
-    setSearchKeyword('');
-  }, []);
+  const selectSearchMenuItemHandler = useCallback((selectedItem: DownshiftItem) => {
+    router.push(selectedItem.url);
+    closeSearchModal();
+  }, [closeSearchModal, router]);
+
+  const submitHandler = useCallback(() => {
+    router.push(`/_search?q=${searchKeyword}`);
+    closeSearchModal();
+  }, [closeSearchModal, router, searchKeyword]);
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
@@ -33,15 +45,54 @@ const SearchModal = (): JSX.Element => {
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
       <ModalBody>
-        <SearchForm
-          searchKeyword={searchKeyword}
-          onChangeSearchText={changeSearchTextHandler}
-          onClickClearButton={clickClearButtonHandler}
-        />
-        <div className="border-top mt-3 mb-3" />
-        <SearchMethodMenuItem searchKeyword={searchKeyword} />
-        <div className="border-top mt-2 mb-2" />
-        <SearchResultMenuItem searchKeyword={searchKeyword} />
+        <Downshift
+          onSelect={selectSearchMenuItemHandler}
+          defaultIsOpen
+        >
+          {({
+            getRootProps,
+            getInputProps,
+            getItemProps,
+            getMenuProps,
+            highlightedIndex,
+            setHighlightedIndex,
+          }) => (
+            <div {...getRootProps({}, { suppressRefError: true })}>
+              <div className="text-muted d-flex justify-content-center align-items-center p-1">
+                <span className="material-symbols-outlined fs-4 me-3">search</span>
+                <SearchForm
+                  searchKeyword={searchKeyword}
+                  onChange={changeSearchTextHandler}
+                  onSubmit={submitHandler}
+                  getInputProps={getInputProps}
+                />
+                <button
+                  type="button"
+                  className="btn border-0 d-flex justify-content-center p-0"
+                  onClick={closeSearchModal}
+                >
+                  <span className="material-symbols-outlined fs-4 ms-3">close</span>
+                </button>
+              </div>
+
+              {/* see: https://github.com/downshift-js/downshift/issues/582#issuecomment-423592531 */}
+              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">
+                <div className="border-top mt-3 mb-2" />
+                <SearchMethodMenuItem
+                  activeIndex={highlightedIndex}
+                  searchKeyword={searchKeyword}
+                  getItemProps={getItemProps}
+                />
+                <div className="border-top mt-2 mb-2" />
+                <SearchResultMenuItem
+                  activeIndex={highlightedIndex}
+                  searchKeyword={searchKeyword}
+                  getItemProps={getItemProps}
+                />
+              </ul>
+            </div>
+          )}
+        </Downshift>
         <SearchHelp />
       </ModalBody>
     </Modal>
