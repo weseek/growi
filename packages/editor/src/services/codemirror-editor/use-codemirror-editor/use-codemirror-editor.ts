@@ -20,6 +20,7 @@ import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/i
 import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
+import { useScrollIntoView, type ScrollIntoView } from './utils/scroll-into-view';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 const markdownHighlighting = HighlightStyle.define([
@@ -41,6 +42,7 @@ type UseCodeMirrorEditorUtils = {
   replaceText: ReplaceText,
   insertMarkdownElements: InsertMarkdowElements,
   insertPrefix: InsertPrefix,
+  scrollIntoView: ScrollIntoView,
 }
 export type UseCodeMirrorEditor = {
   state: EditorState | undefined;
@@ -95,6 +97,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const replaceText = useReplaceText(view);
   const insertMarkdownElements = useInsertMarkdownElements(view);
   const insertPrefix = useInsertPrefix(view);
+  const scrollIntoView = useScrollIntoView(view);
 
   return {
     state,
@@ -108,5 +111,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     replaceText,
     insertMarkdownElements,
     insertPrefix,
+    scrollIntoView,
   };
 };
