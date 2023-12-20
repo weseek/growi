@@ -19,6 +19,7 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
     getItemProps({
       index,
       item: { url },
+      // TOOD: https://redmine.weseek.co.jp/issues/137235
       style: { backgroundColor: isActive ? 'lightblue' : 'white', cursor: 'pointer' },
       className: 'text-muted d-flex p-1',
     })
