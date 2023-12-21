@@ -12,9 +12,9 @@
   "scss.validate": false,
 
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": true,
-    "source.fixAll.markdownlint": true,
-    "source.fixAll.stylelint": true
+    "source.fixAll.eslint": "explicit",
+    "source.fixAll.markdownlint": "explicit",
+    "source.fixAll.stylelint": "explicit"
   },
 
   "githubPullRequests.ignoredPullRequestBranches": [
