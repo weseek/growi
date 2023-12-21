@@ -2,6 +2,8 @@ import React from 'react';
 
 import type { GetItemProps } from '../interfaces/downshift';
 
+import styles from './SearchMenuItem.module.scss';
+
 type Props = {
   url: string
   index: number
@@ -19,13 +21,15 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
     getItemProps({
       index,
       item: { url },
-      className: `d-flex p-1 ${isActive ? 'text-bg-primary' : ''}`,
+      className: `d-flex p-1 text-muted ${isActive ? 'active' : ''}`,
     })
   );
 
   return (
-    <li {...itemMenuOptions}>
-      { children }
-    </li>
+    <div className={`search-menu-item ${styles['search-menu-item']}`}>
+      <li {...itemMenuOptions}>
+        { children }
+      </li>
+    </div>
   );
 };
