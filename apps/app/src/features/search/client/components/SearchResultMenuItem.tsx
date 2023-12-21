@@ -62,7 +62,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
               <PagePathLabel path={item.data.path} />
             </span>
 
-            <span className="ms-2 text-muted d-flex justify-content-center align-items-center">
+            <span className="ms-2 d-flex justify-content-center align-items-center">
               <span className="material-symbols-outlined fs-5">footprint</span>
               <span>{item.data.seenUsers.length}</span>
             </span>
