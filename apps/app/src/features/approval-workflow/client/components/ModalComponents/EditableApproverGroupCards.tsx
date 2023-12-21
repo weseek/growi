@@ -121,7 +121,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
           </div>
         </div>
       )}
-
+      {/* TODO: https://redmine.weseek.co.jp/issues/137322 */}
       <div className="card rounded">
         <div className="container row p-0 mx-auto">
           <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
