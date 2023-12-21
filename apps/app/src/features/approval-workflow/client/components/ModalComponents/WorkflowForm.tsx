@@ -3,9 +3,9 @@ import { FC } from 'react';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
-  editingWorkflowName: string | undefined
+  editingWorkflowName?: string
   workflowNameChangeHandler: (event: React.ChangeEvent<HTMLInputElement>) => void
-  editingWorkflowDescription: string | undefined
+  editingWorkflowDescription?: string
   workflowDescriptionChangeHandler: (event: React.ChangeEvent<HTMLTextAreaElement>) => void
 };
 
