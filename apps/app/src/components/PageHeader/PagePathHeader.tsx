@@ -24,7 +24,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [isEditButton, setEditButton] = useState(true);
+  const [isEditing, setIsEditing] = useState(true);
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -53,8 +53,15 @@ export const PagePathHeader: FC<Props> = (props) => {
     setInputText(inputText);
   };
 
-  const handleFinishButtonClick = () => {
-    pagePathSubmitHandler(inputText);
+  const handleEditButtonClick = () => {
+    setIsEditing(!isEditing);
+
+    if (isEditing) {
+      pagePathSubmitHandler(inputText);
+    }
+    else {
+      setRenameInputShown(true);
+    }
   };
 
   return (
@@ -78,11 +85,9 @@ export const PagePathHeader: FC<Props> = (props) => {
             && (
               <>
                 <div className="col-4">
-                  {
-                    isEditButton
-                      ? <button type="button" onClick={() => { setRenameInputShown(true); setEditButton(false) }}>編集ボタン</button>
-                      : <button type="button" onClick={() => { setEditButton(true); handleFinishButtonClick() }}>完了ボタン</button>
-                  }
+                  <button type="button" onClick={handleEditButtonClick}>
+                    {isEditing ? '完了ボタン' : '編集ボタン'}
+                  </button>
                 </div>
                 <div className="col-4">
                   <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
