@@ -3,18 +3,14 @@ import { useCallback } from 'react';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
-type DrawioModalSaveHandler = () => void;
-
 type DrawioModalStatus = {
   isOpened: boolean,
-  editorKey: string,
-  onSave?: DrawioModalSaveHandler,
+  editorKey: string | undefined,
 }
 
 type DrawioModalStatusUtils = {
   open(
     editorKey: string,
-    onSave?: DrawioModalSaveHandler,
   ): void,
   close(): void,
 }
@@ -22,18 +18,18 @@ type DrawioModalStatusUtils = {
 export const useDrawioModalForEditor = (status?: DrawioModalStatus): SWRResponse<DrawioModalStatus, Error> & DrawioModalStatusUtils => {
   const initialData: DrawioModalStatus = {
     isOpened: false,
-    editorKey: '',
+    editorKey: undefined,
   };
-  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatusForEditor', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
-  const open = useCallback((editorKey: string, onSave?: DrawioModalSaveHandler): void => {
-    mutate({ isOpened: true, editorKey, onSave });
+  const open = useCallback((editorKey: string | undefined): void => {
+    mutate({ isOpened: true, editorKey });
   }, [mutate]);
 
   const close = useCallback((): void => {
-    mutate({ isOpened: false, editorKey: '', onSave: undefined });
+    mutate({ isOpened: false, editorKey: undefined });
   }, [mutate]);
 
   return {
