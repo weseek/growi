@@ -10,7 +10,9 @@ import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRMUTxCreateWorkflow } from '../../stores/workflow';
 
 import { EditableApproverGroupCards } from './EditableApproverGroupCards';
+import { WorkflowForm } from './WorkflowForm';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
+
 
 import styles from './WorkflowCreationModalContent.module.scss';
 
@@ -75,45 +77,12 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
 
       <ModalBody>
         <div className="col-9 mx-auto">
-          <div className="mb-3">
-            <div className="row align-items-center">
-              <label htmlFor="name" className="col-md-4 col-form-label text-center">
-                {t('approval_workflow.name')}
-              </label>
-              <div className="col-md-8 mb-3">
-                <div className="row">
-                  <div className="col">
-                    <input
-                      className="form-control"
-                      type="text"
-                      name="name"
-                      value={editingWorkflowName}
-                      onChange={workflowNameChangeHandler}
-                      required
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="row">
-              <label htmlFor="description" className="col-md-4 col-form-label text-center">
-                {t('approval_workflow.description')}
-              </label>
-              <div className="col-md-8">
-                <div className="row">
-                  <div className="col">
-                    <textarea
-                      className="form-control"
-                      name="description"
-                      value={editingWorkflowDescription}
-                      onChange={workflowDescriptionChangeHandler}
-                    />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <WorkflowForm
+            editingWorkflowName={editingWorkflowName}
+            workflowNameChangeHandler={workflowNameChangeHandler}
+            editingWorkflowDescription={editingWorkflowDescription}
+            workflowDescriptionChangeHandler={workflowDescriptionChangeHandler}
+          />
 
           <div className={styles['workflow-creation-modal-content']}>
             <EditableApproverGroupCards
