@@ -1121,7 +1121,7 @@
       "group_sync_client_secret_detail": "Keycloak admin API にリクエストするための認証に使う client の secret",
       "updated_group_sync_settings": "Keycloak グループ同期設定を更新しました",
       "preserve_deleted_keycloak_groups": "Keycloak から削除されたグループを GROWI に残す",
-      "auth_not_set": "同期実行前にセキュリティ設定で Keycloak を使った OIDC または SAML 認証を有効にし、設定してください"
+      "auth_not_set": "グループ同期設定の Host と Group Realm が発行ホストに含まれる OIDC または SAML 認証をセキュリティ設定で有効にしてください"
     },
     "auto_generate_user_on_sync": "作成されていない GROWI アカウントを自動生成する",
     "description_mapper_detail": "グループの「説明」として読み込む属性。「説明」は同期後に編集可能です。ただし、mapper が設定されている場合、編集内容は再同期によって上書きされます。"
