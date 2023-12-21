@@ -120,7 +120,6 @@ export const DrawioModal = (): JSX.Element => {
     };
   }, [isOpened, isOpenedInEditor, receiveMessageHandler]);
 
-
   return (
     <Modal
       isOpen={isOpened || isOpenedInEditor}
