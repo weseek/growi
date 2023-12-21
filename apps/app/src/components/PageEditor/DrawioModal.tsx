@@ -50,16 +50,12 @@ export const DrawioModal = (): JSX.Element => {
   });
 
   const { data: drawioModalData, close: closeDrawioModal } = useDrawioModal();
-  const { data: drawioModalDataInEditor, close: closeDrawioModalInEdior } = useDrawioModalForEditor();
-  const isOpened = drawioModalData?.isOpened ?? false;
-  const isOpendInEditor = drawioModalDataInEditor?.isOpened ?? false;
+  const { data: drawioModalDataInEditor, close: closeDrawioModalInEditor } = useDrawioModalForEditor();
   const editorKey = drawioModalDataInEditor?.editorKey ?? null;
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const editor = codeMirrorEditor?.view;
-
-  if (isOpendInEditor && editor == null) {
-    closeDrawioModalInEdior();
-  }
+  const isOpenedInEditor = (drawioModalDataInEditor?.isOpened ?? false) && (editor != null);
+  const isOpened = drawioModalData?.isOpened ?? false;
 
   const drawioUriWithParams = useMemo(() => {
     if (rendererConfig == null) {
@@ -97,9 +93,9 @@ export const DrawioModal = (): JSX.Element => {
     return new DrawioCommunicationHelper(
       rendererConfig.drawioUri,
       drawioConfig,
-      { onClose: closeDrawioModal, onSave: save },
+      { onClose: isOpened ? closeDrawioModal : closeDrawioModalInEditor, onSave: save },
     );
-  }, [closeDrawioModal, drawioModalData?.onSave, editor, rendererConfig]);
+  }, [closeDrawioModal, closeDrawioModalInEditor, drawioModalData?.onSave, editor, isOpened, rendererConfig]);
 
   const receiveMessageHandler = useCallback((event: MessageEvent) => {
     if (drawioModalData == null) {
@@ -111,7 +107,7 @@ export const DrawioModal = (): JSX.Element => {
   }, [drawioCommunicationHelper, drawioModalData, editor]);
 
   useEffect(() => {
-    if (isOpened) {
+    if (isOpened || isOpenedInEditor) {
       window.addEventListener('message', receiveMessageHandler);
     }
     else {
@@ -122,12 +118,13 @@ export const DrawioModal = (): JSX.Element => {
     return function() {
       window.removeEventListener('message', receiveMessageHandler);
     };
-  }, [isOpened, receiveMessageHandler]);
+  }, [isOpened, isOpenedInEditor, receiveMessageHandler]);
+
 
   return (
     <Modal
-      isOpen={isOpened || isOpendInEditor}
-      toggle={() => closeDrawioModal()}
+      isOpen={isOpened || isOpenedInEditor}
+      toggle={() => (isOpened ? closeDrawioModal() : closeDrawioModalInEditor())}
       backdrop="static"
       className="drawio-modal grw-body-only-modal-expanded"
       size="xl"
@@ -143,7 +140,7 @@ export const DrawioModal = (): JSX.Element => {
         {/* iframe */}
         { drawioUriWithParams != null && (
           <div className="w-100 h-100 position-absolute d-flex">
-            { isOpened && (
+            { (isOpened || isOpenedInEditor) && (
               <iframe
                 src={drawioUriWithParams.href}
                 className="border-0 flex-grow-1"

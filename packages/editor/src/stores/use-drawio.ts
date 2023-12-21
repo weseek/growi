@@ -24,7 +24,7 @@ export const useDrawioModalForEditor = (status?: DrawioModalStatus): SWRResponse
     isOpened: false,
     editorKey: undefined,
   };
-  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatusForEditor', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
