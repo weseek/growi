@@ -2409,7 +2409,7 @@ class PageService {
     return updatedPage;
   }
 
-  private async applyScopesToDescendantsAsyncronously(parentPage, user, isV4 = false) {
+  private async applyScopesToDescendants(parentPage, user, isV4 = false) {
     const Page = this.crowi.model('Page');
     const builder = new Page.PageQueryBuilder(Page.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
@@ -2433,7 +2433,7 @@ class PageService {
         return (async() => {
           const childGrantedGroups = childPage.grantedGroups || [];
           const userRelatedChildGrantedGroupIds = (await this.getUserRelatedGrantedGroups(childPage, user)).map(g => getIdForRef(g.item));
-          const userUnrelatedChildGrantedGroups = childGrantedGroups.filter(g => userRelatedChildGrantedGroupIds.includes(getIdForRef(g.item)));
+          const userUnrelatedChildGrantedGroups = childGrantedGroups.filter(g => !userRelatedChildGrantedGroupIds.includes(getIdForRef(g.item)));
           const newChildGrantedGroups = [...userUnrelatedChildGrantedGroups, ...userRelatedParentGrantedGroups];
           childPage.grantedGroups = newChildGrantedGroups;
           childPage.save();
@@ -3894,7 +3894,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await this.applyScopesToDescendantsAsyncronously(page, user);
+      await this.applyScopesToDescendants(page, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -3946,7 +3946,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      this.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendants(savedPage, user, true);
     }
 
     return savedPage;
@@ -4099,7 +4099,7 @@ class PageService {
 
     // 3. Update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await this.applyScopesToDescendantsAsyncronously(currentPage, user);
+      await this.applyScopesToDescendants(currentPage, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -4264,7 +4264,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      this.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendants(savedPage, user, true);
     }
 
 
