@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
+import { preNotifyService } from '../service/pre-notify';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -136,7 +137,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
-  const { pathUtils } = require('@growi/core/dist/utils');
+  const { pathUtils, pagePathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -329,6 +330,11 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
     }
@@ -448,6 +454,11 @@ module.exports = function(crowi, app) {
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
     }
@@ -522,7 +533,10 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
+
+    activityEvent.emit(
+      'update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, preNotifyService.generatePreNotify,
+    );
   };
 
   /**
@@ -747,6 +761,16 @@ module.exports = function(crowi, app) {
         if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
+
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!crowi.pageService.canDeleteUserHomepageByConfig()) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+          if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+        }
+
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively, false, activityParameters);
       }
       else {
@@ -762,6 +786,15 @@ module.exports = function(crowi, app) {
 
         if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
+        }
+
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!crowi.pageService.canDeleteUserHomepageByConfig()) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+          if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively, activityParameters);
@@ -891,6 +924,11 @@ module.exports = function(crowi, app) {
 
     if (page == null) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
+    }
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+    if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
 
     // check whether path starts slash

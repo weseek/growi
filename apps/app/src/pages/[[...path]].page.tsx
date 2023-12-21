@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 
 import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -20,9 +20,10 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
+import { useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -249,8 +250,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(pageWithMeta?.data);
-
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
     if (!props.skipSSR) {
@@ -323,7 +322,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
+      <div className="dynamic-layout-root justify-content-between">
         <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
@@ -398,24 +397,6 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-// apply parent page grant fot creating page
-async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroups.item');
-  const grant = {
-    grant: ancestor.grant,
-  };
-  const grantedGroups = ancestor.grantedGroups ? {
-    grantedGroups: ancestor.grantedGroups.map((group) => {
-      return {
-        id: group.item._id,
-        name: group.item.name,
-        type: group.type,
-      };
-    }),
-  } : {};
-  props.grantData = Object.assign(grant, grantedGroups);
-}
-
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -476,10 +457,20 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply parent page grant
+    // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
-      await applyGrantToPage(props, ancestor);
+      const userRelatedGrantedGroups = await pageService.getUserRelatedGrantedGroups(ancestor, user);
+      props.grantData = {
+        grant: ancestor.grant,
+        grantedGroups: userRelatedGrantedGroups.map((group) => {
+          return {
+            id: group.item._id,
+            name: group.item.name,
+            type: group.type,
+          };
+        }),
+      };
     }
   }
 

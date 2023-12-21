@@ -3,6 +3,7 @@ import React, { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
+import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
@@ -12,7 +13,7 @@ import {
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath } from '~/stores/page';
 
-import { type IWorkflowHasId } from '../../../interfaces/workflow';
+import { type IWorkflowHasId, WorkflowStatus } from '../../../interfaces/workflow';
 import { isWorkflowNameSet } from '../../../utils/workflow';
 import { deleteWorkflow } from '../../services/workflow';
 
@@ -97,9 +98,21 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
   }, [currentUser]);
 
+  const getBadgeStyle = useCallback((workflow: IWorkflowHasId) => {
+    switch (workflow.status) {
+      case WorkflowStatus.INPROGRESS:
+        return 'bg-info-subtle border border-info-subtle text-info-emphasis';
+      case WorkflowStatus.APPROVE:
+        return 'bg-success-subtle border border-success-subtle text-success-emphasis';
+      default:
+        return '';
+    }
+  }, []);
+
   return (
     <>
       <WorkflowModalHeader>
+        <span className="material-symbols-outlined me-3">account_tree</span>
         <span className="fw-bold">{t('approval_workflow.list')}</span>
       </WorkflowModalHeader>
 
@@ -110,64 +123,85 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
 
         {/* TODO: Allow infinite scrolling */}
         {(workflows.length >= 1 && (
-          <table className="table">
+          <table
+            className="table h-100"
+            style={{ borderSpacing: '0 10px', borderCollapse: 'separate' }}
+          >
             <thead>
               <tr>
                 <th scope="col">{t('approval_workflow.name')}</th>
                 <th scope="col">{t('approval_workflow.status')}</th>
                 <th scope="col">{t('approval_workflow.applicant')}</th>
+                <th scope="col"></th>
               </tr>
             </thead>
-
             <tbody>
               {workflows.map((workflow) => {
                 return (
                   <tr data-testid="activity-table" key={workflow._id}>
-                    <td>
-                      { isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle }
-                      <div>
-                        <span className="text-muted">
-                          {formatDate(workflow.createdAt)}
-                        </span>
-                        <span className="btn btn-link text-muted" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
-                          {t('approval_workflow.show_detail')}
-                          <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
-                        </span>
+                    <td className="align-middle border-end border-secondary-subtle border-bottom-0">
+                      <div className="h-75">
+                        {isWorkflowNameSet(workflow.name) ? workflow.name : pageTitle}
+                        <div className="d-flex align-items-center">
+                          <span className="text-muted flex-grow-1">
+                            {formatDate(workflow.createdAt)}
+                          </span>
+                          <span className="py-0 btn btn-link text-muted ms-auto" onClick={() => showWorkflowDetailButtonClickHandler(workflow._id)}>
+                            {t('approval_workflow.show_detail')}
+                            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+                          </span>
+                        </div>
                       </div>
                     </td>
-                    <td>
-                      {t(`approval_workflow.workflow_status.${workflow.status}`)}
+                    <td className="text-center border-end border-secondary-subtle align-middle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
+                        <h5>
+                          <span className={`badge rounded-pill ${getBadgeStyle(workflow)}`}>
+                            {t(`approval_workflow.workflow_status.${workflow.status}`)}
+                          </span>
+                        </h5>
+                      </div>
                     </td>
-                    <td>
-                      {workflow.creator.username}
+                    <td className="align-middle border-end border-secondary-subtle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
+                        <div className="d-inline-block pe-2">
+                          <UserPicture user={workflow.creator} noLink noTooltip />
+                        </div>
+                        {workflow.creator.username}
+                      </div>
                     </td>
-                    <td>
-                      <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
-                        <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-                          <i className="icon-options"></i>
-                        </DropdownToggle>
+                    <td className="align-middle border-bottom-0">
+                      <div className="h-75 d-flex align-items-center justify-content-center">
+                        <Dropdown isOpen={isOpenMenu} toggle={() => { setIsOpenMenu(!isOpenMenu) }}>
+                          <DropdownToggle
+                            color="transparent"
+                            className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center"
+                          >
+                            <i className="icon-options"></i>
+                          </DropdownToggle>
 
-                        <DropdownMenu>
-                          <div id="delete-workflow-button">
-                            <DropdownItem
-                              className={isDeletable(workflow) ? 'text-danger' : ''}
-                              disabled={!isDeletable(workflow)}
-                              onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
-                            >{t('approval_workflow.delete')}
-                            </DropdownItem>
-                            {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                            { !isDeletable(workflow) && (
-                              <UncontrolledTooltip
-                                target="delete-workflow-button"
-                                placement="bottom"
-                                fade={false}
-                              >
-                                {t('approval_workflow.delete_button_tooltip')}
-                              </UncontrolledTooltip>
-                            )}
-                          </div>
-                        </DropdownMenu>
-                      </Dropdown>
+                          <DropdownMenu>
+                            <div id="delete-workflow-button">
+                              <DropdownItem
+                                className={isDeletable(workflow) ? 'text-danger' : ''}
+                                disabled={!isDeletable(workflow)}
+                                onClick={() => { deleteWorkflowButtonClickHandler(workflow._id) }}
+                              >{t('approval_workflow.delete')}
+                              </DropdownItem>
+                              {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                              {!isDeletable(workflow) && (
+                                <UncontrolledTooltip
+                                  target="delete-workflow-button"
+                                  placement="bottom"
+                                  fade={false}
+                                >
+                                  {t('approval_workflow.delete_button_tooltip')}
+                                </UncontrolledTooltip>
+                              )}
+                            </div>
+                          </DropdownMenu>
+                        </Dropdown>
+                      </div>
                     </td>
                   </tr>
                 );
@@ -178,8 +212,10 @@ export const WorkflowListModalContent = (props: Props): JSX.Element => {
       </ModalBody>
 
       <ModalFooter>
-        <button type="button" onClick={createWorkflowButtonClickHandler}>
-          {t('approval_workflow.create')}
+        <button className="btn btn-primary mx-auto" type="button" onClick={createWorkflowButtonClickHandler}>
+          <div className="title">
+            {t('approval_workflow.create')}
+          </div>
         </button>
       </ModalFooter>
     </>
