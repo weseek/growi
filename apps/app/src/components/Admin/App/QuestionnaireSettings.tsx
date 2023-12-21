@@ -52,10 +52,14 @@ const QuestionnaireSettings = (): JSX.Element => {
       <p className="card custom-card">
         <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
-          <div className="mb-2">
-            <span className="text-info me-2"><span className="material-symbols-outlined">info</span>{t('app_setting.about_data_sent')}</span>
-            <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
-              {t('app_setting.learn_more')} <span className="material-symbols-outlined">share</span>
+          <div className="mb-2 d-flex">
+            <span className="text-info d-flex me-2">
+              <span className="material-symbols-outlined me-1">info</span>{t('app_setting.about_data_sent')}
+            </span>
+            <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-flex">
+              {t('app_setting.learn_more')}
+              {/* TODO: 137284 */}
+              <span className="material-symbols-outlined">share</span>
             </a>
           </div>
           {t('app_setting.other_info_will_be_sent')}<br />

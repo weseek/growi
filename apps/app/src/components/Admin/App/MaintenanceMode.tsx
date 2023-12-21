@@ -58,8 +58,8 @@ export const MaintenanceMode: FC = () => {
         {t('admin:maintenance_mode.description')}
         <br />
         <br />
-        <span className="text-warning">
-          <span className="material-symbols-outlined">error</span>
+        <span className="text-warning d-flex">
+          <span className="material-symbols-outlined me-1">error</span>
           {t('admin:maintenance_mode.supplymentary_message_to_start')}
         </span>
       </p>

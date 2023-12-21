@@ -47,7 +47,9 @@ const MailSetting = (props: Props) => {
   return (
     <React.Fragment>
       {!adminAppContainer.state.isMailerSetup && (
-        <div className="alert alert-danger"><span className="material-symbols-outlined">error</span> {t('admin:app_setting.mailer_is_not_set_up')}</div>
+        <div className="alert alert-danger d-flex align-items-center">
+          <span className="material-symbols-outlined me-1">error</span> {t('admin:app_setting.mailer_is_not_set_up')}
+        </div>
       )}
       <div className="row mb-5">
         <label className="col-md-3 col-form-label text-end">{t('admin:app_setting.from_e-mail_address')}</label>
