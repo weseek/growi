@@ -1,42 +1,49 @@
-import React, {
-  forwardRef, ForwardRefRenderFunction,
-} from 'react';
+import React from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IUser, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
-import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
-import { useActionMsgAndIconForUserModelNotification } from './useActionAndMsg';
+import { ModelNotificationUtils } from './PageModelNotification';
+import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 
-const UserModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, {
-  notification: IInAppNotification & HasObjectId
-  actionUsers: string
-}> = ({
-  notification, actionUsers,
-}, ref) => {
+export const useUserModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
+
+  const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
   const router = useRouter();
 
-  const { actionMsg, actionIcon } = useActionMsgAndIconForUserModelNotification(notification);
+  const isUserModelNotification = (notification: IInAppNotification & HasObjectId): notification is IInAppNotification<IUser> & HasObjectId => {
+    return notification.targetModel === SupportedTargetModel.MODEL_USER;
+  };
 
-  // publish open()
+  if (!isUserModelNotification(notification)) {
+    return null;
+  }
+
+  const actionUsers = notification.target.username;
+
+  const Notification = () => {
+    return (
+      <ModelNotification
+        notification={notification}
+        actionMsg={actionMsg}
+        actionIcon={actionIcon}
+        actionUsers={actionUsers}
+      />
+    );
+  };
+
   const publishOpen = () => {
     router.push('/admin/users');
   };
 
-  return (
-    <ModelNotification
-      notification={notification}
-      actionMsg={actionMsg}
-      actionIcon={actionIcon}
-      actionUsers={actionUsers}
-      publishOpen={publishOpen}
-      ref={ref}
-    />
-  );
-};
+  return {
+    Notification,
+    publishOpen,
+  };
 
-export default forwardRef(UserModelNotification);
+};

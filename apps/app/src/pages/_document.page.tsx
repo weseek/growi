@@ -48,7 +48,7 @@ class GrowiDocument extends Document<GrowiDocumentInitialProps> {
 
   static override async getInitialProps(ctx: DocumentContext): Promise<GrowiDocumentInitialProps> {
     const initialProps: DocumentInitialProps = await Document.getInitialProps(ctx);
-    const { crowi } = ctx.req as CrowiRequest<any>;
+    const { crowi } = ctx.req as CrowiRequest;
     const { customizeService } = crowi;
 
     const { themeHref } = customizeService;

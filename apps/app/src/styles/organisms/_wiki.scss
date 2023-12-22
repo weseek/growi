@@ -294,7 +294,7 @@
 
 // == Colors
 .wiki {
-  a {
+  a:not(.alert-link) {
     @extend .link-underline-opacity-25;
     @extend .link-underline-opacity-100-hover;
 
@@ -309,5 +309,6 @@
         var(--bs-link-opacity, 1)
       );
     }
+
   }
 }

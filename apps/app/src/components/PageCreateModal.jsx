@@ -281,16 +281,16 @@ const PageCreateModal = () => {
               <DropdownToggle id="template-type" caret>
                 {template == null && t('template.option_label.select')}
                 {template === 'children' && t('template.children.label')}
-                {template === 'decendants' && t('template.decendants.label')}
+                {template === 'descendants' && t('template.descendants.label')}
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={() => onChangeTemplateHandler('children')}>
                   {t('template.children.label')} (_template)<br className="d-block d-md-none" />
                   <small className="text-muted text-wrap">- {t('template.children.desc')}</small>
                 </DropdownItem>
-                <DropdownItem onClick={() => onChangeTemplateHandler('decendants')}>
-                  {t('template.decendants.label')} (__template) <br className="d-block d-md-none" />
-                  <small className="text-muted">- {t('template.decendants.desc')}</small>
+                <DropdownItem onClick={() => onChangeTemplateHandler('descendants')}>
+                  {t('template.descendants.label')} (__template) <br className="d-block d-md-none" />
+                  <small className="text-muted">- {t('template.descendants.desc')}</small>
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledButtonDropdown>

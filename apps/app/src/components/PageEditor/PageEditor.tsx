@@ -16,8 +16,9 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -58,11 +59,11 @@ import { PageHeader } from '../PageHeader/PageHeader';
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 // import { ConflictDiffModal } from './ConflictDiffModal';
 // import Editor from './Editor';
+import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import EditorNavbarBottom from './EditorNavbarBottom';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -99,7 +100,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { data: pageTags, sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
+  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
@@ -127,6 +128,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
@@ -215,16 +218,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     if (grantData == null) {
       return;
     }
+    const grantedGroups = grantData.grantedGroups?.map((group) => {
+      return { item: group.id, type: group.type };
+    });
     const optionsToSave = {
       isSlackEnabled: isSlackEnabled ?? false,
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
-      pageTags: pageTags ?? [],
-      grantUserGroupId: grantData.grantedGroup?.id,
-      grantUserGroupName: grantData.grantedGroup?.name,
+      // pageTags: pageTags ?? [],
+      grantUserGroupIds: grantedGroups,
     };
     return optionsToSave;
-  }, [grantData, isSlackEnabled, pageTags]);
+  }, [grantData, isSlackEnabled]);
 
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
@@ -308,10 +313,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const uploadHandler = useCallback((files: File[]) => {
     files.forEach(async(file) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const resLimit: any = await apiGet('/attachments.limit', {
-          fileSize: file.size,
-        });
+        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);
@@ -319,17 +321,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
         const formData = new FormData();
         formData.append('file', file);
-        if (currentPagePath != null) {
-          formData.append('path', currentPagePath);
-        }
         if (pageId != null) {
           formData.append('page_id', pageId);
         }
-        if (pageId == null) {
-          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-        }
 
-        const resAdd: any = await apiPostForm('/attachments.add', formData);
+        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
+
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
@@ -339,23 +336,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.insertText(insertText);
+
         codeMirrorEditor?.insertText(insertText);
       }
       catch (e) {
         logger.error('failed to upload', e);
         toastError(e);
       }
-      finally {
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.terminateUploadingState();
-      }
     });
 
-  }, [codeMirrorEditor, currentPagePath, pageId]);
+  }, [codeMirrorEditor, pageId]);
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadEnabled) {
@@ -596,6 +586,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
+            expandContentWidth={shouldExpandContent}
             // TODO: implement
             // refs: https://redmine.weseek.co.jp/issues/126519
             // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}

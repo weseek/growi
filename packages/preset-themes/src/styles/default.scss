@@ -27,9 +27,7 @@
 
   @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  @import '@growi/core/scss/bootstrap/theming/root';
-  @import '@growi/core/scss/bootstrap/theming/root-light';
-  @import '@growi/core/scss/bootstrap/theming/apply';
+  @import '@growi/core/scss/bootstrap/theming/apply-light';
 
   --grw-wiki-link-color-rgb: var(--grw-highlight-800-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-highlight-900-rgb);
@@ -65,9 +63,7 @@
 
   @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  @import '@growi/core/scss/bootstrap/theming/root';
-  @import '@growi/core/scss/bootstrap/theming/root-dark';
-  @import '@growi/core/scss/bootstrap/theming/apply';
+  @import '@growi/core/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-highlight-500-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-highlight-300-rgb);

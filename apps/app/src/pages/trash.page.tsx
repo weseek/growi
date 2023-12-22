@@ -68,7 +68,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           TODO: implement navigation for /trash
         </nav>
 
-        <div className="content-main container-lg grw-container-convertible mb-5 pb-5">
+        <div className="content-main container-lg mb-5 pb-5">
           <PagePathNavSticky pagePath="/trash" />
           <TrashPageList />
         </div>
@@ -131,7 +131,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
   const result = await getServerSideCommonProps(context);
 

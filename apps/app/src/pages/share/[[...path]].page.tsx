@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import type { IUserHasId, IPagePopulatedToShowRevision } from '@growi/core';
+import { type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -8,7 +8,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
@@ -18,6 +17,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
+import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
@@ -107,8 +107,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
 
-  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(props.shareLinkRelatedPage);
-
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
 
   const title = generateCustomTitleForPage(props, pagePath);
@@ -119,7 +117,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
 
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
+      <div className="dynamic-layout-root justify-content-between">
         <nav className="sticky-top">
           <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
@@ -221,7 +219,7 @@ async function addActivity(context: GetServerSidePropsContext, action: Supported
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { crowi, params } = req;
   const result = await getServerSideCommonProps(context);
 
@@ -231,18 +229,23 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   try {
-    const ShareLinkModel = crowi.model('ShareLink');
-    const shareLink = await ShareLinkModel.findOne({ _id: params.linkId }).populate('relatedPage');
+    const shareLink = await ShareLink.findOne({ _id: params.linkId }).populate('relatedPage');
     if (shareLink == null) {
       props.isNotFound = true;
     }
     else {
       props.isNotFound = false;
-      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
-      props.skipSSR = await skipSSR(shareLink.relatedPage, ssrMaxRevisionBodyLength);
-      props.shareLinkRelatedPage = await shareLink.relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
       props.isExpired = shareLink.isExpired();
       props.shareLink = shareLink.toObject();
+
+      // retrieve Page
+      const Page = crowi.model('Page');
+      const relatedPage = await Page.findOne({ _id: getIdForRef(shareLink.relatedPage) });
+      // determine whether skip SSR
+      const ssrMaxRevisionBodyLength = crowi.configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
+      props.skipSSR = await skipSSR(relatedPage, ssrMaxRevisionBodyLength);
+      // populate
+      props.shareLinkRelatedPage = await relatedPage.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
     }
   }
   catch (err) {

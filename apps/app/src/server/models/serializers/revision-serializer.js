@@ -7,14 +7,10 @@ function serializeInsecureUserAttributes(revision) {
   return revision;
 }
 
-function serializeRevisionSecurely(revision) {
+export function serializeRevisionSecurely(revision) {
   const serialized = revision;
 
   serializeInsecureUserAttributes(serialized);
 
   return serialized;
 }
-
-module.exports = {
-  serializeRevisionSecurely,
-};

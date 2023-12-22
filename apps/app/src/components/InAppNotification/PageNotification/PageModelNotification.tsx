@@ -1,53 +1,85 @@
 import React, {
-  forwardRef, ForwardRefRenderFunction,
+  FC, useCallback,
 } from 'react';
 
-import type { HasObjectId } from '@growi/core';
+import type { IPage, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
-import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
+import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import * as pageSerializers from '~/models/serializers/in-app-notification-snapshot/page';
 
 import { ModelNotification } from './ModelNotification';
-import { useActionMsgAndIconForPageModelNotification } from './useActionAndMsg';
+import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 
-interface Props {
-  notification: IInAppNotification & HasObjectId
-  actionUsers: string
+export interface ModelNotificationUtils {
+  Notification: FC
+  publishOpen: () => void
 }
 
-const PageModelNotification: ForwardRefRenderFunction<IInAppNotificationOpenable, Props> = (props: Props, ref) => {
-
-  const {
-    notification, actionUsers,
-  } = props;
-
-  const { actionMsg, actionIcon } = useActionMsgAndIconForPageModelNotification(notification);
+export const usePageModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
   const router = useRouter();
+  const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
 
-  // publish open()
+  const getActionUsers = useCallback(() => {
+    const latestActionUsers = notification.actionUsers.slice(0, 3);
+    const latestUsers = latestActionUsers.map((user) => {
+      return `@${user.name}`;
+    });
+
+    let actionedUsers = '';
+    const latestUsersCount = latestUsers.length;
+    if (latestUsersCount === 1) {
+      actionedUsers = latestUsers[0];
+    }
+    else if (notification.actionUsers.length >= 4) {
+      actionedUsers = `${latestUsers.slice(0, 2).join(', ')} and ${notification.actionUsers.length - 2} others`;
+    }
+    else {
+      actionedUsers = latestUsers.join(', ');
+    }
+
+    return actionedUsers;
+  }, [notification.actionUsers]);
+
+  const isPageModelNotification = (notification: IInAppNotification & HasObjectId): notification is IInAppNotification<IPage> & HasObjectId => {
+    return notification.targetModel === SupportedTargetModel.MODEL_PAGE;
+  };
+
+  if (!isPageModelNotification(notification)) {
+    return null;
+  }
+
+  const actionUsers = getActionUsers();
+
+  notification.parsedSnapshot = pageSerializers.parseSnapshot(notification.snapshot);
+
+  const Notification = () => {
+    return (
+      <ModelNotification
+        notification={notification}
+        actionMsg={actionMsg}
+        actionIcon={actionIcon}
+        actionUsers={actionUsers}
+      />
+    );
+  };
+
   const publishOpen = () => {
     if (notification.target != null) {
       // jump to target page
-      const targetPagePath = notification.target.path;
+      const targetPagePath = (notification.target as IPage).path;
       if (targetPagePath != null) {
         router.push(targetPagePath);
       }
     }
   };
 
-  return (
-    <ModelNotification
-      notification={notification}
-      actionMsg={actionMsg}
-      actionIcon={actionIcon}
-      actionUsers={actionUsers}
-      publishOpen={publishOpen}
-      ref={ref}
-    />
-  );
-};
+  return {
+    Notification,
+    publishOpen,
+  };
 
-export default forwardRef(PageModelNotification);
+};

@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
+import { preNotifyService } from '../service/pre-notify';
 
 const { serializePageSecurely } = require('../models/serializers/page-serializer');
 const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
@@ -136,7 +137,7 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
-  const { pathUtils } = require('@growi/core/dist/utils');
+  const { pathUtils, pagePathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -324,11 +325,15 @@ module.exports = function(crowi, app) {
     const body = req.body.body || null;
     let pagePath = req.body.path || null;
     const grant = req.body.grant || null;
-    const grantUserGroupId = req.body.grantUserGroupId || null;
+    const grantUserGroupIds = req.body.grantUserGroupIds || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
 
     if (body === null || pagePath === null) {
       return res.json(ApiResponse.error('Parameters body and path are required.'));
@@ -346,21 +351,14 @@ module.exports = function(crowi, app) {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
 
-    let savedTags;
-    if (pageTags != null) {
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
     const result = {
       page: serializePageSecurely(createdPage),
       revision: serializeRevisionSecurely(createdPage.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
@@ -451,11 +449,15 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
-    const grantUserGroupId = req.body.grantUserGroupId || null;
+    const grantUserGroupIds = req.body.grantUserGroupIds || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-    const pageTags = req.body.pageTags || undefined;
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -484,7 +486,7 @@ module.exports = function(crowi, app) {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupId = grantUserGroupId;
+      options.grantUserGroupIds = grantUserGroupIds;
     }
 
     const previousRevision = await Revision.findById(revisionId);
@@ -496,18 +498,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(err));
     }
 
-    let savedTags;
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(pageId, pageTags);
-      savedTags = await PageTagRelation.listTagNamesByPage(pageId);
-      tagEvent.emit('update', page, savedTags);
-    }
 
     const result = {
       page: serializePageSecurely(page),
       revision: serializeRevisionSecurely(page.revision),
-      tags: savedTags,
     };
     res.json(ApiResponse.success(result));
 
@@ -539,7 +533,10 @@ module.exports = function(crowi, app) {
       target: page,
       action: SupportedAction.ACTION_PAGE_UPDATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() });
+
+    activityEvent.emit(
+      'update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, preNotifyService.generatePreNotify,
+    );
   };
 
   /**
@@ -764,6 +761,16 @@ module.exports = function(crowi, app) {
         if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
         }
+
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!crowi.pageService.canDeleteUserHomepageByConfig()) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+          if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+        }
+
         await crowi.pageService.deleteCompletely(page, req.user, options, isRecursively, false, activityParameters);
       }
       else {
@@ -779,6 +786,15 @@ module.exports = function(crowi, app) {
 
         if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
+        }
+
+        if (pagePathUtils.isUsersHomepage(page.path)) {
+          if (!crowi.pageService.canDeleteUserHomepageByConfig()) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
+          if (!await crowi.pageService.isUsersHomepageOwnerAbsent(page.path)) {
+            return res.json(ApiResponse.error('Could not delete user homepage'));
+          }
         }
 
         await crowi.pageService.deletePage(page, req.user, options, isRecursively, activityParameters);
@@ -910,6 +926,11 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+    if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
+
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
@@ -920,7 +941,7 @@ module.exports = function(crowi, app) {
     req.body.body = page.revision.body;
     req.body.grant = page.grant;
     req.body.grantedUsers = page.grantedUsers;
-    req.body.grantUserGroupId = page.grantedGroup;
+    req.body.grantUserGroupIds = page.grantedGroups;
     req.body.pageTags = originTags;
 
     return api.create(req, res);

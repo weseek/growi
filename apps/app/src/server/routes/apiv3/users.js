@@ -2,8 +2,11 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import Activity from '~/server/models/activity';
+import ExternalAccount from '~/server/models/external-account';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
@@ -89,8 +92,6 @@ module.exports = (crowi) => {
   const {
     User,
     Page,
-    ExternalAccount,
-    UserGroupRelation,
   } = crowi.models;
 
 
@@ -778,7 +779,7 @@ module.exports = (crowi) => {
    *        tags: [Users]
    *        operationId: removeUser
    *        summary: /users/{id}/remove
-   *        description: Delete user and if isUsersHomepageDeletionEnabled delete user homepage and subpages
+   *        description: Delete user
    *        parameters:
    *          - name: id
    *            in: path
@@ -788,7 +789,7 @@ module.exports = (crowi) => {
    *              type: string
    *        responses:
    *          200:
-   *            description: Deleting user success and if isUsersHomepageDeletionEnabled delete user homepage and subpages success
+   *            description: Deleting user success
    *            content:
    *              application/json:
    *                schema:
@@ -796,16 +797,11 @@ module.exports = (crowi) => {
    *                    user:
    *                      type: object
    *                      description: data of deleted user
-   *                    userHomepagePath:
-   *                      type: string
-   *                      description: a user homepage path
-   *                    isUsersHomepageDeletionEnabled:
-   *                      type: boolean
-   *                      description: is users homepage deletion enabled
    */
   router.delete('/:id/remove', loginRequiredStrictly, adminRequired, certifyUserOperationOtherThenYourOwn, addActivity, async(req, res) => {
     const { id } = req.params;
-    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled');
+    const isUsersHomepageDeletionEnabled = configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled');
+    const isForceDeleteUserHomepageOnUserDeletion = configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion');
 
     try {
       const user = await User.findById(id);
@@ -814,6 +810,7 @@ module.exports = (crowi) => {
       const homepagePath = userHomepagePath(user);
 
       await UserGroupRelation.remove({ relatedUser: user });
+      await ExternalUserGroupRelation.remove({ relatedUser: user });
       await user.statusDelete();
       await ExternalAccount.remove({ user });
 
@@ -821,7 +818,7 @@ module.exports = (crowi) => {
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_USERS_REMOVE });
 
-      if (isUsersHomepageDeletionEnabled) {
+      if (isUsersHomepageDeletionEnabled && isForceDeleteUserHomepageOnUserDeletion) {
         crowi.pageService.deleteCompletelyUserHomeBySystem(homepagePath);
       }
 

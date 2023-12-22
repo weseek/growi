@@ -9,7 +9,7 @@ import {
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { IPageGrantData } from '~/interfaces/page';
-import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -29,7 +29,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
-  const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
+
+  const [isGroupSelectModalShown, setIsGroupSelectModalShown] = useState(false);
+  const [selectedGroup, setSelectedGroup] = useState<PopulatedGrantedGroup | undefined>(undefined);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
@@ -57,7 +59,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroup: selectedGroup?._id,
+        grantedGroups: selectedGroup?.item._id != null ? [{ item: selectedGroup?.item._id, type: selectedGroup.type }] : null,
       });
 
       toastSuccess(t('Successfully updated'));
@@ -86,10 +88,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.grantedGroup == null) {
+      if (grantData.grantedGroups == null || grantData.grantedGroups.length === 0) {
         return t('fix_page_grant.modal.grant_label.isForbidden');
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroups[0].name})`;
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed
@@ -177,15 +179,15 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                 <div className="dropdown ms-2">
                   <button
                     type="button"
-                    className="btn btn-secondary dropdown-toggle text-end w-100 border-0 shadow-none"
-                    data-bs-toggle="dropdown"
+                    className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
+                    data-toggle="dropdown"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
                   >
                     <span className="float-start ms-2">
                       {
                         selectedGroup == null
                           ? t('fix_page_grant.modal.select_group_default_text')
-                          : selectedGroup.name
+                          : selectedGroup.item.name
                       }
                     </span>
                   </button>
@@ -193,12 +195,12 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                     {
                       applicableGroups != null && applicableGroups.map(g => (
                         <button
-                          key={g._id}
+                          key={g.item._id}
                           className="dropdown-item"
                           type="button"
                           onClick={() => setSelectedGroup(g)}
                         >
-                          {g.name}
+                          {g.item.name}
                         </button>
                       ))
                     }
