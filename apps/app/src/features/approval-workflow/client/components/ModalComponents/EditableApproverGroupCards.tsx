@@ -157,7 +157,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
                   <DropdownToggle
                     className="btn btn-sm rounded-pill dropdown-toggle px-3 border border-dark-subtle"
                     disabled={!isChangeableApprovealType}
-                    color="light"
+                    color="secondary"
                   >
                     {t(`approval_workflow.approval_type.${editingApprovalType}`)}
                   </DropdownToggle>
@@ -216,7 +216,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
       )}
 
       {onClickAddApproverGroupCard != null && isLastApproverGroup && (
-        <div className="rounded bg-light-subtle mt-5">
+        <div className="rounded bg-body-tertiary mt-5">
           <button
             type="button"
             className="btn btn-link w-100 my-2"
