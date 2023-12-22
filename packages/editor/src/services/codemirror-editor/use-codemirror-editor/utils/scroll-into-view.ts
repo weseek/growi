@@ -8,7 +8,7 @@ export const useScrollIntoView = (view?: EditorView): ScrollIntoView => {
 
   return useCallback((line) => {
     view?.dispatch({
-      effects: EditorView.scrollIntoView(line),
+      effects: EditorView.scrollIntoView(line, { y: 'start' }),
     });
   }, [view]);
 
