@@ -63,6 +63,7 @@ import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
+import { preview } from 'vite';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -89,7 +90,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
-  const parentPreviewRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -430,36 +430,42 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
    * scroll Editor component by scroll event of Preview component
    * @param {number} offset
    */
-  const scrollEditorByPreviewScroll = useCallback((offset: number) => {
-    if (codeMirrorEditorContainerRef.current == null || previewRef.current == null) {
-      return;
-    }
+  // const scrollEditorByPreviewScroll = useCallback((offset: number) => {
+  //   if (codeMirrorEditorContainerRef.current == null || previewRef.current == null) {
+  //     return;
+  //   }
 
-    // prevent circular invocation
-    if (isOriginOfScrollSyncEditor) {
-      isOriginOfScrollSyncEditor = false; // turn off the flag
-      return;
-    }
+  //   // prevent circular invocation
+  //   if (isOriginOfScrollSyncEditor) {
+  //     isOriginOfScrollSyncEditor = false; // turn off the flag
+  //     return;
+  //   }
 
-    // turn on the flag
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    isOriginOfScrollSyncPreview = true;
+  //   // turn on the flag
+  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  //   isOriginOfScrollSyncPreview = true;
 
-    scrollSyncHelper.scrollEditor(codeMirrorEditorContainerRef.current, previewRef.current, offset);
-  }, []);
-  const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
+  //   scrollSyncHelper.scrollEditor(codeMirrorEditorContainerRef.current, previewRef.current, offset);
+  // }, []);
+  // const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
 
-  let scrolltest = 0;
-  const scrollHandler = useCallback((line: number) => {
-    scrolltest += 1;
-    if (previewRef.current != null) {
-      previewRef.current.scrollTop = scrolltest;
-      console.log(previewRef.current.scrollTop);
-      console.log(scrolltest);
+  const scrollEditorHandler = useCallback(() => {
+    console.log('ScrollEditor!');
+    if (codeMirrorEditor.view.scrollDOM != null && previewRef.current != null) {
+      // scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
     }
   }, [codeMirrorEditor, previewRef]);
 
-  const scrollHandlerThrottle = useMemo(() => throttle(20, scrollHandler), [scrollHandler]);
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(20, scrollEditorHandler), [scrollEditorHandler]);
+
+  const scrollPreviewHandler = useCallback(() => {
+    console.log('ScrollPreview!');
+    if (codeMirrorEditor.view.scrollDOM != null && previewRef.current != null) {
+      // scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
+    }
+  }, [codeMirrorEditor, previewRef]);
+
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(20, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
@@ -588,22 +594,21 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
-            onScroll={scrollHandlerThrottle}
+            onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
           />
         </div>
-        <div ref={parentPreviewRef} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
           <Preview
-            ref={previewRef}
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            pastEnd={parentPreviewRef.current?.getBoundingClientRect().height}
+            pastEnd={previewRef.current?.getBoundingClientRect().height}
             // TODO: implement
             // refs: https://redmine.weseek.co.jp/issues/126519
-            onScroll={offset => console.log(offset)}
+            // onScroll={(offset) => { console.log('Preview'); console.log(offset) }}
           />
         </div>
         {/*

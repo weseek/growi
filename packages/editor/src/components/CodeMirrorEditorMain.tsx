@@ -17,7 +17,7 @@ type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
-  onScroll?: (line: number) => void,
+  onScroll?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
 }
