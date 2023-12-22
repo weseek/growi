@@ -14,9 +14,11 @@ export const TemplateButton = (props: Props): JSX.Element => {
 
   const onClickTempleteButton = useCallback(() => {
     const editor = codeMirrorEditor?.view;
-    const insertText = (text: string) => editor?.dispatch(editor.state.replaceSelection(text));
-    const onSubmit = (templateText: string) => insertText(templateText);
-    openTemplateModal({ onSubmit });
+    if (editor != null) {
+      const insertText = (text: string) => editor.dispatch(editor.state.replaceSelection(text));
+      const onSubmit = (templateText: string) => insertText(templateText);
+      openTemplateModal({ onSubmit });
+    }
   }, [codeMirrorEditor?.view, openTemplateModal]);
 
   return (
