@@ -89,6 +89,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
   const router = useRouter();
 
+  const parentPreviewRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<HTMLDivElement>(null);
   const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
 
@@ -462,6 +463,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   //   scrollSyncHelper.scrollEditor(editorRef.current, previewRef.current, offset);
   // }, []);
   // const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
+  let scrolltest = 0;
+  const scrollHandler = useCallback((line: number) => {
+    scrolltest += 1;
+    if (previewRef.current != null) {
+      previewRef.current.scrollTop = scrolltest;
+      console.log(previewRef.current.scrollTop);
+      console.log(scrolltest);
+    }
+  }, [codeMirrorEditor, previewRef]);
+
+  const scrollHandlerThrottle = useMemo(() => throttle(20, scrollHandler), [scrollHandler]);
+
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
@@ -590,17 +603,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
+            onScroll={scrollHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
           />
         </div>
-        <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div ref={parentPreviewRef} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
           <Preview
             ref={previewRef}
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
+            pastEnd={parentPreviewRef.current?.getBoundingClientRect().height}
             // TODO: implement
             // refs: https://redmine.weseek.co.jp/issues/126519
             // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}

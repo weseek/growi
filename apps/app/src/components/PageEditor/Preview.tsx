@@ -17,6 +17,7 @@ type Props = {
   markdown?: string,
   pagePath?: string | null,
   expandContentWidth?: boolean,
+  pastEnd?: number,
   onScroll?: (scrollTop: number) => void,
 }
 
@@ -24,7 +25,7 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
 
   const {
     rendererOptions,
-    markdown, pagePath,
+    markdown, pagePath, pastEnd,
     expandContentWidth,
   } = props;
 
@@ -34,6 +35,7 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
     <div
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       ref={ref}
+      style={{ paddingBottom: pastEnd }}
       onScroll={(event: SyntheticEvent<HTMLDivElement>) => {
         if (props.onScroll != null) {
           props.onScroll(event.currentTarget.scrollTop);
