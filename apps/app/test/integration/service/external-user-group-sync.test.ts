@@ -99,20 +99,6 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     provider: 'ldap',
     parent: null,
   });
-  const grandParentGroupRelations = await ExternalUserGroupRelation
-    .find({ relatedGroup: grandParentGroup._id });
-  if (autoGenerateUserOnGroupSync) {
-    expect(grandParentGroupRelations.length).toBe(3);
-    const grandParentGroupUser = (await grandParentGroupRelations[0].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(grandParentGroupUser?.username).toBe('grandParentGroupUser');
-    const parentGroupUser = (await grandParentGroupRelations[1].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(parentGroupUser?.username).toBe('parentGroupUser');
-    const childGroupUser = (await grandParentGroupRelations[2].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(childGroupUser?.username).toBe('childGroupUser');
-  }
-  else {
-    expect(grandParentGroupRelations.length).toBe(0);
-  }
 
   const parentGroup = await ExternalUserGroup.findOne({ name: 'parentGroup' });
   checkGroup(parentGroup, {
@@ -122,18 +108,6 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     provider: 'ldap',
     parent: grandParentGroup._id,
   });
-  const parentGroupRelations = await ExternalUserGroupRelation
-    .find({ relatedGroup: parentGroup._id });
-  if (autoGenerateUserOnGroupSync) {
-    expect(parentGroupRelations.length).toBe(2);
-    const parentGroupUser = (await parentGroupRelations[0].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(parentGroupUser?.username).toBe('parentGroupUser');
-    const childGroupUser = (await parentGroupRelations[1].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(childGroupUser?.username).toBe('childGroupUser');
-  }
-  else {
-    expect(parentGroupRelations.length).toBe(0);
-  }
 
   const childGroup = await ExternalUserGroup.findOne({ name: 'childGroup' });
   checkGroup(childGroup, {
@@ -143,16 +117,6 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     provider: 'ldap',
     parent: parentGroup._id,
   });
-  const childGroupRelations = await ExternalUserGroupRelation
-    .find({ relatedGroup: childGroup._id });
-  if (autoGenerateUserOnGroupSync) {
-    expect(childGroupRelations.length).toBe(1);
-    const childGroupUser = (await childGroupRelations[0].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
-    expect(childGroupUser?.username).toBe('childGroupUser');
-  }
-  else {
-    expect(childGroupRelations.length).toBe(0);
-  }
 
   const previouslySyncedGroup = await ExternalUserGroup.findOne({ name: 'previouslySyncedGroup' });
   checkGroup(previouslySyncedGroup, {
@@ -162,14 +126,53 @@ const checkSync = async(autoGenerateUserOnGroupSync = true) => {
     provider: 'ldap',
     parent: null,
   });
+
+  const grandParentGroupRelations = await ExternalUserGroupRelation
+    .find({ relatedGroup: grandParentGroup._id });
+  const parentGroupRelations = await ExternalUserGroupRelation
+    .find({ relatedGroup: parentGroup._id });
+  const childGroupRelations = await ExternalUserGroupRelation
+    .find({ relatedGroup: childGroup._id });
   const previouslySyncedGroupRelations = await ExternalUserGroupRelation
     .find({ relatedGroup: previouslySyncedGroup._id });
+
   if (autoGenerateUserOnGroupSync) {
+    expect(grandParentGroupRelations.length).toBe(3);
+    const populatedGrandParentGroupRelations = await Promise.all(grandParentGroupRelations.map((relation) => {
+      return relation.populate<{relatedUser: IUserHasId}>('relatedUser');
+    }));
+    expect(populatedGrandParentGroupRelations[0].relatedUser.username).toBe('grandParentGroupUser');
+    expect(populatedGrandParentGroupRelations[1].relatedUser.username).toBe('parentGroupUser');
+    expect(populatedGrandParentGroupRelations[2].relatedUser.username).toBe('childGroupUser');
+
+    expect(parentGroupRelations.length).toBe(2);
+    const populatedParentGroupRelations = await Promise.all(parentGroupRelations.map((relation) => {
+      return relation.populate<{relatedUser: IUserHasId}>('relatedUser');
+    }));
+    expect(populatedParentGroupRelations[0].relatedUser.username).toBe('parentGroupUser');
+    expect(populatedParentGroupRelations[1].relatedUser.username).toBe('childGroupUser');
+
+    expect(childGroupRelations.length).toBe(1);
+    const childGroupUser = (await childGroupRelations[0].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
+    expect(childGroupUser?.username).toBe('childGroupUser');
+
     expect(previouslySyncedGroupRelations.length).toBe(1);
     const previouslySyncedGroupUser = (await previouslySyncedGroupRelations[0].populate<{relatedUser: IUserHasId}>('relatedUser'))?.relatedUser;
     expect(previouslySyncedGroupUser?.username).toBe('previouslySyncedGroupUser');
+
+    const userPages = await mongoose.model('Page').find({
+      path: {
+        $in: [
+          '/user/childGroupUser', '/user/parentGroupUser', '/user/grandParentGroupUser', '/user/previouslySyncedGroupUser',
+        ],
+      },
+    });
+    expect(userPages.length).toBe(4);
   }
   else {
+    expect(grandParentGroupRelations.length).toBe(0);
+    expect(parentGroupRelations.length).toBe(0);
+    expect(childGroupRelations.length).toBe(0);
     expect(previouslySyncedGroupRelations.length).toBe(0);
   }
 };
@@ -179,6 +182,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
 
   beforeAll(async() => {
     crowi = await getInstance();
+    await configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
     const passportService = new PassportService(crowi);
     instanciate(passportService);
   });
@@ -198,6 +202,13 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     await mongoose.model('User')
       .deleteMany({ username: { $in: ['childGroupUser', 'parentGroupUser', 'grandParentGroupUser', 'previouslySyncedGroupUser'] } });
     await ExternalAccount.deleteMany({ accountId: { $in: ['childGroupUser', 'parentGroupUser', 'grandParentGroupUser', 'previouslySyncedGroupUser'] } });
+    await mongoose.model('Page').deleteMany({
+      path: {
+        $in: [
+          '/user/childGroupUser', '/user/parentGroupUser', '/user/grandParentGroupUser', '/user/previouslySyncedGroupUser',
+        ],
+      },
+    });
   });
 
   describe('When autoGenerateUserOnGroupSync is true', () => {
@@ -207,7 +218,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
     });
 
     // eslint-disable-next-line jest/expect-expect
@@ -224,7 +235,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
     });
 
     // eslint-disable-next-line jest/expect-expect
@@ -241,7 +252,7 @@ describe('ExternalUserGroupSyncService.syncExternalUserGroups', () => {
     };
 
     beforeAll(async() => {
-      await configManager.updateConfigsInTheSameNamespace('crowi', configParams, true);
+      await configManager.updateConfigsInTheSameNamespace('crowi', configParams);
 
       const groupId = new Types.ObjectId();
       const userId = new Types.ObjectId();

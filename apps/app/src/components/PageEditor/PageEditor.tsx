@@ -18,7 +18,7 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -313,10 +313,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const uploadHandler = useCallback((files: File[]) => {
     files.forEach(async(file) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const resLimit: any = await apiGet('/attachments.limit', {
-          fileSize: file.size,
-        });
+        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);
@@ -324,17 +321,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
         const formData = new FormData();
         formData.append('file', file);
-        if (currentPagePath != null) {
-          formData.append('path', currentPagePath);
-        }
         if (pageId != null) {
           formData.append('page_id', pageId);
         }
-        if (pageId == null) {
-          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-        }
 
-        const resAdd: any = await apiPostForm('/attachments.add', formData);
+        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
+
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
@@ -344,23 +336,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.insertText(insertText);
+
         codeMirrorEditor?.insertText(insertText);
       }
       catch (e) {
         logger.error('failed to upload', e);
         toastError(e);
       }
-      finally {
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.terminateUploadingState();
-      }
     });
 
-  }, [codeMirrorEditor, currentPagePath, pageId]);
+  }, [codeMirrorEditor, pageId]);
 
   const acceptedFileType = useMemo(() => {
     if (!isUploadEnabled) {
