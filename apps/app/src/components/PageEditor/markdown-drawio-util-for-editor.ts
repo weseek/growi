@@ -1,4 +1,3 @@
-import { foldEffect } from '@codemirror/language';
 import { EditorView } from '@codemirror/view';
 
 const lineBeginPartOfDrawioRE = /^```(\s.*)drawio$/;
@@ -115,36 +114,6 @@ export const getMarkdownDrawioMxfile = (editor: EditorView): string | null => {
 
   return editor.state.sliceDoc(bodLine, eodLine);
 };
-
-// /**
-//  * return an array of the starting line numbers of the drawio sections found in markdown
-//  */
-// const findAllDrawioSection = (editor: EditorView): number[] => {
-//   const lineNumbers: number[] = [];
-//   for (let i = firstLineNum, e = lastLineNum(editor); i <= e; i++) {
-//     const lineTxt = getLine(editor, i).text;
-//     const match = lineBeginPartOfDrawioRE.exec(lineTxt);
-//     if (match) {
-//       lineNumbers.push(i);
-//     }
-//   }
-//   return lineNumbers;
-// };
-
-// // fold draw.io section (``` drawio ~ ```)
-// export const foldDrawioSection = (editor: EditorView): void => {
-//   const lineNumbers = findAllDrawioSection(editor);
-//   console.log(lineNumbers);
-//   lineNumbers.forEach((lineNumber) => {
-//     const from = getLine(editor, lineNumber).to;
-//     const to = getLine(editor, lineNumber + 2).to;
-//     editor.dispatch({
-//       effects: foldEffect.of({
-//         from, to,
-//       }),
-//     });
-//   });
-// };
 
 export const replaceFocusedDrawioWithEditor = (editor: EditorView, drawioData: string): void => {
   const drawioBlock = ['``` drawio', drawioData.toString(), '```'].join('\n');
