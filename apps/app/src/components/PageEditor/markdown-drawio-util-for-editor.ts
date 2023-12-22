@@ -131,5 +131,4 @@ export const replaceFocusedDrawioWithEditor = (editor: EditorView, drawioData: s
       insert: drawioBlock,
     },
   });
-  // foldDrawioSection(editor);
 };
