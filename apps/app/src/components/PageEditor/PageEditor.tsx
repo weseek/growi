@@ -75,7 +75,7 @@ declare global {
 
 
 // for scrolling
-let lastScrolledDateWithCursor: Date | null = null;
+const lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
@@ -420,34 +420,35 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
    * @param {number} line
    * @see https://codemirror.net/doc/manual.html#events
    */
-  const editorScrollCursorIntoViewHandler = useCallback((line: number) => {
-    // record date
-    lastScrolledDateWithCursor = new Date();
-    scrollPreviewByCursorMovingWithThrottle(line);
-  }, [scrollPreviewByCursorMovingWithThrottle]);
+  // const editorScrollCursorIntoViewHandler = useCallback((line: number) => {
+  //   // record date
+  //   lastScrolledDateWithCursor = new Date();
+  //   scrollPreviewByCursorMovingWithThrottle(line);
+  // }, [scrollPreviewByCursorMovingWithThrottle]);
 
   /**
    * scroll Editor component by scroll event of Preview component
    * @param {number} offset
    */
-  // const scrollEditorByPreviewScroll = useCallback((offset: number) => {
-  //   if (editorRef.current == null || previewRef.current == null) {
-  //     return;
-  //   }
+  const scrollEditorByPreviewScroll = useCallback((offset: number) => {
+    if (codeMirrorEditorContainerRef.current == null || previewRef.current == null) {
+      return;
+    }
 
-  //   // prevent circular invocation
-  //   if (isOriginOfScrollSyncEditor) {
-  //     isOriginOfScrollSyncEditor = false; // turn off the flag
-  //     return;
-  //   }
+    // prevent circular invocation
+    if (isOriginOfScrollSyncEditor) {
+      isOriginOfScrollSyncEditor = false; // turn off the flag
+      return;
+    }
 
-  //   // turn on the flag
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   isOriginOfScrollSyncPreview = true;
+    // turn on the flag
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    isOriginOfScrollSyncPreview = true;
 
-  //   scrollSyncHelper.scrollEditor(editorRef.current, previewRef.current, offset);
-  // }, []);
-  // const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
+    scrollSyncHelper.scrollEditor(codeMirrorEditorContainerRef.current, previewRef.current, offset);
+  }, []);
+  const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
+
   let scrolltest = 0;
   const scrollHandler = useCallback((line: number) => {
     scrolltest += 1;
@@ -459,7 +460,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, previewRef]);
 
   const scrollHandlerThrottle = useMemo(() => throttle(20, scrollHandler), [scrollHandler]);
-
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
@@ -603,7 +603,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pastEnd={parentPreviewRef.current?.getBoundingClientRect().height}
             // TODO: implement
             // refs: https://redmine.weseek.co.jp/issues/126519
-            // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
+            onScroll={offset => console.log(offset)}
           />
         </div>
         {/*
