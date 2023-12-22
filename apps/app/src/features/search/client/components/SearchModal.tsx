@@ -3,7 +3,7 @@ import React, {
   useState, useCallback, useEffect,
 } from 'react';
 
-import Downshift from 'downshift';
+import Downshift, { type DownshiftState, type StateChangeOptions } from 'downshift';
 import { useRouter } from 'next/router';
 import { Modal, ModalBody } from 'reactstrap';
 
@@ -36,6 +36,18 @@ const SearchModal = (): JSX.Element => {
     closeSearchModal();
   }, [closeSearchModal, router, searchKeyword]);
 
+  const stateReducer = (state: DownshiftState<DownshiftItem>, changes: StateChangeOptions<DownshiftItem>) => {
+    // Do not update highlightedIndex on mouse hover
+    if (changes.type === Downshift.stateChangeTypes.itemMouseEnter) {
+      return {
+        ...changes,
+        highlightedIndex: state.highlightedIndex,
+      };
+    }
+
+    return changes;
+  };
+
   useEffect(() => {
     if (!searchModalData?.isOpened) {
       setSearchKeyword('');
@@ -47,6 +59,7 @@ const SearchModal = (): JSX.Element => {
       <ModalBody>
         <Downshift
           onSelect={selectSearchMenuItemHandler}
+          stateReducer={stateReducer}
           defaultIsOpen
         >
           {({
@@ -55,7 +68,6 @@ const SearchModal = (): JSX.Element => {
             getItemProps,
             getMenuProps,
             highlightedIndex,
-            setHighlightedIndex,
           }) => (
             <div {...getRootProps({}, { suppressRefError: true })}>
               <div className="text-muted d-flex justify-content-center align-items-center p-1">
@@ -75,8 +87,7 @@ const SearchModal = (): JSX.Element => {
                 </button>
               </div>
 
-              {/* see: https://github.com/downshift-js/downshift/issues/582#issuecomment-423592531 */}
-              <ul {...getMenuProps({ onMouseLeave: () => { setHighlightedIndex(-1) } })} className="list-unstyled">
+              <ul {...getMenuProps()} className="list-unstyled">
                 <div className="border-top mt-3 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
