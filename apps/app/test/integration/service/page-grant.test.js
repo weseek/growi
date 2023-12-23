@@ -199,7 +199,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
       {
@@ -328,7 +328,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: emptyPage1._id,
       },
       {
@@ -337,7 +337,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: [user1._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: emptyPage2._id,
       },
       {
@@ -364,7 +364,7 @@ describe('PageGrantService', () => {
         creator: user1,
         lastUpdateUser: user1,
         grantedUsers: [user1._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: emptyPage3._id,
       },
     ]);

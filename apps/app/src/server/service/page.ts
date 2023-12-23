@@ -4099,7 +4099,7 @@ class PageService {
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
 
-    // use the previous data if absence
+    // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
     const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
       ? (await this.getNewGrantedGroups(options.userRelatedGrantUserGroupIds, clonedPageData, user))
@@ -4214,7 +4214,8 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
-    const grant = options.grant || pageData.grant; // use the previous data if absence
+    // use the previous data if absent
+    const grant = options.grant || pageData.grant;
     const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
       ? (await this.getNewGrantedGroups(options.userRelatedGrantUserGroupIds, pageData, user))
       : pageData.grantedGroups;
