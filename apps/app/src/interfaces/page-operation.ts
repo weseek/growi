@@ -33,6 +33,6 @@ export type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;
   grant: number;
-  // grantUserGroupIds?: IGrantedGroup[];
+  // userRelatedGrantUserGroupIds?: IGrantedGroup[];
   // isSyncRevisionToHackmd?: boolean;
 };
