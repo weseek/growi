@@ -996,6 +996,18 @@ describe('Page', () => {
         parent: rootPage._id,
         descendantCount: 0,
       },
+      {
+        path: '/page_with_multiple_individual_granted_groups',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroups: [
+          { item: userGroupIdPModelA, type: GroupType.userGroup },
+          { item: userGroupIdPModelB, type: GroupType.userGroup },
+        ],
+        creator: pModelUserId1,
+        lastUpdateUser: pModelUserId1,
+        isEmpty: false,
+        parent: rootPage,
+      },
     ]);
 
     await createDocumentsToTestUpdatePageOverwritingDescendants();
@@ -1457,9 +1469,40 @@ describe('Page', () => {
           expect(page2.grantedGroups.length).toBe(0); // no group should be set
         });
       });
+      describe('update grant of a page from GRANT_USER_GROUP to GRANT_USER_GROUP', () => {
+        test('successfully change the granted groups, with the previous groups wich user is not related to remaining', async() => {
+          // path
+          const path = '/page_with_multiple_individual_granted_groups';
+          // page
+          const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP });
+          expect(_page).toBeTruthy();
 
+          const newUserRelatedGrantedGroups = [
+            { item: userGroupIdPModelA, type: GroupType.userGroup },
+            { item: externalUserGroupIdPModelA, type: GroupType.externalUserGroup },
+          ];
+
+          const options = {
+            grant: Page.GRANT_USER_GROUP,
+            userRelatedGrantUserGroupIds: newUserRelatedGrantedGroups,
+          };
+          const updatedPage = await updatePage(_page, 'new', 'old', pModelUser1, options); // from GRANT_PUBLIC to GRANT_USER_GROUP(userGroupIdPModelA)
+
+          const page = await Page.findById(_page._id);
+          expect(page).toBeTruthy();
+          expect(updatedPage).toBeTruthy();
+          expect(updatedPage._id).toStrictEqual(page._id);
+
+          // check page grant and group
+          expect(page.grant).toBe(Page.GRANT_USER_GROUP);
+          expect(normalizeGrantedGroups(page.grantedGroups)).toEqual(expect.arrayContaining([
+            ...newUserRelatedGrantedGroups,
+            // userB group remains, although options does not include it
+            { item: userGroupIdPModelB, type: GroupType.userGroup },
+          ]));
+        });
+      });
     });
-
   });
 
 
@@ -1536,7 +1579,7 @@ describe('Page', () => {
       expect(upodPageonlyAUpdated.grant).toBe(newGrant);
       expect(upodPageonlyAUpdated.grantedUsers).toStrictEqual(newGrantedUsers);
     });
-    test.only(`(case 3) it should update all granted descendant pages when update grant is GRANT_USER_GROUP
+    test(`(case 3) it should update all granted descendant pages when update grant is GRANT_USER_GROUP
     , all user groups of descendants are the children or itself of the update user group
     , and all users of descendants belong to the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_3' });
