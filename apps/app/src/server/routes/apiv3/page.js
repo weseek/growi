@@ -565,10 +565,10 @@ module.exports = (crowi) => {
 
   router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
-    const { grant, grantedGroups } = req.body;
+    const { grant, userRelatedGrantedGroups } = req.body;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136137
-    if (grantedGroups != null && grantedGroups.length > 1) {
+    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 1) {
       return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
 
@@ -584,7 +584,7 @@ module.exports = (crowi) => {
     let data;
     try {
       const shouldUseV4Process = false;
-      const grantData = { grant, grantedGroups };
+      const grantData = { grant, userRelatedGrantedGroups };
       data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {

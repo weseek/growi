@@ -463,8 +463,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       ancestor.populate('grantedGroups.item');
-      const userRelatedGrantedGroups = await pageService.getUserRelatedGrantedGroups(ancestor, user);
-      const grantedGroupsInfo = userRelatedGrantedGroups.map((group) => {
+      const userRelatedGrantedGroups = (await pageService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
         if (isPopulated(group.item)) {
           return {
             id: group.item._id,
@@ -476,7 +475,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
       props.grantData = {
         grant: ancestor.grant,
-        grantedGroups: grantedGroupsInfo,
+        userRelatedGrantedGroups,
       };
     }
   }

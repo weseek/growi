@@ -651,7 +651,7 @@ export const getPageSchema = (crowi) => {
         updateOne: {
           filter: { _id: page._id },
           update: {
-            grantedGroups: null,
+            grantedGroups: [],
             grant: this.GRANT_PUBLIC,
           },
         },
