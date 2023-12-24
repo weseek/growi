@@ -997,7 +997,7 @@ describe('Page', () => {
         descendantCount: 0,
       },
       {
-        path: '/page_with_multiple_individual_granted_groups',
+        path: '/with_multiple_individual_granted_groups',
         grant: Page.GRANT_USER_GROUP,
         grantedGroups: [
           { item: userGroupIdPModelA, type: GroupType.userGroup },
@@ -1472,7 +1472,7 @@ describe('Page', () => {
       describe('update grant of a page from GRANT_USER_GROUP to GRANT_USER_GROUP', () => {
         test('successfully change the granted groups, with the previous groups wich user is not related to remaining', async() => {
           // path
-          const path = '/page_with_multiple_individual_granted_groups';
+          const path = '/with_multiple_individual_granted_groups';
           // page
           const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP });
           expect(_page).toBeTruthy();
