@@ -461,6 +461,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
+      ancestor.populate('grantedGroups.item');
       const userRelatedGrantedGroups = (await pageService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
         if (isPopulated(group.item)) {
           return {
