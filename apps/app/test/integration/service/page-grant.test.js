@@ -399,7 +399,7 @@ describe('PageGrantService', () => {
       const targetPath = '/NEW';
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -423,7 +423,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageRootPublicPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -447,7 +447,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageE1PublicPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -459,7 +459,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageE2User1Path}/NEW`;
       const grant = Page.GRANT_OWNER;
       const grantedUserIds = [user1._id];
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -471,7 +471,7 @@ describe('PageGrantService', () => {
       const targetPath = `${pageE3GroupParentPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -497,7 +497,7 @@ describe('PageGrantService', () => {
       const targetPath = emptyPagePath1;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = true;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -509,7 +509,7 @@ describe('PageGrantService', () => {
       const targetPath = emptyPagePath2;
       const grant = Page.GRANT_OWNER;
       const grantedUserIds = [user1._id];
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = true;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -533,7 +533,7 @@ describe('PageGrantService', () => {
       const targetPath = emptyPagePath1;
       const grant = Page.GRANT_OWNER;
       const grantedUserIds = [user1._id];
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = true;
 
       const result = await pageGrantService.isGrantNormalized(user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants);
@@ -547,7 +547,7 @@ describe('PageGrantService', () => {
       const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(
@@ -561,7 +561,35 @@ describe('PageGrantService', () => {
       const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_PUBLIC;
       const grantedUserIds = null;
-      const grantedGroupIds = null;
+      const grantedGroupIds = [];
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(
+        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to owner grant', async() => {
+      const targetPath = pageMultipleGroupTreesAndUsersPath;
+      const grant = Page.GRANT_OWNER;
+      const grantedUserIds = [user2._id];
+      const grantedGroupIds = [];
+      const shouldCheckDescendants = false;
+
+      const result = await pageGrantService.isGrantNormalized(
+        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      );
+
+      expect(result).toBe(false);
+    });
+
+    test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to restricted grant', async() => {
+      const targetPath = pageMultipleGroupTreesAndUsersPath;
+      const grant = Page.GRANT_RESTRICTED;
+      const grantedUserIds = null;
+      const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
       const result = await pageGrantService.isGrantNormalized(

@@ -260,6 +260,21 @@ describe('Page', () => {
         grantedGroups: [],
         parent: upodPageIdgAB1,
       },
+      // grant user A and B with independent groups
+      {
+        path: '/gAB_upod_1/gA_gB_upod_1',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroups: [
+          { item: upodUserGroupIdA, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdA, type: GroupType.externalUserGroup },
+          { item: upodUserGroupIdB, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
+        ],
+        parent: upodPageIdgAB1,
+      },
       // case 2
       {
         _id: upodPageIdPublic2,
@@ -1530,14 +1545,17 @@ describe('Page', () => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
       const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
       const upodPageonlyB = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
+      const upodPagegAgB = await Page.findOne({ path: '/gAB_upod_1/gA_gB_upod_1' });
 
       expect(upodPagegAB).not.toBeNull();
       expect(upodPagegB).not.toBeNull();
       expect(upodPageonlyB).not.toBeNull();
+      expect(upodPagegAgB).not.toBeNull();
 
       expect(upodPagegAB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPagegB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPageonlyB.grant).toBe(PageGrant.GRANT_OWNER);
+      expect(upodPagegAgB.grant).toBe(PageGrant.GRANT_USER_GROUP);
 
       // Update
       const options = {
@@ -1548,6 +1566,7 @@ describe('Page', () => {
 
       const upodPagegBUpdated = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
       const upodPageonlyBUpdated = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
+      const upodPagegAgBUpdated = await Page.findOne({ path: '/gAB_upod_1/gA_gB_upod_1' });
 
       // Changed
       const newGrant = PageGrant.GRANT_PUBLIC;
@@ -1557,8 +1576,10 @@ describe('Page', () => {
       expect(upodPagegBUpdated.grantedGroups).toStrictEqual(upodPagegB.grantedGroups);
       expect(upodPageonlyBUpdated.grant).toBe(PageGrant.GRANT_OWNER);
       expect(upodPageonlyBUpdated.grantedUsers).toStrictEqual(upodPageonlyB.grantedUsers);
+      expect(upodPagegAgBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);
+      expect(upodPagegAgBUpdated.grantedGroups).toStrictEqual(upodPagegAgB.grantedGroups);
     });
-    test('(case 2) it should update all granted descendant pages when all descendant pages are granted by the operator', async() => {
+    test('(case 2) it should update all granted descendant pages when all descendant pages are granted to the operator', async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_2' });
       const upodPagegA = await Page.findOne({ path: '/public_upod_2/gA_upod_2' });
       const upodPagegAIsolated = await Page.findOne({ path: '/public_upod_2/gAIsolated_upod_2' });

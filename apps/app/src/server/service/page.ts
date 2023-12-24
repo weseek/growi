@@ -35,6 +35,7 @@ import {
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { Attachment } from '../models';
@@ -2426,28 +2427,22 @@ class PageService {
 
     const grant = parentPage.grant;
 
-    if (grant === PageGrant.GRANT_USER_GROUP) {
-      const userRelatedParentGrantedGroups = await this.getUserRelatedGrantedGroups(parentPage, user);
-      const childPages = await builder.query;
-      const childPageUpdatePromises = childPages.map((childPage) => {
-        return (async() => {
-          const childGrantedGroups = childPage.grantedGroups || [];
-          const userRelatedChildGrantedGroupIds = (await this.getUserRelatedGrantedGroups(childPage, user)).map(g => getIdForRef(g.item));
-          const userUnrelatedChildGrantedGroups = childGrantedGroups.filter(g => !userRelatedChildGrantedGroupIds.includes(getIdForRef(g.item)));
-          const newChildGrantedGroups = [...userUnrelatedChildGrantedGroups, ...userRelatedParentGrantedGroups];
-          childPage.grantedGroups = newChildGrantedGroups;
-          childPage.save();
-        })();
-      });
-      await Promise.all(childPageUpdatePromises);
-    }
-    else {
-      await builder.query.updateMany({}, {
-        grant,
-        grantedGroups: null,
-        grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
-      });
-    }
+    const childPages = await builder.query;
+    await batchProcessPromiseAll(childPages, 20, async(childPage: any) => {
+      let newChildGrantedGroups: IGrantedGroup[] = [];
+      if (grant === PageGrant.GRANT_USER_GROUP) {
+        const userRelatedParentGrantedGroups = await this.getUserRelatedGrantedGroups(parentPage, user);
+        newChildGrantedGroups = await this.getNewGrantedGroups(userRelatedParentGrantedGroups, childPage, user);
+      }
+      const canChangeGrant = await this.pageGrantService
+        .validateGrantChange(user, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+      if (canChangeGrant) {
+        childPage.grant = grant;
+        childPage.grantedUsers = grant === PageGrant.GRANT_OWNER ? [user._id] : null;
+        childPage.grantedGroups = newChildGrantedGroups;
+        childPage.save();
+      }
+    });
   }
 
   /**

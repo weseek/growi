@@ -30,7 +30,6 @@ import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
-import PageService from '~/server/service/page';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,
