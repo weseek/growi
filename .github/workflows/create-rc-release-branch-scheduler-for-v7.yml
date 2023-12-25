@@ -1,8 +1,13 @@
 name: Create RC release Branche with the Scheduler (for dev/7.0.x)
 
+# on:
+#   schedule:
+#     - cron: '0 0 * * *'
+
 on:
-  schedule:
-    - cron: '0 0 * * *'
+  pull_request:
+    branches:
+      - master
 
 jobs:
     create-rc-branch:
