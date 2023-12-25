@@ -30,9 +30,9 @@ jobs:
           run: |
             git config user.name github-actions
             git config user.email github-actions@github.com
-            git commit --allow-empty -m "empty commit to run release-rc.yml"
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
-            git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+            git commit --allow-empty -m "empty commit to run release-rc.yml"
+            git push
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
