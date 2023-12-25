@@ -18,7 +18,7 @@ jobs:
         - name: Set current datetime as env variable
           id: set-current-datetime
           env:
-          TZ: 'Asia/Tokyo'
+            TZ: 'Asia/Tokyo'
           run: echo "CURRENT_DATETIME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
         - name: Checkout target branch
@@ -27,5 +27,7 @@ jobs:
             ref: dev/7.0.x
 
         - name: Create RC release branch
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
