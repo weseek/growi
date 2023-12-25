@@ -132,20 +132,3 @@ export const replaceFocusedDrawioWithEditor = (editor: EditorView, drawioData: s
     },
   });
 };
-
-/**
- * return an array of the starting line numbers of the drawio sections found in markdown
- */
-// TODO: https://redmine.weseek.co.jp/issues/136473
-// export const findAllDrawioSection = (editor: EditorView): number[] => {
-//   const lineNumbers: number[] = [];
-//   // refs: https://github.com/codemirror/CodeMirror/blob/5.64.0/addon/fold/foldcode.js#L106-L111
-//   for (let i = firstLineNum, e = lastLineNum(editor); i <= e; i++) {
-//     const lineTxt = getLine(editor, i).text;
-//     const match = lineBeginPartOfDrawioRE.exec(lineTxt);
-//     if (match) {
-//       lineNumbers.push(i);
-//     }
-//   }
-//   return lineNumbers;
-// };
