@@ -22,7 +22,7 @@ jobs:
           run: echo "CURRENT_DATETIME=$(date +'%Y%m%d%H%M%S')" >> $GITHUB_OUTPUT
 
         - name: Checkout target branch
-          uses: actions/checkout@v4
+          uses: actions/checkout@v
           with:
             ref: dev/7.0.x
 
@@ -32,7 +32,7 @@ jobs:
             git config user.email github-actions@github.com
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
             git commit --allow-empty -m "empty commit to run release-rc.yml"
-            git push
+            git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
