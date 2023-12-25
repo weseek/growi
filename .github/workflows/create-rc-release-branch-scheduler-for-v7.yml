@@ -28,20 +28,22 @@ jobs:
 
         - name: Create RC release branch
           run: |
-            git config --local user.email "github-actions[bot]@users.noreply.github.com"
-            git config --local user.name "github-actions[bot]"
+            git config user.name github-actions
+            git config user.email github-actions@github.com
             git commit --allow-empty -m "empty commit to run release-rc.yml"
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
             git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+          env:
+            GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        - name: Retrieve information from package.json
-          uses: myrotvorets/info-from-package-json-action@1.2.0
-          id: package-json
+        # - name: Retrieve information from package.json
+        #   uses: myrotvorets/info-from-package-json-action@1.2.0
+        #   id: package-json
 
-        - name: Create PR
-          uses: repo-sync/pull-request@v2
-          with:
-            source_branch: rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
-            destination_branch: dev/7.0.x
-            pr_title: Release ${{ steps.package-json.outputs.packageVersion }}-${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+        # - name: Create PR
+        #   uses: repo-sync/pull-request@v2
+        #   with:
+        #     source_branch: rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+        #     destination_branch: dev/7.0.x
+        #     pr_title: Release ${{ steps.package-json.outputs.packageVersion }}-${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+        #     github_token: ${{ secrets.GITHUB_TOKEN }}
