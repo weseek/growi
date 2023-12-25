@@ -104,8 +104,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   useEffect(() => {
 
-    const handleScroll = () => {
-      onScroll();
+    const handleScroll = (event: Event) => {
+      event.preventDefault();
+      if (onScroll != null) {
+        onScroll();
+      }
     };
 
     const extension = EditorView.domEventHandlers({

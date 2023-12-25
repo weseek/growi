@@ -61,6 +61,7 @@ import loggerFactory from '~/utils/logger';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import scrollSyncHelper from './ScrollSyncHelper';
+import { scrollEditor, scrollPreview } from './ScrollSyncHelperTest';
 
 import '@growi/editor/dist/style.css';
 import { preview } from 'vite';
@@ -451,8 +452,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const scrollEditorHandler = useCallback(() => {
     console.log('ScrollEditor!');
-    if (codeMirrorEditor.view.scrollDOM != null && previewRef.current != null) {
-      // scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
+    if (codeMirrorEditor?.view?.scrollDOM != null && previewRef.current != null) {
+      scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
     }
   }, [codeMirrorEditor, previewRef]);
 
@@ -460,8 +461,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const scrollPreviewHandler = useCallback(() => {
     console.log('ScrollPreview!');
-    if (codeMirrorEditor.view.scrollDOM != null && previewRef.current != null) {
-      // scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
+    if (codeMirrorEditor?.view?.scrollDOM != null && previewRef.current != null) {
+      scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
     }
   }, [codeMirrorEditor, previewRef]);
 
@@ -599,7 +600,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedFileType={acceptedFileType}
           />
         </div>
-        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div ref={previewRef} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
           <Preview
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
