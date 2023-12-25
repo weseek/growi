@@ -96,7 +96,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
   return (
     <>
       {onClickAddApproverGroupCard != null && groupIndex === 0 && (
-        <div className="d-flex justify-content-center my-2">
+        <div className="d-flex justify-content-center my-2 z-1 position-relative">
           <div className="row w-75">
             <div className="col-5"></div>
             <div className="col-7">
@@ -122,7 +122,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
         </div>
       )}
       {/* TODO: https://redmine.weseek.co.jp/issues/137322 */}
-      <div className="card rounded">
+      <div className="card rounded z-1 position-relative">
         <div className="container row p-0 mx-auto">
           <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
             <span className="material-symbols-outlined">
@@ -189,7 +189,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
       </div>
 
       {onClickAddApproverGroupCard != null && !isLastApproverGroup && (
-        <div className="d-flex justify-content-center my-2">
+        <div className="d-flex justify-content-center my-2 z-1 position-relative">
           <div className="row w-75">
             <div className="col-5"></div>
             <div className="col-7">
@@ -216,7 +216,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
       )}
 
       {onClickAddApproverGroupCard != null && isLastApproverGroup && (
-        <div className="rounded bg-body-tertiary mt-5">
+        <div className="rounded bg-body-tertiary mt-5 z-1 position-relative">
           <button
             type="button"
             className="btn btn-link w-100 my-2"

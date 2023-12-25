@@ -14,8 +14,6 @@ import { WorkflowForm } from './WorkflowForm';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
 
 
-import styles from './WorkflowCreationModalContent.module.scss';
-
 type Props = {
   pageId: string,
   onCreated?: () => void
@@ -84,7 +82,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
             workflowDescriptionChangeHandler={workflowDescriptionChangeHandler}
           />
 
-          <div className={styles['workflow-creation-modal-content']}>
+          <div className="position-relative">
             <EditableApproverGroupCards
               editingApproverGroups={editingApproverGroups}
               excludedSearchUserIds={excludedSearchUserIds}
@@ -92,6 +90,7 @@ export const WorkflowCreationModalContent = (props: Props): JSX.Element => {
               onClickAddApproverGroupCard={addApproverGroupHandler}
               onClickRemoveApproverGroupCard={removeApproverGroupHandler}
             />
+            <div className="position-absolute top-0 start-0 bottom-0 end-0 m-auto bg-secondary z-0" style={{ width: '2px' }}></div>
           </div>
 
           <p className="my-3 text-muted text-center">{t('approval_workflow.description_for_new_creation')}</p>
