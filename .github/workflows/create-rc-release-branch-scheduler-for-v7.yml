@@ -27,7 +27,7 @@ jobs:
             ref: dev/7.0.x
 
         - name: Commit
-          uses: github-actions-x/commit@6
+          uses: actions-x/commit@v6
           with:
             name: GitHub Actions Autocommitter
             token: ${{ secrets.GITHUB_TOKEN }}
