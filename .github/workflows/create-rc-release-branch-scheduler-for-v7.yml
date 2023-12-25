@@ -1,4 +1,4 @@
-name: Create RC Release Branche with the Scheduler (for dev/7.0.x)
+name: Create RC release Branche with the Scheduler (for dev/7.0.x)
 
 on:
   schedule:
@@ -21,6 +21,6 @@ jobs:
           with:
             ref: dev/7.0.x
 
-        - name: Create checkout rc branch
+        - name: Create RC release branch
           run: |
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
