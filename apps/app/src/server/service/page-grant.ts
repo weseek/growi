@@ -13,7 +13,7 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
-import { includesObjectIds, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { includesObjectIds, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import UserGroupRelation from '../models/user-group-relation';
@@ -250,7 +250,7 @@ class PageGrantService implements IPageGrantService {
       if (grant !== PageGrant.GRANT_USER_GROUP) {
         return false;
       }
-      const pageGrantIncludesUserRelatedGroup = includesObjectIds(grantedGroupIds?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
+      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroupIds?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
       if (!pageGrantIncludesUserRelatedGroup) {
         return false;
       }

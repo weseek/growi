@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:remove-basic-auth-related-config');
+const logger = loggerFactory('growi:granted-group-to-array-of-objects');
 
 module.exports = {
   async up(db, client) {

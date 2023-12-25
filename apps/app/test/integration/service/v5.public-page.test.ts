@@ -453,7 +453,7 @@ describe('PageService page operations with only public pages', () => {
           status: 'published',
           grant: 1,
           grantedUsers: [],
-          grantedGroups: null,
+          grantedGroups: [],
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },
