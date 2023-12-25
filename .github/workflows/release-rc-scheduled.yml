@@ -3,3 +3,4 @@ name: Release Docker Images for RC (by Scheduler)
 on:
   schedule:
     - cron: '0 3 * * fri'
+
