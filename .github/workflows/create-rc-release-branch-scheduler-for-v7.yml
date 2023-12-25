@@ -33,6 +33,7 @@ jobs:
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
             git commit --allow-empty -m "empty commit to run release-rc.yml"
             git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+            gh pr create --title "Release ${{ steps.package-json.outputs.packageVersion }}-${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}"
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
