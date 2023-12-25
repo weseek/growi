@@ -1,7 +1,7 @@
-name: Release Docker Images for RC
+name: Release Docker Images for RC (for dev/7.0.x)
 
 on:
-  merge:
+  push:
     branches:
       - dev/7.0.x
 
