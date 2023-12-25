@@ -26,6 +26,10 @@ jobs:
           with:
             ref: dev/7.0.x
 
+        - name: Retrieve information from package.json
+          uses: myrotvorets/info-from-package-json-action@1.2.0
+          id: package-json
+
         - name: Create RC release branch
           run: |
             git config user.name github-actions
@@ -33,13 +37,10 @@ jobs:
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
             git commit --allow-empty -m "empty commit to run release-rc.yml"
             git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
-            gh pr create --title "Release ${{ steps.package-json.outputs.packageVersion }}-${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}" --body "test"
+            gh pr create --title "Release ${{ steps.package-json.outputs.packageVersion }}-${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}" --body "test" --base dev/7.0.x
           env:
             GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-        # - name: Retrieve information from package.json
-        #   uses: myrotvorets/info-from-package-json-action@1.2.0
-        #   id: package-json
 
         # - name: Create PR
         #   uses: repo-sync/pull-request@v2
