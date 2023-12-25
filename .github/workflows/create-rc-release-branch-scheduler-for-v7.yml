@@ -10,7 +10,7 @@ on:
       - master
 
 jobs:
-    create-rc-branch:
+    create-rc-release-branch:
 
       runs-on: ubuntu-latest
 
@@ -31,4 +31,5 @@ jobs:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           run: |
             git checkout -b rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
+            git commit --allow-empty -m "empty commit"
             git push --set-upstream origin rc/${{ steps.set-current-datetime.outputs.CURRENT_DATETIME }}
