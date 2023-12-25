@@ -16,7 +16,9 @@ import { useEditingApproverGroups } from '../../services/workflow';
 import { useSWRxWorkflow } from '../../stores/workflow';
 
 import { EditableApproverGroupCards } from './EditableApproverGroupCards';
+import { WorkflowForm } from './WorkflowForm';
 import { WorkflowModalHeader } from './WorkflowModalHeader';
+
 
 // Compare oldUserIds and newUserIds and extract the userId that has increased or decreased
 const compareApproverDiff = (oldUserIds: string[], newUserIds: string[]): { userIdToAdd?: string, userIdToRemove?: string } => {
@@ -175,67 +177,43 @@ export const WorkflowEditModalContent = (props: Props): JSX.Element => {
       </WorkflowModalHeader>
 
       <ModalBody>
-        <div className="mb-3">
-          <div className="row align-items-center">
-            <label htmlFor="name" className="col-md-4 col-form-label">
-              {t('approval_workflow.name')}
-            </label>
-            <div className="col-md-8 mb-3">
-              <div className="row">
-                <div className="col">
-                  <input
-                    className="form-control"
-                    type="text"
-                    name="name"
-                    value={editingWorkflowName}
-                    onChange={workflowNameChangeHandler}
-                    required
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="row">
-            <label htmlFor="description" className="col-md-4 col-form-label">
-              {t('approval_workflow.description')}
-            </label>
-            <div className="col-md-8">
-              <div className="row">
-                <div className="col">
-                  <textarea
-                    className="form-control"
-                    name="description"
-                    value={editingWorkflowDescription}
-                    onChange={workflowDescriptionChangeHandler}
-                  />
-                </div>
-              </div>
-            </div>
+        <div className="col-9 mx-auto">
+          <WorkflowForm
+            editingWorkflowName={editingWorkflowName}
+            workflowNameChangeHandler={workflowNameChangeHandler}
+            editingWorkflowDescription={editingWorkflowDescription}
+            workflowDescriptionChangeHandler={workflowDescriptionChangeHandler}
+          />
+          <div className="position-relative">
+            <EditableApproverGroupCards
+              editingApproverGroups={editingApproverGroups}
+              approvedApproverIds={allApprovedApproverIds}
+              excludedSearchUserIds={excludedSearchUserIds}
+              latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
+              onUpdateApproverGroups={onUpdateApproverGroupsHandler}
+              onClickAddApproverGroupCard={addApproverGroupHandler}
+              onClickRemoveApproverGroupCard={onRemoveApproverGroupsHandler}
+            />
+            <div className="position-absolute top-0 start-0 bottom-0 end-0 m-auto bg-secondary z-0" style={{ width: '2px' }}></div>
           </div>
         </div>
-        <EditableApproverGroupCards
-          editingApproverGroups={editingApproverGroups}
-          approvedApproverIds={allApprovedApproverIds}
-          excludedSearchUserIds={excludedSearchUserIds}
-          latestApprovedApproverGroupIndex={latestApprovedApproverGroupIndex ?? undefined}
-          onUpdateApproverGroups={onUpdateApproverGroupsHandler}
-          onClickAddApproverGroupCard={addApproverGroupHandler}
-          onClickRemoveApproverGroupCard={onRemoveApproverGroupsHandler}
-        />
       </ModalBody>
 
       <ModalFooter>
-        <button
-          type="button"
-          onClick={onClickWorkflowDetailPageBackButton}
-        >{t('approval_workflow.cancel')}
-        </button>
-        <button
-          type="button"
-          onClick={clickSaveWorkflowButtonClickHandler}
-        >{t('approval_workflow.completion')}
-        </button>
+        <div className="mx-auto">
+          <button
+            className="btn btn-secondary me-2"
+            type="button"
+            onClick={onClickWorkflowDetailPageBackButton}
+          >{t('approval_workflow.cancel')}
+          </button>
+          <button
+            className="btn btn-primary ms-2"
+            type="button"
+            onClick={clickSaveWorkflowButtonClickHandler}
+          >{t('approval_workflow.completion')}
+          </button>
+        </div>
       </ModalFooter>
     </>
   );
