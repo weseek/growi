@@ -457,7 +457,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [codeMirrorEditor, previewRef]);
 
-  const scrollEditorHandlerThrottle = useMemo(() => throttle(20, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(150, scrollEditorHandler), [scrollEditorHandler]);
 
   const scrollPreviewHandler = useCallback(() => {
     console.log('ScrollPreview!');
@@ -466,7 +466,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [codeMirrorEditor, previewRef]);
 
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(20, scrollPreviewHandler), [scrollPreviewHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(150, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
