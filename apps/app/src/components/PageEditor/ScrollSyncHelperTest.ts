@@ -20,8 +20,12 @@
 // fn: (args) => {return list[args] < 5}
 // output: 4
 
-let topY = 0;
-const padding = 0;
+let defaultTop = 0;
+const padding = 5;
+
+const getDataLineIndex = (previewElement: Element): number => {
+  return +(previewElement.getAttribute('data-line') ?? '0') - 1;
+};
 
 const getEditorElements = (editorRootElement: HTMLElement): Array<Element> => {
   return Array.from(editorRootElement.getElementsByClassName('cm-line'));
@@ -50,68 +54,87 @@ const elementBinarySearch = (list: Array<Element>, fn: (index: number) => boolea
 const findTopElementIndex = (elements: Array<Element>): number => {
 
   const find = (index: number): boolean => {
-    return elements[index].getBoundingClientRect().y < topY + padding;
+    return elements[index].getBoundingClientRect().top < defaultTop + padding;
   };
 
   return elementBinarySearch(elements, find);
 };
 
-const findTopElement = (elements: Array<Element>): Element => {
-  return elements[findTopElementIndex(elements)];
-};
-
-const findPreviewElement = (previewElements: Array<Element>, editorElementLine: number): Element => {
+const findPreviewElementIndex = (previewElements: Array<Element>, editorElementLineIndex: number): number => {
 
   const find = (index: number): boolean => {
-    const data = +(previewElements[index].getAttribute('data-line') ?? '0');
-    return data <= editorElementLine;
+    const data = getDataLineIndex(previewElements[index]);
+    return data <= editorElementLineIndex;
   };
 
-  return previewElements[elementBinarySearch(previewElements, find)];
+  return elementBinarySearch(previewElements, find);
 };
-
 
 const calcScrollElementToTop = (element: Element): number => {
-  return element.getBoundingClientRect().y - (topY + padding);
+  return element.getBoundingClientRect().top - (defaultTop + padding);
 };
 
-const calcScorllElementByRatio = (sourceElement: Element, targetElement: Element): number => {
-  // console.log('calc raito');
-  // console.log(sourceElement.getBoundingClientRect());
-  // console.log(targetElement.getBoundingClientRect());
-  return 0;
+type SourceElement = {
+  start: Element,
+  top: Element,
+  next: Element | undefined,
+}
+
+type TargetElement = {
+  start: Element,
+  next: Element | undefined,
+}
+
+const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: TargetElement): number => {
+  if (sourceElement.start === sourceElement.next || sourceElement.next == null || targetElement.next == null) {
+    return 0;
+  }
+  const sourceAllHeight = sourceElement.next.getBoundingClientRect().top - sourceElement.start.getBoundingClientRect().top;
+  const sourceUseHeight = sourceElement.top.getBoundingClientRect().top - sourceElement.start.getBoundingClientRect().top;
+  const sourceTopHeight = defaultTop + padding - sourceElement.top.getBoundingClientRect().top;
+  const sourceRaito = (sourceUseHeight + sourceTopHeight) / sourceAllHeight;
+
+  const targetAllHeight = targetElement.next.getBoundingClientRect().top - targetElement.start.getBoundingClientRect().top;
+
+  return targetAllHeight * sourceRaito;
 };
 
 export const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
 
-  topY = editorRootElement.getBoundingClientRect().y;
+  defaultTop = editorRootElement.getBoundingClientRect().top;
 
   const editorElements = getEditorElements(editorRootElement);
   const previewElements = getPreviewElements(previewRootElement);
 
   const topEditorElementIndex = findTopElementIndex(editorElements);
+  const targetPreviewElementIndex = findPreviewElementIndex(previewElements, topEditorElementIndex);
 
-  const sourceEditorElement = editorElements[topEditorElementIndex];
-  const targetPreviewElement = findPreviewElement(previewElements, topEditorElementIndex + 1);
+  const startEditorElementIndex = getDataLineIndex(previewElements[targetPreviewElementIndex]);
+  const nextEditorElementIndex = getDataLineIndex(previewElements[targetPreviewElementIndex + 1]);
 
   let newScrollTop = previewRootElement.scrollTop;
-  newScrollTop += calcScrollElementToTop(targetPreviewElement);
-  newScrollTop += calcScorllElementByRatio(sourceEditorElement, targetPreviewElement);
 
+  newScrollTop += calcScrollElementToTop(previewElements[targetPreviewElementIndex]);
+  newScrollTop += calcScorllElementByRatio(
+    {
+      start: editorElements[startEditorElementIndex],
+      top: editorElements[topEditorElementIndex],
+      next: editorElements[nextEditorElementIndex],
+    },
+    {
+      start: previewElements[targetPreviewElementIndex],
+      next: previewElements[targetPreviewElementIndex + 1],
+    },
+  );
 
-  console.log(previewRootElement.scrollTop, newScrollTop);
-  previewRootElement.scrollTo({ top: newScrollTop, behavior: 'smooth' });
-
-  // console.log(topEditorElement);
-  // console.log(topEditorElement.getBoundingClientRect());
-  // console.log(editorRootElement.scrollTop);
+  previewRootElement.scrollTop = newScrollTop;
 
 };
 
 
 export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
 
-  // topY = previewRootElement.getBoundingClientRect().y;
+  // defaultTop = previewRootElement.getBoundingClientRect().y;
 
   // const previewElements = getPreviewElements(previewRootElement);
 
