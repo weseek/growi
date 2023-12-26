@@ -149,11 +149,11 @@ export const AuditLogManagement: FC = () => {
 
   return (
     <div data-testid="admin-auditlog">
-      <button type="button" className="btn btn-outline-secondary mb-4" onClick={() => setIsSettingPage(!isSettingPage)}>
+      <button type="button" className="btn btn-outline-secondary mb-4 d-flex" onClick={() => setIsSettingPage(!isSettingPage)}>
         {
           isSettingPage
-            ? <><span className="material-symbols-outlined">arrow_left_alt</span>{t('admin:audit_log_management.return')}</>
-            : <><span className="material-symbols-outlined">settings</span>{t('admin:audit_log_management.settings')}</>
+            ? <><span className="material-symbols-outlined me-1">arrow_left_alt</span>{t('admin:audit_log_management.return')}</>
+            : <><span className="material-symbols-outlined me-1">settings</span>{t('admin:audit_log_management.settings')}</>
         }
       </button>
 
