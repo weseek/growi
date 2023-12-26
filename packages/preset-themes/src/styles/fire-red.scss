@@ -3,13 +3,13 @@
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  $primary: #439cb9;
-  $highlight: #93e3ea;
+  $primary: #EA5532;
+  $highlight: #C9BBBA;
 
-  @include generate-color-palette('primary', $primary, #021529, white);
-  @include generate-color-palette('highlight', $highlight, black, #edffff);
+  @include generate-color-palette('primary', $primary, #120700, white);
+  @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color:                $gray-700;
+  $body-color:                var(--grw-highlight-800);
   $body-bg:                   white;
 
   $body-secondary-color:      rgba($body-color, .75);
@@ -38,10 +38,10 @@
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  $primary: #439cb9;
-  $highlight: #166cc0;
+  $primary: #EA5532;
+  $highlight: #C9BBBA;
 
-  @include generate-color-palette('primary', $primary, #021529, white);
+  @include generate-color-palette('primary', $primary, #120700, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
   $body-color-dark:                   $gray-400;
