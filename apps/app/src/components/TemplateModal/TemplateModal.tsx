@@ -5,6 +5,7 @@ import React, {
 import assert from 'assert';
 
 import { Lang } from '@growi/core';
+import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/stores/use-template-modal';
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
@@ -21,7 +22,6 @@ import {
 } from 'reactstrap';
 
 import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
-import { useTemplateModal, type TemplateModalStatus } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
