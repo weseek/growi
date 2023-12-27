@@ -48,12 +48,11 @@ const insertText = (editor: EditorView, text: string) => {
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
   const strFromBol = getStrFromBol(editor);
 
-  if (indentAndMarkRE.test(strFromBol)) {
+  const matchResult = strFromBol.match(indentAndMarkRE);
+
+  if (matchResult != null) {
     // continue list
-    const indentAndMark = strFromBol.match(indentAndMarkRE)[0];
+    const indentAndMark = matchResult[0];
     insertText(editor, indentAndMark);
-  }
-  else {
-    insertText(editor, '\n');
   }
 };

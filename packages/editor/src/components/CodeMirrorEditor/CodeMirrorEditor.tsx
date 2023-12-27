@@ -52,6 +52,9 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       if (event.key === 'Enter') {
         event.preventDefault();
         const editor = codeMirrorEditor?.view;
+        if (editor == null) {
+          return;
+        }
         newlineAndIndentContinueMarkdownList(editor);
       }
     };
