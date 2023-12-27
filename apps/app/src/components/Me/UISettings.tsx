@@ -7,9 +7,6 @@ import { updateUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
 
-import SidebarCollapsedIcon from './SidebarCollapsedIcon';
-import SidebarDockIcon from './SidebarDockIcon';
-
 import styles from './UISettings.module.scss';
 
 const IconWithTooltip = ({
