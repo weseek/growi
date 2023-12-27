@@ -59,7 +59,7 @@ export const UISettings = (): JSX.Element => {
             >
               <span className="growi-custom-icon">sidebar-collapsed</span>
             </IconWithTooltip>
-            <div className="form-check form-switch ms-2">
+            <div className="form-check form-switch ms-1">
 
               <input
                 id="swSidebarMode"
