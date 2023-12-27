@@ -2,5 +2,6 @@
   "fontName": "growi-custom-icon",
   "css": false,
   "outSVGReact": false,
-  "useNameAsUnicode": true
+  "useNameAsUnicode": true,
+  "className": "growi-custom-icon"
 }
