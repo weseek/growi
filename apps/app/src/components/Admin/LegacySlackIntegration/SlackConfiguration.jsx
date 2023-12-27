@@ -102,7 +102,9 @@ class SlackConfiguration extends React.Component {
               <h2 className="border-bottom mb-5">{t('notification_settings.slack_app_configuration')}</h2>
 
               <div className="card custom-card">
-                <span className="text-danger"><span className="material-symbols-outlined">error</span>NOT RECOMMENDED</span>
+                <span className="text-danger d-flex">
+                  <span className="material-symbols-outlined me-1">error</span>NOT RECOMMENDED
+                </span>
                 <br />
                 {/* eslint-disable-next-line react/no-danger */}
                 <span dangerouslySetInnerHTML={{ __html: t('notification_settings.slack_app_configuration_desc') }} />
@@ -140,7 +142,7 @@ class SlackConfiguration extends React.Component {
         <hr />
 
         <h3>
-          <span className="material-symbols-outlined" aria-hidden="true">help</span>{' '}
+          <span className="material-symbols-outlined me-1" aria-hidden="true">help</span>
           <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
