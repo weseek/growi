@@ -9,7 +9,7 @@
   @include generate-color-palette('primary', $primary, #120700, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color:                var(--grw-highlight-800);
+  $body-color:                #223246;
   $body-bg:                   white;
 
   $body-secondary-color:      rgba($body-color, .75);
