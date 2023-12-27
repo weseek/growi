@@ -21,7 +21,7 @@ type Props = {
   onClickRemoveApproverGroupCard?: (groupIndex: number) => void
 }
 
-const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.Element => {
+const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastApproverGroup: boolean }): JSX.Element => {
   const {
     groupIndex,
     approvedApproverIds,
@@ -31,6 +31,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
     onUpdateApproverGroups,
     onClickAddApproverGroupCard,
     onClickRemoveApproverGroupCard,
+    isLastApproverGroup,
   } = props;
 
   const { t } = useTranslation();
@@ -95,82 +96,139 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
   return (
     <>
       {onClickAddApproverGroupCard != null && groupIndex === 0 && (
-        <div className="text-center my-2">
-          <button
-            type="button"
-            disabled={!isCreatableTopApporverGroup}
-            onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
-          >{t('approval_workflow.add_flow')}
-          </button>
+        <div className="d-flex justify-content-center my-2 z-1 position-relative">
+          <div className="row w-75">
+            <div className="col-5"></div>
+            <div className="col-7">
+              <button
+                type="button"
+                disabled={!isCreatableTopApporverGroup}
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                className="btn btn-link w-100 p-0 border-0 opacity-100"
+              >
+                <div className="container">
+                  <div className="row">
+                    <div className="col-2">
+                      <span className="material-symbols-outlined text-light bg-secondary rounded-circle">add</span>
+                    </div>
+                    <div className="col-10 ps-2 text-start">
+                      {t('approval_workflow.add_flow')}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
         </div>
       )}
-
-      <div className="card rounded">
-        <div className="card-body">
-
-          <div className="d-flex justify-content-center align-items-center">
-            <SearchUserTypeahead
-              isEditable={isEditable}
-              selectedUsers={selectedUsers}
-              approvedApproverIds={approvedApproverIds}
-              excludedSearchUserIds={excludedSearchUserIds}
-              onChange={updateApproversHandler}
-              onRemoveApprover={removeApproverHandler}
-              onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
-            />
-
-            { isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
-              <button type="button" className="btn-close" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
-            )}
-          </div>
-
-          <div className="d-flex justify-content-center align-items-center mt-3">
-
-            <span className="text-muted">
-              {t('approval_workflow.completion_conditions')}
+      {/* TODO: https://redmine.weseek.co.jp/issues/137322 */}
+      <div className="card rounded z-1 position-relative">
+        <div className="container row p-0 mx-auto">
+          <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
+            <span className="material-symbols-outlined">
+              drag_indicator
             </span>
+          </div>
+          <div className="col-11 py-3">
+            <div className="d-flex justify-content-center align-items-center">
+              <SearchUserTypeahead
+                isEditable={isEditable}
+                selectedUsers={selectedUsers}
+                approvedApproverIds={approvedApproverIds}
+                excludedSearchUserIds={excludedSearchUserIds}
+                onChange={updateApproversHandler}
+                onRemoveApprover={removeApproverHandler}
+                onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
+              />
 
-            <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
-              <div id="change-approval-type-button">
-                <DropdownToggle
-                  className="btn btn-light btn-sm rounded-pill dropdown-toggle"
-                  disabled={!isChangeableApprovealType}
-                >
-                  {t(`approval_workflow.approval_type.${editingApprovalType}`)}
-                </DropdownToggle>
-                {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
-                { !isChangeableApprovealType && (
-                  <UncontrolledTooltip
-                    target="change-approval-type-button"
-                    placement="bottom"
-                    fade={false}
+              {isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
+                <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
+              )}
+            </div>
+
+            <div className="d-flex justify-content-center align-items-center mt-3">
+
+              <span className="text-muted me-2">
+                {t('approval_workflow.completion_conditions')}
+              </span>
+
+              <Dropdown isOpen={isOpenChangeApprovalTypeMenu} toggle={() => { setIsOpenChangeApprovalTypeMenu(!isOpenChangeApprovalTypeMenu) }}>
+                <div id="change-approval-type-button">
+                  <DropdownToggle
+                    className="btn btn-sm rounded-pill dropdown-toggle px-3 border border-dark-subtle"
+                    disabled={!isChangeableApprovealType}
+                    color="secondary"
                   >
-                    {t('approval_workflow.cannot_change_approval_type')}
-                  </UncontrolledTooltip>
-                )}
-              </div>
+                    {t(`approval_workflow.approval_type.${editingApprovalType}`)}
+                  </DropdownToggle>
+                  {/* see: https://stackoverflow.com/questions/52180239/how-add-tooltip-for-disabed-button-reactstrap */}
+                  {!isChangeableApprovealType && (
+                    <UncontrolledTooltip
+                      target="change-approval-type-button"
+                      placement="bottom"
+                      fade={false}
+                    >
+                      {t('approval_workflow.cannot_change_approval_type')}
+                    </UncontrolledTooltip>
+                  )}
+                </div>
 
-              <DropdownMenu>
-                <DropdownItem
-                  onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
-                >  { isApprovalTypeAnd
-                    ? <>{t('approval_workflow.approval_type.OR')}</>
-                    : <>{t('approval_workflow.approval_type.AND')}</>
-                  }
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+                <DropdownMenu>
+                  <DropdownItem
+                    onClick={() => changeApprovalTypeButtonClickHandler(isApprovalTypeAnd ? WorkflowApprovalType.OR : WorkflowApprovalType.AND)}
+                  >  {isApprovalTypeAnd
+                      ? <>{t('approval_workflow.approval_type.OR')}</>
+                      : <>{t('approval_workflow.approval_type.AND')}</>
+                    }
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </div>
           </div>
         </div>
       </div>
 
-      {onClickAddApproverGroupCard != null && (
-        <div className="text-center my-2">
+      {onClickAddApproverGroupCard != null && !isLastApproverGroup && (
+        <div className="d-flex justify-content-center my-2 z-1 position-relative">
+          <div className="row w-75">
+            <div className="col-5"></div>
+            <div className="col-7">
+              <button
+                type="button"
+                disabled={!isCreatableTopApporverGroup}
+                onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex - 1))}
+                className="btn btn-link w-100 p-0 border-0 opacity-100"
+              >
+                <div className="container">
+                  <div className="row">
+                    <div className="col-2">
+                      <span className="material-symbols-outlined text-light bg-secondary rounded-circle">add</span>
+                    </div>
+                    <div className="col-10 ps-2 text-start">
+                      {t('approval_workflow.add_flow')}
+                    </div>
+                  </div>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {onClickAddApproverGroupCard != null && isLastApproverGroup && (
+        <div className="rounded bg-body-tertiary mt-5 z-1 position-relative">
           <button
             type="button"
-            disabled={!isCreatableButtomApproverGroup}
+            className="btn btn-link w-100 my-2"
+            disabled={!isCreatableTopApporverGroup}
             onClick={() => onClickAddApproverGroupCard(Math.max(0, groupIndex + 1))}
-          >{t('approval_workflow.add_flow')}
+          >
+            <div className="container d-flex justify-content-center">
+              <span className="material-symbols-outlined">add</span>
+              <div>
+                {t('approval_workflow.add_flow')}
+              </div>
+            </div>
           </button>
         </div>
       )}
@@ -179,13 +237,21 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number }): JSX.E
 };
 
 export const EditableApproverGroupCards = (props: Props): JSX.Element => {
+
+  const { editingApproverGroups } = props;
+
+  const editingApproverGroupsLength = editingApproverGroups.length;
+
+  const isLastApproverGroup = useCallback(groupIndex => editingApproverGroupsLength - 1 === groupIndex, [editingApproverGroupsLength]);
+
   return (
     <>
-      {props.editingApproverGroups?.map((data, index) => (
+      {editingApproverGroups?.map((data, index) => (
         <EditableApproverGroupCard
           key={data.uuidForRenderList}
           groupIndex={index}
           {...props}
+          isLastApproverGroup={isLastApproverGroup(index)}
         />
       ))}
     </>
