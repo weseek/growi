@@ -13,20 +13,24 @@ const getStrFromBol = (editor: EditorView) => {
 
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
+const insertText = (editor: EditorView, text: string) => {
+  const curPos = editor.state.selection.main.head;
+  const line = editor.state.doc.lineAt(curPos).from;
+  editor.dispatch({
+    changes: {
+      from: line,
+      to: curPos,
+      insert: text,
+    },
+  });
+};
+
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
   const strFromBol = getStrFromBol(editor);
 
   if (indentAndMarkRE.test(strFromBol)) {
     // continue list
     const indentAndMark = strFromBol.match(indentAndMarkRE)[0];
-    const curPos = editor.state.selection.main.head;
-    const line = editor.state.doc.lineAt(curPos).from;
-    editor.dispatch({
-      changes: {
-        from: line,
-        to: curPos,
-        insert: indentAndMark,
-      },
-    });
+    insertText(editor, indentAndMark);
   }
 };
