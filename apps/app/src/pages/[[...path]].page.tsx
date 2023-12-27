@@ -3,8 +3,9 @@ import React, { ReactNode, useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfoForEntity, isPopulated } from '@growi/core';
 import type {
+  GroupType,
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
@@ -460,16 +461,20 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
-      const userRelatedGrantedGroups = await pageService.getUserRelatedGrantedGroups(ancestor, user);
-      props.grantData = {
-        grant: ancestor.grant,
-        grantedGroups: userRelatedGrantedGroups.map((group) => {
+      ancestor.populate('grantedGroups.item');
+      const userRelatedGrantedGroups = (await pageService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
+        if (isPopulated(group.item)) {
           return {
             id: group.item._id,
             name: group.item.name,
             type: group.type,
           };
-        }),
+        }
+        return null;
+      }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
+      props.grantData = {
+        grant: ancestor.grant,
+        userRelatedGrantedGroups,
       };
     }
   }

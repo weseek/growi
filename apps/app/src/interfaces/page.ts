@@ -10,7 +10,7 @@ export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData
 
 export type IPageGrantData = {
   grant: number,
-  grantedGroups?: {
+  userRelatedGrantedGroups?: {
     id: string,
     name: string,
     type: GroupType,

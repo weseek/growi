@@ -68,7 +68,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
+        userRelatedGrantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
           return { item: g.item._id, type: g.type };
         }) : null,
       });
@@ -99,10 +99,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.grantedGroups == null || grantData.grantedGroups.length === 0) {
+      if (grantData.userRelatedGrantedGroups == null || grantData.userRelatedGrantedGroups.length === 0) {
         return t('fix_page_grant.modal.grant_label.isForbidden');
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.grantedGroups.map(g => g.name).join(', ')})`;
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.userRelatedGrantedGroups.map(g => g.name).join(', ')})`;
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed

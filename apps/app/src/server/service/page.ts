@@ -5,7 +5,9 @@ import type {
   Ref, HasObjectId, IUserHasId, IUser,
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
-import { PageGrant, PageStatus, getIdForRef } from '@growi/core';
+import {
+  PageGrant, PageStatus, getIdForRef, isPopulated,
+} from '@growi/core';
 import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
@@ -2360,15 +2362,19 @@ class PageService {
   }
 
   /*
- * get all groups of Page that user is related to
- */
-  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<PopulatedGrantedGroup[]> {
-    const populatedPage = await page.populate<{grantedGroups: PopulatedGrantedGroup[] | null}>('grantedGroups.item');
-    const userRelatedGroupIds = [
+  * get all groups of Page that user is related to
+  */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroupIds: string[] = [
       ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
       ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
     ];
-    return populatedPage.grantedGroups?.filter(group => userRelatedGroupIds.includes(group.item._id.toString())) || [];
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return userRelatedGroupIds.includes(group.item._id.toString());
+      }
+      return userRelatedGroupIds.includes(group.item);
+    }) || [];
   }
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
@@ -4004,12 +4010,12 @@ class PageService {
    * @param {UserDocument} user
    * @param options
    */
-  async updateGrant(page, user, grantData: {grant: PageGrant, grantedGroups: IGrantedGroup[]}): Promise<PageDocument> {
-    const { grant, grantedGroups } = grantData;
+  async updateGrant(page, user, grantData: {grant: PageGrant, userRelatedGrantedGroups: IGrantedGroup[]}): Promise<PageDocument> {
+    const { grant, userRelatedGrantedGroups } = grantData;
 
     const options: IOptionsForUpdate = {
       grant,
-      grantUserGroupIds: grantedGroups,
+      userRelatedGrantUserGroupIds: userRelatedGrantedGroups,
       isSyncRevisionToHackmd: false,
     };
 
@@ -4055,6 +4061,21 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
+  /**
+   * Get the new GrantedGroups for the page going through an update operation.
+   * It will include the groups specified by the operator, and groups which the user does not belong to, but was related to the page before the update.
+   * @param userRelatedGrantedGroups The groups specified by the operator
+   * @param page The page going through an update operation
+   * @param user The operator
+   * @returns The new GrantedGroups array to be set to the page
+   */
+  async getNewGrantedGroups(userRelatedGrantedGroups: IGrantedGroup[], page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const previousGrantedGroups = page.grantedGroups;
+    const userRelatedPreviousGrantedGroups = (await this.getUserRelatedGrantedGroups(page, user)).map(g => getIdForRef(g.item));
+    const userUnrelatedPreviousGrantedGroups = previousGrantedGroups.filter(g => !userRelatedPreviousGrantedGroups.includes(getIdForRef(g.item)));
+    return [...userUnrelatedPreviousGrantedGroups, ...userRelatedGrantedGroups];
+  }
+
   async updatePage(
       pageData: PageDocument,
       body: string | null,
@@ -4078,8 +4099,11 @@ class PageService {
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
 
-    const grant = options.grant ?? clonedPageData.grant; // use the previous data if absence
-    const grantUserGroupIds = options.grantUserGroupIds ?? clonedPageData.grantedGroups;
+    // use the previous data if absent
+    const grant = options.grant ?? clonedPageData.grant;
+    const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
+      ? (await this.getNewGrantedGroups(options.userRelatedGrantUserGroupIds, clonedPageData, user))
+      : clonedPageData.grantedGroups;
 
     const grantedUserIds = clonedPageData.grantedUserIds || [user._id];
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
@@ -4101,7 +4125,7 @@ class PageService {
       }
 
       if (options.overwriteScopesOfDescendants) {
-        const updateGrantInfo = await this.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.grantUserGroupIds);
+        const updateGrantInfo = await this.pageGrantService.generateUpdateGrantInfoToOverwriteDescendants(user, grant, options.userRelatedGrantUserGroupIds);
         const canOverwriteDescendants = await this.pageGrantService.canOverwriteDescendants(clonedPageData.path, user, updateGrantInfo);
 
         if (!canOverwriteDescendants) {
@@ -4190,11 +4214,14 @@ class PageService {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Revision = mongoose.model('Revision') as any; // TODO: TypeScriptize model
 
-    const grant = options.grant || pageData.grant; // use the previous data if absence
-    const grantUserGroupIds = options.grantUserGroupIds || pageData.grantUserGroupIds; // use the previous data if absence
+    // use the previous data if absent
+    const grant = options.grant || pageData.grant;
+    const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
+      ? (await this.getNewGrantedGroups(options.userRelatedGrantUserGroupIds, pageData, user))
+      : pageData.grantedGroups;
     const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
-    // TODO 136137: validate multiple group grant before save using pageData and options
+    // validate multiple group grant before save using pageData and options
     await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
 
     await this.validateAppliedScope(user, grant, grantUserGroupIds);
