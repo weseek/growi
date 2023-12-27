@@ -185,12 +185,6 @@ class GlobalNotificationList extends React.Component {
         )}
       </React.Fragment>
     );
-
-
-  //   <button type="button" className="btn btn-sm btn-outline-secondary dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
-  //   <span className="material-symbols-outlined">settings</span>
-  //   <span className="caret"></span>
-  // </button>
   }
 
 }
