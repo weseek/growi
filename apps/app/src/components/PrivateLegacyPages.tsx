@@ -171,11 +171,11 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
         </div>
         <button
           type="button"
-          className="btn btn-primary"
+          className="btn btn-primary d-flex align-items-center"
           disabled={!checked}
           onClick={() => props.onSubmit?.(currentInput)}
         >
-          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
+          <span className="material-symbols-outlined me-1" aria-hidden="true">refresh</span>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
       </ModalFooter>
@@ -362,13 +362,13 @@ const PrivateLegacyPages = (): JSX.Element => {
                 {t('private_legacy_pages.bulk_operation')}
               </DropdownToggle>
               <DropdownMenu>
-                <DropdownItem onClick={convertMenuItemClickedHandler}>
-                  <span className="material-symbols-outlined">refresh</span>
+                <DropdownItem onClick={convertMenuItemClickedHandler} className="d-flex align-items-center">
+                  <span className="material-symbols-outlined me-1">refresh</span>
                   {t('private_legacy_pages.convert_all_selected_pages')}
                 </DropdownItem>
                 <DropdownItem onClick={deleteAllButtonClickedHandler}>
-                  <span className="text-danger">
-                    <span className="material-symbols-outlined">delete</span>
+                  <span className="text-danger d-flex align-items-cente">
+                    <span className="material-symbols-outlined me-1">delete</span>
                     {t('search_result.delete_all_selected_page')}
                   </span>
                 </DropdownItem>

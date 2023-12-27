@@ -185,7 +185,7 @@ export const SearchPage = (): JSX.Element => {
           >
             <button
               type="button"
-              className="btn btn-outline-danger text-nowrap border-0 px-2"
+              className="btn btn-outline-danger text-nowrap border-0 px-2 d-flex align-items-center"
               disabled={isDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
