@@ -21,7 +21,7 @@ export const AuditLogSettings: FC = () => {
     <>
       <h4 className="mt-4">{t('admin:audit_log_management.activity_expiration_date')}</h4>
       <p className="form-text text-muted">
-        {t('admin:audit_log_management.activity_expiration_date_explain')}
+        {t('admin:audit_log_management.activity_expiration_date_explanation')}
       </p>
       <p className="alert alert-warning col-6">
         <i className="icon-exclamation icon-fw">
@@ -50,7 +50,7 @@ export const AuditLogSettings: FC = () => {
         </a>
       </h4>
       <p className="form-text text-muted">
-        {t('admin:audit_log_management.available_action_list_explain')}
+        {t('admin:audit_log_management.available_action_list_explanation')}
       </p>
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>

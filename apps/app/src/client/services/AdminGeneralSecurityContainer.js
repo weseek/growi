@@ -157,10 +157,10 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
-   * Change isAllGroupMembershipRequiredForPageCompleteDeletion
+   * Switch isAllGroupMembershipRequiredForPageCompleteDeletion
    */
-  changeIsAllGroupMembershipRequiredForPageCompleteDeletion(val) {
-    this.setState({ isAllGroupMembershipRequiredForPageCompleteDeletion: val });
+  switchIsAllGroupMembershipRequiredForPageCompleteDeletion() {
+    this.setState({ isAllGroupMembershipRequiredForPageCompleteDeletion: !this.state.isAllGroupMembershipRequiredForPageCompleteDeletion });
   }
 
   /**
