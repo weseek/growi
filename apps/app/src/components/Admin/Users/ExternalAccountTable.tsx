@@ -97,12 +97,12 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                     <ul className="dropdown-menu" role="menu">
                       <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
                       <button
-                        className="dropdown-item"
+                        className="dropdown-item d-flex align-items-center"
                         type="button"
                         role="button"
                         onClick={() => removeExtenalAccount(ea._id)}
                       >
-                        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
+                        <span className="material-symbols-outlined text-danger me-1">delete_forever</span> {t('Delete')}
                       </button>
                     </ul>
                   </div>

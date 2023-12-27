@@ -174,8 +174,8 @@ class GoogleSecurityManagementContents extends React.Component {
         <hr />
 
         <div style={{ minHeight: '300px' }}>
-          <h4>
-            <span className="material-symbols-outlined" aria-hidden="true">help</span>
+          <h4 className="d-flex align-items-center">
+            <span className="material-symbols-outlined me-1" aria-hidden="true">help</span>
             <a href="#collapseHelpForGoogleOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.google')}</a>
           </h4>
           <ol id="collapseHelpForGoogleOauth" className="collapse">
