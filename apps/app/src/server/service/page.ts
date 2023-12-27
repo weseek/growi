@@ -22,7 +22,6 @@ import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -179,26 +178,37 @@ class PageService {
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
   }
 
-  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
+  async canDeleteCompletely(page: PageDocument, operator: any | null, isRecursively: boolean): Promise<boolean> {
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
+
+    const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
+      'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
+    );
+
+    if (isAllGroupMembershipRequiredForPageCompleteDeletion) {
+      const userRelatedGrantedGroups = await this.getUserRelatedGrantedGroups(page, operator);
+      if (userRelatedGrantedGroups.length !== page.grantedGroups.length) {
+        return false;
+      }
+    }
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
+  canDelete(page: PageDocument, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   canDeleteUserHomepageByConfig(): boolean {
@@ -223,16 +233,16 @@ class PageService {
       recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator?.admin ?? false;
-    const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
+    const isAuthor = operator?._id == null ? false : operator._id.equals(creatorId);
 
     if (isRecursively) {
-      return this.compareDeleteConfig(isAdmin, isOperator, recursiveAuthority);
+      return this.compareDeleteConfig(isAdmin, isAuthor, recursiveAuthority);
     }
 
-    return this.compareDeleteConfig(isAdmin, isOperator, authority);
+    return this.compareDeleteConfig(isAdmin, isAuthor, authority);
   }
 
-  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
+  private compareDeleteConfig(isAdmin: boolean, isAuthor: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
     if (isAdmin) {
       return true;
     }
@@ -240,7 +250,7 @@ class PageService {
     if (authority === PageDeleteConfigValue.Anyone || authority == null) {
       return true;
     }
-    if (authority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+    if (authority === PageDeleteConfigValue.AdminAndAuthor && isAuthor) {
       return true;
     }
 
@@ -270,9 +280,13 @@ class PageService {
       pages: PageDocument[],
       user: IUserHasId,
       isRecursively: boolean,
-      canDeleteFunction: (path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean) => boolean,
+      canDeleteFunction: (page: PageDocument, operator: any, isRecursively: boolean) => Promise<boolean> | boolean,
   ): Promise<PageDocument[]> {
-    const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
+    const filteredPages = pages.filter(async(p) => {
+      if (p.isEmpty) return true;
+      const canDelete = await canDeleteFunction(p, user, isRecursively);
+      return canDelete;
+    });
 
     if (!this.canDeleteUserHomepageByConfig()) {
       return filteredPages.filter(p => !isUsersHomepage(p.path));
@@ -363,8 +377,8 @@ class PageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    const isDeletable = this.canDelete(page.path, creatorId, user, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+    const isDeletable = this.canDelete(page, user, false);
+    const isAbleToDeleteCompletely = await this.canDeleteCompletely(page, user, false); // use normal delete config
 
     return {
       data: page,
