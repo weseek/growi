@@ -3,7 +3,7 @@
   "version": "7.0.0-RC.0",
   "license": "MIT",
   "scripts": {
-    "font": "svgtofont --sources ./svg --output ./font"
+    "build": "svgtofont --sources ./svg --output ./font"
   },
   "dependencies": {
     "svgtofont": "^4.1.0"
