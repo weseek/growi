@@ -7,75 +7,31 @@ class MarkdownListUtil {
     // https://github.com/codemirror/CodeMirror/blob/c7853a989c77bb9f520c9c530cbe1497856e96fc/addon/edit/continuelist.js#L14
     // https://regex101.com/r/7BN2fR/5
     this.indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
-    this.indentAndMarkOnlyRE = /^(\d+)[.)](\s*)$/;
+    this.indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
     this.newlineAndIndentContinueMarkdownList = this.newlineAndIndentContinueMarkdownList.bind(this);
     this.pasteText = this.pasteText.bind(this);
   }
 
-  insertText(editor, text) {
-    editor.dispatch({
-      changes: {
-        insert: text,
-      },
-    });
-  }
-
   /**
-   * return the postion of the BOL(beginning of line)
+   * Self Implementation with AbstractEditor interface
+   * @param {AbstractEditor} editor An instance of AbstractEditor
    */
-  getBol(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.doc.lineAt(curPos).from;
-  }
+  newlineAndIndentContinueMarkdownList(editor) {
+    const strFromBol = editor.getStrFromBol();
 
-  getStrFromBol(editor) {
-    const curPos = editor.state.selection.main.head;
-    return editor.state.sliceDoc(this.getBol(), curPos);
-  }
-
-  /**
-   * select the upper position of pos1 and pos2
-   * @param {{line: number, ch: number}} pos1
-   * @param {{line: number, ch: number}} pos2
-   */
-  selectUpperPos(editor, pos1, pos2) {
-    // if both is in same line
-    if (editor.state.doc.lineAt(pos1) === editor.state.doc.lineAt(pos2)) {
-      return (editor.state.doc.lineAt(pos1).from < editor.state.doc.lineAt(pos1).to) ? pos1 : pos2;
+    if (this.indentAndMarkOnlyRE.test(strFromBol)) {
+      // clear current line and end list
+      editor.replaceBolToCurrentPos('\n');
     }
-    return (editor.state.doc.lineAt(pos1) < editor.state.doc.lineAt(pos2)) ? pos1 : pos2;
-  }
-
-  /**
-   * select the lower position of pos1 and pos2
-   * @param {{line: number, ch: number}} pos1
-   * @param {{line: number, ch: number}} pos2
-   */
-  selectLowerPos(editor, pos1, pos2) {
-    // if both is in same line
-    if (editor.state.doc.lineAt(pos1).number === editor.state.doc.lineAt(pos2).number) {
-      return (editor.state.doc.lineAt(pos1).from < editor.state.doc.lineAt(pos1).to) ? pos2 : pos1;
+    else if (this.indentAndMarkRE.test(strFromBol)) {
+      // continue list
+      const indentAndMark = strFromBol.match(this.indentAndMarkRE)[0];
+      editor.insertText(`\n${indentAndMark}`);
     }
-    return (editor.state.doc.lineAt(pos1) < editor.state.doc.lineAt(pos2)) ? pos2 : pos1;
-  }
-
-  replaceBolToCurrentPos(editor, text) {
-    const curPos = editor.state.selection.main.head;
-    const pos = this.selectLowerPos(editor.state.doc.lineAt(curPos).from, editor.state.doc.lineAt(curPos).to);
-    editor.dispatch({
-      changes: {
-        from: this.getBol(editor),
-        to: pos,
-        insert: text,
-      },
-    });
-  }
-
-  getStrFromBolToSelectedUpperPos(editor) {
-    const curPos = editor.state.selection.main.head;
-    const pos = this.selectUpperPos(editor.state.doc.lineAt(curPos).from, editor.state.doc.lineAt(curPos).to);
-    return editor.state.sliceDoc(this.getBol(), pos);
+    else {
+      editor.insertLinebreak();
+    }
   }
 
   /**
@@ -86,7 +42,7 @@ class MarkdownListUtil {
    */
   pasteText(editor, event, text) {
     // get strings from BOL(beginning of line) to current position
-    const strFromBol = this.getStrFromBolToSelectedUpperPos();
+    const strFromBol = editor.getStrFromBolToSelectedUpperPos();
 
     // when match indentAndMarkOnlyRE
     // (this means the current position is the beginning of the list item)
@@ -96,7 +52,7 @@ class MarkdownListUtil {
       // replace
       if (adjusted != null) {
         event.preventDefault();
-        this.replaceBolToCurrentPos(editor, adjusted);
+        editor.replaceBolToCurrentPos(adjusted);
       }
     }
   }

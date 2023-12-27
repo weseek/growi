@@ -25,6 +25,26 @@ const insertText = (editor: EditorView, text: string) => {
   });
 };
 
+// const selectLowerPos = (editor: EditorView, pos1: number, pos2: number) => {
+//   // if both is in same line
+//   if (editor.state.doc.lineAt(pos1).number === editor.state.doc.lineAt(pos2).number) {
+//     return (editor.state.doc.lineAt(pos1).from < editor.state.doc.lineAt(pos1).to) ? pos2 : pos1;
+//   }
+//   return (editor.state.doc.lineAt(pos1) < editor.state.doc.lineAt(pos2)) ? pos2 : pos1;
+// };
+
+// const replaceBolToCurrentPos = (editor: EditorView, text: string) => {
+//   const curPos = editor.state.selection.main.head;
+//   const pos = selectLowerPos(editor, editor.state.doc.lineAt(curPos).from, editor.state.doc.lineAt(curPos).to);
+//   editor.dispatch({
+//     changes: {
+//       from: getBol(editor),
+//       to: pos,
+//       insert: text,
+//     },
+//   });
+// };
+
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
   const strFromBol = getStrFromBol(editor);
 
@@ -32,5 +52,8 @@ export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void =
     // continue list
     const indentAndMark = strFromBol.match(indentAndMarkRE)[0];
     insertText(editor, indentAndMark);
+  }
+  else {
+    insertText(editor, '\n');
   }
 };
