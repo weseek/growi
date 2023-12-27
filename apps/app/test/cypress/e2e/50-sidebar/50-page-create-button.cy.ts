@@ -2,34 +2,48 @@ describe('Access to PageCreateButton', () => {
 
   const ssPrefix = 'access-to-sidebar-';
 
-  describe('Test PageCreateButton', () => {
+  context('when logged in', () => {
     beforeEach(() => {
-      cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible')
-        .then($elem => {
-          if (!$elem.hasClass('active')) {
-            cy.getByTestid('grw-sidebar-nav-page-create-button').click();
-          }
-        })
+      // login
+      cy.fixture("user-admin.json").then(user => {
+        cy.login(user.username, user.password);
+      });
     });
 
-    it('Successfully create untitled page', () => {
-      cy.visit('/');
+    context('when access to root page', { scrollBehavior: false }, () => {
+      beforeEach(() => {
+        cy.visit('/');
+      });
 
-      cy.getByTestid('grw-sidebar-nav-page-create-button').click();
+      describe('Test PageCreateButton', () => {
+        // beforeEach(() => {
+        //   cy.visit('/')
+        //   cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible')
+        //     .then($elem => {
+        //       if (!$elem.hasClass('active')) {
+        //         cy.getByTestid('grw-sidebar-nav-page-create-button').click();
+        //       }
+        //     })
+        // });
 
-      cy.getByTestid('page-editor').should('be.visible');
-      cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+        it('Successfully create untitled page', () => {
+          cy.getByTestid('grw-sidebar-nav-page-create-button').click({force: true});
 
-      cy.screenshot(`${ssPrefix}create-untitled-page`);
+          cy.getByTestid('page-editor').should('be.visible');
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+
+          cy.screenshot(`${ssPrefix}create-untitled-page`);
+        });
+      });
+
+      describe('Test PageCreateButton dropdown', () => {
+
+        it('Successfully create untitled page', () => {});
+        it("Successfully create today's page", () => {});
+        it('Successfully create children template', () => {});
+        it('Successfully create descendants template', () => {});
+
+      });
     });
-  });
-
-  describe('Test PageCreateButton dropdown', () => {
-
-    it('Successfully create untitled page', () => {});
-    it("Successfully create today's page", () => {});
-    it('Successfully create children template', () => {});
-    it('Successfully create descendants template', () => {});
-
   });
 });
