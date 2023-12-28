@@ -144,12 +144,15 @@ const routerFactory = (crowi: Crowi): Router => {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
+        // eslint-disable-next-line no-await-in-loop
+        const canDeleteCompletely = await pageService.canDeleteCompletely(page, req.user, false); // use normal delete config
+
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo
           // create IPageInfoForListing
           : {
             ...basicPageInfo,
-            isAbleToDeleteCompletely: pageService.canDeleteCompletely(page.path, (page.creator as IUserHasId)?._id, req.user, false), // use normal delete config
+            isAbleToDeleteCompletely: canDeleteCompletely,
             bookmarkCount: bookmarkCountMap != null ? bookmarkCountMap[page._id] : undefined,
             revisionShortBody: shortBodiesMap != null ? shortBodiesMap[page._id] : undefined,
           } as IPageInfoForListing;
