@@ -20,7 +20,7 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
-  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
+  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation, PageSingleDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
@@ -181,19 +181,22 @@ class PageService {
   async canDeleteCompletely(page: PageDocument, operator: any | null, isRecursively: boolean): Promise<boolean> {
     if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
+    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
     const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
       'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
     );
 
-    if (isAllGroupMembershipRequiredForPageCompleteDeletion) {
+    const isAdmin = operator?.admin ?? false;
+    const isAuthor = operator?._id == null ? false : operator._id.equals(page.creator);
+    const isAdminOrAuthor = isAdmin || isAuthor;
+
+    if (!isAdminOrAuthor && pageCompleteDeletionAuthority === PageSingleDeleteCompConfigValue.Anyone && isAllGroupMembershipRequiredForPageCompleteDeletion) {
       const userRelatedGrantedGroups = await this.getUserRelatedGrantedGroups(page, operator);
       if (userRelatedGrantedGroups.length !== page.grantedGroups.length) {
         return false;
       }
     }
-
-    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
-    const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
