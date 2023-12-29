@@ -63,6 +63,25 @@ describe('archiveUrl()', () => {
     const { archiveUrl } = githubUrl;
 
     // then
-    expect(archiveUrl).toEqual('https://github.com/org/repos/archive/refs/heads/fix/bug.zip');
+    expect(archiveUrl).toEqual('https://github.com/org/repos/archive/refs/heads/fix%2Fbug.zip');
   });
+});
+
+describe('extractedArchiveDirName()', () => {
+
+  it.concurrent.each`
+    branchName
+    ${'a"\'!,;-=@`]<>|&{}()$%+#/b'}
+    ${'a---b'}
+  `("'$branchName'", ({ branchName }) => {
+    // setup
+    const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
+
+    // when
+    const { extractedArchiveDirName } = githubUrl;
+
+    // then
+    expect(extractedArchiveDirName).toEqual('a-b');
+  });
+
 });

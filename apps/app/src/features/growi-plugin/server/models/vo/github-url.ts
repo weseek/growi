@@ -31,7 +31,7 @@ export class GitHubUrl {
     return ghUrl.toString();
   }
 
-  get archiveFileName(): string {
+  get extractedArchiveDirName(): string {
     return this._branchName.replaceAll(sanitizeChars, '-');
   }
 

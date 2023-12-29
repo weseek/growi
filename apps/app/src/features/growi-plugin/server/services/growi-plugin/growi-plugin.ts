@@ -76,11 +76,11 @@ export class GrowiPluginService implements IGrowiPluginService {
 
           // TODO: imprv Document version and repository version possibly different.
           const ghUrl = new GitHubUrl(growiPlugin.origin.url, growiPlugin.origin.ghBranch);
-          const { reposName, archiveUrl, archiveFileName } = ghUrl;
+          const { reposName, archiveUrl, extractedArchiveDirName } = ghUrl;
 
-          const zipFilePath = path.join(PLUGIN_STORING_PATH, `${archiveFileName}.zip`);
+          const zipFilePath = path.join(PLUGIN_STORING_PATH, `${extractedArchiveDirName}.zip`);
           const unzippedPath = PLUGIN_STORING_PATH;
-          const unzippedReposPath = path.join(PLUGIN_STORING_PATH, `${reposName}-${archiveFileName}`);
+          const unzippedReposPath = path.join(PLUGIN_STORING_PATH, `${reposName}-${extractedArchiveDirName}`);
 
           try {
             // download github repository to local file system
@@ -110,14 +110,14 @@ export class GrowiPluginService implements IGrowiPluginService {
   async install(origin: IGrowiPluginOrigin): Promise<string> {
     const ghUrl = new GitHubUrl(origin.url, origin.ghBranch);
     const {
-      organizationName, reposName, archiveUrl, archiveFileName,
+      organizationName, reposName, archiveUrl, extractedArchiveDirName,
     } = ghUrl;
 
     const installedPath = `${organizationName}/${reposName}`;
 
     const organizationPath = path.join(PLUGIN_STORING_PATH, organizationName);
-    const zipFilePath = path.join(organizationPath, `${reposName}-${archiveFileName}.zip`);
-    const temporaryReposPath = path.join(organizationPath, `${reposName}-${archiveFileName}`);
+    const zipFilePath = path.join(organizationPath, `${reposName}-${extractedArchiveDirName}.zip`);
+    const temporaryReposPath = path.join(organizationPath, `${reposName}-${extractedArchiveDirName}`);
     const reposPath = path.join(organizationPath, reposName);
 
     if (!fs.existsSync(organizationPath)) fs.mkdirSync(organizationPath);
