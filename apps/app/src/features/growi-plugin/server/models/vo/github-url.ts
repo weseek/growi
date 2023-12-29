@@ -2,8 +2,8 @@ import sanitize from 'sanitize-filename';
 
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
-// https://regex101.com/r/DOVpOT/1
-const sanitizeChars = new RegExp(/[/|"'<>]+/g);
+// https://regex101.com/r/YhZVsj/1
+const sanitizeChars = new RegExp(/[^a-zA-Z_.]+/g);
 
 export class GitHubUrl {
 
@@ -26,7 +26,8 @@ export class GitHubUrl {
   }
 
   get archiveUrl(): string {
-    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/heads/${this.branchName}.zip`, 'https://github.com');
+    const encodedBranchName = encodeURIComponent(this.branchName);
+    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/heads/${encodedBranchName}.zip`, 'https://github.com');
     return ghUrl.toString();
   }
 
