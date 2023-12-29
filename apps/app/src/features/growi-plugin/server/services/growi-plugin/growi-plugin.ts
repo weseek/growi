@@ -8,7 +8,6 @@ import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
 import mongoose from 'mongoose';
-import sanitize from 'sanitize-filename';
 import streamToPromise from 'stream-to-promise';
 import unzipper from 'unzipper';
 
