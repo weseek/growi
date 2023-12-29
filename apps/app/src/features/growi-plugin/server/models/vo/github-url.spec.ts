@@ -69,19 +69,38 @@ describe('archiveUrl()', () => {
 
 describe('extractedArchiveDirName()', () => {
 
-  it.concurrent.each`
-    branchName
-    ${'a"\'!,;-=@`]<>|&{}()$%+#/b'}
-    ${'a---b'}
-  `("'$branchName'", ({ branchName }) => {
-    // setup
-    const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
+  describe('certain characters in the branch name are converted to slashes, and if they are consecutive, they become a single hyphen', () => {
+    it.concurrent.each`
+      branchName
+      ${'a"\'!,;-=@`]<>|&{}()$%+#/b'}
+      ${'a---b'}
+    `("'$branchName'", ({ branchName }) => {
+      // setup
+      const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
 
-    // when
-    const { extractedArchiveDirName } = githubUrl;
+      // when
+      const { extractedArchiveDirName } = githubUrl;
 
-    // then
-    expect(extractedArchiveDirName).toEqual('a-b');
+      // then
+      expect(extractedArchiveDirName).toEqual('a-b');
+    });
+  });
+
+  describe('when no certain characters in the branch name', () => {
+    it.concurrent.each`
+      branchName
+      ${'a.b'}
+      ${'a_b'}
+    `("'$branchName'", ({ branchName }) => {
+      // setup
+      const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
+
+      // when
+      const { extractedArchiveDirName } = githubUrl;
+
+      // then
+      expect(extractedArchiveDirName).toEqual(branchName);
+    });
   });
 
 });
