@@ -5,5 +5,7 @@
   "scripts": {
     "build": "svgtofont --sources ./svg --output ./font"
   },
-  "dependencies": {}
+  "dependencies": {
+    "svgtofont": "^4.1.1"
+  }
 }
