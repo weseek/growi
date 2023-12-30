@@ -1843,6 +1843,11 @@
     stream-events "^1.0.1"
     xdg-basedir "^4.0.0"
 
+"@growi/apps-font-icons@link:packages/apps-font-icons":
+  version "7.0.0-RC.0"
+  dependencies:
+    svgtofont "^4.1.1"
+
 "@growi/core@link:packages/core":
   version "7.0.0-RC.0"
   dependencies:
