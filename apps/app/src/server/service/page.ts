@@ -6,6 +6,7 @@ import type {
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
 import {
+  GroupType,
   PageGrant, PageStatus, getIdForRef, isPopulated,
 } from '@growi/core';
 import {
@@ -16,6 +17,7 @@ import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -33,6 +35,7 @@ import {
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
+import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { Attachment } from '../models';
@@ -43,6 +46,7 @@ import type { PageRedirectModel } from '../models/page-redirect';
 import { serializePageSecurely } from '../models/serializers/page-serializer';
 import ShareLink from '../models/share-link';
 import Subscription from '../models/subscription';
+import UserGroup from '../models/user-group';
 import UserGroupRelation from '../models/user-group-relation';
 import { V5ConversionError } from '../models/vo/v5-conversion-error';
 import { divideByType } from '../util/granted-group';
@@ -2362,8 +2366,8 @@ class PageService {
   }
 
   /*
-  * get all groups of Page that user is related to
-  */
+   * get all groups of Page that user is related to
+   */
   async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
     const userRelatedGroupIds: string[] = [
       ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
@@ -2404,6 +2408,41 @@ class PageService {
     this.pageEvent.emit('revert', page, updatedPage, user);
 
     return updatedPage;
+  }
+
+  private async applyScopesToDescendants(parentPage, user, isV4 = false) {
+    const Page = this.crowi.model('Page');
+    const builder = new Page.PageQueryBuilder(Page.find());
+    builder.addConditionToListOnlyDescendants(parentPage.path);
+
+    if (isV4) {
+      builder.addConditionAsRootOrNotOnTree();
+    }
+    else {
+      builder.addConditionAsOnTree();
+    }
+
+    // add grant conditions
+    await Page.addConditionToFilteringByViewerToEdit(builder, user);
+
+    const grant = parentPage.grant;
+
+    const childPages = await builder.query;
+    await batchProcessPromiseAll(childPages, 20, async(childPage: any) => {
+      let newChildGrantedGroups: IGrantedGroup[] = [];
+      if (grant === PageGrant.GRANT_USER_GROUP) {
+        const userRelatedParentGrantedGroups = await this.getUserRelatedGrantedGroups(parentPage, user);
+        newChildGrantedGroups = await this.getNewGrantedGroups(userRelatedParentGrantedGroups, childPage, user);
+      }
+      const canChangeGrant = await this.pageGrantService
+        .validateGrantChange(user, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+      if (canChangeGrant) {
+        childPage.grant = grant;
+        childPage.grantedUsers = grant === PageGrant.GRANT_OWNER ? [user._id] : null;
+        childPage.grantedGroups = newChildGrantedGroups;
+        childPage.save();
+      }
+    });
   }
 
   /**
@@ -3850,7 +3889,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await Page.applyScopesToDescendantsAsyncronously(page, user);
+      await this.applyScopesToDescendants(page, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -3902,7 +3941,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendants(savedPage, user, true);
     }
 
     return savedPage;
@@ -4055,7 +4094,7 @@ class PageService {
 
     // 3. Update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await Page.applyScopesToDescendantsAsyncronously(currentPage, user);
+      await this.applyScopesToDescendants(currentPage, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -4241,7 +4280,7 @@ class PageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      Page.applyScopesToDescendantsAsyncronously(savedPage, user, true);
+      this.applyScopesToDescendants(savedPage, user, true);
     }
 
 
