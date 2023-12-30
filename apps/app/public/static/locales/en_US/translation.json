@@ -327,7 +327,8 @@
     "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete",
-    "single_deletion_empty_pages": "Empty pages cannot be single deleted"
+    "single_deletion_empty_pages": "Empty pages cannot be single deleted",
+    "complete_deletion_not_allowed_for_user": "You are not allowed to delete this page completely"
   },
   "page_history": {
     "revision_list": "Revision list",

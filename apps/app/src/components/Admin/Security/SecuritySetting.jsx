@@ -273,7 +273,7 @@ class SecuritySetting extends React.Component {
                         id="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox"
                         className="form-check-input"
                         type="checkbox"
-                        checked={!adminGeneralSecurityContainer.state.isAllGroupMembershipRequiredForPageCompleteDeletion}
+                        checked={adminGeneralSecurityContainer.state.isAllGroupMembershipRequiredForPageCompleteDeletion}
                         onChange={() => { adminGeneralSecurityContainer.switchIsAllGroupMembershipRequiredForPageCompleteDeletion() }}
                       />
                       <label className="form-check-label" htmlFor="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox">
