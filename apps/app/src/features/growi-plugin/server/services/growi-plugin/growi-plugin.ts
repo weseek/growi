@@ -10,7 +10,7 @@ import axios from 'axios';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 import streamToPromise from 'stream-to-promise';
-import unzipper from 'unzipper';
+import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
@@ -205,9 +205,9 @@ export class GrowiPluginService implements IGrowiPluginService {
   private async unzip(zipFilePath: fs.PathLike, destPath: fs.PathLike): Promise<void> {
     try {
       const stream = fs.createReadStream(zipFilePath);
-      const unzipStream = stream.pipe(unzipper.Extract({ path: destPath }));
+      const unzipFileStream = stream.pipe(unzipStream.Extract({ path: destPath }));
 
-      await streamToPromise(unzipStream);
+      await streamToPromise(unzipFileStream);
     }
     catch (err) {
       logger.error(err);
