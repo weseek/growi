@@ -3,6 +3,5 @@
   "css": false,
   "outSVGReact": false,
   "useNameAsUnicode": true,
-  "className": "growi-custom-icon",
-  "dist": "dist"
+  "className": "growi-custom-icon"
 }
