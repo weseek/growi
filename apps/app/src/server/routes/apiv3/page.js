@@ -478,7 +478,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
+    const userRelatedGrantedGroups = await crowi.pageService.getUserRelatedGrantedGroups(page, req.user);
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
     const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
     const grantedUserGroupData = currentPageUserGroups.map((group) => {
@@ -489,7 +490,7 @@ module.exports = (crowi) => {
     });
     const currentPageGrant = {
       grant,
-      grantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
     };
 
     // page doesn't have parent page
@@ -514,10 +515,11 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
+    const userRelatedParentGrantedGroups = await crowi.pageService.getUserRelatedGrantedGroups(parentPage, req.user);
     const {
       grantedUserGroups: parentGrantedUserGroupIds,
       grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
-    } = divideByType(parentPage.grantedGroups);
+    } = divideByType(userRelatedParentGrantedGroups);
     const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
     const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
     const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
@@ -528,7 +530,7 @@ module.exports = (crowi) => {
     });
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
     };
 
     const grantData = {
