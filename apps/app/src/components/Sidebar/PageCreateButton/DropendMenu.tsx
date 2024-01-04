@@ -32,7 +32,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           {t('create_page_dropdown.new_page')}
         </button>
       </li>
-      {todaysPath && (
+      {todaysPath != null && (
         <>
           <li><hr className="dropdown-divider" /></li>
           <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
