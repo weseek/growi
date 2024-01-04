@@ -14,6 +14,7 @@ import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletio
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
+import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
@@ -41,6 +42,7 @@ type UseCodeMirrorEditorUtils = {
   replaceText: ReplaceText,
   insertMarkdownElements: InsertMarkdowElements,
   insertPrefix: InsertPrefix,
+  foldDrawio: FoldDrawio,
 }
 export type UseCodeMirrorEditor = {
   state: EditorState | undefined;
@@ -95,6 +97,7 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const replaceText = useReplaceText(view);
   const insertMarkdownElements = useInsertMarkdownElements(view);
   const insertPrefix = useInsertPrefix(view);
+  const foldDrawio = useFoldDrawio(view);
 
   return {
     state,
@@ -108,5 +111,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     replaceText,
     insertMarkdownElements,
     insertPrefix,
+    foldDrawio,
   };
 };

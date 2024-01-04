@@ -2,6 +2,7 @@ import React, { useState, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
@@ -15,6 +16,8 @@ import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
 export const PageCreateButton = React.memo((): JSX.Element => {
+  const { t } = useTranslation('commons');
+
   const { data: currentPagePath, isLoading } = useCurrentPagePath();
   const { data: currentUser } = useCurrentUser();
 
@@ -22,7 +25,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const now = format(new Date(), 'yyyy/MM/dd');
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-  const todaysPath = `${userHomepagePath}/memo/${now}`;
+  const todaysPath = `${userHomepagePath}/${t('create_page_dropdown.todays.memo')}/${now}`;
 
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPagePath, isLoading);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
