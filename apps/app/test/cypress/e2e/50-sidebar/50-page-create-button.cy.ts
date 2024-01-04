@@ -27,23 +27,36 @@ describe('Access to PageCreateButton', () => {
         // });
 
         it('Successfully create untitled page', () => {
+
+          // cy.waitUntil(() => {
+          //   // ページ作成ボタンが表示されるまで待機
+          //   cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible');
+
+          //   // ページ作成ボタンをクリック
+          //   cy.getByTestid('grw-sidebar-nav-page-create-button').click({ force: true });
+
+          //   // ページエディタが表示されるかどうかを確認して条件を返す
+          //   return cy.getByTestid('page-editor').should('be.visible');
+          // });
+
+          cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
           cy.getByTestid('grw-sidebar-nav-page-create-button').click({force: true});
 
-          cy.getByTestid('page-editor').should('be.visible');
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
           cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
 
           cy.screenshot(`${ssPrefix}create-untitled-page`);
         });
       });
 
-      describe('Test PageCreateButton dropdown', () => {
+      // describe('Test PageCreateButton dropdown', () => {
 
-        it('Successfully create untitled page', () => {});
-        it("Successfully create today's page", () => {});
-        it('Successfully create children template', () => {});
-        it('Successfully create descendants template', () => {});
+      //   it('Successfully create untitled page', () => {});
+      //   it("Successfully create today's page", () => {});
+      //   it('Successfully create children template', () => {});
+      //   it('Successfully create descendants template', () => {});
 
-      });
+      // });
     });
   });
 });
