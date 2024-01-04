@@ -37,7 +37,8 @@
     "@growi/core": "link:../core"
   },
   "devDependencies": {
-    "reactstrap": "^9.2.0"
+    "reactstrap": "^9.2.0",
+    "throttle-debounce": "^5.0.0"
   },
   "peerDependencies": {
     "next": "^13",

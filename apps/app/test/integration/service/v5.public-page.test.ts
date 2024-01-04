@@ -738,7 +738,6 @@ describe('PageService page operations with only public pages', () => {
 
     await Comment.insertMany([
       {
-        commentPosition: -1,
         page: pageIdForDuplicate11,
         creator: dummyUser1._id,
         revision: revisionIdForDuplicate10,
@@ -980,7 +979,6 @@ describe('PageService page operations with only public pages', () => {
 
     await Comment.insertMany([
       {
-        commentPosition: -1,
         page: pageIdForDeleteCompletely2,
         creator: dummyUser1._id,
         revision: revisionIdForDeleteCompletely4,

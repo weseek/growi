@@ -12,8 +12,8 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
+import { usePostComment, updateComment, useSWRxEditingCommentsNum, useSWRxPageComment } from '~/features/comment/client';
 import { IEditorMethods } from '~/interfaces/editor-methods';
-import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
@@ -67,7 +67,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const { data: currentUser } = useCurrentUser();
   const { data: currentPagePath } = useCurrentPagePath();
-  const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
+  const { mutate: mutateComments } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
@@ -79,6 +79,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+
+  const postComment = usePostComment();
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme(resolvedTheme);
@@ -163,23 +165,23 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     try {
       if (currentCommentId != null) {
         // update current comment
-        await updateComment(comment, revisionId, currentCommentId);
+        await updateComment(currentCommentId, revisionId, comment);
       }
       else {
         // post new comment
-        const postCommentArgs = {
+        await postComment({
           commentForm: {
             comment,
-            revisionId,
             replyTo,
           },
           slackNotificationForm: {
             isSlackEnabled,
             slackChannels,
           },
-        };
-        await postComment(postCommentArgs);
+        });
       }
+
+      mutateComments();
 
       initializeEditor();
 
@@ -191,11 +193,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
-  }, [
-    comment, currentCommentId, initializeEditor,
-    isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
-    postComment, revisionId, updateComment,
-  ]);
+  }, [currentCommentId, mutateComments, initializeEditor, onCommentButtonClicked, revisionId, postComment, comment, replyTo, isSlackEnabled, slackChannels]);
 
   const ctrlEnterHandler = useCallback((event) => {
     if (event != null) {

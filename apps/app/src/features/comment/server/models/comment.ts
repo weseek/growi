@@ -1,36 +1,28 @@
-import type { IUser } from '@growi/core/dist/interfaces';
+import type { IUser, IComment, IInlineComment } from '@growi/core/dist/interfaces';
 import {
-  Types, Document, Model, Schema, Query,
+  Document, Schema,
+  type Types, type Model, type Query,
 } from 'mongoose';
 
-import { IComment } from '~/interfaces/comment';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:models:comment');
 
-export interface CommentDocument extends IComment, Document {
+// export interface CommentDocument extends IComment, Document {
+export interface CommentDocument extends IInlineComment, Document {
   removeWithReplies: () => Promise<void>
   findCreatorsByPage: (pageId: Types.ObjectId) => Promise<CommentDocument[]>
 }
 
 
-type Add = (
-  pageId: Types.ObjectId,
-  creatorId: Types.ObjectId,
-  revisionId: Types.ObjectId,
-  comment: string,
-  commentPosition: number,
-  replyTo?: Types.ObjectId | null,
-) => Promise<CommentDocument>;
 type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCommentsByRevisionId = (revisionId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>
 type GetPageIdToCommentMap = (pageIds: Types.ObjectId[]) => Promise<Record<string, CommentDocument[]>>
 type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>
 
-export interface CommentModel extends Model<CommentDocument> {
-  add: Add
+export interface CommentModel<D extends CommentDocument = CommentDocument> extends Model<D> {
   findCommentsByPageId: FindCommentsByPageId
   findCommentsByRevisionId: FindCommentsByRevisionId
   findCreatorsByPage: FindCreatorsByPage
@@ -43,40 +35,15 @@ const commentSchema = new Schema<CommentDocument, CommentModel>({
   creator: { type: Schema.Types.ObjectId, ref: 'User', index: true },
   revision: { type: Schema.Types.ObjectId, ref: 'Revision', index: true },
   comment: { type: String, required: true },
-  commentPosition: { type: Number, default: -1 },
   replyTo: { type: Schema.Types.ObjectId },
+  inline: { type: Schema.Types.Boolean, index: true },
+  firstLevelBlockXpath: Schema.Types.String,
+  innerHtmlDiff: Schema.Types.String,
+  resolvedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+  resolvedAt: Schema.Types.Date,
 }, {
   timestamps: true,
 });
-
-const add: Add = async function(
-    this: CommentModel,
-    pageId,
-    creatorId,
-    revisionId,
-    comment,
-    commentPosition,
-    replyTo?,
-): Promise<CommentDocument> {
-  try {
-    const data = await this.create({
-      page: pageId.toString(),
-      creator: creatorId.toString(),
-      revision: revisionId.toString(),
-      comment,
-      commentPosition,
-      replyTo,
-    });
-    logger.debug('Comment saved.', data);
-
-    return data;
-  }
-  catch (err) {
-    logger.debug('Error on saving comment.', err);
-    throw err;
-  }
-};
-commentSchema.statics.add = add;
 
 commentSchema.statics.findCommentsByPageId = function(id) {
   return this.find({ page: id }).sort({ createdAt: -1 });

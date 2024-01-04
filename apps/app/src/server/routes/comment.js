@@ -1,5 +1,7 @@
 
-import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
+import {
+  Comment, CommentEvent, InlineComment, commentEvent,
+} from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
@@ -40,10 +42,6 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  *            type: string
  *            description: comment
  *            example: good
- *          commentPosition:
- *            type: number
- *            description: comment position
- *            example: 0
  *          createdAt:
  *            type: string
  *            description: date created at
@@ -155,7 +153,6 @@ module.exports = function(crowi, app) {
       body('commentForm.page_id').exists(),
       body('commentForm.revision_id').exists(),
       body('commentForm.comment').exists(),
-      body('commentForm.comment_position').isInt(),
       body('commentForm.is_markdown').isBoolean(),
       body('commentForm.replyTo').exists().custom((value) => {
         if (value === '') {
@@ -192,8 +189,6 @@ module.exports = function(crowi, app) {
    *                        $ref: '#/components/schemas/Revision/properties/_id'
    *                      comment:
    *                        $ref: '#/components/schemas/Comment/properties/comment'
-   *                      comment_position:
-   *                        $ref: '#/components/schemas/Comment/properties/commentPosition'
    *                required:
    *                  - commentForm
    *        responses:
@@ -220,10 +215,11 @@ module.exports = function(crowi, app) {
    * @apiParam {String} page_id Page Id.
    * @apiParam {String} revision_id Revision Id.
    * @apiParam {String} comment Comment body
-   * @apiParam {Number} comment_position=-1 Line number of the comment
    */
   api.add = async function(req, res) {
-    const { commentForm, slackNotificationForm } = req.body;
+    /** @type {import('~/features/comment/interfaces').ICommentPostArgs} */
+    const typedBody = req.body;
+    const { commentForm, slackNotificationForm } = typedBody;
     const { validationResult } = require('express-validator');
 
     const errors = validationResult(req.body);
@@ -231,11 +227,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('コメントを入力してください。'));
     }
 
-    const pageId = commentForm.page_id;
-    const revisionId = commentForm.revision_id;
-    const comment = commentForm.comment;
-    const position = commentForm.comment_position || -1;
-    const replyTo = commentForm.replyTo;
+    const pageId = commentForm.pageId;
 
     // check whether accessible
     const isAccessible = await Page.isAccessiblePageByViewer(pageId, req.user);
@@ -245,7 +237,23 @@ module.exports = function(crowi, app) {
 
     let createdComment;
     try {
-      createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
+      const comment = commentForm.inline
+        ? new Comment()
+        : new InlineComment();
+      comment.creator = req.user._id;
+      comment.page = commentForm.pageId;
+      comment.revision = commentForm.revisionId;
+      comment.comment = commentForm.comment;
+      comment.replyTo = commentForm.replyTo;
+
+      // set inline comment attributes
+      if (commentForm.inline) {
+        comment.inline = true;
+        comment.firstLevelBlockXpath = commentForm.firstLevelBlockXpath;
+        comment.innerHtmlDiff = commentForm.innerHtmlDiff;
+      }
+
+      createdComment = await comment.save();
       commentEvent.emit(CommentEvent.CREATE, createdComment);
     }
     catch (err) {
@@ -290,7 +298,7 @@ module.exports = function(crowi, app) {
     }
 
     // slack notification
-    if (slackNotificationForm.isSlackEnabled) {
+    if (slackNotificationForm?.isSlackEnabled) {
       const { slackChannels } = slackNotificationForm;
 
       try {

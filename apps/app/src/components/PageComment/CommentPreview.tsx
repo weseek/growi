@@ -25,7 +25,7 @@ export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
       <RevisionRenderer
         rendererOptions={rendererOptions}
         markdown={markdown}
-        additionalClassName="comment"
+        className="comment"
       />
     </div>
   );

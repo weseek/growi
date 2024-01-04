@@ -13,7 +13,7 @@ const logger = loggerFactory('components:Page:RevisionRenderer');
 type Props = {
   rendererOptions: RendererOptions,
   markdown: string,
-  additionalClassName?: string,
+  className?: string,
 }
 
 const ErrorFallback: React.FC<FallbackProps> = React.memo(({ error, resetErrorBoundary }) => {
@@ -30,14 +30,14 @@ ErrorFallback.displayName = 'ErrorFallback';
 const RevisionRenderer = React.memo((props: Props): JSX.Element => {
 
   const {
-    rendererOptions, markdown, additionalClassName,
+    rendererOptions, markdown, className = '',
   } = props;
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <ReactMarkdown
         {...rendererOptions}
-        className={`wiki ${additionalClassName ?? ''}`}
+        className={`wiki ${className}`}
       >
         {markdown}
       </ReactMarkdown>

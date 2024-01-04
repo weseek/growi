@@ -1,14 +1,14 @@
 import React, {
-  FC, useCallback, useEffect, useRef, useState,
+  type FC, useCallback, useRef,
 } from 'react';
 
 import { getIdForRef } from '@growi/core';
 import type { IPageToDeleteWithMeta, IPageToRenameWithMeta } from '@growi/core';
+import { useRenderedObserver } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
-import { debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
@@ -63,7 +63,6 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
 };
 
 const SCROLL_OFFSET_TOP = 30;
-const MUTATION_OBSERVER_CONFIG = { childList: true, subtree: true }; // omit 'subtree: true'
 
 type Props ={
   pageWithMeta : IPageWithSearchMeta,
@@ -85,29 +84,21 @@ const scrollToFirstHighlightedKeyword = (scrollElement: HTMLElement): void => {
     duration: 200,
   });
 };
-const scrollToFirstHighlightedKeywordDebounced = debounce(500, scrollToFirstHighlightedKeyword);
+// const scrollToFirstHighlightedKeywordDebounced = debounce(500, scrollToFirstHighlightedKeyword);
 
 export const SearchResultContent: FC<Props> = (props: Props) => {
 
-  const scrollElementRef = useRef<HTMLDivElement|null>(null);
+  const scrollElementRef = useRef<HTMLDivElement>(null);
 
-  // ***************************  Auto Scroll  ***************************
-  useEffect(() => {
-    const scrollElement = scrollElementRef.current;
+  // Auto Scroll
+  useRenderedObserver(scrollElementRef, {
+    onRendered: () => {
+      const scrollElement = scrollElementRef.current;
+      if (scrollElement == null) return;
 
-    if (scrollElement == null) return;
-
-    const observer = new MutationObserver(() => {
-      scrollToFirstHighlightedKeywordDebounced(scrollElement);
-    });
-    observer.observe(scrollElement, MUTATION_OBSERVER_CONFIG);
-
-    // no cleanup function -- 2023.07.31 Yuki Takei
-    // see: https://developer.mozilla.org/en-US/docs/Web/API/MutationObserver/observe
-    // > You can call observe() multiple times on the same MutationObserver
-    // > to watch for changes to different parts of the DOM tree and/or different types of changes.
+      scrollToFirstHighlightedKeyword(scrollElement);
+    },
   });
-  // *******************************  end  *******************************
 
   const {
     pageWithMeta,

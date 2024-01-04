@@ -223,6 +223,7 @@
     "@next/bundle-analyzer": "^13.2.3",
     "@swc-node/jest": "^1.6.2",
     "@swc/jest": "^0.2.24",
+    "@types/diff": "^5.0.8",
     "@types/express": "^4.17.11",
     "@types/jest": "^29.5.2",
     "@types/react-scroll": "^1.8.4",
@@ -242,6 +243,7 @@
     "eslint-plugin-regex": "^1.8.0",
     "font-awesome": "^4.7.0",
     "fslightbox-react": "^1.7.6",
+    "get-xpath": "^3.1.0",
     "handsontable": "=6.2.2",
     "i18next-hmr": "^1.11.0",
     "jest": "^29.5.0",
@@ -259,6 +261,7 @@
     "react-copy-to-clipboard": "^5.0.1",
     "react-dropzone": "^11.2.4",
     "react-hotkeys": "^2.0.0",
+    "react-laag": "^2.0.5",
     "react-stickynode": "^4.1.0",
     "rehype-rewrite": "^3.0.6",
     "replacestream": "^4.0.3",
@@ -269,6 +272,7 @@
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
     "swagger2openapi": "^7.0.8",
+    "text-annotator-v2": "^1.1.9",
     "tsc-alias": "^1.2.9"
   }
 }

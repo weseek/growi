@@ -27,6 +27,7 @@ import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
+import { TextSelectableContainer } from './TextSelectionTools';
 
 import styles from './PageView.module.scss';
 
@@ -40,7 +41,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-
+const InlineCommentsContainer = dynamic(() => import('~/features/comment/client').then(mod => mod.InlineCommentsContainer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -136,18 +137,20 @@ export const PageView = (props: Props): JSX.Element => {
         <PageContentsUtilities />
 
         <div className="flex-expand-vert justify-content-between">
-          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+          <InlineCommentsContainer>
+            <TextSelectableContainer>
+              <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+            </TextSelectableContainer>
+          </InlineCommentsContainer>
 
-          { !isIdenticalPathPage && !isNotFound && (
-            <div id="comments-container" ref={commentsContainerRef}>
-              <Comments
-                pageId={page._id}
-                pagePath={pagePath}
-                revision={page.revision}
-                onLoaded={() => setCommentsLoaded(true)}
-              />
-            </div>
-          ) }
+          <div id="comments-container" ref={commentsContainerRef}>
+            <Comments
+              pageId={page._id}
+              pagePath={pagePath}
+              revision={page.revision}
+              onLoaded={() => setCommentsLoaded(true)}
+            />
+          </div>
         </div>
       </>
     );
