@@ -11,6 +11,7 @@ import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
 import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
+import { setDataLine } from '../../extensions/setDataLine';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -22,6 +23,7 @@ import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useScrollIntoView, type ScrollIntoView } from './utils/scroll-into-view';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
+
 
 const markdownHighlighting = HighlightStyle.define([
   { tag: tags.heading1, class: 'cm-header-1 cm-header' },
@@ -58,6 +60,7 @@ const defaultExtensions: Extension[] = [
   syntaxHighlighting(markdownHighlighting),
   Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
   emojiAutocompletionSettings,
+  setDataLine,
 ];
 
 
