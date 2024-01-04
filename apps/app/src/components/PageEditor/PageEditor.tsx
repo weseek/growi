@@ -387,31 +387,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-  const [pastEnd, setPastEnd] = useState(0);
-  useEffect(() => {
-    if (previewRef.current == null) {
-      return;
-    }
-    const resizeObserver = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        console.log(entry.contentRect);
-        const previewHeight = entry.contentRect.height;
-        let lastElementHeight = 0;
-        if (previewRef.current != null) {
-          const previewElements = previewRef.current.getElementsByClassName('has-data-line');
-          lastElementHeight = previewElements[previewElements.length - 1].getBoundingClientRect().height;
-        }
-        setPastEnd(previewHeight - lastElementHeight - 10);
-      }
-    });
-
-    resizeObserver.observe(previewRef.current);
-
-    return () => {
-      resizeObserver.disconnect();
-    };
-  }, [setPastEnd]);
-
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
     const pageData = await mutateCurrentPage();
@@ -534,7 +509,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            pastEnd={pastEnd}
+            // TODO: Dynamic changes by height or resizing the last element
+            pastEnd={500}
           />
         </div>
         {/*
