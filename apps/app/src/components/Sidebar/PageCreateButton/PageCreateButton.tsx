@@ -3,12 +3,12 @@ import React, { useState, useCallback } from 'react';
 import type { Nullable, IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
@@ -26,7 +26,9 @@ const generateTodaysPath = (currentUser?: Nullable<IUserHasId>, isGuestUser?: bo
 };
 
 export const PageCreateButton = React.memo((): JSX.Element => {
-  const { data: currentPage, isLoading } = useSWRxCurrentPage();
+  const { t } = useTranslation('commons');
+
+  const { data: currentPagePath, isLoading } = useCurrentPagePath();
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
 
@@ -34,9 +36,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const todaysPath = generateTodaysPath(currentUser, isGuestUser);
 
-  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(isLoading, currentPage);
-  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
+  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPagePath, isLoading);
+  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoading);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {

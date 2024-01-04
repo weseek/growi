@@ -630,38 +630,6 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
   };
 };
 
-/*
- * TemplateModal
- */
-
-type TemplateSelectedCallback = (templateText: string) => void;
-type TemplateModalOptions = {
-  onSubmit?: TemplateSelectedCallback,
-}
-export type TemplateModalStatus = TemplateModalOptions & {
-  isOpened: boolean,
-}
-
-type TemplateModalUtils = {
-  open(opts: TemplateModalOptions): void,
-  close(): void,
-}
-
-export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
-
-  const initialStatus: TemplateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
-
-  return Object.assign(swrResponse, {
-    open: (opts: TemplateModalOptions) => {
-      swrResponse.mutate({ isOpened: true, onSubmit: opts.onSubmit });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
-};
-
 /**
  * DeleteAttachmentModal
  */

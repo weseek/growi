@@ -29,7 +29,7 @@ export class DrawioCommunicationHelper {
     this.callbackOpts = callbackOpts;
   }
 
-  onReceiveMessage(event: MessageEvent, drawioMxFile: string): void {
+  onReceiveMessage(event: MessageEvent, drawioMxFile: string | null): void {
 
     // check origin
     if (event.origin != null && this.drawioUri != null) {
