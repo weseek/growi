@@ -5,7 +5,7 @@ import EventEmitter from 'events';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { useSaveOrUpdate } from '~/client/services/page-operation';
-import mdu from '~/components/PageEditor/MarkdownDrawioUtil';
+import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
 import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
@@ -41,7 +41,7 @@ export const useDrawioModalLauncherForView = (opts?: {
     }
 
     const currentMarkdown = currentPage.revision.body;
-    const newMarkdown = mdu.replaceDrawioInMarkdown(drawioMxFile, currentMarkdown, bol, eol);
+    const newMarkdown = replaceDrawioInMarkdown(drawioMxFile, currentMarkdown, bol, eol);
 
     const grantUserGroupIds = currentPage.grantedGroups.map((g) => {
       return {

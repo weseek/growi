@@ -18,6 +18,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import { NextPageWithLayout } from '../_app.page';
@@ -87,8 +88,6 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsSearchPage(false);
 
-  useCurrentUser(props.currentUser ?? null);
-
   useRegistrationWhitelist(props.registrationWhitelist);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
@@ -96,6 +95,12 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   // commons
   useCsrfToken(props.csrfToken);
   useGrowiCloudUri(props.growiCloudUri);
+
+  useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  const { mutate } = useSWRxCurrentPage();
+  mutate(undefined, { revalidate: false });
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);

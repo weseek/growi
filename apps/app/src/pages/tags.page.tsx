@@ -10,6 +10,7 @@ import Head from 'next/head';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -44,6 +45,11 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [offset, setOffset] = useState<number>(0);
 
   useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  const { mutate } = useSWRxCurrentPage();
+  mutate(undefined, { revalidate: false });
+
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
   const { t } = useTranslation('');
   const setOffsetByPageNumber = useCallback((selectedPageNumber: number) => {
