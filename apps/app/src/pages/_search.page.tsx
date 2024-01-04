@@ -14,6 +14,7 @@ import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { SearchPage } from '../components/SearchPage';
 
@@ -49,6 +50,10 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  const { mutate } = useSWRxCurrentPage();
+  mutate(undefined, { revalidate: false });
 
   // Search
   useIsSearchPage(true);
