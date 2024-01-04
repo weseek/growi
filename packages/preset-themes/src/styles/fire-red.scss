@@ -7,9 +7,9 @@
   $highlight: #C9BBBA;
 
   @include generate-color-palette('primary', $primary, #120700, white);
-  @include generate-color-palette('highlight', $highlight, black, white);
+  @include generate-color-palette('highlight', $highlight, #120700, white);
 
-  $body-color:                #223246;
+  $body-color:                mix(#C9BBBA, #120700, 40%);
   $body-bg:                   white;
 
   $body-secondary-color:      rgba($body-color, .75);
@@ -30,7 +30,7 @@
   @import '@growi/core/scss/bootstrap/theming/apply-light';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
-  --grw-wiki-link-hover-color-rgb: var(--grw-primary-700-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-600-rgb);
 }
 
 :root[data-bs-theme='dark'] {
@@ -42,10 +42,10 @@
   $highlight: #C9BBBA;
 
   @include generate-color-palette('primary', $primary, #120700, white);
-  @include generate-color-palette('highlight', $highlight, black, white);
+  @include generate-color-palette('highlight', $highlight, #120700, white);
 
   $body-color-dark:                   $gray-400;
-  $body-bg-dark:                      #16202c;
+  $body-bg-dark:                      $gray-900;
 
   $body-secondary-color-dark:         rgba($body-color-dark, .75);
   $body-secondary-bg-dark:            $gray-800;
@@ -65,7 +65,7 @@
   @import '@growi/core/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
-  --grw-wiki-link-hover-color-rgb: var(--grw-primary-300-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-400-rgb);
 }
 
 // @use '@growi/core/scss/bootstrap/init' as bs;
