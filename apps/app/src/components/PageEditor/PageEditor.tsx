@@ -74,7 +74,6 @@ declare global {
 }
 
 // for scrolling
-let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
@@ -360,12 +359,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    const now = new Date();
-    if (lastScrolledDateWithCursor != null && now.getTime() - lastScrolledDateWithCursor.getTime() < 50) {
-      lastScrolledDateWithCursor = now;
-      return;
-    }
-
     if (isOriginOfScrollSyncPreview) {
       isOriginOfScrollSyncPreview = false;
       return;
@@ -382,11 +375,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    const now = new Date();
-    if (lastScrolledDateWithCursor != null && now.getTime() - lastScrolledDateWithCursor.getTime() < 50) {
-      lastScrolledDateWithCursor = now;
-      return;
-    }
     if (isOriginOfScrollSyncEditor) {
       isOriginOfScrollSyncEditor = false;
       return;
@@ -396,7 +384,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
   }, [codeMirrorEditor, previewRef]);
 
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(150, scrollPreviewHandler), [scrollPreviewHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
@@ -521,7 +509,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            pastEnd={previewRef.current?.getBoundingClientRect().height}
+            pastEnd={previewRef?.current?.getBoundingClientRect().height ?? 200 - 200}
           />
         </div>
         {/*
