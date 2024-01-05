@@ -44,7 +44,7 @@
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color-dark:                   $gray-400;
+  $body-color-dark:                   mix(#BBC3BF, white, 60%);
   $body-bg-dark:                      $gray-900;
 
   $body-secondary-color-dark:         rgba($body-color-dark, .75);
