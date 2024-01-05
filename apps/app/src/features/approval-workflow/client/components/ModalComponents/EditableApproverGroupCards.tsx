@@ -8,6 +8,7 @@ import {
 
 import { WorkflowApprovalType, type EditingApproverGroup } from '../../../interfaces/workflow';
 
+import { ApprovedApproverCard } from './ApprovedApproverCards';
 import { SearchUserTypeahead } from './SearchUserTypeahead';
 
 
@@ -93,6 +94,8 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
     }
   }, [groupIndex, isDeletebleEditingApproverGroup, onClickRemoveApproverGroupCard]);
 
+  const isEditing = true;
+
   return (
     <>
       {onClickAddApproverGroupCard != null && groupIndex === 0 && (
@@ -123,13 +126,27 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
       )}
       {/* TODO: https://redmine.weseek.co.jp/issues/137322 */}
       <div className="card rounded z-1 position-relative">
+
         <div className="container row p-0 mx-auto">
-          <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
-            <span className="material-symbols-outlined">
-              drag_indicator
-            </span>
-          </div>
-          <div className="col-11 py-3">
+
+          {!isEditing && (
+            <div className="col-1 py-3 d-flex justify-content-center align-items-center border-end border-secondary-subtle">
+              <span className="material-symbols-outlined">
+                drag_indicator
+              </span>
+            </div>
+          )}
+
+          <div className="col-11 px-0">
+
+            { selectedUsers.map(selectedUser => (
+              <ApprovedApproverCard
+                userData={selectedUser}
+                approvedApproverIds={approvedApproverIds}
+                isEditable={isEditable}
+              />
+            )) }
+
             <div className="d-flex justify-content-center align-items-center">
               <SearchUserTypeahead
                 isEditable={isEditable}
@@ -140,7 +157,6 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
                 onRemoveApprover={removeApproverHandler}
                 onRemoveLastEddtingApprover={removeApproverGroupCardHandler}
               />
-
               {isDeletebleEditingApproverGroup && onClickRemoveApproverGroupCard != null && (
                 <button type="button" className="btn-close justify-content-end" aria-label="Close" onClick={removeApproverGroupCardHandler}></button>
               )}
@@ -186,6 +202,7 @@ const EditableApproverGroupCard = (props: Props & { groupIndex: number, isLastAp
             </div>
           </div>
         </div>
+
       </div>
 
       {onClickAddApproverGroupCard != null && !isLastApproverGroup && (
