@@ -3,7 +3,7 @@ import localFont from 'next/font/local';
 import { DefineStyle } from './types';
 
 const growiCustomIconFont = localFont({
-  src: '../../../../../packages/apps-font-icons/dist/growi-custom-icon.woff2',
+  src: '../../../../../packages/custom-icons/dist/growi-custom-icon.woff2',
 });
 
 export const useGrowiCustomIcon: DefineStyle = () => (
