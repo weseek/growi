@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
@@ -20,6 +21,8 @@ export const PageSelectModal: FC = () => {
   } = usePageSelectModal();
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
+
+  const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -54,9 +57,7 @@ export const PageSelectModal: FC = () => {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="primary" onClick={closeModal}>
-          完了
-        </Button>{' '}
+        <Button color="primary" onClick={closeModal}>{t('Done')}</Button>{' '}
       </ModalFooter>
     </Modal>
   );

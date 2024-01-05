@@ -40,10 +40,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     setInputText(inputText);
     setIsAbleToShowAlert(true);
 
-    if (props.handleInputChange != null) {
-      props.handleInputChange(inputText);
-    }
-
+    props.handleInputChange?.(inputText);
   };
 
   const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {

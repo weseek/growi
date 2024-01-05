@@ -3,6 +3,7 @@ import {
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
 import { usePageSelectModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -25,6 +26,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isButtonsShown, setButtonShown] = useState(false);
   const [inputText, setInputText] = useState('');
   const [isEditing, setIsEditing] = useState(true);
+
+  const { t } = useTranslation();
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -86,7 +89,7 @@ export const PagePathHeader: FC<Props> = (props) => {
               <>
                 <div className="col-4">
                   <button type="button" onClick={handleEditButtonClick}>
-                    {isEditing ? '完了ボタン' : '編集ボタン'}
+                    {isEditing ? t('Done') : t('Edit')}
                   </button>
                 </div>
                 <div className="col-4">

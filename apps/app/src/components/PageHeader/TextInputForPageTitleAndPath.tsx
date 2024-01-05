@@ -49,7 +49,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
           />
         </div>
       ) : (
-        { CustomComponent }
+        <>{ CustomComponent }</>
       )}
     </>
   );

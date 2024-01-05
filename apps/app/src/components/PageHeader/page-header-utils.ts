@@ -47,9 +47,7 @@ export const usePagePathSubmitHandler = (
         newPagePath,
       });
 
-      if (onRenamed != null) {
-        onRenamed(currentPage.path, newPagePath);
-      }
+      onRenamed(currentPage.path, newPagePath);
 
       toastSuccess(t('renamed_pages', { path: currentPage.path }));
     }
