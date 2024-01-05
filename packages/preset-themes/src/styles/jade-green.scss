@@ -1,3 +1,5 @@
+$min-contrast-ratio: 2;
+
 :root[data-bs-theme='light'] {
   @import '@growi/core/scss/bootstrap/init-stage-1';
   @import '@growi/core/scss/bootstrap/theming/variables';
