@@ -6,6 +6,11 @@
       "outputs": ["dist/**"],
       "inputs": ["svg/**"],
       "outputMode": "new-only"
+    },
+    "dev": {
+      "outputs": ["dist/**"],
+      "inputs": ["svg/**"],
+      "outputMode": "new-only"
     }
   }
 }
