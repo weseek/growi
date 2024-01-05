@@ -1,7 +1,7 @@
 {
-  "fontName": "growi-custom-icon",
+  "fontName": "growi-custom-icons",
   "css": false,
   "outSVGReact": false,
   "useNameAsUnicode": true,
-  "className": "growi-custom-icon"
+  "className": "growi-custom-icons"
 }

@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { useGrowiCustomIcon } from './use-growi-custom-icon';
+import { useGrowiCustomIcon } from './use-growi-custom-icons';
 import { useLatoFontFamily } from './use-lato';
 import { useMaterialSymbolsOutlined } from './use-material-symbols-outlined';
 import { useSourceHanCodeJP } from './use-source-han-code-jp';
