@@ -1,14 +1,14 @@
 import { useCallback, useState } from 'react';
 
-import type { Nullable, IPagePopulatedToShowRevision, IUserHasId } from '@growi/core';
+import type { Nullable, IUserHasId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 
 export const useOnNewButtonClicked = (
-    isLoading: boolean,
-    currentPage?: IPagePopulatedToShowRevision | null,
+    currentPagePath?: string,
+    isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
   isPageCreating: boolean
@@ -22,9 +22,9 @@ export const useOnNewButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      const parentPath = currentPage == null
+      const parentPath = currentPagePath == null
         ? '/'
-        : currentPage.path;
+        : currentPagePath;
 
       const params = {
         isSlackEnabled: false,
@@ -37,7 +37,7 @@ export const useOnNewButtonClicked = (
 
       const response = await createPage(parentPath, '', params);
 
-      router.push(`${response.page.id}#edit`);
+      router.push(`/${response.page.id}#edit`);
     }
     catch (err) {
       toastError(err);
@@ -45,7 +45,7 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPage, isLoading, router]);
+  }, [currentPagePath, isLoading, router]);
 
   return { onClickHandler, isPageCreating };
 };
