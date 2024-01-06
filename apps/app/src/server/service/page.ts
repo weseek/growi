@@ -3,7 +3,7 @@ import { Readable, Writable } from 'stream';
 
 import type {
   Ref, HasObjectId, IUserHasId, IUser,
-  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
+  IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup, IRevisionHasId,
 } from '@growi/core';
 import {
   GroupType,
@@ -1012,7 +1012,7 @@ class PageService {
   /*
    * Duplicate
    */
-  async duplicate(page, newPagePath, user, isRecursively) {
+  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedGrantedGroups: boolean) {
     /*
      * Common Operation
      */
@@ -1033,7 +1033,7 @@ class PageService {
     // 1. Separate v4 & v5 process
     const shouldUseV4Process = this.shouldUseV4Process(page);
     if (shouldUseV4Process) {
-      return this.duplicateV4(page, newPagePath, user, isRecursively);
+      return this.duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups);
     }
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPagePath);
@@ -1043,9 +1043,9 @@ class PageService {
 
     // 2. UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
-    let grant;
+    let grant: PageGrant;
     let grantedUserIds;
-    let grantedGroupIds;
+    let grantedGroupIds: IGrantedGroup[];
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -1053,12 +1053,12 @@ class PageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupIds = parent.grantedGroups;
+      grantedGroupIds = onlyDuplicateUserRelatedGrantedGroups ? (await this.pageGrantService.getUserRelatedGrantedGroups(parent, user)) : parent.grantedGroups;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupIds = page.grantedGroups;
+      grantedGroupIds = onlyDuplicateUserRelatedGrantedGroups ? (await this.pageGrantService.getUserRelatedGrantedGroups(page, user)) : page.grantedGroups;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
@@ -1089,9 +1089,9 @@ class PageService {
       duplicatedTarget = await Page.createEmptyPage(newPagePath, parent);
     }
     else {
-      await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
+      const populatedPage = await page.populate<{revision: IRevisionHasId | null}>({ path: 'revision', model: 'Revision', select: 'body' });
       duplicatedTarget = await (this.create as CreateMethod)(
-        newPagePath, page.revision.body, user, options,
+        newPagePath, populatedPage?.revision?.body ?? '', user, options,
       );
     }
     this.pageEvent.emit('duplicate', page, user);
@@ -1145,7 +1145,7 @@ class PageService {
     return result;
   }
 
-  async duplicateRecursivelyMainOperation(page, newPagePath: string, user, pageOpId: ObjectIdLike): Promise<void> {
+  async duplicateRecursivelyMainOperation(page: PageDocument, newPagePath: string, user, pageOpId: ObjectIdLike): Promise<void> {
     const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false);
 
     // normalize parent of descendant pages
@@ -1185,7 +1185,7 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async duplicateV4(page, newPagePath, user, isRecursively) {
+  async duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups: boolean) {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
@@ -1204,7 +1204,7 @@ class PageService {
     this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user);
+      this.duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups);
     }
 
     // take over tags
@@ -1258,7 +1258,10 @@ class PageService {
     return PageTagRelation.insertMany(newPageTagRelation, { ordered: false });
   }
 
-  private async duplicateDescendants(pages, user, oldPagePathPrefix, newPagePathPrefix, shouldUseV4Process = true) {
+  private async duplicateDescendants(
+      pages, user, oldPagePathPrefix, newPagePathPrefix,
+      onlyDuplicateUserRelatedGrantedGroups: boolean, shouldUseV4Process = true,
+  ) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
     }
@@ -1280,6 +1283,8 @@ class PageService {
     const newPages: any[] = [];
     const newRevisions: any[] = [];
 
+    const userRelatedGroupIds = (await this.pageGrantService.getUserRelatedGroups(user)).map(ug => ug.item._id.toString());
+
     // no need to save parent here
     pages.forEach((page) => {
       const newPageId = new mongoose.Types.ObjectId();
@@ -1289,12 +1294,15 @@ class PageService {
 
       let newPage;
       if (!page.isEmpty) {
+        const grantedGroups = onlyDuplicateUserRelatedGrantedGroups
+          ? this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroupIds)
+          : page.grantedGroups;
         newPage = {
           _id: newPageId,
           path: newPagePath,
           creator: user._id,
           grant: page.grant,
-          grantedGroups: page.grantedGroups,
+          grantedGroups,
           grantedUsers: page.grantedUsers,
           lastUpdateUser: user._id,
           revision: revisionId,
@@ -1357,9 +1365,9 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, shouldUseV4Process = true) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups: boolean, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
-      return this.duplicateDescendantsWithStreamV4(page, newPagePath, user);
+      return this.duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups);
     }
 
     const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
@@ -1378,7 +1386,7 @@ class PageService {
         try {
           count += batch.length;
           nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, shouldUseV4Process);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedGrantedGroups, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1405,7 +1413,7 @@ class PageService {
     return nNonEmptyDuplicatedPages;
   }
 
-  private async duplicateDescendantsWithStreamV4(page, newPagePath, user) {
+  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups: boolean) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;
@@ -1419,7 +1427,7 @@ class PageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedGrantedGroups);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -2365,22 +2373,6 @@ class PageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  /*
-   * get all groups of Page that user is related to
-   */
-  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
-    const userRelatedGroupIds: string[] = [
-      ...(await UserGroupRelation.findAllGroupsForUser(user)).map(ugr => ugr._id.toString()),
-      ...(await ExternalUserGroupRelation.findAllGroupsForUser(user)).map(eugr => eugr._id.toString()),
-    ];
-    return page.grantedGroups?.filter((group) => {
-      if (isPopulated(group.item)) {
-        return userRelatedGroupIds.includes(group.item._id.toString());
-      }
-      return userRelatedGroupIds.includes(group.item);
-    }) || [];
-  }
-
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
     const PageTagRelation = this.crowi.model('PageTagRelation');
@@ -2431,7 +2423,7 @@ class PageService {
     await batchProcessPromiseAll(childPages, 20, async(childPage: any) => {
       let newChildGrantedGroups: IGrantedGroup[] = [];
       if (grant === PageGrant.GRANT_USER_GROUP) {
-        const userRelatedParentGrantedGroups = await this.getUserRelatedGrantedGroups(parentPage, user);
+        const userRelatedParentGrantedGroups = await this.pageGrantService.getUserRelatedGrantedGroups(parentPage, user);
         newChildGrantedGroups = await this.getNewGrantedGroups(userRelatedParentGrantedGroups, childPage, user);
       }
       const canChangeGrant = await this.pageGrantService
@@ -4110,7 +4102,7 @@ class PageService {
    */
   async getNewGrantedGroups(userRelatedGrantedGroups: IGrantedGroup[], page: PageDocument, user): Promise<IGrantedGroup[]> {
     const previousGrantedGroups = page.grantedGroups;
-    const userRelatedPreviousGrantedGroups = (await this.getUserRelatedGrantedGroups(page, user)).map(g => getIdForRef(g.item));
+    const userRelatedPreviousGrantedGroups = (await this.pageGrantService.getUserRelatedGrantedGroups(page, user)).map(g => getIdForRef(g.item));
     const userUnrelatedPreviousGrantedGroups = previousGrantedGroups.filter(g => !userRelatedPreviousGrantedGroups.includes(getIdForRef(g.item)));
     return [...userUnrelatedPreviousGrantedGroups, ...userRelatedGrantedGroups];
   }

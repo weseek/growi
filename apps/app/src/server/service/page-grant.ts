@@ -1,6 +1,6 @@
 import {
   type IGrantedGroup,
-  PageGrant, GroupType, getIdForRef,
+  PageGrant, GroupType, getIdForRef, isPopulated,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
@@ -94,6 +94,9 @@ export interface IPageGrantService {
   ) => Promise<UpdateGrantInfo>,
   canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>,
   validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>
+  getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
+  filterGrantedGroupsByIds: (page: PageDocument, groupIds: string[]) => IGrantedGroup[],
+  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>
 }
 
 class PageGrantService implements IPageGrantService {
@@ -642,6 +645,9 @@ class PageGrantService implements IPageGrantService {
     return data;
   }
 
+  /*
+   * get all groups that user is related to
+   */
   async getUserRelatedGroups(user): Promise<PopulatedGrantedGroup[]> {
     const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
     const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
@@ -653,6 +659,26 @@ class PageGrantService implements IPageGrantService {
         return { type: GroupType.externalUserGroup, item: group };
       }),
     ];
+  }
+
+  /*
+   * filter page.grantedGroups to groups with id inside groupIds
+   */
+  filterGrantedGroupsByIds(page: PageDocument, groupIds: string[]): IGrantedGroup[] {
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return groupIds.includes(group.item._id.toString());
+      }
+      return groupIds.includes(group.item);
+    }) || [];
+  }
+
+  /*
+   * get all groups of Page that user is related to
+   */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroupIds: string[] = (await this.getUserRelatedGroups(user)).map(ug => ug.item._id.toString());
+    return this.filterGrantedGroupsByIds(page, userRelatedGroupIds);
   }
 
   /**

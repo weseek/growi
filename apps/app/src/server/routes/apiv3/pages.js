@@ -797,7 +797,7 @@ module.exports = (crowi) => {
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.duplicatePage, apiV3FormValidator,
     async(req, res) => {
-      const { pageId, isRecursively } = req.body;
+      const { pageId, isRecursively, onlyDuplicateUserRelatedGrantedGroups } = req.body;
 
       const newPagePath = normalizePath(req.body.pageNameInput);
 
@@ -833,7 +833,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
-      const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
+      const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively, onlyDuplicateUserRelatedGrantedGroups);
       const result = { page: serializePageSecurely(newParentPage) };
 
       // copy the page since it's used and updated in crowi.pageService.duplicate

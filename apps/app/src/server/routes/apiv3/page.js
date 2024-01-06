@@ -478,7 +478,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const userRelatedGrantedGroups = await crowi.pageService.getUserRelatedGrantedGroups(page, req.user);
+    const userRelatedGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(page, req.user);
     const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
     const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
@@ -515,7 +515,7 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const userRelatedParentGrantedGroups = await crowi.pageService.getUserRelatedGrantedGroups(parentPage, req.user);
+    const userRelatedParentGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(parentPage, req.user);
     const {
       grantedUserGroups: parentGrantedUserGroupIds,
       grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
