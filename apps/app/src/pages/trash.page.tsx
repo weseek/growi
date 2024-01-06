@@ -9,7 +9,7 @@ import Head from 'next/head';
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { useCurrentPageId } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
@@ -40,6 +40,10 @@ type Props = CommonProps & {
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  const { mutate } = useSWRxCurrentPage();
+  mutate(undefined, { revalidate: false });
 
   useGrowiCloudUri(props.growiCloudUri);
 
