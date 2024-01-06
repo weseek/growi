@@ -61,8 +61,10 @@ const EmptyTrashModal: FC = () => {
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal">
       <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="bg-danger text-light">
-        <span className="material-symbols-outlined">delete_forever</span>
-        {t('modal_empty.empty_the_trash')}
+        <div className="d-flex align-items-center">
+          <span className="material-symbols-outlined me-1">delete_forever</span>
+          {t('modal_empty.empty_the_trash')}
+        </div>
       </ModalHeader>
       <ModalBody>
         <div className="grw-scrollable-modal-body pb-1">
@@ -77,7 +79,7 @@ const EmptyTrashModal: FC = () => {
         <ApiErrorMessageList errs={errs} />
         <button
           type="button"
-          className="btn btn-danger"
+          className="btn btn-danger d-flex align-items-center"
           onClick={emptyTrashButtonHandler}
         >
           <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span>

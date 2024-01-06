@@ -86,16 +86,16 @@ export const TrashPageAlert = (): JSX.Element => {
       <>
         <button
           type="button"
-          className="btn btn-info rounded-pill btn-sm ms-auto me-2"
+          className="btn btn-info rounded-pill btn-sm ms-auto me-2 d-flex align-items-center"
           onClick={openPutbackPageModalHandler}
           data-bs-toggle="modal"
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> {t('Put Back')}
+          <span className="material-symbols-outlined">undo</span>{t('Put Back')}
         </button>
         <button
           type="button"
-          className="btn btn-danger rounded-pill btn-sm"
+          className="btn btn-danger rounded-pill btn-sm d-flex align-items-center"
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
@@ -114,8 +114,9 @@ export const TrashPageAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
-          This page is in the trash <span className="material-symbols-outlined" aria-hidden="true">delete</span>.
-          <br />
+          <div className="d-flex align-items-center">
+            This page is in the trash <span className="material-symbols-outlined" aria-hidden="true">delete</span>.
+          </div>
           <UserPicture user={deleteUser} />
           <span className="ms-2">
             Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>

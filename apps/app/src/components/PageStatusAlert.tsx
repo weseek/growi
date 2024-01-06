@@ -75,15 +75,17 @@ export const PageStatusAlert = (): JSX.Element => {
     return {
       additionalClasses: ['bg-warning text-dark'],
       label:
-  <>
-    <span className="material-symbols-outlined">lightbulb</span>
+  <div className="d-flex">
+    <span className="material-symbols-outlined me-1">lightbulb</span>
     {label1}
-  </>,
+  </div>,
       btn:
   <>
-    <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white me-4">
-      <span className="material-symbols-outlined">refresh</span>
-      {t('Load latest')}
+    <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white">
+      <div className="d-flex">
+        <span className="material-symbols-outlined me-1">refresh</span>
+        {t('Load latest')}
+      </div>
     </button>
     { isConflict && (
       <button
@@ -91,8 +93,10 @@ export const PageStatusAlert = (): JSX.Element => {
         onClick={onClickResolveConflict}
         className="btn btn-outline-white"
       >
-        <span className="material-symbols-outlined">description</span>
-        {t('modal_resolve_conflict.resolve_conflict')}
+        <div className="d-flex">
+          <span className="material-symbols-outlined me-1">description</span>
+          {t('modal_resolve_conflict.resolve_conflict')}
+        </div>
       </button>
     )}
   </>,
@@ -104,6 +108,7 @@ export const PageStatusAlert = (): JSX.Element => {
 
     // 'revision?._id' and 'remoteRevisionId' are can not be undefined
     if (revision?._id == null || remoteRevisionId == null) { return }
+
 
     // when remote revision is newer than both
     if (isRevisionOutdated) {

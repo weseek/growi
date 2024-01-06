@@ -13,9 +13,9 @@ const BookMarkLinkButton = React.memo(() => {
     <ScrollLink to="bookmarks-list" offset={-120}>
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm px-2"
+        className="btn btn-outline-secondary btn-sm d-flex align-items-center me-2"
       >
-        <span className="material-symbols-outlined">bookmark</span>
+        <span className="material-symbols-outlined me-1">bookmark</span>
         <span>Bookmarks</span>
       </button>
     </ScrollLink>
@@ -30,10 +30,10 @@ const RecentlyCreatedLinkButton = React.memo(() => {
     <ScrollLink to="recently-created-list" offset={-120}>
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm px-3"
+        className="btn btn-outline-secondary btn-sm d-flex align-items-center"
       >
-        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created me-2`}><RecentlyCreatedIcon /></i>
-        <span>Recently Created</span>
+        <span className="material-symbols-outlined me-1">edit</span>
+        <span className="text-nowrap">Recently Created</span>
       </button>
     </ScrollLink>
   );

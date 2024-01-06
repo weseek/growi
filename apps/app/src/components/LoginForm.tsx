@@ -237,9 +237,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label">
+              <span className="btn-label d-flex align-items-center">
                 {/* spinner.Tentative decision meiri-k 11.17 */}
-                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
+                <span className="material-symbols-outlined">{isLoading ? 'sync' : 'login'}</span>
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -512,9 +512,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label">
+              <span className="btn-label d-flex align-items-center">
                 {/* spinner.Tentative decision meiri-k 11.17 */}
-                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
+                <span className="material-symbols-outlined">{isLoading ? 'sync' : 'login'}</span>
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
@@ -528,7 +528,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <a
               href="#login"
               id="login"
-              className="link-switch"
+              className="link-switch d-flex align-items-center pull-right"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={switchForm}
             >
@@ -557,9 +557,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-end mb-2">
-                    <a href="/forgot-password" className="d-block link-switch">
-                      <span className="material-symbols-outlined">vpn_key</span>{t('forgot_password.forgot_password')}
+                  <div className="text-end">
+                    <a href="/forgot-password" className="d-block link-switch d-flex align-items-center pull-right mb-2">
+                      <span className="material-symbols-outlined">key</span>{t('forgot_password.forgot_password')}
                     </a>
                   </div>
                 )}
@@ -569,7 +569,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                     <a
                       href="#register"
                       id="register"
-                      className="link-switch"
+                      className="link-switch d-flex align-items-center pull-right mb-2"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={switchForm}
                     >

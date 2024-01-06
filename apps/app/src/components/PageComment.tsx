@@ -175,10 +175,10 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           outline
                           color="secondary"
                           size="sm"
-                          className="btn-comment-reply"
+                          className="btn-comment-reply d-flex align-items-center"
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
-                          <span className="material-symbols-outlined">replay</span> Reply
+                          <span className="material-symbols-outlined fs-5 me-1">reply</span> Reply
                         </Button>
                       </NotAvailableForReadOnlyUser>
                     </NotAvailableForGuest>
