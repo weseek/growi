@@ -33,7 +33,7 @@
       "outputMode": "new-only"
     },
     "dev": {
-      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt", "@growi/custom-icons#build"],
+      "dependsOn": ["^dev", "dev:migrate", "dev:styles-prebuilt"],
       "cache": false,
       "persistent": true
     },
