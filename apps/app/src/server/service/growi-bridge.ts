@@ -1,9 +1,11 @@
+import unzipStream from 'unzip-stream';
+
 import loggerFactory from '~/utils/logger';
 
 const fs = require('fs');
 const path = require('path');
+
 const streamToPromise = require('stream-to-promise');
-const unzipper = require('unzipper');
 
 const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
 
@@ -88,9 +90,9 @@ class GrowiBridgeService {
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.Parse());
+    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
 
-    unzipStream.on('entry', async(entry) => {
+    unzipStreamPipe.on('entry', async(entry) => {
       const fileName = entry.path;
       const size = entry.vars.uncompressedSize; // There is also compressedSize;
 
