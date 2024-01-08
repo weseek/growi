@@ -58,7 +58,7 @@ class GrowiBridgeService {
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
-    const Model = Object.values(this.crowi.models).find((m: Model<any>) => {
+    const Model = Object.values(this.crowi.models).find((m: Model<unknown>) => {
       return m.collection != null && m.collection.name === collectionName;
     });
 
