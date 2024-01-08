@@ -1,6 +1,7 @@
 /**
  * @typedef {import("@types/unzip-stream").Parse} Parse
  */
+
 import gc from 'expose-gc/function';
 
 import loggerFactory from '~/utils/logger';
