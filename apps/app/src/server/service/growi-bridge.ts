@@ -1,3 +1,6 @@
+import {
+  Model,
+} from 'mongoose';
 import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
@@ -14,6 +17,14 @@ const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-dis
  * common properties and methods between export service and import service are defined in this service
  */
 class GrowiBridgeService {
+
+  crowi: any;
+
+  encoding: string;
+
+  metaFileName: string;
+
+  baseDir: null;
 
   constructor(crowi) {
     this.crowi = crowi;
@@ -49,7 +60,7 @@ class GrowiBridgeService {
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName) {
-    const Model = Object.values(this.crowi.models).find((m) => {
+    const Model = Object.values(this.crowi.models).find((m: Model<any>) => {
       return m.collection != null && m.collection.name === collectionName;
     });
 
@@ -86,7 +97,7 @@ class GrowiBridgeService {
    */
   async parseZipFile(zipFile) {
     const fileStat = fs.statSync(zipFile);
-    const innerFileStats = [];
+    const innerFileStats: Array<{ fileName: string, collectionName: string, size: number }> = [];
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
