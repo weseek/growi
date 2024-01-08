@@ -1,3 +1,6 @@
+/**
+ * @typedef {import("@types/unzip-stream").Parse} Parse
+ */
 import gc from 'expose-gc/function';
 
 import loggerFactory from '~/utils/logger';
@@ -11,7 +14,7 @@ const parseISO = require('date-fns/parseISO');
 const isIsoDate = require('is-iso-date');
 const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
-const unzipper = require('unzipper');
+const unzipStream = require('unzip-stream');
 
 const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 const { createBatchStream } = require('../util/batch-stream');
@@ -386,10 +389,10 @@ class ImportService {
    */
   async unzip(zipFile) {
     const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.Parse());
+    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
     const files = [];
 
-    unzipStream.on('entry', (entry) => {
+    unzipStreamPipe.on('entry', (entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
