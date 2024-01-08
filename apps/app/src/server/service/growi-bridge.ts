@@ -1,6 +1,4 @@
-import {
-  Model,
-} from 'mongoose';
+import { Model } from 'mongoose';
 import unzipStream from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
