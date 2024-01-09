@@ -35,7 +35,7 @@ export const BookmarkFolderItemControl: React.FC<{
             onClick={onClickMoveToRoot}
             className="grw-page-control-dropdown-item"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1">bookmark</span>
             {t('bookmark_folder.move_to_root')}
           </DropdownItem>
         )}
@@ -43,7 +43,7 @@ export const BookmarkFolderItemControl: React.FC<{
           onClick={onClickRename}
           className="grw-page-control-dropdown-item"
         >
-          <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+          <span className="material-symbols-outlined me-1">redo</span>
           {t('Rename')}
         </DropdownItem>
 
@@ -53,7 +53,7 @@ export const BookmarkFolderItemControl: React.FC<{
           className="pt-2 grw-page-control-dropdown-item text-danger"
           onClick={onClickDelete}
         >
-          <span className="material-symbols-outlined grw-page-control-dropdown-icon">delete</span>
+          <span className="material-symbols-outlined me-1">delete</span>
           {t('Delete')}
         </DropdownItem>
       </DropdownMenu>
