@@ -68,6 +68,7 @@
     "@elastic/elasticsearch8": "npm:@elastic/elasticsearch@^8.7.0",
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
+    "@growi/custom-icons": "link:../../packages/custom-icons",
     "@growi/core": "link:../../packages/core",
     "@growi/pluginkit": "link:../../packages/pluginkit",
     "@growi/preset-templates": "link:../../packages/preset-templates",
