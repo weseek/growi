@@ -2,7 +2,7 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
-import type { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxInfinitePageRevisions } from '~/stores/page';
@@ -96,27 +96,19 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   }, [isLoadingMore, isReachingEnd, setSize, size]);
 
 
-  const onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
-    setSourceRevision(revision);
-  };
-  const onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
-    setTargetRevision(revision);
-  };
-
-
   const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
       isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
 
     const handleCompareLatestRevisionButton = () => {
-      onChangeSourceInvoked(revision);
-      onChangeTargetInvoked(latestRevision);
+      setSourceRevision(revision);
+      setTargetRevision(latestRevision);
     };
 
     const handleComparePreviousRevisionButton = () => {
-      onChangeSourceInvoked(previousRevision);
-      onChangeTargetInvoked(revision);
+      setSourceRevision(previousRevision);
+      setTargetRevision(revision);
     };
 
     return (
@@ -165,7 +157,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
                 name="compareSource"
                 value={revisionId}
                 checked={revisionId === sourceRevision?._id}
-                onChange={() => onChangeSourceInvoked(revision)}
+                onChange={() => setSourceRevision(revision)}
               />
               <label className="form-label form-check-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
@@ -181,7 +173,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
                 name="compareTarget"
                 value={revisionId}
                 checked={revisionId === targetRevision?._id}
-                onChange={() => onChangeTargetInvoked(revision)}
+                onChange={() => setTargetRevision(revision)}
               />
               <label className="form-label form-check-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>

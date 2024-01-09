@@ -10,13 +10,8 @@ import { IPageForItem } from '~/interfaces/page';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { ItemNode } from './ItemNode';
+import type { StateHandlersType } from './state-handlers-type';
 
-type StateHandlersType = {
-  isOpen: boolean,
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  isCreating: boolean,
-  setCreating: React.Dispatch<React.SetStateAction<boolean>>,
-};
 
 export type NewPageCreateButtonProps = {
   page: IPageForItem,
@@ -46,7 +41,7 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
     if (hasDescendants) {
       setIsOpen(true);
     }
-  }, [hasDescendants, setIsOpen]);
+  }, [hasDescendants, setIsOpen, setNewPageInputShown]);
 
   return (
     <>
