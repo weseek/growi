@@ -19,6 +19,7 @@ import { shouldRecoverPagePaths } from '~/utils/page-operation';
 import CountBadge from '../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
+import { StateHandlersType } from './state-handlers-type';
 
 
 export type SimpleItemProps = {
@@ -130,6 +131,12 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   );
 };
 
+type SimpleItemContentProps = SimpleItemProps & {
+  page: IPageForItem,
+  children: ItemNode[],
+  stateHandlers: StateHandlersType,
+};
+
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
@@ -212,7 +219,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
 
-  const SimpleItemContentProps = {
+  const SimpleItemContentProps: SimpleItemContentProps = {
     itemNode,
     page,
     onRenamed,
