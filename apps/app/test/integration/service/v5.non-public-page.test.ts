@@ -507,7 +507,12 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate2,
         path: '/np_duplicate2',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdA, type: GroupType.userGroup }, { item: externalGroupIdA, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser1._id,
         lastUpdateUser: npDummyUser1._id,
         revision: revisionIdDuplicate2,
@@ -517,7 +522,12 @@ describe('PageService page operations with non-public pages', () => {
         _id: pageIdDuplicate3,
         path: '/np_duplicate2/np_duplicate3',
         grant: Page.GRANT_USER_GROUP,
-        grantedGroups: [{ item: groupIdB, type: GroupType.userGroup }, { item: externalGroupIdB, type: GroupType.externalUserGroup }],
+        grantedGroups: [
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
         revision: revisionIdDuplicate3,
@@ -1083,10 +1093,10 @@ describe('PageService page operations with non-public pages', () => {
   });
   describe('Duplicate', () => {
 
-    const duplicate = async(page, newPagePath, user, isRecursively) => {
+    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups = false) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
-      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively);
+      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups);
 
       // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
       const argsForDuplicateRecursivelyMainOperation = mockedDuplicateRecursivelyMainOperation.mock.calls[0];

@@ -1012,7 +1012,7 @@ class PageService {
   /*
    * Duplicate
    */
-  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedGrantedGroups: boolean) {
+  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedGrantedGroups = false) {
     /*
      * Common Operation
      */
@@ -1146,7 +1146,7 @@ class PageService {
   }
 
   async duplicateRecursivelyMainOperation(page: PageDocument, newPagePath: string, user, pageOpId: ObjectIdLike): Promise<void> {
-    const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false);
+    const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false, false);
 
     // normalize parent of descendant pages
     const shouldNormalize = this.shouldNormalizeParent(page);
@@ -1294,6 +1294,8 @@ class PageService {
 
       let newPage;
       if (!page.isEmpty) {
+        // TODO: GROUP_GRANT で、なおかつユーザが所属するグループが含まれている時のみ有効にすべき。そうでないと、誰もアクセスできないページとなってしまう。
+        // これはかなり複雑な仕様になるが、本当に他の方法はないのか検討
         const grantedGroups = onlyDuplicateUserRelatedGrantedGroups
           ? this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroupIds)
           : page.grantedGroups;
@@ -1365,7 +1367,7 @@ class PageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups: boolean, shouldUseV4Process = true) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups = false, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups);
     }
@@ -1413,7 +1415,7 @@ class PageService {
     return nNonEmptyDuplicatedPages;
   }
 
-  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups: boolean) {
+  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups = false) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;
