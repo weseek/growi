@@ -20,7 +20,7 @@ export default defineConfig(({ mode }) => {
           // '/src/styles/hufflepuff.scss',
           // '/src/styles/island.scss',
           // '/src/styles/jade-green.scss',
-          // '/src/styles/kibela.scss',
+          '/src/styles/kibela.scss',
           '/src/styles/mono-blue.scss',
           // '/src/styles/nature.scss',
           // '/src/styles/spring.scss',

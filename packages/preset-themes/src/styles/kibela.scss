@@ -1,134 +1,169 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+:root[data-bs-theme='light'] {
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-@use './variables' as var;
-@use './theme/mixins/page-editor-mode-manager';
-@use './theme/hsl-functions' as hsl;
+  $primary: #3780C0;
+  $highlight: #909090;
 
-:root[data-bs-theme='light']{
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-  --primary-hs: 212,80%;
-  --primary-l: 35%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-  --secondary-hs: 208,7%;
-  --secondary-l: 46%;
-  --subthemecolor: hsl(var(--subthemecolor-hs),var(--subthemecolor-l));
-  --subthemecolor-hs: 224,94%;
-  --subthemecolor-l: 66%;
-  --lightthemecolor: hsl(var(--lightthemecolor-hs),var(--lightthemecolor-l));
-  --lightthemecolor-hs: 220,80%;
-  --lightthemecolor-l: 84%;
+  @include generate-color-palette('primary', $primary, black, #F5F5F5, 20%, 25%);
+  @include generate-color-palette('highlight', $highlight, black, white, 20%, 25%);
 
-  // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-  --bgcolor-global-hs: 210,10%;
-  --bgcolor-global-l: 96%;
-  --bgcolor-inline-code: #{hsl.lighten(var(--subthemecolor), 70%)};
-  --bgcolor-card: var(--lightthemecolor);
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary),20%)};
-  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+  $body-color:                $gray-700;
+  $body-bg:                   white;
 
-  // Font colors
-  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
-  --color-global-hs: 217,23%;
-  --color-global-l: 31%;
-  --color-reversal: #{bs.$gray-100};
-  --color-header: var(--primary);
-  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
-  --color-link-hs: 224,56%;
-  --color-link-l: 55%;
-  --color-link-hover: #{hsl.lighten(var(--color-link),12%)};
-  --color-link-wiki: #{hsl.lighten(var(--primary), 20%)};
-  --color-link-wiki-hover: #{hsl.lighten(var(--primary), 40%)};
-  --color-link-nabvar: var(--color-global);
-  --color-inline-code: var(--subthemecolor);
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         $gray-200;
 
-  // List Group colors
-  --color-list: var(--color-global); // optional
-  --bgcolor-list: var(--bgcolor-global); // optional
-  --color-list-hover: var(--color-reversal);
-  --color-list-active: var(--color-reversal);
-  --bgcolor-list-active: var(--primary);
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          $gray-100;
 
-  // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-hs: 0,0%;
-  --bgcolor-navbar-l: 100%;
-  --bgcolor-search-top-dropdown: var(--primary);
-  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
-  --bgcolor-search-top-dropdown-l: var(--primary-l);
+  $border-color:              $gray-300;
 
-  // Logo colors
-  --bgcolor-logo: transparent;
-  --fillcolor-logo-mark: #{hsl.lighten(var(--primary), 20%)};
+  $link-color:                $gray-800;
 
-  // Sidebar
-  --bgcolor-sidebar: var(--primary);
-  --bgcolor-sidebar-hs: var(--primary-hs);
-  --bgcolor-sidebar-l: var(--primary-l);
-  --bgcolor-sidebar-context: #{hsl.lighten(var(--primary), 10%)};
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
 
-  // Sidebar resize button
-  --color-resize-button: var(--color-reversal);
-  --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
-  --bgcolor-resize-button-hs: 199,74%;
-  --bgcolor-resize-button-l: 49%;
-  --color-resize-button-hover: var(--color-reversal);
-  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+  @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  // Sidebar contents
-  --color-sidebar-context: var(--color-global);
-  --color-sidebar-context-hs: var(--color-global-hs);
-  --color-sidebar-context-l: var(--color-global-l);
-  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
-  --bgcolor-sidebar-context-hs: 225,57%;
-  --bgcolor-sidebar-context-l: 97%;
+  @import '@growi/core/scss/bootstrap/theming/apply-light';
 
-  // Sidebar list group
-  --bgcolor-sidebar-list-group: #fafbff; // optional
-
-  // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
-
-  // Icon colors
-  --color-editor-icons: var(--color-global);
-
-  // border colors
-  --border-color-theme: var(--lightthemecolor);
-  --thickborder: #5584e1;
-  --bordercolor-inline-code: var(--lightthemecolor);
-
-  // dropdown colors
-  --bgcolor-dropdown-link-active: #{var.$growi-blue};
-
-  // admin theme box
-  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
-
-  .main {
-    .container,
-    .container-sm,
-    .container-md,
-    .container-lg,
-    .container-fluid {
-      padding-top: 30px;
-      padding-bottom: 30px;
-      background-color: white;
-      border-radius: 0.35em;
-    }
-  }
-
-  .user-page-footer {
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    background-color: white;
-    border-radius: 0.35em;
-  }
-
-  //Button
-  .btn-group.grw-page-editor-mode-manager {
-    .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager (#{hsl.darken(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 45%)}, #{hsl.lighten(var(--primary), 50%)});
-    }
-  }
+  --grw-wiki-link-color-rgb: var(--grw-primary-400-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-500-rgb);
 }
+
+// @use '@growi/core/scss/bootstrap/init' as bs;
+
+// @use './variables' as var;
+// @use './theme/mixins/page-editor-mode-manager';
+// @use './theme/hsl-functions' as hsl;
+
+// :root[data-bs-theme='light']{
+//   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
+//   --primary-hs: 212,80%;
+//   --primary-l: 35%;
+//   --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
+//   --secondary-hs: 208,7%;
+//   --secondary-l: 46%;
+//   --subthemecolor: hsl(var(--subthemecolor-hs),var(--subthemecolor-l));
+//   --subthemecolor-hs: 224,94%;
+//   --subthemecolor-l: 66%;
+//   --lightthemecolor: hsl(var(--lightthemecolor-hs),var(--lightthemecolor-l));
+//   --lightthemecolor-hs: 220,80%;
+//   --lightthemecolor-l: 84%;
+
+//   // Background colors
+//   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
+//   --bgcolor-global-hs: 210,10%;
+//   --bgcolor-global-l: 96%;
+//   --bgcolor-inline-code: #{hsl.lighten(var(--subthemecolor), 70%)};
+//   --bgcolor-card: var(--lightthemecolor);
+//   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),20%)};
+//   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+
+//   // Font colors
+//   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
+//   --color-global-hs: 217,23%;
+//   --color-global-l: 31%;
+//   --color-reversal: #{bs.$gray-100};
+//   --color-header: var(--primary);
+//   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
+//   --color-link-hs: 224,56%;
+//   --color-link-l: 55%;
+//   --color-link-hover: #{hsl.lighten(var(--color-link),12%)};
+//   --color-link-wiki: #{hsl.lighten(var(--primary), 20%)};
+//   --color-link-wiki-hover: #{hsl.lighten(var(--primary), 40%)};
+//   --color-link-nabvar: var(--color-global);
+//   --color-inline-code: var(--subthemecolor);
+
+//   // List Group colors
+//   --color-list: var(--color-global); // optional
+//   --bgcolor-list: var(--bgcolor-global); // optional
+//   --color-list-hover: var(--color-reversal);
+//   --color-list-active: var(--color-reversal);
+//   --bgcolor-list-active: var(--primary);
+
+//   // Navbar
+//   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
+//   --bgcolor-navbar-hs: 0,0%;
+//   --bgcolor-navbar-l: 100%;
+//   --bgcolor-search-top-dropdown: var(--primary);
+//   --bgcolor-search-top-dropdown-hs: var(--primary-hs);
+//   --bgcolor-search-top-dropdown-l: var(--primary-l);
+
+//   // Logo colors
+//   --bgcolor-logo: transparent;
+//   --fillcolor-logo-mark: #{hsl.lighten(var(--primary), 20%)};
+
+//   // Sidebar
+//   --bgcolor-sidebar: var(--primary);
+//   --bgcolor-sidebar-hs: var(--primary-hs);
+//   --bgcolor-sidebar-l: var(--primary-l);
+//   --bgcolor-sidebar-context: #{hsl.lighten(var(--primary), 10%)};
+
+//   // Sidebar resize button
+//   --color-resize-button: var(--color-reversal);
+//   --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
+//   --bgcolor-resize-button-hs: 199,74%;
+//   --bgcolor-resize-button-l: 49%;
+//   --color-resize-button-hover: var(--color-reversal);
+//   --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+
+//   // Sidebar contents
+//   --color-sidebar-context: var(--color-global);
+//   --color-sidebar-context-hs: var(--color-global-hs);
+//   --color-sidebar-context-l: var(--color-global-l);
+//   --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
+//   --bgcolor-sidebar-context-hs: 225,57%;
+//   --bgcolor-sidebar-context-l: 97%;
+
+//   // Sidebar list group
+//   --bgcolor-sidebar-list-group: #fafbff; // optional
+
+//   // Subnavigation
+//   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
+//   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
+//   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) - 3%);
+
+//   // Icon colors
+//   --color-editor-icons: var(--color-global);
+
+//   // border colors
+//   --border-color-theme: var(--lightthemecolor);
+//   --thickborder: #5584e1;
+//   --bordercolor-inline-code: var(--lightthemecolor);
+
+//   // dropdown colors
+//   --bgcolor-dropdown-link-active: #{var.$growi-blue};
+
+//   // admin theme box
+//   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
+
+//   .main {
+//     .container,
+//     .container-sm,
+//     .container-md,
+//     .container-lg,
+//     .container-fluid {
+//       padding-top: 30px;
+//       padding-bottom: 30px;
+//       background-color: white;
+//       border-radius: 0.35em;
+//     }
+//   }
+
+//   .user-page-footer {
+//     margin-top: 3rem;
+//     margin-bottom: 3rem;
+//     background-color: white;
+//     border-radius: 0.35em;
+//   }
+
+//   //Button
+//   .btn-group.grw-page-editor-mode-manager {
+//     .btn.btn-outline-primary {
+//       @include page-editor-mode-manager.btn-page-editor-mode-manager (#{hsl.darken(var(--primary), 15%)}, #{hsl.lighten(var(--primary), 45%)}, #{hsl.lighten(var(--primary), 50%)});
+//     }
+//   }
+// }
