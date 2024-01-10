@@ -33,8 +33,8 @@ class UserRemoveButton extends React.Component {
     const { t } = this.props;
 
     return (
-      <button className="dropdown-item d-flex align-items-center" type="button" onClick={() => { this.onClickDeleteBtn() }}>
-        <span className="material-symbols-outlined text-danger me-1">delete_forever</span> {t('Delete')}
+      <button className="dropdown-item" type="button" onClick={() => { this.onClickDeleteBtn() }}>
+        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
       </button>
     );
   }

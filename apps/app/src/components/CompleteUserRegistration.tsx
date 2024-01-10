@@ -14,9 +14,7 @@ export const CompleteUserRegistration: FC = () => {
           </p>
           {/* If the transition source is "/login", use <a /> tag since the transition will not occur if next/link is used. */}
           <a href="/login">
-            <div className="d-flex align-items-center justify-content-center">
-              <span className="material-symbols-outlined me-1">login</span>{t('Sign in is here')}
-            </div>
+            <span className="material-symbols-outlined">login</span>{t('Sign in is here')}
           </a>
         </div>
       </div>

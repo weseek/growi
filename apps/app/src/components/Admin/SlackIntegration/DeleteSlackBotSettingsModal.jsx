@@ -23,16 +23,16 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
           {props.isResetAll && (
-            <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">delete_forever</span>
+            <>
+              <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset_all_settings')}
-            </div>
+            </>
           )}
           {!props.isResetAll && (
-            <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">delete</span>
+            <>
+              <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete_slackbot_settings')}
-            </div>
+            </>
           )}
         </span>
       </ModalHeader>
@@ -54,16 +54,16 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteSlackCredentialsHandler}>
           {props.isResetAll && (
-            <div className="d-flex align-items-center">
+            <>
               <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset')}
-            </div>
+            </>
           )}
           {!props.isResetAll && (
-            <div className="d-flex align-items-center">
+            <>
               <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete')}
-            </div>
+            </>
           )}
         </Button>
       </ModalFooter>

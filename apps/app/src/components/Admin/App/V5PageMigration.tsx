@@ -137,8 +137,8 @@ const V5PageMigration: FC<Props> = (props: Props) => {
         {t('admin:v5_page_migration.migration_desc')}
         <br />
         <br />
-        <span className="text-danger d-flex">
-          <span className="material-symbols-outlined me-1">error</span>
+        <span className="text-danger">
+          <span className="material-symbols-outlined">error</span>
           {t('admin:v5_page_migration.migration_note')}
         </span>
       </p>

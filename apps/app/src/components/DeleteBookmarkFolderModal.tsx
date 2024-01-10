@@ -42,10 +42,8 @@ const DeleteBookmarkFolderModal: FC = () => {
   return (
     <Modal size="md" isOpen={isOpened} toggle={closeBookmarkFolderDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeBookmarkFolderDeleteModal} className="bg-danger text-light">
-        <div className="d-flex align-items-center">
-          <span className="material-symbols-outlined me-1">delete</span>
-          {t('bookmark_folder.delete_modal.modal_header_label')}
-        </div>
+        <span className="material-symbols-outlined">delete</span>
+        {t('bookmark_folder.delete_modal.modal_header_label')}
       </ModalHeader>
       <ModalBody>
         <div className="pb-1">
@@ -57,7 +55,7 @@ const DeleteBookmarkFolderModal: FC = () => {
       <ModalFooter>
         <button
           type="button"
-          className="btn btn-danger d-flex align-items-center"
+          className="btn btn-danger"
           onClick={onClickDeleteButton}
         >
           <span className="material-symbols-outlined" aria-hidden="true">delete</span>

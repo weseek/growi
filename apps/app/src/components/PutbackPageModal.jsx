@@ -59,9 +59,9 @@ const PutBackPageModal = () => {
       return <></>;
     }
     return (
-      <div className="d-flex align-items-center">
-        <span className="material-symbols-outlined me-1" aria-hidden="true">undo</span> { t('modal_putback.label.Put Back Page') }
-      </div>
+      <>
+        <span className="material-symbols-outlined" aria-hidden="true">undo</span> { t('modal_putback.label.Put Back Page') }
+      </>
     );
   };
 
@@ -101,7 +101,7 @@ const PutBackPageModal = () => {
     return (
       <>
         <ApiErrorMessageList errs={errs} targetPath={targetPath} />
-        <button type="button" className="btn btn-info d-flex align-items-center" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
+        <button type="button" className="btn btn-info" onClick={putbackPageButtonHandler} data-testid="put-back-execution-button">
           <span className="material-symbols-outlined" aria-hidden="true">undo</span> { t('Put Back') }
         </button>
       </>

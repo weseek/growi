@@ -182,14 +182,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
                 key={key}
                 className={`p-0 ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
-                <NavLink
-                  type="button"
-                  key={key}
-                  innerRef={elm => registerNavLink(key, elm)}
-                  disabled={!isLinkEnabled}
-                  onClick={() => navLinkClickHandler(key)}
-                  className="d-flex align-items-center"
-                >
+                <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
                   { Icon != null && <Icon /> } {i18n}
                 </NavLink>
               </NavItem>

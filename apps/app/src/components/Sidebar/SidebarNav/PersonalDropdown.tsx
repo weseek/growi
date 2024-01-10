@@ -68,34 +68,34 @@ export const PersonalDropdown = (): JSX.Element => {
           <li>
             <Link
               href={pagePathUtils.userHomepagePath(currentUser)}
-              className="dropdown-item d-flex align-items-center"
+              className="dropdown-item"
               data-testid="grw-personal-dropdown-menu-user-home"
             >
-              <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+              <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
             </Link>
           </li>
           <li>
             <Link
               href="/me"
-              className="dropdown-item d-flex align-items-center"
+              className="dropdown-item"
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
-              <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+              <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
             </Link>
           </li>
           <li>
             <button
               data-testid="grw-proactive-questionnaire-modal-toggle-btn"
               type="button"
-              className="dropdown-item d-flex align-items-center"
+              className="dropdown-item"
               onClick={() => setQuestionnaireModalOpen(true)}
             >
-              <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
+              <span className="material-symbols-outlined">edit</span>{t('personal_dropdown.feedback')}
             </button>
           </li>
           <li>
-            <button type="button" className="dropdown-item d-flex align-items-center" onClick={logoutHandler}>
-              <span className="material-symbols-outlined me-1">power_settings_new</span>{t('Sign out')}
+            <button type="button" className="dropdown-item" onClick={logoutHandler}>
+              <i className="icon-fw icon-power"></i>{t('Sign out')}
             </button>
           </li>
         </ul>

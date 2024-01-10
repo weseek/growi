@@ -24,10 +24,8 @@ export const AuditLogSettings: FC = () => {
         {t('admin:audit_log_management.activity_expiration_date_explain')}
       </p>
       <p className="alert alert-warning col-6">
-        <div className="d-flex">
-          <span className="material-symbols-outlined me-1">error</span>
-          <b>FIXED</b>
-        </div>
+        <span className="material-symbols-outlined">error</span>
+        <b>FIXED</b><br />
         <b
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{

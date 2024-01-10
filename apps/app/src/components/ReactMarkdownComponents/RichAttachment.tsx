@@ -60,7 +60,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
             <img src="/images/icons/editor/attachment.svg" className="attachment-icon" alt="attachment icon" />
           </div>
           <div className="ps-0">
-            <div className="d-flex align-items-center">
+            <div className="d-inline-block">
               {/* Since we need to include the "referer" to view the attachment on the shared page */}
               {/* eslint-disable-next-line react/jsx-no-target-blank */}
               <a target="_blank" rel="noopener" href={filePathProxied}>

@@ -54,10 +54,8 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
           prefetch={false}
           className="btn btn-outline-secondary"
         >
-          <div className="d-flex">
-            <span className="material-symbols-outlined me-1" aria-hidden="true">arrow_back</span>
-            {t('admin:user_management.back_to_user_management')}
-          </div>
+          <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
+          {t('admin:user_management.back_to_user_management')}
         </Link>
       </p>
       <h2>{t('admin:user_management.external_account_list')}</h2>

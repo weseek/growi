@@ -184,10 +184,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   return (
     <Modal className="modal-md" isOpen={props.isShow} toggle={toggleHandler}>
       <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
-        <div className="d-flex align-items-center">
-          <span className="material-symbols-outlined me-1">delete_forever</span>
-          {t('admin:user_group_management.delete_modal.header')}
-        </div>
+        <span className="material-symbols-outlined">delete_forever</span> {t('admin:user_group_management.delete_modal.header')}
       </ModalHeader>
       <ModalBody>
         <div>
@@ -203,8 +200,8 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>
-          <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap d-flex align-items-center" disabled={!validateForm()}>
-            <span className="material-symbols-outlined">delete_forever</span>{t('Delete')}
+          <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!validateForm()}>
+            <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </form>
       </ModalFooter>

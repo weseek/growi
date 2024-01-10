@@ -84,9 +84,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
   return (
     <Dropdown className="notification-wrapper grw-notification-dropdown" isOpen={isOpen} toggle={toggleDropdownHandler} direction="end">
       <DropdownToggle className="px-3" color="primary" innerRef={buttonRef}>
-        <div className="d-flex align-items-center justify-content-center">
-          <span className="material-symbols-outlined">notifications</span> {badge}
-        </div>
+        <span className="material-symbols-outlined">notifications</span> {badge}
       </DropdownToggle>
       <DropdownMenu end>
         { inAppNotificationData != null && inAppNotificationData.docs.length === 0

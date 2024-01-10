@@ -147,7 +147,7 @@ export default class ImportCollectionItem extends React.Component {
     return (
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm p-1 ms-2 d-flex"
+        className="btn btn-outline-secondary btn-sm p-1 ms-2"
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >

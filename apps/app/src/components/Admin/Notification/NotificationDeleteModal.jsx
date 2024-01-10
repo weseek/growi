@@ -13,9 +13,7 @@ class NotificationDeleteModal extends React.PureComponent {
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
         <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-danger text-light">
-          <div className="d-flex align-items-center">
-            <span className="material-symbols-outlined me-1">delete_forever</span>Delete Global Notification Setting
-          </div>
+          <span className="material-symbols-outlined">delete_forever</span>Delete Global Notification Setting
         </ModalHeader>
         <ModalBody>
           <p>
@@ -26,8 +24,8 @@ class NotificationDeleteModal extends React.PureComponent {
           </p>
         </ModalBody>
         <ModalFooter>
-          <button type="button" className="btn btn-sm btn-danger d-flex align-items-center" onClick={this.props.onClickSubmit}>
-            <span className="material-symbols-outlined">delete_forever</span>{t('Delete')}
+          <button type="button" className="btn btn-sm btn-danger" onClick={this.props.onClickSubmit}>
+            <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </ModalFooter>
       </Modal>

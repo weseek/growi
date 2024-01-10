@@ -194,9 +194,7 @@ const PageCreateModal = () => {
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
                 onClick={createTodayPage}
               >
-                <div className="d-flex align-items-center">
-                  <span className="material-symbols-outlined me-1">description</span>{t('Create')}
-                </div>
+                <span className="material-symbols-outlined">description</span>{t('Create')}
               </button>
             </div>
 
@@ -250,9 +248,7 @@ const PageCreateModal = () => {
                 onClick={createInputPage}
                 disabled={isMatchedWithUserHomepagePath}
               >
-                <div className="d-flex align-items-center">
-                  <span className="material-symbols-outlined me-1">description</span>{t('Create')}
-                </div>
+                <span className="material-symbols-outlined">description</span>{t('Create')}
               </button>
             </div>
 
@@ -307,9 +303,7 @@ const PageCreateModal = () => {
                 onClick={createTemplatePage}
                 disabled={template == null}
               >
-                <div className="d-flex align-items-center">
-                  <span className="material-symbols-outlined me-1">description</span>{t('Edit')}
-                </div>
+                <span className="material-symbols-outlined">description</span>{t('Edit')}
               </button>
             </div>
 

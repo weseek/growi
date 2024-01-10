@@ -209,35 +209,17 @@ export const UserGroupTable: FC<Props> = ({
                           <i className="icon-settings"></i>
                         </button>
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
-                          <button
-                            className="dropdown-item d-flex align-items-center"
-                            type="button"
-                            role="button"
-                            onClick={onClickEdit}
-                            data-user-group-id={group._id}
-                          >
-                            <span className="material-symbols-outlined me-1">edit</span>{t('Edit')}
+                          <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
+                            <i className="icon-fw icon-note"></i> {t('Edit')}
                           </button>
                           {onRemove != null
                           && (
-                            <button
-                              className="dropdown-item d-flex align-items-center"
-                              type="button"
-                              role="button"
-                              onClick={onClickRemove}
-                              data-user-group-id={group._id}
-                            >
-                              <span className="material-symbols-outlined me-1">link_off</span>{t('admin:user_group_management.remove_child_group')}
+                            <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
+                              <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
                             </button>
                           )}
-                          <button
-                            className="dropdown-item d-flex align-items-center"
-                            type="button"
-                            role="button"
-                            onClick={onClickDelete}
-                            data-user-group-id={group._id}
-                          >
-                            <span className="material-symbols-outlined text-danger me-1">delete_forever</span> {t('Delete')}
+                          <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>
+                            <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                           </button>
                         </div>
                       </div>

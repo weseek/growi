@@ -31,8 +31,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       return <></>;
     }
     return (
-      <span className="d-flex align-items-center">
-        <span className="material-symbols-outlined me-1">delete_forever</span>
+      <span>
+        <span className="material-symbols-outlined">delete_forever</span>
         Delete comment?
       </span>
     );
@@ -72,7 +72,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       <>
         <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancelToDelete}>Cancel</Button>
-        <Button color="danger" onClick={confirmToDelete} className="d-flex align-items-center">
+        <Button color="danger" onClick={confirmToDelete}>
           <span className="material-symbols-outlined">delete_forever</span>
           Delete
         </Button>

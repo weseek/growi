@@ -81,10 +81,7 @@ const PasswordResetExecutionForm: FC = () => {
         <input name="reset-password-btn" className="btn btn-lg btn-primary" value={t('forgot_password.reset_password')} type="submit" />
       </div>
       <Link href="/login" prefetch={false}>
-        <div className="d-flex align-items-center justify-content-center mt-3">
-          <span className="material-symbols-outlined">login</span>
-          {t('forgot_password.sign_in_instead')}
-        </div>
+        <span className="material-symbols-outlined">login</span>{t('forgot_password.sign_in_instead')}
       </Link>
     </form>
   );

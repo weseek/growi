@@ -32,10 +32,8 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
   return (
     <Modal isOpen={props.isModalOpen} toggle={onCancel}>
       <ModalHeader tag="h4" toggle={onCancel} className="bg-danger">
-        <div className="d-flex align-items-center">
-          <span className="material-symbols-outlined me-2">help</span>
-          {t('Warning')}
-        </div>
+        <span className="material-symbols-outlined">help</span>
+        {t('Warning')}
       </ModalHeader>
       <ModalBody>
         {props.warningMessage}
@@ -44,9 +42,9 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
             <>
               <br />
               <br />
-              <span className="text-warning d-flex">
+              <span className="text-warning">
                 <>
-                  <span className="material-symbols-outlined me-1">error</span>
+                  <span className="material-symbols-outlined">error</span>
                   {props.supplymentaryMessage}
                 </>
               </span>

@@ -43,8 +43,8 @@ export const PluginDeleteModal: React.FC = () => {
   return (
     <Modal isOpen={isOpen} toggle={toggleHandler}>
       <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light" name={name}>
-        <span className="d-flex align-items-center">
-          <span className="material-symbols-outlined me-1">delete_forever</span>
+        <span>
+          <span className="material-symbols-outlined">delete_forever</span>
           {t('plugins.confirm')}
         </span>
       </ModalHeader>
@@ -54,7 +54,7 @@ export const PluginDeleteModal: React.FC = () => {
         </div>
       </ModalBody>
       <ModalFooter>
-        <Button color="danger" className="d-flex align-items-center" onClick={onClickDeleteButtonHandler}>
+        <Button color="danger" onClick={onClickDeleteButtonHandler}>
           <span className="material-symbols-outlined">delete_forever</span>
           {t('Delete')}
         </Button>

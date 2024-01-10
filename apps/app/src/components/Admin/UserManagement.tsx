@@ -128,10 +128,8 @@ const UserManagement = (props: UserManagementProps) => {
           className="btn btn-outline-secondary ms-2"
           role="button"
         >
-          <div className="d-flex">
-            <span className="material-symbols-outlined me-1" aria-hidden="true">person_add</span>
-            {t('admin:user_management.external_account')}
-          </div>
+          <span className="material-symbols-outlined" aria-hidden="true">person_add</span>
+          {t('admin:user_management.external_account')}
         </Link>
       </p>
 
@@ -182,10 +180,10 @@ const UserManagement = (props: UserManagementProps) => {
           <div className="col-md-2 my-2">
             <button
               type="button"
-              className="btn btn-outline-secondary btn-sm d-flex align-items-center"
+              className="btn btn-outline-secondary btn-sm"
               onClick={resetButtonClickHandler}
             >
-              <span className="material-symbols-outlined fs-5">refresh</span>
+              <span className="material-symbols-outlined">refresh</span>
               {t('commons:Reset')}
             </button>
           </div>

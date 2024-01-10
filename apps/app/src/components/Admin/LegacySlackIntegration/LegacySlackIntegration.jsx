@@ -40,17 +40,16 @@ const LegacySlackIntegration = (props) => {
 
   return (
     <div data-testid="admin-slack-integration-legacy">
-      { true && (
-        <div className="alert alert-danger d-flex">
-          {/* <span className="material-symbols-outlined">remove</span> */}
-          <span className="material-symbols-outlined me-1">do_not_disturb_on</span>
+      { isDisabled && (
+        <div className="alert alert-danger">
+          <span className="material-symbols-outlined">remove</span>
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_disabled') }}></span>
         </div>
       ) }
 
-      <div className="alert alert-warning d-flex">
-        <span className="material-symbols-outlined me-1">info</span>
+      <div className="alert alert-warning">
+        <span className="material-symbols-outlined">info</span>
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('admin:slack_integration_legacy.alert_deplicated') }}></span>
       </div>

@@ -98,44 +98,32 @@ class GlobalNotificationList extends React.Component {
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
                     <li className="list-inline-item badge rounded-pill bg-success">
-                      <div className="d-flex align-items-center">
-                        <span className=" material-symbols-outlined me-1">description</span>CREATE
-                      </div>
+                      <span className=" material-symbols-outlined">description</span> CREATE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
                     <li className="list-inline-item badge rounded-pill bg-warning text-dark">
-                      <div className="d-flex align-items-center">
-                        <span className="material-symbols-outlined me-1">edit</span>EDIT
-                      </div>
+                      <span className="material-symbols-outlined">edit</span> EDIT
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
-                    <li className="list-inline-item badge rounded-pill bg-secondary">
-                      <div className="d-flex align-items-center">
-                        <span className="material-symbols-outlined me-1">redo</span>MOVE
-                      </div>
+                    <li className="list-inline-item badge rounded-pill bg-pink">
+                      <span className="material-symbols-outlined">redo</span> MOVE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
                     <li className="list-inline-item badge rounded-pill bg-danger">
-                      <div className="d-flex align-items-center">
-                        <span className="material-symbols-outlined me-1">delete_forever</span>DELETE
-                      </div>
+                      <span className="material-symbols-outlined">delete_forever</span>DELETE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
                     <li className="list-inline-item badge rounded-pill bg-info">
-                      <div className="d-flex align-items-center">
-                        <span className="material-symbols-outlined me-1">favorite</span>LIKE
-                      </div>
+                      <span className="material-symbols-outlined">favorite</span> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
                     <li className="list-inline-item badge rounded-pill bg-primary">
-                      <div className="d-flex align-items-center">
-                        <span className="material-symbols-outlined me-1">bubble_chart</span>POST
-                      </div>
+                      <span className="material-symbols-outlined">bubble_chart</span> POST
                     </li>
                   )}
                 </ul>
@@ -148,26 +136,21 @@ class GlobalNotificationList extends React.Component {
               <td className="td-abs-center">
                 <div className="dropdown">
                   <button
-                    className="btn btn-outline-secondary dropdown-toggle d-flex align-items-center"
+                    className="btn btn-outline-secondary dropdown-toggle"
                     type="button"
                     id="dropdownMenuButton"
                     data-bs-toggle="dropdown"
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    <span className="material-symbols-outlined">settings</span>
-                    <span className="caret"></span>
+                    <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
-                      <div className="d-flex">
-                        <span className="material-symbols-outlined me-1">note</span>{t('Edit')}
-                      </div>
+                      <span className="material-symbols-outlined">note</span> {t('Edit')}
                     </a>
                     <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
-                      <div className="d-flex">
-                        <span className="material-symbols-outlined text-danger me-1">delete_forever</span> {t('Delete')}
-                      </div>
+                      <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                     </button>
                   </div>
                 </div>

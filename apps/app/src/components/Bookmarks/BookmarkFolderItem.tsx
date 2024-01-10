@@ -265,7 +265,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
                 }
               >
                 <div onClick={e => e.stopPropagation()}>
-                  <DropdownToggle color="transparent" className="border-0 rounded p-0 grw-visible-on-hover me-1">
+                  <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
                     <span className="material-symbols-outlined">more_vert</span>
                   </DropdownToggle>
                 </div>

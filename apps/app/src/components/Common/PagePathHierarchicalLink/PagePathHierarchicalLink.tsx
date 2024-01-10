@@ -51,7 +51,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/" prefetch={false}>
-              <span className="material-symbols-outlined">home</span>
+              <i className="icon-home"></i>
               <span className={`separator ${styles.separator}`}>/</span>
             </Link>
           </span>
@@ -78,12 +78,11 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
           isInnerElem
         />
       ) }
-
       { isSeparatorRequired && (
         <span className={`separator ${styles.separator}`}>/</span>
       ) }
 
-      <Link href={href} prefetch={false} legacyBehavior className="">
+      <Link href={href} prefetch={false} legacyBehavior>
         {
           shouldDangerouslySetInnerHTML
             // eslint-disable-next-line react/no-danger
