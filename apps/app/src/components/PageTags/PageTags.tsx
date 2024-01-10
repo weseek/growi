@@ -34,7 +34,7 @@ export const PageTags:FC<Props> = (props: Props) => {
         <button
           type="button"
           className={`btn btn-sm btn-outline-secondary rounded-pill mb-2 d-flex d-lg-none ${styles['grw-tag-icon-button']}`}
-          onClick={() => {}} // TODO: add a handler
+          onClick={onClickEditTagsButton}
         >
           <span className="material-symbols-outlined">local_offer</span>
         </button>
