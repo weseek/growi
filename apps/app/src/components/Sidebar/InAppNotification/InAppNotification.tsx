@@ -7,7 +7,7 @@ import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
 
 import { InAppNotificationForms } from './InAppNotificationSubstance';
 
-const InAppNotificationSubstance = dynamic(() => import('./InAppNotificationSubstance').then(mod => mod.InAppNotificationSubstance), { ssr: false });
+const InAppNotificationContent = dynamic(() => import('./InAppNotificationSubstance').then(mod => mod.InAppNotificationContent), { ssr: false });
 
 export const InAppNotification = (): JSX.Element => {
   const { t } = useTranslation();
@@ -23,11 +23,11 @@ export const InAppNotification = (): JSX.Element => {
       </div>
 
       <InAppNotificationForms
-        onChangeUnreadNotificationVisible={() => { setUnreadNotificationsVisible(!isUnreadNotificationsVisible) }}
+        onChangeUnreadNotificationsVisible={() => { setUnreadNotificationsVisible(!isUnreadNotificationsVisible) }}
       />
 
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <InAppNotificationSubstance isUnreadNotificationsVisible={isUnreadNotificationsVisible} />
+        <InAppNotificationContent isUnreadNotificationsVisible={isUnreadNotificationsVisible} />
       </Suspense>
     </div>
   );

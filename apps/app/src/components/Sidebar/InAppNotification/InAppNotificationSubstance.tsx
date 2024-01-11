@@ -6,10 +6,10 @@ import { useSWRxInAppNotifications } from '~/stores/in-app-notification';
 
 
 type InAppNotificationFormsProps = {
-  onChangeUnreadNotificationVisible: () => void
+  onChangeUnreadNotificationsVisible: () => void
 }
 export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.Element => {
-  const { onChangeUnreadNotificationVisible } = props;
+  const { onChangeUnreadNotificationsVisible } = props;
 
   return (
     <div className="px-4 mt-2 mb-2">
@@ -20,7 +20,7 @@ export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.
           className="form-check-input"
           type="checkbox"
           role="switch"
-          onChange={onChangeUnreadNotificationVisible}
+          onChange={onChangeUnreadNotificationsVisible}
         />
       </div>
     </div>
@@ -28,10 +28,10 @@ export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.
 };
 
 
-type InAppNotificationSubstanceProps = {
+type InAppNotificationContentProps = {
   isUnreadNotificationsVisible: boolean
 }
-export const InAppNotificationSubstance = (props: InAppNotificationSubstanceProps): JSX.Element => {
+export const InAppNotificationContent = (props: InAppNotificationContentProps): JSX.Element => {
   const { isUnreadNotificationsVisible } = props;
 
   // TODO: Infinite scroll implemented (https://redmine.weseek.co.jp/issues/138057)
