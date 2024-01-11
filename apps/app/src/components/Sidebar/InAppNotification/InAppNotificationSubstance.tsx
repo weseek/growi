@@ -12,7 +12,7 @@ export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.
   const { onChangeUnreadNotificationsVisible } = props;
 
   return (
-    <div className="px-4 mt-2 mb-2">
+    <div className="px-4 my-2">
       <div className="form-check form-switch">
         <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Only unread</label>
         <input

@@ -15,7 +15,7 @@ export const InAppNotification = (): JSX.Element => {
   const [isUnreadNotificationsVisible, setUnreadNotificationsVisible] = useState(false);
 
   return (
-    <div className="px-3 ">
+    <div className="px-3">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">
           {t('In-App Notification')}
