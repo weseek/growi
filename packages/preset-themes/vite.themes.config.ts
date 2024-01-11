@@ -22,7 +22,7 @@ export default defineConfig(({ mode }) => {
           '/src/styles/jade-green.scss',
           // '/src/styles/kibela.scss',
           '/src/styles/mono-blue.scss',
-          // '/src/styles/nature.scss',
+          '/src/styles/nature.scss',
           // '/src/styles/spring.scss',
           // '/src/styles/wood.scss',
         ],
