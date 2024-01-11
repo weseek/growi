@@ -9,7 +9,7 @@ export const InAppNotificationSubstance = (): JSX.Element => {
 
   return (
     <>
-      <InAppNotificationList type="dropdown-item" inAppNotificationData={inAppNotificationData} />
+      <InAppNotificationList type="list" inAppNotificationData={inAppNotificationData} />
     </>
   );
 };

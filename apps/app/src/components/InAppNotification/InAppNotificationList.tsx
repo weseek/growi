@@ -10,7 +10,7 @@ import InAppNotificationElm from './InAppNotificationElm';
 type Props = {
   inAppNotificationData?: PaginateResult<IInAppNotification>,
   elemClassName?: string,
-  type?: 'button' | 'dropdown-item',
+  type?: 'button' | 'list',
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
