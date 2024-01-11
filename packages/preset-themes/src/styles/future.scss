@@ -1,4 +1,4 @@
-:root[data-bs-theme='dark'] {
+:root[data-bs-theme] {
   @import '@growi/core/scss/bootstrap/init-stage-1';
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
