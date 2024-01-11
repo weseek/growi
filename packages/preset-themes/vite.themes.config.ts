@@ -18,7 +18,7 @@ export default defineConfig(({ mode }) => {
           // '/src/styles/future.scss',
           // '/src/styles/halloween.scss',
           // '/src/styles/hufflepuff.scss',
-          // '/src/styles/island.scss',
+          '/src/styles/island.scss',
           '/src/styles/jade-green.scss',
           // '/src/styles/kibela.scss',
           '/src/styles/mono-blue.scss',
