@@ -1,5 +1,3 @@
-import type { Dispatch, SetStateAction } from 'react';
-
 import nodePath from 'path';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -12,8 +10,8 @@ import { useSWRMUTxCurrentPage } from '~/stores/page';
 import { mutatePageTree, mutatePageList } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
-export const usePagePathSubmitHandler = (
-    currentPage: IPagePopulatedToShowRevision, currentPagePath: string, setRenameInputShown: Dispatch<SetStateAction<boolean>>,
+export const usePagePathRenameHandler = (
+    currentPage: IPagePopulatedToShowRevision, currentPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void,
 ): (inputText: string) => Promise<void> => {
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
@@ -29,18 +27,18 @@ export const usePagePathSubmitHandler = (
     }
   };
 
-  const pagePathSubmitHandler = async(inputText: string) => {
+  const pagePathRenameHandler = async(inputText: string) => {
 
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
-    if (newPagePath === currentPage.path) {
-      setRenameInputShown(false);
+    if (newPagePath === currentPage.path || inputText === '') {
+      onRenameFinish?.();
       return;
     }
 
     try {
-      setRenameInputShown(false);
+      onRenameFinish?.();
       await apiv3Put('/pages/rename', {
         pageId: currentPage._id,
         revisionId: currentPage.revision._id,
@@ -52,10 +50,10 @@ export const usePagePathSubmitHandler = (
       toastSuccess(t('renamed_pages', { path: currentPage.path }));
     }
     catch (err) {
-      setRenameInputShown(true);
+      onRenameFailure?.();
       toastError(err);
     }
   };
 
-  return pagePathSubmitHandler;
+  return pagePathRenameHandler;
 };
