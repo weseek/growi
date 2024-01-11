@@ -57,7 +57,7 @@ const PageDeleteModal: FC = () => {
 
   // inject IPageInfo to operate
   let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
-  if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
+  if (deleteModalData?.pages != null) {
     injectedPages = injectTo(deleteModalData?.pages);
   }
 
