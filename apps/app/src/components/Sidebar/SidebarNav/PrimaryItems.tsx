@@ -3,6 +3,8 @@ import { FC, memo, useCallback } from 'react';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
+import { NotificationCountBadge } from './NotificationCountBadge';
+
 import styles from './PrimaryItems.module.scss';
 
 /**
@@ -71,7 +73,10 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
     >
-      <span className="material-symbols-outlined">{iconName}</span>
+      { contents === SidebarContentsType.NOTIFICATION
+        ? <NotificationCountBadge />
+        : <span className="material-symbols-outlined">{iconName}</span>
+      }
     </button>
   );
 };
