@@ -31,11 +31,20 @@ export const PageTags:FC<Props> = (props: Props) => {
   return (
     <>
       <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center ${printNoneClass}`} data-testid="grw-tag-labels">
-        <RenderTagLabels
-          tags={tags}
-          isTagLabelsDisabled={isTagLabelsDisabled}
-          onClickEditTagsButton={onClickEditTagsButton}
-        />
+        <button
+          type="button"
+          className={`btn btn-sm btn-outline-secondary rounded-pill mb-2 d-flex d-lg-none ${styles['grw-tag-icon-button']}`}
+          onClick={onClickEditTagsButton}
+        >
+          <span className="material-symbols-outlined">local_offer</span>
+        </button>
+        <div className="d-none d-lg-flex">
+          <RenderTagLabels
+            tags={tags}
+            isTagLabelsDisabled={isTagLabelsDisabled}
+            onClickEditTagsButton={onClickEditTagsButton}
+          />
+        </div>
       </div>
     </>
   );
