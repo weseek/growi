@@ -1,18 +1,16 @@
-$min-contrast-ratio: 2;
-
 :root[data-bs-theme='dark'] {
   @import '@growi/core/scss/bootstrap/init-stage-1';
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-  $primary: #4FBFC2;
+  $primary: #15A3A7;
   $highlight: #406C65;
 
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
   $body-color-dark:                   mix(#406C65, white, 20%);
-  $body-bg-dark:                      mix(#4FBFC2, black, 20%);
+  $body-bg-dark:                      mix(#15A3A7, black, 20%);
 
   $body-secondary-color-dark:         rgba($body-color-dark, .75);
   $body-secondary-bg-dark:            $gray-800;
