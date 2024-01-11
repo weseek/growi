@@ -1,7 +1,10 @@
-import { FC, memo, useCallback } from 'react';
+import {
+  FC, memo, useCallback, useEffect,
+} from 'react';
 
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
+import { useDefaultSocket } from '~/stores/socket-io';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
@@ -20,7 +23,22 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
 };
 
 const NotificationIconWithCountBadge = (): JSX.Element => {
-  const { data: notificationCount } = useSWRxInAppNotificationStatus();
+  const { data: socket } = useDefaultSocket();
+
+  const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
+
+  useEffect(() => {
+    if (socket != null) {
+      socket.on('notificationUpdated', () => {
+        mutateNotificationCount();
+      });
+
+      // clean up
+      return () => {
+        socket.off('notificationUpdated');
+      };
+    }
+  }, [mutateNotificationCount, socket]);
 
   return (
     <div className="position-relative">
