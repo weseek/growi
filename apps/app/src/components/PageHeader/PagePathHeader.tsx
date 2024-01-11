@@ -114,11 +114,13 @@ export const PagePathHeader: FC<Props> = (props) => {
           <div className={`${buttonStyle} col-4 row`}>
             <div className="col-4">
               <button type="button" onClick={handleEditButtonClick}>
-                {isRenameInputShown ? t('Done') : t('Edit')}
+                {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
               </button>
             </div>
             <div className="col-4">
-              <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
+              <button type="button" onClick={openPageSelectModal}>
+                <span className="material-symbols-outlined">account_tree</span>
+              </button>
             </div>
           </div>
           {isOpened

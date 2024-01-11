@@ -45,7 +45,7 @@ export const PageSelectModal: FC = () => {
       centered
       size="sm"
     >
-      <ModalHeader toggle={closeModal}>ページの場所を選択</ModalHeader>
+      <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody>
         <ItemsTree
           CustomTreeItem={TreeItemForModal}

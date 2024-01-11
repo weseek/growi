@@ -821,5 +821,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "没有找到附件"
+  },
+  "page_select_modal": {
+    "select_page_location": "选择页面位置"
   }
 }
