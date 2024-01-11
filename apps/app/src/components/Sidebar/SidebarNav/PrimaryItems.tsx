@@ -20,11 +20,13 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
 };
 
 const NotificationIconWithCountBadge = (): JSX.Element => {
-  const { data: inAppNotificationStatus } = useSWRxInAppNotificationStatus();
+  const { data: notificationCount } = useSWRxInAppNotificationStatus();
 
   return (
     <div className="position-relative">
-      <span className="badge rounded-pill bg-primary notification-count-badge">{inAppNotificationStatus}</span>
+      { notificationCount != null && notificationCount > 0 && (
+        <span className="badge rounded-pill bg-primary notification-count-badge">{notificationCount}</span>
+      ) }
       <span className="material-symbols-outlined">notifications</span>
     </div>
   );
