@@ -42,6 +42,15 @@
       }
     }
   }
+
+  .notification-count-badge :global {
+    position: absolute;
+    left: calc(100% - 21px);
+    margin: -2px;
+    font-size: 8px;
+    font-weight: bold;
+    color: white;
+  }
 }
 
 // == Colors

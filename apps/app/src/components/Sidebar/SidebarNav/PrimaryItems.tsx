@@ -1,9 +1,8 @@
 import { FC, memo, useCallback } from 'react';
 
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
+import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
-
-import { NotificationIconWithCountBadge } from './NotificationIconWithCountBadge';
 
 import styles from './PrimaryItems.module.scss';
 
@@ -20,6 +19,16 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
   return isSelected ? 'active' : '';
 };
 
+const NotificationIconWithCountBadge = (): JSX.Element => {
+  const { data: inAppNotificationStatus } = useSWRxInAppNotificationStatus();
+
+  return (
+    <div className="position-relative">
+      <span className="badge rounded-pill bg-primary notification-count-badge">{inAppNotificationStatus}</span>
+      <span className="material-symbols-outlined">notifications</span>
+    </div>
+  );
+};
 
 type PrimaryItemProps = {
   contents: SidebarContentsType,
