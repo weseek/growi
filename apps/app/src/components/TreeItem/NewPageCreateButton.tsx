@@ -1,47 +1,20 @@
-import React, {
-  useCallback, FC,
-} from 'react';
+import React, { FC } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
 import { IPageForItem } from '~/interfaces/page';
-import { usePageTreeDescCountMap } from '~/stores/ui';
 
-import { ItemNode } from './ItemNode';
-import type { StateHandlersType } from './state-handlers-type';
-
-
-export type NewPageCreateButtonProps = {
+type NewPageCreateButtonProps = {
   page: IPageForItem,
-  currentChildren: ItemNode[],
-  stateHandlers: StateHandlersType,
-  isNewPageInputShown?: boolean,
-  setNewPageInputShown: React.Dispatch<React.SetStateAction<boolean>>,
+  onClick?: () => void,
 };
 
 export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
   const {
-    page, currentChildren, stateHandlers, setNewPageInputShown,
+    page, onClick,
   } = props;
-
-  const { setIsOpen } = stateHandlers;
-
-  // descendantCount
-  const { getDescCount } = usePageTreeDescCountMap();
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
-  const isChildrenLoaded = currentChildren?.length > 0;
-  const hasDescendants = descendantCount > 0 || isChildrenLoaded;
-
-  const onClickPlusButton = useCallback(() => {
-    setNewPageInputShown(true);
-
-    if (hasDescendants) {
-      setIsOpen(true);
-    }
-  }, [hasDescendants, setIsOpen, setNewPageInputShown]);
 
   return (
     <>
@@ -52,7 +25,7 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
               id="page-create-button-in-page-tree"
               type="button"
               className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
-              onClick={onClickPlusButton}
+              onClick={onClick}
             >
               <i className="icon-plus d-block p-0" />
             </button>

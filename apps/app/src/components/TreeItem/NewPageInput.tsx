@@ -1,43 +1,35 @@
-import React, { FC, useCallback, useEffect } from 'react';
+import React, { type FC, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
-
 
 import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
-import { useSWRxPageChildren } from '~/stores/page-listing';
-import { usePageTreeDescCountMap } from '~/stores/ui';
+import type { IPageForItem } from '~/interfaces/page';
 
-import { NewPageCreateButtonProps } from './NewPageCreateButton';
-import { NotDraggableForClosableTextInput } from './SimpleItem';
+import { NotDraggableForClosableTextInput } from './NotDraggableForClosableTextInput';
 
-type NewPageInputProps = NewPageCreateButtonProps & {isEnableActions: boolean};
+type Props = {
+  page: IPageForItem,
+  isEnableActions: boolean,
+  onSubmit?: (newPagePath: string) => Promise<void>,
+  onSubmittionFailed?: () => void,
+  onCanceled?: () => void,
+};
 
-export const NewPageInput: FC<NewPageInputProps> = (props) => {
+export const NewPageInput: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const {
-    page, isEnableActions, currentChildren, stateHandlers, isNewPageInputShown, setNewPageInputShown,
+    page, isEnableActions,
+    onSubmit, onSubmittionFailed,
+    onCanceled,
   } = props;
 
-  const { isOpen, setIsOpen, setCreating } = stateHandlers;
-
-  const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
-
-  const { getDescCount } = usePageTreeDescCountMap();
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
-  const isChildrenLoaded = currentChildren?.length > 0;
-  const hasDescendants = descendantCount > 0 || isChildrenLoaded;
-
   const onPressEnterForCreateHandler = async(inputText: string) => {
-    setNewPageInputShown(false);
-    // closeNewPageInput();
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
@@ -48,37 +40,22 @@ export const NewPageInput: FC<NewPageInputProps> = (props) => {
     }
 
     try {
-      setCreating(true);
-
-      await apiv3Post('/pages/', {
-        path: newPagePath,
-        body: undefined,
-        grant: page.grant,
-        // grantUserGroupId: page.grantedGroup,
-        grantUserGroupIds: page.grantedGroups,
-      });
-
-      mutateChildren();
-
-      if (!hasDescendants) {
-        setIsOpen(true);
-      }
-
+      onSubmit?.(newPagePath);
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {
       toastError(err);
     }
     finally {
-      setCreating(false);
+      onSubmittionFailed?.();
     }
   };
 
   const onPressEscHandler = useCallback((event) => {
     if (event.keyCode === 27) {
-      setNewPageInputShown(false);
+      onCanceled?.();
     }
-  }, []);
+  }, [onCanceled]);
 
   useEffect(() => {
     document.addEventListener('keydown', onPressEscHandler, false);
@@ -89,11 +66,11 @@ export const NewPageInput: FC<NewPageInputProps> = (props) => {
 
   return (
     <>
-      {isEnableActions && isNewPageInputShown && (
+      {isEnableActions && (
         <NotDraggableForClosableTextInput>
           <ClosableTextInput
             placeholder={t('Input page name')}
-            onClickOutside={() => { setNewPageInputShown(false) }}
+            onClickOutside={onCanceled}
             onPressEnter={onPressEnterForCreateHandler}
             validationTarget={ValidationTarget.PAGE}
           />
