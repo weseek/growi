@@ -1,5 +1,5 @@
 import {
-  FC, useMemo, useState,
+  FC, useEffect, useMemo, useState,
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -12,7 +12,7 @@ import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
-import { usePagePathSubmitHandler } from './page-header-utils';
+import { usePagePathRenameHandler } from './page-header-utils';
 
 type Props = {
   currentPagePath: string
@@ -25,13 +25,21 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
   const [inputText, setInputText] = useState('');
-  const [isEditing, setIsEditing] = useState(true);
 
   const { t } = useTranslation();
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
-  const pagePathSubmitHandler = usePagePathSubmitHandler(currentPage, currentPagePath, setRenameInputShown);
+
+  const onRenameFinish = () => {
+    setRenameInputShown(false);
+  };
+
+  const onRenameFailure = () => {
+    setRenameInputShown(true);
+  };
+
+  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, currentPagePath, onRenameFinish, onRenameFailure);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -57,9 +65,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   };
 
   const handleEditButtonClick = () => {
-    setIsEditing(!isEditing);
-
-    if (isEditing) {
+    if (isRenameInputShown) {
       pagePathSubmitHandler(inputText);
     }
     else {
@@ -67,9 +73,30 @@ export const PagePathHeader: FC<Props> = (props) => {
     }
   };
 
+  const buttonStyle = isButtonsShown ? '' : 'd-none';
+
+  const clickOutSideHandler = (e) => {
+    const container = document.getElementById('page-path-header');
+
+    if (container && !container.contains(e.target)) {
+      setRenameInputShown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', clickOutSideHandler);
+
+    return () => {
+      document.removeEventListener('click', clickOutSideHandler);
+    };
+  }, []);
+
   return (
     <>
-      <div onMouseLeave={() => setButtonShown(false)}>
+      <div
+        id="page-path-header"
+        onMouseLeave={() => setButtonShown(false)}
+      >
         <div className="row">
           <div
             className="col-4"
@@ -84,19 +111,16 @@ export const PagePathHeader: FC<Props> = (props) => {
               handleInputChange={handleInputChange}
             />
           </div>
-          {isButtonsShown
-            && (
-              <>
-                <div className="col-4">
-                  <button type="button" onClick={handleEditButtonClick}>
-                    {isEditing ? t('Done') : t('Edit')}
-                  </button>
-                </div>
-                <div className="col-4">
-                  <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
-                </div>
-              </>
-            )}
+          <div className={`${buttonStyle} col-4 row`}>
+            <div className="col-4">
+              <button type="button" onClick={handleEditButtonClick}>
+                {isRenameInputShown ? t('Done') : t('Edit')}
+              </button>
+            </div>
+            <div className="col-4">
+              <button type="button" onClick={openPageSelectModal}>ページツリーボタン</button>
+            </div>
+          </div>
           {isOpened
             && (
               <PageSelectModal />
