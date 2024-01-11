@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
+import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
+
+import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
+
+const InAppNotificationSubstance = dynamic(() => import('./InAppNotificationSubstance').then(mod => mod.InAppNotificationSubstance), { ssr: false });
 
 export const InAppNotification = (): JSX.Element => {
   const { t } = useTranslation();
@@ -11,6 +16,10 @@ export const InAppNotification = (): JSX.Element => {
           {t('In-App Notification')}
         </h3>
       </div>
+
+      <Suspense fallback={<ItemsTreeContentSkeleton />}>
+        <InAppNotificationSubstance />
+      </Suspense>
     </div>
   );
 };
