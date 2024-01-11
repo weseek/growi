@@ -56,7 +56,7 @@ class StatusTable extends React.PureComponent {
     const aliasLabels = aliases.map((aliasName) => {
       return (
         <span key={`badge-${indexName}-${aliasName}`} className="badge rounded-pill bg-primary me-2">
-          <i className="icon-tag"></i> {aliasName}
+          <span className="material-symbols-outlined">sell</span> {aliasName}
         </span>
       );
     });
@@ -66,7 +66,7 @@ class StatusTable extends React.PureComponent {
         <div className="card-header">
 
           <a role="button" className="text-nowrap me-2" data-bs-toggle="collapse" href={`#${collapseId}`} aria-expanded="true" aria-controls={collapseId}>
-            <i className="fa fa-fw fa-database"></i> {indexName}
+            <span className="material-symbols-outlined">database</span> {indexName}
           </a>
           <span className="ms-md-3">{aliasLabels}</span>
         </div>

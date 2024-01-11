@@ -113,7 +113,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
     <>
       <div className="my-3">
         <Link href="/admin/notification" className="btn btn-outline-secondary">
-          <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">arrow_left_alt</span>
           {t('notification_settings.back_to_list')}
         </Link>
       </div>
@@ -179,7 +179,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
               <>
                 <div className="input-group notify-to-option" id="mail-input">
                   <div>
-                    <span className="input-group-text" id="mail-addon"><i className="ti ti-email" /></span>
+                    <span className="input-group-text" id="mail-addon"></span><span className="material-symbols-outlined">mail</span>
                   </div>
                   <input
                     className="form-control"
@@ -198,7 +198,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                   {!isMailerSetup && <span className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />}
                   <b>Hint: </b>
                   <a href="https://ifttt.com/create" target="blank">{t('notification_settings.email.ifttt_link')}
-                    <i className="icon-share-alt" />
+                    <span className="material-symbols-outlined">share</span>
                   </a>
                 </p>
               </>
@@ -207,7 +207,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
               <>
                 <div className="input-group notify-to-option" id="slack-input">
                   <div>
-                    <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+                    <span className="input-group-text" id="slack-channel-addon"></span><span className="material-symbols-outlined">tag</span>
                   </div>
                   <input
                     className="form-control"
@@ -238,7 +238,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.CREATE)}
               >
                 <span className="badge rounded-pill bg-success">
-                  <i className="icon-doc me-1" /> CREATE
+                  <span className="material-symbols-outlined">edit_note</span> CREATE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -250,7 +250,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.EDIT)}
               >
                 <span className="badge rounded-pill bg-warning text-dark">
-                  <i className="icon-pencil me-1" />EDIT
+                  <span className="imaterial-symbols-outlined">edit</span> EDIT
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -262,7 +262,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.MOVE)}
               >
                 <span className="badge rounded-pill bg-pink">
-                  <i className="icon-action-redo me-1" />MOVE
+                  <span className="material-symbols-outlined">redo</span>MOVE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -274,7 +274,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.DELETE)}
               >
                 <span className="badge rounded-pill bg-danger">
-                  <i className="icon-fire me-1" />DELETE
+                  <span className="material-symbols-outlined">delete_forever</span>DELETE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -286,7 +286,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.LIKE)}
               >
                 <span className="badge rounded-pill bg-info">
-                  <i className="fa fa-heart-o me-1" />LIKE
+                  <span className="material-symbols-outlined">favorite</span>LIKE
                 </span>
               </TriggerEventCheckBox>
             </div>
@@ -298,7 +298,7 @@ const ManageGlobalNotification = (props: Props): JSX.Element => {
                 onChange={() => onChangeTriggerEvents(TriggerEventType.POST)}
               >
                 <span className="badge rounded-pill bg-primary">
-                  <i className="icon-bubble me-1" />POST
+                  <span className="material-symbols-outlined">language</span>POST
                 </span>
               </TriggerEventCheckBox>
             </div>

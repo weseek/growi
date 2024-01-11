@@ -40,7 +40,7 @@ const PersonalSettings = () => {
         i18n: t('API Settings'),
       },
       // editor_settings: {
-      //   Icon: () => <i className="icon-fw icon-pencil"></i>,
+      //   Icon: () => <span className="material-symbols-outlined">edit</span>,
       //   Content: EditorSettings,
       //   i18n: t('editor_settings.editor_settings'),
       // },

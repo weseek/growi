@@ -102,7 +102,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                         role="button"
                         onClick={() => removeExtenalAccount(ea._id)}
                       >
-                        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                       </button>
                     </ul>
                   </div>

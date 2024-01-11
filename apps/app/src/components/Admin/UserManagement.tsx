@@ -128,7 +128,7 @@ const UserManagement = (props: UserManagementProps) => {
           className="btn btn-outline-secondary ms-2"
           role="button"
         >
-          <i className="icon-user-follow me-1" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">person_add</span>
           {t('admin:user_management.external_account')}
         </Link>
       </p>
@@ -138,7 +138,7 @@ const UserManagement = (props: UserManagementProps) => {
 
         <div className="row d-flex justify-content-start align-items-center my-2">
           <div className="col-md-3 d-flex align-items-center my-2">
-            <i className="icon-magnifier me-1"></i>
+            <span className="material-symbols-outlined">search</span>
             <span className={`search-typeahead ${styles['search-typeahead']}`}>
               <input
                 className="w-100"
@@ -183,7 +183,7 @@ const UserManagement = (props: UserManagementProps) => {
               className="btn btn-outline-secondary btn-sm"
               onClick={resetButtonClickHandler}
             >
-              <span className="icon-refresh me-1"></span>
+              <span className="material-symbols-outlined">refresh</span>
               {t('commons:Reset')}
             </button>
           </div>
