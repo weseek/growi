@@ -23,12 +23,14 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageName}</div>), [pageName]);
 
   return (
-    <TextInputForPageTitleAndPath
-      currentPagePath={currentPagePath}
-      currentPage={currentPage}
-      stateHandler={stateHandler}
-      inputValue={pageName}
-      CustomComponent={PageTitle}
-    />
+    <div onBlur={() => setRenameInputShown(false)}>
+      <TextInputForPageTitleAndPath
+        currentPagePath={currentPagePath}
+        currentPage={currentPage}
+        stateHandler={stateHandler}
+        inputValue={pageName}
+        CustomComponent={PageTitle}
+      />
+    </div>
   );
 };
