@@ -8,7 +8,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 
-import { usePagePathSubmitHandler } from './page-header-utils';
+import { usePagePathRenameHandler } from './page-header-utils';
 
 type StateHandler = {
   isRenameInputShown: boolean
@@ -33,7 +33,15 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
 
-  const pagePathSubmitHandler = usePagePathSubmitHandler(currentPage, currentPagePath, setRenameInputShown);
+  const onRenameFinish = () => {
+    setRenameInputShown(false);
+  };
+
+  const onRenameFailure = () => {
+    setRenameInputShown(true);
+  };
+
+  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, currentPagePath, onRenameFinish, onRenameFailure);
 
   return (
     <>
@@ -42,7 +50,6 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
           <ClosableTextInput
             value={inputValue}
             placeholder={t('Input page name')}
-            onClickOutside={() => { setRenameInputShown(false) }}
             onPressEnter={pagePathSubmitHandler}
             validationTarget={ValidationTarget.PAGE}
             handleInputChange={handleInputChange}
