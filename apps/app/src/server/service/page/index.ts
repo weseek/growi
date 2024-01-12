@@ -1,3 +1,4 @@
+import type EventEmitter from 'events';
 import pathlib from 'path';
 import { Readable, Writable } from 'stream';
 
@@ -6,7 +7,6 @@ import type {
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup,
 } from '@growi/core';
 import {
-  GroupType,
   PageGrant, PageStatus, getIdForRef, isPopulated,
 } from '@growi/core';
 import {
@@ -17,14 +17,12 @@ import mongoose, { ObjectId, Cursor } from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
   PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
 } from '~/interfaces/page-delete-config';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -37,23 +35,28 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 import { batchProcessPromiseAll } from '~/utils/promise';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import { Attachment } from '../models';
-import { PathAlreadyExistsError } from '../models/errors';
-import type { IOptionsForCreate, IOptionsForUpdate } from '../models/interfaces/page-operation';
-import PageOperation, { type PageOperationDocument } from '../models/page-operation';
-import type { PageRedirectModel } from '../models/page-redirect';
-import { serializePageSecurely } from '../models/serializers/page-serializer';
-import ShareLink from '../models/share-link';
-import Subscription from '../models/subscription';
-import UserGroup from '../models/user-group';
-import UserGroupRelation from '../models/user-group-relation';
-import { V5ConversionError } from '../models/vo/v5-conversion-error';
-import { divideByType } from '../util/granted-group';
+import { ObjectIdLike } from '../../interfaces/mongoose-utils';
+import { Attachment } from '../../models';
+import { PathAlreadyExistsError } from '../../models/errors';
+import { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
+import PageOperation, { PageOperationDocument } from '../../models/page-operation';
+import { PageRedirectModel } from '../../models/page-redirect';
+import { serializePageSecurely } from '../../models/serializers/page-serializer';
+import ShareLink from '../../models/share-link';
+import Subscription from '../../models/subscription';
+import UserGroupRelation from '../../models/user-group-relation';
+import { V5ConversionError } from '../../models/vo/v5-conversion-error';
+import { divideByType } from '../../util/granted-group';
+import { configManager } from '../config-manager';
+import { IPageGrantService } from '../page-grant';
+import { preNotifyService } from '../pre-notify';
 
-import { configManager } from './config-manager';
-import { IPageGrantService } from './page-grant';
-import { preNotifyService } from './pre-notify';
+import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
+import { IPageService } from './page-service';
+import { shouldUseV4Process } from './should-use-v4-process';
+
+export * from './page-service';
+
 
 const debug = require('debug')('growi:services:page');
 
@@ -64,9 +67,6 @@ const {
 } = pagePathUtils;
 
 const { addTrailingSlash } = pathUtils;
-
-const BULK_REINDEX_SIZE = 100;
-const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 // TODO: improve type
 class PageCursorsForDescendantsFactory {
@@ -149,11 +149,16 @@ class PageCursorsForDescendantsFactory {
 
 }
 
-class PageService {
+
+class PageService implements IPageService {
 
   crowi: any;
 
-  pageEvent: any;
+  pageEvent: EventEmitter & {
+    onCreate,
+    onCreateMany,
+    onAddSeenUsers,
+  };
 
   tagEvent: any;
 
@@ -181,6 +186,10 @@ class PageService {
     // createMany
     this.pageEvent.on('createMany', this.pageEvent.onCreateMany);
     this.pageEvent.on('addSeenUsers', this.pageEvent.onAddSeenUsers);
+  }
+
+  getEventEmitter(): EventEmitter {
+    return this.pageEvent;
   }
 
   canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
@@ -383,20 +392,6 @@ class PageService {
     };
   }
 
-  private shouldUseV4Process(page): boolean {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
-    const isTrashPage = page.status === Page.STATUS_DELETED;
-    const isPageMigrated = page.parent != null;
-    const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
-    const isRoot = isTopPage(page.path);
-    const isPageRestricted = page.grant === Page.GRANT_RESTRICTED;
-
-    const shouldUseV4Process = !isRoot && (!isV5Compatible || !isPageMigrated || isTrashPage || isPageRestricted);
-
-    return shouldUseV4Process;
-  }
-
   private shouldUseV4ProcessForRevert(page): boolean {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -465,8 +460,8 @@ class PageService {
     }
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.renamePageV4(page, newPagePath, user, options);
     }
 
@@ -1031,8 +1026,8 @@ class PageService {
     newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.duplicateV4(page, newPagePath, user, isRecursively);
     }
 
@@ -1456,8 +1451,8 @@ class PageService {
     const Page = mongoose.model('Page') as PageModel;
 
     // Separate v4 & v5 process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.deletePageV4(page, user, options, isRecursively);
     }
     // Validate
@@ -1783,7 +1778,7 @@ class PageService {
     return nDeletedNonEmptyPages;
   }
 
-  private async deleteCompletelyOperation(pageIds, pagePaths) {
+  async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Page = this.crowi.model('Page');
@@ -1794,7 +1789,7 @@ class PageService {
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
-    return Promise.all([
+    await Promise.all([
       Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1807,7 +1802,7 @@ class PageService {
   }
 
   // delete multiple pages
-  private async deleteMultipleCompletely(pages, user, options = {}) {
+  async deleteMultipleCompletely(pages, user) {
     const ids = pages.map(page => (page._id));
     const paths = pages.map(page => (page.path));
 
@@ -1835,8 +1830,8 @@ class PageService {
     }
 
     // v4 compatible process
-    const shouldUseV4Process = this.shouldUseV4Process(page);
-    if (shouldUseV4Process) {
+    const isShouldUseV4Process = shouldUseV4Process(page);
+    if (isShouldUseV4Process) {
       return this.deleteCompletelyV4(page, user, options, isRecursively, preventEmitting);
     }
 
@@ -2014,7 +2009,7 @@ class PageService {
 
         try {
           count += batch.length;
-          await deleteMultipleCompletely(batch, user, options);
+          await deleteMultipleCompletely(batch, user);
           const subscribedUsers = await Subscription.getSubscriptions(batch);
           subscribedUsers.forEach((eachUser) => {
             descendantsSubscribedSets.add(eachUser);
@@ -2063,106 +2058,6 @@ class PageService {
       for await (const page of pages) {
         await this.deletePage(page, user, {}, isRecursively, activityParameters);
       }
-    }
-  }
-
-  /**
-   * @description This function is intended to be used exclusively for forcibly deleting the user homepage by the system.
-   * It should only be called from within the appropriate context and with caution as it performs a system-level operation.
-   *
-   * @param {string} userHomepagePath - The path of the user's homepage.
-   * @returns {Promise<void>} - A Promise that resolves when the deletion is complete.
-   * @throws {Error} - If an error occurs during the deletion process.
-   */
-  async deleteCompletelyUserHomeBySystem(userHomepagePath: string): Promise<void> {
-    if (!isUsersHomepage(userHomepagePath)) {
-      const msg = 'input value is not user homepage path.';
-      logger.error(msg);
-      throw new Error(msg);
-    }
-
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    const userHomepage = await Page.findByPath(userHomepagePath, true);
-
-    if (userHomepage == null) {
-      const msg = 'user homepage is not found.';
-      logger.error(msg);
-      throw new Error(msg);
-    }
-
-    const shouldUseV4Process = this.shouldUseV4Process(userHomepage);
-
-    const ids = [userHomepage._id];
-    const paths = [userHomepage.path];
-    const parentId = getIdForRef(userHomepage.parent);
-
-    try {
-      if (!shouldUseV4Process) {
-        // Ensure consistency of ancestors
-        const inc = userHomepage.isEmpty ? -userHomepage.descendantCount : -(userHomepage.descendantCount + 1);
-        await this.updateDescendantCountOfAncestors(parentId, inc, true);
-      }
-
-      // Delete the user's homepage
-      await this.deleteCompletelyOperation(ids, paths);
-
-      if (!shouldUseV4Process) {
-        // Remove leaf empty pages
-        await Page.removeLeafEmptyPagesRecursively(parentId);
-      }
-
-      if (!userHomepage.isEmpty) {
-        // Emit an event for the search service
-        this.pageEvent.emit('deleteCompletely', userHomepage);
-      }
-
-      const { PageQueryBuilder } = Page;
-
-      // Find descendant pages with system deletion condition
-      const builder = new PageQueryBuilder(Page.find(), true)
-        .addConditionForSystemDeletion()
-        .addConditionToListOnlyDescendants(userHomepage.path, {});
-
-      // Stream processing to delete descendant pages
-      // ────────┤ start │─────────
-      const readStream = await builder
-        .query
-        .lean()
-        .cursor({ batchSize: BULK_REINDEX_SIZE });
-
-      let count = 0;
-
-      const deleteMultipleCompletely = this.deleteMultipleCompletely.bind(this);
-      const writeStream = new Writable({
-        objectMode: true,
-        async write(batch, encoding, callback) {
-          try {
-            count += batch.length;
-            // Delete multiple pages completely
-            await deleteMultipleCompletely(batch, null, {});
-            logger.debug(`Adding pages progressing: (count=${count})`);
-          }
-          catch (err) {
-            logger.error('addAllPages error on add anyway: ', err);
-          }
-          callback();
-        },
-        final(callback) {
-          logger.debug(`Adding pages has completed: (totalCount=${count})`);
-          callback();
-        },
-      });
-
-      readStream
-        .pipe(createBatchStream(BULK_REINDEX_SIZE))
-        .pipe(writeStream);
-
-      await streamToPromise(writeStream);
-      // ────────┤ end │─────────
-    }
-    catch (err) {
-      logger.error('Error occurred while deleting user homepage and subpages.', err);
-      throw err;
     }
   }
 

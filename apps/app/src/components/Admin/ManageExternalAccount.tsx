@@ -54,7 +54,7 @@ const ManageExternalAccount = (props: ManageExternalAccountProps): JSX.Element =
           prefetch={false}
           className="btn btn-outline-secondary"
         >
-          <i className="icon-fw ti ti-arrow-left" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">arrow_back</span>
           {t('admin:user_management.back_to_user_management')}
         </Link>
       </p>

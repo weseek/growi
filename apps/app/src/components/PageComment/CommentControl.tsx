@@ -14,7 +14,7 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
     // The page-comment-control class is imported from Comment.module.scss
     <div className="page-comment-control">
       <button type="button" className="btn btn-link p-2" onClick={onClickEditBtn}>
-        <i className="ti ti-pencil"></i>
+        <span className="material-symbols-outlined">edit</span>
       </button>
       <button
         data-testid="comment-delete-button"

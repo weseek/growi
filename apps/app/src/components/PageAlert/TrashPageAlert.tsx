@@ -99,7 +99,7 @@ export const TrashPageAlert = (): JSX.Element => {
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
-          <i className="icon-fire" aria-hidden="true"></i> {t('Delete Completely')}
+          <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span> {t('Delete Completely')}
         </button>
       </>
     );
@@ -114,7 +114,7 @@ export const TrashPageAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
-          This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
+          This page is in the trash <span className="material-symbols-outlined" aria-hidden="true">delete</span>.
           <br />
           <UserPicture user={deleteUser} />
           <span className="ms-2">

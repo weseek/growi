@@ -9,7 +9,7 @@ type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
 
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
-  const { NewPageInputWrapper, NewPageCreateButtonWrapper } = useNewPageInput();
+  const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
     <SimpleItem
@@ -22,9 +22,9 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
-      customNextComponents={[NewPageInputWrapper]}
+      customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
-      customEndComponents={[SimpleItemTool, NewPageCreateButtonWrapper]}
+      customEndComponents={[SimpleItemTool, NewPageCreateButton]}
     />
   );
 };

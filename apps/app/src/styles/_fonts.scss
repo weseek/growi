@@ -6,6 +6,7 @@
 
 .material-symbols-outlined {
   display: inline-block;
+  padding-bottom: 3px;
   font-family: var(--grw-font-family-material-symbols-outlined);
   font-size: 24px;  /* Preferred icon size */
   font-style: normal;
@@ -15,6 +16,7 @@
   letter-spacing: normal;
   word-wrap: normal;
   white-space: nowrap;
+  vertical-align: middle;
   direction: ltr;
 
   &.fill {
