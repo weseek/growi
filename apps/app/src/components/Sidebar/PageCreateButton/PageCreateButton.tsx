@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
 
-import type { Nullable, IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
-import { useCurrentUser, useIsGuestUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
@@ -15,24 +16,23 @@ import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
-const generateTodaysPath = (currentUser?: Nullable<IUserHasId>, isGuestUser?: boolean) => {
-  if (isGuestUser || currentUser == null) {
-    return null;
-  }
-
+const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
   const now = format(new Date(), 'yyyy/MM/dd');
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-  return `${userHomepagePath}/memo/${now}`;
+  return `${userHomepagePath}/${parentDirName}/${now}`;
 };
 
 export const PageCreateButton = React.memo((): JSX.Element => {
+  const { t } = useTranslation('commons');
+
   const { data: currentPagePath, isLoading } = useCurrentPagePath();
   const { data: currentUser } = useCurrentUser();
-  const { data: isGuestUser } = useIsGuestUser();
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const todaysPath = generateTodaysPath(currentUser, isGuestUser);
+  const todaysPath = currentUser == null
+    ? null
+    : generateTodaysPath(currentUser, t('create_page_dropdown.todays.memo'));
 
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPagePath, isLoading);
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
