@@ -9,8 +9,8 @@ import { NewPageInput } from './NewPageInput';
 import type { SimpleItemContentProps } from './interfaces';
 
 type UseNewPageInput = {
-  NewPageInputWrapper: FC<SimpleItemContentProps>,
-  NewPageCreateButtonWrapper: FC<SimpleItemContentProps>,
+  Input: FC<SimpleItemContentProps>,
+  CreateButton: FC<SimpleItemContentProps>,
   isProcessingSubmission: boolean,
 }
 
@@ -21,7 +21,7 @@ export const useNewPageInput = (): UseNewPageInput => {
 
   const { getDescCount } = usePageTreeDescCountMap();
 
-  const NewPageCreateButtonWrapper: FC<SimpleItemContentProps> = (props) => {
+  const CreateButton: FC<SimpleItemContentProps> = (props) => {
 
     const { page, children, stateHandlers } = props;
     const { setIsOpen } = stateHandlers;
@@ -48,7 +48,7 @@ export const useNewPageInput = (): UseNewPageInput => {
     );
   };
 
-  const NewPageInputWrapper: FC<SimpleItemContentProps> = (props) => {
+  const Input: FC<SimpleItemContentProps> = (props) => {
 
     const {
       page, children, stateHandlers,
@@ -102,8 +102,8 @@ export const useNewPageInput = (): UseNewPageInput => {
   };
 
   return {
-    NewPageInputWrapper,
-    NewPageCreateButtonWrapper,
+    Input,
+    CreateButton,
     isProcessingSubmission,
   };
 };

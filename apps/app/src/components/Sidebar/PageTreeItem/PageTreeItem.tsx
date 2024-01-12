@@ -154,7 +154,7 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
 
   const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
-  const { NewPageInputWrapper, NewPageCreateButtonWrapper } = useNewPageInput();
+  const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
     <SimpleItem
@@ -169,8 +169,8 @@ export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
-      customEndComponents={[Ellipsis, NewPageCreateButtonWrapper]}
-      customNextComponents={[NewPageInputWrapper]}
+      customEndComponents={[Ellipsis, NewPageCreateButton]}
+      customNextComponents={[NewPageInput]}
     />
   );
 };
