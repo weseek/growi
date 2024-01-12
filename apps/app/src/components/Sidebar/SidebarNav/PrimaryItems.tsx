@@ -1,16 +1,9 @@
 import { FC, memo, useCallback } from 'react';
 
-import dynamic from 'next/dynamic';
-
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
-
-
-const InAppNotificationDropdown = dynamic(() => import('../../InAppNotification/InAppNotificationDropdown')
-  .then(mod => mod.InAppNotificationDropdown), { ssr: false });
-
 
 /**
  * @returns String for className to switch the indicator is active or not
@@ -104,7 +97,13 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
-      <InAppNotificationDropdown />
+      <PrimaryItem
+        sidebarMode={sidebarMode}
+        contents={SidebarContentsType.NOTIFICATION}
+        label="In-App Notification"
+        iconName="notifications"
+        onHover={onItemHover}
+      />
     </div>
   );
 });
