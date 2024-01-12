@@ -63,7 +63,6 @@ import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import { preview } from 'vite';
 
 
 const logger = loggerFactory('growi:PageEditor');
