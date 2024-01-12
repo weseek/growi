@@ -10,8 +10,6 @@ import { useModelNotification } from './PageNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
-  elemClassName?: string,
-  type?: 'button' | 'list',
 }
 
 const InAppNotificationElm: FC<Props> = (props: Props) => {

@@ -9,8 +9,6 @@ import InAppNotificationElm from './InAppNotificationElm';
 
 type Props = {
   inAppNotificationData?: PaginateResult<IInAppNotification>,
-  elemClassName?: string,
-  type?: 'button' | 'list',
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
@@ -32,7 +30,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     <div className="list-group">
       { notifications.map((notification: IInAppNotification & HasObjectId) => {
         return (
-          <InAppNotificationElm key={notification._id} notification={notification} type={props.type} elemClassName={props.elemClassName} />
+          <InAppNotificationElm key={notification._id} notification={notification} />
         );
       }) }
     </div>
