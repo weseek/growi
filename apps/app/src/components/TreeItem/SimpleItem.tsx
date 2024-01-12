@@ -17,7 +17,7 @@ import { shouldRecoverPagePaths } from '~/utils/page-operation';
 import CountBadge from '../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
-import { useNewPageInput } from './UseNewPageInput';
+import { useNewPageInput } from './NewPageInput';
 import type { SimpleItemContentProps, SimpleItemProps, SimpleItemToolProps } from './interfaces';
 
 

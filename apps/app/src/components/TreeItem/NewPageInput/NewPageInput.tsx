@@ -10,7 +10,7 @@ import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
 import type { IPageForItem } from '~/interfaces/page';
 
-import { NotDraggableForClosableTextInput } from './NotDraggableForClosableTextInput';
+import { NotDraggableForClosableTextInput } from '../NotDraggableForClosableTextInput';
 
 type Props = {
   page: IPageForItem,

@@ -4,9 +4,10 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
+import type { SimpleItemContentProps } from '../interfaces';
+
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';
-import type { SimpleItemContentProps } from './interfaces';
 
 type UseNewPageInput = {
   Input: FC<SimpleItemContentProps>,

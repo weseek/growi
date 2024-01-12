@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '~/components/NotAvailableForReadOnlyUser';
-import { IPageForItem } from '~/interfaces/page';
+import type { IPageForItem } from '~/interfaces/page';
 
 type NewPageCreateButtonProps = {
   page: IPageForItem,
