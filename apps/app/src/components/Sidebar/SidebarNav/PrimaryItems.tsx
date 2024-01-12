@@ -1,10 +1,9 @@
 import {
-  FC, memo, useCallback, useEffect,
+  FC, memo, useCallback,
 } from 'react';
 
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
-import { useDefaultSocket } from '~/stores/socket-io';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
@@ -22,45 +21,18 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
   return isSelected ? 'active' : '';
 };
 
-const NotificationIconWithCountBadge = (): JSX.Element => {
-  const { data: socket } = useDefaultSocket();
-
-  const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
-
-  useEffect(() => {
-    if (socket != null) {
-      socket.on('notificationUpdated', () => {
-        mutateNotificationCount();
-      });
-
-      // clean up
-      return () => {
-        socket.off('notificationUpdated');
-      };
-    }
-  }, [mutateNotificationCount, socket]);
-
-  return (
-    <div className="position-relative">
-      { notificationCount != null && notificationCount > 0 && (
-        <span className="position-absolute badge rounded-pill bg-primary notification-count-badge">{notificationCount}</span>
-      ) }
-      <span className="material-symbols-outlined">notifications</span>
-    </div>
-  );
-};
-
 type PrimaryItemProps = {
   contents: SidebarContentsType,
   label: string,
   iconName: string,
   sidebarMode: SidebarMode,
+  badgeContents?: number,
   onHover?: (contents: SidebarContentsType) => void,
 }
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
-    contents, label, iconName, sidebarMode,
+    contents, label, iconName, sidebarMode, badgeContents,
     onHover,
   } = props;
 
@@ -102,10 +74,12 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
       onClick={itemClickedHandler}
       onMouseEnter={mouseEnteredHandler}
     >
-      { contents === SidebarContentsType.NOTIFICATION
-        ? <NotificationIconWithCountBadge />
-        : <span className="material-symbols-outlined">{iconName}</span>
-      }
+      <div className="position-relative">
+        { badgeContents != null && (
+          <span className="position-absolute badge rounded-pill bg-primary">{badgeContents}</span>
+        )}
+        <span className="material-symbols-outlined">{iconName}</span>
+      </div>
     </button>
   );
 };
@@ -119,6 +93,8 @@ export const PrimaryItems = memo((props: Props) => {
   const { onItemHover } = props;
 
   const { data: sidebarMode } = useSidebarMode();
+
+  const { data: notificationCount } = useSWRxInAppNotificationStatus();
 
   if (sidebarMode == null) {
     return <></>;
@@ -137,6 +113,7 @@ export const PrimaryItems = memo((props: Props) => {
         label="In-App Notification"
         iconName="notifications"
         onHover={onItemHover}
+        badgeContents={notificationCount}
       />
     </div>
   );
