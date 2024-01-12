@@ -91,7 +91,7 @@ export const InAppNotificationDropdown = (): JSX.Element => {
           // no items
           ? <DropdownItem disabled>{t('in_app_notification.mark_all_as_read')}</DropdownItem>
           // render DropdownItem
-          : <InAppNotificationList type="list" inAppNotificationData={inAppNotificationData} />
+          : <InAppNotificationList inAppNotificationData={inAppNotificationData} />
         }
         <DropdownItem divider />
         <DropdownItem tag="a" href="/me/all-in-app-notifications">
