@@ -54,7 +54,7 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
       </td>
       <td style={{ maxWidth: '0', textAlign: 'center' }}>
         <button className="btn btn-outline-warning" type="button" onClick={onDelete}>
-          <i className="icon-trash"></i>{t('Delete')}
+          <span className="material-symbols-outlined">delete</span>{t('Delete')}
         </button>
       </td>
     </tr>

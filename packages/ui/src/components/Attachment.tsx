@@ -33,7 +33,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
   const btnTrash = (isUserLoggedIn)
     ? (
       <a className="text-danger attachment-delete" onClick={_onAttachmentDeleteClicked}>
-        <i className="icon-trash" />
+        <span className="material-symbols-outlined">delete</span>
       </a>
     )
     : '';

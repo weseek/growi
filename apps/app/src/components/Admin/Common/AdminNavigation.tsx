@@ -13,23 +13,23 @@ const MenuLabel = ({ menu }: { menu: string }) => {
 
   switch (menu) {
     /* eslint-disable no-multi-spaces, max-len */
-    case 'app':                      return <><i className="me-1 icon-fw icon-settings"></i>{        t('headers.app_settings', { ns: 'commons' }) }</>;
-    case 'security':                 return <><i className="me-1 icon-fw icon-shield"></i>{          t('security_settings.security_settings') }</>;
-    case 'markdown':                 return <><i className="me-1 icon-fw icon-note"></i>{            t('markdown_settings.markdown_settings') }</>;
-    case 'customize':                return <><i className="me-1 icon-fw icon-wrench"></i>{          t('customize_settings.customize_settings') }</>;
-    case 'importer':                 return <><i className="me-1 icon-fw icon-cloud-upload"></i>{    t('importer_management.import_data') }</>;
-    case 'export':                   return <><i className="me-1 icon-fw icon-cloud-download"></i>{  t('export_management.export_archive_data') }</>;
-    case 'data-transfer':            return <><i className="me-1 icon-fw icon-plane"></i>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
-    case 'notification':             return <><i className="me-1 icon-fw icon-bell"></i>{            t('external_notification.external_notification')}</>;
-    case 'slack-integration':        return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration.slack_integration') }</>;
-    case 'slack-integration-legacy': return <><i className="me-1 icon-fw icon-shuffle"></i>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
-    case 'users':                    return <><i className="me-1 icon-fw icon-user"></i>{            t('user_management.user_management') }</>;
-    case 'user-groups':              return <><i className="me-1 icon-fw icon-people"></i>{          t('user_group_management.user_group_management') }</>;
-    case 'audit-log':                return <><i className="me-1 icon-fw icon-feed"></i>{            t('audit_log_management.audit_log')}</>;
-    case 'plugins':                  return <><i className="me-1 icon-fw icon-puzzle"></i>{          t('plugins.plugins')}</>;
-    case 'search':                   return <><i className="me-1 icon-fw icon-magnifier"></i>{       t('full_text_search_management.full_text_search_management') }</>;
-    case 'cloud':                    return <><i className="me-1 icon-fw icon-share-alt"></i>{       t('cloud_setting_management.to_cloud_settings')} </>;
-    default:                         return <><i className="me-1 icon-fw icon-home"></i>{            t('wiki_management_homepage') }</>;
+    case 'app':                      return <><span className="material-symbols-outlined me-1">settings</span>{        t('headers.app_settings', { ns: 'commons' }) }</>;
+    case 'security':                 return <><span className="material-symbols-outlined me-1">shield</span>{          t('security_settings.security_settings') }</>;
+    case 'markdown':                 return <><span className="material-symbols-outlined me-1">note</span>{            t('markdown_settings.markdown_settings') }</>;
+    case 'customize':                return <><span className="material-symbols-outlined me-1">construction</span>{          t('customize_settings.customize_settings') }</>;
+    case 'importer':                 return <><span className="material-symbols-outlined me-1">cloud_upload</span>{    t('importer_management.import_data') }</>;
+    case 'export':                   return <><span className="material-symbols-outlined me-1">cloud_download</span>{  t('export_management.export_archive_data') }</>;
+    case 'data-transfer':            return <><span className="material-symbols-outlined me-1">flight</span>{           t('g2g_data_transfer.data_transfer', { ns: 'commons' })}</>;
+    case 'notification':             return <><span className="material-symbols-outlined me-1">notifications</span>{            t('external_notification.external_notification')}</>;
+    case 'slack-integration':        return <><span className="material-symbols-outlined me-1">shuffle</span>{         t('slack_integration.slack_integration') }</>;
+    case 'slack-integration-legacy': return <><span className="material-symbols-outlined me-1">shuffle</span>{         t('slack_integration_legacy.slack_integration_legacy')}</>;
+    case 'users':                    return <><span className="material-symbols-outlined me-1">person</span>{            t('user_management.user_management') }</>;
+    case 'user-groups':              return <><span className="material-symbols-outlined me-1">group</span>{          t('user_group_management.user_group_management') }</>;
+    case 'audit-log':                return <><span className="material-symbols-outlined me-1">feed</span>{            t('audit_log_management.audit_log')}</>;
+    case 'plugins':                  return <><span className="material-symbols-outlined me-1">extension</span>{          t('plugins.plugins')}</>;
+    case 'search':                   return <><span className="material-symbols-outlined me-1">search</span>{       t('full_text_search_management.full_text_search_management') }</>;
+    case 'cloud':                    return <><span className="material-symbols-outlined me-1">share</span>{       t('cloud_setting_management.to_cloud_settings')} </>;
+    default:                         return <><span className="material-symbols-outlined me-1">home</span>{            t('wiki_management_homepage') }</>;
       /* eslint-enable no-multi-spaces, max-len */
   }
 };
