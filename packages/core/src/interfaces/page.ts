@@ -111,23 +111,12 @@ export type IPageInfoAll = IPageInfo | IPageInfoForEntity | IPageInfoForOperatio
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  const requiredProperties: (keyof IPageInfoForEntity)[] = [
-    'isV5Compatible',
-    'isEmpty',
-    'isDeletable',
-    'isAbleToDeleteCompletely',
-    'isRevertible',
-    'bookmarkCount',
-    'sumOfLikers',
-    'likerIds',
-    'sumOfSeenUsers',
-    'seenUserIds',
-    'contentAge',
-    'descendantCount',
-    'commentCount',
-  ];
+  return pageInfo != null;
+};
 
-  return pageInfo != null && requiredProperties.every(prop => prop in pageInfo);
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && 'isDeletable' in pageInfo && 'isAbleToDeleteCompletely' in pageInfo;
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

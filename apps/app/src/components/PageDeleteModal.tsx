@@ -2,7 +2,7 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfoForEntityForDeleteModal } from '@growi/core';
 import type {
   HasObjectId,
   IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
@@ -50,7 +50,7 @@ const PageDeleteModal: FC = () => {
   const isOpened = deleteModalData?.isOpened ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForEntity(p.meta));
+    .filter(p => !isIPageInfoForEntityForDeleteModal(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
