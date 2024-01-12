@@ -344,7 +344,10 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const getAuthProviderType = () => {
-      const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+      let kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
+      if (kcHost?.endsWith('/')) {
+        kcHost = kcHost.slice(0, -1);
+      }
       const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
 
       // starts with kcHost, contains kcGroupRealm in path

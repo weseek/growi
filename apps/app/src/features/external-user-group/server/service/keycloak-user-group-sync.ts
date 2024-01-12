@@ -30,18 +30,18 @@ export class KeycloakUserGroupSyncService extends ExternalUserGroupSyncService {
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
   constructor(s2sMessagingService: S2sMessagingService | null, socketIoService) {
+    super(ExternalGroupProviderType.keycloak, s2sMessagingService, socketIoService);
+  }
+
+  init(authProviderType: 'oidc' | 'saml'): void {
     const kcHost = configManager?.getConfig('crowi', 'external-user-group:keycloak:host');
     const kcGroupRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupRealm');
     const kcGroupSyncClientRealm = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupSyncClientRealm');
     const kcGroupDescriptionAttribute = configManager?.getConfig('crowi', 'external-user-group:keycloak:groupDescriptionAttribute');
 
-    super(ExternalGroupProviderType.keycloak, s2sMessagingService, socketIoService);
     this.kcAdminClient = new KeycloakAdminClient({ baseUrl: kcHost, realmName: kcGroupSyncClientRealm });
     this.realm = kcGroupRealm;
     this.groupDescriptionAttribute = kcGroupDescriptionAttribute;
-  }
-
-  init(authProviderType: 'oidc' | 'saml'): void {
     this.authProviderType = authProviderType;
     this.isInitialized = true;
   }
