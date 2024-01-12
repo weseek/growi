@@ -29,13 +29,13 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
   const notifications = inAppNotificationData.docs;
 
   return (
-    <>
+    <div className="list-group">
       { notifications.map((notification: IInAppNotification & HasObjectId) => {
         return (
           <InAppNotificationElm key={notification._id} notification={notification} type={props.type} elemClassName={props.elemClassName} />
         );
       }) }
-    </>
+    </div>
   );
 };
 

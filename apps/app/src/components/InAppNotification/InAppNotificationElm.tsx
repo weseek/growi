@@ -14,7 +14,6 @@ interface Props {
   type?: 'button' | 'list',
 }
 
-
 const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const { notification } = props;
@@ -56,22 +55,8 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     );
   };
 
-  const isListItem = props.type === 'list';
-
-  // determine tag
-  const TagElem = isListItem
-    ? props => (
-      <div {...props} style={{ cursor: 'pointer' }}>
-        {/* eslint-disable-next-line react/prop-types */}
-        {props.children}
-        <div className="border-top" />
-      </div>
-    )
-    // eslint-disable-next-line react/prop-types
-    : props => <button type="button" {...props}>{props.children}</button>;
-
   return (
-    <TagElem className={props.elemClassName} onClick={() => clickHandler(notification)}>
+    <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
       <div className="d-flex align-items-center">
         <span
           className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
@@ -80,12 +65,13 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
           } rounded-circle me-3`}
         >
         </span>
+
         {renderActionUserPictures()}
 
         <Notification />
 
       </div>
-    </TagElem>
+    </div>
   );
 };
 
