@@ -43,7 +43,7 @@ const NotificationIconWithCountBadge = (): JSX.Element => {
   return (
     <div className="position-relative">
       { notificationCount != null && notificationCount > 0 && (
-        <span className="badge rounded-pill bg-primary notification-count-badge">{notificationCount}</span>
+        <span className="position-absolute badge rounded-pill bg-primary notification-count-badge">{notificationCount}</span>
       ) }
       <span className="material-symbols-outlined">notifications</span>
     </div>
