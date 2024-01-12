@@ -2,7 +2,6 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { isIPageInfoForEntityForDeleteModal } from '@growi/core';
 import type {
   HasObjectId,
   IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
@@ -40,6 +39,11 @@ const deleteIconAndKey = {
     icon: 'trash',
     translationKey: 'page',
   },
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && 'isDeletable' in pageInfo && 'isAbleToDeleteCompletely' in pageInfo;
 };
 
 const PageDeleteModal: FC = () => {

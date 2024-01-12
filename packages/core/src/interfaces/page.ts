@@ -115,11 +115,6 @@ export const isIPageInfoForEntity = (pageInfo: any | undefined): pageInfo is IPa
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
-  return pageInfo != null && 'isDeletable' in pageInfo && 'isAbleToDeleteCompletely' in pageInfo;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isIPageInfoForOperation = (pageInfo: any | undefined): pageInfo is IPageInfoForOperation => {
   return pageInfo != null
     && isIPageInfoForEntity(pageInfo)
