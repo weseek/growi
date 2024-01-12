@@ -151,7 +151,7 @@ export default class ImportCollectionItem extends React.Component {
         disabled={isImporting || !isConfigButtonAvailable}
         onClick={isConfigButtonAvailable ? this.configButtonClickedHandler : null}
       >
-        <i className="icon-settings"></i>
+        <span className="material-symbols-outlined">settings</span>
       </button>
     );
   }

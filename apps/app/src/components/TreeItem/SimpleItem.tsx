@@ -1,17 +1,15 @@
 import React, {
-  useCallback, useState, FC, useEffect, ReactNode,
+  useCallback, useState, FC, useEffect,
 } from 'react';
 
 import nodePath from 'path';
 
-import type { Nullable, IPageToDeleteWithMeta } from '@growi/core';
+import type { Nullable } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { IPageForItem } from '~/interfaces/page';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -19,23 +17,9 @@ import { shouldRecoverPagePaths } from '~/utils/page-operation';
 import CountBadge from '../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
+import { useNewPageInput } from './NewPageInput';
+import type { SimpleItemContentProps, SimpleItemProps, SimpleItemToolProps } from './interfaces';
 
-
-export type SimpleItemProps = {
-  isEnableActions: boolean
-  isReadOnlyUser: boolean
-  itemNode: ItemNode
-  targetPathOrId?: Nullable<string>
-  isOpen?: boolean
-  onRenamed?(fromPath: string | undefined, toPath: string): void
-  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
-  itemRef?
-  itemClass?: React.FunctionComponent<SimpleItemProps>
-  mainClassName?: string
-  customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
-  customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
-};
 
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
@@ -69,21 +53,10 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
  * @returns
  */
 
-// Component wrapper to make a child element not draggable
-// https://github.com/react-dnd/react-dnd/issues/335
-type NotDraggableProps = {
-  children: ReactNode,
-};
-export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
-  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
-};
-
-type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
-
 export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   const { t } = useTranslation();
   const router = useRouter();
+
   const { getDescCount } = usePageTreeDescCountMap();
 
   const page = props.page;
@@ -139,18 +112,12 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const { page, children } = itemNode;
 
+  const { isProcessingSubmission } = useNewPageInput();
+
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isCreating, setCreating] = useState(false);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
-
-  const stateHandlers = {
-    isOpen,
-    setIsOpen,
-    isCreating,
-    setCreating,
-  };
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
@@ -197,7 +164,12 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const commonProps = {
+  const CustomEndComponents = props.customEndComponents;
+
+  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
+
+  const simpleItemProps: SimpleItemProps = {
+    itemNode,
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
@@ -205,23 +177,13 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
-    stateHandlers,
   };
 
-  const CustomEndComponents = props.customEndComponents;
-
-  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
-
-  const SimpleItemContentProps = {
-    itemNode,
+  const simpleItemContentProps: SimpleItemContentProps = {
+    ...simpleItemProps,
     page,
-    onRenamed,
-    onClickDuplicateMenuItem,
-    onClickDeleteMenuItem,
-    isEnableActions,
-    isReadOnlyUser,
     children,
-    stateHandlers,
+    stateHandlers: { isOpen, setIsOpen },
   };
 
   const CustomNextComponents = props.customNextComponents;
@@ -254,20 +216,20 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
         </div>
         {SimpleItemContent.map((ItemContent, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <ItemContent key={index} {...SimpleItemContentProps} />
+          <ItemContent key={index} {...simpleItemContentProps} />
         ))}
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <UnderItemContent key={index} {...SimpleItemContentProps} />
+        <UnderItemContent key={index} {...simpleItemContentProps} />
       ))}
 
       {
         isOpen && hasChildren() && currentChildren.map((node, index) => (
           <div key={node.page._id} className="grw-pagetree-item-children">
-            <ItemClassFixed itemNode={node} {...commonProps} />
-            {isCreating && (currentChildren.length - 1 === index) && (
+            <ItemClassFixed {...simpleItemProps} />
+            {isProcessingSubmission && (currentChildren.length - 1 === index) && (
               <div className="text-muted text-center">
                 <i className="fa fa-spinner fa-pulse mr-1"></i>
               </div>

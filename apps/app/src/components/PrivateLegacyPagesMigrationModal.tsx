@@ -89,7 +89,7 @@ export const PrivateLegacyPagesMigrationModal = (): JSX.Element => {
       <ModalFooter>
         <ApiErrorMessageList errs={errs} />
         <button type="button" className="btn btn-primary" onClick={submit}>
-          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
           { t('private_legacy_pages.modal.button_label') }
         </button>
       </ModalFooter>
