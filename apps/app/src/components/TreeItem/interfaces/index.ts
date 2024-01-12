@@ -6,16 +6,10 @@ import type { IPageForPageDuplicateModal } from '~/stores/modal';
 
 import type { ItemNode } from '../ItemNode';
 
-export type SimpleItemStateHandlers = {
-  isOpen: boolean,
-  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-};
-
 type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
 
 export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {
   page: IPageForItem,
-  stateHandlers: SimpleItemStateHandlers,
 };
 
 export type SimpleItemProps = {
@@ -32,4 +26,13 @@ export type SimpleItemProps = {
   mainClassName?: string
   customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
   customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
+};
+
+export type SimpleItemContentProps = SimpleItemToolProps & {
+  page: IPageForItem,
+  children: ItemNode[],
+  stateHandlers: {
+    isOpen: boolean,
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  },
 };

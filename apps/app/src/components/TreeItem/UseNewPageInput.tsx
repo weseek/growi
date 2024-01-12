@@ -4,23 +4,24 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
-import { ItemNode } from './ItemNode';
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';
-import { SimpleItemToolProps } from './interfaces';
+import type { SimpleItemContentProps } from './interfaces';
 
-type UseNewPageInputProps = SimpleItemToolProps & {
-  children: ItemNode[],
-};
+type UseNewPageInput = {
+  NewPageInputWrapper: FC<SimpleItemContentProps>,
+  NewPageCreateButtonWrapper: FC<SimpleItemContentProps>,
+  isProcessingSubmission: boolean,
+}
 
-export const useNewPageInput = () => {
+export const useNewPageInput = (): UseNewPageInput => {
 
   const [showInput, setShowInput] = useState(false);
   const [isProcessingSubmission, setProcessingSubmission] = useState(false);
 
   const { getDescCount } = usePageTreeDescCountMap();
 
-  const NewPageCreateButtonWrapper: FC<UseNewPageInputProps> = (props) => {
+  const NewPageCreateButtonWrapper: FC<SimpleItemContentProps> = (props) => {
 
     const { page, children, stateHandlers } = props;
     const { setIsOpen } = stateHandlers;
@@ -47,7 +48,7 @@ export const useNewPageInput = () => {
     );
   };
 
-  const NewPageInputWrapper: FC<UseNewPageInputProps> = (props) => {
+  const NewPageInputWrapper: FC<SimpleItemContentProps> = (props) => {
 
     const {
       page, children, stateHandlers,
@@ -87,15 +88,17 @@ export const useNewPageInput = () => {
       setProcessingSubmission(false);
     }, []);
 
-    return showInput && (
-      <NewPageInput
-        page={props.page}
-        isEnableActions={props.isEnableActions}
-        onSubmit={submitHandler}
-        onSubmittionFailed={submittionFailedHandler}
-        onCanceled={() => setShowInput(false)}
-      />
-    );
+    return showInput
+      ? (
+        <NewPageInput
+          page={props.page}
+          isEnableActions={props.isEnableActions}
+          onSubmit={submitHandler}
+          onSubmittionFailed={submittionFailedHandler}
+          onCanceled={() => setShowInput(false)}
+        />
+      )
+      : <></>;
   };
 
   return {
