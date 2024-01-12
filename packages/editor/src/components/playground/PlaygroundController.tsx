@@ -3,6 +3,7 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { PlaygroundAllEditorTheme, PlaygroundReactCodeMirror } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -68,11 +69,62 @@ export const SetCaretLineRow = (): JSX.Element => {
   );
 };
 
-export const PlaygroundController = (): JSX.Element => {
+type SetThemeRowProps = {
+  setEditorTheme: (value: string) => void,
+}
+const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
+
+  const { setEditorTheme } = props;
+
+  const createItems = (items: string[]): JSX.Element => {
+    return (
+      <div>
+        { items.map((theme) => {
+          return (
+            <button
+              type="button"
+              className="btn btn-outline-secondary"
+              onClick={() => {
+                setEditorTheme(theme);
+              }}
+            >{theme}
+            </button>
+          );
+        }) }
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="row mt-3">
+        <h2>default</h2>
+        <div className="col">
+          {createItems(Object.keys(PlaygroundAllEditorTheme))}
+        </div>
+      </div>
+      <div className="row mt-3">
+        <h2>ReactCodeMirror</h2>
+        <div className="col">
+          {createItems(Object.keys(PlaygroundReactCodeMirror))}
+        </div>
+      </div>
+    </>
+  );
+};
+
+
+type PlaygroundControllerProps = {
+  setEditorTheme: (value: string) => void
+};
+
+export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
+  const { setEditorTheme } = props;
   return (
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
+      <SetThemeRow setEditorTheme={setEditorTheme} />
     </div>
   );
 };
