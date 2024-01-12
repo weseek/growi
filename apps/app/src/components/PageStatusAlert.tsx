@@ -52,12 +52,12 @@ export const PageStatusAlert = (): JSX.Element => {
   //     additionalClasses: ['bg-success', 'd-hackmd-none'],
   //     label:
   // <>
-  //   <i className="icon-fw icon-people"></i>
+  //   <span className="material-symbols-outlined">person</span>
   //   {t('hackmd.someone_editing')}
   // </>,
   //     btn:
   // <a href="#hackmd" key="btnOpenHackmdSomeoneEditing" className="btn btn-outline-white">
-  //   <i className="fa fa-fw fa-file-text-o me-1"></i>
+  //   <span class="material-symbols-outlined">description</span>
   //   Open HackMD Editor
   // </a>,
   //   };
@@ -76,13 +76,13 @@ export const PageStatusAlert = (): JSX.Element => {
       additionalClasses: ['bg-warning text-dark'],
       label:
   <>
-    <i className="icon-fw icon-bulb"></i>
+    <span className="material-symbols-outlined">lightbulb</span>
     {label1}
   </>,
       btn:
   <>
     <button type="button" onClick={() => refreshPage()} className="btn btn-outline-white me-4">
-      <i className="icon-fw icon-reload me-1"></i>
+      <span className="material-symbols-outlined">refresh</span>
       {t('Load latest')}
     </button>
     { isConflict && (
@@ -91,7 +91,7 @@ export const PageStatusAlert = (): JSX.Element => {
         onClick={onClickResolveConflict}
         className="btn btn-outline-white"
       >
-        <i className="fa fa-fw fa-file-text-o me-1"></i>
+        <span className="material-symbols-outlined">description</span>
         {t('modal_resolve_conflict.resolve_conflict')}
       </button>
     )}
