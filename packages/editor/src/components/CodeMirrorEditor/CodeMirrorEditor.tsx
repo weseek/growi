@@ -3,11 +3,12 @@ import {
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
+import { Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone, FileDropzoneOverlay } from '../../services';
+import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -26,6 +27,7 @@ type Props = {
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
   indentSize?: number,
+  editorTheme?: string,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -35,6 +37,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     onChange,
     onUpload,
     indentSize,
+    editorTheme,
   } = props;
 
   const containerRef = useRef(null);
@@ -99,6 +102,23 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor]);
+
+  useEffect(() => {
+    if (editorTheme == null) {
+      return;
+    }
+    if (AllEditorTheme[editorTheme] == null) {
+      return;
+    }
+
+    const extension = AllEditorTheme[editorTheme];
+
+    // React CodeMirror has default theme which is default prec
+    // and extension have to be higher prec here than default theme.
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorTheme]);
 
   const {
     getRootProps,

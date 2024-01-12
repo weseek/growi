@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
+
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
@@ -28,6 +29,7 @@ import {
   useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
+  useEditorSettings,
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
@@ -114,6 +116,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
   const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
@@ -577,6 +580,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
+            editorTheme={editorSettings?.theme}
           />
         </div>
         <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
