@@ -1,5 +1,5 @@
 import { Model } from 'mongoose';
-import unzipStream from 'unzip-stream';
+import unzipStream, { Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
@@ -101,12 +101,16 @@ class GrowiBridgeService {
     const readStream = fs.createReadStream(zipFile);
     const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
 
-    unzipStreamPipe.on('entry', async(entry) => {
+    unzipStreamPipe.on('entry', async(entry: Entry) => {
       const fileName = entry.path;
-      const size = entry.vars.uncompressedSize; // There is also compressedSize;
+      const size = entry.size; // might be undefined in some archives
 
       if (fileName === this.getMetaFileName()) {
-        meta = JSON.parse((await entry.buffer()).toString());
+        const metaBuffers: Array<Buffer> = [];
+        for await (const chunk of entry) {
+          metaBuffers.push(Buffer.from(chunk));
+        }
+        meta = JSON.parse(Buffer.concat(metaBuffers).toString());
       }
       else {
         innerFileStats.push({
