@@ -417,7 +417,7 @@ class ImportService {
       }
     });
 
-    await streamToPromise(unzipStream);
+    await streamToPromise(unzipStreamPipe);
 
     return files;
   }

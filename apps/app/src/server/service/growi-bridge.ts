@@ -124,7 +124,7 @@ class GrowiBridgeService {
     });
 
     try {
-      await streamToPromise(unzipStream);
+      await streamToPromise(unzipStreamPipe);
     }
     // if zip is broken
     catch (err) {
