@@ -1,5 +1,6 @@
 /**
  * @typedef {import("@types/unzip-stream").Parse} Parse
+ * @typedef {import("@types/unzip-stream").Entry} Entry
  */
 
 import gc from 'expose-gc/function';
@@ -393,7 +394,7 @@ class ImportService {
     const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
     const files = [];
 
-    unzipStreamPipe.on('entry', (entry) => {
+    unzipStreamPipe.on('entry', (/** @type {Entry} */ entry) => {
       const fileName = entry.path;
       // https://regex101.com/r/mD4eZs/6
       // prevent from unexpecting attack doing unzip file (path traversal attack)
