@@ -1,3 +1,5 @@
+import { Transform } from 'stream';
+
 import { Model } from 'mongoose';
 import unzipStream, { Entry } from 'unzip-stream';
 
@@ -100,17 +102,25 @@ class GrowiBridgeService {
 
     const readStream = fs.createReadStream(zipFile);
     const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    const entryStreams: Array<Promise<void>> = [];
 
-    unzipStreamPipe.on('entry', async(entry: Entry) => {
+    unzipStreamPipe.on('entry', (entry: Entry) => {
       const fileName = entry.path;
       const size = entry.size; // might be undefined in some archives
-
       if (fileName === this.getMetaFileName()) {
         const metaBuffers: Array<Buffer> = [];
-        for await (const chunk of entry) {
-          metaBuffers.push(Buffer.from(chunk));
-        }
-        meta = JSON.parse(Buffer.concat(metaBuffers).toString());
+        const metaStream = new Transform({
+          transform: (chunk, _encoding, callback) => {
+            metaBuffers.push(Buffer.from(chunk));
+            callback();
+          },
+          final: (callback) => {
+            meta = JSON.parse(Buffer.concat(metaBuffers).toString());
+            callback();
+          },
+        });
+
+        entryStreams.push(streamToPromise(entry.pipe(metaStream)));
       }
       else {
         innerFileStats.push({
@@ -125,6 +135,7 @@ class GrowiBridgeService {
 
     try {
       await streamToPromise(unzipStreamPipe);
+      await Promise.all(entryStreams);
     }
     // if zip is broken
     catch (err) {
