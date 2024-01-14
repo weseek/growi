@@ -37,6 +37,7 @@ const PageDuplicateModal = (): JSX.Element => {
   const [existingPaths, setExistingPaths] = useState<string[]>([]);
   const [isDuplicateRecursively, setIsDuplicateRecursively] = useState(true);
   const [isDuplicateRecursivelyWithoutExistPath, setIsDuplicateRecursivelyWithoutExistPath] = useState(true);
+  const [onlyDuplicateUserRelatedGrantedGroups, setOnlyDuplicateUserRelatedGrantedGroups] = useState(true);
 
   const updateSubordinatedList = useCallback(async() => {
     if (page == null) {
@@ -114,7 +115,9 @@ const PageDuplicateModal = (): JSX.Element => {
 
     const { pageId, path } = page;
     try {
-      const { data } = await apiv3Post('/pages/duplicate', { pageId, pageNameInput, isRecursively: isDuplicateRecursively });
+      const { data } = await apiv3Post('/pages/duplicate', {
+        pageId, pageNameInput, isRecursively: isDuplicateRecursively, onlyDuplicateUserRelatedGrantedGroups,
+      });
       const onDuplicated = duplicateModalData?.opts?.onDuplicated;
       const fromPath = path;
       const toPath = data.page.path;
@@ -193,7 +196,7 @@ const PageDuplicateModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        <div className="form-check form-check-warning mb-3">
+        <div className="form-check form-check-warning">
           <input
             className="form-check-input"
             name="recursively"
@@ -204,7 +207,7 @@ const PageDuplicateModal = (): JSX.Element => {
           />
           <label className="form-label form-check-label" htmlFor="cbDuplicateRecursively">
             { t('modal_duplicate.label.Recursively') }
-            <p className="form-text text-muted mt-0">{ t('modal_duplicate.help.recursive') }</p>
+            <p className="form-text text-muted my-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
 
           <div>
@@ -224,11 +227,24 @@ const PageDuplicateModal = (): JSX.Element => {
               </div>
             )}
           </div>
-          <div>
-            {isDuplicateRecursively && existingPaths.length !== 0 && (
-              <DuplicatePathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
-            ) }
-          </div>
+        </div>
+
+        <div className="form-check form-check-warning mb-3">
+          <input
+            className="form-check-input"
+            id="cbOnlyDuplicateUserRelatedGrantedGroups"
+            type="checkbox"
+            checked={onlyDuplicateUserRelatedGrantedGroups}
+            onChange={() => setOnlyDuplicateUserRelatedGrantedGroups(!onlyDuplicateUserRelatedGrantedGroups)}
+          />
+          <label className="form-label form-check-label" htmlFor="cbOnlyDuplicateUserRelatedGrantedGroups">
+            Only duplicate user related granted groups
+          </label>
+        </div>
+        <div>
+          {isDuplicateRecursively && existingPaths.length !== 0 && (
+            <DuplicatePathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
+          ) }
         </div>
       </>
     );
