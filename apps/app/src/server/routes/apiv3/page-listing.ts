@@ -8,6 +8,7 @@ import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
 
+import { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
 
 import Crowi from '../../crowi';
@@ -119,6 +120,8 @@ const routerFactory = (crowi: Crowi): Router => {
     const Bookmark = crowi.model('Bookmark');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageService: PageService = crowi.pageService!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const pageGrantService: IPageGrantService = crowi.pageGrantService!;
 
     try {
       const pages = pageIds != null
@@ -140,12 +143,14 @@ const routerFactory = (crowi: Crowi): Router => {
       const idToPageInfoMap: Record<string, IPageInfo | IPageInfoForListing> = {};
 
       const isGuestUser = req.user == null;
+
+      const userRelatedGroups = await pageGrantService.getUserRelatedGroups(req.user);
+
       for (const page of pages) {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
-        // eslint-disable-next-line no-await-in-loop
-        const canDeleteCompletely = await pageService.canDeleteCompletely(page, req.user, false); // use normal delete config
+        const canDeleteCompletely = pageService.canDeleteCompletely(page, req.user, false, userRelatedGroups); // use normal delete config
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

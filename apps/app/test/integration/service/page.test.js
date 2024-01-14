@@ -770,7 +770,8 @@ describe('PageService', () => {
         });
 
         test('is not deletable', async() => {
-          const isDeleteable = await crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1);
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
           expect(isDeleteable).toBe(false);
         });
       });
@@ -789,7 +790,8 @@ describe('PageService', () => {
         });
 
         test('is not deletable', async() => {
-          const isDeleteable = await crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser3);
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser3);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser3, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
@@ -808,7 +810,8 @@ describe('PageService', () => {
         });
 
         test('is deletable', async() => {
-          const isDeleteable = await crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1);
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
@@ -827,7 +830,8 @@ describe('PageService', () => {
         });
 
         test('is deletable', async() => {
-          const isDeleteable = await crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser2);
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser2);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser2, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
