@@ -210,6 +210,20 @@ class PageService implements IPageService {
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
+
+    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, operator, userRelatedGroups)) return false;
+
+    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
+
+    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
+  }
+
+  /**
+   * If page is multi-group granted, check if operator is allowed to completely delete the page.
+   * see: https://dev.growi.org/656745fa52eafe1cf1879508#%E5%AE%8C%E5%85%A8%E3%81%AB%E5%89%8A%E9%99%A4%E3%81%99%E3%82%8B%E6%93%8D%E4%BD%9C
+   */
+  canDeleteCompletelyAsMultiGroupGrantedPage(page: PageDocument, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
+    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
       'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
     );
@@ -227,9 +241,7 @@ class PageService implements IPageService {
       }
     }
 
-    const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
-
-    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return true;
   }
 
   canDelete(page: PageDocument, operator: any | null, isRecursively: boolean): boolean {
@@ -317,7 +329,7 @@ class PageService implements IPageService {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
       if (p.isEmpty) return true;
-      const canDelete = await canDeleteFunction(p, user, isRecursively, userRelatedGroups);
+      const canDelete = canDeleteFunction(p, user, isRecursively, userRelatedGroups);
       return canDelete;
     });
 
