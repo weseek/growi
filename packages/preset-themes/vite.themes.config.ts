@@ -15,7 +15,7 @@ export default defineConfig(({ mode }) => {
           // '/src/styles/christmas.scss',
           '/src/styles/default.scss',
           '/src/styles/fire-red.scss',
-          // '/src/styles/future.scss',
+          '/src/styles/future.scss',
           // '/src/styles/halloween.scss',
           // '/src/styles/hufflepuff.scss',
           // '/src/styles/island.scss',
