@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -15,6 +16,12 @@ import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
+const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
+  const now = format(new Date(), 'yyyy/MM/dd');
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
+  return `${userHomepagePath}/${parentDirName}/${now}`;
+};
+
 export const PageCreateButton = React.memo((): JSX.Element => {
   const { t } = useTranslation('commons');
 
@@ -23,12 +30,12 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const now = format(new Date(), 'yyyy/MM/dd');
-  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-  const todaysPath = `${userHomepagePath}/${t('create_page_dropdown.todays.memo')}/${now}`;
+  const todaysPath = currentUser == null
+    ? null
+    : generateTodaysPath(currentUser, t('create_page_dropdown.todays.memo'));
 
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPagePath, isLoading);
-  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
+  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
   const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoading);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
@@ -69,10 +76,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
             aria-expanded="false"
           />
           <DropendMenu
-            todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickNewButton}
             onClickCreateTodaysButtonHandler={onClickTodaysButton}
             onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+            todaysPath={todaysPath}
           />
         </div>
       )}

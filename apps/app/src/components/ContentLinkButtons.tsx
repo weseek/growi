@@ -15,7 +15,7 @@ const BookMarkLinkButton = React.memo(() => {
         type="button"
         className="btn btn-outline-secondary btn-sm px-2"
       >
-        <i className="fa fa-fw fa-bookmark-o"></i>
+        <span className="material-symbols-outlined">bookmark</span>
         <span>Bookmarks</span>
       </button>
     </ScrollLink>
