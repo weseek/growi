@@ -1,9 +1,10 @@
 import {
-  FC, memo, useCallback,
+  FC, memo, useCallback, useEffect,
 } from 'react';
 
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
+import { useDefaultSocket } from '~/stores/socket-io';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
 import styles from './PrimaryItems.module.scss';
@@ -94,8 +95,6 @@ export const PrimaryItems = memo((props: Props) => {
 
   const { data: sidebarMode } = useSidebarMode();
 
-  const { data: notificationCount } = useSWRxInAppNotificationStatus();
-
   if (sidebarMode == null) {
     return <></>;
   }
@@ -107,13 +106,46 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
+    </div>
+  );
+});
+
+export const PrimaryItemsForNotification = memo((props: Props) => {
+  const { onItemHover } = props;
+
+  const { data: sidebarMode } = useSidebarMode();
+
+  const { data: socket } = useDefaultSocket();
+
+  const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
+
+  useEffect(() => {
+    if (socket != null) {
+      socket.on('notificationUpdated', () => {
+        mutateNotificationCount();
+      });
+
+      // clean up
+      return () => {
+        socket.off('notificationUpdated');
+      };
+    }
+  }, [mutateNotificationCount, socket]);
+
+
+  if (sidebarMode == null) {
+    return <></>;
+  }
+
+  return (
+    <div className={styles['grw-primary-items']}>
       <PrimaryItem
         sidebarMode={sidebarMode}
         contents={SidebarContentsType.NOTIFICATION}
         label="In-App Notification"
         iconName="notifications"
         onHover={onItemHover}
-        badgeContents={notificationCount}
+        badgeContents={notificationCount != null && notificationCount > 0 ? notificationCount : undefined}
       />
     </div>
   );
