@@ -753,8 +753,10 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
-          return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
+        const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(req.user);
+        const canDeleteCompletely = crowi.pageService.canDeleteCompletely(page, req.user, isRecursively, userRelatedGroups);
+        if (!canDeleteCompletely) {
+          return res.json(ApiResponse.error('You cannot delete this page completely', 'complete_deletion_not_allowed_for_user'));
         }
 
         if (pagePathUtils.isUsersHomepage(page.path)) {

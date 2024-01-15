@@ -21,8 +21,9 @@ import ExternalUserGroupRelation from '~/features/external-user-group/server/mod
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
 import {
-  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation,
+  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation, PageSingleDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
+import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -192,26 +193,66 @@ class PageService implements IPageService {
     return this.pageEvent;
   }
 
-  canDeleteCompletely(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
+  /**
+   * Check if page can be deleted completely.
+   * Use pageGrantService.getUserRelatedGroups before execution of canDeleteCompletely to get value for userRelatedGroups.
+   * Do NOT use getUserRelatedGrantedGroups inside this method, because canDeleteCompletely should not be async as for now.
+   * The reason for this is because canDeleteCompletely is called in /page-listing/info in a for loop,
+   * and /page-listing/info should not be an execution heavy API.
+   */
+  canDeleteCompletely(
+      page: PageDocument,
+      operator: any | null,
+      isRecursively: boolean,
+      userRelatedGroups: PopulatedGrantedGroup[],
+  ): boolean {
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
+    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, operator, userRelatedGroups)) return false;
+
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
-  canDelete(path: string, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
-    if (operator == null || isTopPage(path) || isUsersTopPage(path)) return false;
+  /**
+   * If page is multi-group granted, check if operator is allowed to completely delete the page.
+   * see: https://dev.growi.org/656745fa52eafe1cf1879508#%E5%AE%8C%E5%85%A8%E3%81%AB%E5%89%8A%E9%99%A4%E3%81%99%E3%82%8B%E6%93%8D%E4%BD%9C
+   */
+  canDeleteCompletelyAsMultiGroupGrantedPage(page: PageDocument, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
+    const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
+    const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
+      'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
+    );
+
+    const isAdmin = operator?.admin ?? false;
+    const isAuthor = operator?._id == null ? false : operator._id.equals(page.creator);
+    const isAdminOrAuthor = isAdmin || isAuthor;
+
+    if (page.grant === PageGrant.GRANT_USER_GROUP
+      && !isAdminOrAuthor && pageCompleteDeletionAuthority === PageSingleDeleteCompConfigValue.Anyone
+      && isAllGroupMembershipRequiredForPageCompleteDeletion) {
+      const userRelatedGrantedGroups = this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroups.map(ug => ug.item._id.toString()));
+      if (userRelatedGrantedGroups.length !== page.grantedGroups.length) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  canDelete(page: PageDocument, operator: any | null, isRecursively: boolean): boolean {
+    if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
     const pageRecursiveDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority');
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
-    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   canDeleteUserHomepageByConfig(): boolean {
@@ -236,16 +277,16 @@ class PageService implements IPageService {
       recursiveAuthority: IPageDeleteConfigValueToProcessValidation | null,
   ): boolean {
     const isAdmin = operator?.admin ?? false;
-    const isOperator = operator?._id == null ? false : operator._id.equals(creatorId);
+    const isAuthor = operator?._id == null ? false : operator._id.equals(creatorId);
 
     if (isRecursively) {
-      return this.compareDeleteConfig(isAdmin, isOperator, recursiveAuthority);
+      return this.compareDeleteConfig(isAdmin, isAuthor, recursiveAuthority);
     }
 
-    return this.compareDeleteConfig(isAdmin, isOperator, authority);
+    return this.compareDeleteConfig(isAdmin, isAuthor, authority);
   }
 
-  private compareDeleteConfig(isAdmin: boolean, isOperator: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
+  private compareDeleteConfig(isAdmin: boolean, isAuthor: boolean, authority: IPageDeleteConfigValueToProcessValidation | null): boolean {
     if (isAdmin) {
       return true;
     }
@@ -253,7 +294,7 @@ class PageService implements IPageService {
     if (authority === PageDeleteConfigValue.Anyone || authority == null) {
       return true;
     }
-    if (authority === PageDeleteConfigValue.AdminAndAuthor && isOperator) {
+    if (authority === PageDeleteConfigValue.AdminAndAuthor && isAuthor) {
       return true;
     }
 
@@ -283,9 +324,14 @@ class PageService implements IPageService {
       pages: PageDocument[],
       user: IUserHasId,
       isRecursively: boolean,
-      canDeleteFunction: (path: string, creatorId: ObjectIdLike, operator: any, isRecursively: boolean) => boolean,
+      canDeleteFunction: (page: PageDocument, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
   ): Promise<PageDocument[]> {
-    const filteredPages = pages.filter(p => p.isEmpty || canDeleteFunction(p.path, p.creator, user, isRecursively));
+    const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
+    const filteredPages = pages.filter(async(p) => {
+      if (p.isEmpty) return true;
+      const canDelete = canDeleteFunction(p, user, isRecursively, userRelatedGroups);
+      return canDelete;
+    });
 
     if (!this.canDeleteUserHomepageByConfig()) {
       return filteredPages.filter(p => !isUsersHomepage(p.path));
@@ -376,8 +422,11 @@ class PageService implements IPageService {
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
       creatorId = notEmptyClosestAncestor.creator;
     }
-    const isDeletable = this.canDelete(page.path, creatorId, user, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page.path, creatorId, user, false); // use normal delete config
+
+    const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
+
+    const isDeletable = this.canDelete(page, user, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page, user, false, userRelatedGroups); // use normal delete config
 
     return {
       data: page,
