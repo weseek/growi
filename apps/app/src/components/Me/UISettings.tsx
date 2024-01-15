@@ -7,9 +7,6 @@ import { updateUserUISettings } from '~/client/services/user-ui-settings';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCollapsedContentsOpened, usePreferCollapsedMode, useSidebarMode } from '~/stores/ui';
 
-import SidebarCollapsedIcon from './SidebarCollapsedIcon';
-import SidebarDockIcon from './SidebarDockIcon';
-
 import styles from './UISettings.module.scss';
 
 const IconWithTooltip = ({
@@ -60,9 +57,9 @@ export const UISettings = (): JSX.Element => {
               label="Collapsed"
               additionalClasses={styles['grw-sidebar-mode-icon']}
             >
-              <SidebarCollapsedIcon />
+              <span className="growi-custom-icons">sidebar-collapsed</span>
             </IconWithTooltip>
-            <div className="form-check form-switch ms-2">
+            <div className="form-check form-switch ms-1">
 
               <input
                 id="swSidebarMode"
@@ -74,7 +71,7 @@ export const UISettings = (): JSX.Element => {
               <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
             </div>
             <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-              <SidebarDockIcon />
+              <span className="growi-custom-icons">sidebar-dock</span>
             </IconWithTooltip>
           </div>
           <div className="ms-2">
