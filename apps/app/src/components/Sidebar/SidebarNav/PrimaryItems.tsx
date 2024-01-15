@@ -119,6 +119,8 @@ export const PrimaryItemsForNotification = memo((props: Props) => {
 
   const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
+  const badgeContents = notificationCount != null && notificationCount > 0 ? notificationCount : undefined;
+
   useEffect(() => {
     if (socket != null) {
       socket.on('notificationUpdated', () => {
@@ -145,7 +147,7 @@ export const PrimaryItemsForNotification = memo((props: Props) => {
         label="In-App Notification"
         iconName="notifications"
         onHover={onItemHover}
-        badgeContents={notificationCount != null && notificationCount > 0 ? notificationCount : undefined}
+        badgeContents={badgeContents}
       />
     </div>
   );
