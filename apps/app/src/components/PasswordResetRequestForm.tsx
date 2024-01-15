@@ -40,7 +40,8 @@ const PasswordResetRequestForm: FC = () => {
         </div>
       ) : (
         <>
-          <h1><i className="icon-lock large"></i></h1>
+          {/* lock-icon large */}
+          <h1><span className="material-symbols-outlined">lock</span></h1>
           <h1 className="text-center">{ t('forgot_password.forgot_password') }</h1>
           <h3>{t('forgot_password.password_reset_request_desc')}</h3>
           <div>
@@ -67,7 +68,7 @@ const PasswordResetRequestForm: FC = () => {
         </>
       )}
       <Link href="/login" prefetch={false}>
-        <i className="icon-login me-1" />{t('forgot_password.return_to_login')}
+        <span className="material-symbols-outlined">login</span>{t('forgot_password.return_to_login')}
       </Link>
     </form>
   );

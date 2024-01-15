@@ -218,7 +218,7 @@ const PageDeleteModal: FC = () => {
         {!isAbleToDeleteCompletely
         && (
           <p className="alert alert-warning p-2 my-0">
-            <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
+            <span className="material-symbols-outlined">block</span>{ t('modal_delete.delete_completely_restriction') }
           </p>
         )}
       </div>

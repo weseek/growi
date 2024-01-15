@@ -178,7 +178,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           className="btn-comment-reply"
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
-                          <i className="icon-fw icon-action-undo"></i> Reply
+                          <span className="material-symbols-outlined">replay</span> Reply
                         </Button>
                       </NotAvailableForReadOnlyUser>
                     </NotAvailableForGuest>
