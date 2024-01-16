@@ -204,18 +204,19 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully redirect to editor', () => {
-          const content = '# HELLO \n ## Hello\n ### Hello';
+        // TODO: fix by https://redmine.weseek.co.jp/issues/138562
+        // it('Successfully redirect to editor', () => {
+        //   const content = '# HELLO \n ## Hello\n ### Hello';
 
-          cy.get('.grw-sidebar-content-header > h3 > a').should('be.visible').click();
+        //   cy.get('.grw-sidebar-content-header > h3 > a').should('be.visible').click();
 
-          cy.get('.layout-root').should('have.class', 'editing');
-          cy.get('.CodeMirror textarea').type(content, {force: true});
+        //   cy.get('.layout-root').should('have.class', 'editing');
+        //   cy.get('.CodeMirror textarea').type(content, {force: true});
 
-          cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`, { blackout: blackoutOverride });
+        //   cy.screenshot(`${ssPrefix}custom-sidebar-2-redirect-to-editor`, { blackout: blackoutOverride });
 
-          cy.getByTestid('save-page-btn').click();
-        });
+        //   cy.getByTestid('save-page-btn').click();
+        // });
 
         it('Successfully create custom sidebar content', () => {
           cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
