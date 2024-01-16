@@ -11,6 +11,7 @@ const getStrFromBol = (editor: EditorView) => {
   return editor.state.sliceDoc(getBol(editor), curPos);
 };
 
+// https://regex101.com/r/UKMNlO/1
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
 const insertText = (editor: EditorView, text: string) => {
