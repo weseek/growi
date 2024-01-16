@@ -1056,7 +1056,7 @@ class PageService implements IPageService {
   /*
    * Duplicate
    */
-  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedGrantedGroups = false) {
+  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources = false) {
     /*
      * Common Operation
      */
@@ -1077,7 +1077,7 @@ class PageService implements IPageService {
     // 1. Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
     if (isShouldUseV4Process) {
-      return this.duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups);
+      return this.duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources);
     }
 
     const canOperate = await this.crowi.pageOperationService.canOperate(isRecursively, page.path, newPagePath);
@@ -1097,12 +1097,12 @@ class PageService implements IPageService {
       }
       grant = parent.grant;
       grantedUserIds = parent.grantedUsers;
-      grantedGroupIds = onlyDuplicateUserRelatedGrantedGroups ? (await this.pageGrantService.getUserRelatedGrantedGroups(parent, user)) : parent.grantedGroups;
+      grantedGroupIds = onlyDuplicateUserRelatedResources ? (await this.pageGrantService.getUserRelatedGrantedGroups(parent, user)) : parent.grantedGroups;
     }
     else {
       grant = page.grant;
       grantedUserIds = page.grantedUsers;
-      grantedGroupIds = onlyDuplicateUserRelatedGrantedGroups ? (await this.pageGrantService.getUserRelatedGrantedGroups(page, user)) : page.grantedGroups;
+      grantedGroupIds = onlyDuplicateUserRelatedResources ? (await this.pageGrantService.getUserRelatedGrantedGroups(page, user)) : page.grantedGroups;
     }
 
     if (grant !== Page.GRANT_RESTRICTED) {
@@ -1229,7 +1229,7 @@ class PageService implements IPageService {
     await PageOperation.findByIdAndDelete(pageOpId);
   }
 
-  async duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups: boolean) {
+  async duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources: boolean) {
     const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
@@ -1248,7 +1248,7 @@ class PageService implements IPageService {
     this.pageEvent.emit('duplicate', page, user);
 
     if (isRecursively) {
-      this.duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups);
+      this.duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedResources);
     }
 
     // take over tags
@@ -1304,7 +1304,7 @@ class PageService implements IPageService {
 
   private async duplicateDescendants(
       pages, user, oldPagePathPrefix, newPagePathPrefix,
-      onlyDuplicateUserRelatedGrantedGroups: boolean, shouldUseV4Process = true,
+      onlyDuplicateUserRelatedResources: boolean, shouldUseV4Process = true,
   ) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsV4(pages, user, oldPagePathPrefix, newPagePathPrefix);
@@ -1336,11 +1336,12 @@ class PageService implements IPageService {
       const revisionId = new mongoose.Types.ObjectId();
       pageIdMapping[page._id] = newPageId;
 
+      const isDuplicateTarget = !page.isEmpty
+      && (!onlyDuplicateUserRelatedResources || this.pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroupIds));
+
       let newPage;
-      if (!page.isEmpty) {
-        // TODO: GROUP_GRANT で、なおかつユーザが所属するグループが含まれている時のみ有効にすべき。そうでないと、誰もアクセスできないページとなってしまう。
-        // これはかなり複雑な仕様になるが、本当に他の方法はないのか検討
-        const grantedGroups = onlyDuplicateUserRelatedGrantedGroups
+      if (isDuplicateTarget) {
+        const grantedGroups = onlyDuplicateUserRelatedResources
           ? this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroupIds)
           : page.grantedGroups;
         newPage = {
@@ -1411,9 +1412,9 @@ class PageService implements IPageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups = false, shouldUseV4Process = true) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedResources = false, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
-      return this.duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups);
+      return this.duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources);
     }
 
     const iterableFactory = new PageCursorsForDescendantsFactory(user, page, true);
@@ -1432,7 +1433,7 @@ class PageService implements IPageService {
         try {
           count += batch.length;
           nNonEmptyDuplicatedPages += batch.filter(page => !page.isEmpty).length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedGrantedGroups, shouldUseV4Process);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedResources, shouldUseV4Process);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {
@@ -1459,7 +1460,7 @@ class PageService implements IPageService {
     return nNonEmptyDuplicatedPages;
   }
 
-  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedGrantedGroups = false) {
+  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources = false) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;
@@ -1473,7 +1474,7 @@ class PageService implements IPageService {
       async write(batch, encoding, callback) {
         try {
           count += batch.length;
-          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedGrantedGroups);
+          await duplicateDescendants(batch, user, pathRegExp, newPagePathPrefix, onlyDuplicateUserRelatedResources);
           logger.debug(`Adding pages progressing: (count=${count})`);
         }
         catch (err) {

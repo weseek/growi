@@ -1093,10 +1093,10 @@ describe('PageService page operations with non-public pages', () => {
   });
   describe('Duplicate', () => {
 
-    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups = false) => {
+    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources = false) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
-      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedGrantedGroups);
+      const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources);
 
       // retrieve the arguments passed when calling method duplicateRecursivelyMainOperation inside duplicate method
       const argsForDuplicateRecursivelyMainOperation = mockedDuplicateRecursivelyMainOperation.mock.calls[0];

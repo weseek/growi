@@ -96,7 +96,8 @@ export interface IPageGrantService {
   validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>
   getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
   filterGrantedGroupsByIds: (page: PageDocument, groupIds: string[]) => IGrantedGroup[],
-  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>
+  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroupIds: string[]) => boolean
 }
 
 class PageGrantService implements IPageGrantService {
@@ -679,6 +680,13 @@ class PageGrantService implements IPageGrantService {
   async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
     const userRelatedGroupIds: string[] = (await this.getUserRelatedGroups(user)).map(ug => ug.item._id.toString());
     return this.filterGrantedGroupsByIds(page, userRelatedGroupIds);
+  }
+
+  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroupIds: string[]): boolean {
+    if (page.grant === PageGrant.GRANT_PUBLIC) return true;
+    if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
+    if (page.grant === PageGrant.GRANT_USER_GROUP) return this.filterGrantedGroupsByIds(page, userRelatedGroupIds).length > 0;
+    return false;
   }
 
   /**
