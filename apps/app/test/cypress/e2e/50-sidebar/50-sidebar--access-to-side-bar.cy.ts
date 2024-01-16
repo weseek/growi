@@ -36,9 +36,8 @@ describe('Access to sidebar', () => {
           });
         });
 
-        // TODO: rewrite test case with grw-switch-collapse-button
         it('Successfully collapse sidebar', () => {
-          cy.getByTestid('grw-switch-collapse-button').click({force: true});
+          cy.getByTestid('btn-toggle-collapse').click({force: true});
 
           cy.getByTestid('grw-sidebar-contents').should('not.be.visible');
 
