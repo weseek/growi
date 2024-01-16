@@ -45,6 +45,12 @@
 		}
   },
 
+  "search_method_menu_item": {
+    "search_in_all": "所有页面",
+    "only_children_of_this_tree": "当前分支以下内容",
+    "exact_mutch": "完全匹配"
+  },
+
   "share_links": {
     "Share Link": "Share Link",
     "Page Path": "Page Path",

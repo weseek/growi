@@ -98,32 +98,32 @@ class GlobalNotificationList extends React.Component {
                 <ul className="list-inline mb-0">
                   {notification.triggerEvents.includes('pageCreate') && (
                     <li className="list-inline-item badge rounded-pill bg-success">
-                      <i className="icon-doc"></i> CREATE
+                      <span className=" material-symbols-outlined">description</span> CREATE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageEdit') && (
                     <li className="list-inline-item badge rounded-pill bg-warning text-dark">
-                      <i className="icon-pencil"></i> EDIT
+                      <span className="material-symbols-outlined">edit</span> EDIT
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageMove') && (
                     <li className="list-inline-item badge rounded-pill bg-pink">
-                      <i className="icon-action-redo"></i> MOVE
+                      <span className="material-symbols-outlined">redo</span> MOVE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageDelete') && (
                     <li className="list-inline-item badge rounded-pill bg-danger">
-                      <i className="icon-fire"></i> DELETE
+                      <span className="material-symbols-outlined">delete_forever</span>DELETE
                     </li>
                   )}
                   {notification.triggerEvents.includes('pageLike') && (
                     <li className="list-inline-item badge rounded-pill bg-info">
-                      <i className="fa fa-heart-o"></i> LIKE
+                      <span className="material-symbols-outlined">favorite</span> LIKE
                     </li>
                   )}
                   {notification.triggerEvents.includes('comment') && (
                     <li className="list-inline-item badge rounded-pill bg-primary">
-                      <i className="icon-fw icon-bubble"></i> POST
+                      <span className="material-symbols-outlined">bubble_chart</span> POST
                     </li>
                   )}
                 </ul>
@@ -143,14 +143,14 @@ class GlobalNotificationList extends React.Component {
                     aria-haspopup="true"
                     aria-expanded="false"
                   >
-                    <i className="icon-settings"></i> <span className="caret"></span>
+                    <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
                   </button>
                   <div className="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                     <a className="dropdown-item" href={urljoin('/admin/global-notification/', notification._id)}>
-                      <i className="icon-fw icon-note"></i> {t('Edit')}
+                      <span className="material-symbols-outlined">note</span> {t('Edit')}
                     </a>
                     <button className="dropdown-item" type="button" onClick={() => this.openConfirmationModal(notification)}>
-                      <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                      <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                     </button>
                   </div>
                 </div>
@@ -168,7 +168,6 @@ class GlobalNotificationList extends React.Component {
         )}
       </React.Fragment>
     );
-
   }
 
 }

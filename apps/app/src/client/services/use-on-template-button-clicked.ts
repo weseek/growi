@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
@@ -7,6 +8,7 @@ import { LabelType } from '~/interfaces/template';
 
 export const useOnTemplateButtonClicked = (
     currentPagePath?: string,
+    isLoading?: boolean,
 ): {
   onClickHandler: (label: LabelType) => Promise<void>,
   isPageCreating: boolean
@@ -15,23 +17,27 @@ export const useOnTemplateButtonClicked = (
   const [isPageCreating, setIsPageCreating] = useState(false);
 
   const onClickHandler = useCallback(async(label: LabelType) => {
+    if (isLoading) return;
+
     try {
       setIsPageCreating(true);
 
-      const path = currentPagePath == null || currentPagePath === '/'
+      const targetPath = currentPagePath == null || currentPagePath === '/'
         ? `/${label}`
         : `${currentPagePath}/${label}`;
 
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-      // grant: currentPage?.grant || 1,
-      // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
+      const path = isCreatablePage(targetPath) ? targetPath : `/${label}`;
 
       const res = await exist(JSON.stringify([path]));
       if (!res.pages[path]) {
+        const params = {
+          isSlackEnabled: false,
+          slackChannels: '',
+          grant: 4,
+        // grant: currentPage?.grant || 1,
+        // grantUserGroupId: currentPage?.grantedGroup?._id,
+        };
+
         await createPage(path, '', params);
       }
 
@@ -43,7 +49,7 @@ export const useOnTemplateButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, router]);
+  }, [currentPagePath, isLoading, router]);
 
   return { onClickHandler, isPageCreating };
 };

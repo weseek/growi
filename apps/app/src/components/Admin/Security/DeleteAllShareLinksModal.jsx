@@ -22,7 +22,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
     <Modal isOpen={props.isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
-          <i className="icon-fw icon-fire"></i>
+          <span className="material-symbols-outlined">delete_forever</span>
           {t('security_settings.delete_all_share_links')}
         </span>
       </ModalHeader>
@@ -32,7 +32,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteAllLinkHandler}>
-          <i className="icon icon-fire"></i>
+          <span className="material-symbols-outlined">delete_forever</span>
           {t('Delete')}
         </Button>
       </ModalFooter>
