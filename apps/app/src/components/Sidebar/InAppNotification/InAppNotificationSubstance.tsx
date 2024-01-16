@@ -49,7 +49,7 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
     <>
       {inAppNotificationData != null && inAppNotificationData.docs.length === 0
       // no items
-        ? t('in_app_notification.mark_all_as_read')
+        ? t('in_app_notification.no_notification')
       // render list-group
         : (
           <InAppNotificationList
