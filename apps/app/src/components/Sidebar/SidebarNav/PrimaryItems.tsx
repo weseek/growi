@@ -1,15 +1,18 @@
 import {
-  FC, memo, useCallback, useEffect,
+  FC, memo, useCallback,
 } from 'react';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import dynamic from 'next/dynamic';
+
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
-import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
-import { useDefaultSocket } from '~/stores/socket-io';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
-import loggerFactory from '~/utils/logger';
 
 import styles from './PrimaryItems.module.scss';
+
+const PrimaryItemForNotification = dynamic(
+  // eslint-disable-next-line import/no-cycle
+  () => import('../InAppNotification/PrimaryItemForNotification').then(mod => mod.PrimaryItemForNotification), { ssr: false },
+);
 
 /**
  * @returns String for className to switch the indicator is active or not
@@ -24,7 +27,7 @@ const useIndicator = (sidebarMode: SidebarMode, isSelected: boolean): string => 
   return isSelected ? 'active' : '';
 };
 
-type PrimaryItemProps = {
+export type PrimaryItemProps = {
   contents: SidebarContentsType,
   label: string,
   iconName: string,
@@ -34,7 +37,7 @@ type PrimaryItemProps = {
   onClick?: () => void,
 }
 
-const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
+export const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
     contents, label, iconName, sidebarMode, badgeContents,
     onClick, onHover,
@@ -110,69 +113,7 @@ export const PrimaryItems = memo((props: Props) => {
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.RECENT} label="Recent Changes" iconName="update" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.BOOKMARKS} label="Bookmarks" iconName="bookmarks" onHover={onItemHover} />
       <PrimaryItem sidebarMode={sidebarMode} contents={SidebarContentsType.TAG} label="Tags" iconName="local_offer" onHover={onItemHover} />
-    </div>
-  );
-});
-
-
-const logger = loggerFactory('growi:PrimaryItemsForNotification');
-
-// TODO(after v7 release): https://redmine.weseek.co.jp/issues/138463
-export const PrimaryItemsForNotification = memo((props: Props) => {
-  const { onItemHover } = props;
-
-  const { data: sidebarMode } = useSidebarMode();
-
-  const { data: socket } = useDefaultSocket();
-
-  const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
-
-  const badgeContents = notificationCount != null && notificationCount > 0 ? notificationCount : undefined;
-
-  const updateNotificationStatus = useCallback(async() => {
-    try {
-      await apiv3Post('/in-app-notification/read');
-      mutateNotificationCount();
-    }
-    catch (err) {
-      logger.error(err);
-    }
-  }, [mutateNotificationCount]);
-
-  const itemHoverHandler = useCallback((contents: SidebarContentsType) => {
-    onItemHover?.(contents);
-    updateNotificationStatus();
-  }, [onItemHover, updateNotificationStatus]);
-
-  useEffect(() => {
-    if (socket != null) {
-      socket.on('notificationUpdated', () => {
-        mutateNotificationCount();
-      });
-
-      // clean up
-      return () => {
-        socket.off('notificationUpdated');
-      };
-    }
-  }, [mutateNotificationCount, socket]);
-
-
-  if (sidebarMode == null) {
-    return <></>;
-  }
-
-  return (
-    <div className={styles['grw-primary-items']}>
-      <PrimaryItem
-        sidebarMode={sidebarMode}
-        contents={SidebarContentsType.NOTIFICATION}
-        label="In-App Notification"
-        iconName="notifications"
-        onClick={updateNotificationStatus}
-        onHover={itemHoverHandler}
-        badgeContents={badgeContents}
-      />
+      <PrimaryItemForNotification sidebarMode={sidebarMode} onHover={onItemHover} />
     </div>
   );
 });
