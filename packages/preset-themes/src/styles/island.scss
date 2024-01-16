@@ -1,4 +1,4 @@
-:root[data-bs-theme='light'] {
+:root[data-bs-theme] {
   @import '@growi/core/scss/bootstrap/init-stage-1';
   @import '@growi/core/scss/bootstrap/theming/variables';
   @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
@@ -33,7 +33,8 @@
   --grw-wiki-link-hover-color-rgb: var(--grw-primary-700-rgb);
 
   &, body {
-    background: linear-gradient(to bottom, white, #CFF1F5);
+    background: linear-gradient(to bottom, white 20%, #D8F9FD);
+    background-attachment: fixed;
   }
 }
 
