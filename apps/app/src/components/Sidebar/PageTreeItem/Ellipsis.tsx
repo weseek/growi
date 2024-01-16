@@ -15,26 +15,25 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { IPageForItem } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import {
-  SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
 } from '../../TreeItem';
 
-type EllipsisProps = SimpleItemToolProps & {page: IPageForItem};
-
-export const Ellipsis: FC<EllipsisProps> = (props) => {
+export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const { t } = useTranslation();
 
   const {
-    page, onRenamed, onClickDuplicateMenuItem,
+    itemNode, onRenamed, onClickDuplicateMenuItem,
     onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
   } = props;
+
+  const { page } = itemNode;
 
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(page._id ?? null);
@@ -141,7 +140,7 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false} />
+        <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
