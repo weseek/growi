@@ -2,10 +2,12 @@ import {
   FC, memo, useCallback, useEffect,
 } from 'react';
 
+import { apiv3Post } from '~/client/util/apiv3-client';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import styles from './PrimaryItems.module.scss';
 
@@ -29,12 +31,13 @@ type PrimaryItemProps = {
   sidebarMode: SidebarMode,
   badgeContents?: number,
   onHover?: (contents: SidebarContentsType) => void,
+  onClick?: () => void,
 }
 
 const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
   const {
     contents, label, iconName, sidebarMode, badgeContents,
-    onHover,
+    onClick, onHover,
   } = props;
 
   const { data: currentContents, mutateAndSave: mutateContents } = useCurrentSidebarContents();
@@ -52,7 +55,8 @@ const PrimaryItem: FC<PrimaryItemProps> = (props: PrimaryItemProps) => {
     }
 
     selectThisItem();
-  }, [selectThisItem, sidebarMode]);
+    onClick?.();
+  }, [onClick, selectThisItem, sidebarMode]);
 
   const mouseEnteredHandler = useCallback(() => {
     // ignore other than collapsed mode
@@ -110,6 +114,10 @@ export const PrimaryItems = memo((props: Props) => {
   );
 });
 
+
+const logger = loggerFactory('growi:PrimaryItemsForNotification');
+
+// TODO(after v7 release): https://redmine.weseek.co.jp/issues/138463
 export const PrimaryItemsForNotification = memo((props: Props) => {
   const { onItemHover } = props;
 
@@ -120,6 +128,21 @@ export const PrimaryItemsForNotification = memo((props: Props) => {
   const { data: notificationCount, mutate: mutateNotificationCount } = useSWRxInAppNotificationStatus();
 
   const badgeContents = notificationCount != null && notificationCount > 0 ? notificationCount : undefined;
+
+  const updateNotificationStatus = useCallback(async() => {
+    try {
+      await apiv3Post('/in-app-notification/read');
+      mutateNotificationCount();
+    }
+    catch (err) {
+      logger.error(err);
+    }
+  }, [mutateNotificationCount]);
+
+  const itemHoverHandler = useCallback((contents: SidebarContentsType) => {
+    onItemHover?.(contents);
+    updateNotificationStatus();
+  }, [onItemHover, updateNotificationStatus]);
 
   useEffect(() => {
     if (socket != null) {
@@ -146,7 +169,8 @@ export const PrimaryItemsForNotification = memo((props: Props) => {
         contents={SidebarContentsType.NOTIFICATION}
         label="In-App Notification"
         iconName="notifications"
-        onHover={onItemHover}
+        onClick={updateNotificationStatus}
+        onHover={itemHoverHandler}
         badgeContents={badgeContents}
       />
     </div>
