@@ -32,6 +32,13 @@
   --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-primary-600-rgb);
   --grw-sidebar-nav-btn-color: var(--grw-highlight-600);
+
+  &, body {
+    background-image: url('../images/spring/spring02.jpg');
+    background-attachment: fixed;
+    background-position: bottom;
+    background-size: cover;
+  }
 }
 
 // @use '@growi/core/scss/bootstrap/init' as bs;
