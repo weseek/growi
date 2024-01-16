@@ -156,7 +156,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     >
       {/* <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}> */}
       <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3">
-        <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
+        <span className="material-symbols-outlined">error</span>{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
       <ModalBody className="mx-4 my-1">
         { isOpen
@@ -212,7 +212,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                     setResolvedRevision(request.revisionBody);
                   }}
                 >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  <span className="material-symbols-outlined">arrow_circle_down</span>
                   {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
                 </button>
               </div>
@@ -227,7 +227,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                     setResolvedRevision(origin.revisionBody);
                   }}
                 >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  <span className="material-symbols-outlined">arrow_circle_down</span>
                   {t('modal_resolve_conflict.select_revision', { revision: 'origin' })}
                 </button>
               </div>
@@ -242,7 +242,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                     setResolvedRevision(latest.revisionBody);
                   }}
                 >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
+                  <span className="material-symbols-outlined">arrow_circle_down</span>
                   {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
                 </button>
               </div>

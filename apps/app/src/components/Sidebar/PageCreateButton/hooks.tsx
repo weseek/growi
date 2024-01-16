@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import type { Nullable, IUserHasId } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
@@ -51,8 +50,7 @@ export const useOnNewButtonClicked = (
 };
 
 export const useOnTodaysButtonClicked = (
-    todaysPath: string,
-    currentUser?: Nullable<IUserHasId> | undefined,
+    todaysPath: string | null,
 ): {
   onClickHandler: () => Promise<void>,
   isPageCreating: boolean
@@ -61,7 +59,7 @@ export const useOnTodaysButtonClicked = (
   const [isPageCreating, setIsPageCreating] = useState(false);
 
   const onClickHandler = useCallback(async() => {
-    if (currentUser == null) {
+    if (todaysPath == null) {
       return;
     }
 
@@ -89,7 +87,7 @@ export const useOnTodaysButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentUser, router, todaysPath]);
+  }, [router, todaysPath]);
 
   return { onClickHandler, isPageCreating };
 };

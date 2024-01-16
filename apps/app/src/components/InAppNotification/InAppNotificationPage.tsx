@@ -100,9 +100,7 @@ export const InAppNotificationPage: FC = () => {
           ? t('in_app_notification.mark_all_as_read')
           // render list-group
           : (
-            <div className="list-group">
-              <InAppNotificationList inAppNotificationData={notificationData} type="button" elemClassName="list-group-item list-group-item-action" />
-            </div>
+            <InAppNotificationList inAppNotificationData={notificationData} />
           )
         }
 
