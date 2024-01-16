@@ -24,7 +24,7 @@ const EmptyTrashButton = (props: EmptyTrashButtonProps): JSX.Element => {
         disabled={disableEmptyButton}
         onClick={emptyTrashButtonHandler}
       >
-        <i className="icon-fw icon-trash"></i>
+        <span className="material-symbols-outlined">delete</span>
         <div>{t('modal_empty.empty_the_trash')}</div>
       </button>
     </div>

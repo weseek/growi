@@ -189,7 +189,7 @@ export const SearchPage = (): JSX.Element => {
               disabled={isDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
-              <i className="icon-fw icon-trash"></i>
+              <span className="material-symbols-outlined">delete</span>
               {t('search_result.delete_all_selected_page')}
             </button>
           </OperateAllControl>

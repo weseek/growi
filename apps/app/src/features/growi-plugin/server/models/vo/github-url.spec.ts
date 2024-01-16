@@ -63,6 +63,44 @@ describe('archiveUrl()', () => {
     const { archiveUrl } = githubUrl;
 
     // then
-    expect(archiveUrl).toEqual('https://github.com/org/repos/archive/refs/heads/fix/bug.zip');
+    expect(archiveUrl).toEqual('https://github.com/org/repos/archive/refs/heads/fix%2Fbug.zip');
   });
+});
+
+describe('extractedArchiveDirName()', () => {
+
+  describe('certain characters in the branch name are converted to slashes, and if they are consecutive, they become a single hyphen', () => {
+    it.concurrent.each`
+      branchName
+      ${'a"\'!,;-=@`]<>|&{}()$%+#/b'}
+      ${'a---b'}
+    `("'$branchName'", ({ branchName }) => {
+      // setup
+      const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
+
+      // when
+      const { extractedArchiveDirName } = githubUrl;
+
+      // then
+      expect(extractedArchiveDirName).toEqual('a-b');
+    });
+  });
+
+  describe('when no certain characters in the branch name', () => {
+    it.concurrent.each`
+      branchName
+      ${'a.b'}
+      ${'a_b'}
+    `("'$branchName'", ({ branchName }) => {
+      // setup
+      const githubUrl = new GitHubUrl('https://github.com/org/repos', branchName);
+
+      // when
+      const { extractedArchiveDirName } = githubUrl;
+
+      // then
+      expect(extractedArchiveDirName).toEqual(branchName);
+    });
+  });
+
 });

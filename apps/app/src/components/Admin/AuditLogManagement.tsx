@@ -152,8 +152,8 @@ export const AuditLogManagement: FC = () => {
       <button type="button" className="btn btn-outline-secondary mb-4" onClick={() => setIsSettingPage(!isSettingPage)}>
         {
           isSettingPage
-            ? <><i className="fa fa-hand-o-left me-1" />{t('admin:audit_log_management.return')}</>
-            : <><i className="fa icon-settings me-1" />{t('admin:audit_log_management.settings')}</>
+            ? <><span className="material-symbols-outlined">arrow_left_alt</span>{t('admin:audit_log_management.return')}</>
+            : <><span className="material-symbols-outlined">settings</span>{t('admin:audit_log_management.settings')}</>
         }
       </button>
 
@@ -163,7 +163,7 @@ export const AuditLogManagement: FC = () => {
         </span>
         { !isSettingPage && (
           <button type="button" className="btn btn-sm ms-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-            <i className="icon icon-reload"></i>
+            <span className="material-symbols-outlined">refresh</span>
           </button>
         )}
       </h2>

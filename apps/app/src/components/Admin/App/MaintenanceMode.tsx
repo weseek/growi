@@ -59,7 +59,7 @@ export const MaintenanceMode: FC = () => {
         <br />
         <br />
         <span className="text-warning">
-          <i className="icon-exclamation icon-fw"></i>
+          <span className="material-symbols-outlined">error</span>
           {t('admin:maintenance_mode.supplymentary_message_to_start')}
         </span>
       </p>

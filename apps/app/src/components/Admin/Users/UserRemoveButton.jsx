@@ -34,7 +34,7 @@ class UserRemoveButton extends React.Component {
 
     return (
       <button className="dropdown-item" type="button" onClick={() => { this.onClickDeleteBtn() }}>
-        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
       </button>
     );
   }

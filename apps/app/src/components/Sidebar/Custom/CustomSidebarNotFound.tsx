@@ -7,7 +7,7 @@ export const SidebarNotFound = (): JSX.Element => {
   return (
     <div className="grw-sidebar-content-header h5 text-center py-3">
       <Link href="/Sidebar#edit">
-        <i className="icon-fw icon-magic-wand"></i>
+        <span className="material-symbols-outlined">edit_note</span>
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('Create Sidebar Page') }}></span>
       </Link>
