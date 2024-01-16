@@ -24,7 +24,7 @@ export default defineConfig(({ mode }) => {
           // '/src/styles/kibela.scss',
           '/src/styles/mono-blue.scss',
           // '/src/styles/nature.scss',
-          // '/src/styles/spring.scss',
+          '/src/styles/spring.scss',
           // '/src/styles/wood.scss',
         ],
         output: {
