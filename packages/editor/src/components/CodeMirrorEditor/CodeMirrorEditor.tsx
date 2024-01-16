@@ -57,6 +57,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
+  // ここのPaste処理を改善！
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
