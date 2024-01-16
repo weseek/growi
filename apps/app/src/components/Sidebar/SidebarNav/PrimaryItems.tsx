@@ -9,6 +9,7 @@ import { PrimaryItem } from './PrimaryItem';
 
 import styles from './PrimaryItems.module.scss';
 
+// Do not SSR Socket.io to make it work
 const PrimaryItemForNotification = dynamic(
   () => import('../InAppNotification/PrimaryItemForNotification').then(mod => mod.PrimaryItemForNotification), { ssr: false },
 );
