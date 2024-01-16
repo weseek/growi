@@ -31,6 +31,10 @@
 
   --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-primary-600-rgb);
+
+  &, body {
+    background-image: url('../images/wood/wood.svg');
+  }
 }
 
 // @use '@growi/core/scss/bootstrap/init' as bs;
