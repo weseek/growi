@@ -6,18 +6,15 @@ import { useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import { useDefaultSocket } from '~/stores/socket-io';
 import loggerFactory from '~/utils/logger';
 
-// eslint-disable-next-line import/no-cycle
-import { PrimaryItem, type PrimaryItemProps } from '../SidebarNav/PrimaryItems';
-
+import { PrimaryItem, type Props } from '../SidebarNav/PrimaryItem';
 
 const logger = loggerFactory('growi:PrimaryItemsForNotification');
 
-type PrimaryItemForNotification = Omit<PrimaryItemProps, 'onClick' | 'label' | 'iconName' | 'contents' | 'badgeContents' >
+type PrimaryItemForNotificationProps = Omit<Props, 'onClick' | 'label' | 'iconName' | 'contents' | 'badgeContents' >
 
 // TODO(after v7 release): https://redmine.weseek.co.jp/issues/138463
-export const PrimaryItemForNotification = memo((props: PrimaryItemForNotification) => {
+export const PrimaryItemForNotification = memo((props: PrimaryItemForNotificationProps) => {
   const { sidebarMode, onHover } = props;
-
 
   const { data: socket } = useDefaultSocket();
 
@@ -52,11 +49,6 @@ export const PrimaryItemForNotification = memo((props: PrimaryItemForNotificatio
       };
     }
   }, [mutateNotificationCount, socket]);
-
-
-  if (sidebarMode == null) {
-    return <></>;
-  }
 
   return (
     <PrimaryItem
