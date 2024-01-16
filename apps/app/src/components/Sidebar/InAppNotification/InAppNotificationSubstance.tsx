@@ -38,7 +38,7 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
   const { t } = useTranslation('commons');
 
   // TODO: Infinite scroll implemented (https://redmine.weseek.co.jp/issues/138057)
-  const { data: inAppNotificationData } = useSWRxInAppNotifications(
+  const { data: inAppNotificationData, mutate: mutateInAppNotificationData } = useSWRxInAppNotifications(
     6,
     undefined,
     isUnopendNotificationsVisible ? InAppNotificationStatuses.STATUS_UNOPENED : undefined,
@@ -52,7 +52,10 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
         ? t('in_app_notification.mark_all_as_read')
       // render list-group
         : (
-          <InAppNotificationList inAppNotificationData={inAppNotificationData} />
+          <InAppNotificationList
+            inAppNotificationData={inAppNotificationData}
+            onClickNotificationElm={mutateInAppNotificationData}
+          />
         )
       }
     </>

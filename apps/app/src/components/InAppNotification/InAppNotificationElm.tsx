@@ -10,11 +10,12 @@ import { useModelNotification } from './PageNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
+  onClick?: () => void,
 }
 
 const InAppNotificationElm: FC<Props> = (props: Props) => {
 
-  const { notification } = props;
+  const { notification, onClick } = props;
 
   const modelNotificationUtils = useModelNotification(notification);
 
@@ -32,6 +33,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     }
 
     publishOpen();
+    onClick?.();
   };
 
   const renderActionUserPictures = (): JSX.Element => {
