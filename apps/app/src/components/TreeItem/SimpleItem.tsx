@@ -1,5 +1,6 @@
 import React, {
-  useCallback, useState, FC, useEffect,
+  useCallback, useState, useEffect,
+  type FC, type RefObject, type RefCallback,
 } from 'react';
 
 import nodePath from 'path';
@@ -18,7 +19,7 @@ import CountBadge from '../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
 import { useNewPageInput } from './NewPageInput';
-import type { SimpleItemContentProps, SimpleItemProps, SimpleItemToolProps } from './interfaces';
+import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
 // Utility to mark target
@@ -38,28 +39,14 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
   });
 };
 
-/**
- * Return new page path after the droppedPagePath is moved under the newParentPagePath
- * @param droppedPagePath
- * @param newParentPagePath
- * @returns
- */
 
-/**
- * Return whether the fromPage could be moved under the newParentPage
- * @param fromPage
- * @param newParentPage
- * @param printLog
- * @returns
- */
-
-export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
+export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
   const { t } = useTranslation();
   const router = useRouter();
 
   const { getDescCount } = usePageTreeDescCountMap();
 
-  const page = props.page;
+  const { page } = props.itemNode;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
@@ -102,6 +89,10 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
     </>
   );
 };
+
+type SimpleItemProps = TreeItemProps & {
+  itemRef?: RefObject<any> | RefCallback<any>,
+}
 
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
@@ -168,8 +159,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
 
-  const simpleItemProps: SimpleItemProps = {
-    itemNode,
+  const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
@@ -179,11 +169,9 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     onClickDeleteMenuItem,
   };
 
-  const simpleItemContentProps: SimpleItemContentProps = {
-    ...simpleItemProps,
-    page,
-    children,
-    stateHandlers: { isOpen, setIsOpen },
+  const toolProps: TreeItemToolProps = {
+    ...baseProps,
+    itemNode,
   };
 
   const CustomNextComponents = props.customNextComponents;
@@ -216,26 +204,35 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
         </div>
         {SimpleItemContent.map((ItemContent, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <ItemContent key={index} {...simpleItemContentProps} />
+          <ItemContent key={index} {...toolProps} />
         ))}
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <UnderItemContent key={index} {...simpleItemContentProps} />
+        <UnderItemContent key={index} {...toolProps} />
       ))}
 
       {
-        isOpen && hasChildren() && currentChildren.map((node, index) => (
-          <div key={node.page._id} className="grw-pagetree-item-children">
-            <ItemClassFixed {...simpleItemProps} />
-            {isProcessingSubmission && (currentChildren.length - 1 === index) && (
-              <div className="text-muted text-center">
-                <i className="fa fa-spinner fa-pulse mr-1"></i>
-              </div>
-            )}
-          </div>
-        ))
+        isOpen && hasChildren() && currentChildren.map((node, index) => {
+          const itemProps = {
+            ...baseProps,
+            itemNode: node,
+            itemClass,
+            mainClassName,
+          };
+
+          return (
+            <div key={node.page._id} className="grw-pagetree-item-children">
+              <ItemClassFixed {...itemProps} />
+              {isProcessingSubmission && (currentChildren.length - 1 === index) && (
+                <div className="text-muted text-center">
+                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                </div>
+              )}
+            </div>
+          );
+        })
       }
     </div>
   );

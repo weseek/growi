@@ -1,5 +1,6 @@
 import React, {
-  useCallback, useState, FC,
+  useCallback, useState,
+  type FC,
 } from 'react';
 
 import nodePath from 'path';
@@ -15,17 +16,14 @@ import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
 import {
-  SimpleItem, type SimpleItemProps, useNewPageInput, ItemNode,
+  SimpleItem, useNewPageInput, ItemNode, type TreeItemProps,
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
 
 const logger = loggerFactory('growi:cli:Item');
 
-type PageTreeItemPropsOptional = 'itemRef' | 'itemClass' | 'mainClassName';
-type PageTreeItemProps = Omit<SimpleItemProps, PageTreeItemPropsOptional>;
-
-export const PageTreeItem: FC<PageTreeItemProps> = (props) => {
+export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
     const pageTitle = nodePath.basename(droppedPagePath);
     return nodePath.join(newParentPagePath, pageTitle);
