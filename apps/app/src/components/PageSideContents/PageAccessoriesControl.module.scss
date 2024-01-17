@@ -12,6 +12,12 @@
   }
 }
 
+@include bs.media-breakpoint-down(sm) {
+  .btn-page-accessories :global {
+    box-shadow: 0px 3px 6px rgba(black, 0.15);
+  }
+}
+
 // apply larger font when smaller than lg
 @include bs.media-breakpoint-down(lg) {
   .btn-page-accessories :global {

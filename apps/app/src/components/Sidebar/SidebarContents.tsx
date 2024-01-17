@@ -6,6 +6,7 @@ import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode }
 
 import { Bookmarks } from './Bookmarks';
 import { CustomSidebar } from './Custom';
+import { InAppNotification } from './InAppNotification';
 import { PageTree } from './PageTree';
 import { RecentChanges } from './RecentChanges';
 import Tag from './Tag';
@@ -29,6 +30,8 @@ export const SidebarContents = memo(() => {
         return Tag;
       case SidebarContentsType.BOOKMARKS:
         return Bookmarks;
+      case SidebarContentsType.NOTIFICATION:
+        return InAppNotification;
       default:
         return PageTree;
     }

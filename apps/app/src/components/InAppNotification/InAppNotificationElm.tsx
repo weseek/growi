@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
-import { DropdownItem } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
@@ -11,10 +10,7 @@ import { useModelNotification } from './PageNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
-  elemClassName?: string,
-  type?: 'button' | 'dropdown-item',
 }
-
 
 const InAppNotificationElm: FC<Props> = (props: Props) => {
 
@@ -57,16 +53,8 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     );
   };
 
-  const isDropdownItem = props.type === 'dropdown-item';
-
-  // determine tag
-  const TagElem = isDropdownItem
-    ? DropdownItem
-    // eslint-disable-next-line react/prop-types
-    : props => <button type="button" {...props}>{props.children}</button>;
-
   return (
-    <TagElem className={props.elemClassName} onClick={() => clickHandler(notification)}>
+    <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
       <div className="d-flex align-items-center">
         <span
           className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
@@ -75,12 +63,13 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
           } rounded-circle me-3`}
         >
         </span>
+
         {renderActionUserPictures()}
 
         <Notification />
 
       </div>
-    </TagElem>
+    </div>
   );
 };
 
