@@ -23,7 +23,7 @@ const getPreviewElements = (previewRootElement: HTMLElement): Array<Element> => 
     .filter((element) => { return !Number.isNaN(element.getAttribute('data-line')) });
 };
 
-
+// Ref: https://github.com/mikolalysenko/binary-search-bounds/blob/f436a2a8af11bf3208434e18bbac17e18e7a3a30/search-bounds.js
 const elementBinarySearch = (list: Array<Element>, fn: (index: number) => boolean): number => {
   let ok = 0;
   let ng = list.length;
