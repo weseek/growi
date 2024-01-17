@@ -22,12 +22,18 @@ const TYPICAL_INDENT_SIZE = [2, 4];
 
 const ThemeSelector = (): JSX.Element => {
 
+  const [isThemeMenuOpened, setIsThemeMenuOpened] = useState(false);
+
   const { data: editorSettings, update } = useEditorSettings();
 
   const menuItems = useMemo(() => (
     <>
       { AVAILABLE_THEMES.map((theme) => {
-        return <button key={theme} className="dropdown-item" type="button" onClick={() => update({ theme })}>{theme}</button>;
+        return (
+          <DropdownItem className="menuitem-label" onClick={() => update({ theme })}>
+            {theme}
+          </DropdownItem>
+        );
       }) }
     </>
   ), [update]);
@@ -39,21 +45,21 @@ const ThemeSelector = (): JSX.Element => {
       <div>
         <span className="input-group-text" id="igt-theme">Theme</span>
       </div>
-      <div className="dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-theme"
-        >
+
+      <Dropdown
+        direction="up"
+        isOpen={isThemeMenuOpened}
+        toggle={() => setIsThemeMenuOpened(!isThemeMenuOpened)}
+      >
+        <DropdownToggle color="outline-secondary" caret>
           {selectedTheme}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
           {menuItems}
-        </div>
-      </div>
+        </DropdownMenu>
+
+      </Dropdown>
     </div>
   );
 };
@@ -72,9 +78,10 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
 
 const KeymapSelector = memo((): JSX.Element => {
 
+  const [isKeyMenuOpened, setIsKeyMenuOpened] = useState(false);
+
   const { data: editorSettings, update } = useEditorSettings();
 
-  Object.keys(KEYMAP_LABEL_MAP);
   const menuItems = useMemo(() => (
     <>
       { (Object.keys(KEYMAP_LABEL_MAP) as KeyMapMode[]).map((keymapMode) => {
@@ -82,7 +89,11 @@ const KeymapSelector = memo((): JSX.Element => {
         const icon = (keymapMode !== 'default')
           ? <img src={`/images/icons/${keymapMode}.png`} width="16px" className="me-2"></img>
           : null;
-        return <button key={keymapMode} className="dropdown-item" type="button" onClick={() => update({ keymapMode })}>{icon}{keymapLabel}</button>;
+        return (
+          <DropdownItem className="menuitem-label" onClick={() => update({ keymapMode })}>
+            {icon}{keymapLabel}
+          </DropdownItem>
+        );
       }) }
     </>
   ), [update]);
@@ -91,24 +102,21 @@ const KeymapSelector = memo((): JSX.Element => {
 
   return (
     <div className="input-group flex-nowrap">
-      <div>
-        <span className="input-group-text" id="igt-keymap">Keymap</span>
-      </div>
-      <div className="dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-keymap"
-        >
-          { editorSettings != null && selectedKeymapMode}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+      <span className="input-group-text" id="igt-keymap">Keymap</span>
+      <Dropdown
+        direction="up"
+        isOpen={isKeyMenuOpened}
+        toggle={() => setIsKeyMenuOpened(!isKeyMenuOpened)}
+      >
+        <DropdownToggle color="outline-secondary" caret>
+          {selectedKeymapMode}
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
           {menuItems}
-        </div>
-      </div>
+        </DropdownMenu>
+
+      </Dropdown>
     </div>
   );
 
@@ -123,38 +131,41 @@ type IndentSizeSelectorProps = {
 }
 
 const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onChange }: IndentSizeSelectorProps): JSX.Element => {
+
+  const [isIndentMenuOpened, setIsIndentMenuOpened] = useState(false);
+
   const menuItems = useMemo(() => (
     <>
       { TYPICAL_INDENT_SIZE.map((indent) => {
-        return <button key={indent} className="dropdown-item" type="button" onClick={() => onChange(indent)}>{indent}</button>;
+        return (
+          <DropdownItem className="menuitem-label" onClick={() => onChange(indent)}>
+            {indent}
+          </DropdownItem>
+        );
       }) }
     </>
   ), [onChange]);
 
   return (
     <div className="input-group flex-nowrap">
-      <div>
-        <span className="input-group-text" id="igt-indent">Indent</span>
-      </div>
-      <div className="dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-bs-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-indent"
-          disabled={isIndentSizeForced}
-        >
+      <span className="input-group-text" id="igt-indent">Indent</span>
+      <Dropdown
+        direction="up"
+        isOpen={isIndentMenuOpened}
+        toggle={() => setIsIndentMenuOpened(!isIndentMenuOpened)}
+        disabled={isIndentSizeForced}
+      >
+        <DropdownToggle color="outline-secondary" caret>
           {selectedIndentSize}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
           {menuItems}
-        </div>
-      </div>
+        </DropdownMenu>
+
+      </Dropdown>
     </div>
   );
-
 });
 
 IndentSizeSelector.displayName = 'IndentSizeSelector';
@@ -228,7 +239,7 @@ const ConfigurationDropdown = memo((): JSX.Element => {
           <i className="icon-settings"></i>
         </DropdownToggle>
 
-        <DropdownMenu>
+        <DropdownMenu container="body">
           {renderActiveLineMenuItem()}
           {renderMarkdownTableAutoFormattingMenuItem()}
           {/* <DropdownItem divider /> */}
@@ -254,7 +265,7 @@ export const OptionsSelector = (): JSX.Element => {
 
   return (
     <>
-      <div className="d-flex flex-row">
+      <div className="d-flex flex-row zindex-dropdown">
         <span>
           <ThemeSelector />
         </span>
