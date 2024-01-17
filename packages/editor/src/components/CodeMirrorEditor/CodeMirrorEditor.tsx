@@ -16,7 +16,7 @@ import style from './CodeMirrorEditor.module.scss';
 
 const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   return (
-    <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
+    <div {...props} className={`flex-expand-vert codemirror-editor-container ${style['codemirror-editor-container']}`} ref={ref} />
   );
 });
 

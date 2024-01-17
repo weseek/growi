@@ -106,9 +106,9 @@ Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string) => {
   const lines: string[] = [];
   cy.waitUntil(() => {
     // do
-    cy.get('.CodeMirror textarea').type(inputText, { force: true });
+    cy.get('[role="textbox"]').type(inputText, { force: true });
     // until
-    return cy.get('.CodeMirror-line')
+    return cy.get('.cm-activeLine')
       .each(($item) => {
         lines.push($item.text());
       }).then(() => {
