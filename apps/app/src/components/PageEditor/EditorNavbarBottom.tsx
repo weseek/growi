@@ -93,7 +93,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${moduleClass}`}>
+      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 grw-editor-navbar-bottom ${moduleClass}`}>
         <form>
           { isDeviceLargerThanMd && <OptionsSelector /> }
         </form>
@@ -132,7 +132,7 @@ const EditorNavbarBottom = (): JSX.Element => {
       { isCollapsedOptionsSelectorEnabled && (
         <Collapse isOpen={isExpanded}>
           <div className="px-2"> {/* set padding for border-top */}
-            <div className={`navbar navbar-expand border-top px-0 ${moduleClass}`}>
+            <div className={`navbar navbar-expand border-top px-0 grw-editor-navbar-bottom ${moduleClass}`}>
               <form className="ms-auto">
                 <OptionsSelector />
               </form>
