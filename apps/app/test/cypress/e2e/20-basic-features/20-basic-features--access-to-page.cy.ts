@@ -72,8 +72,8 @@ context('Access to page', () => {
     cy.visit('/Sandbox#edit');
     cy.collapseSidebar(true);
 
-    // Commented out because Editor.tsx is not rendered
-    // cy.getByTestid('navbar-editor').should('be.visible');
+    cy.get('.codemirror-editor-toolbar').should('be.visible');
+
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
     cy.get('.grw-grant-selector').should('be.visible');
@@ -273,8 +273,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('template-button-children').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
-    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-      cy.url().should('include', '/_template#edit');
+    cy.get('.codemirror-editor-toolbar').should('be.visible').then(()=>{
       cy.screenshot(`${ssPrefix}-open-template-page-for-children-in-editor-mode`);
     });
 
@@ -307,8 +306,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('template-button-descendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
-    cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
-      cy.url().should('include', '/__template#edit');
+    cy.get('.codemirror-editor-toolbar').should('be.visible').then(()=>{
       cy.screenshot(`${ssPrefix}-open-template-page-for-descendants-in-editor-mode`);
     })
 
