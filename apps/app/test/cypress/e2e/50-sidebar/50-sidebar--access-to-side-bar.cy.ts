@@ -307,8 +307,7 @@ describe('Access to sidebar', () => {
             cy.get('a[href*="/trash"]').click();
           });
 
-          cy.get('.grw-page-path-hierarchical-link').should('be.visible');
-          cy.get('.grw-custom-nav-tab').should('be.visible');
+          cy.getByTestid('trash-page-list').should('be.visible');
 
           cy.screenshot(`${ssPrefix}access-to-trash-page`, { blackout: blackoutOverride });
         });
