@@ -57,6 +57,9 @@ describe('PageService page operations with non-public pages', () => {
   const pageIdDuplicate4 = new mongoose.Types.ObjectId();
   const pageIdDuplicate5 = new mongoose.Types.ObjectId();
   const pageIdDuplicate6 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate7 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate8 = new mongoose.Types.ObjectId();
+  const pageIdDuplicate9 = new mongoose.Types.ObjectId();
   // revision id
   const revisionIdDuplicate1 = new mongoose.Types.ObjectId();
   const revisionIdDuplicate2 = new mongoose.Types.ObjectId();
@@ -64,6 +67,9 @@ describe('PageService page operations with non-public pages', () => {
   const revisionIdDuplicate4 = new mongoose.Types.ObjectId();
   const revisionIdDuplicate5 = new mongoose.Types.ObjectId();
   const revisionIdDuplicate6 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate7 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate8 = new mongoose.Types.ObjectId();
+  const revisionIdDuplicate9 = new mongoose.Types.ObjectId();
 
   /**
    * Revert
@@ -510,8 +516,6 @@ describe('PageService page operations with non-public pages', () => {
         grantedGroups: [
           { item: groupIdA, type: GroupType.userGroup },
           { item: externalGroupIdA, type: GroupType.externalUserGroup },
-          { item: groupIdC, type: GroupType.userGroup },
-          { item: externalGroupIdC, type: GroupType.externalUserGroup },
         ],
         creator: npDummyUser1._id,
         lastUpdateUser: npDummyUser1._id,
@@ -525,8 +529,6 @@ describe('PageService page operations with non-public pages', () => {
         grantedGroups: [
           { item: groupIdB, type: GroupType.userGroup },
           { item: externalGroupIdB, type: GroupType.externalUserGroup },
-          { item: groupIdC, type: GroupType.userGroup },
-          { item: externalGroupIdC, type: GroupType.externalUserGroup },
         ],
         creator: npDummyUser2._id,
         lastUpdateUser: npDummyUser2._id,
@@ -558,6 +560,44 @@ describe('PageService page operations with non-public pages', () => {
         lastUpdateUser: npDummyUser1._id,
         parent: pageIdDuplicate4,
         revision: revisionIdDuplicate6,
+      },
+      {
+        _id: pageIdDuplicate7,
+        path: '/np_duplicate7',
+        grant: Page.GRANT_USER_GROUP,
+        creator: npDummyUser1._id,
+        lastUpdateUser: npDummyUser1._id,
+        parent: rootPage._id,
+        revision: revisionIdDuplicate7,
+        grantedGroups: [
+          { item: groupIdA, type: GroupType.userGroup },
+          { item: externalGroupIdA, type: GroupType.externalUserGroup },
+          { item: groupIdB, type: GroupType.userGroup },
+          { item: externalGroupIdB, type: GroupType.externalUserGroup },
+        ],
+      },
+      {
+        _id: pageIdDuplicate8,
+        path: '/np_duplicate7/np_duplicate8',
+        grant: Page.GRANT_USER_GROUP,
+        creator: npDummyUser3._id,
+        lastUpdateUser: npDummyUser3._id,
+        parent: pageIdDuplicate7,
+        revision: revisionIdDuplicate8,
+        grantedGroups: [
+          { item: groupIdC, type: GroupType.userGroup },
+          { item: externalGroupIdC, type: GroupType.externalUserGroup },
+        ],
+      },
+      {
+        _id: pageIdDuplicate9,
+        path: '/np_duplicate7/np_duplicate9',
+        grant: Page.GRANT_OWNER,
+        creator: npDummyUser2._id,
+        lastUpdateUser: npDummyUser2._id,
+        parent: pageIdDuplicate7,
+        revision: revisionIdDuplicate9,
+        grantedUsers: [npDummyUser2._id],
       },
     ]);
     await Revision.insertMany([
@@ -602,6 +642,27 @@ describe('PageService page operations with non-public pages', () => {
         format: 'markdown',
         pageId: pageIdDuplicate6,
         author: npDummyUser1._id,
+      },
+      {
+        _id: revisionIdDuplicate7,
+        body: 'np_duplicate7',
+        format: 'markdown',
+        pageId: pageIdDuplicate7,
+        author: npDummyUser1._id,
+      },
+      {
+        _id: revisionIdDuplicate8,
+        body: 'np_duplicate8',
+        format: 'markdown',
+        pageId: pageIdDuplicate8,
+        author: npDummyUser3._id,
+      },
+      {
+        _id: revisionIdDuplicate9,
+        body: 'np_duplicate9',
+        format: 'markdown',
+        pageId: pageIdDuplicate9,
+        author: npDummyUser2._id,
       },
     ]);
 
@@ -1093,7 +1154,7 @@ describe('PageService page operations with non-public pages', () => {
   });
   describe('Duplicate', () => {
 
-    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources = false) => {
+    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources);
@@ -1118,7 +1179,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(_revision).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate1';
-      await duplicate(_page, newPagePath, npDummyUser1, false);
+      await duplicate(_page, newPagePath, npDummyUser1, false, false);
 
       const duplicatedPage = await Page.findOne({ path: newPagePath });
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
@@ -1136,9 +1197,9 @@ describe('PageService page operations with non-public pages', () => {
       const _path1 = '/np_duplicate2';
       const _path2 = '/np_duplicate2/np_duplicate3';
       const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id, grantedGroups: { $elemMatch: { item: groupIdA } } })
-        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdA._id });
+        .populate({ path: 'revision', model: 'Revision' });
       const _page2 = await Page.findOne({ path: _path2, parent: _page1._id, grantedGroups: { $elemMatch: { item: groupIdB } } })
-        .populate({ path: 'revision', model: 'Revision', grantedPage: groupIdB._id });
+        .populate({ path: 'revision', model: 'Revision' });
       const _revision1 = _page1.revision;
       const _revision2 = _page2.revision;
       expect(_page1).toBeTruthy();
@@ -1147,7 +1208,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(_revision2).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate2';
-      await duplicate(_page1, newPagePath, npDummyUser2, true);
+      await duplicate(_page1, newPagePath, npDummyUser2, true, false);
 
       const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
@@ -1191,7 +1252,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(baseRevision2).toBeTruthy();
 
       const newPagePath = '/dup_np_duplicate4';
-      await duplicate(_page1, newPagePath, npDummyUser1, true);
+      await duplicate(_page1, newPagePath, npDummyUser1, true, false);
 
       const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate5' }).populate({ path: 'revision', model: 'Revision' });
@@ -1212,6 +1273,40 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision3.body).toBe(baseRevision3.body);
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
+    });
+    test('Should duplicate only user related resources when onlyDuplicateUserRelatedResources is true', async() => {
+      const _path1 = '/np_duplicate7';
+      const _path2 = '/np_duplicate7/np_duplicate8';
+      const _path3 = '/np_duplicate7/np_duplicate9';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id })
+        .populate({ path: 'revision', model: 'Revision' });
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id });
+      const _page3 = await Page.findOne({ path: _path3, parent: _page1._id });
+      const _revision1 = _page1.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_revision1).toBeTruthy();
+
+      const newPagePath = '/dup_np_duplicate7';
+      await duplicate(_page1, newPagePath, npDummyUser1, true, true);
+
+      const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate7/np_duplicate8' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage3 = await Page.findOne({ path: '/dup_np_duplicate7/np_duplicate9' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedRevision1 = duplicatedPage1.revision;
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage2).toBeFalsy();
+      expect(duplicatedPage3).toBeFalsy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(normalizeGrantedGroups(duplicatedPage1.grantedGroups)).toStrictEqual([
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
+      ]);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
+      expect(duplicatedRevision1.body).toBe(_revision1.body);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
     });
 
   });

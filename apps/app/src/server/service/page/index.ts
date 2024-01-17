@@ -1056,7 +1056,7 @@ class PageService implements IPageService {
   /*
    * Duplicate
    */
-  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources = false) {
+  async duplicate(page: PageDocument, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources: boolean) {
     /*
      * Common Operation
      */
@@ -1090,6 +1090,7 @@ class PageService implements IPageService {
     let grant: PageGrant;
     let grantedUserIds;
     let grantedGroupIds: IGrantedGroup[];
+
     if (page.isEmpty) {
       const parent = await Page.findOne({ _id: page.parent });
       if (parent == null) {
@@ -1124,8 +1125,8 @@ class PageService implements IPageService {
 
     // 3. Duplicate target
     const options: PageCreateOptions = {
-      grant: page.grant,
-      grantUserGroupIds: page.grantedGroups,
+      grant,
+      grantUserGroupIds: grantedGroupIds,
     };
     let duplicatedTarget;
     if (page.isEmpty) {
@@ -1171,7 +1172,7 @@ class PageService implements IPageService {
 
       (async() => {
         try {
-          await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id);
+          await this.duplicateRecursivelyMainOperation(page, newPagePath, user, pageOp._id, onlyDuplicateUserRelatedResources);
         }
         catch (err) {
           logger.error('Error occurred while running duplicateRecursivelyMainOperation.', err);
@@ -1189,8 +1190,14 @@ class PageService implements IPageService {
     return result;
   }
 
-  async duplicateRecursivelyMainOperation(page: PageDocument, newPagePath: string, user, pageOpId: ObjectIdLike): Promise<void> {
-    const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, false, false);
+  async duplicateRecursivelyMainOperation(
+      page: PageDocument,
+      newPagePath: string,
+      user,
+      pageOpId: ObjectIdLike,
+      onlyDuplicateUserRelatedResources: boolean,
+  ): Promise<void> {
+    const nDuplicatedPages = await this.duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedResources, false);
 
     // normalize parent of descendant pages
     const shouldNormalize = this.shouldNormalizeParent(page);
@@ -1412,7 +1419,7 @@ class PageService implements IPageService {
     await this.duplicateTags(pageIdMapping);
   }
 
-  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedResources = false, shouldUseV4Process = true) {
+  private async duplicateDescendantsWithStream(page, newPagePath, user, onlyDuplicateUserRelatedResources: boolean, shouldUseV4Process = true) {
     if (shouldUseV4Process) {
       return this.duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources);
     }
@@ -1460,7 +1467,7 @@ class PageService implements IPageService {
     return nNonEmptyDuplicatedPages;
   }
 
-  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources = false) {
+  private async duplicateDescendantsWithStreamV4(page, newPagePath, user, onlyDuplicateUserRelatedResources: boolean) {
     const readStream = await this.generateReadStreamToOperateOnlyDescendants(page.path, user);
 
     const newPagePathPrefix = newPagePath;

@@ -682,6 +682,9 @@ class PageGrantService implements IPageGrantService {
     return this.filterGrantedGroupsByIds(page, userRelatedGroupIds);
   }
 
+  /**
+   * Check if user is granted access to page
+   */
   isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroupIds: string[]): boolean {
     if (page.grant === PageGrant.GRANT_PUBLIC) return true;
     if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
