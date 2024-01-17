@@ -25,6 +25,7 @@
     "@codemirror/language": "^6.8.0",
     "@codemirror/language-data": "^6.3.1",
     "@codemirror/state": "^6.2.1",
+    "@codemirror/theme-one-dark": "^6.1.2",
     "@codemirror/view": "^6.15.3",
     "@popperjs/core": "^2.11.8",
     "@types/react": "^18.2.14",
@@ -33,6 +34,14 @@
     "@uiw/codemirror-themes-all": "^4.21.21",
     "@uiw/react-codemirror": "^4.21.8",
     "bootstrap": "^5.3.1",
+    "cm6-theme-basic-dark": "^0.2.0",
+    "cm6-theme-basic-light": "^0.2.0",
+    "cm6-theme-gruvbox-dark": "^0.2.0",
+    "cm6-theme-gruvbox-light": "^0.2.0",
+    "cm6-theme-material-dark": "^0.2.0",
+    "cm6-theme-nord": "^0.2.0",
+    "cm6-theme-solarized-dark": "^0.2.0",
+    "cm6-theme-solarized-light": "^0.2.0",
     "codemirror": "^6.0.1",
     "emoji-mart": "npm:panta82-emoji-mart@^3.0.1",
     "eslint-plugin-react-refresh": "^0.4.1",
@@ -41,6 +50,7 @@
     "react-toastify": "^9.1.3",
     "reactstrap": "^9.2.0",
     "swr": "^2.2.2",
+    "thememirror": "^2.0.1",
     "ts-deepmerge": "^6.2.0"
   }
 }

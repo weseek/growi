@@ -3,7 +3,9 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import { PlaygroundAllEditorTheme, PlaygroundReactCodeMirror } from '../../services';
+import {
+  PlaygroundOfficial, PlaygroundCM6Themes, PlaygroundThemeMirror, PlaygroundAllEditorTheme, PlaygroundReactCodeMirror,
+} from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -107,6 +109,24 @@ const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
         <h2>ReactCodeMirror</h2>
         <div className="col">
           {createItems(Object.keys(PlaygroundReactCodeMirror))}
+        </div>
+      </div>
+      <div className="row mt-3">
+        <h2>ThemeMirror</h2>
+        <div className="col">
+          {createItems(Object.keys(PlaygroundThemeMirror))}
+        </div>
+      </div>
+      <div className="row mt-3">
+        <h2>CM6-Theme</h2>
+        <div className="col">
+          {createItems(Object.keys(PlaygroundCM6Themes))}
+        </div>
+      </div>
+      <div className="row mt-3">
+        <h2>OneDark</h2>
+        <div className="col">
+          {createItems(Object.keys(PlaygroundOfficial))}
         </div>
       </div>
     </>
