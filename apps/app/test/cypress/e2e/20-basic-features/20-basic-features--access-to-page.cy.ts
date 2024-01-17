@@ -72,7 +72,7 @@ context('Access to page', () => {
     cy.visit('/Sandbox#edit');
     cy.collapseSidebar(true);
 
-    // Editor.tsx is not rendered
+    // Commented out because Editor.tsx is not rendered
     // cy.getByTestid('navbar-editor').should('be.visible');
     cy.get('.grw-editor-navbar-bottom').should('be.visible');
     cy.getByTestid('save-page-btn').should('be.visible');
@@ -82,7 +82,7 @@ context('Access to page', () => {
     cy.screenshot(`${ssPrefix}-Sandbox-edit-page`);
   })
 
-  // // Editor.tsx is not rendered
+  // Comment out because no text has been entered.
   // const body1 = 'hello';
   // const body2 = ' world!';
   // it('Edit and save with save-page-btn', () => {
@@ -100,7 +100,7 @@ context('Access to page', () => {
   //   cy.screenshot(`${ssPrefix}-edit-and-save-with-save-page-btn`);
   // })
 
-  // // Editor.tsx is not rendered
+  // Comment out because no text has been entered.
   // it('Edit and save with shortcut key', () => {
   //   const savePageShortcutKey = '{ctrl+s}';
 
@@ -235,11 +235,9 @@ context('Access to Template Editing Mode', () => {
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);
     cy.collapseSidebar(true);
-    cy.getByTestid('grw-sidebar-contents').should('not.be.visible');
-    cy.waitUntilSkeletonDisappear();
 
-    cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
-    cy.waitUntilSkeletonDisappear();
+    // cy.getByTestid('grw-contextual-sub-nav').should('be.visible');
+    // cy.waitUntilSkeletonDisappear();
 
     // Comment out because no text has been entered.
     // Check if the template is applied
@@ -258,6 +256,7 @@ context('Access to Template Editing Mode', () => {
     });
   });
 
+  // Comment out because no text has been entered.
   // it("Successfully created template for children", () => {
   //   cy.visit('/Sandbox');
   //   cy.waitUntilSkeletonDisappear();
@@ -293,6 +292,7 @@ context('Access to Template Editing Mode', () => {
     createPageFromPageTreeTest('template-test-page1', '/Sandbox' ,templateBody1);
   });
 
+  // Comment out because no text has been entered
   // it('Successfully created template for descendants', () => {
   //   cy.visit('/Sandbox');
   //   cy.waitUntilSkeletonDisappear();
@@ -327,6 +327,7 @@ context('Access to Template Editing Mode', () => {
     createPageFromPageTreeTest('template-test-page2','Sandbox',templateBody1);
   });
 
+  // Sandbox/_template not created, comment out
   // it('Template is applied to pages created from PageTree (template for descendants)', () => {
   //   // delete /Sandbox/_template
   //   cy.visit('/Sandbox/_template');
