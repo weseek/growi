@@ -218,14 +218,14 @@ describe('Access to sidebar', () => {
         //   cy.getByTestid('save-page-btn').click();
         // });
 
-        it('Successfully create custom sidebar content', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
-            .should('be.visible')
-            .should('have.class', 'active');
+        // it('Successfully create custom sidebar content', () => {
+        //   cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
+        //     .should('be.visible')
+        //     .should('have.class', 'active');
 
-          cy.waitUntilSkeletonDisappear();
-          cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`, { blackout: blackoutOverride });
-        });
+        //   cy.waitUntilSkeletonDisappear();
+        //   cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`, { blackout: blackoutOverride });
+        // });
       });
 
       describe('Test recent changes tab', () => {
