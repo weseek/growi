@@ -1,7 +1,4 @@
-import nodePath from 'path';
-
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -11,11 +8,13 @@ import { mutatePageTree, mutatePageList } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
 export const usePagePathRenameHandler = (
-    currentPage: IPagePopulatedToShowRevision, currentPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void,
-): (inputText: string) => Promise<void> => {
+    currentPage: IPagePopulatedToShowRevision, onRenameFinish?: () => void, onRenameFailure?: () => void,
+): (newPagePath: string) => Promise<void> => {
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { t } = useTranslation();
+
+  const currentPagePath = currentPage.path;
 
   const onRenamed = (fromPath: string | undefined, toPath: string) => {
     mutatePageTree();
@@ -27,12 +26,9 @@ export const usePagePathRenameHandler = (
     }
   };
 
-  const pagePathRenameHandler = async(inputText: string) => {
+  const pagePathRenameHandler = async(newPagePath: string) => {
 
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-
-    if (newPagePath === currentPage.path || inputText === '') {
+    if (newPagePath === currentPage.path || newPagePath === '') {
       onRenameFinish?.();
       return;
     }

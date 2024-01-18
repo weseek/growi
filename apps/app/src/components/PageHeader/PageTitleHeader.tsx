@@ -25,7 +25,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
   return (
     <div onBlur={() => setRenameInputShown(false)}>
       <TextInputForPageTitleAndPath
-        currentPagePath={currentPagePath}
         currentPage={currentPage}
         stateHandler={stateHandler}
         inputValue={pageName}

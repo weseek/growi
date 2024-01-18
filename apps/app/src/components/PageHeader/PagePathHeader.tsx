@@ -3,7 +3,6 @@ import {
 } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { useTranslation } from 'next-i18next';
 
 import { usePageSelectModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -26,8 +25,6 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isButtonsShown, setButtonShown] = useState(false);
   const [inputText, setInputText] = useState('');
 
-  const { t } = useTranslation();
-
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
@@ -39,7 +36,7 @@ export const PagePathHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, currentPagePath, onRenameFinish, onRenameFailure);
+  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -103,7 +100,6 @@ export const PagePathHeader: FC<Props> = (props) => {
             onMouseEnter={() => setButtonShown(true)}
           >
             <TextInputForPageTitleAndPath
-              currentPagePath={currentPagePath}
               currentPage={currentPage}
               stateHandler={stateHandler}
               inputValue={currentPagePath}

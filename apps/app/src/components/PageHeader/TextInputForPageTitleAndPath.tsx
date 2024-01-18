@@ -1,14 +1,19 @@
-import { FC } from 'react';
+import { FC, useCallback } from 'react';
 import type { Dispatch, SetStateAction } from 'react';
 
+import nodePath from 'path';
+
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 
+
 import { usePagePathRenameHandler } from './page-header-utils';
+
 
 type StateHandler = {
   isRenameInputShown: boolean
@@ -16,7 +21,6 @@ type StateHandler = {
 }
 
 type Props = {
-  currentPagePath: string
   currentPage: IPagePopulatedToShowRevision
   stateHandler: StateHandler
   inputValue: string
@@ -26,7 +30,7 @@ type Props = {
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPagePath, currentPage, stateHandler, inputValue, CustomComponent, handleInputChange,
+    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange,
   } = props;
 
   const { t } = useTranslation();
@@ -41,7 +45,16 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, currentPagePath, onRenameFinish, onRenameFailure);
+  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+
+  const onPressEnter = useCallback((inputPagePath: string) => {
+
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputPagePath);
+
+    pagePathSubmitHandler(newPagePath);
+
+  }, [currentPage.path, pagePathSubmitHandler]);
 
   return (
     <>
@@ -50,7 +63,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
           <ClosableTextInput
             value={inputValue}
             placeholder={t('Input page name')}
-            onPressEnter={pagePathSubmitHandler}
+            onPressEnter={onPressEnter}
             validationTarget={ValidationTarget.PAGE}
             handleInputChange={handleInputChange}
           />
