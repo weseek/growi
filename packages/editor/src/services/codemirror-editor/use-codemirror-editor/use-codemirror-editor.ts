@@ -11,7 +11,6 @@ import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
 import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
-import { setDataLine } from '../../extensions/setDataLine';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -60,7 +59,6 @@ const defaultExtensions: Extension[] = [
   syntaxHighlighting(markdownHighlighting),
   Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
   emojiAutocompletionSettings,
-  setDataLine,
 ];
 
 

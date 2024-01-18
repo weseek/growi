@@ -1,16 +1,20 @@
 import { useEffect } from 'react';
 
-import type { Extension } from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
 
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
+  [
+    scrollPastEnd(),
+    setDataLine,
+  ],
 ];
 
 type Props = {
