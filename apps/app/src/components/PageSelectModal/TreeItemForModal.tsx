@@ -1,11 +1,12 @@
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import {
-  SimpleItem, SimpleItemProps, SimpleItemTool, useNewPageInput,
+  SimpleItem, SimpleItemTool, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
 
-type Optional = 'itemRef' | 'itemClass' | 'mainClassName';
-type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
+type PageTreeItemProps = TreeItemProps & {
+  key?: React.Key | null,
+};
 
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 

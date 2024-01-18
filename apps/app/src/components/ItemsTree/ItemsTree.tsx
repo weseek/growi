@@ -25,7 +25,7 @@ import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { ItemNode, SimpleItemProps } from '../TreeItem';
+import { ItemNode, type TreeItemProps } from '../TreeItem';
 
 import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
@@ -92,7 +92,7 @@ type ItemsTreeProps = {
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
-  CustomTreeItem: React.FunctionComponent<SimpleItemProps>
+  CustomTreeItem: React.FunctionComponent<TreeItemProps>
 }
 
 /*
