@@ -8,9 +8,13 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay } from '../../services';
+import {
+  getStrFromBolToSelectedUpperPos, adjustPasteData,
+} from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
+
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -62,6 +66,19 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
+      const strFromBol = getStrFromBolToSelectedUpperPos(editor);
+
+      const testVar = strFromBol;
+
+      console.log(testVar);
+      console.log('kohsei');
+
       if (event.clipboardData == null) {
         return;
       }
@@ -71,9 +88,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       }
 
       if (event.clipboardData.types.includes('text/plain')) {
+
         const textData = event.clipboardData.getData('text/plain');
-        codeMirrorEditor?.replaceText(textData);
+
+        const adjusted = adjustPasteData(strFromBol, textData);
+
+        if (adjusted != null) {
+          codeMirrorEditor?.replaceText(adjusted);
+        }
       }
+      // console.log('kohsei');
     };
 
     const extension = EditorView.domEventHandlers({
