@@ -332,7 +332,7 @@ module.exports = (crowi) => {
           path = await generateUniquePath(defaultTitle);
           // initialize grant data
           grant = 1;
-          grantUserGroupIds = null;
+          grantUserGroupIds = undefined;
         }
       }
       catch (err) {

@@ -36,7 +36,7 @@ export const useOnNewButtonClicked = (
         isSlackEnabled: false,
         slackChannels: '',
         grant: shouldUseRootPath ? 1 : currentPage.grant,
-        grantUserGroupId: shouldUseRootPath ? undefined : currentPage.grantedGroups,
+        grantUserGroupIds: shouldUseRootPath ? undefined : currentPage.grantedGroups,
         shouldGeneratePath: true,
       };
 
