@@ -10,7 +10,8 @@ import CollectionProgressingStatus from '../models/vo/collection-progressing-sta
 
 import AppService from './app';
 import ConfigLoader from './config-loader';
-import GrowiBridgeService, { ZipFileStat } from './growi-bridge';
+import GrowiBridgeService from './growi-bridge';
+import { ZipFileStat } from './interfaces/export';
 
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars

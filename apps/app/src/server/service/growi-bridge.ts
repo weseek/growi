@@ -5,21 +5,11 @@ import unzipper from 'unzipper';
 
 import loggerFactory from '~/utils/logger';
 
+import { ZipFileStat } from './interfaces/export';
+
 const streamToPromise = require('stream-to-promise');
 
 const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
-
-export type ZipFileStat = {
-  meta: object;
-  fileName: string;
-  zipFilePath: string;
-  fileStat: fs.Stats;
-  innerFileStats: {
-      fileName: string;
-      collectionName: string;
-      size: number;
-  }[];
-} | null
 
 /**
  * the service class for bridging GROWIs (export and import)
