@@ -432,8 +432,10 @@ export class G2GTransferPusherService implements Pusher {
 
     let zipFileStream: ReadStream;
     try {
-      const zipFileStat = await this.crowi.exportService.export(collections);
-      const zipFilePath = zipFileStat.zipFilePath;
+      const zipFileStat = await this.crowi.exportService?.export(collections);
+      const zipFilePath = zipFileStat?.zipFilePath;
+
+      if (zipFilePath == null) throw new Error('Failed to generate zip file');
 
       zipFileStream = createReadStream(zipFilePath);
     }

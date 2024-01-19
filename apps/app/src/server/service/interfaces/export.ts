@@ -10,4 +10,4 @@ export type ZipFileStat = {
       collectionName: string;
       size: number;
   }[];
-} | null
+}

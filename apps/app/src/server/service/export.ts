@@ -77,7 +77,7 @@ class ExportService {
     const zipFiles = fs.readdirSync(this.baseDir).filter(file => path.extname(file) === '.zip');
 
     // process serially so as not to waste memory
-    const zipFileStats: ZipFileStat[] = [];
+    const zipFileStats: Array<ZipFileStat | null> = [];
     const parseZipFilePromises = zipFiles.map((file) => {
       const zipFile = this.getFile(file);
       return this.growiBridgeService.parseZipFile(zipFile);
@@ -226,7 +226,7 @@ class ExportService {
    * @param {Array.<string>} collections array of collection name
    * @return {Array.<ZipFileStat>} info of zip file created
    */
-  async exportCollectionsToZippedJson(collections: string[]): Promise<ZipFileStat> {
+  async exportCollectionsToZippedJson(collections: string[]): Promise<ZipFileStat | null> {
     const metaJson = await this.createMetaJson();
 
     // process serially so as not to waste memory
@@ -257,7 +257,7 @@ class ExportService {
     // TODO: remove broken zip file
   }
 
-  async export(collections: string[]): Promise<ZipFileStat> {
+  async export(collections: string[]): Promise<ZipFileStat | null> {
     if (this.currentProgressingStatus != null) {
       throw new Error('There is an exporting process running.');
     }
@@ -265,7 +265,7 @@ class ExportService {
     this.currentProgressingStatus = new ExportProgressingStatus(collections);
     await this.currentProgressingStatus.init();
 
-    let zipFileStat: ZipFileStat;
+    let zipFileStat: ZipFileStat | null;
     try {
       zipFileStat = await this.exportCollectionsToZippedJson(collections);
     }
@@ -329,7 +329,7 @@ class ExportService {
    * emit terminate event
    * @param {object} zipFileStat added zip file status data
    */
-  emitTerminateEvent(zipFileStat: ZipFileStat): void {
+  emitTerminateEvent(zipFileStat: ZipFileStat | null): void {
     this.adminEvent.emit('onTerminateForExport', { addedZipFileStat: zipFileStat });
   }
 

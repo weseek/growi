@@ -92,7 +92,7 @@ class GrowiBridgeService {
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{Array.<object>}
    */
-  async parseZipFile(zipFile: string): Promise<ZipFileStat> {
+  async parseZipFile(zipFile: string): Promise<ZipFileStat | null> {
     const fileStat = fs.statSync(zipFile);
     const innerFileStats: {fileName: string, collectionName: string, size: number}[] = [];
     let meta = {};

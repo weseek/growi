@@ -165,9 +165,9 @@ module.exports = (crowi: Crowi): Router => {
       const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
-      innerFileStats = _innerFileStats;
-      meta = parsedMeta;
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = zipFileStat?.innerFileStats;
+      meta = zipFileStat?.meta;
     }
     catch (err) {
       logger.error(err);
