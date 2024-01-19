@@ -4,11 +4,11 @@ const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*
 
 const getBol = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
-  const aboveLine = editor.state.doc.lineAt(curPos).number - 1;
+  const aboveLine = editor.state.doc.lineAt(curPos).number;
   return editor.state.doc.line(aboveLine).from;
 };
 
-const getStrFromBol = (editor: EditorView) => {
+export const getStrFromBol = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
   return editor.state.sliceDoc(getBol(editor), curPos);
 };
@@ -27,6 +27,8 @@ const insertText = (editor: EditorView, text: string) => {
 
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
   const strFromBol = getStrFromBol(editor);
+
+  console.log(strFromBol);
 
   const matchResult = strFromBol.match(indentAndMarkRE);
 
