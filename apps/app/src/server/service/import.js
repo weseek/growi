@@ -2,6 +2,8 @@ import gc from 'expose-gc/function';
 
 import loggerFactory from '~/utils/logger';
 
+import CollectionProgressingStatus from '../models/vo/collection-progressing-status';
+
 const fs = require('fs');
 const path = require('path');
 const { Writable, Transform } = require('stream');
@@ -13,7 +15,6 @@ const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
 const unzipper = require('unzipper');
 
-const CollectionProgressingStatus = require('../models/vo/collection-progressing-status');
 const { createBatchStream } = require('../util/batch-stream');
 
 const { ObjectId } = mongoose.Types;

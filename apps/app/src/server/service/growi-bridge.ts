@@ -1,11 +1,25 @@
+import fs from 'fs';
+import path from 'path';
+
+import unzipper from 'unzipper';
+
 import loggerFactory from '~/utils/logger';
 
-const fs = require('fs');
-const path = require('path');
 const streamToPromise = require('stream-to-promise');
-const unzipper = require('unzipper');
 
 const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-disable-line no-unused-vars
+
+export type ZipFileStat = {
+  meta: object;
+  fileName: string;
+  zipFilePath: string;
+  fileStat: fs.Stats;
+  innerFileStats: {
+      fileName: string;
+      collectionName: string;
+      size: number;
+  }[];
+} | null
 
 /**
  * the service class for bridging GROWIs (export and import)
@@ -13,19 +27,25 @@ const logger = loggerFactory('growi:services:GrowiBridgeService'); // eslint-dis
  */
 class GrowiBridgeService {
 
+  crowi: any;
+
+  encoding: BufferEncoding = 'utf-8';
+
+  metaFileName = 'meta.json';
+
+  baseDir: string | undefined;
+
   constructor(crowi) {
     this.crowi = crowi;
-    this.encoding = 'utf-8';
-    this.metaFileName = 'meta.json';
   }
 
   /**
    * getter for encoding
    *
    * @memberOf GrowiBridgeService
-   * @return {string} encoding
+   * @return {BufferEncoding} encoding
    */
-  getEncoding() {
+  getEncoding(): BufferEncoding {
     return this.encoding;
   }
 
@@ -35,7 +55,7 @@ class GrowiBridgeService {
    * @memberOf GrowiBridgeService
    * @return {string} base name of meta file
    */
-  getMetaFileName() {
+  getMetaFileName(): string {
     return this.metaFileName;
   }
 
@@ -46,8 +66,8 @@ class GrowiBridgeService {
    * @param {string} collectionName collection name
    * @return {object} instance of mongoose model
    */
-  getModelFromCollectionName(collectionName) {
-    const Model = Object.values(this.crowi.models).find((m) => {
+  getModelFromCollectionName(collectionName: string) {
+    const Model = Object.values(this.crowi.models).find((m: any) => {
       return m.collection != null && m.collection.name === collectionName;
     });
 
@@ -62,7 +82,7 @@ class GrowiBridgeService {
    * @param {string} fileName base name of file
    * @return {string} absolute path to the file
    */
-  getFile(fileName) {
+  getFile(fileName: string): string {
     if (this.baseDir == null) {
       throw new Error('baseDir is not defined');
     }
@@ -82,9 +102,9 @@ class GrowiBridgeService {
    * @param {string} zipFile path to zip file
    * @return {object} meta{object} and files{Array.<object>}
    */
-  async parseZipFile(zipFile) {
+  async parseZipFile(zipFile: string): Promise<ZipFileStat> {
     const fileStat = fs.statSync(zipFile);
-    const innerFileStats = [];
+    const innerFileStats: {fileName: string, collectionName: string, size: number}[] = [];
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
@@ -128,4 +148,4 @@ class GrowiBridgeService {
 
 }
 
-module.exports = GrowiBridgeService;
+export default GrowiBridgeService;
