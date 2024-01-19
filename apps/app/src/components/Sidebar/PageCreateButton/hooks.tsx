@@ -1,12 +1,13 @@
 import { useCallback, useState } from 'react';
 
+import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
 
 export const useOnNewButtonClicked = (
-    currentPagePath?: string,
+    currentPage?: IPagePopulatedToShowRevision | null,
     isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
@@ -21,19 +22,25 @@ export const useOnNewButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      const parentPath = currentPagePath == null
+      // !! NOTICE !!
+      // Verification of page createable or not is done on the server side.
+      // Since the new page path is not generated on the client side.
+      // Need shouldGeneratePath flag.
+      const shouldUseRootPath = currentPage?.path == null;
+      const parentPath = shouldUseRootPath
         ? '/'
-        : currentPagePath;
+        : currentPage.path;
 
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: shouldUseRootPath ? 1 : currentPage.grant,
+        grantUserGroupId: shouldUseRootPath ? undefined : currentPage.grantedGroups,
         shouldGeneratePath: true,
       };
 
+      // !! NOTICE !!
+      // If shouldGeneratePath is flagged, send the parent page path
       const response = await createPage(parentPath, '', params);
 
       router.push(`/${response.page.id}#edit`);
@@ -44,7 +51,7 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, isLoading, router]);
+  }, [currentPage, isLoading, router]);
 
   return { onClickHandler, isPageCreating };
 };
