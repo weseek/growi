@@ -14,6 +14,7 @@ import { DropdownItem } from 'reactstrap';
 import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -71,6 +72,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
 
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
+  const { open: openPageBulkExportSelectModal } = usePageBulkExportSelectModal();
 
   return (
     <>
@@ -92,7 +94,16 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         className="grw-page-control-dropdown-item"
       >
         <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
-        {t('export_bulk.export_page_markdown')}
+        {t('page_export.export_page_markdown')}
+      </DropdownItem>
+
+      {/* Bulk export */}
+      <DropdownItem
+        onClick={openPageBulkExportSelectModal}
+        className="grw-page-control-dropdown-item"
+      >
+        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
+        {t('page_export.bulk_export')}
       </DropdownItem>
 
       <DropdownItem divider />
