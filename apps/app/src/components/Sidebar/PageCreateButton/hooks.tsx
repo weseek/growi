@@ -22,10 +22,11 @@ export const useOnNewButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      // !! NOTICE !!
-      // Verification of page createable or not is done on the server side.
-      // Since the new page path is not generated on the client side.
-      // Need shouldGeneratePath flag.
+      /**
+       * !! NOTICE !! - Verification of page createable or not is checked on the server side.
+       * since the new page path is not generated on the client side.
+       * need shouldGeneratePath flag.
+       */
       const shouldUseRootPath = currentPage?.path == null;
       const parentPath = shouldUseRootPath
         ? '/'
@@ -39,8 +40,7 @@ export const useOnNewButtonClicked = (
         shouldGeneratePath: true,
       };
 
-      // !! NOTICE !!
-      // If shouldGeneratePath is flagged, send the parent page path
+      // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
       const response = await createPage(parentPath, '', params);
 
       router.push(`/${response.page.id}#edit`);

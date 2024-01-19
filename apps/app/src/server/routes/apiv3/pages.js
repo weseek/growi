@@ -327,10 +327,10 @@ module.exports = (crowi) => {
         const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
         path = await generateUniquePath(basePath);
 
-        // If the generated path is not creatable, create the path under the root path.
+        // if the generated path is not creatable, create the path under the root path
         if (!isCreatablePage(path)) {
           path = await generateUniquePath(defaultTitle);
-          // Initialize grant data when creating under root
+          // initialize grant data
           grant = 1;
           grantUserGroupIds = null;
         }
