@@ -53,7 +53,7 @@ export const BookmarkFolderItemControl: React.FC<{
           className="pt-2 grw-page-control-dropdown-item text-danger"
           onClick={onClickDelete}
         >
-          <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+          <span className="material-symbols-outlined grw-page-control-dropdown-icon">delete</span>
           {t('Delete')}
         </DropdownItem>
       </DropdownMenu>

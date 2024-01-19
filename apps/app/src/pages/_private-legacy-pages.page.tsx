@@ -14,6 +14,7 @@ import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp,
 } from '~/stores/context';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -45,6 +46,10 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  const { mutate } = useSWRxCurrentPage();
+  mutate(undefined, { revalidate: false });
 
   // Search
   useIsSearchPage(true);

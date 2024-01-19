@@ -28,10 +28,10 @@ export const AlertSiteUrlUndefined = (): JSX.Element => {
 
   return (
     <div className="alert alert-danger rounded-0 d-edit-none mb-0 px-4 py-2">
-      <i className="icon-exclamation"></i>
+      <span className="material-symbols-outlined">error</span>
       {
         t('alert.siteUrl_is_not_set', { link: t('headers.app_settings') })
-      } &gt;&gt; <a href="/admin/app">{t('headers.app_settings')}<i className="icon-login"></i></a>
+      } &gt;&gt; <a href="/admin/app">{t('headers.app_settings')}<span className="material-symbols-outlined">login</span></a>
     </div>
   );
 };

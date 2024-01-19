@@ -83,7 +83,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Email Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-envelope"></i>
+            <span className="material-symbols-outlined">mail</span>
           </span>
           <input
             type="text"
@@ -98,7 +98,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
           <span className="input-group-text">
-            <i className="icon-user"></i>
+            <span className="material-symbols-outlined">person</span>
           </span>
           <input
             type="text"
@@ -112,7 +112,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Name Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-tag"></i>
+            <span className="material-symbols-outlined">sell</span>
           </span>
           <input
             type="text"
@@ -126,7 +126,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Password Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-lock"></i>
+            <span className="material-symbols-outlined">lock</span>
           </span>
           <input
             type="password"

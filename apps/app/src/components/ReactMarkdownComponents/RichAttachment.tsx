@@ -70,7 +70,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
                 <i className="icon-cloud-download" />
               </a>
               <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash" />
+                <span className="material-symbols-outlined">delete</span>
               </a>
             </div>
             <div className="d-flex align-items-center">

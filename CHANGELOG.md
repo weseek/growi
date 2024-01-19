@@ -1,8 +1,60 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.0](https://github.com/weseek/growi/compare/v6.2.5...v6.3.0) - 2023-12-14
+
+### BREAKING CHANGES
+
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+
+### 💎 Features
+
+* feat: LDAP/Keycloak group sync (#7857) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Refactor DrawioViewer re-rendering by the resizing trigger (#8314) @yuki-takei
+* imprv: Apply content headers for attachment response (#8245) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: SAML callback action throws the field is undefined error when the ACL Rule string is only white space (#8322) @yuki-takei
+* fix: Remove groups not related to the user from the user groups that are specified automatically when creating child pages (#8266) @arafubeatbox
+* fix: Certify shared page attachment middleware (#8255) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Add test for delete-completely-user-home-by-system.ts (#8323) @jam411
+* ci(deps-dev): bump vite from 4.5.0 to 4.5.1 (#8302) @dependabot
+* support: TypeScriptize attachment codes (#8243) @yuki-takei
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+
+## [v6.2.5](https://github.com/weseek/growi/compare/v6.2.4...v6.2.5) - 2023-12-14
+
+### 🐛 Bug Fixes
+
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
+
+## [v6.2.4](https://github.com/weseek/growi/compare/v6.2.3...v6.2.4) - 2023-11-29
+
+### 💎 Features
+
+* feat: Show create date in Attachment Data list (#8229) @sakazuki
+
+### 🚀 Improvement
+
+* imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
+* imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
+
+### 🐛 Bug Fixes
+* fix: Certify shared page attachment middleware (6.2.x) (#8256) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Refactor deleteCompletelyUserHomeBySystem (#8262) @jam411
 
 ## [v6.2.3](https://github.com/weseek/growi/compare/v6.2.2...v6.2.3) - 2023-11-13
 

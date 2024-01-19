@@ -24,8 +24,8 @@ export const AuditLogSettings: FC = () => {
         {t('admin:audit_log_management.activity_expiration_date_explain')}
       </p>
       <p className="alert alert-warning col-6">
-        <i className="icon-exclamation icon-fw">
-        </i><b>FIXED</b><br />
+        <span className="material-symbols-outlined">error</span>
+        <b>FIXED</b><br />
         <b
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
@@ -46,7 +46,7 @@ export const AuditLogSettings: FC = () => {
           target="_blank"
           rel="noopener noreferrer"
         >
-          <i className="icon-fw icon-question" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">help</span>
         </a>
       </h4>
       <p className="form-text text-muted">
