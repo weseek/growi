@@ -224,6 +224,7 @@
     "@next/bundle-analyzer": "^13.2.3",
     "@swc-node/jest": "^1.6.2",
     "@swc/jest": "^0.2.24",
+    "@testing-library/react": "^14.1.2",
     "@types/express": "^4.17.11",
     "@types/jest": "^29.5.2",
     "@types/react-scroll": "^1.8.4",
