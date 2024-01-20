@@ -7,7 +7,7 @@ import { PageItemControl } from './PageItemControl';
 
 describe('PageItemControl.tsx', () => {
   // TODO: https://redmine.weseek.co.jp/issues/138836 remove skip() after resolution
-  it.skip('Should fire onClickRenameMenuItem() when clicking the rename button, with pageInfo.isDeletable being "false"', async() => {
+  it('Should fire onClickRenameMenuItem() when clicking the rename button, with pageInfo.isDeletable being "false"', async() => {
     // setup
     const onClickRenameMenuItemMock = vi.fn(() => {});
 
