@@ -244,6 +244,7 @@
     "font-awesome": "^4.7.0",
     "fslightbox-react": "^1.7.6",
     "handsontable": "=6.2.2",
+    "happy-dom": "^13.2.0",
     "i18next-hmr": "^1.11.0",
     "jest": "^29.5.0",
     "jest-date-mock": "^1.0.8",

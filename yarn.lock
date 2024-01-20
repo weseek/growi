@@ -6817,6 +6817,11 @@ ent@^2.2.0:
   resolved "https://registry.yarnpkg.com/ent/-/ent-2.2.0.tgz#e964219325a21d05f44466a2f686ed6ce5f5dd1d"
   integrity sha1-6WQhkyWiHQX0RGai9obtbOX13R0=
 
+entities@^4.5.0:
+  version "4.5.0"
+  resolved "https://registry.yarnpkg.com/entities/-/entities-4.5.0.tgz#5d268ea5e7113ec74c4d033b79ea5a35a488fb48"
+  integrity sha512-V0hjH4dGPh9Ao5p0MoRY6BVqtwCjhz6vI5LT8AJ55H+4g9/4vbHx1I54fS0XuclLhDHArPQCiMjDxjaL8fPxhw==
+
 entities@~3.0.1:
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/entities/-/entities-3.0.1.tgz#2b887ca62585e96db3903482d336c1006c3001d4"
@@ -8278,6 +8283,15 @@ handsontable@=6.2.2:
     moment "2.20.1"
     numbro "^2.0.6"
     pikaday "1.5.1"
+
+happy-dom@^13.2.0:
+  version "13.2.0"
+  resolved "https://registry.yarnpkg.com/happy-dom/-/happy-dom-13.2.0.tgz#ff27977deaf0c55c230a4eb93371902bbb745fd8"
+  integrity sha512-aeFD9M5d1sN618nOpWy/76IiU5/UJxdYydPdzpXxEn4r7MQByrmtoH1iU9v8v9bJJ0fMte6OAMy6rDD/mGawfg==
+  dependencies:
+    entities "^4.5.0"
+    webidl-conversions "^7.0.0"
+    whatwg-mimetype "^3.0.0"
 
 har-schema@^2.0.0:
   version "2.0.0"
@@ -16204,6 +16218,11 @@ well-known-symbols@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/well-known-symbols/-/well-known-symbols-2.0.0.tgz#e9c7c07dbd132b7b84212c8174391ec1f9871ba5"
   integrity sha512-ZMjC3ho+KXo0BfJb7JgtQ5IBuvnShdlACNkKkdsqBmYw3bPAaJfPeYUo6tLUaT5tG/Gkh7xkpBhKRQ9e7pyg9Q==
+
+whatwg-mimetype@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/whatwg-mimetype/-/whatwg-mimetype-3.0.0.tgz#5fa1a7623867ff1af6ca3dc72ad6b8a4208beba7"
+  integrity sha512-nt+N2dzIutVRxARx1nghPKGv1xHikU7HKdfafKkLNLindmPU/ch3U31NOCGGA/dmPcmb1VlofO0vnKAcsm0o/Q==
 
 whatwg-url@^11.0.0:
   version "11.0.0"
