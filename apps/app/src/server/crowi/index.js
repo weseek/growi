@@ -25,8 +25,8 @@ import { aclService as aclServiceSingletonInstance } from '../service/acl';
 import AppService from '../service/app';
 import AttachmentService from '../service/attachment';
 import { configManager as configManagerSingletonInstance } from '../service/config-manager';
-import ExportService from '../service/export';
-import { instanciate as instanciateExternalAccountService } from '../service/external-account';
+import instanciateExportService from '../service/export';
+import instanciateExternalAccountService from '../service/external-account';
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import GrowiBridgeService from '../service/growi-bridge';
@@ -82,7 +82,6 @@ class Crowi {
     this.fileUploadService = null;
     this.restQiitaAPIService = null;
     this.growiBridgeService = null;
-    this.exportService = null;
     this.importService = null;
     this.pluginService = null;
     this.searchService = null;
@@ -691,9 +690,7 @@ Crowi.prototype.setUpGrowiBridge = async function() {
 };
 
 Crowi.prototype.setupExport = async function() {
-  if (this.exportService == null) {
-    this.exportService = new ExportService(this);
-  }
+  instanciateExportService(this);
 };
 
 Crowi.prototype.setupImport = async function() {
