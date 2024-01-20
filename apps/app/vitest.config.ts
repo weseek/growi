@@ -8,7 +8,7 @@ export default defineConfig({
   test: {
     environment: 'node',
     exclude: [
-      '**/test/**',
+      '**/test/**', '**/*.test.tsx', '**/*.test.jsx',
     ],
     clearMocks: true,
     globals: true,
