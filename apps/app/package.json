@@ -231,6 +231,7 @@
     "@types/jest": "^29.5.2",
     "@types/react-scroll": "^1.8.4",
     "@types/unzip-stream": "^0.3.4",
+    "@vitejs/plugin-react": "^4.2.1",
     "@vitest/coverage-v8": "^0.34.6",
     "autoprefixer": "^9.0.0",
     "babel-loader": "^8.2.5",
