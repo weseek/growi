@@ -3,7 +3,7 @@ import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
-import { tapStreamDataByPromise } from './unzip-stream-entry-wrapper';
+import { tapStreamDataByPromise } from './unzip-stream-utils';
 
 const fs = require('fs');
 const path = require('path');
