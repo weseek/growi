@@ -380,10 +380,12 @@
 			"Current page name": "Current page name",
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
-      "Same page already exists": "Same page already exists"
+      "Same page already exists": "Same page already exists",
+      "Only duplicate user related resources": "Only duplicate user related resources"
     },
     "help": {
-      "recursive": "Duplicate children of under this path recursively"
+      "recursive": "Duplicate children of under this path recursively",
+      "only_user_related_resources": "This will only duplicate pages that the user has permission to view. If the page permission is set to \"Only specific groups\", only user related groups will be set to the page duplicate."
     }
   },
   "duplicated_pages": "{{fromPath}} 已重复",

@@ -407,7 +407,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService, configManager } = crowi;
+  const { pageService, configManager, pageGrantService } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -462,7 +462,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
       ancestor.populate('grantedGroups.item');
-      const userRelatedGrantedGroups = (await pageService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
+      const userRelatedGrantedGroups = (await pageGrantService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
         if (isPopulated(group.item)) {
           return {
             id: group.item._id,
