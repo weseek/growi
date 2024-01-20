@@ -1,7 +1,7 @@
 import { Transform } from 'stream';
 
 import { Model } from 'mongoose';
-import unzipStream, { Entry } from 'unzip-stream';
+import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
