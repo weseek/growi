@@ -4058,11 +4058,7 @@ class PageService implements IPageService {
    * @param user The operator
    * @returns The new GrantedGroups array to be set to the page
    */
-  async getNewGrantedGroups(
-      userRelatedGrantedGroups: IGrantedGroup[],
-      page: PageDocument,
-      user,
-  ): Promise<IGrantedGroup[]> {
+  async getNewGrantedGroups(userRelatedGrantedGroups: IGrantedGroup[], page: PageDocument, user): Promise<IGrantedGroup[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     return this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedGrantedGroups, page);
   }
@@ -4071,11 +4067,7 @@ class PageService implements IPageService {
    * Use when you do not want to use getNewGrantedGroups with async/await (e.g inside loops that process a large amount of pages)
    * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
    */
-  getNewGrantedGroupsSyncronously(
-      userRelatedGroups: PopulatedGrantedGroup[],
-      userRelatedGrantedGroups: IGrantedGroup[],
-      page: PageDocument,
-  ): IGrantedGroup[] {
+  getNewGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], userRelatedGrantedGroups: IGrantedGroup[], page: PageDocument): IGrantedGroup[] {
     const previousGrantedGroups = page.grantedGroups;
     const userRelatedPreviousGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(
       userRelatedGroups, page,
