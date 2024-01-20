@@ -1,6 +1,5 @@
-import React from 'react';
-
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
+import userEvent, { PointerEventsCheckLevel } from '@testing-library/user-event';
 
 import { PageItemControl } from './PageItemControl';
 
@@ -9,7 +8,7 @@ describe('PageItemControl.tsx', () => {
   // TODO: https://redmine.weseek.co.jp/issues/138836 remove skip() after resolution
   it('Should fire onClickRenameMenuItem() when clicking the rename button, with pageInfo.isDeletable being "false"', async() => {
     // setup
-    const onClickRenameMenuItemMock = vi.fn(() => {});
+    const onClickRenameMenuItemMock = vi.fn();
 
     const pageInfo = {
       isV5Compatible: true,
@@ -29,8 +28,8 @@ describe('PageItemControl.tsx', () => {
     render(<PageItemControl {...props} />);
 
     // when
-    const renameButton = screen.getByText('Move/Rename');
-    fireEvent.click(renameButton);
+    const openPageMoveRenameModalButton = screen.getByTestId('open-page-move-rename-modal-btn');
+    await waitFor(() => userEvent.click(openPageMoveRenameModalButton, { pointerEventsCheck: PointerEventsCheckLevel.Never }));
 
     // then
     expect(onClickRenameMenuItemMock).toHaveBeenCalled();
