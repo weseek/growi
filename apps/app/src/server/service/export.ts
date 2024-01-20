@@ -1,10 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import { Readable, Transform } from 'stream';
+import { Readable, Transform, Writable } from 'stream';
+
+import { isPopulated } from '@growi/core';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
+import archiver, { Archiver } from 'archiver';
 
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
+import { PageModel, PageDocument } from '../models/page';
 import CollectionProgress from '../models/vo/collection-progress';
 import CollectionProgressingStatus from '../models/vo/collection-progressing-status';
 
@@ -16,7 +21,6 @@ import { ZipFileStat } from './interfaces/export';
 
 const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
 
-const archiver = require('archiver');
 const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
 
@@ -396,6 +400,86 @@ class ExportService {
     readable.push(null);
 
     return readable;
+  }
+
+  getPageReadableStream(basePagePath: string) {
+    const Page = this.crowi.model('Page') as PageModel;
+    const { PageQueryBuilder } = Page;
+
+    const builder = new PageQueryBuilder(Page.find())
+      .addConditionToListOnlyDescendants(basePagePath);
+
+    return builder
+      .query
+      .populate('revision')
+      .lean()
+      .cursor({ batchSize: 100 }); // get stream
+  }
+
+  setUpArchiver(): Archiver {
+    // decide zip file path
+    const timeStamp = (new Date()).getTime();
+    const zipFilePath = path.join(__dirname, `${timeStamp}.md.zip`);
+
+    const archive = archiver('zip', {
+      zlib: { level: 9 }, // maximum compression
+    });
+
+    // good practice to catch warnings (ie stat failures and other non-blocking errors)
+    archive.on('warning', (err) => {
+      if (err.code === 'ENOENT') logger.error(err);
+      else throw err;
+    });
+    // good practice to catch this error explicitly
+    archive.on('error', (err) => { throw err });
+
+    // pipe archive data to the file
+    const output = fs.createWriteStream(zipFilePath);
+    archive.pipe(output);
+
+    return archive;
+  }
+
+  async bulkExportWithBasePagePath(basePagePath: string): Promise<void> {
+    // get pages with descendants as stream
+    const pageReadableStream = this.getPageReadableStream(basePagePath);
+
+    const archive = this.setUpArchiver();
+
+    // read from pageReadableStream, then append each page to archiver
+    // pageReadableStream.pipe(pagesWritable) below will pipe the stream
+    const pagesWritable = new Writable({
+      objectMode: true,
+      async write(page: PageDocument, encoding, callback) {
+        try {
+          const revision = page.revision;
+
+          let markdownBody = 'This page does not have any content.';
+          if (revision != null && isPopulated(revision)) {
+            markdownBody = revision.body;
+          }
+
+          // write to zip
+          const pathNormalized = normalizePath(page.path);
+          archive.append(markdownBody, { name: `${pathNormalized}.md` });
+        }
+        catch (err) {
+          logger.error('Error occurred while converting data to readable: ', err);
+          throw Error('だめ');
+        }
+
+        callback();
+      },
+      final(callback) {
+        // TODO: multi-part upload instead of calling finalize() 78070
+        archive.finalize();
+        callback();
+      },
+    });
+
+    pageReadableStream.pipe(pagesWritable);
+
+    await streamToPromise(archive);
   }
 
 }
