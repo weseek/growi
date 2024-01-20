@@ -1,9 +1,9 @@
-import { Transform } from 'stream';
-
 import { Model } from 'mongoose';
 import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
+
+import { tapStreamDataByPromise } from './unzip-stream-entry-wrapper';
 
 const fs = require('fs');
 const path = require('path');
@@ -102,25 +102,15 @@ class GrowiBridgeService {
 
     const readStream = fs.createReadStream(zipFile);
     const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
-    const entryStreams: Array<Promise<void>> = [];
+    let tapPromise;
 
-    unzipStreamPipe.on('entry', (entry: Entry) => {
+    const unzipEntryStream = unzipStreamPipe.on('entry', (entry: Entry) => {
       const fileName = entry.path;
       const size = entry.size; // might be undefined in some archives
       if (fileName === this.getMetaFileName()) {
-        const metaBuffers: Array<Buffer> = [];
-        const metaStream = new Transform({
-          transform: (chunk, _encoding, callback) => {
-            metaBuffers.push(Buffer.from(chunk));
-            callback();
-          },
-          final: (callback) => {
-            meta = JSON.parse(Buffer.concat(metaBuffers).toString());
-            callback();
-          },
+        tapPromise = tapStreamDataByPromise(entry).then((metaBuffer) => {
+          meta = JSON.parse(metaBuffer.toString());
         });
-
-        entryStreams.push(streamToPromise(entry.pipe(metaStream)));
       }
       else {
         innerFileStats.push({
@@ -129,13 +119,12 @@ class GrowiBridgeService {
           size,
         });
       }
-
       entry.autodrain();
     });
 
     try {
-      await streamToPromise(unzipStreamPipe);
-      await Promise.all(entryStreams);
+      await streamToPromise(unzipEntryStream);
+      await tapPromise;
     }
     // if zip is broken
     catch (err) {
