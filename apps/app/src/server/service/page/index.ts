@@ -235,7 +235,7 @@ class PageService implements IPageService {
     if (page.grant === PageGrant.GRANT_USER_GROUP
       && !isAdminOrAuthor && pageCompleteDeletionAuthority === PageSingleDeleteCompConfigValue.Anyone
       && isAllGroupMembershipRequiredForPageCompleteDeletion) {
-      const userRelatedGrantedGroups = this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroups.map(ug => ug.item._id.toString()));
+      const userRelatedGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page);
       if (userRelatedGrantedGroups.length !== page.grantedGroups.length) {
         return false;
       }
@@ -1334,7 +1334,7 @@ class PageService implements IPageService {
     const newPages: any[] = [];
     const newRevisions: any[] = [];
 
-    const userRelatedGroupIds = (await this.pageGrantService.getUserRelatedGroups(user)).map(ug => ug.item._id.toString());
+    const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
 
     // no need to save parent here
     pages.forEach((page) => {
@@ -1344,12 +1344,12 @@ class PageService implements IPageService {
       pageIdMapping[page._id] = newPageId;
 
       const isDuplicateTarget = !page.isEmpty
-      && (!onlyDuplicateUserRelatedResources || this.pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroupIds));
+      && (!onlyDuplicateUserRelatedResources || this.pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups));
 
       let newPage;
       if (isDuplicateTarget) {
         const grantedGroups = onlyDuplicateUserRelatedResources
-          ? this.pageGrantService.filterGrantedGroupsByIds(page, userRelatedGroupIds)
+          ? this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page)
           : page.grantedGroups;
         newPage = {
           _id: newPageId,
@@ -2373,20 +2373,24 @@ class PageService implements IPageService {
 
     const grant = parentPage.grant;
 
+    const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
+
     const childPages = await builder.query;
     await batchProcessPromiseAll(childPages, 20, async(childPage: any) => {
       let newChildGrantedGroups: IGrantedGroup[] = [];
       if (grant === PageGrant.GRANT_USER_GROUP) {
-        const userRelatedParentGrantedGroups = await this.pageGrantService.getUserRelatedGrantedGroups(parentPage, user);
-        newChildGrantedGroups = await this.getNewGrantedGroups(userRelatedParentGrantedGroups, childPage, user);
+        const userRelatedParentGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(
+          userRelatedGroups, parentPage,
+        );
+        newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
       }
-      const canChangeGrant = await this.pageGrantService
-        .validateGrantChange(user, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+      const canChangeGrant = this.pageGrantService
+        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
       if (canChangeGrant) {
         childPage.grant = grant;
         childPage.grantedUsers = grant === PageGrant.GRANT_OWNER ? [user._id] : null;
         childPage.grantedGroups = newChildGrantedGroups;
-        childPage.save();
+        await childPage.save();
       }
     });
   }
@@ -4054,9 +4058,28 @@ class PageService implements IPageService {
    * @param user The operator
    * @returns The new GrantedGroups array to be set to the page
    */
-  async getNewGrantedGroups(userRelatedGrantedGroups: IGrantedGroup[], page: PageDocument, user): Promise<IGrantedGroup[]> {
+  async getNewGrantedGroups(
+      userRelatedGrantedGroups: IGrantedGroup[],
+      page: PageDocument,
+      user,
+  ): Promise<IGrantedGroup[]> {
+    const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
+    return this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedGrantedGroups, page);
+  }
+
+  /**
+   * Use when you do not want to use getNewGrantedGroups with async/await (e.g inside loops that process a large amount of pages)
+   * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
+   */
+  getNewGrantedGroupsSyncronously(
+      userRelatedGroups: PopulatedGrantedGroup[],
+      userRelatedGrantedGroups: IGrantedGroup[],
+      page: PageDocument,
+  ): IGrantedGroup[] {
     const previousGrantedGroups = page.grantedGroups;
-    const userRelatedPreviousGrantedGroups = (await this.pageGrantService.getUserRelatedGrantedGroups(page, user)).map(g => getIdForRef(g.item));
+    const userRelatedPreviousGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(
+      userRelatedGroups, page,
+    ).map(g => getIdForRef(g.item));
     const userUnrelatedPreviousGrantedGroups = previousGrantedGroups.filter(g => !userRelatedPreviousGrantedGroups.includes(getIdForRef(g.item)));
     return [...userUnrelatedPreviousGrantedGroups, ...userRelatedGrantedGroups];
   }

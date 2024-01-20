@@ -93,11 +93,14 @@ export interface IPageGrantService {
     operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
   ) => Promise<UpdateGrantInfo>,
   canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>,
-  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>
+  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>,
+  validateGrantChangeSyncronously:(
+    userRelatedGroups: PopulatedGrantedGroup[], previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[],
+  ) => boolean,
   getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
-  filterGrantedGroupsByIds: (page: PageDocument, groupIds: string[]) => IGrantedGroup[],
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
-  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroupIds: string[]) => boolean
+  getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean
 }
 
 class PageGrantService implements IPageGrantService {
@@ -239,14 +242,28 @@ class PageGrantService implements IPageGrantService {
    * Necessary for pages with multiple group grant.
    * see: https://dev.growi.org/656745fa52eafe1cf1879508#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE-grant-%E3%81%AE%E6%9B%B4%E6%96%B0
    * @param user The user who is changing the grant
-   * @param previousGrantedGroupIds The groups that were granted priorly
+   * @param previousGrantedGroups The groups that were granted priorly
    * @param grant The grant to be changed to
-   * @param grantedGroupIds The groups to be granted
+   * @param grantedGroups The groups to be granted
    */
-  async validateGrantChange(user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]): Promise<boolean> {
-    const userRelatedGroupIds = (await this.getUserRelatedGroups(user)).map(g => g.item._id);
+  async validateGrantChange(user, previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[]): Promise<boolean> {
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
+    return this.validateGrantChangeSyncronously(userRelatedGroups, previousGrantedGroups, grant, grantedGroups);
+  }
+
+  /**
+   * Use when you do not want to use validateGrantChange with async/await (e.g inside loops that process a large amount of pages)
+   * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
+   */
+  validateGrantChangeSyncronously(
+      userRelatedGroups: PopulatedGrantedGroup[],
+      previousGrantedGroups: IGrantedGroup[],
+      grant?: PageGrant,
+      grantedGroups?: IGrantedGroup[],
+  ): boolean {
+    const userRelatedGroupIds = userRelatedGroups.map(g => g.item._id);
     const userBelongsToAllPreviousGrantedGroups = excludeTestIdsFromTargetIds(
-      previousGrantedGroupIds.map(g => getIdForRef(g.item)),
+      previousGrantedGroups.map(g => getIdForRef(g.item)),
       userRelatedGroupIds,
     ).length === 0;
 
@@ -254,7 +271,7 @@ class PageGrantService implements IPageGrantService {
       if (grant !== PageGrant.GRANT_USER_GROUP) {
         return false;
       }
-      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroupIds?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
+      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroups?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
       if (!pageGrantIncludesUserRelatedGroup) {
         return false;
       }
@@ -663,32 +680,34 @@ class PageGrantService implements IPageGrantService {
   }
 
   /*
-   * filter page.grantedGroups to groups with id inside groupIds
-   */
-  filterGrantedGroupsByIds(page: PageDocument, groupIds: string[]): IGrantedGroup[] {
-    return page.grantedGroups?.filter((group) => {
-      if (isPopulated(group.item)) {
-        return groupIds.includes(group.item._id.toString());
-      }
-      return groupIds.includes(group.item);
-    }) || [];
-  }
-
-  /*
    * get all groups of Page that user is related to
    */
   async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
-    const userRelatedGroupIds: string[] = (await this.getUserRelatedGroups(user)).map(ug => ug.item._id.toString());
-    return this.filterGrantedGroupsByIds(page, userRelatedGroupIds);
+    const userRelatedGroups = (await this.getUserRelatedGroups(user));
+    return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page);
+  }
+
+  /**
+   * Use when you do not want to use getUserRelatedGrantedGroups with async/await (e.g inside loops that process a large amount of pages)
+   * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
+   */
+  getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
+    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return userRelatedGroupIds.includes(group.item._id.toString());
+      }
+      return userRelatedGroupIds.includes(group.item);
+    }) || [];
   }
 
   /**
    * Check if user is granted access to page
    */
-  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroupIds: string[]): boolean {
+  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
     if (page.grant === PageGrant.GRANT_PUBLIC) return true;
     if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
-    if (page.grant === PageGrant.GRANT_USER_GROUP) return this.filterGrantedGroupsByIds(page, userRelatedGroupIds).length > 0;
+    if (page.grant === PageGrant.GRANT_USER_GROUP) return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0;
     return false;
   }
 
