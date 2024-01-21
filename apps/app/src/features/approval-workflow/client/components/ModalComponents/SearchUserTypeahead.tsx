@@ -9,6 +9,8 @@ import { useTranslation } from 'react-i18next';
 import { IClearable } from '~/client/interfaces/clearable';
 import { useSWRMUTxSearchUser } from '~/stores/user';
 
+import { ApprovedApproverCards } from './ApprovedApproverCards';
+
 type Props = {
   isEditable: boolean
   selectedUsers?: IUserHasId[] // for updated
@@ -66,28 +68,35 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
     }
   }, [searchKeyword, searchUser]);
 
+  console.log(userData?.docs);
+
   return (
-    <div className="input-group me-2">
-      <span className="input-group-text">
-        <i className="icon-people" />
-      </span>
-      <AsyncTypeahead
-        id="user-typeahead-asynctypeahead"
-        ref={typeaheadRef}
-        multiple
-        disabled={!isEditable}
-        delay={200}
-        minLength={1}
-        useCache={false}
-        caseSensitive={false}
-        isLoading={isMutating}
-        onSearch={onSearchHandler}
-        onChange={onChangeHandler}
-        selected={selectedUsers}
-        options={userData?.docs ?? []}
-        labelKey={(option: IUserHasId) => option.username}
-        renderToken={(option: IUserHasId) => renderToken(option)}
+    <>
+      <ApprovedApproverCards
+        ApprovedApprovers={userData?.docs}
       />
-    </div>
+      <div className="input-group me-2">
+        <span className="input-group-text">
+          <i className="icon-people" />
+        </span>
+        <AsyncTypeahead
+          id="user-typeahead-asynctypeahead"
+          ref={typeaheadRef}
+          multiple
+          disabled={!isEditable}
+          delay={200}
+          minLength={1}
+          useCache={false}
+          caseSensitive={false}
+          isLoading={isMutating}
+          onSearch={onSearchHandler}
+          onChange={onChangeHandler}
+          selected={selectedUsers}
+          options={userData?.docs ?? []}
+          labelKey={(option: IUserHasId) => option.username}
+          renderToken={(option: IUserHasId) => renderToken(option)}
+        />
+      </div>
+    </>
   );
 };
