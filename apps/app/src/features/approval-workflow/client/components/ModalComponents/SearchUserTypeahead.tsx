@@ -58,7 +58,10 @@ export const SearchUserTypeahead = (props: Props): JSX.Element => {
     const isApproved = approvedApproverIds?.includes(option._id);
     const isDisabled = !isEditable || isApproved;
     return (
-      <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token>
+      <>
+        { !isDisabled && <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token> }
+        {/* <Token onRemove={() => onRemoveApproverHandler(option)} disabled={isDisabled}>{option.username}</Token> */}
+      </>
     );
   };
 
