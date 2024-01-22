@@ -8,7 +8,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay } from '../../services';
-import { newlineAndIndentContinueMarkdownList } from '../../services/list-util/markdown-list-util';
+// import { newlineAndIndentContinueMarkdownList } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -47,24 +47,24 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
-  useEffect(() => {
-    const handleEnterKey = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        const editor = codeMirrorEditor?.view;
-        if (editor == null) {
-          return;
-        }
-        newlineAndIndentContinueMarkdownList(editor);
-      }
-    };
+  // useEffect(() => {
+  //   const handleEnterKey = (event: KeyboardEvent) => {
+  //     if (event.key === 'Enter') {
+  //       event.preventDefault();
+  //       const editor = codeMirrorEditor?.view;
+  //       if (editor == null) {
+  //         return;
+  //       }
+  //       newlineAndIndentContinueMarkdownList(editor);
+  //     }
+  //   };
 
-    codeMirrorEditor?.view?.dom.addEventListener('keydown', handleEnterKey);
+  //   codeMirrorEditor?.view?.dom.addEventListener('keydown', handleEnterKey);
 
-    return () => {
-      codeMirrorEditor?.view?.dom.removeEventListener('keydown', handleEnterKey);
-    };
-  }, [codeMirrorEditor]);
+  //   return () => {
+  //     codeMirrorEditor?.view?.dom.removeEventListener('keydown', handleEnterKey);
+  //   };
+  // }, [codeMirrorEditor]);
 
   useEffect(() => {
     if (indentSize == null) {
