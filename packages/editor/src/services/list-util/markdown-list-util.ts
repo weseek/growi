@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
 
+// https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
 const getBol = (editor: EditorView) => {
