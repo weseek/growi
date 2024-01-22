@@ -15,7 +15,7 @@ export const getStrFromBol = (editor: EditorView): string => {
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {
 
-  let adjusted = '';
+  let adjusted;
 
   if (text.match(indentAndMarkRE)) {
     const matchResult = indentAndMark.match(indentAndMarkRE);

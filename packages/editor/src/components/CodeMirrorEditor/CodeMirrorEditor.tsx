@@ -87,9 +87,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
         const adjusted = adjustPasteData(strFromBol, textData);
 
-        if (adjusted != null) {
-          codeMirrorEditor?.replaceText(adjusted);
-        }
+        codeMirrorEditor?.replaceText(adjusted);
       }
     };
 
