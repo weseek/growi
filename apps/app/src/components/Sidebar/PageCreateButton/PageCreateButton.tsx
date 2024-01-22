@@ -35,7 +35,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     ? null
     : generateTodaysPath(currentUser, t('create_page_dropdown.todays.memo'));
 
-  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(currentPage, isLoading);
+  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(
+    currentPage?.path, currentPage?.grant, currentPage?.grantedGroups, isLoading,
+  );
   // TODO: https://redmine.weseek.co.jp/issues/138806
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
   // TODO: https://redmine.weseek.co.jp/issues/138805
