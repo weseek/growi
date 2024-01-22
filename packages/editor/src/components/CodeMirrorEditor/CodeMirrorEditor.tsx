@@ -61,7 +61,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, indentSize]);
 
-  // ここのPaste処理を改善！
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
@@ -92,7 +91,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
           codeMirrorEditor?.replaceText(adjusted);
         }
       }
-      // console.log('kohsei');
     };
 
     const extension = EditorView.domEventHandlers({
