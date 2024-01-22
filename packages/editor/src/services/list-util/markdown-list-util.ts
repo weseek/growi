@@ -8,7 +8,7 @@ const getBol = (editor: EditorView) => {
   return editor.state.doc.line(aboveLine).from;
 };
 
-export const getStrFromBol = (editor: EditorView) => {
+export const getStrFromBol = (editor: EditorView): string => {
   const curPos = editor.state.selection.main.head;
   return editor.state.sliceDoc(getBol(editor), curPos);
 };
@@ -28,8 +28,6 @@ const insertText = (editor: EditorView, text: string) => {
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
   const strFromBol = getStrFromBol(editor);
 
-  console.log(strFromBol);
-
   const matchResult = strFromBol.match(indentAndMarkRE);
 
   if (matchResult != null) {
@@ -46,14 +44,6 @@ const selectUpperPos = (editor: EditorView, pos1: number, pos2: number) => {
 
   const pos1Ch = pos1 - editor.state.doc.lineAt(pos1).from;
   const pos2Ch = pos2 - editor.state.doc.lineAt(pos2).from;
-
-  console.log(pos1);
-  console.log(pos2);
-  console.log(pos1Line);
-  console.log(pos2Line);
-  console.log(pos1Ch);
-  console.log(pos2Ch);
-
 
   if (pos1Line === pos2Line) {
     return (pos1Ch < pos2Ch) ? pos1 : pos2;
@@ -79,7 +69,12 @@ export const adjustPasteData = (indentAndMark: string, text: string): string => 
 
     const lines = text.match(/[^\r\n]+/g);
 
-    const replacedLines = lines?.map((line) => {
+    const replacedLines = lines?.map((line, index) => {
+
+      if (index === 0 && indentAndMark.match(indentAndMarkRE)) {
+        return line.replace(indentAndMarkRE, '');
+      }
+
       return indent + line;
     });
 

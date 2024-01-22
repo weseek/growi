@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
-import { markdown, markdownLanguage, markdownKeymap } from '@codemirror/lang-markdown';
+import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { EditorState, Prec, type Extension } from '@codemirror/state';
