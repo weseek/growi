@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
@@ -15,16 +17,16 @@ export const usePagePathRenameHandler = (
 
   const currentPagePath = currentPage.path;
 
-  const onRenamed = (fromPath: string | undefined, toPath: string) => {
-    mutatePageTree();
-    mutatePageList();
+  const pagePathRenameHandler = useCallback(async(newPagePath: string) => {
 
-    if (currentPagePath === fromPath || currentPagePath === toPath) {
-      mutateCurrentPage();
-    }
-  };
+    const onRenamed = (fromPath: string | undefined, toPath: string) => {
+      mutatePageTree();
+      mutatePageList();
 
-  const pagePathRenameHandler = async(newPagePath: string) => {
+      if (currentPagePath === fromPath || currentPagePath === toPath) {
+        mutateCurrentPage();
+      }
+    };
 
     if (newPagePath === currentPage.path || newPagePath === '') {
       onRenameFinish?.();
@@ -47,7 +49,7 @@ export const usePagePathRenameHandler = (
       onRenameFailure?.();
       toastError(err);
     }
-  };
+  }, [currentPage._id, currentPage.path, currentPage.revision._id, currentPagePath, mutateCurrentPage, onRenameFailure, onRenameFinish, t]);
 
   return pagePathRenameHandler;
 };
