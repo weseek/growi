@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.2.6...HEAD)
+
+## [v6.2.6](https://github.com/weseek/growi/compare/v6.2.5...v6.2.6) - 2024-01-23
+
+### 🐛 Bug Fixes
+
+* fix: Non-admin user cannot rename pages (#8391) @jam411
 
 ## [v6.2.5](https://github.com/weseek/growi/compare/v6.2.4...v6.2.5) - 2023-12-14
 
