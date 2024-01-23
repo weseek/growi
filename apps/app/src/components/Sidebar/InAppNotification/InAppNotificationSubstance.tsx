@@ -42,7 +42,7 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
     6,
     undefined,
     isUnopendNotificationsVisible ? InAppNotificationStatuses.STATUS_UNOPENED : undefined,
-    { revalidateOnFocus: true },
+    { keepPreviousData: true },
   );
 
   return (
