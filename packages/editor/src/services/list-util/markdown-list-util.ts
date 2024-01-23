@@ -1,39 +1,29 @@
-import { EditorView } from '@codemirror/view';
+import { text } from 'stream/consumers';
 
-const getBol = (editor: EditorView) => {
-  const curPos = editor.state.selection.main.head;
-  const aboveLine = editor.state.doc.lineAt(curPos).number - 1;
-  return editor.state.doc.line(aboveLine).from;
+import type { EditorState } from '@codemirror/state';
+
+// https://regex101.com/r/7BN2fR/5
+// const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
+
+const numberListMarkdownRE = /^(\s|\d+[.)])\s*/;
+
+const getBol = (editorState: EditorState) => {
+  const curPos = editorState.selection.main.head;
+  const aboveLine = editorState.doc.lineAt(curPos).number;
+  return editorState.doc.line(aboveLine).from;
 };
 
-const getStrFromBol = (editor: EditorView) => {
-  const curPos = editor.state.selection.main.head;
-  return editor.state.sliceDoc(getBol(editor), curPos);
+export const getStrFromBol = (editorState: EditorState): string => {
+  const curPos = editorState.selection.main.head;
+  return editorState.sliceDoc(getBol(editorState), curPos);
 };
 
-// https://regex101.com/r/UKMNlO/1
-const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
+export const renumberListIndex = ({ state, dispatch }) => {
 
-const insertText = (editor: EditorView, text: string) => {
-  const curPos = editor.state.selection.main.head;
-  const line = editor.state.doc.lineAt(curPos).from;
-  editor.dispatch({
-    changes: {
-      from: line,
-      to: curPos,
-      insert: text,
-    },
-  });
-};
+  const strFromBol = getStrFromBol(state);
 
-export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
-  const strFromBol = getStrFromBol(editor);
+  if (strFromBol.match(numberListMarkdownRE)) {
 
-  const matchResult = strFromBol.match(indentAndMarkRE);
-
-  if (matchResult != null) {
-    // continue list
-    const indentAndMark = matchResult[0];
-    insertText(editor, indentAndMark);
   }
+
 };

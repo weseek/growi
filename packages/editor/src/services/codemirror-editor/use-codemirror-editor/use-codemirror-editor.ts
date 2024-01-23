@@ -39,6 +39,7 @@ const markdownHighlighting = HighlightStyle.define([
 const onPressEnter: StateCommand = ({ state, dispatch }) => {
   const insertBool = insertNewlineContinueMarkup({ state, dispatch });
   // ここにrenumber的な処理を書く
+  console.log('renumber');
 
   return insertBool;
 };
