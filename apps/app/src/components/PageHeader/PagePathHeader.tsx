@@ -36,7 +36,7 @@ export const PagePathHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -63,7 +63,7 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const handleEditButtonClick = () => {
     if (isRenameInputShown) {
-      pagePathSubmitHandler(inputText);
+      pagePathRenameHandler(inputText);
     }
     else {
       setRenameInputShown(true);

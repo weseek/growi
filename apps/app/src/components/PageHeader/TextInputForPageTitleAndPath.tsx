@@ -45,16 +45,16 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathSubmitHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
 
   const onPressEnter = useCallback((inputPagePath: string) => {
 
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputPagePath);
 
-    pagePathSubmitHandler(newPagePath);
+    pagePathRenameHandler(newPagePath);
 
-  }, [currentPage.path, pagePathSubmitHandler]);
+  }, [currentPage.path, pagePathRenameHandler]);
 
   return (
     <>
