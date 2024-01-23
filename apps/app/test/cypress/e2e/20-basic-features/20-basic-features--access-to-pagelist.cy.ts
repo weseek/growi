@@ -1,3 +1,22 @@
+const openPageAccessoriesModal = () => {
+  cy.visit('/');
+  cy.collapseSidebar(true);
+  cy.waitUntilSkeletonDisappear();
+
+  // open PageAccessoriesModal
+  cy.getByTestid('pageListButton').should('be.visible').click();
+  cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
+
+  // cy.waitUntil(() => {
+  //   // do
+  //   cy.getByTestid('pageListButton').click();
+  //   // wait until
+  //   return cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
+  // });
+
+  cy.waitUntilSpinnerDisappear();
+}
+
 context('Access to pagelist', () => {
   const ssPrefix = 'access-to-pagelist-';
   beforeEach(() => {
@@ -5,22 +24,8 @@ context('Access to pagelist', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
-    cy.visit('/');
-    cy.collapseSidebar(true);
-    cy.waitUntilSkeletonDisappear();
 
-    // open PageAccessoriesModal
-    cy.getByTestid('pageListButton').should('be.visible').click();
-    cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
-
-    // cy.waitUntil(() => {
-    //   // do
-    //   cy.getByTestid('pageListButton').click();
-    //   // wait until
-    //   return cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
-    // });
-
-    cy.waitUntilSpinnerDisappear();
+    openPageAccessoriesModal();
   });
 
   it('Page list modal is successfully opened ', () => {
@@ -75,13 +80,11 @@ context('Access to timeline', () => {
     cy.fixture("user-admin.json").then(user => {
       cy.login(user.username, user.password);
     });
+
+    openPageAccessoriesModal();
   });
 
   it('Timeline list successfully openend', () => {
-    cy.visit('/');
-    cy.collapseSidebar(true);
-
-    cy.getByTestid('pageListButton').click({force: true});
     cy.getByTestid('descendants-page-list-modal').parent().should('have.class','show').within(() => {
       cy.get('.nav-title > li').eq(1).find('a').click();
     });
