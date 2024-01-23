@@ -9,11 +9,11 @@ import InAppNotificationElm from './InAppNotificationElm';
 
 type Props = {
   inAppNotificationData?: PaginateResult<IInAppNotification>,
-  onClickNotificationElm?: () => void,
+  onUnopenedNotificationOpend?: () => void,
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
-  const { inAppNotificationData, onClickNotificationElm } = props;
+  const { inAppNotificationData, onUnopenedNotificationOpend } = props;
 
   if (inAppNotificationData == null) {
     return (
@@ -34,7 +34,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
           <InAppNotificationElm
             key={notification._id}
             notification={notification}
-            onClick={onClickNotificationElm}
+            onUnopenedNotificationOpend={onUnopenedNotificationOpend}
           />
         );
       }) }

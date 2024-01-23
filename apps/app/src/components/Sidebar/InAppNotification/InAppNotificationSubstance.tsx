@@ -54,7 +54,7 @@ export const InAppNotificationContent = (props: InAppNotificationContentProps): 
         : (
           <InAppNotificationList
             inAppNotificationData={inAppNotificationData}
-            onClickNotificationElm={mutateInAppNotificationData}
+            onUnopenedNotificationOpend={mutateInAppNotificationData}
           />
         )
       }
