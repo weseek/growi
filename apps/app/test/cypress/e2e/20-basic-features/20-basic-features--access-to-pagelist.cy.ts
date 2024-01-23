@@ -10,12 +10,15 @@ context('Access to pagelist', () => {
     cy.waitUntilSkeletonDisappear();
 
     // open PageAccessoriesModal
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('pageListButton').click({force: true});
-      // wait until
-      return cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
-    });
+    cy.getByTestid('pageListButton').should('be.visible').click();
+    cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
+
+    // cy.waitUntil(() => {
+    //   // do
+    //   cy.getByTestid('pageListButton').click();
+    //   // wait until
+    //   return cy.getByTestid('descendants-page-list-modal').then($elem => $elem.is(':visible'));
+    // });
 
     cy.waitUntilSpinnerDisappear();
   });
@@ -53,13 +56,14 @@ context('Access to pagelist', () => {
   });
 
   it('Successfully expand and close modal', () => {
-    cy.get('button.close').eq(0).click();
+    cy.get('.btn-close').eq(0).click();
 
     cy.waitUntilSkeletonDisappear();
     cy.waitUntilSpinnerDisappear();
     cy.screenshot(`${ssPrefix}7-page-list-modal-size-fullscreen`);
 
-    cy.get('button.close').eq(1).click();
+    // Check that the modal has been closed
+    cy.getByTestid('descendants-page-list-modal').should('not.be.visible')
     cy.screenshot(`${ssPrefix}8-close-page-list-modal`);
   });
 });
@@ -72,6 +76,7 @@ context('Access to timeline', () => {
       cy.login(user.username, user.password);
     });
   });
+
   it('Timeline list successfully openend', () => {
     cy.visit('/');
     cy.collapseSidebar(true);
