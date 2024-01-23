@@ -313,6 +313,7 @@ class PageService {
         meta: {
           isV5Compatible: isTopPage(page.path) || page.parent != null,
           isEmpty: page.isEmpty,
+          isMovable: false,
           isDeletable: false,
           isAbleToDeleteCompletely: false,
           isRevertible: false,
@@ -2463,12 +2464,14 @@ class PageService {
   }
 
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity {
+    const isMovable = isGuestUser ? false : isMovablePage(page.path);
     const isDeletable = !(isGuestUser || isTopPage(page.path) || isUsersTopPage(page.path));
 
     if (page.isEmpty) {
       return {
         isV5Compatible: true,
         isEmpty: true,
+        isMovable,
         isDeletable: false,
         isAbleToDeleteCompletely: false,
         isRevertible: false,
@@ -2485,6 +2488,7 @@ class PageService {
       likerIds: this.extractStringIds(likers),
       seenUserIds: this.extractStringIds(seenUsers),
       sumOfSeenUsers: page.seenUsers.length,
+      isMovable,
       isDeletable,
       isAbleToDeleteCompletely: false,
       isRevertible: isTrashPage(page.path),
