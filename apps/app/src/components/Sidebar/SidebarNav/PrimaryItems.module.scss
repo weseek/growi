@@ -42,6 +42,11 @@
       }
     }
   }
+
+  .badge :global {
+    left: 26px;
+    font-size: 8px;
+  }
 }
 
 // == Colors
