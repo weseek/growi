@@ -1,29 +1,46 @@
-import { text } from 'stream/consumers';
-
-import type { EditorState } from '@codemirror/state';
+import type { EditorView } from '@codemirror/view';
 
 // https://regex101.com/r/7BN2fR/5
-// const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
+const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-const numberListMarkdownRE = /^(\s|\d+[.)])\s*/;
-
-const getBol = (editorState: EditorState) => {
-  const curPos = editorState.selection.main.head;
-  const aboveLine = editorState.doc.lineAt(curPos).number;
-  return editorState.doc.line(aboveLine).from;
+const getBol = (editor: EditorView) => {
+  const curPos = editor.state.selection.main.head;
+  const aboveLine = editor.state.doc.lineAt(curPos).number;
+  return editor.state.doc.line(aboveLine).from;
 };
 
-export const getStrFromBol = (editorState: EditorState): string => {
-  const curPos = editorState.selection.main.head;
-  return editorState.sliceDoc(getBol(editorState), curPos);
+export const getStrFromBol = (editor: EditorView): string => {
+  const curPos = editor.state.selection.main.head;
+  return editor.state.sliceDoc(getBol(editor), curPos);
 };
 
-export const renumberListIndex = ({ state, dispatch }) => {
+export const adjustPasteData = (indentAndMark: string, text: string): string => {
 
-  const strFromBol = getStrFromBol(state);
+  let adjusted;
 
-  if (strFromBol.match(numberListMarkdownRE)) {
+  if (text.match(indentAndMarkRE)) {
+    const matchResult = indentAndMark.match(indentAndMarkRE);
+    const indent = matchResult ? matchResult[1] : '';
 
+    const lines = text.match(/[^\r\n]+/g);
+
+    const replacedLines = lines?.map((line, index) => {
+
+      if (index === 0 && indentAndMark.match(indentAndMarkRE)) {
+        return line.replace(indentAndMarkRE, '');
+      }
+
+      return indent + line;
+    });
+
+    adjusted = replacedLines ? replacedLines.join('\n') : '';
   }
 
+  else {
+    const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${indentAndMark}`);
+
+    adjusted = indentAndMark + replacedText;
+  }
+
+  return adjusted;
 };

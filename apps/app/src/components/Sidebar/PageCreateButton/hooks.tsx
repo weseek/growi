@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import type { Nullable, IUserHasId } from '@growi/core';
+import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
@@ -8,6 +8,8 @@ import { toastError } from '~/client/util/toastr';
 
 export const useOnNewButtonClicked = (
     currentPagePath?: string,
+    currentPageGrant?: PageGrant,
+    currentPageGrantedGroups?: IGrantedGroup[],
     isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
@@ -22,19 +24,25 @@ export const useOnNewButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      const parentPath = currentPagePath == null
+      /**
+       * !! NOTICE !! - Verification of page createable or not is checked on the server side.
+       * since the new page path is not generated on the client side.
+       * need shouldGeneratePath flag.
+       */
+      const shouldUseRootPath = currentPagePath == null || currentPageGrant == null;
+      const parentPath = shouldUseRootPath
         ? '/'
         : currentPagePath;
 
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: shouldUseRootPath ? 1 : currentPageGrant,
+        grantUserGroupIds: shouldUseRootPath ? undefined : currentPageGrantedGroups,
         shouldGeneratePath: true,
       };
 
+      // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
       const response = await createPage(parentPath, '', params);
 
       router.push(`/${response.page.id}#edit`);
@@ -45,14 +53,13 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, isLoading, router]);
+  }, [currentPageGrant, currentPageGrantedGroups, currentPagePath, isLoading, router]);
 
   return { onClickHandler, isPageCreating };
 };
 
 export const useOnTodaysButtonClicked = (
-    todaysPath: string,
-    currentUser?: Nullable<IUserHasId> | undefined,
+    todaysPath: string | null,
 ): {
   onClickHandler: () => Promise<void>,
   isPageCreating: boolean
@@ -61,7 +68,7 @@ export const useOnTodaysButtonClicked = (
   const [isPageCreating, setIsPageCreating] = useState(false);
 
   const onClickHandler = useCallback(async() => {
-    if (currentUser == null) {
+    if (todaysPath == null) {
       return;
     }
 
@@ -89,7 +96,7 @@ export const useOnTodaysButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentUser, router, todaysPath]);
+  }, [router, todaysPath]);
 
   return { onClickHandler, isPageCreating };
 };

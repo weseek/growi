@@ -1,15 +1,16 @@
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
 
 import {
-  SimpleItem, SimpleItemProps, SimpleItemTool, useNewPageInput,
+  SimpleItem, SimpleItemTool, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
 
-type Optional = 'itemRef' | 'itemClass' | 'mainClassName';
-type PageTreeItemProps = Omit<SimpleItemProps, Optional> & {key};
+type PageTreeItemProps = TreeItemProps & {
+  key?: React.Key | null,
+};
 
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
-  const { NewPageInputWrapper, NewPageCreateButtonWrapper } = useNewPageInput();
+  const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
     <SimpleItem
@@ -22,9 +23,9 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
-      customNextComponents={[NewPageInputWrapper]}
+      customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
-      customEndComponents={[SimpleItemTool, NewPageCreateButtonWrapper]}
+      customEndComponents={[SimpleItemTool, NewPageCreateButton]}
     />
   );
 };
