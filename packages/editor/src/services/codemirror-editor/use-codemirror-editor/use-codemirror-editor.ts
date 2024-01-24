@@ -57,7 +57,6 @@ export type UseCodeMirrorEditor = {
 
 const defaultExtensions: Extension[] = [
   EditorView.lineWrapping,
-  // keymap.of(markdownKeymap),
   markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
