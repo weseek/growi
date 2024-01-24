@@ -1,4 +1,4 @@
-import type { EditorView } from '@codemirror/view';
+import { EditorView } from '@codemirror/view';
 
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
@@ -12,6 +12,30 @@ const getBol = (editor: EditorView) => {
 export const getStrFromBol = (editor: EditorView): string => {
   const curPos = editor.state.selection.main.head;
   return editor.state.sliceDoc(getBol(editor), curPos);
+};
+
+const insertText = (editor: EditorView, text: string) => {
+  const curPos = editor.state.selection.main.head;
+  const line = editor.state.doc.lineAt(curPos).from;
+  editor.dispatch({
+    changes: {
+      from: line,
+      to: curPos,
+      insert: text,
+    },
+  });
+};
+
+export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
+  const strFromBol = getStrFromBol(editor);
+
+  const matchResult = strFromBol.match(indentAndMarkRE);
+
+  if (matchResult != null) {
+    // continue list
+    const indentAndMark = matchResult[0];
+    insertText(editor, indentAndMark);
+  }
 };
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {

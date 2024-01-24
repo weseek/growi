@@ -2,14 +2,14 @@ import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import {
-  markdown, markdownLanguage, insertNewlineContinueMarkup, deleteMarkupBackward,
+  markdown, markdownLanguage,
 } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import {
-  EditorState, Prec, StateCommand, type Extension,
+  EditorState, Prec, type Extension,
 } from '@codemirror/state';
-import { keymap, EditorView, KeyBinding } from '@codemirror/view';
+import { keymap, EditorView } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
@@ -37,19 +37,6 @@ const markdownHighlighting = HighlightStyle.define([
   { tag: tags.heading6, class: 'cm-header-6 cm-header' },
 ]);
 
-const onPressEnter: StateCommand = ({ state, dispatch }) => {
-  const insertBool = insertNewlineContinueMarkup({ state, dispatch });
-  // ここにrenumber的な処理を書く
-  console.log('renumber');
-
-  return insertBool;
-};
-
-const markdownKeymap: KeyBinding[] = [
-  { key: 'Enter', run: onPressEnter },
-  { key: 'Backspace', run: deleteMarkupBackward },
-];
-
 type UseCodeMirrorEditorUtils = {
   initDoc: InitDoc,
   appendExtensions: AppendExtensions,
@@ -70,8 +57,8 @@ export type UseCodeMirrorEditor = {
 
 const defaultExtensions: Extension[] = [
   EditorView.lineWrapping,
-  keymap.of(markdownKeymap),
-  markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: false }),
+  // keymap.of(markdownKeymap),
+  markdown({ base: markdownLanguage, codeLanguages: languages }),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
   syntaxHighlighting(markdownHighlighting),
