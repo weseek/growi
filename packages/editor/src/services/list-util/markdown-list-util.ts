@@ -3,15 +3,24 @@ import { EditorView } from '@codemirror/view';
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-const getBol = (editor: EditorView) => {
+const getLinesAboveCursor = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
-  const aboveLine = editor.state.doc.lineAt(curPos).number;
+  const aboveLine = editor.state.doc.lineAt(curPos).number - 1;
   return editor.state.doc.line(aboveLine).from;
 };
 
-export const getStrFromBol = (editor: EditorView): string => {
+const getStrFromAboveLine = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
-  return editor.state.sliceDoc(getBol(editor), curPos);
+  return editor.state.sliceDoc(getLinesAboveCursor(editor), curPos);
+};
+
+export const getCurrentLine = (editor: EditorView): string => {
+  const curPos = editor.state.selection.main.head;
+  const curLineNum = editor.state.doc.lineAt(curPos).number;
+
+  const curLine = editor.state.doc.line(curLineNum).from;
+
+  return editor.state.sliceDoc(curLine, curPos);
 };
 
 const insertText = (editor: EditorView, text: string) => {
@@ -27,7 +36,7 @@ const insertText = (editor: EditorView, text: string) => {
 };
 
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
-  const strFromBol = getStrFromBol(editor);
+  const strFromBol = getStrFromAboveLine(editor);
 
   const matchResult = strFromBol.match(indentAndMarkRE);
 
