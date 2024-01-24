@@ -226,7 +226,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
               <Clamp lines={1}>
                 <span className="h5 mb-0">
                   {/* Use permanent links to care for pages with the same name (Cannot use page path url) */}
-                  <span className="grw-page-path-hierarchical-link text-break">
+                  <span className="text-break">
                     <Link
                       legacyBehavior
                       href={returnPathForURL(pageData.path, pageData._id)}

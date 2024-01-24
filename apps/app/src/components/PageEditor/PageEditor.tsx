@@ -60,7 +60,7 @@ import loggerFactory from '~/utils/logger';
 // import Editor from './Editor';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
-import scrollSyncHelper from './ScrollSyncHelper';
+import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
 
@@ -73,12 +73,9 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-
 // for scrolling
-let lastScrolledDateWithCursor: Date | null = null;
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
-
 
 type Props = {
   visibility?: boolean,
@@ -356,97 +353,38 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     return AcceptedUploadFileType.IMAGE;
   }, [isUploadAllFileAllowed, isUploadEnabled]);
 
-  const scrollPreviewByEditorLine = useCallback((line: number) => {
-    if (previewRef.current == null) {
+
+  const scrollEditorHandler = useCallback(() => {
+    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
       return;
     }
 
-    // prevent circular invocation
     if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false; // turn off the flag
+      isOriginOfScrollSyncPreview = false;
       return;
     }
 
-    // turn on the flag
     isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreview(previewRef.current, line);
-  }, []);
-  const scrollPreviewByEditorLineWithThrottle = useMemo(() => throttle(20, scrollPreviewByEditorLine), [scrollPreviewByEditorLine]);
+    scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  }, [codeMirrorEditor, previewRef]);
 
-  /**
-   * the scroll event handler from codemirror
-   * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position,
-   *                    the size of the scrollable area, and the size of the visible area (minus scrollbars).
-   *                    And data.line is also available that is added by Editor component
-   * @see https://codemirror.net/doc/manual.html#events
-   */
-  const editorScrolledHandler = useCallback(({ line }: { line: number }) => {
-    // prevent scrolling
-    //   if the elapsed time from last scroll with cursor is shorter than 40ms
-    const now = new Date();
-    if (lastScrolledDateWithCursor != null && now.getTime() - lastScrolledDateWithCursor.getTime() < 40) {
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+
+  const scrollPreviewHandler = useCallback(() => {
+    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
       return;
     }
 
-    scrollPreviewByEditorLineWithThrottle(line);
-  }, [scrollPreviewByEditorLineWithThrottle]);
-
-  /**
-   * scroll Preview element by cursor moving
-   * @param {number} line
-   */
-  const scrollPreviewByCursorMoving = useCallback((line: number) => {
-    if (previewRef.current == null) {
+    if (isOriginOfScrollSyncEditor) {
+      isOriginOfScrollSyncEditor = false;
       return;
     }
 
-    // prevent circular invocation
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false; // turn off the flag
-      return;
-    }
+    isOriginOfScrollSyncPreview = true;
+    scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  }, [codeMirrorEditor, previewRef]);
 
-    // turn on the flag
-    isOriginOfScrollSyncEditor = true;
-    if (previewRef.current != null) {
-      scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
-    }
-  }, []);
-  const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
-
-  /**
-   * the scroll event handler from codemirror
-   * @param {number} line
-   * @see https://codemirror.net/doc/manual.html#events
-   */
-  const editorScrollCursorIntoViewHandler = useCallback((line: number) => {
-    // record date
-    lastScrolledDateWithCursor = new Date();
-    scrollPreviewByCursorMovingWithThrottle(line);
-  }, [scrollPreviewByCursorMovingWithThrottle]);
-
-  /**
-   * scroll Editor component by scroll event of Preview component
-   * @param {number} offset
-   */
-  // const scrollEditorByPreviewScroll = useCallback((offset: number) => {
-  //   if (editorRef.current == null || previewRef.current == null) {
-  //     return;
-  //   }
-
-  //   // prevent circular invocation
-  //   if (isOriginOfScrollSyncEditor) {
-  //     isOriginOfScrollSyncEditor = false; // turn off the flag
-  //     return;
-  //   }
-
-  //   // turn on the flag
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   isOriginOfScrollSyncPreview = true;
-
-  //   scrollSyncHelper.scrollEditor(editorRef.current, previewRef.current, offset);
-  // }, []);
-  // const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const afterResolvedHandler = useCallback(async() => {
     // get page data from db
@@ -479,22 +417,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor]);
-
-  // set handler to set caret line
-  useEffect(() => {
-    const handler = (line) => {
-      codeMirrorEditor?.setCaretLine(line);
-
-      if (previewRef.current != null) {
-        scrollSyncHelper.scrollPreview(previewRef.current, line);
-      }
-    };
-    globalEmitter.on('setCaretLine', handler);
-
-    return function cleanup() {
-      globalEmitter.removeListener('setCaretLine', handler);
-    };
   }, [codeMirrorEditor]);
 
   // set handler to save and return to View
@@ -575,20 +497,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
+            onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
           />
         </div>
-        <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
           <Preview
-            ref={previewRef}
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            // TODO: implement
-            // refs: https://redmine.weseek.co.jp/issues/126519
-            // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
+            // TODO: Dynamic changes by height or resizing the last element
+            pastEnd={500}
           />
         </div>
         {/*
