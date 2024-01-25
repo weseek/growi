@@ -2,10 +2,10 @@
   @import '@growi/core/scss/bootstrap/init-stage-1';
   $gray-100: #F2ECF0;
   $gray-200: #E6DAE2;
-  $gray-300: #F2ECF0;
-  $gray-400: #DAC7D3;
-  $gray-500: #CEB5C5;
-  $gray-600: #C1A2B6;
+  $gray-300: #DAC7D3;
+  $gray-400: #CEB5C5;
+  $gray-500: #C1A2B6;
+  $gray-600: #9F8492;
   $gray-700: #7C656D;
   $gray-800: #594749;
   $gray-900: #362824;
@@ -18,7 +18,7 @@
   @include generate-color-palette('primary', $primary, #140700, white);
   @include generate-color-palette('highlight', $highlight, #240E3E, white);
 
-  $body-color-dark:                   #E6DAE2;
+  $body-color-dark:                   $gray-300;
   $body-bg-dark:                      #1B0A0A;
 
   $body-secondary-color-dark:         rgba($body-color-dark, .75);
