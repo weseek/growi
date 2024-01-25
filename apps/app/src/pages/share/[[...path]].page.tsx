@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { type IUserHasId, type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
+import { type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -28,7 +28,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR, addActivity,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -206,23 +206,6 @@ function getAction(props: Props): SupportedActionType {
 
   return action;
 }
-
-async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-
-  const parameters = {
-    ip: req.ip,
-    endpoint: req.originalUrl,
-    action,
-    user: req.user?._id,
-    snapshot: {
-      username: req.user?.username,
-    },
-  };
-
-  await req.crowi.activityService.createActivity(parameters);
-}
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { crowi, params } = req;
