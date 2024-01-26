@@ -819,5 +819,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "The attachment could not be found"
+  },
+  "page_select_modal": {
+    "select_page_location": "Select page location"
   }
 }

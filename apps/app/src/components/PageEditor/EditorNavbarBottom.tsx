@@ -73,7 +73,7 @@ const EditorNavbarBottom = (): JSX.Element => {
   const isCollapsedOptionsSelectorEnabled = !isDeviceLargerThanLg;
 
   return (
-    <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `}>
+    <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `} data-testid="grw-editor-navbar-bottom">
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && !isDeviceLargerThanLg}>
