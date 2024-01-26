@@ -75,8 +75,12 @@ export const cobalt = createTheme({
       color: '#fff',
     },
     {
-      tag: [t.url, t.escape, t.link],
+      tag: [t.url, t.escape],
       color: '#497DBA',
+    },
+    {
+      tag: [t.brace, t.processingInstruction, t.inserted],
+      color: '#7491B4',
     },
   ],
 });
