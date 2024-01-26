@@ -190,7 +190,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         onCommentButtonClicked();
       }
 
-      // To open a new comment editor after commenting
+      // Insert empty string as new comment editor is opened after comment
       codeMirrorEditor?.initDoc('');
     }
     catch (err) {
