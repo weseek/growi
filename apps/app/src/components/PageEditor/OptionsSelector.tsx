@@ -14,7 +14,7 @@ import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
 
 
 const AVAILABLE_THEMES = [
-  'GrowiLight', 'eclipse', 'basic', 'ayu', 'rosé pine', 'GrowiDark', 'material', 'nord', 'cobalt', 'kimbie',
+  'DefaultLight', 'Eclipse', 'Basic', 'Ayu', 'Rosé Pine', 'DefaultDark', 'Material', 'Nord', 'Cobalt', 'Kimbie',
 ];
 
 const TYPICAL_INDENT_SIZE = [2, 4];
