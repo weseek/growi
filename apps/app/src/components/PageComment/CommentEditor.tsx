@@ -2,7 +2,9 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { useResolvedThemeForEditor } from '@growi/editor';
+import {
+  CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
+} from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -25,7 +27,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
-import Editor from '../PageEditor/Editor';
+// import Editor from '../PageEditor/Editor';
 
 import { CommentPreview } from './CommentPreview';
 
@@ -79,7 +81,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
-
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme(resolvedTheme);
 
@@ -267,14 +269,27 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
-  const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  //   setComment(newValue);
+  //   if (!isClean && !incremented) {
+  //     incrementEditingCommentsNum();
+  //     setIncremented(true);
+  //   }
+  //   mutateIsEnabledUnsavedWarning(!isClean);
+  // }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+
+  const onChangeHandler = useCallback((newValue: string) => {
     setComment(newValue);
-    if (!isClean && !incremented) {
-      incrementEditingCommentsNum();
-      setIncremented(true);
+  }, []);
+
+  // initialize
+  useEffect(() => {
+    if (commentBody == null) {
+      return;
     }
-    mutateIsEnabledUnsavedWarning(!isClean);
-  }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+    codeMirrorEditor?.initDoc(commentBody);
+  }, [codeMirrorEditor, commentBody, mutateIsEnabledUnsavedWarning]);
+
 
   const renderReady = () => {
     const commentPreview = getCommentHtml();
@@ -311,7 +326,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <Editor
+              <CodeMirrorEditorComment
+                onChange={onChangeHandler}
+              />
+              {/* <Editor
                 ref={editorRef}
                 value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
@@ -320,7 +338,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
