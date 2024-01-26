@@ -145,6 +145,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     if (editingCommentsNum != null && editingCommentsNum === 0) {
       mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
     }
+
   }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
@@ -188,15 +189,17 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       if (onCommentButtonClicked != null) {
         onCommentButtonClicked();
       }
+
+      // To open a new comment editor after commenting
+      codeMirrorEditor?.initDoc('');
     }
     catch (err) {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
   }, [
-    comment, currentCommentId, initializeEditor,
-    isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
-    postComment, revisionId, updateComment,
+    currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor,
+    updateComment, comment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment,
   ]);
 
   const ctrlEnterHandler = useCallback((event) => {
@@ -282,13 +285,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     setComment(newValue);
   }, []);
 
-  // initialize
+  // initialize CodeMirrorEditor
   useEffect(() => {
     if (commentBody == null) {
       return;
     }
     codeMirrorEditor?.initDoc(commentBody);
-  }, [codeMirrorEditor, commentBody, mutateIsEnabledUnsavedWarning]);
+  }, [codeMirrorEditor, commentBody]);
 
 
   const renderReady = () => {
