@@ -27,7 +27,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
-// import Editor from '../PageEditor/Editor';
+import Editor from '../PageEditor/Editor';
 
 import { CommentPreview } from './CommentPreview';
 
@@ -283,7 +283,12 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const onChangeHandler = useCallback((newValue: string) => {
     setComment(newValue);
-  }, []);
+
+    if (!incremented) {
+      incrementEditingCommentsNum();
+      setIncremented(true);
+    }
+  }, [incrementEditingCommentsNum, incremented]);
 
   // initialize CodeMirrorEditor
   useEffect(() => {
