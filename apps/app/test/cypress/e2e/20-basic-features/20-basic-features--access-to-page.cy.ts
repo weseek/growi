@@ -91,7 +91,7 @@ context('Access to page', () => {
 
     // check edited contents after save
     cy.appendTextToEditorUntilContains(body1);
-    cy.get('.page-editor-preview-body').should('contain.text', body1);
+    cy.getByTestid('page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
     cy.get('.wiki').should('be.visible');
@@ -108,9 +108,9 @@ context('Access to page', () => {
 
     // check editing contents with shortcut key
     cy.appendTextToEditorUntilContains(body2);
-    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
+    cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('[role="textbox"]').click().type(savePageShortcutKey);
-    cy.get('.page-editor-preview-body').should('contain.text', body1+body2);
+    cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
     cy.screenshot(`${ssPrefix}-edit-and-save-with-shortcut-key`);
   })
 
@@ -278,7 +278,7 @@ context('Access to Template Editing Mode', () => {
     });
 
     cy.appendTextToEditorUntilContains(templateBody1);
-    cy.get('.page-editor-preview-body').should('contain.text', templateBody1);
+    cy.getByTestid('page-editor-preview-body').should('contain.text', templateBody1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
@@ -311,7 +311,7 @@ context('Access to Template Editing Mode', () => {
     })
 
     cy.appendTextToEditorUntilContains(templateBody2);
-    cy.get('.page-editor-preview-body').should('contain.text', templateBody2);
+    cy.getByTestid('page-editor-preview-body').should('contain.text', templateBody2);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
   });
