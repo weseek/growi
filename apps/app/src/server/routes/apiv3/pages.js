@@ -307,15 +307,15 @@ module.exports = (crowi) => {
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       // body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
-      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      body, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
     } = req.body;
+
+    let { path, grant, grantUserGroupIds } = req.body;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136136
     if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
       return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
-
-    let { path } = req.body;
 
     // check whether path starts slash
     path = addHeadingSlash(path);
@@ -327,8 +327,12 @@ module.exports = (crowi) => {
         const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
         path = await generateUniquePath(basePath);
 
+        // if the generated path is not creatable, create the path under the root path
         if (!isCreatablePage(path)) {
           path = await generateUniquePath(defaultTitle);
+          // initialize grant data
+          grant = 1;
+          grantUserGroupIds = undefined;
         }
       }
       catch (err) {

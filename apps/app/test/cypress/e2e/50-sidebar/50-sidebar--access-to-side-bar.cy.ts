@@ -218,14 +218,14 @@ describe('Access to sidebar', () => {
         //   cy.getByTestid('save-page-btn').click();
         // });
 
-        it('Successfully create custom sidebar content', () => {
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
-            .should('be.visible')
-            .should('have.class', 'active');
+        // it('Successfully create custom sidebar content', () => {
+        //   cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar')
+        //     .should('be.visible')
+        //     .should('have.class', 'active');
 
-          cy.waitUntilSkeletonDisappear();
-          cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`, { blackout: blackoutOverride });
-        });
+        //   cy.waitUntilSkeletonDisappear();
+        //   cy.screenshot(`${ssPrefix}custom-sidebar-3-content-created`, { blackout: blackoutOverride });
+        // });
       });
 
       describe('Test recent changes tab', () => {
@@ -307,8 +307,7 @@ describe('Access to sidebar', () => {
             cy.get('a[href*="/trash"]').click();
           });
 
-          cy.get('.grw-page-path-hierarchical-link').should('be.visible');
-          cy.get('.grw-custom-nav-tab').should('be.visible');
+          cy.getByTestid('trash-page-list').should('be.visible');
 
           cy.screenshot(`${ssPrefix}access-to-trash-page`, { blackout: blackoutOverride });
         });

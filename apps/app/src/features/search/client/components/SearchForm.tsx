@@ -51,7 +51,11 @@ export const SearchForm = (props: Props): JSX.Element => {
   });
 
   return (
-    <form className="w-100" onSubmit={submitHandler}>
+    <form
+      className="w-100"
+      onSubmit={submitHandler}
+      data-testid="search-form"
+    >
       <input {...inputOptions} />
     </form>
   );

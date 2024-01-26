@@ -1,22 +1,27 @@
 import { useEffect } from 'react';
 
-import type { Extension } from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
 
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
+  [
+    scrollPastEnd(),
+    setDataLine,
+  ],
 ];
 
 type Props = {
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
+  onScroll?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
   editorTheme?: string,
@@ -24,7 +29,7 @@ type Props = {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, acceptedFileType, indentSize, editorTheme,
+    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, editorTheme,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -66,6 +71,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
       onUpload={onUpload}
+      onScroll={onScroll}
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
       editorTheme={editorTheme}

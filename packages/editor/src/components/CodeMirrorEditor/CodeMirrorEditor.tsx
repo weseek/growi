@@ -9,9 +9,13 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
+import {
+  getStrFromBol, adjustPasteData,
+} from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
+
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -26,6 +30,7 @@ type Props = {
   acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
+  onScroll?: () => void,
   indentSize?: number,
   editorTheme?: string,
 }
@@ -36,6 +41,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     acceptedFileType,
     onChange,
     onUpload,
+    onScroll,
     indentSize,
     editorTheme,
   } = props;
@@ -64,6 +70,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
       if (event.clipboardData == null) {
         return;
       }
@@ -73,8 +85,14 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       }
 
       if (event.clipboardData.types.includes('text/plain')) {
+
         const textData = event.clipboardData.getData('text/plain');
-        codeMirrorEditor?.replaceText(textData);
+
+        const strFromBol = getStrFromBol(editor);
+
+        const adjusted = adjustPasteData(strFromBol, textData);
+
+        codeMirrorEditor?.replaceText(adjusted);
       }
     };
 
@@ -102,6 +120,24 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor]);
+
+  useEffect(() => {
+
+    const handleScroll = (event: Event) => {
+      event.preventDefault();
+      if (onScroll != null) {
+        onScroll();
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      scroll: handleScroll,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [onScroll, codeMirrorEditor]);
 
   useEffect(() => {
     if (editorTheme == null) {

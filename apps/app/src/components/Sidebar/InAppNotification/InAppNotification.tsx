@@ -12,7 +12,7 @@ const InAppNotificationContent = dynamic(() => import('./InAppNotificationSubsta
 export const InAppNotification = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isUnreadNotificationsVisible, setUnreadNotificationsVisible] = useState(false);
+  const [isUnopendNotificationsVisible, setUnopendNotificationsVisible] = useState(false);
 
   return (
     <div className="px-3">
@@ -23,11 +23,11 @@ export const InAppNotification = (): JSX.Element => {
       </div>
 
       <InAppNotificationForms
-        onChangeUnreadNotificationsVisible={() => { setUnreadNotificationsVisible(!isUnreadNotificationsVisible) }}
+        onChangeUnopendNotificationsVisible={() => { setUnopendNotificationsVisible(!isUnopendNotificationsVisible) }}
       />
 
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <InAppNotificationContent isUnreadNotificationsVisible={isUnreadNotificationsVisible} />
+        <InAppNotificationContent isUnopendNotificationsVisible={isUnopendNotificationsVisible} />
       </Suspense>
     </div>
   );

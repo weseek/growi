@@ -10,11 +10,12 @@ import { useModelNotification } from './PageNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
+  onUnopenedNotificationOpend?: () => void,
 }
 
 const InAppNotificationElm: FC<Props> = (props: Props) => {
 
-  const { notification } = props;
+  const { notification, onUnopenedNotificationOpend } = props;
 
   const modelNotificationUtils = useModelNotification(notification);
 
@@ -29,6 +30,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
     if (notification.status === InAppNotificationStatuses.STATUS_UNOPENED) {
       // set notification status "OPEND"
       await apiv3Post('/in-app-notification/open', { id: notification._id });
+      onUnopenedNotificationOpend?.();
     }
 
     publishOpen();

@@ -55,7 +55,7 @@ const SearchModal = (): JSX.Element => {
   }, [searchModalData?.isOpened]);
 
   return (
-    <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal}>
+    <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
       <ModalBody>
         <Downshift
           onSelect={selectSearchMenuItemHandler}
