@@ -108,7 +108,7 @@ Cypress.Commands.add('appendTextToEditorUntilContains', (inputText: string) => {
     // do
     cy.get('.cm-content').type(inputText, { force: true });
     // until
-    return cy.get('.cm-activeLine')
+    return cy.get('.cm-line')
       .each(($item) => {
         lines.push($item.text());
       }).then(() => {
