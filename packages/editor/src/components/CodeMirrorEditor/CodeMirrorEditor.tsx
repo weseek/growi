@@ -54,6 +54,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useEffect(() => {
+    const editor = codeMirrorEditor?.view;
+
     const handleEnterKey = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault();
@@ -65,10 +67,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       }
     };
 
-    codeMirrorEditor?.view?.dom.addEventListener('keydown', handleEnterKey);
+    editor?.dom.addEventListener('keydown', handleEnterKey);
 
     return () => {
-      codeMirrorEditor?.view?.dom.removeEventListener('keydown', handleEnterKey);
+      editor?.dom.removeEventListener('keydown', handleEnterKey);
     };
   }, [codeMirrorEditor]);
 
