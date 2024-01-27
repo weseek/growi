@@ -100,7 +100,7 @@ export const isSharedPage = (path: string): boolean => {
 };
 
 const restrictedPatternsToCreate: Array<RegExp> = [
-  /\^|\$|\*|\+|#|%|\?/,
+  /\^|\$|\*|\+|#|<|>|%|\?/,
   /^\/-\/.*/,
   /^\/_r\/.*/,
   /^\/_apix?(\/.*)?/,
