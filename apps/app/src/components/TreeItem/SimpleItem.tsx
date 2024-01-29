@@ -40,19 +40,15 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 };
 
 
-export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
+const SimpleItemContent: FC<TreeItemToolProps> = (props) => {
   const { t } = useTranslation();
   const router = useRouter();
-
-  const { getDescCount } = usePageTreeDescCountMap();
 
   const { page } = props.itemNode;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
-
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
 
   const pageTreeItemClickHandler = (e) => {
     e.preventDefault();
@@ -81,6 +77,19 @@ export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
           <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
         </div>
       )}
+    </>
+  );
+};
+
+export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
+  const { getDescCount } = usePageTreeDescCountMap();
+
+  const { page } = props.itemNode;
+
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+  return (
+    <>
       {descendantCount > 0 && (
         <div className="grw-pagetree-count-wrapper">
           <CountBadge count={descendantCount} />
@@ -155,9 +164,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const CustomEndComponents = props.customEndComponents;
-
-  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
+  const EndComponents = props.customEndComponents ?? [SimpleItemTool];
 
   const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
@@ -189,6 +196,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
       >
+
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
@@ -202,10 +210,14 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-        {SimpleItemContent.map((ItemContent, index) => (
+
+        <SimpleItemContent {...toolProps} />
+
+        {EndComponents.map((EndComponent, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <ItemContent key={index} {...toolProps} />
+          <EndComponent key={index} {...toolProps} />
         ))}
+
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
