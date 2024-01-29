@@ -28,6 +28,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           className="dropdown-item"
           onClick={onClickCreateNewPageButtonHandler}
           type="button"
+          data-testid="grw-sidebar-nav-page-create-dropdown-item"
         >
           {t('create_page_dropdown.new_page')}
         </button>
@@ -39,6 +40,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           className="dropdown-item"
           onClick={onClickCreateTodaysButtonHandler}
           type="button"
+          data-testid="grw-sidebar-nav-today's-memo-create-dropdown-item"
         >
           {todaysPath}
         </button>
@@ -50,6 +52,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           className="dropdown-item"
           onClick={() => onClickTemplateButtonHandler('_template')}
           type="button"
+          data-testid="grw-sidebar-nav-children-template-create-dropdown-item"
         >
           {t('create_page_dropdown.template.children')}
         </button>
@@ -59,6 +62,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           className="dropdown-item"
           onClick={() => onClickTemplateButtonHandler('__template')}
           type="button"
+          data-testid="grw-sidebar-nav-descendants-template-create-dropdown-item"
         >
           {t('create_page_dropdown.template.descendants')}
         </button>
