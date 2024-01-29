@@ -6,12 +6,14 @@ import React, {
 import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
-import { pagePathUtils } from '@growi/core/dist/utils';
+import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
+import { useRouter } from 'next/router';
 import { useDrag, useDrop } from 'react-dnd';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastWarning, toastError } from '~/client/util/toastr';
+import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
@@ -21,9 +23,12 @@ import {
 
 import { Ellipsis } from './Ellipsis';
 
+
 const logger = loggerFactory('growi:cli:Item');
 
 export const PageTreeItem: FC<TreeItemProps> = (props) => {
+  const router = useRouter();
+
   const getNewPathAfterMoved = (droppedPagePath: string, newParentPagePath: string): string => {
     const pageTitle = nodePath.basename(droppedPagePath);
     return nodePath.join(newParentPagePath, pageTitle);
@@ -52,6 +57,16 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const [shouldHide, setShouldHide] = useState(false);
 
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+
+  const itemSelectedHandler = useCallback((page: IPageForItem) => {
+    if (page.path == null || page._id == null) {
+      return;
+    }
+
+    const link = pathUtils.returnPathForURL(page.path, page._id);
+
+    router.push(link);
+  }, [router]);
 
   const displayDroppedItemByPageId = useCallback((pageId) => {
     const target = document.getElementById(`pagetree-item-${pageId}`);
@@ -161,9 +176,10 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
-      onRenamed={props.onRenamed}
+      onClick={itemSelectedHandler}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
+      onRenamed={props.onRenamed}
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}

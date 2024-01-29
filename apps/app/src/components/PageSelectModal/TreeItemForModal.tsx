@@ -21,9 +21,9 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
-      onRenamed={props.onRenamed}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
+      onRenamed={props.onRenamed}
       customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
       customEndComponents={[NewPageCreateButton]}

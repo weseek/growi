@@ -1,14 +1,12 @@
 import React, {
   useCallback, useState, useEffect,
-  type FC, type RefObject, type RefCallback,
+  type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
 
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
@@ -42,24 +40,21 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 
 const SimpleItemContent: FC<TreeItemToolProps> = (props) => {
   const { t } = useTranslation();
-  const router = useRouter();
 
+  const { onClick } = props;
   const { page } = props.itemNode;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
-  const pageTreeItemClickHandler = (e) => {
-    e.preventDefault();
-
-    if (page.path == null || page._id == null) {
+  const clickHandler = (e: MouseEvent<HTMLParagraphElement>) => {
+    if (onClick == null) {
       return;
     }
 
-    const link = pathUtils.returnPathForURL(page.path, page._id);
-
-    router.push(link);
+    e.preventDefault();
+    onClick(page);
   };
 
   return (
@@ -74,7 +69,7 @@ const SimpleItemContent: FC<TreeItemToolProps> = (props) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <p onClick={clickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
         </div>
       )}
     </>
@@ -106,7 +101,7 @@ type SimpleItemProps = TreeItemProps & {
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
     itemRef, itemClass, mainClassName,
   } = props;
 
@@ -172,6 +167,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     isOpen: false,
     targetPathOrId,
     onRenamed,
+    onClick,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
   };
