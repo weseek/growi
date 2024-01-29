@@ -4,6 +4,7 @@ import type { IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { Dropdown } from 'reactstrap';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
@@ -15,6 +16,7 @@ import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
+
 
 const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -73,21 +75,21 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           disabled={isNewPageCreating || isTodaysPageCreating || isTemplatePageCreating}
         />
       </div>
-      { isHovered && (
-        <div className="btn-group dropend position-absolute">
-          <DropendToggle
-            className="dropdown-toggle dropdown-toggle-split"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          />
-          <DropendMenu
-            onClickCreateNewPageButtonHandler={onClickNewButton}
-            onClickCreateTodaysButtonHandler={onClickTodaysButton}
-            onClickTemplateButtonHandler={onClickTemplateButtonHandler}
-            todaysPath={todaysPath}
-          />
-        </div>
-      )}
+      <Dropdown
+        direction="end"
+      >
+        <DropendToggle
+          // className="dropdown-toggle dropdown-toggle-split"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        />
+        <DropendMenu
+          onClickCreateNewPageButtonHandler={onClickNewButton}
+          onClickCreateTodaysButtonHandler={onClickTodaysButton}
+          onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+          todaysPath={todaysPath}
+        />
+      </Dropdown>
     </div>
   );
 });
