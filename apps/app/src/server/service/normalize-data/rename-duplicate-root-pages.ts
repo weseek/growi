@@ -21,7 +21,7 @@ export const renameDuplicateRootPages = async(): Promise<void> => {
         update: {
           $set: {
             parent: rootPages[0],
-            path: `/${page._id.toString().slice(-10)}`,
+            path: `/obsolete-root-page-${page._id.toString()}`,
           },
         },
       },
