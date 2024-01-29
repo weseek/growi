@@ -9,6 +9,11 @@ import { IDataTagCount } from '~/interfaces/tag';
 
 import PaginationWrapper from './PaginationWrapper';
 
+import styles from './TagList.module.scss';
+
+const moduleClass = styles['grw-tag-list'];
+
+
 type TagListProps = {
   tagData: IDataTagCount[],
   totalTags: number,
@@ -40,8 +45,8 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
           className="list-group-item list-group-item-action d-flex"
           onClick={() => pushState(`tag:${tag.name}`)}
         >
-          <div className="text-truncate list-tag-name">{tag.name}</div>
-          <div className="ms-4 my-auto py-1 px-2 list-tag-count badge bg-primary">{tag.count}</div>
+          <div className="text-truncate grw-tag badge">{tag.name}</div>
+          <div className="ms-4 my-auto py-1 px-2 grw-tag-count badge">{tag.count}</div>
         </button>
       );
     });
@@ -52,8 +57,8 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   }
 
   return (
-    <>
-      <div className="list-group text-start mb-5">
+    <div className={moduleClass}>
+      <div className="list-group list-group-flush mb-5">
         {generateTagList(tagData)}
       </div>
       {isPaginationShown
@@ -68,7 +73,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         />
       )
       }
-    </>
+    </div>
   );
 
 };
