@@ -2374,25 +2374,43 @@ class PageService implements IPageService {
     const grant = parentPage.grant;
 
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
+    const userRelatedParentGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(
+      userRelatedGroups, parentPage,
+    );
 
-    const childPages = await builder.query;
-    await batchProcessPromiseAll(childPages, 20, async(childPage: any) => {
-      let newChildGrantedGroups: IGrantedGroup[] = [];
-      if (grant === PageGrant.GRANT_USER_GROUP) {
-        const userRelatedParentGrantedGroups = this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(
-          userRelatedGroups, parentPage,
-        );
-        newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
-      }
-      const canChangeGrant = this.pageGrantService
-        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
-      if (canChangeGrant) {
-        childPage.grant = grant;
-        childPage.grantedUsers = grant === PageGrant.GRANT_OWNER ? [user._id] : null;
-        childPage.grantedGroups = newChildGrantedGroups;
-        await childPage.save();
-      }
+    const childPagesReadableStream = builder.query.cursor({ batchSize: BULK_REINDEX_SIZE });
+
+    const childPagesWritable = new Writable({
+      objectMode: true,
+      write: async(batch, encoding, callback) => {
+        const operations: any = [];
+
+        batch.forEach((childPage) => {
+          let newChildGrantedGroups: IGrantedGroup[] = [];
+          if (grant === PageGrant.GRANT_USER_GROUP) {
+            newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
+          }
+          const canChangeGrant = this.pageGrantService
+            .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+          if (canChangeGrant) {
+            operations.push({
+              updateOne: {
+                filter: { _id: childPage._id },
+                update: { $set: { grant, grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : [], grantedGroups: newChildGrantedGroups } },
+              },
+            });
+          }
+        });
+        await Page.bulkWrite(operations);
+
+        callback();
+      },
     });
+
+    childPagesReadableStream
+      .pipe(createBatchStream(BULK_REINDEX_SIZE))
+      .pipe(childPagesWritable);
+    await streamToPromise(childPagesWritable);
   }
 
   /**
