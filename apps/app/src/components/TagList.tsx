@@ -42,11 +42,11 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         <button
           key={tag._id}
           type="button"
-          className="list-group-item list-group-item-action d-flex"
+          className="list-group-item list-group-item-action d-flex justify-content-between"
           onClick={() => pushState(`tag:${tag.name}`)}
         >
           <div className="text-truncate grw-tag badge">{tag.name}</div>
-          <div className="ms-4 my-auto py-1 px-2 grw-tag-count badge">{tag.count}</div>
+          <div className="grw-tag-count badge">{tag.count}</div>
         </button>
       );
     });
