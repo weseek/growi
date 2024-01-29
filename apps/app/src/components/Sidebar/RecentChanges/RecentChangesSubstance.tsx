@@ -72,7 +72,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
       <a
         key={tag.name}
         type="button"
-        className="grw-tag-label badge bg-primary me-2 small"
+        className="grw-tag badge me-2 small"
         onClick={() => onClickTag?.(tag.name)}
       >
         {tag.name}

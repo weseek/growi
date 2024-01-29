@@ -30,7 +30,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           <a
             key={tag}
             type="button"
-            className="grw-tag-label badge bg-primary me-2"
+            className="grw-tag badge me-2"
             onClick={() => pushState(`tag:${tag}`)}
           >
             {tag}
