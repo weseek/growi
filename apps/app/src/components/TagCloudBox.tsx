@@ -40,7 +40,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   });
 
   return (
-    <div className="grw-popular-tag-labels">
+    <div>
       {tagElements}
     </div>
   );

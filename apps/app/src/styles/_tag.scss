@@ -1,15 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-.grw-popular-tag-labels {
-  text-align: left;
-
-  .grw-tag-label {
-    font-size: 10px;
-    font-weight: normal;
-    border-radius: bs.$border-radius;
-  }
-}
-
 #edit-tag-modal {
   .form-control {
     height: auto;
