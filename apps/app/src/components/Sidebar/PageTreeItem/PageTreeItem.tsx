@@ -158,7 +158,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     <SimpleItem
       targetPathOrId={props.targetPathOrId}
       itemNode={props.itemNode}
-      isOpen
+      isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
       onRenamed={props.onRenamed}
