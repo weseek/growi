@@ -27,6 +27,7 @@ context('Modal for page operation', () => {
       cy.screenshot(`${ssPrefix}-delete-modal`);
       cy.getByTestid('delete-page-button').click();
     });
+
     cy.getByTestid('trash-page-alert').should('be.visible');
     cy.collapseSidebar(true);
     cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`);
@@ -121,17 +122,17 @@ context('Page Accessories Modal', () => {
 
     cy.visit('/');
     cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
 
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('grw-contextual-sub-nav').should('be.visible').within(() => {
-        cy.getByTestid('open-page-item-control-btn').find('button').first().as('btn').click();
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
+        cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
-      // wait until
-      return cy.get('body').within(() => {
-        return Cypress.$('.dropdown-menu.show').is(':visible');
-      });
+      //wait until
+      return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
+
 
   });
 
@@ -210,7 +211,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     });
 
     cy.get('.Toastify__toast').should('be.visible').trigger('mouseover');
-    cy.get('.grw-taglabels-container > .grw-tag-labels > a').contains(tag).should('exist');
+    cy.getByTestid('grw-tag-labels').contains(tag).should('exist');
 
     cy.screenshot(`${ssPrefix}2-click-done`);
   });

@@ -1,16 +1,15 @@
 import React, {
   useCallback, useState, useEffect,
-  type FC, type RefObject, type RefCallback,
+  type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
 
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
+import type { IPageForItem } from '~/interfaces/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -40,34 +39,15 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 };
 
 
-export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
+const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-
-  const { getDescCount } = usePageTreeDescCountMap();
-
-  const { page } = props.itemNode;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
-  const pageTreeItemClickHandler = (e) => {
-    e.preventDefault();
-
-    if (page.path == null || page._id == null) {
-      return;
-    }
-
-    const link = pathUtils.returnPathForURL(page.path, page._id);
-
-    router.push(link);
-  };
-
   return (
-    <>
+    <div className="flex-grow-1 d-flex align-items-center pe-none">
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
@@ -78,9 +58,22 @@ export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
+  const { getDescCount } = usePageTreeDescCountMap();
+
+  const { page } = props.itemNode;
+
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+  return (
+    <>
       {descendantCount > 0 && (
         <div className="grw-pagetree-count-wrapper">
           <CountBadge count={descendantCount} />
@@ -97,7 +90,7 @@ type SimpleItemProps = TreeItemProps & {
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
     itemRef, itemClass, mainClassName,
   } = props;
 
@@ -110,10 +103,21 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
+
+  const itemClickHandler = useCallback((e: MouseEvent) => {
+    // DO NOT handle the event when e.currentTarget and e.target is different
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    onClick?.(page);
+
+  }, [onClick, page]);
+
+
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
   const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -123,7 +127,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
 
-  const onClickLoadChildren = useCallback(async() => {
+  const onClickLoadChildren = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
@@ -155,9 +159,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const CustomEndComponents = props.customEndComponents;
-
-  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
+  const EndComponents = props.customEndComponents ?? [SimpleItemTool];
 
   const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
@@ -185,10 +187,13 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     >
       <li
         ref={itemRef}
+        role="button"
         className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
+        onClick={itemClickHandler}
       >
+
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
@@ -202,10 +207,14 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-        {SimpleItemContent.map((ItemContent, index) => (
+
+        <SimpleItemContent page={page} />
+
+        {EndComponents.map((EndComponent, index) => (
           // eslint-disable-next-line react/no-array-index-key
-          <ItemContent key={index} {...toolProps} />
+          <EndComponent key={index} {...toolProps} />
         ))}
+
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
@@ -220,6 +229,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             itemNode: node,
             itemClass,
             mainClassName,
+            onClick,
           };
 
           return (

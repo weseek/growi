@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { FC } from 'react';
 
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
@@ -13,13 +14,15 @@ import { ItemsTree } from '../ItemsTree';
 import { TreeItemForModal } from './TreeItemForModal';
 
 
-export const PageSelectModal = () => {
+export const PageSelectModal: FC = () => {
   const {
     data: PageSelectModalData,
     close: closeModal,
   } = usePageSelectModal();
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
+
+  const { t } = useTranslation();
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -40,8 +43,9 @@ export const PageSelectModal = () => {
       isOpen={isOpened}
       toggle={() => closeModal()}
       centered
+      size="sm"
     >
-      <ModalHeader toggle={() => closeModal()}>modal</ModalHeader>
+      <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody>
         <ItemsTree
           CustomTreeItem={TreeItemForModal}
@@ -53,12 +57,7 @@ export const PageSelectModal = () => {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="primary">
-          Do Something
-        </Button>{' '}
-        <Button color="secondary">
-          Cancel
-        </Button>
+        <Button color="primary" onClick={closeModal}>{t('Done')}</Button>{' '}
       </ModalFooter>
     </Modal>
   );

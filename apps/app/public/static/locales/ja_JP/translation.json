@@ -857,5 +857,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
+  },
+  "page_select_modal": {
+    "select_page_location": "ページの場所を選択"
   }
 }

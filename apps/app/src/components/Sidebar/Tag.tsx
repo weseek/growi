@@ -81,9 +81,7 @@ const Tag: FC = () => {
 
       <h3 className="my-3">{t('popular_tags')}</h3>
 
-      <div className="text-center">
-        <TagCloudBox tags={tagCloudData} />
-      </div>
+      <TagCloudBox tags={tagCloudData} />
     </div>
   );
 
