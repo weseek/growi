@@ -24,11 +24,12 @@ type Props = {
   onScroll?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
+  editorTheme?: string,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize,
+    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, editorTheme,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -73,6 +74,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       onScroll={onScroll}
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
+      editorTheme={editorTheme}
     />
   );
 };
