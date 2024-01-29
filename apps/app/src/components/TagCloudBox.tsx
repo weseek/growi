@@ -31,7 +31,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
       <a
         key={tag.name}
         type="button"
-        className="grw-tag-label badge bg-primary me-2"
+        className="grw-tag badge me-2"
         onClick={() => pushState(`tag:${tag.name}`)}
       >
         {tagNameFormat}
@@ -40,7 +40,7 @@ const TagCloudBox: FC<Props> = memo((props:(Props & typeof defaultProps)) => {
   });
 
   return (
-    <div className="grw-popular-tag-labels">
+    <div>
       {tagElements}
     </div>
   );

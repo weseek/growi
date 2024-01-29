@@ -2,9 +2,11 @@ import React, {
   memo, useCallback, useEffect,
 } from 'react';
 
-import { isPopulated, type IPageHasId } from '@growi/core';
+import {
+  isPopulated, type IPageHasId,
+} from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
-import { UserPicture, FootstampIcon } from '@growi/ui/dist/components';
+import { UserPicture } from '@growi/ui/dist/components';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
@@ -18,6 +20,8 @@ import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import styles from './RecentChangesSubstance.module.scss';
 
+const formerLinkClass = styles['grw-former-link'];
+const pageItemLowerClass = styles['grw-recent-changes-item-lower'];
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:History');
@@ -33,14 +37,18 @@ type PageItemProps = PageItemLowerProps & {
 
 const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
   return (
-    <div className="d-flex justify-content-between grw-recent-changes-item-lower pt-1">
-      <div className="d-flex">
-        <div className="footstamp-icon me-1 d-inline-block"><FootstampIcon /></div>
-        <div className="me-2 grw-list-counts d-inline-block">{page.seenUsers.length}</div>
-        <div className="icon-bubble me-1 d-inline-block"></div>
-        <div className="me-2 grw-list-counts d-inline-block">{page.commentCount}</div>
+    <div className={`${pageItemLowerClass} d-flex justify-content-between grw-recent-changes-item-lower`}>
+      <div className="d-flex align-items-center">
+        <div className="">
+          <span className="material-symbols-outlined p-0">footprint</span>
+          <span className="grw-list-counts ms-1">{page.seenUsers.length}</span>
+        </div>
+        <div className="ms-2">
+          <span className="material-symbols-outlined p-0">chat</span>
+          <span className="grw-list-counts ms-1">{page.commentCount}</span>
+        </div>
       </div>
-      <div className="grw-formatted-distance-date small mt-auto" data-vrt-blackout-datetime>
+      <div className="grw-formatted-distance-date mt-auto" data-vrt-blackout-datetime>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
       </div>
     </div>
@@ -48,12 +56,42 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
 });
 PageItemLower.displayName = 'PageItemLower';
 
+type PageTagsProps = PageItemProps;
+const PageTags = memo((props: PageTagsProps): JSX.Element => {
+  const { page, isSmall, onClickTag } = props;
+
+  if (isSmall || (page.tags.length === 0)) {
+    return <></>;
+  }
+
+  return (
+    <>
+      { page.tags.map((tag) => {
+        if (!isPopulated(tag)) {
+          return <></>;
+        }
+        return (
+          <a
+            key={tag.name}
+            type="button"
+            className="grw-tag badge me-2"
+            onClick={() => onClickTag?.(tag.name)}
+          >
+            {tag.name}
+          </a>
+        );
+      }) }
+    </>
+  );
+});
+PageTags.displayName = 'PageTags';
+
 const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Element => {
   const dPagePath = new DevidedPagePath(page.path, false, true);
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className="small">
+    <div className={`${formerLinkClass} small`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
@@ -63,39 +101,37 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
     locked = <span><i className="icon-lock ms-2" /></span>;
   }
 
-  const tags = page.tags;
-  const tagElements = tags.map((tag) => {
-    if (!isPopulated(tag)) {
-      return <></>;
-    }
-    return (
-      <a
-        key={tag.name}
-        type="button"
-        className="grw-tag-label badge bg-primary me-2 small"
-        onClick={() => onClickTag?.(tag.name)}
-      >
-        {tag.name}
-      </a>
-    );
-  });
+  const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
 
   return (
-    <li className={`list-group-item ${styles['list-group-item']} ${isSmall ? 'py-2' : 'py-3'} px-0`}>
+    <li className={`list-group-item ${styles['list-group-item']} py-2 px-0`}>
       <div className="d-flex w-100">
+
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
+
         <div className="flex-grow-1 ms-2">
-          { !dPagePath.isRoot && <FormerLink /> }
-          <h5 className={isSmall ? 'my-0 text-truncate' : 'my-2'}>
-            <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
-            {locked}
-          </h5>
-          {!isSmall && (
-            <div className="grw-tag-labels mt-1 mb-2">
-              { tagElements }
+          <div className={`row ${isSmall ? 'gy-0' : 'gy-2'}`}>
+
+            <div className="col-12">
+              { !dPagePath.isRoot && <FormerLink /> }
             </div>
-          )}
-          <PageItemLower page={page} />
+
+            <h6 className={`col-12 ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
+              <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+              {locked}
+            </h6>
+
+            { isTagElementsRendered && (
+              <div className="col-12">
+                <PageTags isSmall={isSmall} page={page} onClickTag={onClickTag} />
+              </div>
+            ) }
+
+            <div className="col-12">
+              <PageItemLower page={page} />
+            </div>
+
+          </div>
         </div>
       </div>
     </li>

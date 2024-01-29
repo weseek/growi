@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
           '/src/styles/default.scss',
           '/src/styles/fire-red.scss',
           '/src/styles/future.scss',
-          // '/src/styles/halloween.scss',
+          '/src/styles/halloween.scss',
           // '/src/styles/hufflepuff.scss',
           '/src/styles/kibela.scss',
           '/src/styles/island.scss',
@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
           '/src/styles/nature.scss',
           '/src/styles/spring.scss',
           '/src/styles/wood.scss',
+          '/src/styles/classic.scss',
         ],
         output: {
           assetFileNames: isProd

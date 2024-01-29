@@ -16,6 +16,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
+
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
@@ -28,6 +29,7 @@ import {
   useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
 } from '~/stores/context';
 import {
+  useEditorSettings,
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
   useIsEnabledUnsavedWarning,
   useIsConflict,
@@ -54,6 +56,7 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
+import { PageHeader } from '../PageHeader/PageHeader';
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 // import { ConflictDiffModal } from './ConflictDiffModal';
@@ -111,6 +114,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
   const { data: isUploadEnabled } = useIsUploadEnabled();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
@@ -476,8 +480,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="flex-expand-vert justify-content-center align-items-center" style={{ minHeight: '72px' }}>
-        <div>Header</div>
+      <div className="flex-expand-vert justify-content-center" style={{ minHeight: '72px' }}>
+        <PageHeader />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
@@ -500,6 +504,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
+            editorTheme={editorSettings?.theme}
           />
         </div>
         <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

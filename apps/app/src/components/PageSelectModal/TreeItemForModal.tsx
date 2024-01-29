@@ -10,6 +10,7 @@ type PageTreeItemProps = TreeItemProps & {
 
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
+  const { isOpen } = props;
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
@@ -17,7 +18,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       key={props.key}
       targetPathOrId={props.targetPathOrId}
       itemNode={props.itemNode}
-      isOpen
+      isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
       onRenamed={props.onRenamed}
