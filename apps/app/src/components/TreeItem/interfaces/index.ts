@@ -10,7 +10,6 @@ type TreeItemBaseProps = {
   itemNode: ItemNode,
   isEnableActions: boolean,
   isReadOnlyUser: boolean,
-  onClick?(page: IPageForItem): void,
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void,
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void,
   onRenamed?(fromPath: string | undefined, toPath: string): void,
@@ -29,4 +28,5 @@ export type TreeItemProps = TreeItemBaseProps & {
   mainClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customNextComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  onClick?(page: IPageForItem): void,
 };
