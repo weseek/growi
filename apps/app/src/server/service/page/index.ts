@@ -7,7 +7,7 @@ import type {
   IPage, IPageInfo, IPageInfoAll, IPageInfoForEntity, IPageWithMeta, IGrantedGroup, IRevisionHasId,
 } from '@growi/core';
 import {
-  PageGrant, PageStatus, getIdForRef, isPopulated,
+  PageGrant, PageStatus, getIdForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils,
@@ -34,7 +34,6 @@ import {
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
-import { batchProcessPromiseAll } from '~/utils/promise';
 
 import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
