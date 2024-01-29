@@ -7,13 +7,12 @@ import { type PageModel } from '~/server/models/page';
 
 export const renameDuplicateRootPages = async(): Promise<void> => {
   const Page = mongoose.model<IPageHasId, PageModel>('Page');
-  const rootPages = await Page.find({ path: '/' }).sort({ createdAt: 1 }) as Array<IPageHasId>;
+  const rootPages = await Page.find({ path: '/' }).sort({ createdAt: 1 });
 
   if (rootPages.length <= 1) {
     return;
   }
 
-  // Rename duplicate root pages
   const duplicatedRootPages = rootPages.slice(1);
   const requests = duplicatedRootPages.map((page) => {
     return {
