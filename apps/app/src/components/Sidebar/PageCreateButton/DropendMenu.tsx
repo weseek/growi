@@ -72,7 +72,10 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
         </li>
       </ul> */}
 
-      <DropdownMenu container="body">
+      <DropdownMenu
+        container="body"
+        style={{ zIndex: 1055 }}
+      >
         <DropdownItem
           onClick={onClickCreateNewPageButtonHandler}
         >
