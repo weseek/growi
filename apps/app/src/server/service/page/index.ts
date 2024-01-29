@@ -2356,7 +2356,7 @@ class PageService implements IPageService {
     return updatedPage;
   }
 
-  private async applyScopesToDescendants(parentPage, user, isV4 = false) {
+  private async applyScopesToDescendantsWithStream(parentPage, user, isV4 = false) {
     const Page = this.crowi.model('Page');
     const builder = new Page.PageQueryBuilder(Page.find());
     builder.addConditionToListOnlyDescendants(parentPage.path);
@@ -2383,26 +2383,7 @@ class PageService implements IPageService {
     const childPagesWritable = new Writable({
       objectMode: true,
       write: async(batch, encoding, callback) => {
-        const operations: any = [];
-
-        batch.forEach((childPage) => {
-          let newChildGrantedGroups: IGrantedGroup[] = [];
-          if (grant === PageGrant.GRANT_USER_GROUP) {
-            newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
-          }
-          const canChangeGrant = this.pageGrantService
-            .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
-          if (canChangeGrant) {
-            operations.push({
-              updateOne: {
-                filter: { _id: childPage._id },
-                update: { $set: { grant, grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : [], grantedGroups: newChildGrantedGroups } },
-              },
-            });
-          }
-        });
-        await Page.bulkWrite(operations);
-
+        await this.updateChildPagesGrant(batch, grant, user, userRelatedGroups, userRelatedParentGrantedGroups);
         callback();
       },
     });
@@ -2411,6 +2392,31 @@ class PageService implements IPageService {
       .pipe(createBatchStream(BULK_REINDEX_SIZE))
       .pipe(childPagesWritable);
     await streamToPromise(childPagesWritable);
+  }
+
+  async updateChildPagesGrant(
+      pages: PageDocument[], grant: PageGrant, user, userRelatedGroups: PopulatedGrantedGroup[], userRelatedParentGrantedGroups: IGrantedGroup[],
+  ): Promise<void> {
+    const Page = this.crowi.model('Page');
+    const operations: any = [];
+
+    pages.forEach((childPage) => {
+      let newChildGrantedGroups: IGrantedGroup[] = [];
+      if (grant === PageGrant.GRANT_USER_GROUP) {
+        newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
+      }
+      const canChangeGrant = this.pageGrantService
+        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+      if (canChangeGrant) {
+        operations.push({
+          updateOne: {
+            filter: { _id: childPage._id },
+            update: { $set: { grant, grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : [], grantedGroups: newChildGrantedGroups } },
+          },
+        });
+      }
+    });
+    await Page.bulkWrite(operations);
   }
 
   /**
@@ -3857,7 +3863,7 @@ class PageService implements IPageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await this.applyScopesToDescendants(page, user);
+      await this.applyScopesToDescendantsWithStream(page, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -3909,7 +3915,7 @@ class PageService implements IPageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      this.applyScopesToDescendants(savedPage, user, true);
+      this.applyScopesToDescendantsWithStream(savedPage, user, true);
     }
 
     return savedPage;
@@ -4062,7 +4068,7 @@ class PageService implements IPageService {
 
     // 3. Update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      await this.applyScopesToDescendants(currentPage, user);
+      await this.applyScopesToDescendantsWithStream(currentPage, user);
     }
 
     await PageOperation.findByIdAndDelete(pageOpId);
@@ -4259,7 +4265,7 @@ class PageService implements IPageService {
 
     // update scopes for descendants
     if (options.overwriteScopesOfDescendants) {
-      this.applyScopesToDescendants(savedPage, user, true);
+      this.applyScopesToDescendantsWithStream(savedPage, user, true);
     }
 
 
