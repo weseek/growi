@@ -114,7 +114,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /\\/, // see: https://github.com/weseek/growi/issues/7241
   /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share|attachment)(\/.*|$)/,
-  /^\/user\/[^/]+$/, // see: https://regex101.com/r/utVQct/1
+  /^\/user(?:\/[^/]+)?$/, // https://regex101.com/r/9Eh2S1/1
 ];
 export const isCreatablePage = (path: string): boolean => {
   return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
