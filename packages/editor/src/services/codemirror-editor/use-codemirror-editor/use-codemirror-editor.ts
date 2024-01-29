@@ -23,6 +23,7 @@ import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
+
 const markdownHighlighting = HighlightStyle.define([
   { tag: tags.heading1, class: 'cm-header-1 cm-header' },
   { tag: tags.heading2, class: 'cm-header-2 cm-header' },
