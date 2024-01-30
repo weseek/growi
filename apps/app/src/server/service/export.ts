@@ -1,15 +1,12 @@
 import fs from 'fs';
 import path from 'path';
-import { Readable, Transform, Writable } from 'stream';
+import { Readable, Transform } from 'stream';
 
-import { isPopulated } from '@growi/core';
-import { normalizePath } from '@growi/core/dist/utils/path-utils';
-import archiver, { Archiver } from 'archiver';
+import archiver from 'archiver';
 
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import { PageModel, PageDocument } from '../models/page';
 import CollectionProgress from '../models/vo/collection-progress';
 import CollectionProgressingStatus from '../models/vo/collection-progressing-status';
 
