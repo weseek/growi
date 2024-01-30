@@ -84,7 +84,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         <Dropdown
           isOpen={dropdownOpen}
           toggle={toggle}
-          direction='end'
+          direction="end"
           className="position-absolute"
         >
           <DropendToggle
