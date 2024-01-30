@@ -18,7 +18,6 @@ const ColorModeSettingsButton = ({ isActive, children, onClick }: ColorModeSetti
     <button
       type="button"
       onClick={onClick}
-      // eslint-disable-next-line max-len
       className={`btn py-2 px-4 fw-bold border-3 ${isActive ? 'btn-outline-primary' : 'btn-outline-neutral-secondary'}`}
     >
       { children }
@@ -41,6 +40,7 @@ export const ColorModeSettings = (): JSX.Element => {
       <h2 className="border-bottom mb-4">{t('color_mode_settings.settings')}</h2>
 
       <div className="offset-md-3">
+
         <div className="d-flex column-gap-3">
 
           <ColorModeSettingsButton isActive={isActive(Themes.LIGHT)} onClick={() => { setTheme(Themes.LIGHT) }}>
