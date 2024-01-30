@@ -16,6 +16,8 @@ import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
+import { Dropdown } from 'reactstrap';
+
 const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
   const now = format(new Date(), 'yyyy/MM/dd');
   const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
@@ -30,6 +32,8 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const [isHovered, setIsHovered] = useState(false);
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const todaysPath = currentUser == null
     ? null
@@ -60,6 +64,8 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     setIsHovered(false);
   };
 
+  const toggle = () => setDropdownOpen(!dropdownOpen);
+
   return (
     <div
       className="d-flex flex-row"
@@ -73,7 +79,12 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           disabled={isNewPageCreating || isTodaysPageCreating || isTemplatePageCreating}
         />
       </div>
-      <div className="btn-group dropend position-absolute">
+      <Dropdown
+        isOpen={dropdownOpen}
+        toggle={toggle}
+        direction='end'
+        className="position-absolute"
+      >
         <DropendToggle
           className="dropdown-toggle dropdown-toggle-split"
           data-bs-toggle="dropdown"
@@ -85,7 +96,20 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           onClickTemplateButtonHandler={onClickTemplateButtonHandler}
           todaysPath={todaysPath}
         />
-      </div>
+      </Dropdown>
+      {/* <div className="btn-group dropend position-absolute">
+        <DropendToggle
+          className="dropdown-toggle dropdown-toggle-split"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        />
+        <DropendMenu
+          onClickCreateNewPageButtonHandler={onClickNewButton}
+          onClickCreateTodaysButtonHandler={onClickTodaysButton}
+          onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+          todaysPath={todaysPath}
+        />
+      </div> */}
     </div>
   );
 });
