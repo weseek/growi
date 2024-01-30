@@ -3,24 +3,15 @@ import type { EditorView } from '@codemirror/view';
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-const getLineAboveCursor = (editor: EditorView) => {
+export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): string => {
   const curPos = editor.state.selection.main.head;
-  const aboveLine = editor.state.doc.lineAt(curPos).number - 1;
-  return editor.state.doc.line(aboveLine).from;
-};
+  const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
 
-const getStrFromAboveLine = (editor: EditorView) => {
-  const curPos = editor.state.selection.main.head;
-  return editor.state.sliceDoc(getLineAboveCursor(editor), curPos);
-};
+  const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 0);
 
-export const getCurrentLine = (editor: EditorView): string => {
-  const curPos = editor.state.selection.main.head;
-  const curLineNum = editor.state.doc.lineAt(curPos).number;
+  const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
 
-  const curLine = editor.state.doc.line(curLineNum).from;
-
-  return editor.state.sliceDoc(curLine, curPos);
+  return editor.state.sliceDoc(firstLineToGet, curPos);
 };
 
 const insertText = (editor: EditorView, text: string) => {
@@ -36,9 +27,9 @@ const insertText = (editor: EditorView, text: string) => {
 };
 
 export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
-  const strFromBol = getStrFromAboveLine(editor);
+  const getStrFromAboveLine = getLineToCursor(editor, 1);
 
-  const matchResult = strFromBol.match(indentAndMarkRE);
+  const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
 
   if (matchResult != null) {
     const indentAndMark = matchResult[0];
