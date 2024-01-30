@@ -1,7 +1,7 @@
 import React, { FC, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 import { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
@@ -17,8 +17,6 @@ const PAGING_LIMIT = 10;
 const TAG_CLOUD_LIMIT = 20;
 
 const Tag: FC = () => {
-
-  const router = useRouter();
 
   const [activePage, setActivePage] = useState<number>(1);
   const [offset, setOffset] = useState<number>(0);
@@ -70,13 +68,14 @@ const Tag: FC = () => {
       }
 
       <div className="d-flex justify-content-center my-5">
-        <button
+        <Link
+          href="/tags"
           className="btn btn-primary rounded px-4"
-          type="button"
-          onClick={() => router.push('/tags')}
+          role="button"
+          prefetch={false}
         >
           {t('Check All tags')}
-        </button>
+        </Link>
       </div>
 
       <h3 className="my-3">{t('popular_tags')}</h3>
