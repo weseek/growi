@@ -34,7 +34,7 @@ export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
         {label}
         {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
         { count != null
-          ? <CountBadge count={count} offset={0} />
+          ? <CountBadge count={count} />
           : <div className="px-2"></div>}
       </span>
     </button>
