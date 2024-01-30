@@ -454,24 +454,21 @@ class ExportService {
         try {
           const revision = page.revision;
 
-          let markdownBody = 'This page does not have any content.';
           if (revision != null && isPopulated(revision)) {
-            markdownBody = revision.body;
+            const markdownBody = revision.body;
+            // write to zip
+            const pathNormalized = normalizePath(page.path);
+            archive.append(markdownBody, { name: `${pathNormalized}.md` });
           }
-
-          // write to zip
-          const pathNormalized = normalizePath(page.path);
-          archive.append(markdownBody, { name: `${pathNormalized}.md` });
         }
         catch (err) {
-          logger.error('Error occurred while converting data to readable: ', err);
+          logger.error(err);
           throw Error('だめ');
         }
 
         callback();
       },
       final(callback) {
-        // TODO: multi-part upload instead of calling finalize() 78070
         archive.finalize();
         callback();
       },

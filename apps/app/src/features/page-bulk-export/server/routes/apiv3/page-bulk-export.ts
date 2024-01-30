@@ -1,12 +1,14 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { Router, Request } from 'express';
-import { param, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 import Crowi from '~/server/crowi';
 import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
-const logger = loggerFactory('growi:routes:apiv3:external-user-group');
+import { pageBulkExportService } from '../../service/page-bulk-export';
+
+const logger = loggerFactory('growi:routes:apiv3:page-bulk-export');
 
 const router = Router();
 
@@ -19,8 +21,8 @@ module.exports = (crowi: Crowi): Router => {
 
   const validators = {
     pageBulkExport: [
-      param('path').exists({ checkFalsy: true }).isString(),
-      param('format').exists({ checkFalsy: true }).isString(),
+      body('path').exists({ checkFalsy: true }).isString(),
+      body('format').exists({ checkFalsy: true }).isString(),
     ],
   };
 
@@ -30,17 +32,16 @@ module.exports = (crowi: Crowi): Router => {
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { path, format } = req.params;
+    const { path, format } = req.body;
 
     try {
-      await crowi.exportService?.bulkExportWithBasePagePath(path);
+      await pageBulkExportService?.bulkExportWithBasePagePath(path);
 
-      return res.apiv3(204);
+      return res.apiv3({}, 204);
     }
     catch (err) {
-      const msg = 'Error occurred in fetching external user group list';
-      logger.error('Error', err);
-      return res.apiv3Err(new ErrorV3(msg));
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Error occurred in exporting page tree'));
     }
   });
 
