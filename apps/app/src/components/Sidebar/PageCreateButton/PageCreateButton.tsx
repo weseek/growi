@@ -62,6 +62,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const onMouseLeaveHandler = () => {
     setIsHovered(false);
+    setDropdownOpen(false);
   };
 
   const toggle = () => setDropdownOpen(!dropdownOpen);
@@ -79,24 +80,26 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           disabled={isNewPageCreating || isTodaysPageCreating || isTemplatePageCreating}
         />
       </div>
-      <Dropdown
-        isOpen={dropdownOpen}
-        toggle={toggle}
-        direction='end'
-        className="position-absolute"
-      >
-        <DropendToggle
-          className="dropdown-toggle dropdown-toggle-split"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        />
-        <DropendMenu
-          onClickCreateNewPageButtonHandler={onClickNewButton}
-          onClickCreateTodaysButtonHandler={onClickTodaysButton}
-          onClickTemplateButtonHandler={onClickTemplateButtonHandler}
-          todaysPath={todaysPath}
-        />
-      </Dropdown>
+      { isHovered && (
+        <Dropdown
+          isOpen={dropdownOpen}
+          toggle={toggle}
+          direction='end'
+          className="position-absolute"
+        >
+          <DropendToggle
+            className="dropdown-toggle dropdown-toggle-split"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          />
+          <DropendMenu
+            onClickCreateNewPageButtonHandler={onClickNewButton}
+            onClickCreateTodaysButtonHandler={onClickTodaysButton}
+            onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+            todaysPath={todaysPath}
+          />
+        </Dropdown>
+      )}
     </div>
   );
 });
