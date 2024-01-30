@@ -68,28 +68,26 @@ context('Comment', () => {
     cy.get('.cm-content').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
-    // TODO : https://redmine.weseek.co.jp/issues/139431
     // Check update comment count
-    // commentCount += 1
-    // cy.getByTestid('page-comment-button').contains(commentCount);
-    // cy.screenshot(`${ssPrefix}2-reply-comments`);
+    commentCount += 1
+    cy.getByTestid('page-comment-button').contains(commentCount);
+    cy.screenshot(`${ssPrefix}2-reply-comments`);
   });
 
-  // TODO:https://redmine.weseek.co.jp/issues/139467
-  // it('Successfully delete comments', () => {
+  it('Successfully delete comments', () => {
 
-  //   cy.getByTestid('page-comment-button').click();
+    cy.getByTestid('page-comment-button').click();
 
-  //   cy.get('.page-comments').should('be.visible');
-  //   cy.getByTestid('comment-delete-button').eq(0).click({force: true});
-  //   cy.get('.modal-content').then($elem => $elem.is(':visible'));
-  //   cy.get('.modal-footer > button:nth-child(3)').click();
+    cy.get('.page-comments').should('be.visible');
+    cy.getByTestid('comment-delete-button').eq(0).click({force: true});
+    cy.get('.modal-content').then($elem => $elem.is(':visible'));
+    cy.get('.modal-footer > button:nth-child(3)').click();
 
-  //   // Check update comment count
-  //   commentCount -= 2
-  //   cy.getByTestid('page-comment-button').contains(commentCount);
-  //   cy.screenshot(`${ssPrefix}3-delete-comments`);
-  // });
+    // Check update comment count
+    commentCount -= 2
+    cy.getByTestid('page-comment-button').contains(commentCount);
+    cy.screenshot(`${ssPrefix}3-delete-comments`);
+  });
 
 
   // TODO: https://redmine.weseek.co.jp/issues/139520
