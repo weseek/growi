@@ -1,4 +1,5 @@
 @import '../mixins/button-outline-variant';
+@import '../mixins/button-outline-neutral-variant';
 
 :root[data-bs-theme='light'] {
   @each $color, $value in $theme-colors {
@@ -17,5 +18,18 @@
         @include button-outline-variant-dark($value);
       }
     }
+  }
+}
+
+// == .btn-outline-neutral-secondary
+:root[data-bs-theme='light'] {
+  .btn-outline-neutral-secondary {
+    @include button-outline-neutral-variant-light($secondary);
+  }
+}
+
+:root[data-bs-theme='dark'] {
+  .btn-outline-neutral-secondary {
+    @include button-outline-neutral-variant-dark($secondary);
   }
 }
