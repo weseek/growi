@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
 
-import { Dropdown, DropdownToggle } from 'reactstrap';
+import { DropdownToggle } from 'reactstrap';
 
 import { Hexagon } from './Hexagon';
 
@@ -22,16 +22,5 @@ export const DropendToggle = (props: Props): JSX.Element => {
       <div className="hitarea position-absolute" />
       <span className="icon material-symbols-outlined position-absolute">chevron_right</span>
     </DropdownToggle>
-    // <DropdownToggle>
-    //   <button
-    //     type="button"
-    //     {...props}
-    //     className={`${moduleClass} btn btn-primary ${props.className ?? ''}`}
-    //   >
-    //     <Hexagon />
-    //     <div className="hitarea position-absolute" />
-    //     <span className="icon material-symbols-outlined position-absolute">chevron_right</span>
-    //   </button>
-    // </DropdownToggle>
   );
 };

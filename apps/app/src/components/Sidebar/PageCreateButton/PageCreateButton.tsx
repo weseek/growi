@@ -97,19 +97,6 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           todaysPath={todaysPath}
         />
       </Dropdown>
-      {/* <div className="btn-group dropend position-absolute">
-        <DropendToggle
-          className="dropdown-toggle dropdown-toggle-split"
-          data-bs-toggle="dropdown"
-          aria-expanded="false"
-        />
-        <DropendMenu
-          onClickCreateNewPageButtonHandler={onClickNewButton}
-          onClickCreateTodaysButtonHandler={onClickTodaysButton}
-          onClickTemplateButtonHandler={onClickTemplateButtonHandler}
-          todaysPath={todaysPath}
-        />
-      </div> */}
     </div>
   );
 });
