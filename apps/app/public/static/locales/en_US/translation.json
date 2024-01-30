@@ -144,6 +144,7 @@
   "wide_view": "Wide View",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
+  "In-App Notification": "Notifications",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"Duplicated path",
@@ -818,5 +819,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "The attachment could not be found"
+  },
+  "page_select_modal": {
+    "select_page_location": "Select page location"
   }
 }

@@ -24,6 +24,7 @@ describe('PassportService test', () => {
     let i = 0;
     describe.each`
       conditionId | departments   | positions     | ruleStr                                                         | expected
+      ${i++}      | ${undefined}  | ${undefined}  | ${' '}                                                          | ${true}
       ${i++}      | ${undefined}  | ${undefined}  | ${'Department: A'}                                              | ${false}
       ${i++}      | ${[]}         | ${['Leader']} | ${'Position'}                                                   | ${true}
       ${i++}      | ${[]}         | ${['Leader']} | ${'Position: Leader'}                                           | ${true}

@@ -145,6 +145,7 @@
   "wide_view": "ワイドビュー",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
+  "In-App Notification": "通知",
   "original_path":"元のパス",
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
@@ -851,5 +852,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
+  },
+  "page_select_modal": {
+    "select_page_location": "ページの場所を選択"
   }
 }

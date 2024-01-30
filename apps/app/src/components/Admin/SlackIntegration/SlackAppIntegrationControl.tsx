@@ -46,7 +46,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
           }
         }}
       >
-        <i className="icon-trash me-1" />
+        <span className="material-symbols-outlined">delete</span>
         {t('admin:slack_integration.delete')}
       </button>
     </div>

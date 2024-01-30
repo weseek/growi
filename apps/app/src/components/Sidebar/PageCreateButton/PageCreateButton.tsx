@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
+import type { IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -8,28 +9,43 @@ import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-bu
 import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
+import { Dropdown } from 'reactstrap';
+
+const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
+  const now = format(new Date(), 'yyyy/MM/dd');
+  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
+  return `${userHomepagePath}/${parentDirName}/${now}`;
+};
+
 export const PageCreateButton = React.memo((): JSX.Element => {
   const { t } = useTranslation('commons');
 
+  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
 
   const [isHovered, setIsHovered] = useState(false);
 
-  const now = format(new Date(), 'yyyy/MM/dd');
-  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-  const todaysPath = `${userHomepagePath}/${t('create_page_dropdown.todays.memo')}/${now}`;
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(isLoading, currentPage);
-  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath, currentUser);
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPage?.path);
+  const todaysPath = currentUser == null
+    ? null
+    : generateTodaysPath(currentUser, t('create_page_dropdown.todays.memo'));
+
+  const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(
+    currentPage?.path, currentPage?.grant, currentPage?.grantedGroups, isLoading,
+  );
+  // TODO: https://redmine.weseek.co.jp/issues/138806
+  const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
+  // TODO: https://redmine.weseek.co.jp/issues/138805
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoadingPagePath);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
@@ -46,7 +62,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const onMouseLeaveHandler = () => {
     setIsHovered(false);
+    setDropdownOpen(false);
   };
+
+  const toggle = () => setDropdownOpen(!dropdownOpen);
 
   return (
     <div
@@ -62,19 +81,24 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         />
       </div>
       { isHovered && (
-        <div className="btn-group dropend position-absolute">
+        <Dropdown
+          isOpen={dropdownOpen}
+          toggle={toggle}
+          direction="end"
+          className="position-absolute"
+        >
           <DropendToggle
             className="dropdown-toggle dropdown-toggle-split"
             data-bs-toggle="dropdown"
             aria-expanded="false"
           />
           <DropendMenu
-            todaysPath={todaysPath}
             onClickCreateNewPageButtonHandler={onClickNewButton}
             onClickCreateTodaysButtonHandler={onClickTodaysButton}
             onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+            todaysPath={todaysPath}
           />
-        </div>
+        </Dropdown>
       )}
     </div>
   );

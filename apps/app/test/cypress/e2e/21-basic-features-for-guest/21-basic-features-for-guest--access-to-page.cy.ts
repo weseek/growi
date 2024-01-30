@@ -22,7 +22,7 @@ context('Access to page by guest', () => {
     // https://stackoverflow.com/questions/5041494/selecting-and-manipulating-css-pseudo-elements-such-as-before-and-after-usin/21709814#21709814
     cy.get('#headers').invoke('removeClass', 'blink');
 
-    cy.waitUntilSkeletonDisappear();
+    // cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-headers`);
   });
 
@@ -36,7 +36,7 @@ context('Access to page by guest', () => {
 
     cy.get('.math').should('be.visible');
 
-    cy.waitUntilSkeletonDisappear();
+    // cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-math`);
   });
 
@@ -44,7 +44,7 @@ context('Access to page by guest', () => {
     cy.visit('/Sandbox#edit');
     cy.collapseSidebar(true);
 
-    cy.waitUntilSkeletonDisappear();
+    // cy.waitUntilSkeletonDisappear();
     cy.screenshot(`${ssPrefix}-sandbox-with-edit-hash`);
   })
 

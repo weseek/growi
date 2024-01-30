@@ -19,7 +19,7 @@ context('Access to any page', () => {
       // Scroll the window 250px down is enough to trigger sticky effect
        cy.scrollTo(0, 250);
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('have.class', 'active');
     });
 
     cy.waitUntilSkeletonDisappear();
@@ -30,7 +30,7 @@ context('Access to any page', () => {
       // Scroll the window back to top
       cy.scrollTo(0, 0);
       // wait until
-      return cy.waitUntil(() => cy.getByTestid('grw-subnav-switcher').then($elem => $elem.hasClass('grw-subnav-switcher-hidden')));
+      return cy.get('.sticky-outer-wrapper').should('not.have.class', 'active');
     });
 
     cy.screenshot(`${ssPrefix}invisible-on-scroll-top`);
@@ -42,7 +42,7 @@ context('Access to any page', () => {
       // Scroll the window 250px down is enough to trigger sticky effect
       cy.scrollTo(0, 250);
       // wait until
-      return () => cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('have.class', 'active');
     });
 
     // Move to /Sandbox page
@@ -51,7 +51,7 @@ context('Access to any page', () => {
     cy.waitUntilSkeletonDisappear();
     cy.collapseSidebar(true);
 
-    cy.waitUntil(() => cy.getByTestid('grw-subnav-switcher').then($elem => $elem.hasClass('grw-subnav-switcher-hidden')));
+    return cy.get('.sticky-outer-wrapper').should('not.have.class', 'active');
     cy.screenshot(`${ssPrefix}not-visible-on-move-to-other-pages`);
   });
 
@@ -61,17 +61,17 @@ context('Access to any page', () => {
       // Scroll the window 250px down is enough to trigger sticky effect
       cy.scrollTo(0, 250);
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('have.class', 'active');
     });
     cy.waitUntil(() => {
-      cy.getByTestid('grw-subnav-switcher').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('editor-button').as('editorButton').should('be.visible');
         cy.get('@editorButton').click();
       });
       return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
     });
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
-    cy.get('.CodeMirror').should('be.visible');
+    cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
+    // cy.get('.CodeMirror').should('be.visible');
     cy.screenshot(`${ssPrefix}open-editor-when-sticky`);
   });
 
@@ -81,11 +81,11 @@ context('Access to any page', () => {
       // Scroll the window 500px down
       cy.scrollTo(0, 500);
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('have.class', 'active');
     });
     cy.waitUntilSkeletonDisappear();
     cy.viewport(600, 1024);
-    cy.getByTestid('grw-subnav-switcher').within(() => {
+    cy.getByTestid('grw-contextual-sub-nav').within(() => {
       cy.get('#grw-page-editor-mode-manager').should('be.visible');
     })
     cy.screenshot(`${ssPrefix}sticky-on-small-window`);

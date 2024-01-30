@@ -199,6 +199,8 @@ class MailService implements S2sMessageHandlable {
     const templateVars = config.vars || {};
     const output = await renderFilePromisified(
       config.template,
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       templateVars,
     );
 

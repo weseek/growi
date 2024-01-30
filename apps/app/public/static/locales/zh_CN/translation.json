@@ -150,6 +150,7 @@
   "wide_view": "视野开阔",
   "Recent Changes": "最新修改",
   "Page Tree": "页面树",
+  "In-App Notification": "通知",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"Duplicated path",
@@ -821,5 +822,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "没有找到附件"
+  },
+  "page_select_modal": {
+    "select_page_location": "选择页面位置"
   }
 }
