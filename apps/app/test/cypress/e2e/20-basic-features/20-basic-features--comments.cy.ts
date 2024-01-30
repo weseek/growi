@@ -43,10 +43,6 @@ context('Comment', () => {
       return cy.get('.comment-write').then($elem => $elem.is(':visible'));
     });
 
-    // // Open comment editor
-    // cy.getByTestid('open-comment-editor-button').click();
-    // cy.get('.comment-write').then($elem => $elem.is(':visible'));
-
     cy.get('.cm-content').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
@@ -60,10 +56,6 @@ context('Comment', () => {
     const commetText = 'reply comment';
 
     cy.getByTestid('page-comment-button').click();
-
-    // // Open reply comment editor
-    // cy.getByTestid('comment-reply-button').eq(0).click();
-    // cy.get('.comment-write').then($elem => $elem.is(':visible'));
 
     // Open reply comment editor
     cy.waitUntil(() => {
