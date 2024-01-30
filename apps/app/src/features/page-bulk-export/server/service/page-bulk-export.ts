@@ -10,7 +10,7 @@ import { PageModel, PageDocument } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
 
-const logger = loggerFactory('growi:services:PageBulkExportService'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:services:PageBulkExportService');
 
 const streamToPromise = require('stream-to-promise');
 

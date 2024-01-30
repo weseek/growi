@@ -16,7 +16,7 @@ import GrowiBridgeService from './growi-bridge';
 import { ZipFileStat } from './interfaces/export';
 
 
-const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:services:ExportService');
 
 const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
