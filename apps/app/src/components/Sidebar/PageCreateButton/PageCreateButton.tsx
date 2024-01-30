@@ -4,6 +4,7 @@ import type { IUserHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
+import { Dropdown } from 'reactstrap';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
@@ -16,7 +17,6 @@ import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useOnNewButtonClicked, useOnTodaysButtonClicked } from './hooks';
 
-import { Dropdown } from 'reactstrap';
 
 const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
   const now = format(new Date(), 'yyyy/MM/dd');
@@ -87,11 +87,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           direction="end"
           className="position-absolute"
         >
-          <DropendToggle
-            className="dropdown-toggle dropdown-toggle-split"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          />
+          <DropendToggle />
           <DropendMenu
             onClickCreateNewPageButtonHandler={onClickNewButton}
             onClickCreateTodaysButtonHandler={onClickTodaysButton}

@@ -8,15 +8,12 @@ import styles from './DropendToggle.module.scss';
 const moduleClass = styles['btn-toggle'];
 
 
-type Props = {
-  className?: string
-}
-
-export const DropendToggle = (props: Props): JSX.Element => {
-
+export const DropendToggle = (): JSX.Element => {
   return (
     <DropdownToggle
-      className={`position-absolute ${moduleClass} btn btn-primary ${props.className ?? ''}`}
+      color="primary"
+      className={`position-absolute ${moduleClass}`}
+      aria-expanded={false}
     >
       <Hexagon />
       <div className="hitarea position-absolute" />
