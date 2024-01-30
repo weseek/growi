@@ -866,5 +866,8 @@
       "REMAND": "还押",
       "DELEGATE": "代表们"
     }
+  },
+  "page_select_modal": {
+    "select_page_location": "选择页面位置"
   }
 }

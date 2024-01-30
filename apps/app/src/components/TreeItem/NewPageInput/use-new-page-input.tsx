@@ -4,14 +4,14 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
-import type { SimpleItemContentProps } from '../interfaces';
+import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';
 
 type UseNewPageInput = {
-  Input: FC<SimpleItemContentProps>,
-  CreateButton: FC<SimpleItemContentProps>,
+  Input: FC<TreeItemToolProps>,
+  CreateButton: FC<TreeItemToolProps>,
   isProcessingSubmission: boolean,
 }
 
@@ -22,10 +22,10 @@ export const useNewPageInput = (): UseNewPageInput => {
 
   const { getDescCount } = usePageTreeDescCountMap();
 
-  const CreateButton: FC<SimpleItemContentProps> = (props) => {
+  const CreateButton: FC<TreeItemToolProps> = (props) => {
 
-    const { page, children, stateHandlers } = props;
-    const { setIsOpen } = stateHandlers;
+    const { itemNode, stateHandlers } = props;
+    const { page, children } = itemNode;
 
     // descendantCount
     const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
@@ -37,27 +37,24 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(true);
 
       if (hasDescendants) {
-        setIsOpen(true);
+        stateHandlers?.setIsOpen(true);
       }
-    }, [hasDescendants, setIsOpen]);
+    }, [hasDescendants, stateHandlers]);
 
     return (
       <NewPageCreateButton
-        page={props.page}
+        page={page}
         onClick={onClick}
       />
     );
   };
 
-  const Input: FC<SimpleItemContentProps> = (props) => {
+  const Input: FC<TreeItemToolProps> = (props) => {
 
-    const {
-      page, children, stateHandlers,
-    } = props;
+    const { itemNode, stateHandlers } = props;
+    const { page, children } = itemNode;
 
-    const { isOpen, setIsOpen } = stateHandlers;
-
-    const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+    const { mutate: mutateChildren } = useSWRxPageChildren(stateHandlers?.isOpen ? page._id : null);
 
     const { getDescCount } = usePageTreeDescCountMap();
     const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
@@ -81,9 +78,9 @@ export const useNewPageInput = (): UseNewPageInput => {
       mutateChildren();
 
       if (!hasDescendants) {
-        setIsOpen(true);
+        stateHandlers?.setIsOpen(true);
       }
-    }, [hasDescendants, mutateChildren, page.grant, page.grantedGroups, setIsOpen]);
+    }, [hasDescendants, mutateChildren, page.grant, page.grantedGroups, stateHandlers]);
 
     const submittionFailedHandler = useCallback(() => {
       setProcessingSubmission(false);
@@ -92,7 +89,7 @@ export const useNewPageInput = (): UseNewPageInput => {
     return showInput
       ? (
         <NewPageInput
-          page={props.page}
+          page={page}
           isEnableActions={props.isEnableActions}
           onSubmit={submitHandler}
           onSubmittionFailed={submittionFailedHandler}

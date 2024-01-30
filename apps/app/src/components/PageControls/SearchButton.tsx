@@ -19,6 +19,7 @@ const SearchButton = (): JSX.Element => {
       type="button"
       className={`me-3 btn btn-search ${styles['btn-search']}`}
       onClick={searchButtonClickHandler}
+      data-testid="open-search-modal-button"
     >
       <span className="material-symbols-outlined">search</span>
     </button>

@@ -863,5 +863,8 @@
       "REMAND": "Remand",
       "DELEGATE": "Delegate"
     }
+  },
+  "page_select_modal": {
+    "select_page_location": "Select page location"
   }
 }

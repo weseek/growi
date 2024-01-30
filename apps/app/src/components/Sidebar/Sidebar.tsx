@@ -143,15 +143,19 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
 
 });
 
+// for data-* attributes
+type HTMLElementProps = JSX.IntrinsicElements &
+  Record<keyof JSX.IntrinsicElements, { [p: `data-${string}`]: string | number }>;
 
 type DrawableContainerProps = {
+  divProps?: HTMLElementProps['div'],
   className?: string,
   children?: React.ReactNode,
 }
 
 const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
-  const { className, children } = props;
+  const { divProps, className, children } = props;
 
   const { data: isDrawerOpened, mutate } = useDrawerOpened();
 
@@ -159,7 +163,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   return (
     <>
-      <div className={`${className} ${openClass}`}>
+      <div {...divProps} className={`${className} ${openClass}`}>
         {children}
       </div>
       { isDrawerOpened && (
@@ -201,7 +205,7 @@ export const Sidebar = (): JSX.Element => {
         </DrawerToggler>
       ) }
       { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
-      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} data-testid="grw-sidebar">
+      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
