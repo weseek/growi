@@ -14,7 +14,7 @@ export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): st
   const curPos = editor.state.selection.main.head;
   const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
 
-  const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 0);
+  const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 1);
 
   const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
 
@@ -36,6 +36,9 @@ export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): Ne
     if (matchResult != null) {
       const indentAndMark = matchResult[0];
       insertText(indentAndMark, lineStartPos, curPos);
+    }
+    else {
+      insertText('', lineStartPos, curPos);
     }
   }, [insertText]);
 
