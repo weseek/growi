@@ -18,6 +18,7 @@ export const PresetThemes = {
   NATURE: 'nature',
   SPRING: 'spring',
   WOOD: 'wood',
+  CLASSIC: 'classic',
 } as const;
 export type PresetThemes = typeof PresetThemes[keyof typeof PresetThemes];
 
@@ -45,6 +46,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     name: PresetThemes.FIRE_RED,      schemeType: BOTH, bg: '#FDFDFD', topbar: '#2c2c2c', sidebar: '#BFBFBF', accent: '#EA5532',
   }, {
     name: PresetThemes.JADE_GREEN,    schemeType: BOTH, bg: '#FDFDFD', topbar: '#2c2c2c', sidebar: '#BFBFBF', accent: '#38B48B',
+  }, {
+    name: PresetThemes.CLASSIC,    schemeType: BOTH, bg: '#FDFDFD', topbar: '#E1E9F4', sidebar: '#E1E9F4', accent: '#439FD8',
   },
   // light only
   {
