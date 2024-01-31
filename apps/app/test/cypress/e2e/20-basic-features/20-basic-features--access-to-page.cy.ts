@@ -90,7 +90,7 @@ context('Access to page', () => {
     openEditor();
 
     // check edited contents after save
-    cy.get('.cm-content').type(body1, { force: true });
+    cy.get('.cm-content').should('be.visible').type(body1, { force: true });
     // cy.appendTextToEditorUntilContains(body1);
 
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1);
@@ -109,11 +109,11 @@ context('Access to page', () => {
     openEditor();
 
     // check editing contents with shortcut key
-     cy.get('.cm-content').type(body2, { force: true });
+    cy.get('.cm-content').should('be.visible').type(body2, { force: true });
     // cy.appendTextToEditorUntilContains(body2);
 
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
-    cy.get('[role="textbox"]').click().type(savePageShortcutKey);
+    cy.get('.cm-content').click().type(savePageShortcutKey);
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
     cy.screenshot(`${ssPrefix}-edit-and-save-with-shortcut-key`);
   })
