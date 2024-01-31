@@ -21,7 +21,7 @@ export const useInsertText = (view?: EditorView): InsertText => {
         to: toPos,
         insert: text,
       },
-      // selection: { anchor: fromPos },
+      selection: { anchor: insertPos },
     });
   }, [view]);
 
