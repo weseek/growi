@@ -23,6 +23,7 @@ import {
 
 import { Ellipsis } from './Ellipsis';
 
+import styles from './PageTreeItem.module.scss';
 
 const logger = loggerFactory('growi:cli:Item');
 
@@ -165,7 +166,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const itemRef = (c) => { drag(c); drop(c) };
 
-  const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
+  const mainClassName = `pagetree-item ${styles['pagetree-item']} ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
