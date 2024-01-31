@@ -58,15 +58,13 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const newlineAndIndentContinueMarkdownList = useNewlineAndIndentContinueMarkdownList(editor);
 
   useEffect(() => {
-
     const handleEnterKey = (event: KeyboardEvent) => {
       if (event.key === 'Enter') {
         event.preventDefault();
-        const editor = codeMirrorEditor?.view;
         if (editor == null) {
           return;
         }
-        newlineAndIndentContinueMarkdownList();
+        newlineAndIndentContinueMarkdownList?.(editor);
       }
     };
 
@@ -75,7 +73,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return () => {
       editor?.dom.removeEventListener('keydown', handleEnterKey);
     };
-  }, [codeMirrorEditor]);
+  }, [codeMirrorEditor, editor, newlineAndIndentContinueMarkdownList]);
 
   useEffect(() => {
     if (indentSize == null) {
