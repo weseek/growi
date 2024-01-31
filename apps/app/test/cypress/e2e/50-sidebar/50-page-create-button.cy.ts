@@ -36,6 +36,11 @@ describe('Access to PageCreateButton', () => {
           cy.getByTestid('grw-sidebar-nav-page-create-button').trigger('mouseover', {force: true});
           cy.getByTestid('grw-sidebar-nav-dropend-toggle').click({force: true});
           cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').click({force: true});
+
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+
+          cy.screenshot(`${ssPrefix}create-untitled-page`, { capture: 'fullPage' });
         });
         // it("Successfully create today's memo", () => {});
         // it('Successfully create children template', () => {});
