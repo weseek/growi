@@ -90,9 +90,9 @@ context('Access to page', () => {
     openEditor();
 
     // check edited contents after save
-    // eslint-disable-next-line cypress/no-unnecessary-waiting
-    cy.wait(500);
+    // cy.get('.cm-content').type(body1, { force: true });
     cy.appendTextToEditorUntilContains(body1);
+
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1);
     cy.getByTestid('page-editor').should('be.visible');
     cy.getByTestid('save-page-btn').click();
@@ -109,9 +109,9 @@ context('Access to page', () => {
     openEditor();
 
     // check editing contents with shortcut key
-        // eslint-disable-next-line cypress/no-unnecessary-waiting
-        cy.wait(500);
+    //  cy.get('.cm-content').type(body1, { force: true });
     cy.appendTextToEditorUntilContains(body2);
+
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
     cy.get('[role="textbox"]').click().type(savePageShortcutKey);
     cy.getByTestid('page-editor-preview-body').should('contain.text', body1+body2);
