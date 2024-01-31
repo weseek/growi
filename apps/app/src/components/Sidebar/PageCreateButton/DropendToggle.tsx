@@ -1,5 +1,3 @@
-import type { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
-
 import { DropdownToggle } from 'reactstrap';
 
 import { Hexagon } from './Hexagon';
@@ -10,7 +8,9 @@ import styles from './DropendToggle.module.scss';
 const moduleClass = styles['btn-toggle'];
 
 
-type Props = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>;
+type Props = {
+  className?: string
+}
 
 export const DropendToggle = (props: Props): JSX.Element => {
 
