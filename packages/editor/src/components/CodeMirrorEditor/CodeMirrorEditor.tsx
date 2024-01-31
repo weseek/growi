@@ -10,7 +10,8 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
 import {
-  getStrFromBol, adjustPasteData,
+  getLineToCursor, adjustPasteData,
+  newlineAndIndentContinueMarkdownList,
 } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
@@ -56,6 +57,27 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
   useEffect(() => {
+    const editor = codeMirrorEditor?.view;
+
+    const handleEnterKey = (event: KeyboardEvent) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        const editor = codeMirrorEditor?.view;
+        if (editor == null) {
+          return;
+        }
+        newlineAndIndentContinueMarkdownList(editor);
+      }
+    };
+
+    editor?.dom.addEventListener('keydown', handleEnterKey);
+
+    return () => {
+      editor?.dom.removeEventListener('keydown', handleEnterKey);
+    };
+  }, [codeMirrorEditor]);
+
+  useEffect(() => {
     if (indentSize == null) {
       return;
     }
@@ -88,7 +110,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
         const textData = event.clipboardData.getData('text/plain');
 
-        const strFromBol = getStrFromBol(editor);
+        const strFromBol = getLineToCursor(editor);
 
         const adjusted = adjustPasteData(strFromBol, textData);
 

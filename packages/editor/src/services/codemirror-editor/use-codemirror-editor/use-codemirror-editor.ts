@@ -1,10 +1,14 @@
 import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
-import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import {
+  markdown, markdownLanguage,
+} from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
-import { EditorState, Prec, type Extension } from '@codemirror/state';
+import {
+  EditorState, Prec, type Extension,
+} from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
