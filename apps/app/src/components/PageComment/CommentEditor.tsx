@@ -2,7 +2,9 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
-import { useResolvedThemeForEditor } from '@growi/editor';
+import {
+  CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
+} from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -79,7 +81,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
-
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme(resolvedTheme);
 
@@ -143,6 +145,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     if (editingCommentsNum != null && editingCommentsNum === 0) {
       mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
     }
+
   }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
@@ -186,15 +189,17 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       if (onCommentButtonClicked != null) {
         onCommentButtonClicked();
       }
+
+      // Insert empty string as new comment editor is opened after comment
+      codeMirrorEditor?.initDoc('');
     }
     catch (err) {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
   }, [
-    comment, currentCommentId, initializeEditor,
-    isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
-    postComment, revisionId, updateComment,
+    currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor,
+    updateComment, comment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment,
   ]);
 
   const ctrlEnterHandler = useCallback((event) => {
@@ -267,14 +272,32 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
-  const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  //   setComment(newValue);
+  //   if (!isClean && !incremented) {
+  //     incrementEditingCommentsNum();
+  //     setIncremented(true);
+  //   }
+  //   mutateIsEnabledUnsavedWarning(!isClean);
+  // }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+
+  const onChangeHandler = useCallback((newValue: string) => {
     setComment(newValue);
-    if (!isClean && !incremented) {
+
+    if (!incremented) {
       incrementEditingCommentsNum();
       setIncremented(true);
     }
-    mutateIsEnabledUnsavedWarning(!isClean);
-  }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+  }, [incrementEditingCommentsNum, incremented]);
+
+  // initialize CodeMirrorEditor
+  useEffect(() => {
+    if (commentBody == null) {
+      return;
+    }
+    codeMirrorEditor?.initDoc(commentBody);
+  }, [codeMirrorEditor, commentBody]);
+
 
   const renderReady = () => {
     const commentPreview = getCommentHtml();
@@ -311,7 +334,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <Editor
+              <CodeMirrorEditorComment
+                onChange={onChangeHandler}
+              />
+              {/* <Editor
                 ref={editorRef}
                 value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
@@ -320,7 +346,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473

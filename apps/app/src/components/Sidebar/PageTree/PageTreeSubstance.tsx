@@ -45,8 +45,6 @@ const PageTreeUnavailable = () => {
 };
 
 export const PageTreeContent = memo(() => {
-  const { t } = useTranslation();
-
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
