@@ -16,8 +16,7 @@ export const DropendToggle = (props: Props): JSX.Element => {
 
   return (
     <DropdownToggle
-      className={`position-absolute ${moduleClass} btn btn-primary ${props.className ?? ''}`}
-      data-testid="grw-sidebar-nav-dropend-toggle"
+      className={`position-absolute ${moduleClass} btn btn-primary z-1 ${props.className ?? ''}`}
     >
       <Hexagon />
       <div className="hitarea position-absolute" />
