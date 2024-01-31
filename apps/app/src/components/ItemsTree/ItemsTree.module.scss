@@ -68,10 +68,6 @@ $grw-pagetree-item-container-height: 40px;
         min-width: 35px;
         height: $grw-pagetree-item-container-height;
       }
-
-      .grw-pagetree-current-page-item {
-        background-color: var(--grw-primary-100);
-      }
     }
   }
   &:global{
