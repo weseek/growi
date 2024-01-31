@@ -27,7 +27,7 @@ export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): Ne
   const NewlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
 
     const curPos = view?.state.selection.main.head;
-    const line = view?.state.doc.lineAt(curPos).from;
+    const lineStartPos = view?.state.doc.lineAt(curPos).from;
 
     const getStrFromAboveLine = getLineToCursor(view, 1);
 
@@ -35,8 +35,7 @@ export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): Ne
 
     if (matchResult != null) {
       const indentAndMark = matchResult[0];
-      insertText(indentAndMark, line, curPos);
-      // insertText(editor, indentAndMark);
+      insertText(indentAndMark, lineStartPos, curPos);
     }
   }, [insertText]);
 
