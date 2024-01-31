@@ -1,7 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-// TODO: relocate following styles into PageTreeItem.mdoule.scss after refactoring
-// https://redmine.weseek.co.jp/issues/127544
 @include bs.color-mode(light) {
   .pagetree-item :global {
     .list-group-item-action {
