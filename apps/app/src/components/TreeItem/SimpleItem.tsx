@@ -208,8 +208,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           )}
         </div>
 
-        {!hasDescendants && <span className="d-flex justify-content-center ms-5" />}
-
         <SimpleItemContent page={page} />
 
         {EndComponents.map((EndComponent, index) => (
