@@ -2,6 +2,7 @@ import { PageGrant, GroupType } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { Comment } from '~/features/comment/server/models/comment';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
