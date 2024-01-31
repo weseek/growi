@@ -2,9 +2,10 @@ import fs from 'fs';
 import path from 'path';
 import { Writable } from 'stream';
 
-import { isPopulated } from '@growi/core';
+import { type IPage, isPopulated } from '@growi/core';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import archiver, { Archiver } from 'archiver';
+import mongoose from 'mongoose';
 
 import { PageModel, PageDocument } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
@@ -23,7 +24,7 @@ class PageBulkExportService {
   }
 
   getPageReadableStream(basePagePath: string) {
-    const Page = this.crowi.model('Page') as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find())
