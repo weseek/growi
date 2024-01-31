@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { Readable, Transform } from 'stream';
 
+import archiver from 'archiver';
+
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -14,9 +16,8 @@ import GrowiBridgeService from './growi-bridge';
 import { ZipFileStat } from './interfaces/export';
 
 
-const logger = loggerFactory('growi:services:ExportService'); // eslint-disable-line no-unused-vars
+const logger = loggerFactory('growi:services:ExportService');
 
-const archiver = require('archiver');
 const mongoose = require('mongoose');
 const streamToPromise = require('stream-to-promise');
 

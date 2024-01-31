@@ -1,23 +1,33 @@
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { toastSuccess } from '~/client/util/toastr';
+import { apiv3Post } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess } from '~/client/util/toastr';
 import { usePageBulkExportSelectModal } from '~/features/page-bulk-export/client/stores/modal';
+import { PageBulkExportFormat } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import { useCurrentPagePath } from '~/stores/page';
 
 const PageBulkExportSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: status, close } = usePageBulkExportSelectModal();
+  const { data: currentPagePath } = useCurrentPagePath();
 
-  const startBulkExport = () => {
+  const startBulkExport = async(format: PageBulkExportFormat) => {
+    try {
+      await apiv3Post('/page-bulk-export', { path: currentPagePath, format });
+      toastSuccess(t('page_export.bulk_export_started'));
+    }
+    catch (e) {
+      toastError(t('page_export.failed_to_export'));
+    }
     close();
-    toastSuccess(t('page_export.bulk_export_started'));
   };
 
   return (
     <>
       {status != null && (
         <Modal isOpen={status.isOpened} toggle={close}>
-          <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+          <ModalHeader tag="h5" toggle={close} className="bg-primary text-light">
             {t('page_export.bulk_export')}
           </ModalHeader>
           <ModalBody>
@@ -28,8 +38,10 @@ const PageBulkExportSelectModal = (): JSX.Element => {
               </small>
             </div>
             <div className="d-flex justify-content-center mt-2">
-              <button className="btn btn-primary" type="button" onClick={startBulkExport}>{t('page_export.markdown')}</button>
-              <button className="btn btn-primary ml-2" type="button" onClick={startBulkExport}>PDF</button>
+              <button className="btn btn-primary" type="button" onClick={() => startBulkExport(PageBulkExportFormat.markdown)}>
+                {t('page_export.markdown')}
+              </button>
+              <button className="btn btn-primary ms-2" type="button" onClick={() => startBulkExport(PageBulkExportFormat.pdf)}>PDF</button>
             </div>
           </ModalBody>
         </Modal>

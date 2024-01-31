@@ -7,7 +7,7 @@ export const PageBulkExportFormat = {
   pdf: 'pdf',
 } as const;
 
-type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
+export type PageBulkExportFormat = typeof PageBulkExportFormat[keyof typeof PageBulkExportFormat]
 
 export interface IPageBulkExportJob {
   user: Ref<IUser>, // user that started export job

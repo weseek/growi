@@ -226,7 +226,7 @@ export class PageQueryBuilder {
   /**
    * generate the query to find the pages '{path}/*' (exclude '{path}' self).
    */
-  addConditionToListOnlyDescendants(path: string, option): PageQueryBuilder {
+  addConditionToListOnlyDescendants(path: string): PageQueryBuilder {
     // exclude the target page
     this.query = this.query.and({ path: { $ne: path } });
 

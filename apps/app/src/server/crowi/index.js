@@ -12,6 +12,7 @@ import pkg from '^/package.json';
 
 import { KeycloakUserGroupSyncService } from '~/features/external-user-group/server/service/keycloak-user-group-sync';
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
+import instanciatePageBulkExportService from '~/features/page-bulk-export/server/service/page-bulk-export';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
 import CdnResourcesService from '~/services/cdn-resources-service';
@@ -153,6 +154,7 @@ Crowi.prototype.init = async function() {
     this.setupUserGroupService(),
     this.setupExport(),
     this.setupImport(),
+    this.setupPageBulkExportService(),
     this.setupGrowiPluginService(),
     this.setupPageService(),
     this.setupInAppNotificationService(),
@@ -691,6 +693,10 @@ Crowi.prototype.setUpGrowiBridge = async function() {
 
 Crowi.prototype.setupExport = async function() {
   instanciateExportService(this);
+};
+
+Crowi.prototype.setupPageBulkExportService = async function() {
+  instanciatePageBulkExportService(this);
 };
 
 Crowi.prototype.setupImport = async function() {
