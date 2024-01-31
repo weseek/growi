@@ -1,20 +1,24 @@
 import { useCallback } from 'react';
 
-import { EditorView } from '@codemirror/view';
+import { type EditorView } from '@codemirror/view';
 
-export type InsertText = (text: string) => void;
+export type InsertText = (text: string, from?: number, to?: number) => void;
+
 
 export const useInsertText = (view?: EditorView): InsertText => {
-
-  return useCallback((text) => {
+  return useCallback((text, from?, to?) => {
     if (view == null) {
       return;
     }
     const insertPos = view.state.selection.main.head;
+
+    const fromPos = from ?? insertPos;
+    const toPos = to ?? insertPos;
+
     view.dispatch({
       changes: {
-        from: insertPos,
-        to: insertPos,
+        from: fromPos,
+        to: toPos,
         insert: text,
       },
       selection: { anchor: insertPos },

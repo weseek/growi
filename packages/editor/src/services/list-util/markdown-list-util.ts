@@ -1,4 +1,11 @@
-import type { EditorView } from '@codemirror/view';
+import { useCallback } from 'react';
+
+import { EditorView } from '@codemirror/view';
+
+import { useInsertText } from '../codemirror-editor/use-codemirror-editor/utils/insert-text';
+
+
+export type NewlineAndIndentContinueMarkdownList = ((editor: EditorView) => void) | undefined;
 
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
@@ -14,27 +21,29 @@ export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): st
   return editor.state.sliceDoc(firstLineToGet, curPos);
 };
 
-const insertText = (editor: EditorView, text: string) => {
-  const curPos = editor.state.selection.main.head;
-  const line = editor.state.doc.lineAt(curPos).from;
-  editor.dispatch({
-    changes: {
-      from: line,
-      to: curPos,
-      insert: text,
-    },
-  });
-};
+export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): NewlineAndIndentContinueMarkdownList => {
+  const insertText = useInsertText(editor);
 
-export const newlineAndIndentContinueMarkdownList = (editor: EditorView): void => {
-  const getStrFromAboveLine = getLineToCursor(editor, 1);
+  const NewlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
 
-  const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
+    const curPos = view?.state.selection.main.head;
+    const lineStartPos = view?.state.doc.lineAt(curPos).from;
 
-  if (matchResult != null) {
-    const indentAndMark = matchResult[0];
-    insertText(editor, indentAndMark);
+    const getStrFromAboveLine = getLineToCursor(view, 1);
+
+    const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
+
+    if (matchResult != null) {
+      const indentAndMark = matchResult[0];
+      insertText(indentAndMark, lineStartPos, curPos);
+    }
+  }, [insertText]);
+
+  if (editor == null) {
+    return;
   }
+
+  return () => { NewlineAndIndentContinueMarkdownList(editor) };
 };
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {
