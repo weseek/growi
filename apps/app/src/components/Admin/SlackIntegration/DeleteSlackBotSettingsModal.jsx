@@ -24,13 +24,13 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
         <span>
           {props.isResetAll && (
             <>
-              <i className="icon-fw icon-fire" />
+              <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset_all_settings')}
             </>
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash me-1" />
+              <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete_slackbot_settings')}
             </>
           )}
@@ -55,13 +55,13 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
         <Button color="danger" onClick={deleteSlackCredentialsHandler}>
           {props.isResetAll && (
             <>
-              <i className="icon icon-fire"></i>
+              <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset')}
             </>
           )}
           {!props.isResetAll && (
             <>
-              <i className="icon-trash me-1" />
+              <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete')}
             </>
           )}

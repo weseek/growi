@@ -144,6 +144,7 @@
   "wide_view": "Wide View",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
+  "In-App Notification": "Notifications",
   "original_path":"Original path",
   "new_path":"New path",
   "duplicated_path":"Duplicated path",
@@ -248,6 +249,21 @@
     "default_subscribe_rules": {
       "page_create": "Subscribe to the page when you create it."
     }
+  },
+  "ui_settings": {
+    "ui_settings": "UI Settings",
+    "side_bar_mode": {
+      "settings": "Sidebar mode settings",
+      "side_bar_mode_setting": "Set the sidebar mode",
+      "description": "You can set whether or not the sidebar will always be open when the screen width is large. If the screen width is small, the sidebar will always be closed."
+    }
+  },
+  "color_mode_settings": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "settings": "Color mode settings",
+    "description": "Select whether to display in light mode, dark mode, or a system-specific display.<br>Only supported themes can be switched."
   },
   "editor_settings": {
     "editor_settings": "Editor Settings"
@@ -803,5 +819,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "The attachment could not be found"
+  },
+  "page_select_modal": {
+    "select_page_location": "Select page location"
   }
 }

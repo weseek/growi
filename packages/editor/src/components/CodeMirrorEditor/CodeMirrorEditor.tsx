@@ -3,14 +3,19 @@ import {
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
+import { Prec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone, FileDropzoneOverlay } from '../../services';
+import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
+import {
+  getStrFromBol, adjustPasteData,
+} from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
+
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -25,7 +30,9 @@ type Props = {
   acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
   onUpload?: (files: File[]) => void,
+  onScroll?: () => void,
   indentSize?: number,
+  editorTheme?: string,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -34,7 +41,9 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     acceptedFileType,
     onChange,
     onUpload,
+    onScroll,
     indentSize,
+    editorTheme,
   } = props;
 
   const containerRef = useRef(null);
@@ -61,6 +70,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const handlePaste = (event: ClipboardEvent) => {
       event.preventDefault();
 
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
       if (event.clipboardData == null) {
         return;
       }
@@ -70,8 +85,14 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       }
 
       if (event.clipboardData.types.includes('text/plain')) {
+
         const textData = event.clipboardData.getData('text/plain');
-        codeMirrorEditor?.replaceText(textData);
+
+        const strFromBol = getStrFromBol(editor);
+
+        const adjusted = adjustPasteData(strFromBol, textData);
+
+        codeMirrorEditor?.replaceText(adjusted);
       }
     };
 
@@ -99,6 +120,41 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor]);
+
+  useEffect(() => {
+
+    const handleScroll = (event: Event) => {
+      event.preventDefault();
+      if (onScroll != null) {
+        onScroll();
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      scroll: handleScroll,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+    return cleanupFunction;
+
+  }, [onScroll, codeMirrorEditor]);
+
+  useEffect(() => {
+    if (editorTheme == null) {
+      return;
+    }
+    if (AllEditorTheme[editorTheme] == null) {
+      return;
+    }
+
+    const extension = AllEditorTheme[editorTheme];
+
+    // React CodeMirror has default theme which is default prec
+    // and extension have to be higher prec here than default theme.
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorTheme]);
 
   const {
     getRootProps,
@@ -139,12 +195,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, isDragAccept,isDragReject, acceptedFileType]);
+  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
-        <FileDropzoneOverlay isEnabled={isDragActive}/>
+        <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
         <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>

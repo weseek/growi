@@ -145,6 +145,7 @@
   "wide_view": "ワイドビュー",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
+  "In-App Notification": "通知",
   "original_path":"元のパス",
   "new_path":"新しいパス",
   "duplicated_path":"重複したパス",
@@ -249,6 +250,21 @@
     "default_subscribe_rules": {
       "page_create": "ページを作成した時にそのページをサブスクライブします。"
     }
+  },
+  "ui_settings": {
+    "ui_settings": "UI設定",
+    "side_bar_mode": {
+      "settings": "サイドバーモードの設定",
+      "side_bar_mode_setting": "サイドバーのモードを設定する",
+      "description": "画面幅が大きい場合に、サイドバーを常時開いた状態にするかどうかを設定できます。画面幅が小さい場合はサイドバーは常に閉じた状態となります。"
+    }
+  },
+  "color_mode_settings": {
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システム",
+    "settings": "カラーモードの設定",
+    "description": "ライトモードかダークモード、もしくはシステム合わせた表示をするか選択します。<br>対応したテーマのみ切り替えることができます。"
   },
   "editor_settings": {
     "editor_settings": "エディター設定",
@@ -836,5 +852,8 @@
   },
   "rich_attachment": {
     "attachment_not_be_found": "アタッチメントが見つかりません"
+  },
+  "page_select_modal": {
+    "select_page_location": "ページの場所を選択"
   }
 }

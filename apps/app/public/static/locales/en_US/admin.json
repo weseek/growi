@@ -48,8 +48,9 @@
     "anyone": "Anyone",
     "user_homepage_deletion": {
       "user_homepage_deletion": "User homepage deletion",
-      "enable_user_homepage_deletion": "Complete deletion of user homepage, when user deletion",
-      "desc": "When deleting a user, the user homepage and its sub pages are also completely deleted."
+      "enable_user_homepage_deletion": "Enable user homepage deletion",
+      "enable_force_delete_user_homepage_on_user_deletion": "When you delete a user, the user's homepage and all its sub pages will be completely deleted",
+      "desc": "You will be able to delete a deleted user's homepage."
     },
     "session": "Session",
     "max_age": "Max age (msec)",
@@ -1106,7 +1107,7 @@
       "group_sync_client_secret_detail": "Id of the secret used to authenticate to request to Keycloak admin API",
       "updated_group_sync_settings": "Updated Keycloak group sync settings",
       "preserve_deleted_keycloak_groups": "Preserve Deleted Keycloak Groups",
-      "auth_not_set": "Enable and configure OIDC or SAML with Keycloak in security settings before sync"
+      "auth_not_set": "Enable OIDC or SAML host that includes 'Host' and 'Group Realm' of group sync settings"
     },
     "auto_generate_user_on_sync": "Auto Generate User on Sync",
     "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync."

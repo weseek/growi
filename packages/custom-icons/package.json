@@ -1,0 +1,12 @@
+{
+  "name": "@growi/custom-icons",
+  "version": "7.0.0-RC.0",
+  "license": "MIT",
+  "scripts": {
+    "build": "svgtofont --sources ./svg --output ./dist",
+    "dev": "svgtofont --sources ./svg --output ./dist"
+  },
+  "devDependencies": {
+    "svgtofont": "^4.1.1"
+  }
+}

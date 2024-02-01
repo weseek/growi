@@ -56,9 +56,10 @@
 		"admin_and_author": "管理员|作者",
 		"anyone": "任何人",
     "user_homepage_deletion": {
-      "user_homepage_deletion": "删除用户页面",
-      "enable_user_homepage_deletion": "用户删除时，完全删除用户主页",
-      "desc": "删除用户时，用户主页及其下属页面也会被完全删除。"
+      "user_homepage_deletion": "删除用户主页",
+      "enable_user_homepage_deletion": "启用用户主页删除功能",
+      "enable_force_delete_user_homepage_on_user_deletion": "删除用户时，该用户的主页及其所有子页面将被完全删除",
+      "desc": "您可以删除已删除用户的主页。"
     },
     "session": "会议",
     "max_age": "有效期间  (msec)",
@@ -1115,7 +1116,7 @@
       "group_sync_client_secret_detail": "Id of the secret used to authenticate to request to Keycloak admin API",
       "updated_group_sync_settings": "Updated Keycloak group sync settings",
       "preserve_deleted_keycloak_groups": "Preserve Deleted Keycloak Groups",
-      "auth_not_set": "Enable and configure OIDC or SAML with Keycloak in security settings before sync"
+      "auth_not_set": "Enable OIDC or SAML host that includes 'Host' and 'Group Realm' of group sync settings"
     },
     "auto_generate_user_on_sync": "Auto Generate User on Sync",
     "description_mapper_detail": "Attribute to map as group description. Description can be edited after sync. However, when a mapper is set, the edited value can possibly be overwritten by the next sync."

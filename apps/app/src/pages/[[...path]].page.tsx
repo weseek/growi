@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect } from 'react';
-
+import type { ReactNode } from 'react';
+import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
@@ -22,7 +22,9 @@ import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -57,7 +59,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR, addActivity,
 } from './utils/commons';
 
 
@@ -396,24 +398,6 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-// apply parent page grant fot creating page
-async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroups.item');
-  const grant = {
-    grant: ancestor.grant,
-  };
-  const grantedGroups = ancestor.grantedGroups ? {
-    grantedGroups: ancestor.grantedGroups.map((group) => {
-      return {
-        id: group.item._id,
-        name: group.item.name,
-        type: group.type,
-      };
-    }),
-  } : {};
-  props.grantData = Object.assign(grant, grantedGroups);
-}
-
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -474,10 +458,20 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply parent page grant
+    // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
-      await applyGrantToPage(props, ancestor);
+      const userRelatedGrantedGroups = await pageService.getUserRelatedGrantedGroups(ancestor, user);
+      props.grantData = {
+        grant: ancestor.grant,
+        grantedGroups: userRelatedGrantedGroups.map((group) => {
+          return {
+            id: group.item._id,
+            name: group.item.name,
+            type: group.type,
+          };
+        }),
+      };
     }
   }
 
@@ -603,6 +597,22 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+const getAction = (props: Props): SupportedActionType => {
+  if (props.isNotCreatable) {
+    return SupportedAction.ACTION_PAGE_NOT_CREATABLE;
+  }
+  if (props.isForbidden) {
+    return SupportedAction.ACTION_PAGE_FORBIDDEN;
+  }
+  if (props.isNotFound) {
+    return SupportedAction.ACTION_PAGE_NOT_FOUND;
+  }
+  if (pagePathUtils.isUsersHomepage(props.pageWithMeta?.data.path ?? '')) {
+    return SupportedAction.ACTION_PAGE_USER_HOME_VIEW;
+  }
+  return SupportedAction.ACTION_PAGE_VIEW;
+};
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
@@ -646,6 +656,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
+  addActivity(context, getAction(props));
   return {
     props,
   };

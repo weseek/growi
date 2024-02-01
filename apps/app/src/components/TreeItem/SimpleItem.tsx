@@ -1,17 +1,15 @@
 import React, {
-  useCallback, useState, FC, useEffect, ReactNode,
+  useCallback, useState, useEffect,
+  type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
 
 import nodePath from 'path';
 
-import type { Nullable, IPageToDeleteWithMeta } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
+import type { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { IPageForItem } from '~/interfaces/page';
-import { IPageForPageDuplicateModal } from '~/stores/modal';
+import type { IPageForItem } from '~/interfaces/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -19,23 +17,9 @@ import { shouldRecoverPagePaths } from '~/utils/page-operation';
 import CountBadge from '../Common/CountBadge';
 
 import { ItemNode } from './ItemNode';
+import { useNewPageInput } from './NewPageInput';
+import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
-
-export type SimpleItemProps = {
-  isEnableActions: boolean
-  isReadOnlyUser: boolean
-  itemNode: ItemNode
-  targetPathOrId?: Nullable<string>
-  isOpen?: boolean
-  onRenamed?(fromPath: string | undefined, toPath: string): void
-  onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void
-  onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void
-  itemRef?
-  itemClass?: React.FunctionComponent<SimpleItemProps>
-  mainClassName?: string
-  customEndComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
-  customNextComponents?: Array<React.FunctionComponent<SimpleItemToolProps>>
-};
 
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
@@ -54,60 +38,16 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
   });
 };
 
-/**
- * Return new page path after the droppedPagePath is moved under the newParentPagePath
- * @param droppedPagePath
- * @param newParentPagePath
- * @returns
- */
 
-/**
- * Return whether the fromPage could be moved under the newParentPage
- * @param fromPage
- * @param newParentPage
- * @param printLog
- * @returns
- */
-
-// Component wrapper to make a child element not draggable
-// https://github.com/react-dnd/react-dnd/issues/335
-type NotDraggableProps = {
-  children: ReactNode,
-};
-export const NotDraggableForClosableTextInput = (props: NotDraggableProps): JSX.Element => {
-  return <div draggable onDragStart={e => e.preventDefault()}>{props.children}</div>;
-};
-
-type SimpleItemToolPropsOptional = 'itemNode' | 'targetPathOrId' | 'isOpen' | 'itemRef' | 'itemClass' | 'mainClassName';
-export type SimpleItemToolProps = Omit<SimpleItemProps, SimpleItemToolPropsOptional> & {page: IPageForItem};
-
-export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
+const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { getDescCount } = usePageTreeDescCountMap();
-
-  const page = props.page;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
-  const pageTreeItemClickHandler = (e) => {
-    e.preventDefault();
-
-    if (page.path == null || page._id == null) {
-      return;
-    }
-
-    const link = pathUtils.returnPathForURL(page.path, page._id);
-
-    router.push(link);
-  };
-
   return (
-    <>
+    <div className="flex-grow-1 d-flex align-items-center pe-none">
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
@@ -118,9 +58,22 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p onClick={pageTreeItemClickHandler} className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
         </div>
       )}
+    </div>
+  );
+};
+
+export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
+  const { getDescCount } = usePageTreeDescCountMap();
+
+  const { page } = props.itemNode;
+
+  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
+
+  return (
+    <>
       {descendantCount > 0 && (
         <div className="grw-pagetree-count-wrapper">
           <CountBadge count={descendantCount} />
@@ -130,32 +83,41 @@ export const SimpleItemTool: FC<SimpleItemToolProps> = (props) => {
   );
 };
 
+type SimpleItemProps = TreeItemProps & {
+  itemRef?: RefObject<any> | RefCallback<any>,
+}
+
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
     itemRef, itemClass, mainClassName,
   } = props;
 
   const { page, children } = itemNode;
 
+  const { isProcessingSubmission } = useNewPageInput();
+
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [isCreating, setCreating] = useState(false);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
-  const stateHandlers = {
-    isOpen,
-    setIsOpen,
-    isCreating,
-    setCreating,
-  };
+
+  const itemClickHandler = useCallback((e: MouseEvent) => {
+    // DO NOT handle the event when e.currentTarget and e.target is different
+    if (e.target !== e.currentTarget) {
+      return;
+    }
+
+    onClick?.(page);
+
+  }, [onClick, page]);
+
 
   // descendantCount
   const { getDescCount } = usePageTreeDescCountMap();
   const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
 
   // hasDescendants flag
   const isChildrenLoaded = currentChildren?.length > 0;
@@ -165,7 +127,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     return currentChildren != null && currentChildren.length > 0;
   }, [currentChildren]);
 
-  const onClickLoadChildren = useCallback(async() => {
+  const onClickLoadChildren = useCallback(() => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
@@ -197,7 +159,9 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const commonProps = {
+  const EndComponents = props.customEndComponents ?? [SimpleItemTool];
+
+  const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
@@ -205,23 +169,11 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     onRenamed,
     onClickDuplicateMenuItem,
     onClickDeleteMenuItem,
-    stateHandlers,
   };
 
-  const CustomEndComponents = props.customEndComponents;
-
-  const SimpleItemContent = CustomEndComponents ?? [SimpleItemTool];
-
-  const SimpleItemContentProps = {
+  const toolProps: TreeItemToolProps = {
+    ...baseProps,
     itemNode,
-    page,
-    onRenamed,
-    onClickDuplicateMenuItem,
-    onClickDeleteMenuItem,
-    isEnableActions,
-    isReadOnlyUser,
-    children,
-    stateHandlers,
   };
 
   const CustomNextComponents = props.customNextComponents;
@@ -235,10 +187,13 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     >
       <li
         ref={itemRef}
+        role="button"
         className={`list-group-item list-group-item-action border-0 py-0 pr-3 d-flex align-items-center
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
+        onClick={itemClickHandler}
       >
+
         <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
@@ -252,26 +207,42 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-        {SimpleItemContent.map(ItemContent => (
-          <ItemContent {...SimpleItemContentProps} />
+
+        <SimpleItemContent page={page} />
+
+        {EndComponents.map((EndComponent, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <EndComponent key={index} {...toolProps} />
         ))}
+
       </li>
 
-      {CustomNextComponents?.map(UnderItemContent => (
-        <UnderItemContent {...SimpleItemContentProps} />
+      {CustomNextComponents?.map((UnderItemContent, index) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <UnderItemContent key={index} {...toolProps} />
       ))}
 
       {
-        isOpen && hasChildren() && currentChildren.map((node, index) => (
-          <div key={node.page._id} className="grw-pagetree-item-children">
-            <ItemClassFixed itemNode={node} {...commonProps} />
-            {isCreating && (currentChildren.length - 1 === index) && (
-              <div className="text-muted text-center">
-                <i className="fa fa-spinner fa-pulse mr-1"></i>
-              </div>
-            )}
-          </div>
-        ))
+        isOpen && hasChildren() && currentChildren.map((node, index) => {
+          const itemProps = {
+            ...baseProps,
+            itemNode: node,
+            itemClass,
+            mainClassName,
+            onClick,
+          };
+
+          return (
+            <div key={node.page._id} className="grw-pagetree-item-children">
+              <ItemClassFixed {...itemProps} />
+              {isProcessingSubmission && (currentChildren.length - 1 === index) && (
+                <div className="text-muted text-center">
+                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                </div>
+              )}
+            </div>
+          );
+        })
       }
     </div>
   );

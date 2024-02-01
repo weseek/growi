@@ -6,6 +6,7 @@ import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/d
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -306,10 +307,15 @@ module.exports = (crowi) => {
   router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
     const {
       // body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
-      body, grant, grantUserGroupIds, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
+      body, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
     } = req.body;
 
-    let { path } = req.body;
+    let { path, grant, grantUserGroupIds } = req.body;
+
+    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
+    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
+      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+    }
 
     // check whether path starts slash
     path = addHeadingSlash(path);
@@ -321,8 +327,12 @@ module.exports = (crowi) => {
         const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
         path = await generateUniquePath(basePath);
 
+        // if the generated path is not creatable, create the path under the root path
         if (!isCreatablePage(path)) {
           path = await generateUniquePath(defaultTitle);
+          // initialize grant data
+          grant = 1;
+          grantUserGroupIds = undefined;
         }
       }
       catch (err) {
@@ -816,6 +826,11 @@ module.exports = (crowi) => {
 
       const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
+      // TODO: remove in https://redmine.weseek.co.jp/issues/136139
+      if (page.grantedGroups != null && page.grantedGroups.length > 1) {
+        return res.apiv3Err('Cannot grant multiple groups to page at the moment');
+      }
+
       const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
       if (page == null || isEmptyAndNotRecursively) {
         res.code = 'Page is not found';
@@ -849,7 +864,8 @@ module.exports = (crowi) => {
         target: page,
         action: SupportedAction.ACTION_PAGE_DUPLICATE,
       };
-      activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+      activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify);
 
       return res.apiv3(result);
     });
@@ -933,18 +949,12 @@ module.exports = (crowi) => {
     }
 
     let pagesCanBeDeleted;
-    /*
-     * Delete Completely
-     */
     if (isCompletely) {
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDeleteCompletely(pagesToDelete, req.user, isRecursively);
     }
-    /*
-     * Trash
-     */
     else {
-      pagesCanBeDeleted = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
-      pagesCanBeDeleted = crowi.pageService.filterPagesByCanDelete(pagesToDelete, req.user, isRecursively);
+      const filteredPages = pagesToDelete.filter(p => p.isEmpty || p.isUpdatable(pageIdToRevisionIdMap[p._id].toString()));
+      pagesCanBeDeleted = await crowi.pageService.filterPagesByCanDelete(filteredPages, req.user, isRecursively);
     }
 
     if (pagesCanBeDeleted.length === 0) {

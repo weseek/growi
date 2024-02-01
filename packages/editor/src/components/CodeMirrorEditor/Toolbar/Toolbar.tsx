@@ -27,9 +27,9 @@ export const Toolbar = memo((props: Props): JSX.Element => {
       <EmojiButton
         editorKey={editorKey}
       />
-      <TableButton />
-      <DiagramButton />
-      <TemplateButton />
+      <TableButton editorKey={editorKey} />
+      <DiagramButton editorKey={editorKey} />
+      <TemplateButton editorKey={editorKey} />
     </div>
   );
 });

@@ -100,14 +100,17 @@ context('Search all pages', () => {
     cy.collapseSidebar(true, true);
     cy.waitUntilSkeletonDisappear();
 
-    cy.get('.rbt-input').click();
-    cy.get('.rbt-menu.dropdown-menu.show').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}1-search-input-focused`);
+    // open SearchModal
+    cy.getByTestid('grw-contextual-sub-nav').within(() => {
+      cy.getByTestid('open-search-modal-button').click();
     })
+    cy.getByTestid('search-modal').should('be.visible').within(() => {
+      cy.screenshot(`${ssPrefix}1-search-input-focused`);
+    });
 
-    cy.get('.rbt-input-main').type(`${searchText}`);
+    // inseart text
+    cy.getByTestid('search-form').should('be.visible').type(searchText);
     cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
-    cy.get('.rbt-input-main').type('{enter}');
   });
 
   it(`Search all pages by tag is successfully loaded `, () => {
@@ -138,16 +141,20 @@ context('Search all pages', () => {
     });
 
     cy.visit('/');
-
-    cy.get('.rbt-input').should('be.visible');
-    cy.get('.rbt-input').click();
-    cy.get('.rbt-input-main').type(`${searchText}`);
-
-    cy.collapseSidebar(true);
     cy.waitUntilSkeletonDisappear();
+
+    // open SearchModal
+    cy.getByTestid('grw-contextual-sub-nav').within(() => {
+      cy.getByTestid('open-search-modal-button').click();
+    })
+    cy.getByTestid('search-modal').should('be.visible');
+
+    // inseart text
+    cy.getByTestid('search-form').should('be.visible').type(searchText);
     cy.screenshot(`${ssPrefix}1-insert-search-text-with-tag`, { capture: 'viewport'});
 
-    cy.get('.rbt-input-main').type('{enter}');
+    // click search method button
+    cy.getByTestid('search-all-menu-item').click();
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
@@ -375,27 +382,19 @@ context('Search current tree with "prefix":', () => {
     const searchText = 'help';
 
     cy.visit('/');
+    cy.waitUntilSkeletonDisappear();
 
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('select-search-scope').should('be.visible').click();
-      // wait until
-      return cy.get('.grw-global-search-container').within(() => {
-        return Cypress.$('.dropdown-menu.show').is(':visible');
-      });
-    });
+    // open SearchModal
+    cy.getByTestid('grw-contextual-sub-nav').within(() => {
+      cy.getByTestid('open-search-modal-button').click();
+    })
+    cy.getByTestid('search-modal').should('be.visible');
 
-    cy.get('.grw-global-search-container').within(() => {
-      cy.get('.dropdown-menu.show').should('be.visible');
-      // TODO: .input-group-prepend dropped in bootstrap v5
-      cy.get('.input-group-prepend.show > div > button:nth-child(2)').click();
-      cy.get('.rbt-input').should('be.focused');
-      cy.screenshot(`${ssPrefix}1-search-input-focused`);
-    });
+    // inseart text
+    cy.getByTestid('search-form').should('be.visible').type(searchText);
 
-    cy.get('.rbt-input').type(`${searchText}`);
-    cy.screenshot(`${ssPrefix}2-insert-search-text`, { capture: 'viewport'});
-    cy.get('.rbt-input').type('{enter}');
+    // click search method button
+    cy.getByTestid('search-prefix-menu-item').click();
 
     cy.getByTestid('search-result-base').should('be.visible');
     cy.getByTestid('search-result-list').should('be.visible');
