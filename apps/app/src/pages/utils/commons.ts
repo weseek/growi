@@ -5,9 +5,11 @@ import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import type { SSRConfig, UserConfig } from 'next-i18next';
 
+
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
 import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
+import { type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
@@ -185,4 +187,20 @@ export const skipSSR = async(page: PageDocument, ssrMaxRevisionBodyLength: numbe
   }
 
   return ssrMaxRevisionBodyLength < latestRevisionBodyLength;
+};
+
+export const addActivity = async(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> => {
+  const req = context.req as CrowiRequest;
+
+  const parameters = {
+    ip: req.ip,
+    endpoint: req.originalUrl,
+    action,
+    user: req.user?._id,
+    snapshot: {
+      username: req.user?.username,
+    },
+  };
+
+  await req.crowi.activityService.createActivity(parameters);
 };
