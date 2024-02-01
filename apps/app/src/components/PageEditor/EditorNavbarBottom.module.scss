@@ -4,8 +4,6 @@
 
 @include mixins.editing() {
   .grw-editor-navbar-bottom :global {
-    height: var.$grw-editor-navbar-bottom-height;
-
     .grw-grant-selector {
       @include bs.media-breakpoint-down(sm) {
         .btn .label {
