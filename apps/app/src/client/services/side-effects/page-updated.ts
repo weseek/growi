@@ -1,9 +1,10 @@
 import { useCallback, useEffect } from 'react';
 
+import { useGlobalSocket } from '@growi/core/dist/swr';
+
 import { SocketEventName } from '~/interfaces/websocket';
 import { useCurrentPageId } from '~/stores/page';
 import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
-import { useGlobalSocket } from '~/stores/websocket';
 
 export const usePageUpdatedEffect = (): void => {
 
