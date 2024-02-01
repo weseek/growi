@@ -2,7 +2,6 @@ import React, {
   useState, FC, useMemo, useEffect,
 } from 'react';
 
-import { isIPageInfoForEntity } from '@growi/core';
 import type {
   HasObjectId,
   IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
@@ -42,6 +41,11 @@ const deleteIconAndKey = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && 'isDeletable' in pageInfo && 'isAbleToDeleteCompletely' in pageInfo;
+};
+
 const PageDeleteModal: FC = () => {
   const { t } = useTranslation();
 
@@ -50,14 +54,14 @@ const PageDeleteModal: FC = () => {
   const isOpened = deleteModalData?.isOpened ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForEntity(p.meta));
+    .filter(p => !isIPageInfoForEntityForDeleteModal(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
 
   // inject IPageInfo to operate
   let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
-  if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
+  if (deleteModalData?.pages != null) {
     injectedPages = injectTo(deleteModalData?.pages);
   }
 
