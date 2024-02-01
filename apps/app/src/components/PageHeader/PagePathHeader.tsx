@@ -70,8 +70,6 @@ export const PagePathHeader: FC<Props> = (props) => {
     }
   };
 
-  const buttonStyle = isButtonsShown ? '' : 'd-none';
-
   const clickOutSideHandler = (e) => {
     const container = document.getElementById('page-path-header');
 
@@ -107,10 +105,10 @@ export const PagePathHeader: FC<Props> = (props) => {
               handleInputChange={handleInputChange}
             />
           </div>
-          <div className={`${buttonStyle} col-4 row`}>
+          <div className={`${isButtonsShown ? '' : 'd-none'} col-4 row`}>
             <div className="col-4">
               <button type="button" onClick={handleEditButtonClick}>
-                {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
+                <span className="material-symbols-outlined">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
               </button>
             </div>
             <div className="col-4">
