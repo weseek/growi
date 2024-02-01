@@ -4,6 +4,7 @@ import { useRouter } from 'next/router';
 
 import { createPage } from '~/client/services/page-operation';
 import { useIsNotFound } from '~/stores/page';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
@@ -45,6 +46,7 @@ export const useCreatePageAndTransit = (): CreatePageAndTransit => {
   const router = useRouter();
 
   const { data: isNotFound } = useIsNotFound();
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   return useCallback(async(pagePath, opts = {}) => {
     const {
@@ -70,8 +72,8 @@ export const useCreatePageAndTransit = (): CreatePageAndTransit => {
 
       const response = await createPage(pagePath, '', params);
 
-      // Should not mutateEditorMode as it might prevent transitioning during mutation
-      router.push(`${response.page.id}#edit`);
+      await router.push(`${response.page.id}#edit`);
+      mutateEditorMode(EditorMode.Editor);
 
       onCreated?.();
     }
@@ -83,5 +85,5 @@ export const useCreatePageAndTransit = (): CreatePageAndTransit => {
       onTerminated?.();
     }
 
-  }, [isNotFound, router]);
+  }, [isNotFound, mutateEditorMode, router]);
 };
