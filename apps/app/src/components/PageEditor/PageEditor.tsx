@@ -505,6 +505,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             indentSize={currentIndentSize ?? defaultIndentSize}
             acceptedFileType={acceptedFileType}
             editorTheme={editorSettings?.theme}
+            editorKeymap={editorSettings?.keymapMode}
           />
         </div>
         <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

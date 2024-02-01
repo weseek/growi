@@ -63,6 +63,7 @@ export const Playground = (): JSX.Element => {
             indentSize={4}
             acceptedFileType={AcceptedUploadFileType.ALL}
             editorTheme={editorTheme}
+            editorKeymap="sublime"
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
