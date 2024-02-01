@@ -106,13 +106,12 @@ export const PagePathHeader: FC<Props> = (props) => {
             />
           </div>
           <div className={`${isButtonsShown ? '' : 'd-none'} col-4 row`}>
-            <div className="col-4">
-              <button type="button" onClick={handleEditButtonClick}>
+
+            <div className="d-flex align-items-center">
+              <button type="button" className="btn btn-sm btn-link text-muted border border-secondary me-2" onClick={handleEditButtonClick}>
                 <span className="material-symbols-outlined">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
               </button>
-            </div>
-            <div className="col-4">
-              <button type="button" onClick={openPageSelectModal}>
+              <button type="button" className="btn btn-sm btn-link text-muted border border-secondary" onClick={openPageSelectModal}>
                 <span className="material-symbols-outlined">account_tree</span>
               </button>
             </div>
