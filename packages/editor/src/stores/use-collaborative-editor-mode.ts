@@ -39,7 +39,7 @@ export const useCollaborativeEditorMode = (
     provider?.awareness.destroy();
 
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
-    socket.off(GlobalSocketEventName.YDocSync);
+    socket?.off(GlobalSocketEventName.YDocSync);
 
     setIsInit(false);
     setCPageId(pageId);
