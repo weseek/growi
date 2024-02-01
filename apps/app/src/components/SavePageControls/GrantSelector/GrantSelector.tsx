@@ -143,7 +143,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
           <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
-          <DropdownMenu>
+          <DropdownMenu container="body">
             {dropdownMenuElems}
           </DropdownMenu>
         </UncontrolledDropdown>
