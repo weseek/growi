@@ -5,10 +5,9 @@ import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
-import { useCodeMirrorEditorIsolated } from '../stores';
+import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
 import { CodeMirrorEditor } from '.';
-
 
 const additionalExtensions: Extension[] = [
   [
@@ -24,15 +23,22 @@ type Props = {
   onScroll?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
+  userName?: string,
+  pageId?: string,
+  initialValue?: string,
+  onOpenEditor?: (markdown: string) => void,
   editorTheme?: string,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, editorTheme,
+    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor, editorTheme,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
+  useCollaborativeEditorMode(userName, pageId, initialValue, onOpenEditor, codeMirrorEditor);
+
   const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions

@@ -9,8 +9,9 @@ import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
+import type { MutatorOptions } from 'swr';
 import {
-  useSWRConfig, type SWRResponse, type Key, KeyedMutator, MutatorOptions,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 

@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 
+import { useGlobalSocket, GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
 import type { Socket } from 'socket.io-client';
 import { SWRResponse } from 'swr';
 
@@ -8,9 +9,6 @@ import loggerFactory from '~/utils/logger';
 import { useStaticSWR } from './use-static-swr';
 
 const logger = loggerFactory('growi:stores:ui');
-
-export const GLOBAL_SOCKET_NS = '/';
-export const GLOBAL_SOCKET_KEY = 'globalSocket';
 
 export const GLOBAL_ADMIN_SOCKET_NS = '/admin';
 export const GLOBAL_ADMIN_SOCKET_KEY = 'globalAdminSocket';
@@ -38,10 +36,6 @@ export const useSetupGlobalSocket = (): void => {
     setUpSocket();
 
   }, [mutate]);
-};
-
-export const useGlobalSocket = (): SWRResponse<Socket, Error> => {
-  return useStaticSWR(GLOBAL_SOCKET_KEY);
 };
 
 // comment out for porduction build error: https://github.com/weseek/growi/pull/7131
