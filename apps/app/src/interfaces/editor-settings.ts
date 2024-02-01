@@ -4,7 +4,7 @@ const KeyMapMode = {
   default: 'default',
   vim: 'vim',
   emacs: 'emacs',
-  sublime: 'sublime',
+  vscode: 'vscode',
 } as const;
 
 export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];

@@ -13,5 +13,5 @@ export const AllKeymap: Record<string, Extension> = {
   default: keymap.of(defaultKeymap),
   vim: vim(),
   emacs: emacs(),
-  sublime: keymap.of(vscodeKeymap),
+  vscode: keymap.of(vscodeKeymap),
 };

@@ -73,7 +73,7 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
   default: 'Default',
   vim: 'Vim',
   emacs: 'Emacs',
-  sublime: 'Sublime Text',
+  vscode: 'Visual Studio Code',
 };
 
 const KeymapSelector = memo((): JSX.Element => {
