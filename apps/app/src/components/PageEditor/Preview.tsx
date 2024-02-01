@@ -1,6 +1,4 @@
-import React, {
-  SyntheticEvent, RefObject,
-} from 'react';
+import React from 'react';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
@@ -33,6 +31,7 @@ const Preview = React.forwardRef((props: Props): JSX.Element => {
 
   return (
     <div
+      data-testid="page-editor-preview-body"
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       style={{ paddingBottom: pastEnd }}
     >

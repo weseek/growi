@@ -60,11 +60,12 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
       await onClickTemplateButton(label);
+      onClose();
     }
     catch (err) {
       toastError(err);
     }
-  }, [onClickTemplateButton]);
+  }, [onClickTemplateButton, onClose]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
