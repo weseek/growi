@@ -1,58 +1,87 @@
 import { useCallback } from 'react';
 
-import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { createPage } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 
-export const useOnPageEditorModeButtonClicked = (
-    setIsCreating:React.Dispatch<React.SetStateAction<boolean>>,
-    path?: string,
-    // grant?: number,
-    // grantUserGroupId?: string,
-): (editorMode: EditorMode) => Promise<void> => {
-  const router = useRouter();
-  const { t } = useTranslation('commons');
-  const { data: isNotFound } = useIsNotFound();
-  const { mutate: mutateEditorMode } = useEditorMode();
+/**
+ * Invoked when creation and transition has finished
+ */
+type OnCreated = () => void;
+/**
+ * Invoked when either creation or transition has aborted
+ */
+type OnAborted = () => void;
+/**
+ * Invoked when an error is occured
+ */
+type OnError = (err) => void;
+/**
+ * Always invoked after processing is terminated
+ */
+type OnTerminated = () => void;
 
-  return useCallback(async(editorMode: EditorMode) => {
-    if (isNotFound == null || path == null) {
+type CreatePageAndTransitOpts = {
+  onCreationStart?: OnCreated,
+  onCreated?: OnCreated,
+  onAborted?: OnAborted,
+  onError?: OnError,
+  onTerminated?: OnTerminated,
+}
+
+type CreatePageAndTransit = (
+  pagePath: string | undefined,
+  // grant?: number,
+  // grantUserGroupId?: string,
+  opts?: CreatePageAndTransitOpts,
+) => Promise<void>;
+
+export const useCreatePageAndTransit = (): CreatePageAndTransit => {
+
+  const router = useRouter();
+
+  const { data: isNotFound } = useIsNotFound();
+
+  return useCallback(async(pagePath, opts = {}) => {
+    const {
+      onCreationStart, onCreated, onAborted, onError, onTerminated,
+    } = opts;
+
+    if (isNotFound == null || !isNotFound || pagePath == null) {
+      onAborted?.();
+      onTerminated?.();
       return;
     }
 
-    if (editorMode === EditorMode.Editor && isNotFound) {
-      try {
-        setIsCreating(true);
+    try {
+      onCreationStart?.();
 
-        const params = {
-          isSlackEnabled: false,
-          slackChannels: '',
-          grant: 4,
-          // grant,
-          // grantUserGroupId,
-        };
+      const params = {
+        isSlackEnabled: false,
+        slackChannels: '',
+        grant: 4,
+        // grant,
+        // grantUserGroupId,
+      };
 
-        const response = await createPage(path, '', params);
+      const response = await createPage(pagePath, '', params);
 
-        // Should not mutateEditorMode as it might prevent transitioning during mutation
-        router.push(`${response.page.id}#edit`);
-      }
-      catch (err) {
-        logger.warn(err);
-        toastError(t('toaster.create_failed', { target: path }));
-      }
-      finally {
-        setIsCreating(false);
-      }
+      // Should not mutateEditorMode as it might prevent transitioning during mutation
+      router.push(`${response.page.id}#edit`);
+
+      onCreated?.();
+    }
+    catch (err) {
+      logger.warn(err);
+      onError?.(err);
+    }
+    finally {
+      onTerminated?.();
     }
 
-    mutateEditorMode(editorMode);
-  }, [isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
+  }, [isNotFound, router]);
 };
