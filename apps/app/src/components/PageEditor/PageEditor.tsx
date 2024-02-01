@@ -136,7 +136,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   const { resolvedTheme } = useNextThemes();
-  mutateResolvedTheme(resolvedTheme);
+  mutateResolvedTheme({ themeData: resolvedTheme });
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
