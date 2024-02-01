@@ -225,12 +225,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -315,6 +314,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
+  // So preferentially take page data from useSWRxCurrentPage
+  const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
 
   const title = generateCustomTitleForPage(props, pagePath);
 
