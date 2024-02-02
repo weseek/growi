@@ -4,8 +4,8 @@ import { EditorView } from '@codemirror/view';
 
 export type InsertText = (text: string) => void;
 
-
 export const useInsertText = (view?: EditorView): InsertText => {
+
   return useCallback((text) => {
     if (view == null) {
       return;
