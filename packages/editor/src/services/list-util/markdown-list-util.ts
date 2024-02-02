@@ -3,15 +3,26 @@ import { EditorView } from '@codemirror/view';
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): string => {
+// export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): string => {
+//   const curPos = editor.state.selection.main.head;
+//   const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
+
+//   const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 0);
+
+//   const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
+
+//   return editor.state.sliceDoc(firstLineToGet, curPos);
+// };
+
+const getBol = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
-  const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
+  const aboveLine = editor.state.doc.lineAt(curPos).number;
+  return editor.state.doc.line(aboveLine).from;
+};
 
-  const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 0);
-
-  const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
-
-  return editor.state.sliceDoc(firstLineToGet, curPos);
+export const getStrFromBol = (editor: EditorView): string => {
+  const curPos = editor.state.selection.main.head;
+  return editor.state.sliceDoc(getBol(editor), curPos);
 };
 
 export const adjustPasteData = (strFromBol: string, text: string): string => {
