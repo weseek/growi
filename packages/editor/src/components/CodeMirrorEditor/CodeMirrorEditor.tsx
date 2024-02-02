@@ -8,7 +8,9 @@ import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
+import {
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme,
+} from '../../services';
 import {
   getStrFromBol, adjustPasteData,
 } from '../../services/list-util/markdown-list-util';
@@ -140,20 +142,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onScroll, codeMirrorEditor]);
 
   useEffect(() => {
-    if (editorTheme == null) {
-      return;
-    }
-    if (AllEditorTheme[editorTheme] == null) {
-      return;
-    }
+    const settingTheme = async(editorTheme?: string) => {
+      const theme = editorTheme ?? 'DefaultLight';
+      const extension = await getEditorTheme(theme);
 
-    const extension = AllEditorTheme[editorTheme];
-
-    // React CodeMirror has default theme which is default prec
-    // and extension have to be higher prec here than default theme.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
-    return cleanupFunction;
-
+      // React CodeMirror has default theme which is default prec
+      // and extension have to be higher prec here than default theme.
+      const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
+      return cleanupFunction;
+    };
+    settingTheme(editorTheme);
   }, [codeMirrorEditor, editorTheme]);
 
   const {
