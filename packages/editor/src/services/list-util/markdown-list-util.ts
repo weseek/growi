@@ -3,17 +3,6 @@ import { EditorView } from '@codemirror/view';
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-// export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): string => {
-//   const curPos = editor.state.selection.main.head;
-//   const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
-
-//   const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 0);
-
-//   const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
-
-//   return editor.state.sliceDoc(firstLineToGet, curPos);
-// };
-
 const getBol = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
   const aboveLine = editor.state.doc.lineAt(curPos).number;
