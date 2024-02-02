@@ -37,9 +37,6 @@ export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): Ne
       const indentAndMark = matchResult[0];
       insertText(indentAndMark, lineStartPos, curPos);
     }
-    else {
-      insertText('', lineStartPos, curPos);
-    }
   }, [insertText]);
 
   if (editor == null) {
