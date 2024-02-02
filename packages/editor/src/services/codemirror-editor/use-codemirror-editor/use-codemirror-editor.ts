@@ -5,7 +5,7 @@ import {
   markdown, markdownLanguage,
 } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
-import { languages } from '@codemirror/language-data';
+import { languages, deleteMarkupBackward } from '@codemirror/language-data';
 import {
   EditorState, Prec, type Extension,
 } from '@codemirror/state';
@@ -27,6 +27,10 @@ import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
+const markdownKeymap = [
+  { key: 'Backspace', run: deleteMarkupBackward },
+  { key: 'Enter', run:  }
+];
 
 const markdownHighlighting = HighlightStyle.define([
   { tag: tags.heading1, class: 'cm-header-1 cm-header' },
@@ -58,6 +62,7 @@ export type UseCodeMirrorEditor = {
 const defaultExtensions: Extension[] = [
   EditorView.lineWrapping,
   markdown({ base: markdownLanguage, codeLanguages: languages }),
+  // keymap.of(markdownKeymap),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
   syntaxHighlighting(markdownHighlighting),

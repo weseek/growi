@@ -24,7 +24,7 @@ export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): st
 export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): NewlineAndIndentContinueMarkdownList => {
   const insertText = useInsertText(editor);
 
-  const NewlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
+  const newlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
 
     const curPos = view?.state.selection.main.head;
     const lineStartPos = view?.state.doc.lineAt(curPos).from;
@@ -43,7 +43,7 @@ export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): Ne
     return;
   }
 
-  return () => { NewlineAndIndentContinueMarkdownList(editor) };
+  return () => { newlineAndIndentContinueMarkdownList(editor) };
 };
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {
