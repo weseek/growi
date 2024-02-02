@@ -8,7 +8,6 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   const changes: ChangeSpec[] = [];
 
-  let insert: string;
   let selection;
 
   const curPos = state.selection.main.head;
@@ -19,7 +18,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
   const strFromBol = state.sliceDoc(bolPos, curPos);
 
   if (indentAndMarkOnlyRE.test(strFromBol)) {
-    insert = state.lineBreak;
+    const insert = state.lineBreak;
 
     changes.push({
       from: bolPos,
@@ -35,7 +34,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
       return false;
     }
 
-    insert = state.lineBreak + indentAndMark;
+    const insert = state.lineBreak + indentAndMark;
     const nextCurPos = curPos + insert.length;
 
     selection = { anchor: nextCurPos };
@@ -47,7 +46,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
   }
 
   else {
-    insert = state.lineBreak;
+    const insert = state.lineBreak;
     const nextCurPos = curPos + insert.length;
 
     selection = { anchor: nextCurPos };
