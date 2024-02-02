@@ -6,7 +6,7 @@ import { useIsEditable } from '~/stores/context';
 
 const FocusToGlobalSearch = (props) => {
   const { data: isEditable } = useIsEditable();
-  const { open: openSearchModal } = useSearchModal();
+  const { data: searchModalData, open: openSearchModal } = useSearchModal();
 
   // setup effect
   useEffect(() => {
@@ -14,9 +14,13 @@ const FocusToGlobalSearch = (props) => {
       return;
     }
 
-    openSearchModal();
+    if (!searchModalData.isOpened) {
+      openSearchModal();
+      // remove this
+      props.onDeleteRender();
+    }
 
-  }, [isEditable, openSearchModal, props]);
+  }, [isEditable, openSearchModal, props, searchModalData.isOpened]);
 
   return null;
 };
