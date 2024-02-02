@@ -28,7 +28,7 @@ import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
-
+// set new markdownKeymap instead of default one
 const markdownKeymap = [
   { key: 'Backspace', run: deleteMarkupBackward },
   { key: 'Enter', run: insertNewlineContinueMarkup },

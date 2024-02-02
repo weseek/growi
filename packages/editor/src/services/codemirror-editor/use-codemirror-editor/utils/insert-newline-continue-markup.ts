@@ -17,6 +17,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   const strFromBol = state.sliceDoc(bolPos, curPos);
 
+  // If the text before the cursor is only markdown symbols
   if (indentAndMarkOnlyRE.test(strFromBol)) {
     const insert = state.lineBreak;
 
@@ -27,6 +28,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
     });
   }
 
+  // If the text before the cursor is markdown text
   else if (indentAndMarkRE.test(strFromBol)) {
     const indentAndMark = strFromBol.match(indentAndMarkRE)?.[0];
 
@@ -45,6 +47,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
     });
   }
 
+  // If the text before the cursor is regular text
   else {
     const insert = state.lineBreak;
     const nextCurPos = curPos + insert.length;
