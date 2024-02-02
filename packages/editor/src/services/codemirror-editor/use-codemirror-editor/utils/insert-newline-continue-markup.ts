@@ -60,7 +60,6 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
   dispatch(state.update({
     changes,
     selection,
-    scrollIntoView: true,
     userEvent: 'input',
   }));
 
