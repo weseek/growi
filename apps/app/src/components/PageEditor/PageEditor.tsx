@@ -2,10 +2,11 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 import nodePath from 'path';
 
 import type { IPageHasId } from '@growi/core';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
@@ -21,10 +22,10 @@ import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { OptionsToSave } from '~/interfaces/page-operation';
+import type { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
-  useDefaultIndentSize,
+  useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
 } from '~/stores/context';
@@ -53,7 +54,6 @@ import {
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
-import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { PageHeader } from '../PageHeader/PageHeader';
@@ -120,6 +120,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+  const { data: user } = useCurrentUser();
 
   const { data: socket } = useGlobalSocket();
 
@@ -135,7 +136,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   const { resolvedTheme } = useNextThemes();
-  mutateResolvedTheme(resolvedTheme);
+  mutateResolvedTheme({ themeData: resolvedTheme });
 
   // TODO: remove workaround
   // for https://redmine.weseek.co.jp/issues/125923
@@ -174,15 +175,16 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-    // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  })), [mutateIsEnabledUnsavedWarning]);
+  // const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
+  //   // Displays an unsaved warning alert
+  //   mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
+  // })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    mutateIsEnabledUnsavedWarningWithDebounce(value);
-  }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+    // mutateIsEnabledUnsavedWarningWithDebounce(value);
+  // }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+  }, [setMarkdownPreviewWithDebounce]);
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -407,17 +409,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
-
-  // initialize
-  useEffect(() => {
-    if (initialValue == null) {
-      return;
-    }
-    codeMirrorEditor?.initDoc(initialValue);
-    setMarkdownToPreview(initialValue);
-    mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning]);
-
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
@@ -456,19 +447,21 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // when transitioning to a different page, if the initialValue is the same,
-  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
-  const onRouterChangeComplete = useCallback(() => {
-    codeMirrorEditor?.initDoc(initialValue);
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor, initialValue]);
 
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
+  // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
+  // // when transitioning to a different page, if the initialValue is the same,
+  // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  // const onRouterChangeComplete = useCallback(() => {
+  //   codeMirrorEditor?.initDoc(ydoc?.getText('codemirror').toString());
+  //   codeMirrorEditor?.setCaretLine();
+  // }, [codeMirrorEditor, ydoc]);
+
+  // useEffect(() => {
+  //   router.events.on('routeChangeComplete', onRouterChangeComplete);
+  //   return () => {
+  //     router.events.off('routeChangeComplete', onRouterChangeComplete);
+  //   };
+  // }, [onRouterChangeComplete, router.events]);
 
   if (!isEditable) {
     return <></>;
@@ -501,9 +494,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
+            acceptedFileType={acceptedFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            acceptedFileType={acceptedFileType}
+            userName={user?.name}
+            pageId={pageId ?? undefined}
+            initialValue={initialValue}
+            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
           />

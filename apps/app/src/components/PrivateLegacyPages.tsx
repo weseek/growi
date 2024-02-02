@@ -2,6 +2,7 @@ import React, {
   useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
 
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -22,7 +23,6 @@ import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing'
 import {
   useSWRxSearch,
 } from '~/stores/search';
-import { useGlobalSocket } from '~/stores/websocket';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import PaginationWrapper from './PaginationWrapper';
