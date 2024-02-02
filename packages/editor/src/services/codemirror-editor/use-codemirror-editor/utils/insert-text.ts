@@ -20,4 +20,5 @@ export const useInsertText = (view?: EditorView): InsertText => {
       selection: { anchor: insertPos },
     });
   }, [view]);
+
 };
