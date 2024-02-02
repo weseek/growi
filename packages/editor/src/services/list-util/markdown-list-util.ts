@@ -1,9 +1,4 @@
-import { useCallback } from 'react';
-
 import { EditorView } from '@codemirror/view';
-
-import { useInsertText } from '../codemirror-editor/use-codemirror-editor/utils/insert-text';
-
 
 export type NewlineAndIndentContinueMarkdownList = ((editor: EditorView) => void) | undefined;
 
@@ -19,31 +14,6 @@ export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): st
   const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
 
   return editor.state.sliceDoc(firstLineToGet, curPos);
-};
-
-export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): NewlineAndIndentContinueMarkdownList => {
-  const insertText = useInsertText(editor);
-
-  const NewlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
-
-    const curPos = view?.state.selection.main.head;
-    const lineStartPos = view?.state.doc.lineAt(curPos).from;
-
-    const getStrFromAboveLine = getLineToCursor(view, 1);
-
-    const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
-
-    if (matchResult != null) {
-      const indentAndMark = matchResult[0];
-      insertText(indentAndMark, lineStartPos, curPos);
-    }
-  }, [insertText]);
-
-  if (editor == null) {
-    return;
-  }
-
-  return () => { NewlineAndIndentContinueMarkdownList(editor) };
 };
 
 export const adjustPasteData = (strFromBol: string, text: string): string => {
