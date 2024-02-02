@@ -11,7 +11,6 @@ import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts'
 import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
 import {
   getLineToCursor, adjustPasteData,
-  useNewlineAndIndentContinueMarkdownList,
 } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
@@ -55,28 +54,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     };
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
-
-  const editor = codeMirrorEditor?.view;
-
-  const newlineAndIndentContinueMarkdownList = useNewlineAndIndentContinueMarkdownList(editor);
-
-  useEffect(() => {
-    const handleEnterKey = (event: KeyboardEvent) => {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        if (editor == null) {
-          return;
-        }
-        newlineAndIndentContinueMarkdownList?.(editor);
-      }
-    };
-
-    editor?.dom.addEventListener('keydown', handleEnterKey);
-
-    return () => {
-      editor?.dom.removeEventListener('keydown', handleEnterKey);
-    };
-  }, [codeMirrorEditor, editor, newlineAndIndentContinueMarkdownList]);
 
   useEffect(() => {
     if (indentSize == null) {

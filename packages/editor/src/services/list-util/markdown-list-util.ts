@@ -1,7 +1,5 @@
 import { EditorView } from '@codemirror/view';
 
-export type NewlineAndIndentContinueMarkdownList = ((editor: EditorView) => void) | undefined;
-
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
