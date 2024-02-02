@@ -7,8 +7,9 @@ const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$
 export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) => {
 
   const changes: ChangeSpec[] = [];
+
   let insert: string;
-  let nextCurPos: number;
+  let selection;
 
   const curPos = state.selection.main.head;
 
@@ -19,11 +20,10 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   if (indentAndMarkOnlyRE.test(strFromBol)) {
     insert = state.lineBreak;
-    nextCurPos = curPos + insert.length;
 
     changes.push({
       from: bolPos,
-      to: nextCurPos,
+      to: curPos,
       insert,
     });
   }
@@ -35,8 +35,10 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
       return false;
     }
 
-    insert = indentAndMark;
-    nextCurPos = curPos + insert.length + 1;
+    insert = state.lineBreak + indentAndMark;
+    const nextCurPos = curPos + insert.length;
+
+    selection = { anchor: nextCurPos };
 
     changes.push({
       from: curPos,
@@ -46,7 +48,9 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   else {
     insert = state.lineBreak;
-    nextCurPos = curPos + insert.length;
+    const nextCurPos = curPos + insert.length;
+
+    selection = { anchor: nextCurPos };
 
     changes.push({
       from: curPos,
@@ -56,7 +60,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   dispatch(state.update({
     changes,
-    selection: { anchor: nextCurPos },
+    selection,
     scrollIntoView: true,
     userEvent: 'input',
   }));
