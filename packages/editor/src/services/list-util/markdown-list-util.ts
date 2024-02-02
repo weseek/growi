@@ -1,5 +1,18 @@
+import type { EditorView } from '@codemirror/view';
+
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
+
+const getBol = (editor: EditorView) => {
+  const curPos = editor.state.selection.main.head;
+  const aboveLine = editor.state.doc.lineAt(curPos).number;
+  return editor.state.doc.line(aboveLine).from;
+};
+
+export const getStrFromBol = (editor: EditorView): string => {
+  const curPos = editor.state.selection.main.head;
+  return editor.state.sliceDoc(getBol(editor), curPos);
+};
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {
 
