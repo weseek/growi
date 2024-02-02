@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, AllEditorTheme, AllKeymap,
+  useFileDropzone, FileDropzoneOverlay, AllEditorTheme,
 } from '../../services';
 import {
   getStrFromBol, adjustPasteData,
@@ -35,7 +35,6 @@ type Props = {
   onScroll?: () => void,
   indentSize?: number,
   editorTheme?: string,
-  editorKeymap?: string,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -47,7 +46,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     onScroll,
     indentSize,
     editorTheme,
-    editorKeymap,
   } = props;
 
   const containerRef = useRef(null);
@@ -160,16 +158,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, editorTheme]);
 
-
-  useEffect(() => {
-
-    const keymap = editorKeymap ?? 'default';
-    const extension = AllKeymap[keymap] ?? AllKeymap.default;
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorKeymap]);
 
   const {
     getRootProps,

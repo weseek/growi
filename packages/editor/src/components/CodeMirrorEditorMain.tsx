@@ -1,9 +1,10 @@
 import { useEffect } from 'react';
 
-import { type Extension } from '@codemirror/state';
+import { type Extension, Prec } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { getKeymap } from '../services';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
@@ -66,6 +67,16 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
+  useEffect(() => {
+
+    const keymap = editorKeymap ?? 'default';
+    const extension = getKeymap(keymap, onSave);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorKeymap, onSave]);
+
 
   return (
     <CodeMirrorEditor
@@ -76,7 +87,6 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
       editorTheme={editorTheme}
-      editorKeymap={editorKeymap}
     />
   );
 };
