@@ -316,25 +316,11 @@
 
 @include bs.color-mode(light) {
   .wiki {
-    h1, h2 {
-      --bs-border-color: var(--bs-gray-300);
-    }
-    h4, h5, h6 {
-      &::before {
-        --bs-border-color: var(--bs-gray-300);
-      }
-    }
+    --bs-border-color: var(--bs-gray-300);
   }
 }
 @include bs.color-mode(dark) {
   .wiki {
-    h1, h2 {
-      --bs-border-color: var(--bs-gray-700);
-    }
-    h4, h5, h6 {
-      &::before {
-        --bs-border-color: var(--bs-gray-700);
-      }
-    }
+    --bs-border-color: var(--bs-gray-700);
   }
 }
