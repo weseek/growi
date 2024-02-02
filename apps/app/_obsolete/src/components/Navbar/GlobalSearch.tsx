@@ -17,7 +17,7 @@ import {
 import { useCurrentPagePath } from '~/stores/page';
 import { useGlobalSearchFormRef } from '~/stores/ui';
 
-import SearchForm from '../SearchForm';
+import SearchForm from '../../../../src/components/SearchForm';
 
 import styles from './GlobalSearch.module.scss';
 
