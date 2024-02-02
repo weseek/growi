@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
           '/src/styles/nature.scss',
           '/src/styles/spring.scss',
           '/src/styles/wood.scss',
+          '/src/styles/classic.scss',
         ],
         output: {
           assetFileNames: isProd

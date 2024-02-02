@@ -8,7 +8,9 @@ import Head from 'next/head';
 import { SupportedActionType } from '~/interfaces/activity';
 import { CrowiRequest } from '~/interfaces/crowi-request';
 import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
+import {
+  useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions, useActivityExpirationSeconds,
+} from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
@@ -19,6 +21,7 @@ const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').t
 
 type Props = CommonProps & {
   auditLogEnabled: boolean,
+  activityExpirationSeconds: number,
   auditLogAvailableActions: SupportedActionType[],
 };
 
@@ -26,6 +29,7 @@ type Props = CommonProps & {
 const AdminAuditLogPage: NextPage<Props> = (props) => {
   const { t } = useTranslation('admin');
   useAuditLogEnabled(props.auditLogEnabled);
+  useActivityExpirationSeconds(props.activityExpirationSeconds);
   useAuditLogAvailableActions(props.auditLogAvailableActions);
   useCurrentUser(props.currentUser ?? null);
 
@@ -53,6 +57,7 @@ const injectServerConfigurations = async(context: GetServerSidePropsContext, pro
   const { activityService } = crowi;
 
   props.auditLogEnabled = crowi.configManager.getConfig('crowi', 'app:auditLogEnabled');
+  props.activityExpirationSeconds = crowi.configManager.getConfig('crowi', 'app:activityExpirationSeconds');
   props.auditLogAvailableActions = activityService.getAvailableActions(false);
 };
 
