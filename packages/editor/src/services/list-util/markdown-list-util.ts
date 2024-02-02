@@ -2,6 +2,7 @@ import { useCallback } from 'react';
 
 import { EditorView } from '@codemirror/view';
 
+
 import { useInsertText } from '../codemirror-editor/use-codemirror-editor/utils/insert-text';
 
 
@@ -10,41 +11,30 @@ export type NewlineAndIndentContinueMarkdownList = ((editor: EditorView) => void
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 
-export const getLineToCursor = (editor: EditorView, lineNumBeforeCursor = 0): string => {
-  const curPos = editor.state.selection.main.head;
-  const firstLineNumToGet = editor.state.doc.lineAt(curPos).number - lineNumBeforeCursor;
+// export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): NewlineAndIndentContinueMarkdownList => {
+//   const insertText = useInsertText(editor);
 
-  const fixedFirstLineNumToGet = Math.max(firstLineNumToGet, 1);
+//   const newlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
 
-  const firstLineToGet = editor.state.doc.line(fixedFirstLineNumToGet).from;
+//     const curPos = view?.state.selection.main.head;
+//     const lineStartPos = view?.state.doc.lineAt(curPos).from;
 
-  return editor.state.sliceDoc(firstLineToGet, curPos);
-};
+//     const getStrFromAboveLine = getLineToCursor(view, 1);
 
-export const useNewlineAndIndentContinueMarkdownList = (editor?: EditorView): NewlineAndIndentContinueMarkdownList => {
-  const insertText = useInsertText(editor);
+//     const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
 
-  const newlineAndIndentContinueMarkdownList = useCallback((view: EditorView) => {
+//     if (matchResult != null) {
+//       const indentAndMark = matchResult[0];
+//       insertText(indentAndMark, lineStartPos, curPos);
+//     }
+//   }, [insertText]);
 
-    const curPos = view?.state.selection.main.head;
-    const lineStartPos = view?.state.doc.lineAt(curPos).from;
+//   if (editor == null) {
+//     return;
+//   }
 
-    const getStrFromAboveLine = getLineToCursor(view, 1);
-
-    const matchResult = getStrFromAboveLine.match(indentAndMarkRE);
-
-    if (matchResult != null) {
-      const indentAndMark = matchResult[0];
-      insertText(indentAndMark, lineStartPos, curPos);
-    }
-  }, [insertText]);
-
-  if (editor == null) {
-    return;
-  }
-
-  return () => { newlineAndIndentContinueMarkdownList(editor) };
-};
+//   return () => { newlineAndIndentContinueMarkdownList(editor) };
+// };
 
 export const adjustPasteData = (indentAndMark: string, text: string): string => {
 

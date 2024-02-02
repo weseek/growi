@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay } from '../../services';
 import {
-  getLineToCursor, adjustPasteData,
+  adjustPasteData,
   // useNewlineAndIndentContinueMarkdownList,
 } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
@@ -108,7 +108,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
         const textData = event.clipboardData.getData('text/plain');
 
-        const strFromBol = getLineToCursor(editor);
+        // const strFromBol = getLineToCursor(editor);
 
         const adjusted = adjustPasteData(strFromBol, textData);
 
