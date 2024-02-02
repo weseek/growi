@@ -12,7 +12,7 @@ context('Access sticky sub navigation switcher for guest', () => {
       // Scroll page down 250px
       cy.scrollTo(0, 250);
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => !$elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('have.class', 'active');
     });
     cy.screenshot(`${ssPrefix}subnav-switcher-is-sticky-on-scroll-down`);
 
@@ -22,7 +22,7 @@ context('Access sticky sub navigation switcher for guest', () => {
       // Scroll page to top
       cy.scrollTo(0, 0);
       // wait until
-      return cy.getByTestid('grw-subnav-switcher').then($elem => $elem.hasClass('grw-subnav-switcher-hidden'));
+      return cy.get('.sticky-outer-wrapper').should('not.have.class', 'active');
     });
     cy.screenshot(`${ssPrefix}subnav-switcher-is-not-sticky-on-scroll-top`);
   });

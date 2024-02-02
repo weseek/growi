@@ -1,5 +1,5 @@
-import React, { ReactNode, useEffect } from 'react';
-
+import type { ReactNode } from 'react';
+import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
@@ -23,6 +23,7 @@ import superjson from 'superjson';
 import { useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
@@ -58,7 +59,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR, addActivity,
 } from './utils/commons';
 
 
@@ -224,12 +225,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -314,6 +314,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
+  // So preferentially take page data from useSWRxCurrentPage
+  const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
 
   const title = generateCustomTitleForPage(props, pagePath);
 
@@ -596,6 +600,22 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+const getAction = (props: Props): SupportedActionType => {
+  if (props.isNotCreatable) {
+    return SupportedAction.ACTION_PAGE_NOT_CREATABLE;
+  }
+  if (props.isForbidden) {
+    return SupportedAction.ACTION_PAGE_FORBIDDEN;
+  }
+  if (props.isNotFound) {
+    return SupportedAction.ACTION_PAGE_NOT_FOUND;
+  }
+  if (pagePathUtils.isUsersHomepage(props.pageWithMeta?.data.path ?? '')) {
+    return SupportedAction.ACTION_PAGE_USER_HOME_VIEW;
+  }
+  return SupportedAction.ACTION_PAGE_VIEW;
+};
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { user } = req;
@@ -639,6 +659,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
+  addActivity(context, getAction(props));
   return {
     props,
   };

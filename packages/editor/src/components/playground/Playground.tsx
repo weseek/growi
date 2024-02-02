@@ -14,6 +14,7 @@ import { Preview } from './Preview';
 export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
+  const [editorTheme, setEditorTheme] = useState('');
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -61,11 +62,12 @@ export const Playground = (): JSX.Element => {
             onUpload={uploadHandler}
             indentSize={4}
             acceptedFileType={AcceptedUploadFileType.ALL}
+            editorTheme={editorTheme}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />
-          <PlaygroundController />
+          <PlaygroundController setEditorTheme={setEditorTheme} />
         </div>
       </div>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>

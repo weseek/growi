@@ -29,6 +29,7 @@ import { instanciate as instanciateExternalAccountService } from '../service/ext
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
+import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
@@ -172,6 +173,8 @@ Crowi.prototype.init = async function() {
   ]);
 
   await this.autoInstall();
+
+  await normalizeData();
 };
 
 /**

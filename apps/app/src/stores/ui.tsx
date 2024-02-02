@@ -9,8 +9,9 @@ import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
+import type { MutatorOptions } from 'swr';
 import {
-  useSWRConfig, type SWRResponse, type Key, KeyedMutator, MutatorOptions,
+  useSWRConfig, type SWRResponse, type Key,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
@@ -349,10 +350,6 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
 
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
   return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
-};
-
-export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR('globalSearchTypeahead', initialData);
 };
 
 type PageTreeDescCountMapUtils = {
