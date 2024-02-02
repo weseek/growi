@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
@@ -104,7 +104,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu end>
+        <DropdownMenu container="body" end>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>

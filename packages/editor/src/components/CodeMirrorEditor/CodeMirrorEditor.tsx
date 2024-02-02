@@ -10,7 +10,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
 import {
-  getStrFromBol, adjustPasteData,
+  adjustPasteData, getStrFromBol,
 } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
