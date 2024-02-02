@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { indentWithTab, defaultKeymap } from '@codemirror/commands';
 import {
-  markdown, markdownLanguage,
+  markdown, markdownLanguage, deleteMarkupBackward,
 } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -26,11 +26,19 @@ import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
+import { insertNewlineContinueMarkup } from './utils/insert-newline-continue-markup';
 import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
+// set new markdownKeymap instead of default one
+// I also bound the deleteMarkupBackward to the backspace key to align with the existing keymap
+// https://github.com/codemirror/lang-markdown/blob/main/src/index.ts#L17
+const markdownKeymap = [
+  { key: 'Backspace', run: deleteMarkupBackward },
+  { key: 'Enter', run: insertNewlineContinueMarkup },
+];
 
 const markdownHighlighting = HighlightStyle.define([
   { tag: tags.heading1, class: 'cm-header-1 cm-header' },
@@ -61,7 +69,8 @@ export type UseCodeMirrorEditor = {
 
 const defaultExtensions: Extension[] = [
   EditorView.lineWrapping,
-  markdown({ base: markdownLanguage, codeLanguages: languages }),
+  markdown({ base: markdownLanguage, codeLanguages: languages, addKeymap: false }),
+  keymap.of(markdownKeymap),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
   syntaxHighlighting(markdownHighlighting),
