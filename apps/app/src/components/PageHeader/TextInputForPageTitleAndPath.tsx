@@ -68,20 +68,21 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     setRenameInputShown(false);
   }, [currentPage.path, setEditingPagePath, setRenameInputShown]);
 
+  const clickOutSideHandler = (e) => {
+    const container = document.getElementById('page-path-header');
+
+    if (container && !container.contains(e.target)) {
+      setRenameInputShown(false);
+    }
+  };
+
   useEffect(() => {
-    const onClickOutsideHandler = (e) => {
-      const pageHeaderElement = document.getElementById('page-header');
+    document.addEventListener('click', clickOutSideHandler);
 
-      if (pageHeaderElement && !pageHeaderElement.contains(e.target)) {
-        pagePathRenameHandler(editingPagePath);
-        console.log('clicked outside');
-      }
+    return () => {
+      document.removeEventListener('click', clickOutSideHandler);
     };
-
-    document.addEventListener('click', onClickOutsideHandler);
-
-    return () => document.removeEventListener('click', onClickOutsideHandler);
-  }, [editingPagePath, pagePathRenameHandler]);
+  }, []);
 
   return (
     <>
