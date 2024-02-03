@@ -18,7 +18,7 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <div id="page-header">
+    <>
       <PagePathHeader
         currentPagePath={currentPagePath}
         currentPage={currentPage}
@@ -29,6 +29,6 @@ export const PageHeader: FC = () => {
         currentPage={currentPage}
         editingPagePathHandler={editingPagePathHandler}
       />
-    </div>
+    </>
   );
 };
