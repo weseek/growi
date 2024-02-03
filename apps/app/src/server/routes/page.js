@@ -5,6 +5,7 @@ import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
+import { GlobalNotificationSettingEvent } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
 import UpdatePost from '../models/update-post';
 import { preNotifyService } from '../service/pre-notify';
@@ -337,7 +338,7 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_EDIT, page, req.user);
     }
     catch (err) {
       logger.error('Edit notification failed', err);
@@ -647,7 +648,7 @@ module.exports = function(crowi, app) {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_DELETE, page, req.user);
     }
     catch (err) {
       logger.error('Delete notification failed', err);

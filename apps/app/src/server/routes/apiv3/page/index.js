@@ -12,6 +12,7 @@ import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
+import { GlobalNotificationSettingEvent } from '~/server/models';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import { configManager } from '~/server/service/config-manager';
@@ -371,7 +372,7 @@ module.exports = (crowi) => {
     if (isLiked) {
       try {
         // global notification
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
+        await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_LIKE, page, req.user);
       }
       catch (err) {
         logger.error('Like notification failed', err);

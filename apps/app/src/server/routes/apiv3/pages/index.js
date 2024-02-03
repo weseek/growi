@@ -9,6 +9,7 @@ import mongoose from 'mongoose';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { GlobalNotificationSettingEvent } from '~/server/models';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -153,7 +154,6 @@ module.exports = (crowi) => {
   const Page = crowi.model('Page');
   const User = crowi.model('User');
   const PageTagRelation = crowi.model('PageTagRelation');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const activityEvent = crowi.event('activity');
 
@@ -402,7 +402,7 @@ module.exports = (crowi) => {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_CREATE, createdPage, req.user);
     }
     catch (err) {
       logger.error('Create grobal notification failed', err);
@@ -619,7 +619,7 @@ module.exports = (crowi) => {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, renamedPage, req.user, {
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_MOVE, renamedPage, req.user, {
         oldPath: page.path,
       });
     }
@@ -842,7 +842,7 @@ module.exports = (crowi) => {
       const copyPage = { ...page };
       copyPage.path = newPagePath;
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
+        await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_CREATE, copyPage, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);
