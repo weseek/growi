@@ -1,5 +1,5 @@
 import type {
-  IPageInfoForListing, IPageInfo, IUserHasId,
+  IPageInfoForListing, IPageInfo,
 } from '@growi/core';
 import { isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
@@ -14,7 +14,6 @@ import loggerFactory from '~/utils/logger';
 import Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
 import { PageModel } from '../../models/page';
-import PageService from '../../service/page';
 
 import { ApiV3Response } from './interfaces/apiv3-response';
 
@@ -76,7 +75,7 @@ const routerFactory = (crowi: Crowi): Router => {
   router.get('/ancestors-children', accessTokenParser, loginRequired, ...validator.pagePathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response): Promise<any> => {
     const { path } = req.query;
 
-    const pageService: PageService = crowi.pageService!;
+    const pageService = crowi.pageService;
     try {
       const ancestorsChildren = await pageService.findAncestorsChildrenByPathAndViewer(path as string, req.user);
       return res.apiv3({ ancestorsChildren });
@@ -95,7 +94,7 @@ const routerFactory = (crowi: Crowi): Router => {
   router.get('/children', accessTokenParser, loginRequired, validator.pageIdOrPathRequired, apiV3FormValidator, async(req: AuthorizedRequest, res: ApiV3Response) => {
     const { id, path } = req.query;
 
-    const pageService: PageService = crowi.pageService!;
+    const pageService = crowi.pageService;
 
     try {
       const pages = await pageService.findChildrenByParentPathOrIdAndViewer((id || path)as string, req.user);
@@ -119,7 +118,7 @@ const routerFactory = (crowi: Crowi): Router => {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const Bookmark = crowi.model('Bookmark');
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const pageService: PageService = crowi.pageService!;
+    const pageService = crowi.pageService;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const pageGrantService: IPageGrantService = crowi.pageGrantService!;
 

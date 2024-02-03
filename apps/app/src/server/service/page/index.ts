@@ -13,17 +13,19 @@ import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose, { ObjectId, Cursor } from 'mongoose';
+import type { ObjectId, Cursor } from 'mongoose';
+import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import type { IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
 import {
-  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation, PageSingleDeleteCompConfigValue,
+  PageDeleteConfigValue, PageSingleDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -35,12 +37,13 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { ObjectIdLike } from '../../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PathAlreadyExistsError } from '../../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../../models/page-operation';
-import { PageRedirectModel } from '../../models/page-redirect';
+import type { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
+import type { PageOperationDocument } from '../../models/page-operation';
+import PageOperation from '../../models/page-operation';
+import type { PageRedirectModel } from '../../models/page-redirect';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
 import Subscription from '../../models/subscription';
@@ -48,11 +51,11 @@ import UserGroupRelation from '../../models/user-group-relation';
 import { V5ConversionError } from '../../models/vo/v5-conversion-error';
 import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
-import { IPageGrantService } from '../page-grant';
+import type { IPageGrantService } from '../page-grant';
 import { preNotifyService } from '../pre-notify';
 
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
-import { IPageService } from './page-service';
+import type { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
 
 export * from './page-service';
@@ -2567,7 +2570,7 @@ class PageService implements IPageService {
 
   }
 
-  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
+  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user?): Promise<Record<string, string | null>> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const MAX_LENGTH = 350;
 
