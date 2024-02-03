@@ -65,7 +65,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
       className="row"
       onBlur={onBlurHandler}
     >
-      <div className="col-6">
+      <div className="col-4">
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
@@ -74,7 +74,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
           handleInputChange={handleInputChange}
         />
       </div>
-      <div className={`col-6 ${buttonStyle}`}>
+      <div className={`col-4 ${buttonStyle}`}>
         <button type="button" onClick={handleButtonClick}>
           <span className="material-symbols-outlined">check_circle</span>
         </button>
