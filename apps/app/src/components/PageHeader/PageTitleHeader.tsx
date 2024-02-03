@@ -34,8 +34,14 @@ export const PageTitleHeader: FC<Props> = (props) => {
     }
   };
 
+  const onBlurHandler = () => {
+    if (pageName === inputText) {
+      setRenameInputShown(false);
+    }
+  };
+
   return (
-    <div onBlur={() => setRenameInputShown(false)}>
+    <div onBlur={onBlurHandler}>
       <TextInputForPageTitleAndPath
         currentPage={currentPage}
         stateHandler={stateHandler}
