@@ -1,11 +1,10 @@
 import type { FC } from 'react';
 import {
-  useState, useMemo, useEffect, useRef,
+  useState, useMemo,
 } from 'react';
 
 import nodePath from 'path';
 
-import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 
 import type { Props } from './PagePathHeader';
@@ -18,8 +17,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-
-  const ref = useRef<HTMLDivElement>(null);
 
   const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
 
@@ -46,10 +43,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setEditingPagePath(newPagePath);
   };
 
-  const onBlurHandler = () => {
-    pagePathRenameHandler(editingPagePath);
-  };
-
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   const handleButtonClick = () => {
@@ -57,12 +50,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
   };
 
   return (
-    <div
-      id="page-title-header"
-      className="row"
-      // onBlur={onBlurHandler}
-      ref={ref}
-    >
+    <div className="row">
       <div className="col-4">
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
