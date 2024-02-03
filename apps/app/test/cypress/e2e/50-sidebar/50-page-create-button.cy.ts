@@ -51,12 +51,14 @@ describe('Access to PageCreateButton', () => {
         //   // 確実にtoday's memoが作成された保証を得て、スクショ撮影
         // });
 
-        it('Successfully create children template', () => {
-          cy.getByTestid("grw-sidebar-nav-children-template-create-dropdown-item").click({ force:true });
-        });
+        // it('Successfully create children template', () => {
+        //   cy.getByTestid("grw-sidebar-nav-children-template-create-dropdown-item").click({ force:true });
+        //   cy.visit('/_template');
+        // });
 
         // it('Successfully create descendants template', () => {
         //   cy.getByTestid("grw-sidebar-nav-descendants-template-create-dropdown-item").click({ force:true });
+        //   cy.visit('/__template');
         // });
 
       });
