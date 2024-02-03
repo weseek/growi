@@ -6,21 +6,20 @@ import nodePath from 'path';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 
+import type { Props } from './PagePathHeader';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
-
-type Props = {
-  currentPagePath: string,
-  currentPage: IPagePopulatedToShowRevision;
-}
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
   const { currentPagePath, currentPage } = props;
-  const pageName = nodePath.basename(currentPagePath ?? '') || '/';
+  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const [inputText, setInputText] = useState(pageName);
+
+  const { editingPagePath, setEditingPagePath } = props.editingPagePathHandler;
+
+  const editingPageTitle = nodePath.basename(editingPagePath);
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -34,23 +33,23 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
-  const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageName}</div>), [pageName]);
+  const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageTitle}</div>), [pageTitle]);
 
   const handleInputChange = (inputText: string) => {
-    setInputText(inputText);
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
+
+    setEditingPagePath(newPagePath);
   };
 
   const onBlurHandler = () => {
-    pagePathRenameHandler(inputText);
+    pagePathRenameHandler(editingPagePath);
   };
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   const handleButtonClick = () => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-
-    pagePathRenameHandler(newPagePath);
+    pagePathRenameHandler(editingPagePath);
   };
 
   return (
@@ -62,7 +61,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
-          inputValue={inputText}
+          inputValue={editingPageTitle}
           CustomComponent={PageTitle}
           handleInputChange={handleInputChange}
         />
