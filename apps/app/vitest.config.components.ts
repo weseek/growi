@@ -1,16 +1,16 @@
+import react from '@vitejs/plugin-react';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   plugins: [
-    tsconfigPaths(),
+    react(), tsconfigPaths(),
   ],
   test: {
-    environment: 'node',
-    exclude: [
-      '**/test/**', '**/*.spec.{tsx,jsx}',
-    ],
-    clearMocks: true,
     globals: true,
+    environment: 'happy-dom',
+    include: [
+      '**/*.spec.{tsx,jsx}',
+    ],
   },
 });

@@ -3,9 +3,10 @@ import React, { type ReactNode, useCallback, useState } from 'react';
 import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { EditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import { toastError } from '~/client/util/toastr';
+import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
-import { useOnPageEditorModeButtonClicked } from './hooks';
+import { useCreatePageAndTransit } from './hooks';
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -15,7 +16,7 @@ type PageEditorModeButtonProps = {
   editorMode: EditorMode,
   children?: ReactNode,
   isBtnDisabled?: boolean,
-  onClick?: (mode: EditorMode) => void,
+  onClick?: () => void,
 }
 const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
   const {
@@ -34,7 +35,7 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
     <button
       type="button"
       className={classNames.join(' ')}
-      onClick={() => onClick?.(editorMode)}
+      onClick={onClick}
       data-testid={`${editorMode}-button`}
     >
       {children}
@@ -60,21 +61,27 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     // grantUserGroupId,
   } = props;
 
-  const { t } = useTranslation();
+  const { t } = useTranslation('common');
   const [isCreating, setIsCreating] = useState(false);
 
+  const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
-  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path);
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
-  const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
-    if (_isBtnDisabled) {
-      return;
-    }
+  const createPageAndTransit = useCreatePageAndTransit();
 
-    onPageEditorModeButtonClicked?.(viewType);
-  }, [_isBtnDisabled, onPageEditorModeButtonClicked]);
+  const editButtonClickedHandler = useCallback(() => {
+    createPageAndTransit(
+      path,
+      {
+        onCreationStart: () => { setIsCreating(true) },
+        onAborted: () => { mutateEditorMode(EditorMode.Editor) },
+        onError: () => { toastError(t('toaster.create_failed', { target: path })) },
+        onTerminated: () => { setIsCreating(false) },
+      },
+    );
+  }, [createPageAndTransit, path, mutateEditorMode, t]);
 
   return (
     <>
@@ -89,7 +96,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
             isBtnDisabled={_isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
+            onClick={() => mutateEditorMode(EditorMode.View)}
           >
             <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
           </PageEditorModeButton>
@@ -99,7 +106,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             currentEditorMode={editorMode}
             editorMode={EditorMode.Editor}
             isBtnDisabled={_isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
+            onClick={editButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
           </PageEditorModeButton>
