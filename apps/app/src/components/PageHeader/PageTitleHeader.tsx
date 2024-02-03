@@ -56,46 +56,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
     pagePathRenameHandler(editingPagePath);
   };
 
-  // useEffect(() => {
-  //   const element = ref.current;
-
-  //   if (element == null) {
-  //     return;
-  //   }
-
-  //   const handleClickOutside = (e) => {
-  //     if (!element.contains(e.target)) {
-  //       pagePathRenameHandler(editingPagePath);
-  //     }
-  //   };
-
-  //   document.addEventListener('click', handleClickOutside);
-
-  //   return () => {
-  //     document.removeEventListener('click', handleClickOutside);
-  //   };
-
-  // }, []);
-
-  // const clickOutSideHandler = (e) => {
-  //   const container = document.getElementById('page-title-header');
-
-  //   if (container && !container.contains(e.target)) {
-  //     pagePathRenameHandler(editingPagePath);
-  //     console.log('click outside');
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   document.addEventListener('click', clickOutSideHandler);
-
-  //   return () => {
-  //     document.removeEventListener('click', clickOutSideHandler);
-  //   };
-  // }, []);
-
   return (
     <div
+      id="page-title-header"
       className="row"
       // onBlur={onBlurHandler}
       ref={ref}
