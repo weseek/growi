@@ -37,12 +37,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageName}</div>), [pageName]);
 
   const handleInputChange = (inputText: string) => {
-    if (inputText !== '') {
-      setInputText(inputText);
-    }
-    else {
-      setInputText(pageName);
-    }
+    setInputText(inputText);
   };
 
   const onBlurHandler = () => {
