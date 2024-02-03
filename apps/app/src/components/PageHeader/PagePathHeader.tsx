@@ -12,13 +12,8 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
+import { TextInputForPageTitleAndPath, type editingPagePathHandler } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
-
-type editingPagePathHandler = {
-  editingPagePath: string
-  setEditingPagePath: Dispatch<SetStateAction<string>>
-}
 
 export type Props = {
   currentPagePath: string
@@ -27,7 +22,7 @@ export type Props = {
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPagePath, currentPage } = props;
+  const { currentPagePath, currentPage, editingPagePathHandler } = props;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -35,7 +30,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
-  const { editingPagePath, setEditingPagePath } = props.editingPagePathHandler;
+  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -81,59 +76,59 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
-  const clickOutSideHandler = (e) => {
-    const container = document.getElementById('page-path-header');
+  // const clickOutSideHandler = (e) => {
+  //   const container = document.getElementById('page-path-header');
 
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
-  };
+  //   if (container && !container.contains(e.target)) {
+  //     pagePathRenameHandler(editingPagePath);
+  //     console.log('click outside');
+  //   }
+  // };
 
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
+  // useEffect(() => {
+  //   document.addEventListener('click', clickOutSideHandler);
 
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener('click', clickOutSideHandler);
+  //   };
+  // }, []);
 
   return (
-    <>
-      <div
-        id="page-path-header"
-        onMouseLeave={() => setButtonShown(false)}
-      >
-        <div className="row">
-          <div
-            className="col-4"
-            onMouseEnter={() => setButtonShown(true)}
-          >
-            <TextInputForPageTitleAndPath
-              currentPage={currentPage}
-              stateHandler={stateHandler}
-              inputValue={editingPagePath}
-              CustomComponent={PagePath}
-              handleInputChange={handleInputChange}
-            />
-          </div>
-          <div className={`${buttonStyle} col-4 row`}>
-            <div className="col-4">
-              <button type="button" onClick={handleEditButtonClick}>
-                {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
-              </button>
-            </div>
-            <div className="col-4">
-              <button type="button" onClick={openPageSelectModal}>
-                <span className="material-symbols-outlined">account_tree</span>
-              </button>
-            </div>
-          </div>
-          {isOpened
-            && (
-              <PageSelectModal />
-            )}
+    <div
+      id="page-path-header"
+      onMouseLeave={() => setButtonShown(false)}
+    >
+      <div className="row">
+        <div
+          className="col-4"
+          onMouseEnter={() => setButtonShown(true)}
+        >
+          <TextInputForPageTitleAndPath
+            currentPage={currentPage}
+            stateHandler={stateHandler}
+            editingPagePathHandler={editingPagePathHandler}
+            inputValue={editingPagePath}
+            CustomComponent={PagePath}
+            handleInputChange={handleInputChange}
+          />
         </div>
+        <div className={`${buttonStyle} col-4 row`}>
+          <div className="col-4">
+            <button type="button" onClick={handleEditButtonClick}>
+              {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
+            </button>
+          </div>
+          <div className="col-4">
+            <button type="button" onClick={openPageSelectModal}>
+              <span className="material-symbols-outlined">account_tree</span>
+            </button>
+          </div>
+        </div>
+        {isOpened
+          && (
+            <PageSelectModal />
+          )}
       </div>
-    </>
+    </div>
   );
 };
