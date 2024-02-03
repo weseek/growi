@@ -30,6 +30,10 @@ const ApiErrorMessage = (props) => {
         return (
           <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.user_not_admin') }</strong>
         );
+      case 'complete_deletion_not_allowed_for_user':
+        return (
+          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.complete_deletion_not_allowed_for_user') }</strong>
+        );
       case 'outdated':
         return (
           <>

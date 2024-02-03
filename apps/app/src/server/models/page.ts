@@ -127,6 +127,7 @@ const schema = new Schema<PageDocument, PageModel>({
       return arr.length === uniqueItemValues.size;
     }, 'grantedGroups contains non unique item'],
     default: [],
+    required: true,
   },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
