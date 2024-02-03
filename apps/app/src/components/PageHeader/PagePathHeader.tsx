@@ -22,7 +22,7 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
-  const [inputText, setInputText] = useState('');
+  const [inputText, setInputText] = useState(currentPagePath);
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -101,7 +101,7 @@ export const PagePathHeader: FC<Props> = (props) => {
             <TextInputForPageTitleAndPath
               currentPage={currentPage}
               stateHandler={stateHandler}
-              inputValue={currentPagePath}
+              inputValue={inputText}
               CustomComponent={PagePath}
               handleInputChange={handleInputChange}
             />
