@@ -1,7 +1,10 @@
-import type { FC } from 'react';
+import type { FC, Dispatch, SetStateAction } from 'react';
 import { useEffect, useMemo, useState } from 'react';
 
+import nodePath from 'path';
+
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 
 import { usePageSelectModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -12,9 +15,15 @@ import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
-type Props = {
+type editingPagePathHandler = {
+  editingPagePath: string
+  setEditingPagePath: Dispatch<SetStateAction<string>>
+}
+
+export type Props = {
   currentPagePath: string
   currentPage: IPagePopulatedToShowRevision
+  editingPagePathHandler: editingPagePathHandler
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
@@ -22,10 +31,11 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
-  const [inputText, setInputText] = useState(currentPagePath);
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+
+  const { editingPagePath, setEditingPagePath } = props.editingPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -57,12 +67,12 @@ export const PagePathHeader: FC<Props> = (props) => {
   ), [currentPage._id, currentPagePath, isEditorMode]);
 
   const handleInputChange = (inputText: string) => {
-    setInputText(inputText);
+    setEditingPagePath(inputText);
   };
 
   const handleEditButtonClick = () => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(inputText, onRenameFinish, onRenameFailure);
+      pagePathRenameHandler(editingPagePath);
     }
     else {
       setRenameInputShown(true);
@@ -101,7 +111,7 @@ export const PagePathHeader: FC<Props> = (props) => {
             <TextInputForPageTitleAndPath
               currentPage={currentPage}
               stateHandler={stateHandler}
-              inputValue={inputText}
+              inputValue={editingPagePath}
               CustomComponent={PagePath}
               handleInputChange={handleInputChange}
             />
