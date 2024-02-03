@@ -1,4 +1,4 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import type { Dispatch, SetStateAction, FC } from 'react';
 
 import nodePath from 'path';
@@ -42,7 +42,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-  const { setEditingPagePath } = editingPagePathHandler;
+  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -67,6 +67,21 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     setEditingPagePath(currentPage.path);
     setRenameInputShown(false);
   }, [currentPage.path, setEditingPagePath, setRenameInputShown]);
+
+  useEffect(() => {
+    const onClickOutsideHandler = (e) => {
+      const pageHeaderElement = document.getElementById('page-header');
+
+      if (pageHeaderElement && !pageHeaderElement.contains(e.target)) {
+        pagePathRenameHandler(editingPagePath);
+        console.log('clicked outside');
+      }
+    };
+
+    document.addEventListener('click', onClickOutsideHandler);
+
+    return () => document.removeEventListener('click', onClickOutsideHandler);
+  }, [editingPagePath, pagePathRenameHandler]);
 
   return (
     <>
