@@ -3,24 +3,25 @@ import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
+import express from 'express';
+import { body, query } from 'express-validator';
+import mongoose from 'mongoose';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
-import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
-import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
+import { generateAddActivityMiddleware } from '../../../middlewares/add-activity';
+import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
+import { serializePageSecurely } from '../../../models/serializers/page-serializer';
+import { serializeRevisionSecurely } from '../../../models/serializers/revision-serializer';
+import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
+import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
 
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
-const { body } = require('express-validator');
-const { query } = require('express-validator');
-const mongoose = require('mongoose');
-
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
@@ -144,10 +145,10 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../../middlewares/admin-required')(crowi);
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
@@ -158,10 +159,6 @@ module.exports = (crowi) => {
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const userNotificationService = crowi.getUserNotificationService();
-
-  const { serializePageSecurely } = require('../../models/serializers/page-serializer');
-  const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
-  const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
   const addActivity = generateAddActivityMiddleware(crowi);
 

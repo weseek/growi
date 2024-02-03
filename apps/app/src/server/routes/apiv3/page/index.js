@@ -14,6 +14,7 @@ import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
+import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
@@ -166,13 +167,11 @@ const router = express.Router();
  *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
-
-  const configManager = crowi.configManager;
 
   const globalNotificationService = crowi.getGlobalNotificationService();
   const { Page, GlobalNotificationSetting } = crowi.models;
