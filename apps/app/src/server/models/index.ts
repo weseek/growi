@@ -20,6 +20,7 @@ export * as PageRedirect from './page-redirect';
 export * as ShareLink from './share-link';
 export * as Tag from './tag';
 export * as UserGroup from './user-group';
+export * as PageTagRelation from './page-tag-relation';
 
 export * from './serializers';
 

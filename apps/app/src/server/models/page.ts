@@ -77,7 +77,7 @@ export interface PageModel extends Model<PageDocument> {
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
   findTemplate(path: string): Promise<{
     templateBody?: string,
-    templateTags?: ITag[],
+    templateTags?: string[],
   }>
 
   PageQueryBuilder: typeof PageQueryBuilder

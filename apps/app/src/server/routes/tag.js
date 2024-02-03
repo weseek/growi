@@ -1,6 +1,9 @@
 import { SupportedAction } from '~/interfaces/activity';
 import Tag from '~/server/models/tag';
 
+import PageTagRelation from '../models/page-tag-relation';
+import ApiResponse from '../util/apiResponse';
+
 /**
  * @swagger
  *
@@ -32,9 +35,7 @@ import Tag from '~/server/models/tag';
  */
 module.exports = function(crowi, app) {
 
-  const PageTagRelation = crowi.model('PageTagRelation');
   const activityEvent = crowi.event('activity');
-  const ApiResponse = require('../util/apiResponse');
   const actions = {};
   const api = {};
 
