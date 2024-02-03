@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 
@@ -73,8 +73,25 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
+  const clickOutSideHandler = (e) => {
+    const container = document.getElementById('page-path-header');
+
+    if (container && !container.contains(e.target)) {
+      setRenameInputShown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', clickOutSideHandler);
+
+    return () => {
+      document.removeEventListener('click', clickOutSideHandler);
+    };
+  }, []);
+
   return (
     <div
+      id="page-path-header"
       onMouseLeave={() => setButtonShown(false)}
     >
       <div className="row">

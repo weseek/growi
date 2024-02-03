@@ -69,22 +69,6 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     setRenameInputShown(false);
   }, [currentPage.path, setEditingPagePath, setRenameInputShown]);
 
-  const clickOutSideHandler = (e) => {
-    const container = document.getElementById('page-path-header');
-
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
-
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, []);
-
   return (
     <>
       {isRenameInputShown ? (
