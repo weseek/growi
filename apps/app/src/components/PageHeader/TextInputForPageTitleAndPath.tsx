@@ -42,7 +42,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
+  const { setEditingPagePath } = editingPagePathHandler;
 
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
