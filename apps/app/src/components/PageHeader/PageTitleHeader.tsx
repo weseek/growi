@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -41,9 +41,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
   };
 
   const onBlurHandler = () => {
-    if (pageName === inputText) {
-      setRenameInputShown(false);
-    }
+    pagePathRenameHandler(inputText);
   };
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
