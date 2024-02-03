@@ -368,13 +368,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       });
     }
 
-    let grantedGroupIds = null;
-    if (page.grantedGroups != null) {
-      grantedGroupIds = page.grantedGroups.map((group) => {
-        const groupId = (group.item._id == null) ? group.item : group.item._id;
-        return groupId.toString();
-      });
-    }
+    let grantedGroupIds = [];
+    grantedGroupIds = page.grantedGroups.map((group) => {
+      const groupId = (group.item._id == null) ? group.item : group.item._id;
+      return groupId.toString();
+    });
 
     return {
       grant: page.grant,
