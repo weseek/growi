@@ -1,6 +1,7 @@
 import { pagePathUtils } from '@growi/core/dist/utils';
-import loggerFactory from '~/utils/logger';
 
+import { GlobalNotificationSettingType } from '~/server/models';
+import loggerFactory from '~/utils/logger';
 
 import {
   prepareSlackMessageForGlobalNotification,
@@ -18,9 +19,6 @@ class GlobalNotificationSlackService {
 
   constructor(crowi) {
     this.crowi = crowi;
-
-    this.type = crowi.model('GlobalNotificationSetting').TYPE.SLACK;
-    this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
 
@@ -39,7 +37,7 @@ class GlobalNotificationSlackService {
     const { appService, slackIntegrationService } = this.crowi;
 
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
-    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, this.type);
+    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, path, GlobalNotificationSettingType.SLACK);
 
     const messageBody = this.generateMessageBody(event, id, path, triggeredBy, vars);
     const attachmentBody = this.generateAttachmentBody(event, id, path, triggeredBy, vars);
@@ -74,16 +72,16 @@ class GlobalNotificationSlackService {
     let messageBody;
 
     switch (event) {
-      case this.event.PAGE_CREATE:
+      case GlobalNotificationSettingEvent.PAGE_CREATE:
         messageBody = `:bell: ${username} created ${parmaLink}`;
         break;
-      case this.event.PAGE_EDIT:
+      case GlobalNotificationSettingEvent.PAGE_EDIT:
         messageBody = `:bell: ${username} edited ${parmaLink}`;
         break;
-      case this.event.PAGE_DELETE:
+      case GlobalNotificationSettingEvent.PAGE_DELETE:
         messageBody = `:bell: ${username} deleted ${pathLink}`;
         break;
-      case this.event.PAGE_MOVE:
+      case GlobalNotificationSettingEvent.PAGE_MOVE:
         // validate for page move
         if (oldPath == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
@@ -91,10 +89,10 @@ class GlobalNotificationSlackService {
         // eslint-disable-next-line no-case-declarations
         messageBody = `:bell: ${username} moved ${oldPath} to ${parmaLink}`;
         break;
-      case this.event.PAGE_LIKE:
+      case GlobalNotificationSettingEvent.PAGE_LIKE:
         messageBody = `:bell: ${username} liked ${parmaLink}`;
         break;
-      case this.event.COMMENT:
+      case GlobalNotificationSettingEvent.COMMENT:
         // validate for comment
         if (comment == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationSlackService.generateOption for event ${event}`);
@@ -128,17 +126,17 @@ class GlobalNotificationSlackService {
     // attachment body is intended for comment or page diff
 
     // switch (event) {
-    //   case this.event.PAGE_CREATE:
+    //   case GlobalNotificationSettingEvent.PAGE_CREATE:
     //     break;
-    //   case this.event.PAGE_EDIT:
+    //   case GlobalNotificationSettingEvent.PAGE_EDIT:
     //     break;
-    //   case this.event.PAGE_DELETE:
+    //   case GlobalNotificationSettingEvent.PAGE_DELETE:
     //     break;
-    //   case this.event.PAGE_MOVE:
+    //   case GlobalNotificationSettingEvent.PAGE_MOVE:
     //     break;
-    //   case this.event.PAGE_LIKE:
+    //   case GlobalNotificationSettingEvent.PAGE_LIKE:
     //     break;
-    //   case this.event.COMMENT:
+    //   case GlobalNotificationSettingEvent.COMMENT:
     //     break;
     //   default:
     //     throw new Error(`unknown global notificaiton event: ${event}`);
