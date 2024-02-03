@@ -4,8 +4,10 @@ import { useState, useMemo } from 'react';
 import nodePath from 'path';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
+import { usePagePathRenameHandler } from './page-header-utils';
 
 type Props = {
   currentPagePath: string,
@@ -20,6 +22,15 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [inputText, setInputText] = useState(pageName);
 
+  const onRenameFinish = () => {
+    setRenameInputShown(false);
+  };
+
+  const onRenameFailure = () => {
+    setRenameInputShown(true);
+  };
+
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -40,15 +51,34 @@ export const PageTitleHeader: FC<Props> = (props) => {
     }
   };
 
+  const buttonStyle = isRenameInputShown ? '' : 'd-none';
+
+  const handleButtonClick = () => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
+
+    pagePathRenameHandler(newPagePath);
+  };
+
   return (
-    <div onBlur={onBlurHandler}>
-      <TextInputForPageTitleAndPath
-        currentPage={currentPage}
-        stateHandler={stateHandler}
-        inputValue={inputText}
-        CustomComponent={PageTitle}
-        handleInputChange={handleInputChange}
-      />
+    <div
+      className="row"
+      onBlur={onBlurHandler}
+    >
+      <div className="col-6">
+        <TextInputForPageTitleAndPath
+          currentPage={currentPage}
+          stateHandler={stateHandler}
+          inputValue={inputText}
+          CustomComponent={PageTitle}
+          handleInputChange={handleInputChange}
+        />
+      </div>
+      <div className={`col-6 ${buttonStyle}`}>
+        <button type="button" onClick={handleButtonClick}>
+          <span className="material-symbols-outlined">check_circle</span>
+        </button>
+      </div>
     </div>
   );
 };
