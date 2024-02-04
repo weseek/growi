@@ -3,7 +3,6 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
-import type Linker from '@growi/editor/src/services/link-util/Linker';
 import type { SWRResponse } from 'swr';
 
 
@@ -674,35 +673,6 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     open,
     close,
   };
-};
-
-/*
- * LinkEditModal
- */
-type LinkEditModalStatus = {
-  isOpened: boolean,
-  defaultMarkdownLink?: Linker,
-  onSave?: (linkText: string) => void
-}
-
-type LinkEditModalUtils = {
-  open(defaultMarkdownLink: Linker, onSave: (linkText: string) => void): void,
-  close(): void,
-}
-
-export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & LinkEditModalUtils => {
-
-  const initialStatus: LinkEditModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<LinkEditModalStatus, Error>('linkEditModal', undefined, { fallbackData: initialStatus });
-
-  return Object.assign(swrResponse, {
-    open: (defaultMarkdownLink: Linker, onSave: (linkText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, defaultMarkdownLink, onSave });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
 };
 
 /*
