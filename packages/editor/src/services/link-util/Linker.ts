@@ -8,11 +8,7 @@ export default class Linker {
 
   link: string | undefined;
 
-  constructor(
-      type: string = Linker.types.markdownLink,
-      label = '',
-      link = '',
-  ) {
+  constructor(type = Linker.types.markdownLink, label = '', link = '') {
     this.type = type;
     this.label = label;
     this.link = link;
