@@ -36,7 +36,7 @@ module.exports = (crowi: Crowi): Router => {
 
     try {
       // temporal await, remove it after multi-part upload is implemented in https://redmine.weseek.co.jp/issues/78038
-      await pageBulkExportService?.bulkExportWithBasePagePath(path);
+      await pageBulkExportService?.bulkExportWithBasePagePath(path, format);
 
       return res.apiv3({}, 204);
     }

@@ -60,7 +60,7 @@ class PageBulkExportService {
     return archive;
   }
 
-  async bulkExportWithBasePagePath(basePagePath: string): Promise<void> {
+  async bulkExportWithBasePagePath(basePagePath: string, format: string): Promise<void> {
     // get pages with descendants as stream
     const pageReadableStream = this.getPageReadableStream(basePagePath);
 
