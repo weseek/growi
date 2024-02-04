@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
-import { SWRResponse } from 'swr';
+import type Linker from '@growi/editor/src/services/link-util/Linker';
+import type { SWRResponse } from 'swr';
 
-import Linker from '~/client/models/Linker';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';

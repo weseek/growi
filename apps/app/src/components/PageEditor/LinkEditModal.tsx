@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import path from 'path';
 
+import Linker from '@growi/editor/src/services/link-util/Linker';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -13,8 +14,6 @@ import {
 } from 'reactstrap';
 import validator from 'validator';
 
-
-import Linker from '~/client/models/Linker';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { useLinkEditModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
