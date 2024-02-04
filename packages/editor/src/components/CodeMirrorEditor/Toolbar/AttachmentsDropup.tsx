@@ -9,13 +9,11 @@ import {
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
-import type Linker from '../../../services/link-util/Linker';
+import { getMarkdownLink, replaceFocusedMarkdownLinkWithEditor } from '../../../services/link-util/markdown-link-util';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 import { useLinkEditModal } from '../../../stores/use-link-edit-modal';
 
-
 import { AttachmentsButton } from './AttachmentsButton';
-
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
@@ -30,13 +28,19 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   const onClickOpenLinkEditModal = useCallback(() => {
+    const editor = codeMirrorEditor?.view;
+    if (editor == null) {
+      return;
+    }
     const onSubmit = (linkText: string) => {
+      replaceFocusedMarkdownLinkWithEditor(editor, linkText);
       return;
     };
-    const defaultMarkdownLink = {} as Linker;
+
+    const defaultMarkdownLink = getMarkdownLink(editor);
 
     openLinkEditModal(defaultMarkdownLink, onSubmit);
-  }, [openLinkEditModal]);
+  }, [codeMirrorEditor?.view, openLinkEditModal]);
 
   return (
     <>
