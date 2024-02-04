@@ -46,7 +46,7 @@ export default class Linker {
     this.link = encodeSpaces(this.link);
   }
 
-  generateMarkdownText(): string {
+  generateMarkdownText(): string | undefined {
     if (this.type === Linker.types.pukiwikiLink) {
       if (this.label === '') return `[[${this.link}]]`;
       return `[[${this.label}>${this.link}]]`;
@@ -57,7 +57,6 @@ export default class Linker {
     if (this.type === Linker.types.markdownLink) {
       return `[${this.label}](${this.link})`;
     }
-    throw new Error('Invalid linker type');
   }
 
   // create an instance of Linker from string
@@ -70,22 +69,26 @@ export default class Linker {
     // pukiwiki with separator ">".
     if (str.match(this.patterns.pukiwikiLinkWithLabel)) {
       type = this.types.pukiwikiLink;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ({ label, link } = str.match(this.patterns.pukiwikiLinkWithLabel)!.groups!);
     }
     // pukiwiki without separator ">".
     else if (str.match(this.patterns.pukiwikiLinkWithoutLabel)) {
       type = this.types.pukiwikiLink;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ({ label } = str.match(this.patterns.pukiwikiLinkWithoutLabel)!.groups!);
       link = label;
     }
     // markdown
     else if (str.match(this.patterns.markdownLink)) {
       type = this.types.markdownLink;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ({ label, link } = str.match(this.patterns.markdownLink)!.groups!);
     }
     // growi
     else if (str.match(this.patterns.growiLink)) {
       type = this.types.growiLink;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       ({ label } = str.match(this.patterns.growiLink)!.groups!);
       link = label;
     }
