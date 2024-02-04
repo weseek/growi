@@ -1,5 +1,3 @@
-import { useCallback } from 'react';
-
 import {
   UncontrolledDropdown,
   DropdownToggle,
@@ -9,11 +7,9 @@ import {
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
-import { getMarkdownLink, replaceFocusedMarkdownLinkWithEditor } from '../../../services/link-util/markdown-link-util';
-import { useCodeMirrorEditorIsolated } from '../../../stores';
-import { useLinkEditModal } from '../../../stores/use-link-edit-modal';
 
 import { AttachmentsButton } from './AttachmentsButton';
+import { LinkEditButton } from './LinkEditButton';
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
@@ -23,24 +19,6 @@ type Props = {
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
   const { onFileOpen, acceptedFileType, editorKey } = props;
-
-  const { open: openLinkEditModal } = useLinkEditModal();
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
-
-  const onClickOpenLinkEditModal = useCallback(() => {
-    const editor = codeMirrorEditor?.view;
-    if (editor == null) {
-      return;
-    }
-    const onSubmit = (linkText: string) => {
-      replaceFocusedMarkdownLinkWithEditor(editor, linkText);
-      return;
-    };
-
-    const defaultMarkdownLink = getMarkdownLink(editor);
-
-    openLinkEditModal(defaultMarkdownLink, onSubmit);
-  }, [codeMirrorEditor?.view, openLinkEditModal]);
 
   return (
     <>
@@ -55,10 +33,7 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
           </DropdownItem>
           <DropdownItem divider />
           <AttachmentsButton onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
-          <DropdownItem className="d-flex gap-1 align-items-center" onClick={onClickOpenLinkEditModal}>
-            <span className="material-symbols-outlined fs-5">link</span>
-            Link
-          </DropdownItem>
+          <LinkEditButton editorKey={editorKey} />
         </DropdownMenu>
       </UncontrolledDropdown>
     </>
