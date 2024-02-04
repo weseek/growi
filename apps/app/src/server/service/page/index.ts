@@ -13,17 +13,19 @@ import {
   pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
-import mongoose, { ObjectId, Cursor } from 'mongoose';
+import type { ObjectId, Cursor } from 'mongoose';
+import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import type { IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
 import {
-  PageDeleteConfigValue, IPageDeleteConfigValueToProcessValidation, PageSingleDeleteCompConfigValue,
+  PageDeleteConfigValue, PageSingleDeleteCompConfigValue,
 } from '~/interfaces/page-delete-config';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
@@ -35,12 +37,13 @@ import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
-import { ObjectIdLike } from '../../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PathAlreadyExistsError } from '../../models/errors';
-import { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '../../models/page-operation';
-import { PageRedirectModel } from '../../models/page-redirect';
+import type { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
+import type { PageOperationDocument } from '../../models/page-operation';
+import PageOperation from '../../models/page-operation';
+import type { PageRedirectModel } from '../../models/page-redirect';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
 import Subscription from '../../models/subscription';
@@ -48,11 +51,11 @@ import UserGroupRelation from '../../models/user-group-relation';
 import { V5ConversionError } from '../../models/vo/v5-conversion-error';
 import { divideByType } from '../../util/granted-group';
 import { configManager } from '../config-manager';
-import { IPageGrantService } from '../page-grant';
+import type { IPageGrantService } from '../page-grant';
 import { preNotifyService } from '../pre-notify';
 
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
-import { IPageService } from './page-service';
+import type { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
 
 export * from './page-service';
@@ -1203,7 +1206,7 @@ class PageService implements IPageService {
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
       try {
-        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath, user);
+        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath, user, true);
         logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
       }
       catch (err) {
@@ -1346,12 +1349,11 @@ class PageService implements IPageService {
       const isDuplicateTarget = !page.isEmpty
       && (!onlyDuplicateUserRelatedResources || this.pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups));
 
-      let newPage;
       if (isDuplicateTarget) {
         const grantedGroups = onlyDuplicateUserRelatedResources
           ? this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page)
           : page.grantedGroups;
-        newPage = {
+        const newPage = {
           _id: newPageId,
           path: newPagePath,
           creator: user._id,
@@ -1364,8 +1366,8 @@ class PageService implements IPageService {
         newRevisions.push({
           _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
         });
+        newPages.push(newPage);
       }
-      newPages.push(newPage);
     });
 
     await Page.insertMany(newPages, { ordered: false });
@@ -3064,7 +3066,7 @@ class PageService implements IPageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], null, true);
+      await this.normalizeParentRecursively(['/'], null, false, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -3098,8 +3100,8 @@ class PageService implements IPageService {
     }
   }
 
-  private async normalizeParentAndDescendantCountOfDescendants(path: string, user): Promise<void> {
-    await this.normalizeParentRecursively([path], user);
+  private async normalizeParentAndDescendantCountOfDescendants(path: string, user, isDuplicateOperation = false): Promise<void> {
+    await this.normalizeParentRecursively([path], user, isDuplicateOperation);
 
     // update descendantCount of descendant pages
     await this.updateDescendantCountOfSelfAndDescendants(path);
@@ -3111,7 +3113,7 @@ class PageService implements IPageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmitProgress = false): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, isDuplicateOperation = false, shouldEmitProgress = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -3127,12 +3129,14 @@ class PageService implements IPageService {
       ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
     ] : null;
 
-    const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
+    const grantFiltersByUser: { $or: any[] } | null = !isDuplicateOperation ? Page.generateGrantCondition(user, userGroups) : null;
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmitProgress);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, user, grantFiltersByUser, shouldEmitProgress);
   }
 
-  private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
+  private buildFilterForNormalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser?: { $or: any[] } | null,
+  ) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const andFilter: any = {
@@ -3166,7 +3170,7 @@ class PageService implements IPageService {
     // Merge filters
     const mergedFilter = {
       $and: [
-        { $and: [grantFiltersByUser, ...andFilter.$and] },
+        { $and: grantFiltersByUser != null ? [grantFiltersByUser, ...andFilter.$and] : [...andFilter.$and] },
         { $or: orFilter.$or },
       ],
     };
@@ -3177,8 +3181,8 @@ class PageService implements IPageService {
   private async _normalizeParentRecursively(
       pathOrRegExps: (RegExp | string)[],
       publicPathsToNormalize: string[],
-      grantFiltersByUser: { $or: any[] },
       user,
+      grantFiltersByUser: { $or: any[] } | null,
       shouldEmitProgress = false,
       count = 0,
       skiped = 0,
@@ -3267,13 +3271,10 @@ class PageService implements IPageService {
         await Page.createEmptyPagesByPaths(parentPaths, aggregationPipeline);
 
         // 3. Find parents
-        const addGrantCondition = (builder) => {
-          builder.query = builder.query.and(grantFiltersByUser);
-
-          return builder;
-        };
         const builder2 = new PageQueryBuilder(Page.find(), true);
-        addGrantCondition(builder2);
+        if (grantFiltersByUser != null) {
+          builder2.query = builder2.query.and(grantFiltersByUser);
+        }
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
           .addConditionToFilterByApplicableAncestors(publicPathsToNormalize)
@@ -3296,9 +3297,11 @@ class PageService implements IPageService {
                 path: { $in: pathOrRegExps.concat(publicPathsToNormalize) },
               },
               filterForApplicableAncestors,
-              grantFiltersByUser,
             ],
           };
+          if (grantFiltersByUser != null) {
+            filter.$and.push(grantFiltersByUser);
+          }
 
           return {
             updateMany: {
@@ -3355,8 +3358,8 @@ class PageService implements IPageService {
       return this._normalizeParentRecursively(
         pathOrRegExps,
         publicPathsToNormalize,
-        grantFiltersByUser,
         user,
+        grantFiltersByUser,
         shouldEmitProgress,
         nextCount,
         nextSkiped,
