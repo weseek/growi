@@ -9,17 +9,17 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import type { editedPagePathHandler } from './PageHeader';
+import type { editedPagePathState } from './PageHeader';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
-  editedPagePathHandler: editedPagePathHandler
+  editedPagePathState: editedPagePathState
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPage, editedPagePathHandler } = props;
+  const { currentPage, editedPagePathState } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -29,7 +29,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
-  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathState;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -49,15 +49,11 @@ export const PagePathHeader: FC<Props> = (props) => {
   const isEditorMode = !isViewMode;
 
   const PagePath = useMemo(() => (
-    <>
-      {currentPagePath != null && (
-        <PagePathNav
-          pageId={currentPage._id}
-          pagePath={currentPagePath}
-          isSingleLineMode={isEditorMode}
-        />
-      )}
-    </>
+    <PagePathNav
+      pageId={currentPage._id}
+      pagePath={currentPagePath}
+      isSingleLineMode={isEditorMode}
+    />
   ), [currentPage._id, currentPagePath, isEditorMode]);
 
   const handleInputChange = (inputText: string) => {
@@ -104,7 +100,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            editedPagePathHandler={editedPagePathHandler}
+            editedPagePathState={editedPagePathState}
             inputValue={editedPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
