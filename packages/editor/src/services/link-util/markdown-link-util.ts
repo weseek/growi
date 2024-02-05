@@ -38,22 +38,4 @@ export const getMarkdownLink = (editor: EditorView): Linker => {
 
 export const replaceFocusedMarkdownLinkWithEditor = (editor: EditorView, linkText: string): void => {
   editor.dispatch(editor.state.replaceSelection(linkText));
-  // if (!isInLink(editor)) {
-  //   console.log('!isInLink');
-  //   editor.dispatch(editor.state.replaceSelection(linkText));
-  // }
-  // else {
-  //   // editor.dispatch(editor.state.replaceSelection(linkText));
-  //   // console.log('isInLink');
-  //   // const cursorLine = getCursorLine(editor);
-  //   // const startPos = curPos(editor) - cursorLine.from;
-  //   // const { beginningOfLink, endOfLink } = Linker.getBeginningAndEndIndexOfLink(cursorLine.text, startPos);
-  //   // editor.dispatch({
-  //   //   changes: {
-  //   //     from:  { line: cursorLine.number, ch: beginningOfLink },
-  //   //     to: endOfLink,
-  //   //     insert: linkText,
-  //   //   },
-  //   // });
-  // }
 };
