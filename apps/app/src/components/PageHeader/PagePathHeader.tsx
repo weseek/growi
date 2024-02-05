@@ -113,7 +113,7 @@ export const PagePathHeader: FC<Props> = (props) => {
             currentPage={currentPage}
             stateHandler={stateHandler}
             editedPagePathHandler={editedPagePathHandler}
-            inputValue={editedPagePath}
+            inputValue={parentPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
           />
