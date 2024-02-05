@@ -12,18 +12,20 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import { TextInputForPageTitleAndPath, type editingPagePathHandler } from './TextInputForPageTitleAndPath';
+import type { editedPagePathHandler } from './PageHeader';
+import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export type Props = {
-  currentPagePath: string
   currentPage: IPagePopulatedToShowRevision
-  editingPagePathHandler: editingPagePathHandler
+  editedPagePathHandler: editedPagePathHandler
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPagePath, currentPage, editingPagePathHandler } = props;
+  const { currentPage, editedPagePathHandler } = props;
+
+  const currentPagePath = currentPage.path;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -31,7 +33,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
-  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
 
   const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
   const parentPagePath = pathUtils.addHeadingSlash(nodePath.dirname(currentPage.path ?? ''));
@@ -65,14 +67,12 @@ export const PagePathHeader: FC<Props> = (props) => {
   ), [currentPagePath, isEditorMode, parentPagePath]);
 
   const handleInputChange = (inputText: string) => {
-    const editingParentPagePath = inputText;
-    const newPagePath = nodePath.resolve(editingParentPagePath, pageTitle);
-    setEditingPagePath(newPagePath);
+    setEditedPagePath(inputText);
   };
 
   const handleEditButtonClick = () => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(editingPagePath);
+      pagePathRenameHandler(editedPagePath);
     }
     else {
       setRenameInputShown(true);
@@ -110,8 +110,8 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            editingPagePathHandler={editingPagePathHandler}
-            inputValue={parentPagePath}
+            editedPagePathHandler={editedPagePathHandler}
+            inputValue={editedPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
           />
