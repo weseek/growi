@@ -1,5 +1,5 @@
-import type { FC } from 'react';
 import { useMemo, useState, useEffect } from 'react';
+import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 
@@ -9,9 +9,10 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import type { editedPagePathState } from './PageHeader';
+import type { editedPagePathState } from './TextInputForPageTitleAndPath';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
+
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision

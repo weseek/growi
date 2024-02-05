@@ -17,7 +17,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
 
-  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
+  const pageTitle = nodePath.basename(currentPagePath) || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
