@@ -1,7 +1,7 @@
 import { useSWRStatic } from '@growi/core/dist/swr';
 import { SWRResponse } from 'swr';
 
-import Linker from '@growi/editor/src/services/link-util/Linker';
+import Linker from '../services/link-util/Linker';
 
 type LinkEditModalStatus = {
   isOpened: boolean,
