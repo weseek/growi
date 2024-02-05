@@ -1,13 +1,15 @@
 import type { ITag } from '@growi/core';
 import type { Document, Model } from 'mongoose';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import type { IPageTagRelation } from '~/interfaces/page-tag-relation';
 
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
+import type { IdToNameMap } from './tag';
 import Tag from './tag';
 
 
@@ -32,15 +34,17 @@ type CreateTagListWithCountResult = {
   data: ITag[],
   totalCount: number
 }
-type CreateTagListWithCount = (opts?: CreateTagListWithCountOpts) => Promise<CreateTagListWithCountResult>;
+type CreateTagListWithCount = (this: PageTagRelationModel, opts?: CreateTagListWithCountOpts) => Promise<CreateTagListWithCountResult>;
 
-type UpdatePageTags = (pageId: string, tags: string[]) => Promise<void>
+type GetIdToTagNamesMap = (this: PageTagRelationModel, pageIds: string[]) => Promise<IdToNameMap>;
+
+type UpdatePageTags = (this: PageTagRelationModel, pageId: string, tags: string[]) => Promise<void>
 
 export interface PageTagRelationModel extends Model<PageTagRelationDocument> {
   createTagListWithCount: CreateTagListWithCount
   findByPageId(pageId: string, options?: { nullable?: boolean }): Promise<PageTagRelationDocument[]>
   listTagNamesByPage(pageId: string): Promise<PageTagRelationDocument[]>
-  getIdToTagNamesMap(): any
+  getIdToTagNamesMap: GetIdToTagNamesMap
   updatePageTags: UpdatePageTags
 }
 
@@ -73,12 +77,12 @@ schema.index({ relatedPage: 1, relatedTag: 1 }, { unique: true });
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
 
-const createTagListWithCount: CreateTagListWithCount = async function(opts) {
+const createTagListWithCount: CreateTagListWithCount = async function(this, opts) {
   const sortOpt = opts?.sortOpt || {};
-  const offset = opts?.offset;
+  const offset = opts?.offset ?? 0;
   const limit = opts?.limit;
 
-  const tags = await this.aggregate()
+  let query = this.aggregate()
     .match({ isPageTrashed: false })
     .lookup({
       from: 'tags',
@@ -89,12 +93,15 @@ const createTagListWithCount: CreateTagListWithCount = async function(opts) {
     .unwind('$tag')
     .group({ _id: '$relatedTag', count: { $sum: 1 }, name: { $first: '$tag.name' } })
     .sort(sortOpt)
-    .skip(offset)
-    .limit(limit);
+    .skip(offset);
+
+  if (limit != null) {
+    query = query.limit(limit);
+  }
 
   const totalCount = (await this.find({ isPageTrashed: false }).distinct('relatedTag')).length;
 
-  return { data: tags, totalCount };
+  return { data: await query.exec(), totalCount };
 };
 schema.statics.createTagListWithCount = createTagListWithCount;
 
@@ -109,10 +116,8 @@ schema.statics.listTagNamesByPage = async function(pageId) {
   return relations.map((relation) => { return relation.relatedTag.name });
 };
 
-/**
- * @return {object} key: Page._id, value: array of tag names
- */
-schema.statics.getIdToTagNamesMap = async function(pageIds) {
+
+const getIdToTagNamesMap: GetIdToTagNamesMap = async function(this, pageIds) {
   /**
    * @see https://docs.mongodb.com/manual/reference/operator/aggregation/group/#pivot-data
    *
@@ -123,7 +128,7 @@ schema.statics.getIdToTagNamesMap = async function(pageIds) {
    *   ...
    * ]
    */
-  const results = await this.aggregate()
+  const results = await this.aggregate<{ _id: ObjectId, tagIds: ObjectIdLike[] }>()
     .match({ relatedPage: { $in: pageIds } })
     .group({ _id: '$relatedPage', tagIds: { $push: '$relatedTag' } });
 
@@ -145,14 +150,15 @@ schema.statics.getIdToTagNamesMap = async function(pageIds) {
   const idToTagNamesMap = {};
   results.forEach((result) => {
     const tagNames = result.tagIds
-      .map(tagId => tagIdToNameMap[tagId])
+      .map(tagId => tagIdToNameMap[tagId.toString()])
       .filter(tagName => tagName != null); // filter null object
 
-    idToTagNamesMap[result._id] = tagNames;
+    idToTagNamesMap[result._id.toString()] = tagNames;
   });
 
   return idToTagNamesMap;
 };
+schema.statics.getIdToTagNamesMap = getIdToTagNamesMap;
 
 const updatePageTags: UpdatePageTags = async function(pageId, tags) {
   if (pageId == null || tags == null) {
