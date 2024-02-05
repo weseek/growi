@@ -1,7 +1,10 @@
 import type { FC } from 'react';
 import { useMemo, useState, useEffect } from 'react';
 
+import nodePath from 'path';
+
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 
 import { usePageSelectModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -11,6 +14,7 @@ import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { TextInputForPageTitleAndPath, type editingPagePathHandler } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
+
 
 export type Props = {
   currentPagePath: string
@@ -28,6 +32,9 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
   const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
+
+  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
+  const parentPagePath = pathUtils.addHeadingSlash(nodePath.dirname(currentPage.path ?? ''));
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -50,16 +57,17 @@ export const PagePathHeader: FC<Props> = (props) => {
     <>
       {currentPagePath != null && (
         <PagePathNav
-          pageId={currentPage._id}
-          pagePath={currentPagePath}
+          pagePath={parentPagePath}
           isSingleLineMode={isEditorMode}
         />
       )}
     </>
-  ), [currentPage._id, currentPagePath, isEditorMode]);
+  ), [currentPagePath, isEditorMode, parentPagePath]);
 
   const handleInputChange = (inputText: string) => {
-    setEditingPagePath(inputText);
+    const editingParentPagePath = inputText;
+    const newPagePath = nodePath.resolve(editingParentPagePath, pageTitle);
+    setEditingPagePath(newPagePath);
   };
 
   const handleEditButtonClick = () => {
@@ -103,7 +111,7 @@ export const PagePathHeader: FC<Props> = (props) => {
             currentPage={currentPage}
             stateHandler={stateHandler}
             editingPagePathHandler={editingPagePathHandler}
-            inputValue={editingPagePath}
+            inputValue={parentPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
           />

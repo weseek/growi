@@ -1,10 +1,7 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import type { Dispatch, SetStateAction, FC } from 'react';
 
-import nodePath from 'path';
-
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
@@ -42,7 +39,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-  const { setEditingPagePath } = editingPagePathHandler;
+  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -54,14 +51,9 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
 
-  const onPressEnter = useCallback((inputPagePath: string) => {
-
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputPagePath);
-
-    pagePathRenameHandler(newPagePath);
-
-  }, [currentPage.path, pagePathRenameHandler]);
+  const onPressEnter = useCallback(() => {
+    pagePathRenameHandler(editingPagePath);
+  }, [editingPagePath, pagePathRenameHandler]);
 
   const onPressEscape = useCallback(() => {
     setEditingPagePath(currentPage.path);
