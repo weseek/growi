@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useRouter } from 'next/router';
 
@@ -9,6 +10,8 @@ import { LabelType } from '~/interfaces/template';
 export const useOnTemplateButtonClicked = (
     currentPagePath?: string,
     isLoading?: boolean,
+    parentGrant?: PageGrant,
+    parentGrantUserGroupIds?: IGrantedGroup[],
 ): {
   onClickHandler: (label: LabelType) => Promise<void>,
   isPageCreating: boolean
@@ -33,9 +36,8 @@ export const useOnTemplateButtonClicked = (
         const params = {
           isSlackEnabled: false,
           slackChannels: '',
-          grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
+          grant: parentGrant ?? 1,
+          grantUserGroupId: parentGrantUserGroupIds ?? undefined,
         };
 
         await createPage(path, '', params);
@@ -49,7 +51,7 @@ export const useOnTemplateButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, isLoading, router]);
+  }, [currentPagePath, isLoading, parentGrant, parentGrantUserGroupIds, router]);
 
   return { onClickHandler, isPageCreating };
 };

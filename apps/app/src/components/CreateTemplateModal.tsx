@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -48,14 +49,16 @@ type CreateTemplateModalProps = {
   path: string;
   isOpen: boolean;
   onClose: () => void;
+  parentGrant?: PageGrant,
+  parentGrantUserGroupIds?: IGrantedGroup[],
 };
 
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
-  path, isOpen, onClose,
+  path, isOpen, onClose, parentGrant, parentGrantUserGroupIds,
 }) => {
   const { t } = useTranslation();
 
-  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
+  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path, undefined, parentGrant, parentGrantUserGroupIds);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {

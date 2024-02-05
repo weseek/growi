@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { useSWRxNearestParentGrant } from '~/stores/page';
 
 export const useOnNewButtonClicked = (
     currentPagePath?: string,
@@ -66,6 +67,7 @@ export const useOnTodaysButtonClicked = (
 } => {
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
+  const { data: parentGrantData } = useSWRxNearestParentGrant(todaysPath ?? '/');
 
   const onClickHandler = useCallback(async() => {
     if (todaysPath == null) {
@@ -75,12 +77,11 @@ export const useOnTodaysButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      // TODO: get grant, grantUserGroupId data from parent page
-      // https://redmine.weseek.co.jp/issues/133892
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 4,
+        grant: parentGrantData?.grant ?? 1,
+        grantUserGroupId: parentGrantData?.grantedGroups ?? undefined,
       };
 
       const res = await exist(JSON.stringify([todaysPath]));
@@ -96,7 +97,7 @@ export const useOnTodaysButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [router, todaysPath]);
+  }, [parentGrantData?.grant, parentGrantData?.grantedGroups, router, todaysPath]);
 
   return { onClickHandler, isPageCreating };
 };

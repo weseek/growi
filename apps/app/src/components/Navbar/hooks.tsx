@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -14,8 +15,8 @@ const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 export const useOnPageEditorModeButtonClicked = (
     setIsCreating:React.Dispatch<React.SetStateAction<boolean>>,
     path?: string,
-    // grant?: number,
-    // grantUserGroupId?: string,
+    parentGrant?: PageGrant,
+    parentGrantUserGroupIds?: IGrantedGroup[],
 ): (editorMode: EditorMode) => Promise<void> => {
   const router = useRouter();
   const { t } = useTranslation('commons');
@@ -34,9 +35,8 @@ export const useOnPageEditorModeButtonClicked = (
         const params = {
           isSlackEnabled: false,
           slackChannels: '',
-          grant: 4,
-          // grant,
-          // grantUserGroupId,
+          grant: parentGrant ?? 1,
+          grantUserGroupId: parentGrantUserGroupIds ?? undefined,
         };
 
         const response = await createPage(path, '', params);
@@ -54,5 +54,5 @@ export const useOnPageEditorModeButtonClicked = (
     }
 
     mutateEditorMode(editorMode);
-  }, [isNotFound, mutateEditorMode, path, router, setIsCreating, t]);
+  }, [isNotFound, mutateEditorMode, parentGrant, parentGrantUserGroupIds, path, router, setIsCreating, t]);
 };

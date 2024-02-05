@@ -23,7 +23,7 @@ import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,
 } from '~/stores/modal';
 import {
-  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo,
+  useSWRMUTxCurrentPage, useCurrentPageId, useSWRxPageInfo, useSWRxNearestParentGrant,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -208,10 +208,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
 
   const path = currentPage?.path ?? currentPathname;
-  // const grant = currentPage?.grant ?? grantData?.grant;
-  // const grantUserGroupId = currentPage?.grantedGroup?._id ?? grantData?.grantedGroup?.id;
 
   const [isPageTemplateModalShown, setIsPageTempleteModalShown] = useState(false);
+
+  const { data: parentGrantData } = useSWRxNearestParentGrant(path ?? '/');
+  const parentGrant = parentGrantData?.grant;
+  const parentGrantUserGroupIds = parentGrantData?.grantedGroups;
 
   const { isLinkSharingDisabled } = props;
 
@@ -325,8 +327,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             editorMode={editorMode}
             isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
             path={path}
-            // grant={grant}
-            // grantUserGroupId={grantUserGroupId}
+            parentGrant={parentGrant}
+            parentGrantUserGroupIds={parentGrantUserGroupIds}
           />
         )}
       </div>
@@ -336,6 +338,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           path={path}
           isOpen={isPageTemplateModalShown}
           onClose={() => setIsPageTempleteModalShown(false)}
+          parentGrant={parentGrant}
+          parentGrantUserGroupIds={parentGrantUserGroupIds}
         />
       )}
     </>

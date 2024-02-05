@@ -10,7 +10,7 @@ import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-bu
 import { toastError } from '~/client/util/toastr';
 import { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useSWRxNearestParentGrant } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
@@ -27,9 +27,9 @@ const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
 export const PageCreateButton = React.memo((): JSX.Element => {
   const { t } = useTranslation('commons');
 
-  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
+  const { data: parentGrantData } = useSWRxNearestParentGrant(currentPage?.path ?? '/');
 
   const [isHovered, setIsHovered] = useState(false);
 
@@ -42,10 +42,10 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(
     currentPage?.path, currentPage?.grant, currentPage?.grantedGroups, isLoading,
   );
-  // TODO: https://redmine.weseek.co.jp/issues/138806
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
-  // TODO: https://redmine.weseek.co.jp/issues/138805
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoadingPagePath);
+  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(
+    currentPage?.path, isLoading, parentGrantData?.grant, parentGrantData?.grantedGroups,
+  );
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
