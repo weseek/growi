@@ -923,11 +923,6 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
     }
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136139
-    if (page.grantedGroups != null && page.grantedGroups.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     // check whether path starts slash
     newPagePath = pathUtils.addHeadingSlash(newPagePath);
 
