@@ -670,7 +670,9 @@ schema.statics.findRecentUpdatedPages = async function(
  * Find all ancestor pages by path. When duplicate pages found, it uses the oldest page as a result
  * The result will include the target as well
  */
-schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: string, user, userGroups): Promise<TargetAndAncestorsResult> {
+schema.statics.findTargetAndAncestorsByPathOrId = async function(
+    pathOrId: string, user, userGroups, includeEmpty = true, applyViewCondition = true,
+): Promise<TargetAndAncestorsResult> {
   let path;
   if (!hasSlash(pathOrId)) {
     const _id = pathOrId;
@@ -686,8 +688,10 @@ schema.statics.findTargetAndAncestorsByPathOrId = async function(pathOrId: strin
   ancestorPaths.push(path); // include target
 
   // Do not populate
-  const queryBuilder = new PageQueryBuilder(this.find(), true);
-  await queryBuilder.addViewerCondition(user, userGroups);
+  const queryBuilder = new PageQueryBuilder(this.find(), includeEmpty);
+  if (applyViewCondition) {
+    await queryBuilder.addViewerCondition(user, userGroups);
+  }
 
   const _targetAndAncestors: PageDocument[] = await queryBuilder
     .addConditionAsOnTree()
