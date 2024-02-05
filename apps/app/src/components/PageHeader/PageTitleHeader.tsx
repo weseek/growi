@@ -13,7 +13,7 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
-  const { currentPage, editedPagePathHandler } = props;
+  const { currentPage, editedPagePathState } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -21,7 +21,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathState;
 
   const editingPageTitle = nodePath.basename(editedPagePath);
 
@@ -58,7 +58,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
-          editedPagePathHandler={editedPagePathHandler}
+          editedPagePathState={editedPagePathState}
           inputValue={editingPageTitle}
           CustomComponent={PageTitle}
           handleInputChange={handleInputChange}
