@@ -23,3 +23,5 @@ export const getEditorTheme = async(themeName: string): Promise<Extension> => {
   }
   return (await import('./original-light')).originalLight;
 };
+
+export const AllEditorTheme = ['DefaultLight', 'Eclipse', 'Basic', 'Ayu', 'Rosé Pine', 'DefaultDark', 'Material', 'Nord', 'Cobalt', 'Kimbie'];

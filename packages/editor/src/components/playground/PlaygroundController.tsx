@@ -102,7 +102,7 @@ const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
       <div className="row mt-3">
         <h2>default</h2>
         <div className="col">
-          {createItems(Object.keys(AllEditorTheme))}
+          {createItems(AllEditorTheme)}
         </div>
       </div>
     </>
