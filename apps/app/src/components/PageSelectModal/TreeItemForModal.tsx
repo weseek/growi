@@ -1,8 +1,16 @@
-import React, { type FC } from 'react';
+import type { FC } from 'react';
+import { useCallback } from 'react';
 
+import nodePath from 'path';
+
+import { type IPageForItem } from '~/interfaces/page';
+import { useSWRxCurrentPage } from '~/stores/page';
+
+import { usePagePathRenameHandler } from '../PageHeader/page-header-utils';
 import {
   SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
+
 
 type PageTreeItemProps = TreeItemProps & {
   key?: React.Key | null,
@@ -11,7 +19,24 @@ type PageTreeItemProps = TreeItemProps & {
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
   const { isOpen } = props;
+
+  const { data: currentPage } = useSWRxCurrentPage();
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+
+  const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
+
+  const onClick = useCallback((page: IPageForItem) => {
+    const parentPagePath = page.path;
+
+    if (parentPagePath == null) {
+      return;
+    }
+
+    const newPagePath = nodePath.resolve(parentPagePath, currentPageTitle);
+
+    pagePathRenameHandler(newPagePath);
+  }, [currentPageTitle, pagePathRenameHandler]);
 
   return (
     <SimpleItem
@@ -27,6 +52,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
       customEndComponents={[NewPageCreateButton]}
+      onClick={onClick}
     />
   );
 };
