@@ -1,5 +1,5 @@
-import type { FC } from 'react';
 import { useMemo, useState, useEffect } from 'react';
+import type { FC } from 'react';
 
 import nodePath from 'path';
 
@@ -12,18 +12,18 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import type { editedPagePathHandler } from './PageHeader';
+import type { editedPagePathState } from './TextInputForPageTitleAndPath';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
-  editedPagePathHandler: editedPagePathHandler
+  editedPagePathState: editedPagePathState
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPage, editedPagePathHandler } = props;
+  const { currentPage, editedPagePathState } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -33,7 +33,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
-  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathState;
 
   const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
   const parentPagePath = pathUtils.addHeadingSlash(nodePath.dirname(currentPage.path ?? ''));
@@ -56,15 +56,12 @@ export const PagePathHeader: FC<Props> = (props) => {
   const isEditorMode = !isViewMode;
 
   const PagePath = useMemo(() => (
-    <>
-      {currentPagePath != null && (
-        <PagePathNav
-          pagePath={parentPagePath}
-          isSingleLineMode={isEditorMode}
-        />
-      )}
-    </>
-  ), [currentPagePath, isEditorMode, parentPagePath]);
+    <PagePathNav
+      pageId={currentPage._id}
+      pagePath={currentPagePath}
+      isSingleLineMode={isEditorMode}
+    />
+  ), [currentPage._id, currentPagePath, isEditorMode]);
 
   const handleInputChange = (inputText: string) => {
     const editingParentPagePath = inputText;
@@ -112,8 +109,8 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            editedPagePathHandler={editedPagePathHandler}
-            inputValue={parentPagePath}
+            editedPagePathState={editedPagePathState}
+            inputValue={editedPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
           />

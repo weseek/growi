@@ -8,10 +8,12 @@ import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 
-
-import type { editedPagePathHandler } from './PageHeader';
 import { usePagePathRenameHandler } from './page-header-utils';
 
+export type editedPagePathState = {
+  editedPagePath: string
+  setEditedPagePath: Dispatch<SetStateAction<string>>
+}
 
 type StateHandler = {
   isRenameInputShown: boolean
@@ -21,7 +23,7 @@ type StateHandler = {
 type Props = {
   currentPage: IPagePopulatedToShowRevision
   stateHandler: StateHandler
-  editedPagePathHandler: editedPagePathHandler
+  editedPagePathState: editedPagePathState
   inputValue: string
   CustomComponent: JSX.Element
   handleInputChange?: (string) => void
@@ -29,12 +31,13 @@ type Props = {
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange, editedPagePathHandler,
+    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange, editedPagePathState,
   } = props;
 
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
+
   const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
 
   const onRenameFinish = () => {
