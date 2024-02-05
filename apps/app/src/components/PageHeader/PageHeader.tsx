@@ -6,7 +6,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
 
-export type editedPagePathHandler = {
+export type editedPagePathState = {
   editedPagePath: string
   setEditedPagePath: Dispatch<SetStateAction<string>>
 }
@@ -18,7 +18,7 @@ export const PageHeader: FC = () => {
 
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath ?? '');
 
-  const editedPagePathStateHandler = { editedPagePath, setEditedPagePath };
+  const editedPagePathState = { editedPagePath, setEditedPagePath };
 
   if (currentPage == null) {
     return <></>;
@@ -28,11 +28,11 @@ export const PageHeader: FC = () => {
     <>
       <PagePathHeader
         currentPage={currentPage}
-        editedPagePathHandler={editedPagePathStateHandler}
+        editedPagePathState={editedPagePathState}
       />
       <PageTitleHeader
         currentPage={currentPage}
-        editedPagePathHandler={editedPagePathStateHandler}
+        editedPagePathState={editedPagePathState}
       />
     </>
   );
