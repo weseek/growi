@@ -11,10 +11,12 @@ import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 
-
-import type { editedPagePathState } from './PageHeader';
 import { usePagePathRenameHandler } from './page-header-utils';
 
+export type editedPagePathState = {
+  editedPagePath: string
+  setEditedPagePath: Dispatch<SetStateAction<string>>
+}
 
 type StateHandler = {
   isRenameInputShown: boolean
