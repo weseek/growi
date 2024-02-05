@@ -1,15 +1,10 @@
 import { useState } from 'react';
-import type { Dispatch, SetStateAction, FC } from 'react';
+import type { FC } from 'react';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
-
-export type editedPagePathState = {
-  editedPagePath: string
-  setEditedPagePath: Dispatch<SetStateAction<string>>
-}
 
 export const PageHeader: FC = () => {
   const { data: currentPage } = useSWRxCurrentPage();
