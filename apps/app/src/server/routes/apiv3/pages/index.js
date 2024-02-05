@@ -309,11 +309,6 @@ module.exports = (crowi) => {
 
     let { path, grant, grantUserGroupIds } = req.body;
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     // check whether path starts slash
     path = addHeadingSlash(path);
 

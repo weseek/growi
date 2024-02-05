@@ -175,7 +175,7 @@ module.exports = (crowi) => {
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting } = crowi.models;
+  const { Page } = crowi.models;
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
