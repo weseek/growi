@@ -67,7 +67,9 @@ export const PagePathHeader: FC<Props> = (props) => {
   ), [currentPagePath, isEditorMode, parentPagePath]);
 
   const handleInputChange = (inputText: string) => {
-    setEditedPagePath(inputText);
+    const editingParentPagePath = inputText;
+    const newPagePath = nodePath.resolve(editingParentPagePath, pageTitle);
+    setEditedPagePath(newPagePath);
   };
 
   const handleEditButtonClick = () => {
