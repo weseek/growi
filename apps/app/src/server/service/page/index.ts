@@ -2158,7 +2158,6 @@ class PageService implements IPageService {
      * Common Operation
      */
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const parameters = {
       ip: activityParameters.ip,
@@ -2318,7 +2317,6 @@ class PageService implements IPageService {
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
