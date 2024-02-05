@@ -1,9 +1,9 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useState,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
-import { Prec } from '@codemirror/state';
+import { Prec, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
@@ -141,18 +141,24 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-  useEffect(() => {
-    const settingTheme = async(editorTheme?: string) => {
-      const theme = editorTheme ?? 'DefaultLight';
-      const extension = await getEditorTheme(theme);
 
-      // React CodeMirror has default theme which is default prec
-      // and extension have to be higher prec here than default theme.
-      const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
-      return cleanupFunction;
+  const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
+  useEffect(() => {
+    const settingTheme = async(name?: string) => {
+      setThemeExtension(await getEditorTheme(name ?? 'DefaultLight'));
     };
     settingTheme(editorTheme);
-  }, [codeMirrorEditor, editorTheme]);
+  }, [codeMirrorEditor, editorTheme, setThemeExtension]);
+
+  useEffect(() => {
+    if (themeExtension == null) {
+      return;
+    }
+    // React CodeMirror has default theme which is default prec
+    // and extension have to be higher prec here than default theme.
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(themeExtension));
+    return cleanupFunction;
+  }, [codeMirrorEditor, themeExtension]);
 
   const {
     getRootProps,
