@@ -1203,7 +1203,7 @@ class PageService implements IPageService {
     const shouldNormalize = this.shouldNormalizeParent(page);
     if (shouldNormalize) {
       try {
-        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath, user);
+        await this.normalizeParentAndDescendantCountOfDescendants(newPagePath, user, true);
         logger.info(`Successfully normalized duplicated descendant pages under "${newPagePath}"`);
       }
       catch (err) {
@@ -1343,12 +1343,11 @@ class PageService implements IPageService {
       const isDuplicateTarget = !page.isEmpty
       && (!onlyDuplicateUserRelatedResources || this.pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups));
 
-      let newPage;
       if (isDuplicateTarget) {
         const grantedGroups = onlyDuplicateUserRelatedResources
           ? this.pageGrantService.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page)
           : page.grantedGroups;
-        newPage = {
+        const newPage = {
           _id: newPageId,
           path: newPagePath,
           creator: user._id,
@@ -1361,8 +1360,8 @@ class PageService implements IPageService {
         newRevisions.push({
           _id: revisionId, pageId: newPageId, body: pageIdRevisionMapping[page._id].body, author: user._id, format: 'markdown',
         });
+        newPages.push(newPage);
       }
-      newPages.push(newPage);
     });
 
     await Page.insertMany(newPages, { ordered: false });
@@ -3051,7 +3050,7 @@ class PageService implements IPageService {
 
     // then migrate
     try {
-      await this.normalizeParentRecursively(['/'], null, true);
+      await this.normalizeParentRecursively(['/'], null, false, true);
     }
     catch (err) {
       logger.error('V5 initial miration failed.', err);
@@ -3085,8 +3084,8 @@ class PageService implements IPageService {
     }
   }
 
-  private async normalizeParentAndDescendantCountOfDescendants(path: string, user): Promise<void> {
-    await this.normalizeParentRecursively([path], user);
+  private async normalizeParentAndDescendantCountOfDescendants(path: string, user, isDuplicateOperation = false): Promise<void> {
+    await this.normalizeParentRecursively([path], user, isDuplicateOperation);
 
     // update descendantCount of descendant pages
     await this.updateDescendantCountOfSelfAndDescendants(path);
@@ -3098,7 +3097,7 @@ class PageService implements IPageService {
    * @param user To be used to filter pages to update. If null, only public pages will be updated.
    * @returns Promise<void>
    */
-  async normalizeParentRecursively(paths: string[], user: any | null, shouldEmitProgress = false): Promise<number> {
+  async normalizeParentRecursively(paths: string[], user: any | null, isDuplicateOperation = false, shouldEmitProgress = false): Promise<number> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const ancestorPaths = paths.flatMap(p => collectAncestorPaths(p, []));
@@ -3114,12 +3113,14 @@ class PageService implements IPageService {
       ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
     ] : null;
 
-    const grantFiltersByUser: { $or: any[] } = Page.generateGrantCondition(user, userGroups);
+    const grantFiltersByUser: { $or: any[] } | null = !isDuplicateOperation ? Page.generateGrantCondition(user, userGroups) : null;
 
-    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, grantFiltersByUser, user, shouldEmitProgress);
+    return this._normalizeParentRecursively(pathAndRegExpsToNormalize, ancestorPaths, user, grantFiltersByUser, shouldEmitProgress);
   }
 
-  private buildFilterForNormalizeParentRecursively(pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser: { $or: any[] }) {
+  private buildFilterForNormalizeParentRecursively(
+      pathOrRegExps: (RegExp | string)[], publicPathsToNormalize: string[], grantFiltersByUser?: { $or: any[] } | null,
+  ) {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const andFilter: any = {
@@ -3153,7 +3154,7 @@ class PageService implements IPageService {
     // Merge filters
     const mergedFilter = {
       $and: [
-        { $and: [grantFiltersByUser, ...andFilter.$and] },
+        { $and: grantFiltersByUser != null ? [grantFiltersByUser, ...andFilter.$and] : [...andFilter.$and] },
         { $or: orFilter.$or },
       ],
     };
@@ -3164,8 +3165,8 @@ class PageService implements IPageService {
   private async _normalizeParentRecursively(
       pathOrRegExps: (RegExp | string)[],
       publicPathsToNormalize: string[],
-      grantFiltersByUser: { $or: any[] },
       user,
+      grantFiltersByUser: { $or: any[] } | null,
       shouldEmitProgress = false,
       count = 0,
       skiped = 0,
@@ -3254,13 +3255,10 @@ class PageService implements IPageService {
         await Page.createEmptyPagesByPaths(parentPaths, aggregationPipeline);
 
         // 3. Find parents
-        const addGrantCondition = (builder) => {
-          builder.query = builder.query.and(grantFiltersByUser);
-
-          return builder;
-        };
         const builder2 = new PageQueryBuilder(Page.find(), true);
-        addGrantCondition(builder2);
+        if (grantFiltersByUser != null) {
+          builder2.query = builder2.query.and(grantFiltersByUser);
+        }
         const parents = await builder2
           .addConditionToListByPathsArray(parentPaths)
           .addConditionToFilterByApplicableAncestors(publicPathsToNormalize)
@@ -3283,9 +3281,11 @@ class PageService implements IPageService {
                 path: { $in: pathOrRegExps.concat(publicPathsToNormalize) },
               },
               filterForApplicableAncestors,
-              grantFiltersByUser,
             ],
           };
+          if (grantFiltersByUser != null) {
+            filter.$and.push(grantFiltersByUser);
+          }
 
           return {
             updateMany: {
@@ -3342,8 +3342,8 @@ class PageService implements IPageService {
       return this._normalizeParentRecursively(
         pathOrRegExps,
         publicPathsToNormalize,
-        grantFiltersByUser,
         user,
+        grantFiltersByUser,
         shouldEmitProgress,
         nextCount,
         nextSkiped,
