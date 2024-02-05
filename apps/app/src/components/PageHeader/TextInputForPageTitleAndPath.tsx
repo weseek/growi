@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback } from 'react';
 import type { Dispatch, SetStateAction, FC } from 'react';
 
 import nodePath from 'path';
@@ -12,13 +12,9 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import ClosableTextInput from '../Common/ClosableTextInput';
 
 
+import type { editedPagePathHandler } from './PageHeader';
 import { usePagePathRenameHandler } from './page-header-utils';
 
-
-export type editingPagePathHandler = {
-  editingPagePath: string
-  setEditingPagePath: Dispatch<SetStateAction<string>>
-}
 
 type StateHandler = {
   isRenameInputShown: boolean
@@ -28,7 +24,7 @@ type StateHandler = {
 type Props = {
   currentPage: IPagePopulatedToShowRevision
   stateHandler: StateHandler
-  editingPagePathHandler: editingPagePathHandler
+  editedPagePathHandler: editedPagePathHandler
   inputValue: string
   CustomComponent: JSX.Element
   handleInputChange?: (string) => void
@@ -36,13 +32,13 @@ type Props = {
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange, editingPagePathHandler,
+    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange, editedPagePathHandler,
   } = props;
 
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-  const { setEditingPagePath } = editingPagePathHandler;
+  const { setEditedPagePath } = editedPagePathHandler;
 
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
@@ -65,9 +61,9 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   }, [currentPage.path, pagePathRenameHandler, setRenameInputShown]);
 
   const onPressEscape = useCallback(() => {
-    setEditingPagePath(currentPage.path);
+    setEditedPagePath(currentPage.path);
     setRenameInputShown(false);
-  }, [currentPage.path, setEditingPagePath, setRenameInputShown]);
+  }, [currentPage.path, setEditedPagePath, setRenameInputShown]);
 
   return (
     <>

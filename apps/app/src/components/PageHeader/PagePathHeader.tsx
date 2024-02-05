@@ -9,17 +9,19 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import { TextInputForPageTitleAndPath, type editingPagePathHandler } from './TextInputForPageTitleAndPath';
+import type { editedPagePathHandler } from './PageHeader';
+import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 export type Props = {
-  currentPagePath: string
   currentPage: IPagePopulatedToShowRevision
-  editingPagePathHandler: editingPagePathHandler
+  editedPagePathHandler: editedPagePathHandler
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPagePath, currentPage, editingPagePathHandler } = props;
+  const { currentPage, editedPagePathHandler } = props;
+
+  const currentPagePath = currentPage.path;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -27,7 +29,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
-  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -59,12 +61,12 @@ export const PagePathHeader: FC<Props> = (props) => {
   ), [currentPage._id, currentPagePath, isEditorMode]);
 
   const handleInputChange = (inputText: string) => {
-    setEditingPagePath(inputText);
+    setEditedPagePath(inputText);
   };
 
   const handleEditButtonClick = () => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(editingPagePath);
+      pagePathRenameHandler(editedPagePath);
     }
     else {
       setRenameInputShown(true);
@@ -102,8 +104,8 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            editingPagePathHandler={editingPagePathHandler}
-            inputValue={editingPagePath}
+            editedPagePathHandler={editedPagePathHandler}
+            inputValue={editedPagePath}
             CustomComponent={PagePath}
             handleInputChange={handleInputChange}
           />

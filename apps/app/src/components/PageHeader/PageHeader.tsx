@@ -1,33 +1,38 @@
-import { type FC, useState } from 'react';
+import { useState } from 'react';
+import type { Dispatch, SetStateAction, FC } from 'react';
 
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
 
+export type editedPagePathHandler = {
+  editedPagePath: string
+  setEditedPagePath: Dispatch<SetStateAction<string>>
+}
+
 export const PageHeader: FC = () => {
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPage } = useSWRxCurrentPage();
+  const currentPagePath = currentPage?.path;
 
-  const [editingPagePath, setEditingPagePath] = useState(currentPagePath ?? '');
 
-  const editingPagePathHandler = { editingPagePath, setEditingPagePath };
+  const [editedPagePath, setEditedPagePath] = useState(currentPagePath ?? '');
 
-  if (currentPage == null || currentPagePath == null) {
+  const editedPagePathStateHandler = { editedPagePath, setEditedPagePath };
+
+  if (currentPage == null) {
     return <></>;
   }
 
   return (
     <>
       <PagePathHeader
-        currentPagePath={currentPagePath}
         currentPage={currentPage}
-        editingPagePathHandler={editingPagePathHandler}
+        editedPagePathHandler={editedPagePathStateHandler}
       />
       <PageTitleHeader
-        currentPagePath={currentPagePath}
         currentPage={currentPage}
-        editingPagePathHandler={editingPagePathHandler}
+        editedPagePathHandler={editedPagePathStateHandler}
       />
     </>
   );

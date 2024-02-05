@@ -13,14 +13,17 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
-  const { currentPagePath, currentPage, editingPagePathHandler } = props;
+  const { currentPage, editedPagePathHandler } = props;
+
+  const currentPagePath = currentPage.path;
+
   const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { editingPagePath, setEditingPagePath } = editingPagePathHandler;
+  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
 
-  const editingPageTitle = nodePath.basename(editingPagePath);
+  const editingPageTitle = nodePath.basename(editedPagePath);
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -40,13 +43,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
-    setEditingPagePath(newPagePath);
+    setEditedPagePath(newPagePath);
   };
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   const handleButtonClick = () => {
-    pagePathRenameHandler(editingPagePath);
+    pagePathRenameHandler(editedPagePath);
   };
 
   return (
@@ -55,7 +58,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
-          editingPagePathHandler={editingPagePathHandler}
+          editedPagePathHandler={editedPagePathHandler}
           inputValue={editingPageTitle}
           CustomComponent={PageTitle}
           handleInputChange={handleInputChange}
