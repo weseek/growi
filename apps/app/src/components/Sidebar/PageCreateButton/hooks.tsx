@@ -1,12 +1,16 @@
 import { useCallback, useState } from 'react';
 
+import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 export const useOnNewButtonClicked = (
     currentPagePath?: string,
+    currentPageGrant?: PageGrant,
+    currentPageGrantedGroups?: IGrantedGroup[],
     isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
@@ -15,28 +19,37 @@ export const useOnNewButtonClicked = (
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
 
+  const { mutate: mutateEditorMode } = useEditorMode();
+
   const onClickHandler = useCallback(async() => {
     if (isLoading) return;
 
     try {
       setIsPageCreating(true);
 
-      const parentPath = currentPagePath == null
+      /**
+       * !! NOTICE !! - Verification of page createable or not is checked on the server side.
+       * since the new page path is not generated on the client side.
+       * need shouldGeneratePath flag.
+       */
+      const shouldUseRootPath = currentPagePath == null || currentPageGrant == null;
+      const parentPath = shouldUseRootPath
         ? '/'
         : currentPagePath;
 
       const params = {
         isSlackEnabled: false,
         slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
+        grant: shouldUseRootPath ? 1 : currentPageGrant,
+        grantUserGroupIds: shouldUseRootPath ? undefined : currentPageGrantedGroups,
         shouldGeneratePath: true,
       };
 
+      // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
       const response = await createPage(parentPath, '', params);
 
-      router.push(`/${response.page.id}#edit`);
+      await router.push(`/${response.page.id}#edit`);
+      mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
       toastError(err);
@@ -44,7 +57,7 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, isLoading, router]);
+  }, [currentPageGrant, currentPageGrantedGroups, currentPagePath, isLoading, mutateEditorMode, router]);
 
   return { onClickHandler, isPageCreating };
 };
@@ -57,6 +70,8 @@ export const useOnTodaysButtonClicked = (
 } => {
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const onClickHandler = useCallback(async() => {
     if (todaysPath == null) {
@@ -79,7 +94,8 @@ export const useOnTodaysButtonClicked = (
         await createPage(todaysPath, '', params);
       }
 
-      router.push(`${todaysPath}#edit`);
+      await router.push(`${todaysPath}#edit`);
+      mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
       toastError(err);
@@ -87,7 +103,7 @@ export const useOnTodaysButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [router, todaysPath]);
+  }, [mutateEditorMode, router, todaysPath]);
 
   return { onClickHandler, isPageCreating };
 };

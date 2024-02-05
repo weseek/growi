@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
@@ -67,7 +67,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     return null;
   }
 
-  const { grant, grantedGroups } = grantData;
+  const { grant, userRelatedGrantedGroups } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = t('Update');
@@ -82,14 +82,14 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
             <GrantSelector
               grant={grant}
               disabled={isGrantSelectorDisabledPage}
-              grantedGroups={grantedGroups}
+              userRelatedGrantedGroups={userRelatedGrantedGroups}
               onUpdateGrant={updateGrantHandler}
             />
           </div>
         )
       }
 
-      <UncontrolledButtonDropdown direction="up">
+      <UncontrolledButtonDropdown direction="up" size="sm">
         <Button
           id="caret"
           data-testid="save-page-btn"
@@ -104,7 +104,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           {labelSubmitButton}
         </Button>
         <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu end>
+        <DropdownMenu container="body" end>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>

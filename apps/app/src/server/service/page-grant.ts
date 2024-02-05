@@ -1,20 +1,19 @@
 import {
   type IGrantedGroup,
-  PageGrant, type PageGrantCanBeOnTree, GroupType,
+  PageGrant, GroupType, getIdForRef, isPopulated,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
 } from '@growi/core/dist/utils';
-import { et } from 'date-fns/locale';
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
-import ExternalUserGroup, { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { IRecordApplicableGrant } from '~/interfaces/page-grant';
+import { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import { PageDocument, PageModel } from '~/server/models/page';
-import UserGroup, { UserGroupDocument } from '~/server/models/user-group';
-import { includesObjectIds, excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import UserGroup from '~/server/models/user-group';
+import { includesObjectIds, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
 import { ObjectIdLike } from '../interfaces/mongoose-utils';
 import UserGroupRelation from '../models/user-group-relation';
@@ -26,7 +25,7 @@ const { isTopPage } = pagePathUtils;
 const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
 
 type ComparableTarget = {
-  grant: number,
+  grant?: number,
   grantedUserIds?: ObjectIdLike[],
   grantedGroupIds?: IGrantedGroup[],
   applicableUserIds?: ObjectIdLike[],
@@ -78,7 +77,33 @@ type OperatorGrantInfo = {
   userGroupIds: Set<ObjectIdLike>,
 };
 
-class PageGrantService {
+export interface IPageGrantService {
+  isGrantNormalized: (
+    user,
+    targetPath: string,
+    grant?: PageGrant,
+    grantedUserIds?: ObjectIdLike[],
+    grantedGroupIds?: IGrantedGroup[],
+    shouldCheckDescendants?: boolean,
+    includeNotMigratedPages?: boolean,
+    previousGrantedGroupIds?: IGrantedGroup[]
+  ) => Promise<boolean>,
+  separateNormalizableAndNotNormalizablePages: (user, pages) => Promise<[(PageDocument & { _id: any })[], (PageDocument & { _id: any })[]]>,
+  generateUpdateGrantInfoToOverwriteDescendants: (
+    operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
+  ) => Promise<UpdateGrantInfo>,
+  canOverwriteDescendants: (targetPath: string, operator: { _id: ObjectIdLike }, updateGrantInfo: UpdateGrantInfo) => Promise<boolean>,
+  validateGrantChange: (user, previousGrantedGroupIds: IGrantedGroup[], grant?: PageGrant, grantedGroupIds?: IGrantedGroup[]) => Promise<boolean>,
+  validateGrantChangeSyncronously:(
+    userRelatedGroups: PopulatedGrantedGroup[], previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[],
+  ) => boolean,
+  getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
+  getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
+  getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean
+}
+
+class PageGrantService implements IPageGrantService {
 
   crowi!: any;
 
@@ -103,7 +128,10 @@ class PageGrantService {
    * About the rule of validation, see: https://dev.growi.org/61b2cdabaa330ce7d8152844
    * @returns boolean
    */
-  private processValidation(target: ComparableTarget, ancestor: ComparableAncestor, descendants?: ComparableDescendants): boolean {
+  private validateGrant(target: ComparableTarget, ancestor: ComparableAncestor, descendants?: ComparableDescendants): boolean {
+    /*
+     * the page itself
+     */
     this.validateComparableTarget(target);
 
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -210,11 +238,54 @@ class PageGrantService {
   }
 
   /**
+   * Validate if page grant can be changed from prior grant to specified grant.
+   * Necessary for pages with multiple group grant.
+   * see: https://dev.growi.org/656745fa52eafe1cf1879508#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE-grant-%E3%81%AE%E6%9B%B4%E6%96%B0
+   * @param user The user who is changing the grant
+   * @param previousGrantedGroups The groups that were granted priorly
+   * @param grant The grant to be changed to
+   * @param grantedGroups The groups to be granted
+   */
+  async validateGrantChange(user, previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[]): Promise<boolean> {
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
+    return this.validateGrantChangeSyncronously(userRelatedGroups, previousGrantedGroups, grant, grantedGroups);
+  }
+
+  /**
+   * Use when you do not want to use validateGrantChange with async/await (e.g inside loops that process a large amount of pages)
+   * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
+   */
+  validateGrantChangeSyncronously(
+      userRelatedGroups: PopulatedGrantedGroup[],
+      previousGrantedGroups: IGrantedGroup[],
+      grant?: PageGrant,
+      grantedGroups?: IGrantedGroup[],
+  ): boolean {
+    const userRelatedGroupIds = userRelatedGroups.map(g => g.item._id);
+    const userBelongsToAllPreviousGrantedGroups = excludeTestIdsFromTargetIds(
+      previousGrantedGroups.map(g => getIdForRef(g.item)),
+      userRelatedGroupIds,
+    ).length === 0;
+
+    if (!userBelongsToAllPreviousGrantedGroups) {
+      if (grant !== PageGrant.GRANT_USER_GROUP) {
+        return false;
+      }
+      const pageGrantIncludesUserRelatedGroup = hasIntersection(grantedGroups?.map(g => getIdForRef(g.item)) || [], userRelatedGroupIds);
+      if (!pageGrantIncludesUserRelatedGroup) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Prepare ComparableTarget
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableTarget(
-      grant, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined, includeApplicable: boolean,
+      grant: PageGrant | undefined, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined, includeApplicable: boolean,
   ): Promise<ComparableTarget> {
     if (includeApplicable) {
       const Page = mongoose.model('Page') as unknown as PageModel;
@@ -415,27 +486,51 @@ class PageGrantService {
    * Only v5 schema pages will be used to compare by default (Set includeNotMigratedPages to true to include v4 schema pages as well).
    * When comparing, it will use path regex to collect pages instead of using parent attribute of the Page model. This is reasonable since
    * using the path attribute is safer than using the parent attribute in this case. 2022.02.13 -- Taichi Masuyama
+   * @param user The user responsible for execution
+   * @param targetPath Path of page which grant will be validated
+   * @param grant Type of the grant to be validated
+   * @param grantedUserIds Users of grant to be validated
+   * @param grantedGroupIds Groups of grant to be validated
+   * @param shouldCheckDescendants Whether or not to use descendant grant for validation
+   * @param includeNotMigratedPages Whether or not to use unmigrated pages for validation
+   * @param previousGrantedGroupIds
+   *   Previously granted groups of the page. Specific validation is required when previous grant is multiple group grant.
+   *   Apply when page grant change needs to be validated.
+   *   see: https://dev.growi.org/656745fa52eafe1cf1879508#%E3%83%9A%E3%83%BC%E3%82%B8%E3%81%AE-grant-%E3%81%AE%E6%9B%B4%E6%96%B0
    * @returns Promise<boolean>
    */
   async isGrantNormalized(
-      // eslint-disable-next-line max-len
-      user, targetPath: string, grant, grantedUserIds?: ObjectIdLike[], grantedGroupIds?: IGrantedGroup[], shouldCheckDescendants = false, includeNotMigratedPages = false,
+      user,
+      targetPath: string,
+      grant?: PageGrant,
+      grantedUserIds?: ObjectIdLike[],
+      grantedGroupIds?: IGrantedGroup[],
+      shouldCheckDescendants = false,
+      includeNotMigratedPages = false,
+      previousGrantedGroupIds?: IGrantedGroup[],
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
+    }
+
+    if (previousGrantedGroupIds != null) {
+      const isGrantChangeable = await this.validateGrantChange(user, previousGrantedGroupIds, grant, grantedGroupIds);
+      if (!isGrantChangeable) {
+        return false;
+      }
     }
 
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
       const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, false);
-      return this.processValidation(comparableTarget, comparableAncestor);
+      return this.validateGrant(comparableTarget, comparableAncestor);
     }
 
     const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, true);
     const comparableDescendants = await this.generateComparableDescendants(targetPath, user, includeNotMigratedPages);
 
-    return this.processValidation(comparableTarget, comparableAncestor, comparableDescendants);
+    return this.validateGrant(comparableTarget, comparableAncestor, comparableDescendants);
   }
 
   /**
@@ -568,7 +663,10 @@ class PageGrantService {
     return data;
   }
 
-  async getUserRelatedGroups(user) {
+  /*
+   * get all groups that user is related to
+   */
+  async getUserRelatedGroups(user): Promise<PopulatedGrantedGroup[]> {
     const userRelatedUserGroups = await UserGroupRelation.findAllGroupsForUser(user);
     const userRelatedExternalUserGroups = await ExternalUserGroupRelation.findAllGroupsForUser(user);
     return [
@@ -579,6 +677,38 @@ class PageGrantService {
         return { type: GroupType.externalUserGroup, item: group };
       }),
     ];
+  }
+
+  /*
+   * get all groups of Page that user is related to
+   */
+  async getUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroups = (await this.getUserRelatedGroups(user));
+    return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page);
+  }
+
+  /**
+   * Use when you do not want to use getUserRelatedGrantedGroups with async/await (e.g inside loops that process a large amount of pages)
+   * Specification of userRelatedGroups is necessary to avoid the cost of fetching userRelatedGroups from DB every time.
+   */
+  getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
+    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return userRelatedGroupIds.includes(group.item._id.toString());
+      }
+      return userRelatedGroupIds.includes(group.item);
+    }) || [];
+  }
+
+  /**
+   * Check if user is granted access to page
+   */
+  isUserGrantedPageAccess(page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
+    if (page.grant === PageGrant.GRANT_PUBLIC) return true;
+    if (page.grant === PageGrant.GRANT_OWNER) return page.grantedUsers?.includes(user._id.toString()) ?? false;
+    if (page.grant === PageGrant.GRANT_USER_GROUP) return this.getUserRelatedGrantedGroupsSyncronously(userRelatedGroups, page).length > 0;
+    return false;
   }
 
   /**
@@ -622,7 +752,7 @@ class PageGrantService {
   }
 
   async generateUpdateGrantInfoToOverwriteDescendants(
-      operator, updateGrant: PageGrantCanBeOnTree, grantGroupIds?: IGrantedGroup[],
+      operator, updateGrant?: PageGrant, grantGroupIds?: IGrantedGroup[],
   ): Promise<UpdateGrantInfo> {
     let updateGrantInfo: UpdateGrantInfo | null = null;
 
@@ -666,6 +796,7 @@ class PageGrantService {
     }
 
     if (updateGrantInfo == null) {
+      // Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
       throw Error('The parameter `updateGrant` must be 1, 4, or 5');
     }
 

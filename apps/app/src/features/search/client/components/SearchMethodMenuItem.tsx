@@ -28,33 +28,37 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   return (
     <>
       { shouldShowMenuItem && (
-        <SearchMenuItem
-          index={0}
-          isActive={activeIndex === 0}
-          getItemProps={getItemProps}
-          url={`/_search?q=${searchKeyword}`}
-        >
-          <span className="material-symbols-outlined fs-4 me-3">search</span>
-          <span>{searchKeyword}</span>
-          <div className="ms-auto">
-            <span>{t('search_method_menu_item.search_in_all')}</span>
-          </div>
-        </SearchMenuItem>
+        <div data-testid="search-all-menu-item">
+          <SearchMenuItem
+            index={0}
+            isActive={activeIndex === 0}
+            getItemProps={getItemProps}
+            url={`/_search?q=${searchKeyword}`}
+          >
+            <span className="material-symbols-outlined fs-4 me-3">search</span>
+            <span>{searchKeyword}</span>
+            <div className="ms-auto">
+              <span>{t('search_method_menu_item.search_in_all')}</span>
+            </div>
+          </SearchMenuItem>
+        </div>
       )}
 
-      <SearchMenuItem
-        index={shouldShowMenuItem ? 1 : 0}
-        isActive={activeIndex === (shouldShowMenuItem ? 1 : 0)}
-        getItemProps={getItemProps}
-        url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
-      >
-        <span className="material-symbols-outlined fs-4 me-3">search</span>
-        <code>prefix: {currentPagePath}</code>
-        <span className="ms-2">{searchKeyword}</span>
-        <div className="ms-auto">
-          <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
-        </div>
-      </SearchMenuItem>
+      <div data-testid="search-prefix-menu-item">
+        <SearchMenuItem
+          index={shouldShowMenuItem ? 1 : 0}
+          isActive={activeIndex === (shouldShowMenuItem ? 1 : 0)}
+          getItemProps={getItemProps}
+          url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
+        >
+          <span className="material-symbols-outlined fs-4 me-3">search</span>
+          <code>prefix: {currentPagePath}</code>
+          <span className="ms-2">{searchKeyword}</span>
+          <div className="ms-auto">
+            <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
+          </div>
+        </SearchMenuItem>
+      </div>
 
       { shouldShowMenuItem && (
         <SearchMenuItem

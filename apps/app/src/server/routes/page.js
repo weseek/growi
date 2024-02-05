@@ -449,15 +449,10 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
-    const grantUserGroupIds = req.body.grantUserGroupIds || null;
+    const userRelatedGrantUserGroupIds = req.body.userRelatedGrantUserGroupIds || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -486,7 +481,7 @@ module.exports = function(crowi, app) {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupIds = grantUserGroupIds;
+      options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
     }
 
     const previousRevision = await Revision.findById(revisionId);
@@ -758,8 +753,10 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
-          return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
+        const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(req.user);
+        const canDeleteCompletely = crowi.pageService.canDeleteCompletely(page, req.user, isRecursively, userRelatedGroups);
+        if (!canDeleteCompletely) {
+          return res.json(ApiResponse.error('You cannot delete this page completely', 'complete_deletion_not_allowed_for_user'));
         }
 
         if (pagePathUtils.isUsersHomepage(page.path)) {
