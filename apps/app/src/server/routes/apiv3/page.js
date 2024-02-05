@@ -196,6 +196,9 @@ module.exports = (crowi) => {
     isGrantNormalized: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
+    nearestParentGrant: [
+      query('path').isString().withMessage('path is required'),
+    ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
@@ -538,6 +541,28 @@ module.exports = (crowi) => {
     };
 
     return res.apiv3({ isGrantNormalized, grantData });
+  });
+
+  router.get('/nearest-parent-grant', loginRequiredStrictly, validator.nearestParentGrant, apiV3FormValidator, async(req, res) => {
+    const { path } = req.query;
+
+    let page;
+    try {
+      page = await Page.findTargetAndAncestorsByPathOrId(path, undefined, undefined, false, false);
+    }
+    catch (error) {
+      logger.error('An error occurred while processing the get nearest parent garant.', error);
+      return res.apiv3Err(new ErrorV3('An error occurred while processing the request.', 'unexpected_error'), 500);
+    }
+
+    if (page.targetAndAncestors.length === 0) {
+      return res.apiv3Err(new ErrorV3('Page is unreachable.', 'page_unreachable'), 400);
+    }
+
+    const nearestParent = page.targetAndAncestors[0];
+    const { grant, grantedUsers, grantedGroups } = nearestParent;
+
+    return res.apiv3({ grant, grantedUsers, grantedGroups });
   });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {

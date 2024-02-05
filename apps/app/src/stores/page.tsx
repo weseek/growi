@@ -18,7 +18,7 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
+import type { IRecordApplicableGrant, IResIsGrantNormalized, IParentGrantData } from '~/interfaces/page-grant';
 import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
@@ -244,6 +244,15 @@ export const useSWRxIsGrantNormalized = (
   return useSWRImmutable(
     key,
     ([endpoint, pageId]) => apiv3Get(endpoint, { pageId }).then(response => response.data),
+  );
+};
+
+export const useSWRxNearestParentGrant = (
+    path: string,
+): SWRResponse<IParentGrantData, Error> => {
+  return useSWRImmutable(
+    path != null ? ['/page/nearest-parent-grant', path] : null,
+    ([endpoint, path]) => apiv3Get(endpoint, { path }).then(response => response.data),
   );
 };
 

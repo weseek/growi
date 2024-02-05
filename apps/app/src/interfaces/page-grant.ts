@@ -1,4 +1,6 @@
-import { PageGrant, GroupType } from '@growi/core';
+import type {
+  PageGrant, GroupType, Ref, IUser, IGrantedGroup,
+} from '@growi/core';
 
 import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import { UserGroupDocument } from '~/server/models/user-group';
@@ -27,3 +29,9 @@ export type IResIsGrantNormalized = {
   isGrantNormalized: boolean,
   grantData: IResIsGrantNormalizedGrantData
 };
+
+export type IParentGrantData = {
+  grant: PageGrant,
+  grantedUsers: Ref<IUser>[],
+  grantedGroups: IGrantedGroup[],
+}
