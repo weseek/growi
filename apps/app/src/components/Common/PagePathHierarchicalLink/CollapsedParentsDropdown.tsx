@@ -9,17 +9,16 @@ import type LinkedPagePath from '~/models/linked-page-path';
 
 import styles from './CollapsedParentsDropdown.module.scss';
 
-const getAncestorPathAndPathName = (linkedPagePath: LinkedPagePath) => {
-  const data: Array<{ path: string, pathName: string }> = [];
-  let linkedPagePathTmp = linkedPagePath;
+const getAncestorPathAndPathNames = (linkedPagePath: LinkedPagePath) => {
+  const pathAndPathName: Array<{ path: string, pathName: string }> = [];
+  let currentLinkedPagePath = linkedPagePath;
 
-  while (linkedPagePathTmp.parent != null) {
-    data.push({ path: linkedPagePathTmp.path, pathName: linkedPagePathTmp.pathName });
-    linkedPagePathTmp = linkedPagePathTmp.parent;
+  while (currentLinkedPagePath.parent != null) {
+    pathAndPathName.unshift({ path: currentLinkedPagePath.path, pathName: currentLinkedPagePath.pathName });
+    currentLinkedPagePath = currentLinkedPagePath.parent;
   }
 
-  const reversedData = data.reverse();
-  return reversedData;
+  return pathAndPathName;
 };
 
 type Props = {
@@ -29,13 +28,13 @@ type Props = {
 export const CollapsedParentsDropdown = (props: Props): JSX.Element => {
   const { linkedPagePath } = props;
 
-  const ancestorPathAndPathName = useMemo(() => getAncestorPathAndPathName(linkedPagePath), [linkedPagePath]);
+  const ancestorPathAndPathNames = useMemo(() => getAncestorPathAndPathNames(linkedPagePath), [linkedPagePath]);
 
   return (
     <UncontrolledDropdown className="d-inline-block">
       <DropdownToggle color="transparent">...</DropdownToggle>
       <DropdownMenu className={`dropdown-menu ${styles['collapsed-parents-dropdown-menu']}`} container="body">
-        {ancestorPathAndPathName.map(data => (
+        {ancestorPathAndPathNames.map(data => (
           <DropdownItem key={data.path}>
             <Link href={data.path} legacyBehavior>
               <a role="menuitem">{data.pathName}</a>
