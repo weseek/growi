@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { Skeleton } from '../Skeleton';
 
@@ -23,7 +24,7 @@ export const PageTags:FC<Props> = (props: Props) => {
   } = props;
 
   if (tags == null) {
-    return <PageTagsSkeleton />;
+    return <></>;
   }
 
   const printNoneClass = tags.length === 0 ? 'd-print-none' : '';
