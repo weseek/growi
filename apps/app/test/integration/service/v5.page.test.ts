@@ -11,7 +11,6 @@ describe('Test page service methods', () => {
   let Revision;
   let User;
   let Tag;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -42,7 +41,6 @@ describe('Test page service methods', () => {
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');

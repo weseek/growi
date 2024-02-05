@@ -5,11 +5,11 @@ import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils
 import { normalizePath, addHeadingSlash } from '@growi/core/dist/utils/path-utils';
 import express from 'express';
 import { body, query } from 'express-validator';
-import mongoose from 'mongoose';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
 import { GlobalNotificationSettingEvent } from '~/server/models';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
@@ -153,12 +153,10 @@ module.exports = (crowi) => {
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
 
   const activityEvent = crowi.event('activity');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const userNotificationService = crowi.getUserNotificationService();
 
   const addActivity = generateAddActivityMiddleware(crowi);
 
@@ -206,33 +204,6 @@ module.exports = (crowi) => {
       body('convertPath').optional().isString().withMessage('convertPath must be a string'),
     ],
   };
-
-  async function createPageAction({
-    path, body, user, options,
-  }) {
-    const createdPage = await crowi.pageService.create(path, body, user, options);
-    return createdPage;
-  }
-
-  async function saveTagsAction({ createdPage, pageTags }) {
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      tagEvent.emit('update', createdPage, pageTags);
-      return PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
-    return [];
-  }
-
-  async function generateUniquePath(basePath, index = 1) {
-    const path = basePath + index;
-    const existingPageId = await Page.exists({ path, isEmpty: false });
-    if (existingPageId != null) {
-      return generateUniquePath(basePath, index + 1);
-    }
-    return path;
-  }
 
   /**
    * @swagger
@@ -326,7 +297,6 @@ module.exports = (crowi) => {
         }
       });
 
-      const PageTagRelation = mongoose.model('PageTagRelation');
       const ids = result.pages.map((page) => { return page._id });
       const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
 

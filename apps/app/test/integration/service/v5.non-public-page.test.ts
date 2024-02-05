@@ -2,13 +2,16 @@
 import { GroupType, type IGrantedGroup } from '@growi/core';
 import mongoose from 'mongoose';
 
+import PageTagRelation from '~/server/models/page-tag-relation';
+import Tag from '~/server/models/tag';
+import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
-import Tag from '../../../src/server/models/tag';
-import UserGroup from '../../../src/server/models/user-group';
-import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import { getInstance } from '../setup-crowi';
+
 
 describe('PageService page operations with non-public pages', () => {
 
@@ -29,7 +32,6 @@ describe('PageService page operations with non-public pages', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let xssSpy;
 
   let rootPage;
@@ -121,7 +123,6 @@ describe('PageService page operations with non-public pages', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
 
     /*
      * Common

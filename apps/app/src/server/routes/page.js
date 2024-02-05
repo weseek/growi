@@ -7,6 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { GlobalNotificationSettingEvent } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
+import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
 import { preNotifyService } from '../service/pre-notify';
 
@@ -141,9 +142,6 @@ module.exports = function(crowi, app) {
   const { pagePathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
-  const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');

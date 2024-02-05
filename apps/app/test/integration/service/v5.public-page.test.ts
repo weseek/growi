@@ -1,5 +1,4 @@
 /* eslint-disable no-unused-vars */
-import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
 import { PageActionType, PageActionStage } from '../../../src/interfaces/page-operation';
@@ -15,7 +14,6 @@ describe('PageService page operations with only public pages', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -49,7 +47,6 @@ describe('PageService page operations with only public pages', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
