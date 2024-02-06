@@ -23,22 +23,20 @@ type StateHandler = {
 type Props = {
   currentPage: IPagePopulatedToShowRevision
   stateHandler: StateHandler
-  editedPagePathState: editedPagePathState
   inputValue: string
   CustomComponent: JSX.Element
-  handleInputChange?: (string) => void
+  onInputChange?: (string) => void
+  onPressEscape?: () => void
 }
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPage, stateHandler, inputValue, CustomComponent, handleInputChange, editedPagePathState,
+    currentPage, stateHandler, inputValue, CustomComponent, onInputChange,
   } = props;
 
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
-
-  const { editedPagePath, setEditedPagePath } = editedPagePathHandler;
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -54,10 +52,10 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
     pagePathRenameHandler(editedPagePath);
   }, [editedPagePath, pagePathRenameHandler]);
 
-  const onPressEscape = useCallback(() => {
-    setEditedPagePath(currentPage.path);
-    setRenameInputShown(false);
-  }, [currentPage.path, setEditedPagePath, setRenameInputShown]);
+  // const onPressEscape = useCallback(() => {
+  //   setEditedPagePath(currentPage.path);
+  //   setRenameInputShown(false);
+  // }, [currentPage.path, setEditedPagePath, setRenameInputShown]);
 
   return (
     <>
@@ -67,9 +65,9 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
             value={inputValue}
             placeholder={t('Input page name')}
             onPressEnter={onPressEnter}
-            onPressEscape={onPressEscape}
+            onPressEscape={props.onPressEscape}
             validationTarget={ValidationTarget.PAGE}
-            handleInputChange={handleInputChange}
+            handleInputChange={onInputChange}
           />
         </div>
       ) : (

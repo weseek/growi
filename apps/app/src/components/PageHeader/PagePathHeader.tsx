@@ -14,18 +14,18 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import type { editedPagePathState } from './TextInputForPageTitleAndPath';
 import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
-  editedPagePathState: editedPagePathState
+  inputValue: string
+  onInputChange?: (inputText: string) => void
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPage, editedPagePathState } = props;
+  const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -34,11 +34,6 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
-
-  const { editedPagePath, setEditedPagePath } = editedPagePathState;
-
-  const pageTitle = nodePath.basename(currentPagePath ?? '') || '/';
-  const parentPagePath = pathUtils.addHeadingSlash(nodePath.dirname(currentPage.path ?? ''));
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -65,20 +60,14 @@ export const PagePathHeader: FC<Props> = (props) => {
     />
   ), [currentPage._id, currentPagePath, isEditorMode]);
 
-  const handleInputChange = (inputText: string) => {
-    const editingParentPagePath = inputText;
-    const newPagePath = nodePath.resolve(editingParentPagePath, pageTitle);
-    setEditedPagePath(newPagePath);
-  };
-
-  const handleEditButtonClick = useCallback(() => {
+  const onClickEditButton = useCallback(() => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(editedPagePath);
+      pagePathRenameHandler(props.inputValue);
     }
     else {
       setRenameInputShown(true);
     }
-  }, [editedPagePath, isRenameInputShown, pagePathRenameHandler]);
+  }, [isRenameInputShown, pagePathRenameHandler, props.inputValue]);
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
@@ -111,15 +100,14 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            editedPagePathState={editedPagePathState}
-            inputValue={editedPagePath}
+            inputValue={props.inputValue}
             CustomComponent={PagePath}
-            handleInputChange={handleInputChange}
+            onInputChange={props.onInputChange}
           />
         </div>
         <div className={`${buttonStyle} col-4 row`}>
           <div className="col-4">
-            <button type="button" onClick={handleEditButtonClick}>
+            <button type="button" onClick={onClickEditButton}>
               {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
             </button>
           </div>
