@@ -1,5 +1,5 @@
-import { FC, useCallback } from 'react';
-import type { Dispatch, SetStateAction } from 'react';
+import { useCallback } from 'react';
+import type { Dispatch, SetStateAction, FC } from 'react';
 
 import nodePath from 'path';
 
@@ -37,24 +37,25 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
 
-  const onRenameFinish = () => {
-    setRenameInputShown(false);
-  };
 
-  const onRenameFailure = () => {
-    setRenameInputShown(true);
-  };
-
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
   const onPressEnter = useCallback((inputPagePath: string) => {
+
+    const onRenameFinish = () => {
+      setRenameInputShown(false);
+    };
+
+    const onRenameFailure = () => {
+      setRenameInputShown(true);
+    };
 
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputPagePath);
 
-    pagePathRenameHandler(newPagePath);
+    pagePathRenameHandler(newPagePath, onRenameFinish, onRenameFailure);
 
-  }, [currentPage.path, pagePathRenameHandler]);
+  }, [currentPage.path, pagePathRenameHandler, setRenameInputShown]);
 
   return (
     <>

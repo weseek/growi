@@ -1,6 +1,5 @@
-import {
-  FC, useEffect, useMemo, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 
@@ -36,7 +35,7 @@ export const PagePathHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
@@ -63,7 +62,7 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const handleEditButtonClick = () => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(inputText);
+      pagePathRenameHandler(inputText, onRenameFinish, onRenameFailure);
     }
     else {
       setRenameInputShown(true);
