@@ -18,6 +18,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const pageTitle = nodePath.basename(currentPagePath) || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
+
+  const editedPageTitle = nodePath.basename(editedPagePath);
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -27,16 +30,34 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+  const onInputChange = useCallback((inputText: string) => {
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputText);
+
+    setEditedPagePath(newPagePath);
+  }, [currentPage?.path, setEditedPagePath]);
+
+  const onPressEscape = () => {
+    setEditedPagePath(currentPagePath);
+    setRenameInputShown(false);
+  };
+
+  const onClickPageTitle = () => {
+    console.log(currentPagePath);
+    setEditedPagePath(currentPagePath);
+    setRenameInputShown(true);
+  };
+
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
   const stateHandler = { isRenameInputShown, setRenameInputShown };
 
-  const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageTitle}</div>), [pageTitle]);
+  const PageTitle = useMemo(() => (<div onClick={onClickPageTitle}>{pageTitle}</div>), [pageTitle]);
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   const onClickButton = () => {
-    pagePathRenameHandler(props.inputValue);
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
   };
 
   return (
@@ -45,9 +66,10 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
-          inputValue={props.inputValue}
+          inputValue={editedPageTitle}
           CustomComponent={PageTitle}
-          onInputChange={props.onInputChange}
+          onInputChange={onInputChange}
+          onPressEscape={onPressEscape}
         />
       </div>
       <div className={`col-4 ${buttonStyle}`}>
