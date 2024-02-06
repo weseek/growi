@@ -802,7 +802,7 @@ module.exports = (crowi) => {
    */
   router.post('/duplicate', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.duplicatePage, apiV3FormValidator,
     async(req, res) => {
-      const { pageId, isRecursively } = req.body;
+      const { pageId, isRecursively, onlyDuplicateUserRelatedResources } = req.body;
 
       const newPagePath = normalizePath(req.body.pageNameInput);
 
@@ -826,11 +826,6 @@ module.exports = (crowi) => {
 
       const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
-      // TODO: remove in https://redmine.weseek.co.jp/issues/136139
-      if (page.grantedGroups != null && page.grantedGroups.length > 1) {
-        return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-      }
-
       const isEmptyAndNotRecursively = page?.isEmpty && !isRecursively;
       if (page == null || isEmptyAndNotRecursively) {
         res.code = 'Page is not found';
@@ -838,7 +833,7 @@ module.exports = (crowi) => {
         return res.apiv3Err(new ErrorV3(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'), 401);
       }
 
-      const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively);
+      const newParentPage = await crowi.pageService.duplicate(page, newPagePath, req.user, isRecursively, onlyDuplicateUserRelatedResources);
       const result = { page: serializePageSecurely(newParentPage) };
 
       // copy the page since it's used and updated in crowi.pageService.duplicate

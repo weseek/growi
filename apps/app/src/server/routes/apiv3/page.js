@@ -478,7 +478,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
+    const userRelatedGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(page, req.user);
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
     const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
     const grantedUserGroupData = currentPageUserGroups.map((group) => {
@@ -489,7 +490,7 @@ module.exports = (crowi) => {
     });
     const currentPageGrant = {
       grant,
-      grantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
     };
 
     // page doesn't have parent page
@@ -514,10 +515,11 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
+    const userRelatedParentGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(parentPage, req.user);
     const {
       grantedUserGroups: parentGrantedUserGroupIds,
       grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
-    } = divideByType(parentPage.grantedGroups);
+    } = divideByType(userRelatedParentGrantedGroups);
     const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
     const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
     const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
@@ -528,7 +530,7 @@ module.exports = (crowi) => {
     });
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
     };
 
     const grantData = {
@@ -565,10 +567,10 @@ module.exports = (crowi) => {
 
   router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
-    const { grant, grantedGroups } = req.body;
+    const { grant, userRelatedGrantedGroups } = req.body;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136137
-    if (grantedGroups != null && grantedGroups.length > 1) {
+    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 1) {
       return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
 
@@ -584,7 +586,7 @@ module.exports = (crowi) => {
     let data;
     try {
       const shouldUseV4Process = false;
-      const grantData = { grant, grantedGroups };
+      const grantData = { grant, userRelatedGrantedGroups };
       data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {

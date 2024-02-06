@@ -328,7 +328,8 @@
     "already_exists": "Page with the path already exists.",
     "outdated": "Page is updated someone and now outdated.",
     "user_not_admin": "Only admin user can delete",
-    "single_deletion_empty_pages": "Empty pages cannot be single deleted"
+    "single_deletion_empty_pages": "Empty pages cannot be single deleted",
+    "complete_deletion_not_allowed_for_user": "You are not allowed to delete this page completely"
   },
   "page_history": {
     "revision_list": "Revision list",
@@ -389,10 +390,12 @@
       "Current page name": "Current page name",
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
-      "Same page already exists": "Same page already exists"
+      "Same page already exists": "Same page already exists",
+      "Only duplicate user related resources": "Only duplicate user related resources"
     },
     "help": {
-      "recursive": "Duplicate children of under this path recursively"
+      "recursive": "Duplicate children of under this path recursively",
+      "only_user_related_resources": "This will only duplicate pages that the user has permission to view. If the page permission is set to \"Only specific groups\", only user related groups will be set to the page duplicate."
     }
   },
   "duplicated_pages": "{{fromPath}} has been duplicated",
