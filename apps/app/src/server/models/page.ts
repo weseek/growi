@@ -8,26 +8,25 @@ import {
   type IGrantedGroup,
   GroupType, type HasObjectId,
 } from '@growi/core';
+import type { ITag } from '@growi/core/dist/interfaces';
 import { isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
+import type { Model, Document, AnyObject } from 'mongoose';
 import mongoose, {
-  Schema, Model, Document, AnyObject,
+  Schema,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
-import { UserGroupDocument } from './user-group';
 import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
@@ -76,6 +75,10 @@ export interface PageModel extends Model<PageDocument> {
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
+  findTemplate(path: string): Promise<{
+    templateBody?: string,
+    templateTags?: string[],
+  }>
 
   PageQueryBuilder: typeof PageQueryBuilder
 

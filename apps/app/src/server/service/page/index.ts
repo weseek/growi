@@ -33,6 +33,8 @@ import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawDa
 import {
   type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
+import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -43,7 +45,7 @@ import { PathAlreadyExistsError } from '../../models/errors';
 import type { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
-import type { PageRedirectModel } from '../../models/page-redirect';
+import PageRedirect from '../../models/page-redirect';
 import { serializePageSecurely } from '../../models/serializers/page-serializer';
 import ShareLink from '../../models/share-link';
 import Subscription from '../../models/subscription';
@@ -642,7 +644,6 @@ class PageService implements IPageService {
 
     // create page redirect
     if (options.createRedirectPage) {
-      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
     this.pageEvent.emit('rename');
@@ -827,7 +828,6 @@ class PageService implements IPageService {
     await Revision.updateRevisionListByPageId(renamedPage._id, { pageId: renamedPage._id });
 
     if (createRedirectPage) {
-      const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
       await PageRedirect.create({ fromPath: page.path, toPath: newPagePath });
     }
 
@@ -843,7 +843,6 @@ class PageService implements IPageService {
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { updateMetadata, createRedirectPage } = options;
 
@@ -911,7 +910,6 @@ class PageService implements IPageService {
   }
 
   private async renameDescendantsV4(pages, user, options, oldPagePathPrefix, newPagePathPrefix) {
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const pageCollection = mongoose.connection.collection('pages');
     const { updateMetadata, createRedirectPage } = options;
 
@@ -1069,7 +1067,6 @@ class PageService implements IPageService {
     }
 
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
 
     if (!isRecursively && page.isEmpty) {
       throw Error('Page not found.');
@@ -1146,7 +1143,7 @@ class PageService implements IPageService {
 
     // 4. Take over tags
     const originTags = await page.findRelatedTagsById();
-    let savedTags = [];
+    let savedTags: PageTagRelationDocument[] = [];
     if (originTags.length !== 0) {
       await PageTagRelation.updatePageTags(duplicatedTarget._id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(duplicatedTarget._id);
@@ -1240,7 +1237,6 @@ class PageService implements IPageService {
   }
 
   async duplicateV4(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources: boolean) {
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     // populate
     await page.populate({ path: 'revision', model: 'Revision', select: 'body' });
 
@@ -1263,7 +1259,7 @@ class PageService implements IPageService {
 
     // take over tags
     const originTags = await page.findRelatedTagsById();
-    let savedTags = [];
+    let savedTags: PageTagRelationDocument[] = [];
     if (originTags != null) {
       await PageTagRelation.updatePageTags(createdPage.id, originTags);
       savedTags = await PageTagRelation.listTagNamesByPage(createdPage.id);
@@ -1280,8 +1276,6 @@ class PageService implements IPageService {
    * @param {Object} pageIdMapping e.g. key: oldPageId, value: newPageId
    */
   private async duplicateTags(pageIdMapping) {
-    const PageTagRelation = mongoose.model('PageTagRelation');
-
     // convert pageId from string to ObjectId
     const pageIds = Object.keys(pageIdMapping);
     const stage = { $or: pageIds.map((pageId) => { return { relatedPage: new mongoose.Types.ObjectId(pageId) } }) };
@@ -1643,8 +1637,6 @@ class PageService implements IPageService {
 
   private async deleteNonEmptyTarget(page, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
     const newPath = Page.getDeletedPageName(page.path);
 
     const deletedPage = await Page.findByIdAndUpdate(page._id, {
@@ -1684,9 +1676,7 @@ class PageService implements IPageService {
 
   private async deletePageV4(page, user, options = {}, isRecursively = false) {
     const Page = mongoose.model('Page') as PageModel;
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: Typescriptize model
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const newPath = Page.getDeletedPageName(page.path);
     const isTrashed = isTrashPage(page.path);
@@ -1728,7 +1718,6 @@ class PageService implements IPageService {
 
   private async deleteDescendants(pages, user) {
     const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const deletePageOperations: any[] = [];
     const insertPageRedirectOperations: any[] = [];
@@ -1851,9 +1840,7 @@ class PageService implements IPageService {
     // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
     const Bookmark = this.crowi.model('Bookmark');
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
     const Revision = this.crowi.model('Revision');
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const { attachmentService } = this.crowi;
     const attachments = await Attachment.find({ page: { $in: pageIds } });
@@ -2133,7 +2120,6 @@ class PageService implements IPageService {
   // use the same process in both v4 and v5
   private async revertDeletedDescendants(pages, user) {
     const Page = this.crowi.model('Page');
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
 
     const revertPageOperations: any[] = [];
     const fromPathsToDelete: string[] = [];
@@ -2171,7 +2157,6 @@ class PageService implements IPageService {
      * Common Operation
      */
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const parameters = {
       ip: activityParameters.ip,
@@ -2331,7 +2316,6 @@ class PageService implements IPageService {
 
   private async revertDeletedPageV4(page, user, options = {}, isRecursively = false) {
     const Page = this.crowi.model('Page');
-    const PageTagRelation = this.crowi.model('PageTagRelation');
 
     const newPath = Page.getRevertDeletedPageName(page.path);
     const originPage = await Page.findByPath(newPath);
@@ -2569,7 +2553,7 @@ class PageService implements IPageService {
 
   }
 
-  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user): Promise<Record<string, string | null>> {
+  async shortBodiesMapByPageIds(pageIds: ObjectId[] = [], user?): Promise<Record<string, string | null>> {
     const Page = mongoose.model('Page') as unknown as PageModel;
     const MAX_LENGTH = 350;
 
@@ -3851,9 +3835,6 @@ class PageService implements IPageService {
    * Used to run sub operation in create method
    */
   async createSubOperation(page, user, options: IOptionsForCreate, pageOpId: ObjectIdLike): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-    const PageRedirect = mongoose.model('PageRedirect') as unknown as PageRedirectModel;
-
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(page._id, 1, false);
 

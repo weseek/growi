@@ -1,4 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+import { GlobalNotificationSettingType } from '../GlobalNotificationSetting';
+
 const GlobalNotificationSetting = require('./index');
 
 const GlobalNotificationSettingClass = GlobalNotificationSetting.class;
@@ -10,7 +13,7 @@ module.exports = function(crowi) {
 
   const GlobalNotificationSettingModel = mongoose.model('GlobalNotificationSetting', GlobalNotificationSettingSchema);
   const GlobalNotificationSlackSettingModel = GlobalNotificationSettingModel.discriminator(
-    GlobalNotificationSetting.schema.statics.TYPE.SLACK,
+    GlobalNotificationSettingType.SLACK,
     new mongoose.Schema({
       slackChannels: String,
     }, {

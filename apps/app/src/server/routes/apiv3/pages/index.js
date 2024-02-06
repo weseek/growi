@@ -2,25 +2,27 @@
 import { PageGrant } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isTrashPage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
-import { normalizePath, addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
+import { normalizePath, addHeadingSlash } from '@growi/core/dist/utils/path-utils';
+import express from 'express';
+import { body, query } from 'express-validator';
 
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import { GlobalNotificationSettingEvent } from '~/server/models';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
-import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { excludeReadOnlyUser } from '../../middlewares/exclude-read-only-user';
-import { isV5ConversionError } from '../../models/vo/v5-conversion-error';
+import { generateAddActivityMiddleware } from '../../../middlewares/add-activity';
+import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
+import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
+import { serializePageSecurely } from '../../../models/serializers/page-serializer';
+import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
+import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
+import { createPageHandlersFactory } from '../page/cteate-page';
 
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
-const express = require('express');
-const { body } = require('express-validator');
-const { query } = require('express-validator');
-const mongoose = require('mongoose');
-
 const router = express.Router();
 
 const LIMIT_FOR_LIST = 10;
@@ -144,40 +146,21 @@ const LIMIT_FOR_MULTIPLE_PAGE_OP = 20;
  */
 
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const adminRequired = require('../../middlewares/admin-required')(crowi);
+  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const adminRequired = require('../../../middlewares/admin-required')(crowi);
 
   const Page = crowi.model('Page');
   const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
 
   const activityEvent = crowi.event('activity');
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const userNotificationService = crowi.getUserNotificationService();
-
-  const { serializePageSecurely } = require('../../models/serializers/page-serializer');
-  const { serializeRevisionSecurely } = require('../../models/serializers/revision-serializer');
-  const { serializeUserSecurely } = require('../../models/serializers/user-serializer');
 
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const validator = {
-    createPage: [
-      body('body').optional().isString()
-        .withMessage('body must be string or undefined'),
-      body('path').exists().not().isEmpty({ ignore_whitespace: true })
-        .withMessage('path is required'),
-      body('grant').if(value => value != null).isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
-      body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
-      body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
-      body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
-      body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
-      body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
-    ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('revisionId').optional({ nullable: true }).isMongoId().withMessage('revisionId is required'), // required when v4
@@ -221,33 +204,6 @@ module.exports = (crowi) => {
       body('convertPath').optional().isString().withMessage('convertPath must be a string'),
     ],
   };
-
-  async function createPageAction({
-    path, body, user, options,
-  }) {
-    const createdPage = await crowi.pageService.create(path, body, user, options);
-    return createdPage;
-  }
-
-  async function saveTagsAction({ createdPage, pageTags }) {
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      tagEvent.emit('update', createdPage, pageTags);
-      return PageTagRelation.listTagNamesByPage(createdPage.id);
-    }
-
-    return [];
-  }
-
-  async function generateUniquePath(basePath, index = 1) {
-    const path = basePath + index;
-    const existingPageId = await Page.exists({ path, isEmpty: false });
-    if (existingPageId != null) {
-      return generateUniquePath(basePath, index + 1);
-    }
-    return path;
-  }
 
   /**
    * @swagger
@@ -304,137 +260,7 @@ module.exports = (crowi) => {
    *          409:
    *            description: page path is already existed
    */
-  router.post('/', accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, validator.createPage, apiV3FormValidator, async(req, res) => {
-    const {
-      // body, grant, grantUserGroupId, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
-      body, overwriteScopesOfDescendants, isSlackEnabled, slackChannels, pageTags, shouldGeneratePath,
-    } = req.body;
-
-    let { path, grant, grantUserGroupIds } = req.body;
-
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
-    // check whether path starts slash
-    path = addHeadingSlash(path);
-
-    if (shouldGeneratePath) {
-      try {
-        const rootPath = '/';
-        const defaultTitle = '/Untitled';
-        const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
-        path = await generateUniquePath(basePath);
-
-        // if the generated path is not creatable, create the path under the root path
-        if (!isCreatablePage(path)) {
-          path = await generateUniquePath(defaultTitle);
-          // initialize grant data
-          grant = 1;
-          grantUserGroupIds = undefined;
-        }
-      }
-      catch (err) {
-        return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
-      }
-    }
-
-    if (!isCreatablePage(path)) {
-      return res.apiv3Err(`Could not use the path '${path}'`);
-    }
-
-    if (isUserPage(path)) {
-      const isExistUser = await User.isExistUserByUserPagePath(path);
-      if (!isExistUser) {
-        return res.apiv3Err("Unable to create a page under a non-existent user's user page");
-      }
-    }
-
-    const options = { overwriteScopesOfDescendants };
-    if (grant != null) {
-      options.grant = grant;
-      options.grantUserGroupIds = grantUserGroupIds;
-    }
-
-    const isNoBodyPage = body === undefined;
-    let initialTags = [];
-    let initialBody = '';
-    if (isNoBodyPage) {
-      const isEnabledAttachTitleHeader = await crowi.configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
-      if (isEnabledAttachTitleHeader) {
-        initialBody += `${attachTitleHeader(path)}\n`;
-      }
-
-      const templateData = await Page.findTemplate(path);
-      if (templateData?.templateTags != null) {
-        initialTags = templateData.templateTags;
-      }
-      if (templateData?.templateBody != null) {
-        initialBody += `${templateData.templateBody}\n`;
-      }
-    }
-
-    let createdPage;
-    try {
-      createdPage = await createPageAction({
-        path, body: isNoBodyPage ? initialBody : body, user: req.user, options,
-      });
-    }
-    catch (err) {
-      logger.error('Error occurred while creating a page.', err);
-      return res.apiv3Err(err);
-    }
-
-    const savedTags = await saveTagsAction({ createdPage, pageTags: isNoBodyPage ? initialTags : pageTags });
-
-    const result = {
-      page: serializePageSecurely(createdPage),
-      tags: savedTags,
-      revision: serializeRevisionSecurely(createdPage.revision),
-    };
-
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: createdPage,
-      action: SupportedAction.ACTION_PAGE_CREATE,
-    };
-    activityEvent.emit('update', res.locals.activity._id, parameters);
-
-    res.apiv3(result, 201);
-
-    try {
-      // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create grobal notification failed', err);
-    }
-
-    // user notification
-    if (isSlackEnabled) {
-      try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
-        results.forEach((result) => {
-          if (result.status === 'rejected') {
-            logger.error('Create user notification failed', result.reason);
-          }
-        });
-      }
-      catch (err) {
-        logger.error('Create user notification failed', err);
-      }
-    }
-
-    // create subscription
-    try {
-      await crowi.inAppNotificationService.createSubscription(req.user.id, createdPage._id, subscribeRuleNames.PAGE_CREATE);
-    }
-    catch (err) {
-      logger.error('Failed to create subscription document', err);
-    }
-  });
-
+  router.post('/', createPageHandlersFactory(crowi));
 
   /**
    * @swagger
@@ -471,7 +297,6 @@ module.exports = (crowi) => {
         }
       });
 
-      const PageTagRelation = mongoose.model('PageTagRelation');
       const ids = result.pages.map((page) => { return page._id });
       const relations = await PageTagRelation.find({ relatedPage: { $in: ids } }).populate('relatedTag');
 
@@ -622,7 +447,7 @@ module.exports = (crowi) => {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_MOVE, renamedPage, req.user, {
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_MOVE, renamedPage, req.user, {
         oldPath: page.path,
       });
     }
@@ -840,7 +665,7 @@ module.exports = (crowi) => {
       const copyPage = { ...page };
       copyPage.path = newPagePath;
       try {
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, copyPage, req.user);
+        await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_CREATE, copyPage, req.user);
       }
       catch (err) {
         logger.error('Create grobal notification failed', err);

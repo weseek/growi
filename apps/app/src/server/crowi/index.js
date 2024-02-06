@@ -50,6 +50,12 @@ class Crowi {
   /** @type {AppService} */
   appService;
 
+  /** @type {import('../service/page').IPageService} */
+  pageService;
+
+  /** @type UserNotificationService */
+  userNotificationService;
+
   /** @type {FileUploader} */
   fileUploadService;
 
@@ -74,7 +80,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.userNotificationService = null;
     this.xssService = null;
     this.aclService = null;
     this.appService = null;
@@ -86,7 +91,6 @@ class Crowi {
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
-    this.pageService = null;
     this.syncPageStatusService = null;
     this.cdnResourcesService = new CdnResourcesService();
     this.slackIntegrationService = null;

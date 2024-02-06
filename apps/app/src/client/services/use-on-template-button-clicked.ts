@@ -4,7 +4,7 @@ import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
-import { LabelType } from '~/interfaces/template';
+import type { LabelType } from '~/interfaces/template';
 
 export const useOnTemplateButtonClicked = (
     currentPagePath?: string,

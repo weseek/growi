@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { Suspense, useCallback } from 'react';
 
 import { getIdForRef, type IPageHasId, type IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -37,7 +37,7 @@ type TagsProps = {
 const Tags = (props: TagsProps): JSX.Element => {
   const { pageId, revisionId } = props;
 
-  const { data: tagsInfoData } = useSWRxTagsInfo(pageId);
+  const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
 
   const { data: showTagLabel } = useIsAbleToShowTagLabel();
   const { data: isGuestUser } = useIsGuestUser();
@@ -51,7 +51,7 @@ const Tags = (props: TagsProps): JSX.Element => {
     openTagEditModal(tagsInfoData.tags, pageId, revisionId);
   }, [pageId, revisionId, tagsInfoData, openTagEditModal]);
 
-  if (!showTagLabel) {
+  if (!showTagLabel || tagsInfoData == null) {
     return <></>;
   }
 
@@ -59,16 +59,11 @@ const Tags = (props: TagsProps): JSX.Element => {
 
   return (
     <div className="grw-taglabels-container">
-      { tagsInfoData?.tags != null
-        ? (
-          <PageTags
-            tags={tagsInfoData.tags}
-            isTagLabelsDisabled={isTagLabelsDisabled}
-            onClickEditTagsButton={onClickEditTagsButton}
-          />
-        )
-        : <PageTagsSkeleton />
-      }
+      <PageTags
+        tags={tagsInfoData.tags}
+        isTagLabelsDisabled={isTagLabelsDisabled}
+        onClickEditTagsButton={onClickEditTagsButton}
+      />
     </div>
   );
 };
@@ -97,7 +92,9 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   return (
     <>
       {/* Tags */}
-      <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
+      <Suspense fallback={<PageTagsSkeleton />}>
+        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
+      </Suspense>
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
         {/* Page list */}

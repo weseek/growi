@@ -1,8 +1,10 @@
+import nodePath from 'path';
+
+import { GlobalNotificationSettingEvent, GlobalNotificationSettingType } from '~/server/models';
 import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:service:GlobalNotificationMailService'); // eslint-disable-line no-unused-vars
-const nodePath = require('path');
 
 /**
  * sub service class of GlobalNotificationSetting
@@ -11,8 +13,6 @@ class GlobalNotificationMailService {
 
   constructor(crowi) {
     this.crowi = crowi;
-    this.type = crowi.model('GlobalNotificationSetting').TYPE.MAIL;
-    this.event = crowi.model('GlobalNotificationSetting').EVENT;
   }
 
   /**
@@ -29,7 +29,7 @@ class GlobalNotificationMailService {
     const { mailService } = this.crowi;
 
     const GlobalNotification = this.crowi.model('GlobalNotificationSetting');
-    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, page.path, this.type);
+    const notifications = await GlobalNotification.findSettingByPathAndEvent(event, page.path, GlobalNotificationSettingType.MAIL);
 
     const option = this.generateOption(event, page, triggeredBy, vars);
 
@@ -73,19 +73,19 @@ class GlobalNotificationMailService {
     };
 
     switch (event) {
-      case this.event.PAGE_CREATE:
+      case GlobalNotificationSettingEvent.PAGE_CREATE:
         subject = `#${event} - ${triggeredBy.username} created ${path} at URL: ${pageUrl}`;
         break;
 
-      case this.event.PAGE_EDIT:
+      case GlobalNotificationSettingEvent.PAGE_EDIT:
         subject = `#${event} - ${triggeredBy.username} edited ${path} at URL: ${pageUrl}`;
         break;
 
-      case this.event.PAGE_DELETE:
+      case GlobalNotificationSettingEvent.PAGE_DELETE:
         subject = `#${event} - ${triggeredBy.username} deleted ${path} at URL: ${pageUrl}`;
         break;
 
-      case this.event.PAGE_MOVE:
+      case GlobalNotificationSettingEvent.PAGE_MOVE:
         // validate for page move
         if (oldPath == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);
@@ -99,11 +99,11 @@ class GlobalNotificationMailService {
         };
         break;
 
-      case this.event.PAGE_LIKE:
+      case GlobalNotificationSettingEvent.PAGE_LIKE:
         subject = `#${event} - ${triggeredBy.username} liked ${path} at URL: ${pageUrl}`;
         break;
 
-      case this.event.COMMENT:
+      case GlobalNotificationSettingEvent.COMMENT:
         // validate for comment
         if (comment == null) {
           throw new Error(`invalid vars supplied to GlobalNotificationMailService.generateOption for event ${event}`);

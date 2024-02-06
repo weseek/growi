@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
+import type { IPageTagRelation } from '../../../src/interfaces/page-tag-relation';
+import PageTagRelation from '../../../src/server/models/page-tag-relation';
 import Tag from '../../../src/server/models/tag';
 import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
@@ -29,7 +31,6 @@ describe('PageService page operations with non-public pages', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let xssSpy;
 
   let rootPage;
@@ -121,7 +122,6 @@ describe('PageService page operations with non-public pages', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
 
     /*
      * Common
@@ -1527,7 +1527,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const revertedPage = await Page.findOne({ path: '/np_revert1' });
       const deltedPageBeforeRevert = await Page.findOne({ path: '/trash/np_revert1' });
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag?._id });
+      const pageTagRelation = await PageTagRelation.findOne<IPageTagRelation>({ relatedPage: revertedPage._id, relatedTag: tag?._id });
       expect(revertedPage).toBeTruthy();
       expect(pageTagRelation).toBeTruthy();
       expect(deltedPageBeforeRevert).toBeNull();
@@ -1536,7 +1536,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(revertedPage.parent).toBeNull();
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
       expect(revertedPage.grant).toBe(Page.GRANT_RESTRICTED);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
     test('should revert single deleted page with GRANT_USER_GROUP', async() => {
       const beforeRevertPath = '/trash/np_revert2';
@@ -1557,7 +1557,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const revertedPage = await Page.findOne({ path: '/np_revert2' });
       const trashedPageBR = await Page.findOne({ path: beforeRevertPath });
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: revertedPage._id, relatedTag: tag?._id });
+      const pageTagRelation = await PageTagRelation.findOne<IPageTagRelation>({ relatedPage: revertedPage._id, relatedTag: tag?._id });
       expect(revertedPage).toBeTruthy();
       expect(pageTagRelation).toBeTruthy();
       expect(trashedPageBR).toBeNull();
@@ -1569,7 +1569,7 @@ describe('PageService page operations with non-public pages', () => {
         { item: groupIdA, type: GroupType.userGroup },
         { item: externalGroupIdA, type: GroupType.externalUserGroup },
       ]);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
     });
     test(`revert multiple pages: only target page should be reverted.
           Non-existant middle page and leaf page with GRANT_RESTRICTED shoud not be reverted`, async() => {

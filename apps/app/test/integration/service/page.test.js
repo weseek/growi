@@ -3,6 +3,7 @@ import { GroupType } from '@growi/core';
 import { advanceTo } from 'jest-date-mock';
 
 import { PageSingleDeleteCompConfigValue, PageRecursiveDeleteCompConfigValue } from '~/interfaces/page-delete-config';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import Tag from '~/server/models/tag';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
@@ -62,7 +63,6 @@ describe('PageService', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -75,7 +75,6 @@ describe('PageService', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
