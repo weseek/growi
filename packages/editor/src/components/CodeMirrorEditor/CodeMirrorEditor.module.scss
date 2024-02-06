@@ -1,12 +1,9 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 
-.codemirror-editor-container :global {
+%codemirror-editor-common-container {
 
   .cm-editor {
-    width: 100%;
-    height: 100%;
-
     // Header highlight style
     .cm-header {
       text-decoration: none;
@@ -37,6 +34,21 @@
 
   }
 
+}
+
+.codemirror-editor-main-container :global {
+  @extend %codemirror-editor-common-container;
+  .cm-editor {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.codemirror-editor-comment-container :global {
+  @extend %codemirror-editor-common-container;
+  .cm-editor {
+    height: 200px
+  }
 }
 
 

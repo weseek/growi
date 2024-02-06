@@ -19,9 +19,12 @@ import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
 
-const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
+const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, { editorKey: string | GlobalCodeMirrorEditorKey }>((props, ref) => {
+  const { editorKey } = props;
+  const styles = editorKey === GlobalCodeMirrorEditorKey.MAIN ? style['codemirror-editor-main-container'] : style['codemirror-editor-comment-container'];
+
   return (
-    <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
+    <div {...props} className={`flex-expand-vert ${styles}`} ref={ref} />
   );
 });
 
@@ -198,10 +201,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert`}>
+    <div className={`${style['codemirror-editor']} flex-expand-vert}`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <FileDropzoneOverlay isEnabled={isDragActive} />
-        <CodeMirrorEditorContainer ref={containerRef} />
+        <CodeMirrorEditorContainer editorKey={editorKey} ref={containerRef} />
         <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>
     </div>
