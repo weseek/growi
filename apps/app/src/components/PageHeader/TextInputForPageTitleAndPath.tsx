@@ -31,31 +31,31 @@ type Props = {
 
 export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
   const {
-    currentPage, stateHandler, inputValue, CustomComponent, onInputChange,
+    currentPage, stateHandler, inputValue, CustomComponent, onInputChange, onPressEscape,
   } = props;
 
   const { t } = useTranslation();
 
   const { isRenameInputShown, setRenameInputShown } = stateHandler;
 
-  const onRenameFinish = () => {
-    setRenameInputShown(false);
-  };
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const onRenameFailure = () => {
-    setRenameInputShown(true);
-  };
+  const onPressEnter = useCallback((inputPagePath: string) => {
 
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
+    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPath, inputPagePath);
 
-  const onPressEnter = useCallback(() => {
-    pagePathRenameHandler(editedPagePath);
-  }, [editedPagePath, pagePathRenameHandler]);
+    const onRenameFinish = () => {
+      setRenameInputShown(false);
+    };
 
-  // const onPressEscape = useCallback(() => {
-  //   setEditedPagePath(currentPage.path);
-  //   setRenameInputShown(false);
-  // }, [currentPage.path, setEditedPagePath, setRenameInputShown]);
+    const onRenameFailure = () => {
+      setRenameInputShown(true);
+    };
+
+    pagePathRenameHandler(newPagePath, onRenameFinish, onRenameFailure);
+
+  }, [currentPage.path, pagePathRenameHandler, setRenameInputShown]);
 
   return (
     <>
@@ -65,7 +65,7 @@ export const TextInputForPageTitleAndPath: FC<Props> = (props) => {
             value={inputValue}
             placeholder={t('Input page name')}
             onPressEnter={onPressEnter}
-            onPressEscape={props.onPressEscape}
+            onPressEscape={onPressEscape}
             validationTarget={ValidationTarget.PAGE}
             handleInputChange={onInputChange}
           />
