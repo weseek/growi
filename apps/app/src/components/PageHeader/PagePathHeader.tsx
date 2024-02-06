@@ -1,4 +1,6 @@
-import { useMemo, useState, useEffect } from 'react';
+import {
+  useMemo, useState, useEffect, useCallback,
+} from 'react';
 import type { FC } from 'react';
 
 import nodePath from 'path';
@@ -69,24 +71,24 @@ export const PagePathHeader: FC<Props> = (props) => {
     setEditedPagePath(newPagePath);
   };
 
-  const handleEditButtonClick = () => {
+  const handleEditButtonClick = useCallback(() => {
     if (isRenameInputShown) {
       pagePathRenameHandler(editedPagePath);
     }
     else {
       setRenameInputShown(true);
     }
-  };
+  }, [editedPagePath, isRenameInputShown, pagePathRenameHandler]);
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
-  const clickOutSideHandler = (e) => {
+  const clickOutSideHandler = useCallback((e) => {
     const container = document.getElementById('page-path-header');
 
     if (container && !container.contains(e.target)) {
       setRenameInputShown(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener('click', clickOutSideHandler);
