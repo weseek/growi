@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, getEditorTheme,
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme,
 } from '../../services';
 import {
   getStrFromBol, adjustPasteData,
@@ -144,10 +144,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
   useEffect(() => {
-    const settingTheme = async(name?: string) => {
+    const settingTheme = async(name?: EditorTheme) => {
       setThemeExtension(await getEditorTheme(name ?? 'DefaultLight'));
     };
-    settingTheme(editorTheme);
+    settingTheme(editorTheme as EditorTheme);
   }, [codeMirrorEditor, editorTheme, setThemeExtension]);
 
   useEffect(() => {

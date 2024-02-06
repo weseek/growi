@@ -1,6 +1,6 @@
 import { Extension } from '@codemirror/state';
 
-export const getEditorTheme = async(themeName: string): Promise<Extension> => {
+export const getEditorTheme = async(themeName: EditorTheme): Promise<Extension> => {
   switch (themeName) {
     case 'Eclipse':
       return (await import('@uiw/codemirror-theme-eclipse')).eclipse;
@@ -24,4 +24,19 @@ export const getEditorTheme = async(themeName: string): Promise<Extension> => {
   return (await import('./original-light')).originalLight;
 };
 
-export const AllEditorTheme = ['DefaultLight', 'Eclipse', 'Basic', 'Ayu', 'Rosé Pine', 'DefaultDark', 'Material', 'Nord', 'Cobalt', 'Kimbie'];
+const EditorTheme = {
+  DefaultLight: 'DefaultLight',
+  Eclipse: 'Eclipse',
+  Basic: 'Basic',
+  Ayu: 'Ayu',
+  'Rosé Pine': 'Rosé Pine',
+  DefaultDark: 'DefaultDark',
+  Material: 'Material',
+  Nord: 'Nord',
+  Cobalt: 'Cobalt',
+  Kimbie: 'Kimbie',
+} as const;
+
+
+export const AllEditorTheme = Object.values(EditorTheme);
+export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]

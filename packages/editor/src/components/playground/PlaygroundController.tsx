@@ -3,9 +3,7 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import {
-  AllEditorTheme,
-} from '../../services';
+import { AllEditorTheme } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
