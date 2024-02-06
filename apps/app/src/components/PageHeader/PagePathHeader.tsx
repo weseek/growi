@@ -17,8 +17,8 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
-  inputValue: string
-  onInputChange?: (inputText: string) => void
+  // inputValue: string
+  // onInputChange?: (inputText: string) => void
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
@@ -28,9 +28,11 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
+  const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -38,6 +40,15 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const onRenameFailure = () => {
     setRenameInputShown(true);
+  };
+
+  const onInputChange = (inputText: string) => {
+    setEditedPagePath(inputText);
+  };
+
+  const onPressEscape = () => {
+    setEditedPagePath(currentPagePath);
+    setRenameInputShown(false);
   };
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
@@ -59,12 +70,14 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const onClickEditButton = useCallback(() => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(props.inputValue);
+      pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
     }
     else {
+      console.log(currentPagePath);
+      setEditedPagePath(currentPagePath);
       setRenameInputShown(true);
     }
-  }, [isRenameInputShown, pagePathRenameHandler, props.inputValue]);
+  }, [currentPagePath, editedPagePath, isRenameInputShown, pagePathRenameHandler]);
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
@@ -97,9 +110,10 @@ export const PagePathHeader: FC<Props> = (props) => {
           <TextInputForPageTitleAndPath
             currentPage={currentPage}
             stateHandler={stateHandler}
-            inputValue={props.inputValue}
+            inputValue={editedPagePath}
             CustomComponent={PagePath}
-            onInputChange={props.onInputChange}
+            onInputChange={onInputChange}
+            onPressEscape={onPressEscape}
           />
         </div>
         <div className={`${buttonStyle} col-4 row`}>
