@@ -19,7 +19,7 @@ import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user
 import { serializePageSecurely } from '../../../models/serializers/page-serializer';
 import { serializeUserSecurely } from '../../../models/serializers/user-serializer';
 import { isV5ConversionError } from '../../../models/vo/v5-conversion-error';
-import { createPageHandlersFactory } from '../page/cteate-page';
+import { createPageHandlersFactory } from '../page/create-page';
 
 
 const logger = loggerFactory('growi:routes:apiv3:pages'); // eslint-disable-line no-unused-vars
