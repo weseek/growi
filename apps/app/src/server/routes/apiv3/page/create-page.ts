@@ -76,15 +76,15 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   const userNotificationService = crowi.getUserNotificationService();
 
 
-  async function saveTagsAction({ createdPage, pageTags }: { createdPage: PageDocument, pageTags: string[] }) {
-    if (pageTags != null) {
-      const tagEvent = crowi.event('tag');
-      await PageTagRelation.updatePageTags(createdPage.id, pageTags);
-      tagEvent.emit('update', createdPage, pageTags);
-      return PageTagRelation.listTagNamesByPage(createdPage.id);
+  async function saveTagsAction({ createdPage, pageTags }: { createdPage: PageDocument, pageTags?: string[] }) {
+    if (pageTags == null) {
+      return [];
     }
 
-    return [];
+    const tagEvent = crowi.event('tag');
+    await PageTagRelation.updatePageTags(createdPage.id, pageTags);
+    tagEvent.emit('update', createdPage, pageTags);
+    return PageTagRelation.listTagNamesByPage(createdPage.id);
   }
 
   const validator: ValidationChain[] = [
@@ -92,11 +92,11 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       .withMessage('body must be string or undefined'),
     body('path').exists().not().isEmpty({ ignore_whitespace: true })
       .withMessage('path is required'),
-    body('grant').if(value => value != null).isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
-    body('overwriteScopesOfDescendants').if(value => value != null).isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
-    body('isSlackEnabled').if(value => value != null).isBoolean().withMessage('isSlackEnabled must be boolean'),
-    body('slackChannels').if(value => value != null).isString().withMessage('slackChannels must be string'),
-    body('pageTags').if(value => value != null).isArray().withMessage('pageTags must be array'),
+    body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
+    body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
+    body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
+    body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
+    body('pageTags').optional().isArray().withMessage('pageTags must be array'),
     body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
   ];
 
@@ -182,7 +182,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(err);
       }
 
-      const savedTags = await saveTagsAction({ createdPage, pageTags: isNoBodyPage ? initialTags : (pageTags ?? ['']) });
+      const savedTags = await saveTagsAction({ createdPage, pageTags: isNoBodyPage ? initialTags : pageTags });
 
       const result = {
         page: serializePageSecurely(createdPage),
