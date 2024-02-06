@@ -1,7 +1,5 @@
 import type { FC } from 'react';
-import {
-  useState, useMemo,
-} from 'react';
+import { useState, useMemo, useCallback } from 'react';
 
 import nodePath from 'path';
 
@@ -39,12 +37,12 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageTitle}</div>), [pageTitle]);
 
-  const handleInputChange = (inputText: string) => {
+  const handleInputChange = useCallback((inputText: string) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
     setEditedPagePath(newPagePath);
-  };
+  }, [currentPage.path, setEditedPagePath]);
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
