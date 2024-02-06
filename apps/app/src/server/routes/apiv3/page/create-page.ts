@@ -4,7 +4,7 @@ import type {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
-import { addHeadingSlash, attachTitleHeader } from '@growi/core/dist/utils/path-utils';
+import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
@@ -31,29 +31,65 @@ import type { ApiV3Response } from '../interfaces/apiv3-response';
 const logger = loggerFactory('growi:routes:apiv3:page:create-page');
 
 
-async function generateUniquePath(basePath: string, index = 1): Promise<string> {
+async function generateUntitledPath(parentPath: string, basePathname: string, index = 1): Promise<string> {
   const Page = mongoose.model<IPage>('Page');
 
-  const path = basePath + index;
-  const existingPageId = await Page.exists({ path, isEmpty: false });
-  if (existingPageId != null) {
-    return generateUniquePath(basePath, index + 1);
+  const path = `${normalizePath(parentPath)}${normalizePath(basePathname)}-${index}`;
+  if (await Page.exists({ path, isEmpty: false }) != null) {
+    return generateUntitledPath(parentPath, basePathname, index + 1);
   }
   return path;
 }
 
+async function determinePath(parentPath?: string, path?: string, optionalParentPath?: string): Promise<string> {
+  // TODO: i18n
+  const basePathname = 'Untitled';
+
+  if (path != null) {
+    // when path is valid
+    if (isCreatablePage(path)) {
+      return normalizePath(path);
+    }
+    // when optionalParentPath is set
+    if (optionalParentPath != null) {
+      return generateUntitledPath(optionalParentPath, basePathname);
+    }
+    // when path is invalid
+    throw new Error('Could not create the page');
+  }
+
+  if (parentPath != null) {
+    // when parentPath is valid
+    if (isCreatablePage(parentPath)) {
+      return generateUntitledPath(parentPath, basePathname);
+    }
+    // when optionalParentPath is set
+    if (optionalParentPath != null) {
+      return generateUntitledPath(optionalParentPath, basePathname);
+    }
+    // when parentPath is invalid
+    throw new Error('Could not create the page');
+  }
+
+  // when both path and parentPath are not specified
+  return generateUntitledPath('/', basePathname);
+}
+
+
 type ReqBody = {
-  path: string,
+  path?: string,
+  parentPath?: string,
+  optionalParentPath?: string,
+
+  body?: string,
+  pageTags?: string[],
 
   grant?: PageGrant,
   grantUserGroupIds?: IGrantedGroup[],
-
-  body?: string,
   overwriteScopesOfDescendants?: boolean,
+
   isSlackEnabled?: boolean,
   slackChannels?: any,
-  pageTags?: string[],
-  shouldGeneratePath?: boolean,
 }
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
@@ -72,16 +108,20 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
   // define validators for req.body
   const validator: ValidationChain[] = [
+    body('path').optional().not().isEmpty({ ignore_whitespace: true })
+      .withMessage("The empty value is not allowd for the 'path'"),
+    body('parentPath').optional().not().isEmpty({ ignore_whitespace: true })
+      .withMessage("The empty value is not allowd for the 'parentPath'"),
+    body('optionalParentPath').optional().not().isEmpty({ ignore_whitespace: true })
+      .withMessage("The empty value is not allowd for the 'optionalParentPath'"),
     body('body').optional().isString()
       .withMessage('body must be string or undefined'),
-    body('path').exists().not().isEmpty({ ignore_whitespace: true })
-      .withMessage('path is required'),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
+    body('pageTags').optional().isArray().withMessage('pageTags must be array'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
-    body('pageTags').optional().isArray().withMessage('pageTags must be array'),
-    body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
+    // body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
   ];
 
 
@@ -142,49 +182,23 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     validator, apiV3FormValidator,
     async(req: CreatePageRequest, res: ApiV3Response) => {
       const {
-        body, overwriteScopesOfDescendants, pageTags, shouldGeneratePath,
+        body, pageTags,
       } = req.body;
 
-      let { path, grant, grantUserGroupIds } = req.body;
-
-      // check whether path starts slash
-      path = addHeadingSlash(path);
-
-      if (shouldGeneratePath) {
-        try {
-          const rootPath = '/';
-          const defaultTitle = '/Untitled';
-          const basePath = path === rootPath ? defaultTitle : path + defaultTitle;
-          path = await generateUniquePath(basePath);
-
-          // if the generated path is not creatable, create the path under the root path
-          if (!isCreatablePage(path)) {
-            path = await generateUniquePath(defaultTitle);
-            // initialize grant data
-            grant = 1;
-            grantUserGroupIds = undefined;
-          }
-        }
-        catch (err) {
-          return res.apiv3Err(new ErrorV3('Failed to generate unique path'));
-        }
+      let pathToCreate: string;
+      try {
+        const { path, parentPath, optionalParentPath } = req.body;
+        pathToCreate = await determinePath(parentPath, path, optionalParentPath);
+      }
+      catch (err) {
+        return res.apiv3Err(new ErrorV3('Could not create the page.', 'could_not_create_page'));
       }
 
-      if (!isCreatablePage(path)) {
-        return res.apiv3Err(`Could not use the path '${path}'`);
-      }
-
-      if (isUserPage(path)) {
-        const isExistUser = await User.isExistUserByUserPagePath(path);
+      if (isUserPage(pathToCreate)) {
+        const isExistUser = await User.isExistUserByUserPagePath(pathToCreate);
         if (!isExistUser) {
           return res.apiv3Err("Unable to create a page under a non-existent user's user page");
         }
-      }
-
-      const options: IOptionsForCreate = { overwriteScopesOfDescendants };
-      if (grant != null) {
-        options.grant = grant;
-        options.grantUserGroupIds = grantUserGroupIds;
       }
 
       let initialTags: string[] = pageTags ?? [];
@@ -192,10 +206,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       if (body == null) {
         const isEnabledAttachTitleHeader = await configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
         if (isEnabledAttachTitleHeader) {
-          initialBody += `${attachTitleHeader(path)}\n`;
+          initialBody += `${attachTitleHeader(pathToCreate)}\n`;
         }
 
-        const templateData = await Page.findTemplate(path);
+        const templateData = await Page.findTemplate(pathToCreate);
         if (templateData.templateTags != null) {
           initialTags = templateData.templateTags;
         }
@@ -206,8 +220,14 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       let createdPage;
       try {
+        const { grant, grantUserGroupIds, overwriteScopesOfDescendants } = req.body;
+        const options: IOptionsForCreate = { overwriteScopesOfDescendants };
+        if (grant != null) {
+          options.grant = grant;
+          options.grantUserGroupIds = grantUserGroupIds;
+        }
         createdPage = await crowi.pageService.create(
-          path,
+          pathToCreate,
           initialBody,
           req.user,
           options,

@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
 
-import type { PageGrant, IGrantedGroup } from '@growi/core';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
@@ -9,8 +8,6 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 export const useOnNewButtonClicked = (
     currentPagePath?: string,
-    currentPageGrant?: PageGrant,
-    currentPageGrantedGroups?: IGrantedGroup[],
     isLoading?: boolean,
 ): {
   onClickHandler: () => Promise<void>,
@@ -27,28 +24,12 @@ export const useOnNewButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      /**
-       * !! NOTICE !! - Verification of page createable or not is checked on the server side.
-       * since the new page path is not generated on the client side.
-       * need shouldGeneratePath flag.
-       */
-      const shouldUseRootPath = currentPagePath == null || currentPageGrant == null;
-      const parentPath = shouldUseRootPath
-        ? '/'
-        : currentPagePath;
+      const response = await createPage({
+        parentPath: currentPagePath,
+        optionalParentPath: '/',
+      });
 
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: shouldUseRootPath ? 1 : currentPageGrant,
-        grantUserGroupIds: shouldUseRootPath ? undefined : currentPageGrantedGroups,
-        shouldGeneratePath: true,
-      };
-
-      // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
-      const response = await createPage(parentPath, '', params);
-
-      await router.push(`/${response.page.id}#edit`);
+      await router.push(`/${response.page._id}#edit`);
       mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
@@ -57,7 +38,7 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPageGrant, currentPageGrantedGroups, currentPagePath, isLoading, mutateEditorMode, router]);
+  }, [currentPagePath, isLoading, mutateEditorMode, router]);
 
   return { onClickHandler, isPageCreating };
 };
@@ -81,17 +62,9 @@ export const useOnTodaysButtonClicked = (
     try {
       setIsPageCreating(true);
 
-      // TODO: get grant, grantUserGroupId data from parent page
-      // https://redmine.weseek.co.jp/issues/133892
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-      };
-
       const res = await exist(JSON.stringify([todaysPath]));
       if (!res.pages[todaysPath]) {
-        await createPage(todaysPath, '', params);
+        await createPage({ path: todaysPath });
       }
 
       await router.push(`${todaysPath}#edit`);

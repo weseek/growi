@@ -8,7 +8,7 @@ import { Dropdown } from 'reactstrap';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
-import { LabelType } from '~/interfaces/template';
+import type { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
 
@@ -40,7 +40,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
     : generateTodaysPath(currentUser, t('create_page_dropdown.todays.memo'));
 
   const { onClickHandler: onClickNewButton, isPageCreating: isNewPageCreating } = useOnNewButtonClicked(
-    currentPage?.path, currentPage?.grant, currentPage?.grantedGroups, isLoading,
+    currentPage?.path, isLoading,
   );
   // TODO: https://redmine.weseek.co.jp/issues/138806
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);

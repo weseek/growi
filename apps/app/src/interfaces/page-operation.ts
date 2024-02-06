@@ -1,4 +1,6 @@
-import type { IGrantedGroup } from '@growi/core';
+import type {
+  IGrantedGroup, IPageHasId, IRevisionHasId, ITag, PageGrant,
+} from '@growi/core';
 
 export const PageActionType = {
   Create: 'Create',
@@ -32,7 +34,29 @@ export type IPageOperationProcessInfo = {
 export type OptionsToSave = {
   isSlackEnabled: boolean;
   slackChannels: string;
-  grant: number;
+  grant: PageGrant;
   // userRelatedGrantUserGroupIds?: IGrantedGroup[];
   // isSyncRevisionToHackmd?: boolean;
+};
+
+export type IApiv3PageCreateParams = {
+  path?: string,
+  parentPath?: string,
+  optionalParentPath?: string,
+
+  body?: string,
+  pageTags?: string[],
+
+  grant?: PageGrant,
+  grantUserGroupIds?: IGrantedGroup[],
+  overwriteScopesOfDescendants?: boolean,
+
+  isSlackEnabled?: boolean,
+  slackChannels?: string,
+};
+
+export type IApiv3PageCreateResponse = {
+  page: IPageHasId,
+  tags: ITag[],
+  revision: IRevisionHasId,
 };

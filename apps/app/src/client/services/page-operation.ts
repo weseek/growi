@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { SubscriptionStatusType, type Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
-import type { OptionsToSave } from '~/interfaces/page-operation';
+import type { IApiv3PageCreateParams, IApiv3PageCreateResponse, OptionsToSave } from '~/interfaces/page-operation';
 import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
 import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -87,18 +87,9 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
-// TODO: define return type
-export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
-  // clone
-  const params = Object.assign(tmpParams, {
-    path: pagePath,
-    body: markdown,
-  });
-
-  const res = await apiv3Post('/page', params);
-  const { page, tags, revision } = res.data;
-
-  return { page, tags, revision };
+export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3PageCreateResponse> => {
+  const res = await apiv3Post<IApiv3PageCreateResponse>('/page', params);
+  return res.data;
 };
 
 // TODO: define return type
@@ -138,7 +129,7 @@ export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
 
     let res;
     if (pageId == null || revisionId == null) {
-      res = await createPage(path, markdown, options);
+      res = await createPage({ path, body: markdown, ...options });
     }
     else {
       if (revisionId == null) {
