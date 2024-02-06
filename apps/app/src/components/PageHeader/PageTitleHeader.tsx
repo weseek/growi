@@ -11,17 +11,13 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
-  const { currentPage, editedPagePathState } = props;
+  const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
 
   const pageTitle = nodePath.basename(currentPagePath) || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-
-  const { editedPagePath, setEditedPagePath } = editedPagePathState;
-
-  const editingPageTitle = nodePath.basename(editedPagePath);
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -37,17 +33,10 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const PageTitle = useMemo(() => (<div onClick={() => setRenameInputShown(true)}>{pageTitle}</div>), [pageTitle]);
 
-  const handleInputChange = useCallback((inputText: string) => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
-
-    setEditedPagePath(newPagePath);
-  }, [currentPage.path, setEditedPagePath]);
-
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
-  const handleButtonClick = () => {
-    pagePathRenameHandler(editedPagePath);
+  const onClickButton = () => {
+    pagePathRenameHandler(props.inputValue);
   };
 
   return (
@@ -56,14 +45,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <TextInputForPageTitleAndPath
           currentPage={currentPage}
           stateHandler={stateHandler}
-          editedPagePathState={editedPagePathState}
-          inputValue={editingPageTitle}
+          inputValue={props.inputValue}
           CustomComponent={PageTitle}
-          handleInputChange={handleInputChange}
+          onInputChange={props.onInputChange}
         />
       </div>
       <div className={`col-4 ${buttonStyle}`}>
-        <button type="button" onClick={handleButtonClick}>
+        <button type="button" onClick={onClickButton}>
           <span className="material-symbols-outlined">check_circle</span>
         </button>
       </div>
