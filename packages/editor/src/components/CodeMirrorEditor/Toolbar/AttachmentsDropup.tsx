@@ -27,8 +27,7 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
           <span className="material-symbols-outlined fs-6">add</span>
         </DropdownToggle>
         <DropdownMenu>
-          <DropdownItem className="d-flex gap-1 align-items-center" header>
-            <span className="material-symbols-outlined fs-5">add_circle_outline</span>
+          <DropdownItem className="mt-1" header>
             Attachments
           </DropdownItem>
           <DropdownItem divider />
