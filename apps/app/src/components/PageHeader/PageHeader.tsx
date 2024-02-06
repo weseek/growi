@@ -13,22 +13,22 @@ import { PageTitleHeader } from './PageTitleHeader';
 
 export const PageHeader: FC = () => {
   const { data: currentPage } = useSWRxCurrentPage();
-  const currentPagePath = currentPage?.path;
+  // const currentPagePath = currentPage?.path;
 
-  const [editedPagePath, setEditedPagePath] = useState(currentPagePath ?? '');
+  // const [editedPagePath, setEditedPagePath] = useState(currentPagePath ?? '');
 
-  const editedPageTitle = nodePath.basename(editedPagePath);
+  // const editedPageTitle = nodePath.basename(editedPagePath);
 
-  const onInputChangeForPagePath = useCallback((inputText: string) => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+  // const onInputChangeForPagePath = useCallback((inputText: string) => {
+  //   const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
+  //   const newPagePath = nodePath.resolve(parentPath, inputText);
 
-    setEditedPagePath(newPagePath);
-  }, [currentPage?.path, setEditedPagePath]);
+  //   setEditedPagePath(newPagePath);
+  // }, [currentPage?.path, setEditedPagePath]);
 
-  const onInputChangeForPageTitle = (inputText: string) => {
-    setEditedPagePath(inputText);
-  };
+  // const onInputChangeForPageTitle = (inputText: string) => {
+  //   setEditedPagePath(inputText);
+  // };
 
   if (currentPage == null) {
     return <></>;
@@ -38,13 +38,13 @@ export const PageHeader: FC = () => {
     <>
       <PagePathHeader
         currentPage={currentPage}
-        inputValue={editedPagePath}
-        onInputChange={onInputChangeForPagePath}
+        // inputValue={editedPagePath}
+        // onInputChange={onInputChangeForPagePath}
       />
       <PageTitleHeader
         currentPage={currentPage}
-        inputValue={editedPageTitle}
-        onInputChange={onInputChangeForPageTitle}
+        // inputValue={editedPageTitle}
+        // onInputChange={onInputChangeForPageTitle}
       />
     </>
   );
