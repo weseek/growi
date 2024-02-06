@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { SubscriptionStatusType, type Nullable } from '@growi/core';
 import urljoin from 'url-join';
 
-import { OptionsToSave } from '~/interfaces/page-operation';
+import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
 import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -95,7 +95,7 @@ export const createPage = async(pagePath: string, markdown: string, tmpParams: O
     body: markdown,
   });
 
-  const res = await apiv3Post('/pages/', params);
+  const res = await apiv3Post('/page', params);
   const { page, tags, revision } = res.data;
 
   return { page, tags, revision };

@@ -20,6 +20,8 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
+import { createPageHandlersFactory } from './create-page';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -310,6 +312,63 @@ module.exports = (crowi) => {
 
     return res.apiv3({ page, pages });
   });
+
+  /**
+   * @swagger
+   *
+   *    /pages:
+   *      post:
+   *        tags: [Page]
+   *        operationId: createPage
+   *        description: Create page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    type: string
+   *                    description: Text of page
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  grantUserGroupId:
+   *                    type: string
+   *                    description: UserGroup ID
+   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                  pageTags:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Tag'
+   *                  shouldGeneratePath:
+   *                    type: boolean
+   *                    description: Determine whether a new path should be generated
+   *                required:
+   *                  - body
+   *                  - path
+   *        responses:
+   *          201:
+   *            description: Succeeded to create page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        tags:
+   *                          type: array
+   *                          items:
+   *                            $ref: '#/components/schemas/Tags'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
+   *          409:
+   *            description: page path is already existed
+   */
+  router.post('/', createPageHandlersFactory(crowi));
 
   /**
    * @swagger
