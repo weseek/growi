@@ -3,7 +3,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownMenu, DropdownItem } from 'reactstrap';
 
-import { LabelType } from '~/interfaces/template';
+import type { LabelType } from '~/interfaces/template';
 
 
 type DropendMenuProps = {
@@ -39,7 +39,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
           <DropdownItem
             onClick={onClickCreateTodaysButtonHandler}
-            data-testid="grw-sidebar-nav-today's-memo-crate-dropdown-item"
+            data-testid="grw-sidebar-nav-today-page-create-dropdown-item"
           >
             {todaysPath}
           </DropdownItem>

@@ -15,21 +15,32 @@ describe('Access to PageCreateButton', () => {
         cy.visit('/');
       });
 
-      // describe('Test PageCreateButton', () => {
+      describe('Test PageCreateButton', () => {
 
-      //   it('Successfully create untitled page', () => {
-      //     cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
-      //     cy.getByTestid('grw-sidebar-nav-page-create-button').click({ force: true });
+        it('Successfully create untitled page', () => {
+          cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
+          cy.getByTestid('grw-sidebar-nav-page-create-button').click({ force: true });
 
-      //     cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
-      //     cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
 
-      //     cy.screenshot(`${ssPrefix}create-untitled-page`, { capture: 'fullPage' });
-      //   });
+          cy.screenshot(`${ssPrefix}create-untitled-page`, { capture: 'fullPage' });
+        });
 
-      // });
+      });
 
       describe('Test PageCreateButton dropdown', () => {
+        it ('PageCreateButton dropdown is shown and closed successfully', () => {
+          cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
+          cy.getByTestid('grw-sidebar-nav-page-create-button').trigger('mouseover', { force: true });
+          cy.getByTestid('grw-sidebar-nav-dropend-toggle').as('dropend-toggle').click({ force: true });
+
+          cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').should('be.visible');
+          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-opened`);
+          cy.get('@dropend-toggle').click({ force: true });
+
+          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-closed`);
+        });
 
         beforeEach(() => {
           cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
@@ -37,29 +48,41 @@ describe('Access to PageCreateButton', () => {
           cy.getByTestid('grw-sidebar-nav-dropend-toggle').click({ force: true });
         });
 
-        // it('Successfully create untitled page', () => {
-        //   cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').click({ force: true });
+        it('Successfully create untitled page', () => {
+          cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').click({ force: true });
 
-        //   cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
-        //   cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
 
-        //   cy.screenshot(`${ssPrefix}create-untitled-page`, { capture: 'fullPage' });
-        // });
+          cy.screenshot(`${ssPrefix}create-untitled-page`, { capture: 'fullPage' });
+        });
 
-        // it("Successfully create today's memo", () => {
-        //   cy.getByTestid("grw-sidebar-nav-today's-memo-crate-dropdown-item").click({ force:true });
-        //   // 確実にtoday's memoが作成された保証を得て、スクショ撮影
-        // });
+        it("Successfully create today page", () => {
+          cy.getByTestid("grw-sidebar-nav-today-page-create-dropdown-item").click({ force:true });
 
-        // it('Successfully create children template', () => {
-        //   cy.getByTestid("grw-sidebar-nav-children-template-create-dropdown-item").click({ force:true });
-        //   cy.visit('/_template');
-        // });
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
 
-        // it('Successfully create descendants template', () => {
-        //   cy.getByTestid("grw-sidebar-nav-descendants-template-create-dropdown-item").click({ force:true });
-        //   cy.visit('/__template');
-        // });
+          cy.screenshot(`${ssPrefix}create-today-page`, { capture: 'fullPage' });
+        });
+
+        it('Successfully create children template', () => {
+          cy.getByTestid("grw-sidebar-nav-children-template-create-dropdown-item").click({ force:true });
+
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+
+          cy.screenshot(`${ssPrefix}create-children-template`, { capture: 'fullPage' });
+        });
+
+        it('Successfully create descendants template', () => {
+          cy.getByTestid("grw-sidebar-nav-descendants-template-create-dropdown-item").click({ force:true });
+
+          cy.waitUntil(() => cy.getByTestid('page-editor').should('be.visible'));
+          cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
+
+          cy.screenshot(`${ssPrefix}create-descendants-template`, { capture: 'fullPage' });
+        });
 
       });
     });
