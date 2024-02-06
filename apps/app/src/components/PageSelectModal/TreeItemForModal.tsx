@@ -3,6 +3,8 @@ import { useCallback } from 'react';
 
 import nodePath from 'path';
 
+import { useRouter } from 'next/router';
+
 import { type IPageForItem } from '~/interfaces/page';
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -23,8 +25,10 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+  const router = useRouter();
 
   const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
+
 
   const onClick = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
@@ -35,8 +39,12 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
     const newPagePath = nodePath.resolve(parentPagePath, currentPageTitle);
 
-    pagePathRenameHandler(newPagePath);
-  }, [currentPageTitle, pagePathRenameHandler]);
+    const onRenameFinish = () => {
+      router.push(newPagePath);
+    };
+
+    pagePathRenameHandler(newPagePath, onRenameFinish);
+  }, [currentPageTitle, pagePathRenameHandler, router]);
 
   return (
     <SimpleItem
