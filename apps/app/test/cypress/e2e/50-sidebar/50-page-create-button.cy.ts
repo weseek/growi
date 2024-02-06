@@ -30,22 +30,18 @@ describe('Access to PageCreateButton', () => {
       });
 
       describe('Test PageCreateButton dropdown', () => {
-        it ('PageCreateButton dropdown is shown and closed successfully', () => {
-          cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
-          cy.getByTestid('grw-sidebar-nav-page-create-button').trigger('mouseover', { force: true });
-          cy.getByTestid('grw-sidebar-nav-dropend-toggle').as('dropend-toggle').click({ force: true });
-
-          cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').should('be.visible');
-          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-opened`);
-          cy.get('@dropend-toggle').click({ force: true });
-
-          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-closed`);
-        });
-
         beforeEach(() => {
           cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-button').should('be.visible'));
           cy.getByTestid('grw-sidebar-nav-page-create-button').trigger('mouseover', { force: true });
           cy.getByTestid('grw-sidebar-nav-dropend-toggle').click({ force: true });
+        });
+
+        it ('PageCreateButton dropdown is shown and closed successfully', () => {
+          cy.waitUntil(() => cy.getByTestid('grw-sidebar-nav-page-create-dropdown-item').should('be.visible'));
+          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-opened`);
+          cy.getByTestid('grw-sidebar-nav-dropend-toggle').click({ force: true });
+
+          cy.screenshot(`${ssPrefix}PageCreateButton-dropdown-closed`);
         });
 
         it('Successfully create untitled page', () => {
