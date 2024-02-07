@@ -32,11 +32,11 @@ const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), 
 type TagsProps = {
   pageId: string,
   revisionId: string,
-  tagLablesMaxWidth?: number,
+  tagLabelsMaxWidth?: number,
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { pageId, revisionId, tagLablesMaxWidth } = props;
+  const { pageId, revisionId, tagLabelsMaxWidth } = props;
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
 
@@ -64,7 +64,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         tags={tagsInfoData.tags}
         isTagLabelsDisabled={isTagLabelsDisabled}
         onClickEditTagsButton={onClickEditTagsButton}
-        tagLablesMaxWidth={tagLablesMaxWidth}
+        tagLabelsMaxWidth={tagLabelsMaxWidth}
       />
     </div>
   );
@@ -96,7 +96,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
     <>
       {/* Tags */}
       <Suspense fallback={<PageTagsSkeleton />}>
-        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} tagLablesMaxWidth={sideContentsContainer?.clientWidth} />
+        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} tagLabelsMaxWidth={sideContentsContainer?.clientWidth} />
       </Suspense>
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>

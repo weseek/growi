@@ -14,7 +14,7 @@ type Props = {
   isTagLabelsDisabled: boolean,
   tagsUpdateInvoked?: (tags: string[]) => Promise<void> | void,
   onClickEditTagsButton: () => void,
-  tagLablesMaxWidth?: number
+  tagLabelsMaxWidth?: number
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
@@ -23,7 +23,7 @@ export const PageTagsSkeleton = (): JSX.Element => {
 
 export const PageTags:FC<Props> = (props: Props) => {
   const {
-    tags, isTagLabelsDisabled, onClickEditTagsButton, tagLablesMaxWidth,
+    tags, isTagLabelsDisabled, onClickEditTagsButton, tagLabelsMaxWidth,
   } = props;
 
   const { t } = useTranslation();
@@ -54,7 +54,7 @@ export const PageTags:FC<Props> = (props: Props) => {
               tags={tags}
               isTagLabelsDisabled={isTagLabelsDisabled}
               onClickEditTagsButton={onClickEditTagsButton}
-              tagLablesMaxWidth={tagLablesMaxWidth}
+              tagLabelsMaxWidth={tagLabelsMaxWidth}
             />
           </div>
         </div>
