@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 export const useOnNewButtonClicked = (
     currentPagePath?: string,
@@ -17,6 +18,8 @@ export const useOnNewButtonClicked = (
 } => {
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const onClickHandler = useCallback(async() => {
     if (isLoading) return;
@@ -45,7 +48,8 @@ export const useOnNewButtonClicked = (
       // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
       const response = await createPage(parentPath, '', params);
 
-      router.push(`/${response.page.id}#edit`);
+      await router.push(`/${response.page.id}#edit`);
+      mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
       toastError(err);
@@ -53,7 +57,7 @@ export const useOnNewButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPageGrant, currentPageGrantedGroups, currentPagePath, isLoading, router]);
+  }, [currentPageGrant, currentPageGrantedGroups, currentPagePath, isLoading, mutateEditorMode, router]);
 
   return { onClickHandler, isPageCreating };
 };
@@ -66,6 +70,8 @@ export const useOnTodaysButtonClicked = (
 } => {
   const router = useRouter();
   const [isPageCreating, setIsPageCreating] = useState(false);
+
+  const { mutate: mutateEditorMode } = useEditorMode();
 
   const onClickHandler = useCallback(async() => {
     if (todaysPath == null) {
@@ -88,7 +94,8 @@ export const useOnTodaysButtonClicked = (
         await createPage(todaysPath, '', params);
       }
 
-      router.push(`${todaysPath}#edit`);
+      await router.push(`${todaysPath}#edit`);
+      mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
       toastError(err);
@@ -96,7 +103,7 @@ export const useOnTodaysButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [router, todaysPath]);
+  }, [mutateEditorMode, router, todaysPath]);
 
   return { onClickHandler, isPageCreating };
 };

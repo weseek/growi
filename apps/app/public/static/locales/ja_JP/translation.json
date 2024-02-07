@@ -361,7 +361,8 @@
     "already_exists": "そのパスを持つページは既に存在しています。",
     "outdated": "ページが他のユーザーによって更新されました。",
     "user_not_admin": "権限のあるユーザーのみが削除できます",
-    "single_deletion_empty_pages": "空ページの単体削除はできません"
+    "single_deletion_empty_pages": "空ページの単体削除はできません",
+    "complete_deletion_not_allowed_for_user": "ページを完全に削除する権限がありません"
   },
   "page_history": {
     "revision_list": "更新履歴",
@@ -422,10 +423,12 @@
       "Current page name": "現在のページ名",
       "Recursively": "再帰的に複製",
       "Duplicate without exist path": "存在するパス以外を複製する",
-      "Same page already exists": "同じページがすでに存在します"
+      "Same page already exists": "同じページがすでに存在します",
+      "Only duplicate user related resources": "ユーザに関連のあるリソースのみを複製する"
     },
     "help": {
-      "recursive": "配下のページも複製します"
+      "recursive": "配下のページも複製します",
+      "only_user_related_resources": "ユーザが閲覧可能なページのみを複製します。また、閲覧権限が「特定グループのみ」で設定されている場合、複製後のページにはユーザが所属するグループのみを閲覧可能なグループとして設定します。"
     }
   },
   "duplicated_pages": "{{fromPath}} を複製しました",

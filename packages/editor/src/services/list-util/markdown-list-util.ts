@@ -14,19 +14,19 @@ export const getStrFromBol = (editor: EditorView): string => {
   return editor.state.sliceDoc(getBol(editor), curPos);
 };
 
-export const adjustPasteData = (indentAndMark: string, text: string): string => {
+export const adjustPasteData = (strFromBol: string, text: string): string => {
 
-  let adjusted;
+  let adjusted = text;
 
   if (text.match(indentAndMarkRE)) {
-    const matchResult = indentAndMark.match(indentAndMarkRE);
+    const matchResult = strFromBol.match(indentAndMarkRE);
     const indent = matchResult ? matchResult[1] : '';
 
     const lines = text.match(/[^\r\n]+/g);
 
     const replacedLines = lines?.map((line, index) => {
 
-      if (index === 0 && indentAndMark.match(indentAndMarkRE)) {
+      if (index === 0 && strFromBol.match(indentAndMarkRE)) {
         return line.replace(indentAndMarkRE, '');
       }
 
@@ -36,10 +36,10 @@ export const adjustPasteData = (indentAndMark: string, text: string): string => 
     adjusted = replacedLines ? replacedLines.join('\n') : '';
   }
 
-  else {
-    const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${indentAndMark}`);
+  else if (strFromBol.match(indentAndMarkRE)) {
+    const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${strFromBol}`);
 
-    adjusted = indentAndMark + replacedText;
+    adjusted = replacedText;
   }
 
   return adjusted;

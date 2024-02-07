@@ -4,7 +4,27 @@ import { useTranslation } from 'react-i18next';
 
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
-import styles from './ColorModeSettings.module.scss';
+// import styles from './ColorModeSettings.module.scss';
+
+
+type ColorModeSettingsButtonProps = {
+  isActive: boolean,
+  children?: React.ReactNode,
+  onClick?: () => void,
+}
+
+const ColorModeSettingsButton = ({ isActive, children, onClick }: ColorModeSettingsButtonProps): JSX.Element => {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`btn py-2 px-4 fw-bold border-3 ${isActive ? 'btn-outline-primary' : 'btn-outline-neutral-secondary'}`}
+    >
+      { children }
+    </button>
+  );
+};
+
 
 export const ColorModeSettings = (): JSX.Element => {
   const { t } = useTranslation();
@@ -16,40 +36,28 @@ export const ColorModeSettings = (): JSX.Element => {
   }, [theme]);
 
   return (
-    <div className={`color-settings ${styles['color-settings']}`}>
+    <div>
       <h2 className="border-bottom mb-4">{t('color_mode_settings.settings')}</h2>
 
       <div className="offset-md-3">
-        <div className="d-flex">
-          <button
-            type="button"
-            onClick={() => { setTheme(Themes.LIGHT) }}
-            // eslint-disable-next-line max-len
-            className={`btn py-2 px-4 me-4 d-flex align-items-center justify-content-center ${isActive(Themes.LIGHT) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
-          >
+
+        <div className="d-flex column-gap-3">
+
+          <ColorModeSettingsButton isActive={isActive(Themes.LIGHT)} onClick={() => { setTheme(Themes.LIGHT) }}>
             <span className="material-symbols-outlined fs-5 me-1">light_mode</span>
             <span>{t('color_mode_settings.light')}</span>
-          </button>
+          </ColorModeSettingsButton>
 
-          <button
-            type="button"
-            onClick={() => { setTheme(Themes.DARK) }}
-            // eslint-disable-next-line max-len
-            className={`btn py-2 px-4 me-4 d-flex align-items-center justify-content-center ${isActive(Themes.DARK) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
-          >
+          <ColorModeSettingsButton isActive={isActive(Themes.DARK)} onClick={() => { setTheme(Themes.DARK) }}>
             <span className="material-symbols-outlined fs-5 me-1">dark_mode</span>
             <span>{t('color_mode_settings.dark')}</span>
-          </button>
+          </ColorModeSettingsButton>
 
-          <button
-            type="button"
-            onClick={() => { setTheme(Themes.SYSTEM) }}
-            // eslint-disable-next-line max-len
-            className={`btn py-2 px-4 d-flex align-items-center justify-content-center ${isActive(Themes.SYSTEM) ? 'btn-outline-primary' : 'btn-outline-secondary'}`}
-          >
+          <ColorModeSettingsButton isActive={isActive(Themes.SYSTEM)} onClick={() => { setTheme(Themes.SYSTEM) }}>
             <span className="material-symbols-outlined fs-5 me-1">devices</span>
             <span>{t('color_mode_settings.system')}</span>
-          </button>
+          </ColorModeSettingsButton>
+
         </div>
 
         <div className="mt-3 text-muted">

@@ -124,7 +124,6 @@ export const useAuditLogEnabled = (initialData?: boolean): SWRResponse<boolean, 
   return useContextSWR<boolean, Error>('auditLogEnabled', initialData, { fallbackData: false });
 };
 
-// TODO: initialize in [[..path]].page.tsx?
 export const useActivityExpirationSeconds = (initialData?: number) : SWRResponse<number, Error> => {
   return useContextSWR<number, Error>('activityExpirationSeconds', initialData);
 };

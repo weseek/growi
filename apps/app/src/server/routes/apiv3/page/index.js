@@ -12,8 +12,10 @@ import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
+import { GlobalNotificationSettingEvent } from '~/server/models';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
+import { configManager } from '~/server/service/config-manager';
 import { exportService } from '~/server/service/export';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
@@ -167,17 +169,15 @@ const router = express.Router();
  *            example: 5e07345972560e001761fa63
  */
 module.exports = (crowi) => {
-  const accessTokenParser = require('../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../middlewares/login-required')(crowi, true);
-  const loginRequiredStrictly = require('../../middlewares/login-required')(crowi);
-  const certifySharedPage = require('../../middlewares/certify-shared-page')(crowi);
+  const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
+  const loginRequired = require('../../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
+  const certifySharedPage = require('../../../middlewares/certify-shared-page')(crowi);
   const addActivity = generateAddActivityMiddleware(crowi);
 
-  const configManager = crowi.configManager;
-
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page, GlobalNotificationSetting } = crowi.models;
-  const { pageService } = crowi;
+  const { Page } = crowi.models;
+  const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
 
@@ -373,7 +373,7 @@ module.exports = (crowi) => {
     if (isLiked) {
       try {
         // global notification
-        await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_LIKE, page, req.user);
+        await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_LIKE, page, req.user);
       }
       catch (err) {
         logger.error('Like notification failed', err);
@@ -479,7 +479,8 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
+    const userRelatedGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(page, req.user);
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
     const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
     const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
     const grantedUserGroupData = currentPageUserGroups.map((group) => {
@@ -490,7 +491,7 @@ module.exports = (crowi) => {
     });
     const currentPageGrant = {
       grant,
-      grantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
     };
 
     // page doesn't have parent page
@@ -515,10 +516,11 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
+    const userRelatedParentGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(parentPage, req.user);
     const {
       grantedUserGroups: parentGrantedUserGroupIds,
       grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
-    } = divideByType(parentPage.grantedGroups);
+    } = divideByType(userRelatedParentGrantedGroups);
     const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
     const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
     const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
@@ -529,7 +531,7 @@ module.exports = (crowi) => {
     });
     const parentPageGrant = {
       grant: parentPage.grant,
-      grantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
+      userRelatedGrantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
     };
 
     const grantData = {
@@ -566,10 +568,10 @@ module.exports = (crowi) => {
 
   router.put('/:pageId/grant', loginRequiredStrictly, excludeReadOnlyUser, validator.updateGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.params;
-    const { grant, grantedGroups } = req.body;
+    const { grant, userRelatedGrantedGroups } = req.body;
 
     // TODO: remove in https://redmine.weseek.co.jp/issues/136137
-    if (grantedGroups != null && grantedGroups.length > 1) {
+    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 1) {
       return res.apiv3Err('Cannot grant multiple groups to page at the moment');
     }
 
@@ -585,7 +587,7 @@ module.exports = (crowi) => {
     let data;
     try {
       const shouldUseV4Process = false;
-      const grantData = { grant, grantedGroups };
+      const grantData = { grant, userRelatedGrantedGroups };
       data = await crowi.pageService.updateGrant(page, req.user, grantData, shouldUseV4Process);
     }
     catch (err) {
