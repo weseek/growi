@@ -1154,7 +1154,7 @@ describe('PageService page operations with non-public pages', () => {
   });
   describe('Duplicate', () => {
 
-    const duplicate = async(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources) => {
+    const duplicate = async(page, newPagePath: string, user, isRecursively: boolean, onlyDuplicateUserRelatedResources: boolean) => {
       // mock return value
       const mockedDuplicateRecursivelyMainOperation = jest.spyOn(crowi.pageService, 'duplicateRecursivelyMainOperation').mockReturnValue(null);
       const duplicatedPage = await crowi.pageService.duplicate(page, newPagePath, user, isRecursively, onlyDuplicateUserRelatedResources);
@@ -1274,7 +1274,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
       expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
     });
-    test('Should duplicate only user related resources when onlyDuplicateUserRelatedResources is true', async() => {
+    test('Should duplicate only user related pages and granted groups when onlyDuplicateUserRelatedResources is true', async() => {
       const _path1 = '/np_duplicate7';
       const _path2 = '/np_duplicate7/np_duplicate8';
       const _path3 = '/np_duplicate7/np_duplicate9';
@@ -1307,6 +1307,63 @@ describe('PageService page operations with non-public pages', () => {
       expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
       expect(duplicatedRevision1.body).toBe(_revision1.body);
       expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+    });
+    test('Should duplicate all pages and granted groups when onlyDuplicateUserRelatedResources is false', async() => {
+      const _path1 = '/np_duplicate7';
+      const _path2 = '/np_duplicate7/np_duplicate8';
+      const _path3 = '/np_duplicate7/np_duplicate9';
+      const _page1 = await Page.findOne({ path: _path1, parent: rootPage._id })
+        .populate({ path: 'revision', model: 'Revision' });
+      const _page2 = await Page.findOne({ path: _path2, parent: _page1._id })
+        .populate({ path: 'revision', model: 'Revision' });
+      const _page3 = await Page.findOne({ path: _path3, parent: _page1._id })
+        .populate({ path: 'revision', model: 'Revision' });
+      const _revision1 = _page1.revision;
+      const _revision2 = _page2.revision;
+      const _revision3 = _page3.revision;
+      expect(_page1).toBeTruthy();
+      expect(_page2).toBeTruthy();
+      expect(_page3).toBeTruthy();
+      expect(_revision1).toBeTruthy();
+      expect(_revision2).toBeTruthy();
+      expect(_revision3).toBeTruthy();
+
+      const newPagePath = '/dup2_np_duplicate7';
+      await duplicate(_page1, newPagePath, npDummyUser1, true, false);
+
+      const duplicatedPage1 = await Page.findOne({ path: newPagePath }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage2 = await Page.findOne({ path: '/dup2_np_duplicate7/np_duplicate8' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedPage3 = await Page.findOne({ path: '/dup2_np_duplicate7/np_duplicate9' }).populate({ path: 'revision', model: 'Revision' });
+      const duplicatedRevision1 = duplicatedPage1.revision;
+      const duplicatedRevision2 = duplicatedPage2.revision;
+      const duplicatedRevision3 = duplicatedPage3.revision;
+      expect(xssSpy).toHaveBeenCalled();
+      expect(duplicatedPage1).toBeTruthy();
+      expect(duplicatedPage2).toBeTruthy();
+      expect(duplicatedPage3).toBeTruthy();
+      expect(duplicatedRevision1).toBeTruthy();
+      expect(duplicatedRevision2).toBeTruthy();
+      expect(duplicatedRevision3).toBeTruthy();
+      expect(normalizeGrantedGroups(duplicatedPage1.grantedGroups)).toStrictEqual([
+        { item: groupIdA, type: GroupType.userGroup },
+        { item: externalGroupIdA, type: GroupType.externalUserGroup },
+        { item: groupIdB, type: GroupType.userGroup },
+        { item: externalGroupIdB, type: GroupType.externalUserGroup },
+      ]);
+      expect(duplicatedPage1.parent).toStrictEqual(_page1.parent);
+      expect(duplicatedRevision1.body).toBe(_revision1.body);
+      expect(duplicatedRevision1.pageId).toStrictEqual(duplicatedPage1._id);
+      expect(normalizeGrantedGroups(duplicatedPage2.grantedGroups)).toStrictEqual([
+        { item: groupIdC, type: GroupType.userGroup },
+        { item: externalGroupIdC, type: GroupType.externalUserGroup },
+      ]);
+      expect(duplicatedPage2.parent).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision2.body).toBe(_revision2.body);
+      expect(duplicatedRevision2.pageId).toStrictEqual(duplicatedPage2._id);
+      expect(duplicatedPage3.grantedUsers).toStrictEqual([npDummyUser2._id]);
+      expect(duplicatedPage3.parent).toStrictEqual(duplicatedPage1._id);
+      expect(duplicatedRevision3.body).toBe(_revision3.body);
+      expect(duplicatedRevision3.pageId).toStrictEqual(duplicatedPage3._id);
     });
 
   });
