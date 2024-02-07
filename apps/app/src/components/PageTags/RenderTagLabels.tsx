@@ -11,11 +11,12 @@ type RenderTagLabelsProps = {
   tags: string[],
   isTagLabelsDisabled: boolean,
   onClickEditTagsButton: () => void,
+  tagLablesMaxWidth?: number
 }
 
 const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const {
-    tags, isTagLabelsDisabled, onClickEditTagsButton,
+    tags, isTagLabelsDisabled, onClickEditTagsButton, tagLablesMaxWidth,
   } = props;
   const { t } = useTranslation();
 
@@ -30,7 +31,8 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           <a
             key={tag}
             type="button"
-            className="grw-tag badge me-1 mb-1"
+            className="grw-tag badge me-1 mb-1 text-truncate"
+            style={{ maxWidth: tagLablesMaxWidth }}
             onClick={() => pushState(`tag:${tag}`)}
           >
             {tag}
