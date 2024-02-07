@@ -91,7 +91,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate' : ''}`}>
+    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate' : ''} small`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
