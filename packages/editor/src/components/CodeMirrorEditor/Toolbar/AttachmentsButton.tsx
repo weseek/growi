@@ -16,7 +16,7 @@ export const AttachmentsButton = (props: Props): JSX.Element => {
   if (acceptedFileType === AcceptedUploadFileType.ALL) {
     return (
       <>
-        <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
+        <DropdownItem className="d-flex gap-2 align-items-center" onClick={onFileOpen}>
           <span className="material-symbols-outlined fs-5">attach_file</span>
           Files
         </DropdownItem>
@@ -26,7 +26,7 @@ export const AttachmentsButton = (props: Props): JSX.Element => {
   if (acceptedFileType === AcceptedUploadFileType.IMAGE) {
     return (
       <>
-        <DropdownItem className="d-flex gap-1 align-items-center" onClick={onFileOpen}>
+        <DropdownItem className="d-flex gap-2 align-items-center" onClick={onFileOpen}>
           <span className="material-symbols-outlined fs-5">image</span>
           Images
         </DropdownItem>
