@@ -8,8 +8,12 @@ $grw-tag-label-font-size: 12px;
     font-weight: normal;
     border-radius: bs.$border-radius;
   }
-  .material-symbols-outlined {
-    font-size: 2em;
+
+  // apply larger font when smaller than lg
+  @include bs.media-breakpoint-down(lg) {
+    .material-symbols-outlined {
+      font-size: 2em;
+    }
   }
 }
 
