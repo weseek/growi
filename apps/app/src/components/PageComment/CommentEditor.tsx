@@ -14,7 +14,7 @@ import {
 
 import { apiPostForm } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
-import { IEditorMethods } from '~/interfaces/editor-methods';
+import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured,
@@ -27,7 +27,6 @@ import { useNextThemes } from '~/stores/use-next-themes';
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
-import Editor from '../PageEditor/Editor';
 
 import { CommentPreview } from './CommentPreview';
 
@@ -83,7 +82,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
   const { resolvedTheme } = useNextThemes();
-  mutateResolvedTheme(resolvedTheme);
+  mutateResolvedTheme({ themeData: resolvedTheme });
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');

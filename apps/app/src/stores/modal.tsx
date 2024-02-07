@@ -3,11 +3,11 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 
-import Linker from '~/client/models/Linker';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
@@ -673,35 +673,6 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     open,
     close,
   };
-};
-
-/*
- * LinkEditModal
- */
-type LinkEditModalStatus = {
-  isOpened: boolean,
-  defaultMarkdownLink?: Linker,
-  onSave?: (linkText: string) => void
-}
-
-type LinkEditModalUtils = {
-  open(defaultMarkdownLink: Linker, onSave: (linkText: string) => void): void,
-  close(): void,
-}
-
-export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & LinkEditModalUtils => {
-
-  const initialStatus: LinkEditModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<LinkEditModalStatus, Error>('linkEditModal', undefined, { fallbackData: initialStatus });
-
-  return Object.assign(swrResponse, {
-    open: (defaultMarkdownLink: Linker, onSave: (linkText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, defaultMarkdownLink, onSave });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
 };
 
 /*

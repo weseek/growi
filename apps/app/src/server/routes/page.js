@@ -5,7 +5,9 @@ import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
+import { GlobalNotificationSettingEvent } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
+import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
 import { preNotifyService } from '../service/pre-notify';
 
@@ -137,12 +139,9 @@ module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
-  const { pathUtils, pagePathUtils } = require('@growi/core/dist/utils');
+  const { pagePathUtils } = require('@growi/core/dist/utils');
 
   const Page = crowi.model('Page');
-  const User = crowi.model('User');
-  const PageTagRelation = crowi.model('PageTagRelation');
-  const GlobalNotificationSetting = crowi.model('GlobalNotificationSetting');
   const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');
@@ -224,171 +223,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /pages.list:
-   *      get:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: listPages
-   *        summary: /pages.list
-   *        description: Get list of pages
-   *        parameters:
-   *          - in: query
-   *            name: path
-   *            schema:
-   *              $ref: '#/components/schemas/Page/properties/path'
-   *          - in: query
-   *            name: user
-   *            schema:
-   *              $ref: '#/components/schemas/User/properties/username'
-   *          - in: query
-   *            name: limit
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/limit'
-   *          - in: query
-   *            name: offset
-   *            schema:
-   *              $ref: '#/components/schemas/V1PaginateResult/properties/meta/properties/offset'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get list of pages.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: array
-   *                      items:
-   *                        $ref: '#/components/schemas/Page'
-   *                      description: page list
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /pages.list List pages by user
-   * @apiName ListPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} path
-   * @apiParam {String} user
-   */
-  api.list = async function(req, res) {
-    const username = req.query.user || null;
-    const path = req.query.path || null;
-    const limit = +req.query.limit || 50;
-    const offset = parseInt(req.query.offset) || 0;
-
-    const queryOptions = { offset, limit: limit + 1 };
-
-    // Accepts only one of these
-    if (username === null && path === null) {
-      return res.json(ApiResponse.error('Parameter user or path is required.'));
-    }
-    if (username !== null && path !== null) {
-      return res.json(ApiResponse.error('Parameter user or path is required.'));
-    }
-
-    try {
-      let result = null;
-      if (path == null) {
-        const user = await User.findUserByUsername(username);
-        if (user === null) {
-          throw new Error('The user not found.');
-        }
-        result = await Page.findListByCreator(user, req.user, queryOptions);
-      }
-      else {
-        result = await Page.findListByStartWith(path, req.user, queryOptions);
-      }
-
-      if (result.pages.length > limit) {
-        result.pages.pop();
-      }
-
-      result.pages.forEach((page) => {
-        if (page.lastUpdateUser != null && page.lastUpdateUser instanceof User) {
-          page.lastUpdateUser = serializeUserSecurely(page.lastUpdateUser);
-        }
-      });
-
-      return res.json(ApiResponse.success(result));
-    }
-    catch (err) {
-      return res.json(ApiResponse.error(err));
-    }
-  };
-
-  // TODO If everything that depends on this route, delete it too
-  api.create = async function(req, res) {
-    const body = req.body.body || null;
-    let pagePath = req.body.path || null;
-    const grant = req.body.grant || null;
-    const grantUserGroupIds = req.body.grantUserGroupIds || null;
-    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
-    const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
-    const slackChannels = req.body.slackChannels || null;
-
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136136
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
-    if (body === null || pagePath === null) {
-      return res.json(ApiResponse.error('Parameters body and path are required.'));
-    }
-
-    // check whether path starts slash
-    pagePath = pathUtils.addHeadingSlash(pagePath);
-
-    // check page existence
-    const isExist = await Page.count({ path: pagePath }) > 0;
-    if (isExist) {
-      return res.json(ApiResponse.error('Page exists', 'already_exists'));
-    }
-
-    const options = { overwriteScopesOfDescendants };
-    if (grant != null) {
-      options.grant = grant;
-      options.grantUserGroupIds = grantUserGroupIds;
-    }
-
-    const createdPage = await crowi.pageService.create(pagePath, body, req.user, options);
-
-    const result = {
-      page: serializePageSecurely(createdPage),
-      revision: serializeRevisionSecurely(createdPage.revision),
-    };
-    res.json(ApiResponse.success(result));
-
-    // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_CREATE, createdPage, req.user);
-    }
-    catch (err) {
-      logger.error('Create notification failed', err);
-    }
-
-    // user notification
-    if (isSlackEnabled) {
-      try {
-        const results = await userNotificationService.fire(createdPage, req.user, slackChannels, 'create');
-        results.forEach((result) => {
-          if (result.status === 'rejected') {
-            logger.error('Create user notification failed', result.reason);
-          }
-        });
-      }
-      catch (err) {
-        logger.error('Create user notification failed', err);
-      }
-    }
-  };
-
-  /**
-   * @swagger
-   *
    *    /pages.update:
    *      post:
    *        tags: [Pages, CrowiCompatibles]
@@ -449,15 +283,10 @@ module.exports = function(crowi, app) {
     const pageId = req.body.page_id || null;
     const revisionId = req.body.revision_id || null;
     const grant = req.body.grant || null;
-    const grantUserGroupIds = req.body.grantUserGroupIds || null;
+    const userRelatedGrantUserGroupIds = req.body.userRelatedGrantUserGroupIds || null;
     const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
     const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
     const slackChannels = req.body.slackChannels || null;
-
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136140
-    if (grantUserGroupIds != null && grantUserGroupIds.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
 
     if (pageId === null || pageBody === null || revisionId === null) {
       return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
@@ -486,7 +315,7 @@ module.exports = function(crowi, app) {
     const options = { overwriteScopesOfDescendants };
     if (grant != null) {
       options.grant = grant;
-      options.grantUserGroupIds = grantUserGroupIds;
+      options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
     }
 
     const previousRevision = await Revision.findById(revisionId);
@@ -507,7 +336,7 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_EDIT, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_EDIT, page, req.user);
     }
     catch (err) {
       logger.error('Edit notification failed', err);
@@ -758,8 +587,10 @@ module.exports = function(crowi, app) {
 
     try {
       if (isCompletely) {
-        if (!crowi.pageService.canDeleteCompletely(page.path, creator, req.user, isRecursively)) {
-          return res.json(ApiResponse.error('You can not delete this page completely', 'user_not_admin'));
+        const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(req.user);
+        const canDeleteCompletely = crowi.pageService.canDeleteCompletely(page, req.user, isRecursively, userRelatedGroups);
+        if (!canDeleteCompletely) {
+          return res.json(ApiResponse.error('You cannot delete this page completely', 'complete_deletion_not_allowed_for_user'));
         }
 
         if (pagePathUtils.isUsersHomepage(page.path)) {
@@ -815,7 +646,7 @@ module.exports = function(crowi, app) {
 
     try {
       // global notification
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.PAGE_DELETE, page, req.user);
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_DELETE, page, req.user);
     }
     catch (err) {
       logger.error('Delete notification failed', err);
@@ -868,83 +699,6 @@ module.exports = function(crowi, app) {
     result.page = page; // TODO consider to use serializePageSecurely method -- 2018.08.06 Yuki Takei
 
     return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.duplicate:
-   *      post:
-   *        tags: [Pages]
-   *        operationId: duplicatePage
-   *        summary: /pages.duplicate
-   *        description: Duplicate page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  new_path:
-   *                    $ref: '#/components/schemas/Page/properties/path'
-   *                required:
-   *                  - page_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to duplicate page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *                    tags:
-   *                      $ref: '#/components/schemas/Tags'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.duplicate Duplicate page
-   * @apiName DuplicatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} page_id Page Id.
-   * @apiParam {String} new_path New path name.
-   */
-  api.duplicate = async function(req, res) {
-    const pageId = req.body.page_id;
-    let newPagePath = pathUtils.normalizePath(req.body.new_path);
-
-    const page = await Page.findByIdAndViewer(pageId, req.user);
-
-    if (page == null) {
-      return res.json(ApiResponse.error(`Page '${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
-    }
-
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136139
-    if (page.grantedGroups != null && page.grantedGroups.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
-    // check whether path starts slash
-    newPagePath = pathUtils.addHeadingSlash(newPagePath);
-
-    await page.populateDataToShowRevision();
-    const originTags = await page.findRelatedTagsById();
-
-    req.body.path = newPagePath;
-    req.body.body = page.revision.body;
-    req.body.grant = page.grant;
-    req.body.grantedUsers = page.grantedUsers;
-    req.body.grantUserGroupIds = page.grantedGroups;
-    req.body.pageTags = originTags;
-
-    return api.create(req, res);
   };
 
   /**

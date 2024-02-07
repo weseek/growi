@@ -3,9 +3,7 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import {
-  AllEditorTheme,
-} from '../../services';
+import { AllEditorTheme } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -102,7 +100,7 @@ const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
       <div className="row mt-3">
         <h2>default</h2>
         <div className="col">
-          {createItems(Object.keys(AllEditorTheme))}
+          {createItems(AllEditorTheme)}
         </div>
       </div>
     </>
