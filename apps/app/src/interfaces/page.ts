@@ -1,4 +1,6 @@
-import type { GroupType, IPageHasId, Nullable } from '@growi/core';
+import type {
+  GroupType, IGrantedGroup, IPageHasId, Nullable, PageGrant,
+} from '@growi/core';
 
 import type { IPageOperationProcessData } from './page-operation';
 
@@ -28,4 +30,19 @@ export type IDeleteManyPageApiv3Result = {
   paths: string[],
   isRecursively: Nullable<true>,
   isCompletely: Nullable<true>,
+};
+
+export type IOptionsForUpdate = {
+  grant?: PageGrant,
+  userRelatedGrantUserGroupIds?: IGrantedGroup[],
+  // isSyncRevisionToHackmd?: boolean,
+  overwriteScopesOfDescendants?: boolean,
+};
+
+export type IOptionsForCreate = {
+  // format?: string,
+  grantUserGroupIds?: IGrantedGroup[],
+  grant?: PageGrant,
+  overwriteScopesOfDescendants?: boolean,
+  isSynchronously?: boolean,
 };

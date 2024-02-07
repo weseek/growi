@@ -21,6 +21,7 @@ import { Comment } from '~/features/comment/server';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
+import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import type { IPageDeleteConfigValueToProcessValidation } from '~/interfaces/page-delete-config';
 import {
   PageDeleteConfigValue, PageSingleDeleteCompConfigValue,
@@ -42,7 +43,6 @@ import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PathAlreadyExistsError } from '../../models/errors';
-import type { IOptionsForCreate, IOptionsForUpdate } from '../../models/interfaces/page-operation';
 import type { PageOperationDocument } from '../../models/page-operation';
 import PageOperation from '../../models/page-operation';
 import PageRedirect from '../../models/page-redirect';

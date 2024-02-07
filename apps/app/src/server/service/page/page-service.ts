@@ -3,9 +3,9 @@ import type EventEmitter from 'events';
 import type { IPageInfo, IPageInfoForEntity, IUser } from '@growi/core';
 import type { ObjectId } from 'mongoose';
 
+import type { IOptionsForCreate } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import type { IOptionsForCreate } from '~/server/models/interfaces/page-operation';
 import type { PageDocument } from '~/server/models/page';
 
 export interface IPageService {

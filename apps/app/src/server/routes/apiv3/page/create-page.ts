@@ -1,6 +1,5 @@
 import type {
-  IGrantedGroup,
-  IPage, IUser, IUserHasId, PageGrant,
+  IPage, IUser, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
@@ -11,13 +10,14 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
+import type { IOptionsForCreate } from '~/interfaces/page';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import {
   GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely,
 } from '~/server/models';
-import type { IOptionsForCreate } from '~/server/models/interfaces/page-operation';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
@@ -76,21 +76,7 @@ async function determinePath(parentPath?: string, path?: string, optionalParentP
 }
 
 
-type ReqBody = {
-  path?: string,
-  parentPath?: string,
-  optionalParentPath?: string,
-
-  body?: string,
-  pageTags?: string[],
-
-  grant?: PageGrant,
-  grantUserGroupIds?: IGrantedGroup[],
-  overwriteScopesOfDescendants?: boolean,
-
-  isSlackEnabled?: boolean,
-  slackChannels?: any,
-}
+type ReqBody = IApiv3PageCreateParams
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
   user: IUserHasId,
@@ -121,7 +107,6 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('pageTags').optional().isArray().withMessage('pageTags must be array'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
-    // body('shouldGeneratePath').optional().isBoolean().withMessage('shouldGeneratePath is must be boolean or undefined'),
   ];
 
 
