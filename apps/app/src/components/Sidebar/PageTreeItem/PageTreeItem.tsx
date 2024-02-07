@@ -17,8 +17,9 @@ import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
+import type { ItemNode } from '../../TreeItem';
 import {
-  SimpleItem, useNewPageInput, ItemNode, type TreeItemProps,
+  SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
@@ -166,7 +167,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const itemRef = (c) => { drag(c); drop(c) };
 
-  const mainClassName = `pagetree-item ${styles['pagetree-item']} ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
+  const mainClassName = `${styles['pagetree-item']} ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 

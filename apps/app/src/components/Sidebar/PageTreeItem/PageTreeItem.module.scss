@@ -3,12 +3,6 @@
 // == Colors
 @include bs.color-mode(light) {
   .pagetree-item :global {
-    li:hover {
-      background-color: var(--grw-primary-100);
-    }
-    li.active {
-      background-color: var(--grw-primary-100)
-    }
     .list-group-item-action {
       .btn-page-item-control {
         --bs-btn-bg: transparent;
@@ -21,12 +15,6 @@
 
 @include bs.color-mode(dark) {
   .pagetree-item :global {
-    li:hover {
-      background-color: var(--grw-primary-800);
-    }
-    li.active {
-      background-color: var(--grw-primary-800)
-    }
     .list-group-item-action {
       .btn-page-item-control {
         --bs-btn-bg: transparent;
