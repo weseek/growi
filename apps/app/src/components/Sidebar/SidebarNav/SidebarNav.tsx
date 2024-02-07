@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 
-import { SidebarContentsType } from '~/interfaces/ui';
+import type { SidebarContentsType } from '~/interfaces/ui';
 
 import { PageCreateButton } from '../PageCreateButton';
 
@@ -23,7 +23,8 @@ export const SidebarNav = memo((props: SidebarNavProps) => {
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         <PrimaryItems onItemHover={onPrimaryItemHover} />
       </div>
-      <div className="grw-sidebar-nav-secondary-container">
+
+      <div className="grw-sidebar-nav-secondary-container position-absolute">
         <SecondaryItems />
       </div>
     </div>
