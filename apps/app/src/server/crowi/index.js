@@ -32,6 +32,7 @@ import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import GrowiBridgeService from '../service/growi-bridge';
 import { InstallerService } from '../service/installer';
+import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
@@ -51,6 +52,12 @@ class Crowi {
 
   /** @type {AppService} */
   appService;
+
+  /** @type {import('../service/page').IPageService} */
+  pageService;
+
+  /** @type UserNotificationService */
+  userNotificationService;
 
   /** @type {FileUploader} */
   fileUploadService;
@@ -76,7 +83,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.userNotificationService = null;
     this.xssService = null;
     this.aclService = null;
     this.appService = null;
@@ -87,7 +93,6 @@ class Crowi {
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
-    this.pageService = null;
     this.syncPageStatusService = null;
     this.cdnResourcesService = new CdnResourcesService();
     this.slackIntegrationService = null;
@@ -175,6 +180,8 @@ Crowi.prototype.init = async function() {
   ]);
 
   await this.autoInstall();
+
+  await normalizeData();
 };
 
 /**
@@ -715,11 +722,12 @@ Crowi.prototype.setupGrowiPluginService = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  if (this.pageService == null) {
-    this.pageService = new PageService(this);
-  }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
+  }
+  // initialize after pageGrantService since pageService uses pageGrantService in constructor
+  if (this.pageService == null) {
+    this.pageService = new PageService(this);
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);

@@ -1,8 +1,7 @@
-import {
-  Types, Model, Schema,
-} from 'mongoose';
+import type { Types, Model } from 'mongoose';
+import { Schema } from 'mongoose';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 const mongoosePaginate = require('mongoose-paginate-v2');

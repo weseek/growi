@@ -1,4 +1,4 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { PageGrant, GroupType, getIdForRef } from '@growi/core';
 import mongoose from 'mongoose';
 
 import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
@@ -16,7 +16,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -63,6 +62,8 @@ describe('Page', () => {
   const upodPageIdPublic5 = new mongoose.Types.ObjectId();
   const upodPageIdPublic6 = new mongoose.Types.ObjectId();
 
+  // Since updatePageSubOperation is asyncronously called from updatePageSubOperation,
+  // mock it inside updatePageSubOperation, and later call it independently to await for it's execution.
   const updatePage = async(page, newRevisionBody, oldRevisionBody, user, options = {}) => {
     const mockedUpdatePageSubOperation = jest.spyOn(pageService, 'updatePageSubOperation').mockReturnValue(null);
 
@@ -255,7 +256,22 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: [upodUserB._id],
-        grantedGroups: null,
+        grantedGroups: [],
+        parent: upodPageIdgAB1,
+      },
+      // grant user A and B with independent groups
+      {
+        path: '/gAB_upod_1/gA_gB_upod_1',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroups: [
+          { item: upodUserGroupIdA, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdA, type: GroupType.externalUserGroup },
+          { item: upodUserGroupIdB, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
+        ],
         parent: upodPageIdgAB1,
       },
       // case 2
@@ -266,7 +282,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
       {
@@ -299,7 +315,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: [upodUserA._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: upodPageIdPublic2,
       },
       // case 3
@@ -310,9 +326,11 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
+      // grant user A and B with a single group
+      // (external group is extra for testing external groups)
       {
         path: '/public_upod_3/gAB_upod_3',
         grant: PageGrant.GRANT_USER_GROUP,
@@ -322,6 +340,21 @@ describe('Page', () => {
         grantedGroups: [
           { item: upodUserGroupIdAB, type: GroupType.userGroup },
           { item: upodExternalUserGroupIdAB, type: GroupType.externalUserGroup },
+        ],
+        parent: upodPageIdPublic3,
+      },
+      // grant user A and B with independent groups
+      {
+        path: '/public_upod_3/gA_gB_upod_3',
+        grant: PageGrant.GRANT_USER_GROUP,
+        creator: upodUserA,
+        lastUpdateUser: upodUserA,
+        grantedUsers: null,
+        grantedGroups: [
+          { item: upodUserGroupIdA, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdA, type: GroupType.externalUserGroup },
+          { item: upodUserGroupIdB, type: GroupType.userGroup },
+          { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
         ],
         parent: upodPageIdPublic3,
       },
@@ -343,7 +376,7 @@ describe('Page', () => {
         creator: upodUserB,
         lastUpdateUser: upodUserB,
         grantedUsers: [upodUserB._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: upodPageIdPublic3,
       },
       // case 4
@@ -354,7 +387,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
       {
@@ -389,7 +422,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
       {
@@ -410,7 +443,7 @@ describe('Page', () => {
         creator: upodUserC,
         lastUpdateUser: upodUserC,
         grantedUsers: [upodUserC._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: upodPageIdPublic5,
       },
       // case 6
@@ -421,7 +454,7 @@ describe('Page', () => {
         creator: upodUserA,
         lastUpdateUser: upodUserA,
         grantedUsers: null,
-        grantedGroups: null,
+        grantedGroups: [],
         parent: rootPage._id,
       },
       {
@@ -430,7 +463,7 @@ describe('Page', () => {
         creator: upodUserC,
         lastUpdateUser: upodUserC,
         grantedUsers: [upodUserC._id],
-        grantedGroups: null,
+        grantedGroups: [],
         parent: upodPageIdPublic6,
       },
     ]);
@@ -439,8 +472,7 @@ describe('Page', () => {
   // normalize for result comparison
   const normalizeGrantedGroups = (grantedGroups) => {
     return grantedGroups.map((group) => {
-      const itemId = typeof group.item === 'string' ? group.item : group.item._id;
-      return { item: itemId, type: group.type };
+      return { item: getIdForRef(group.item), type: group.type };
     });
   };
 
@@ -455,7 +487,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
@@ -996,12 +1027,24 @@ describe('Page', () => {
         parent: rootPage._id,
         descendantCount: 0,
       },
+      {
+        path: '/with_multiple_individual_granted_groups',
+        grant: Page.GRANT_USER_GROUP,
+        grantedGroups: [
+          { item: userGroupIdPModelA, type: GroupType.userGroup },
+          { item: userGroupIdPModelB, type: GroupType.userGroup },
+        ],
+        creator: pModelUserId1,
+        lastUpdateUser: pModelUserId1,
+        isEmpty: false,
+        parent: rootPage,
+      },
     ]);
 
     await createDocumentsToTestUpdatePageOverwritingDescendants();
   });
 
-  describe('update', () => {
+  describe('updatePage with overwriteScopesOfDescendants false', () => {
     describe('Changing grant from PUBLIC to RESTRICTED of', () => {
       test('an only-child page will delete its empty parent page', async() => {
         const pathT = '/mup13_top';
@@ -1014,7 +1057,7 @@ describe('Page', () => {
         expect(page1).toBeTruthy();
         expect(page2).toBeTruthy();
 
-        const options = { grant: Page.GRANT_RESTRICTED, grantUserGroupIds: null };
+        const options = { grant: Page.GRANT_RESTRICTED, userRelatedGrantUserGroupIds: null };
         await updatePage(page2, 'newRevisionBody', 'oldRevisionBody', dummyUser1, options);
 
         const _pageT = await Page.findOne({ path: pathT });
@@ -1221,7 +1264,7 @@ describe('Page', () => {
 
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: newGrantedGroups,
+            userRelatedGrantUserGroupIds: newGrantedGroups,
           };
           const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser1, options); // from GRANT_PUBLIC to GRANT_USER_GROUP(userGroupIdPModelA)
 
@@ -1251,7 +1294,7 @@ describe('Page', () => {
 
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: newGrantedGroups,
+            userRelatedGrantUserGroupIds: newGrantedGroups,
           };
           const updatedPage = await updatePage(_page1, 'new', 'old', pModelUser1, options); // from GRANT_RESTRICTED to GRANT_USER_GROUP(userGroupIdPModelA)
 
@@ -1289,7 +1332,7 @@ describe('Page', () => {
 
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: newGrantedGroups,
+            userRelatedGrantUserGroupIds: newGrantedGroups,
           };
           const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser1, options); // from GRANT_OWNER to GRANT_USER_GROUP(userGroupIdPModelA)
 
@@ -1327,7 +1370,7 @@ describe('Page', () => {
           ];
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: newGrantedGroups,
+            userRelatedGrantUserGroupIds: newGrantedGroups,
           };
           const updatedPage = await updatePage(_page2, 'new', 'old', pModelUser3, options); // from GRANT_OWNER to GRANT_USER_GROUP(userGroupIdPModelB)
 
@@ -1348,7 +1391,7 @@ describe('Page', () => {
             { item: userGroupIdPModelC, type: GroupType.userGroup },
             { item: externalUserGroupIdPModelC, type: GroupType.externalUserGroup },
           ];
-          const secondRoundOptions = { grant: Page.GRANT_USER_GROUP, grantUserGroupIds: secondRoundNewGrantedGroups }; // from GRANT_USER_GROUP(userGroupIdPModelB) to GRANT_USER_GROUP(userGroupIdPModelC)
+          const secondRoundOptions = { grant: Page.GRANT_USER_GROUP, userRelatedGrantUserGroupIds: secondRoundNewGrantedGroups }; // from GRANT_USER_GROUP(userGroupIdPModelB) to GRANT_USER_GROUP(userGroupIdPModelC)
           // undo grantedGroups populate to prevent Page.hydrate error
           _page2.grantedGroups.forEach((group) => {
             group.item = group.item._id;
@@ -1379,7 +1422,7 @@ describe('Page', () => {
 
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: [
+            userRelatedGrantUserGroupIds: [
               { item: userGroupIdPModelIsolate, type: GroupType.userGroup },
               { item: externalUserGroupIdPModelIsolate, type: GroupType.externalUserGroup },
             ],
@@ -1410,7 +1453,7 @@ describe('Page', () => {
 
           const options = {
             grant: Page.GRANT_USER_GROUP,
-            grantUserGroupIds: [
+            userRelatedGrantUserGroupIds: [
               { item: userGroupIdPModelA, type: GroupType.userGroup },
               { item: externalUserGroupIdPModelA, type: GroupType.externalUserGroup },
             ],
@@ -1444,7 +1487,7 @@ describe('Page', () => {
           expect(_page1).toBeTruthy();
           expect(_page2).toBeTruthy();
 
-          const options = { grant: Page.GRANT_USER_GROUP, grantUserGroupIds: [{ item: userGroupIdPModelA, type: GroupType.userGroup }] };
+          const options = { grant: Page.GRANT_USER_GROUP, userRelatedGrantUserGroupIds: [{ item: userGroupIdPModelA, type: GroupType.userGroup }] };
           await expect(updatePage(_page2, 'new', 'old', pModelUser1, options)) // from GRANT_OWNER to GRANT_USER_GROUP(userGroupIdPModelA)
             .rejects.toThrow(new Error('The selected grant or grantedGroup is not assignable to this page.'));
 
@@ -1457,9 +1500,40 @@ describe('Page', () => {
           expect(page2.grantedGroups.length).toBe(0); // no group should be set
         });
       });
+      describe('update grant of a page from GRANT_USER_GROUP to GRANT_USER_GROUP', () => {
+        test('successfully change the granted groups, with the previous groups wich user is not related to remaining', async() => {
+          // path
+          const path = '/with_multiple_individual_granted_groups';
+          // page
+          const _page = await Page.findOne({ path, grant: Page.GRANT_USER_GROUP });
+          expect(_page).toBeTruthy();
 
+          const newUserRelatedGrantedGroups = [
+            { item: userGroupIdPModelA, type: GroupType.userGroup },
+            { item: externalUserGroupIdPModelA, type: GroupType.externalUserGroup },
+          ];
+
+          const options = {
+            grant: Page.GRANT_USER_GROUP,
+            userRelatedGrantUserGroupIds: newUserRelatedGrantedGroups,
+          };
+          const updatedPage = await updatePage(_page, 'new', 'old', pModelUser1, options); // from GRANT_PUBLIC to GRANT_USER_GROUP(userGroupIdPModelA)
+
+          const page = await Page.findById(_page._id);
+          expect(page).toBeTruthy();
+          expect(updatedPage).toBeTruthy();
+          expect(updatedPage._id).toStrictEqual(page._id);
+
+          // check page grant and group
+          expect(page.grant).toBe(Page.GRANT_USER_GROUP);
+          expect(normalizeGrantedGroups(page.grantedGroups)).toEqual(expect.arrayContaining([
+            ...newUserRelatedGrantedGroups,
+            // userB group remains, although options does not include it
+            { item: userGroupIdPModelB, type: GroupType.userGroup },
+          ]));
+        });
+      });
     });
-
   });
 
 
@@ -1469,14 +1543,17 @@ describe('Page', () => {
       const upodPagegAB = await Page.findOne({ path: '/gAB_upod_1' });
       const upodPagegB = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
       const upodPageonlyB = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
+      const upodPagegAgB = await Page.findOne({ path: '/gAB_upod_1/gA_gB_upod_1' });
 
       expect(upodPagegAB).not.toBeNull();
       expect(upodPagegB).not.toBeNull();
       expect(upodPageonlyB).not.toBeNull();
+      expect(upodPagegAgB).not.toBeNull();
 
       expect(upodPagegAB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPagegB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPageonlyB.grant).toBe(PageGrant.GRANT_OWNER);
+      expect(upodPagegAgB.grant).toBe(PageGrant.GRANT_USER_GROUP);
 
       // Update
       const options = {
@@ -1487,6 +1564,7 @@ describe('Page', () => {
 
       const upodPagegBUpdated = await Page.findOne({ path: '/gAB_upod_1/gB_upod_1' });
       const upodPageonlyBUpdated = await Page.findOne({ path: '/gAB_upod_1/onlyB_upod_1' });
+      const upodPagegAgBUpdated = await Page.findOne({ path: '/gAB_upod_1/gA_gB_upod_1' });
 
       // Changed
       const newGrant = PageGrant.GRANT_PUBLIC;
@@ -1496,8 +1574,10 @@ describe('Page', () => {
       expect(upodPagegBUpdated.grantedGroups).toStrictEqual(upodPagegB.grantedGroups);
       expect(upodPageonlyBUpdated.grant).toBe(PageGrant.GRANT_OWNER);
       expect(upodPageonlyBUpdated.grantedUsers).toStrictEqual(upodPageonlyB.grantedUsers);
+      expect(upodPagegAgBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);
+      expect(upodPagegAgBUpdated.grantedGroups).toStrictEqual(upodPagegAgB.grantedGroups);
     });
-    test('(case 2) it should update all granted descendant pages when all descendant pages are granted by the operator', async() => {
+    test('(case 2) it should update all granted descendant pages when all descendant pages are granted to the operator', async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_2' });
       const upodPagegA = await Page.findOne({ path: '/public_upod_2/gA_upod_2' });
       const upodPagegAIsolated = await Page.findOne({ path: '/public_upod_2/gAIsolated_upod_2' });
@@ -1541,23 +1621,26 @@ describe('Page', () => {
     , and all users of descendants belong to the update user group`, async() => {
       const upodPagePublic = await Page.findOne({ path: '/public_upod_3' });
       const upodPagegAB = await Page.findOne({ path: '/public_upod_3/gAB_upod_3' });
+      const upodPagegAgB = await Page.findOne({ path: '/public_upod_3/gA_gB_upod_3' });
       const upodPagegB = await Page.findOne({ path: '/public_upod_3/gB_upod_3' });
       const upodPageonlyB = await Page.findOne({ path: '/public_upod_3/onlyB_upod_3' });
 
       expect(upodPagePublic).not.toBeNull();
       expect(upodPagegAB).not.toBeNull();
+      expect(upodPagegAgB).not.toBeNull();
       expect(upodPagegB).not.toBeNull();
       expect(upodPageonlyB).not.toBeNull();
 
       expect(upodPagePublic.grant).toBe(PageGrant.GRANT_PUBLIC);
       expect(upodPagegAB.grant).toBe(PageGrant.GRANT_USER_GROUP);
+      expect(upodPagegAgB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPagegB.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPageonlyB.grant).toBe(PageGrant.GRANT_OWNER);
 
       // Update
       const options = {
         grant: PageGrant.GRANT_USER_GROUP,
-        grantUserGroupIds: [
+        userRelatedGrantUserGroupIds: [
           { item: upodUserGroupIdAB, type: GroupType.userGroup },
           { item: upodExternalUserGroupIdAB, type: GroupType.externalUserGroup },
         ],
@@ -1566,6 +1649,7 @@ describe('Page', () => {
       const updatedPage = await updatePage(upodPagePublic, 'newRevisionBody', 'oldRevisionBody', upodUserA, options);
 
       const upodPagegABUpdated = await Page.findOne({ path: '/public_upod_3/gAB_upod_3' });
+      const upodPagegAgBUpdated = await Page.findOne({ path: '/public_upod_3/gA_gB_upod_3' });
       const upodPagegBUpdated = await Page.findOne({ path: '/public_upod_3/gB_upod_3' });
       const upodPageonlyBUpdated = await Page.findOne({ path: '/public_upod_3/onlyB_upod_3' });
 
@@ -1579,6 +1663,15 @@ describe('Page', () => {
       expect(normalizeGrantedGroups(updatedPage.grantedGroups)).toStrictEqual(newGrantedGroups);
       expect(upodPagegABUpdated.grant).toBe(newGrant);
       expect(normalizeGrantedGroups(upodPagegABUpdated.grantedGroups)).toStrictEqual(newGrantedGroups);
+      expect(upodPagegAgBUpdated.grant).toBe(newGrant);
+      // For multi group granted pages, the grant update will only add/remove groups that the user belongs to,
+      // and groups that the user doesn't belong to will stay as it was before the update.
+      expect(normalizeGrantedGroups(upodPagegAgBUpdated.grantedGroups)).toEqual(expect.arrayContaining([
+        ...newGrantedGroups,
+        { item: upodUserGroupIdB, type: GroupType.userGroup },
+        { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
+      ]));
+
       // Not changed
       expect(upodPagegBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);
       expect(upodPagegBUpdated.grantedGroups).toStrictEqual(upodPagegB.grantedGroups);
@@ -1603,7 +1696,7 @@ describe('Page', () => {
       // Update
       const options = {
         grant: PageGrant.GRANT_USER_GROUP,
-        grantUserGroupIds: [
+        userRelatedGrantUserGroupIds: [
           { item: upodUserGroupIdAB, type: GroupType.userGroup },
           { item: upodExternalUserGroupIdAB, type: GroupType.externalUserGroup },
         ],
@@ -1631,7 +1724,7 @@ describe('Page', () => {
       // Update
       const options = {
         grant: PageGrant.GRANT_USER_GROUP,
-        grantUserGroupIds: [
+        userRelatedGrantUserGroupIds: [
           { item: upodUserGroupIdAB, type: GroupType.userGroup },
           { item: upodExternalUserGroupIdAB, type: GroupType.externalUserGroup },
         ],
@@ -1654,7 +1747,7 @@ describe('Page', () => {
       // Update
       const options = {
         grant: PageGrant.GRANT_USER_GROUP,
-        grantUserGroupIds: [
+        userRelatedGrantUserGroupIds: [
           { item: upodUserGroupIdAB, type: GroupType.userGroup },
           { item: upodExternalUserGroupIdAB, type: GroupType.externalUserGroup },
         ],

@@ -1,11 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 
-import unzipper from 'unzipper';
+import type { Model } from 'mongoose';
+import unzipStream, { type Entry } from 'unzip-stream';
 
 import loggerFactory from '~/utils/logger';
 
-import { ZipFileStat } from './interfaces/export';
+import type { ZipFileStat } from '../interfaces/export';
+
+import { tapStreamDataByPromise } from './unzip-stream-utils';
 
 const streamToPromise = require('stream-to-promise');
 
@@ -57,7 +60,7 @@ class GrowiBridgeService {
    * @return {object} instance of mongoose model
    */
   getModelFromCollectionName(collectionName: string) {
-    const Model = Object.values(this.crowi.models).find((m: any) => {
+    const Model = Object.values(this.crowi.models).find((m: Model<unknown>) => {
       return m.collection != null && m.collection.name === collectionName;
     });
 
@@ -94,18 +97,20 @@ class GrowiBridgeService {
    */
   async parseZipFile(zipFile: string): Promise<ZipFileStat | null> {
     const fileStat = fs.statSync(zipFile);
-    const innerFileStats: {fileName: string, collectionName: string, size: number}[] = [];
+    const innerFileStats: Array<{ fileName: string, collectionName: string, size: number }> = [];
     let meta = {};
 
     const readStream = fs.createReadStream(zipFile);
-    const unzipStream = readStream.pipe(unzipper.Parse());
+    const unzipStreamPipe = readStream.pipe(unzipStream.Parse());
+    let tapPromise;
 
-    unzipStream.on('entry', async(entry) => {
+    const unzipEntryStream = unzipStreamPipe.on('entry', (entry: Entry) => {
       const fileName = entry.path;
-      const size = entry.vars.uncompressedSize; // There is also compressedSize;
-
+      const size = entry.size; // might be undefined in some archives
       if (fileName === this.getMetaFileName()) {
-        meta = JSON.parse((await entry.buffer()).toString());
+        tapPromise = tapStreamDataByPromise(entry).then((metaBuffer) => {
+          meta = JSON.parse(metaBuffer.toString());
+        });
       }
       else {
         innerFileStats.push({
@@ -114,12 +119,12 @@ class GrowiBridgeService {
           size,
         });
       }
-
       entry.autodrain();
     });
 
     try {
-      await streamToPromise(unzipStream);
+      await streamToPromise(unzipEntryStream);
+      await tapPromise;
     }
     // if zip is broken
     catch (err) {

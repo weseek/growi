@@ -4,12 +4,12 @@ import dynamic from 'next/dynamic';
 import { Collapse, Button } from 'reactstrap';
 
 
-import { SavePageControlsProps } from '~/components/SavePageControls';
+import type { SavePageControlsProps } from '~/components/SavePageControls';
 import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import {
-  useDrawerOpened, useEditorMode, useIsDeviceLargerThanLg, useIsDeviceLargerThanMd,
+  useEditorMode, useIsDeviceLargerThanLg, useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
 
@@ -93,11 +93,11 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`flex-expand-horiz align-items-center border-top px-2 px-md-3 ${moduleClass}`}>
+      <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
         <form>
           { isDeviceLargerThanMd && <OptionsSelector /> }
         </form>
-        <form className="flex-nowrap ms-auto">
+        <form className="row row-cols-lg-auto g-3 align-items-center ms-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {isSlackConfigured && (!isDeviceLargerThanMd ? (

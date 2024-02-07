@@ -1,8 +1,8 @@
 import { Server } from 'http';
 
-import Crowi from '~/server/crowi';
+import Crowi from '../../src/server/crowi';
 
-let _instance = null;
+let _instance: Crowi;
 
 const initCrowi = async(crowi) => {
   await crowi.setupModels();
@@ -27,7 +27,7 @@ const initCrowi = async(crowi) => {
   ]);
 };
 
-export async function getInstance(isNewInstance) {
+export async function getInstance(isNewInstance?: boolean): Promise<Crowi> {
   if (isNewInstance) {
     const crowi = new Crowi();
     await initCrowi(crowi);
