@@ -1,6 +1,8 @@
 import type { FC } from 'react';
 import React from 'react';
 
+import { useTranslation } from 'next-i18next';
+
 import { Skeleton } from '../Skeleton';
 
 import RenderTagLabels from './RenderTagLabels';
@@ -23,6 +25,8 @@ export const PageTags:FC<Props> = (props: Props) => {
     tags, isTagLabelsDisabled, onClickEditTagsButton,
   } = props;
 
+  const { t } = useTranslation();
+
   if (tags == null) {
     return <></>;
   }
@@ -39,12 +43,18 @@ export const PageTags:FC<Props> = (props: Props) => {
         >
           <span className="material-symbols-outlined">local_offer</span>
         </button>
-        <div className="d-none d-lg-flex">
-          <RenderTagLabels
-            tags={tags}
-            isTagLabelsDisabled={isTagLabelsDisabled}
-            onClickEditTagsButton={onClickEditTagsButton}
-          />
+        <div className="d-none d-lg-flex row">
+          <div className="col mb-2">
+            <div>
+              <span className="material-symbols-outlined">local_offer</span>
+              <span>{t('Tags')}</span>
+            </div>
+            <RenderTagLabels
+              tags={tags}
+              isTagLabelsDisabled={isTagLabelsDisabled}
+              onClickEditTagsButton={onClickEditTagsButton}
+            />
+          </div>
         </div>
       </div>
     </>

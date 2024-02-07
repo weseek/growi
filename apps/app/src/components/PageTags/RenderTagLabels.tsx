@@ -24,13 +24,13 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
   const isTagsEmpty = tags.length === 0;
 
   return (
-    <>
+    <div className="d-flex flex-wrap align-items-center">
       {tags.map((tag) => {
         return (
           <a
             key={tag}
             type="button"
-            className="grw-tag badge me-2"
+            className="grw-tag badge me-1 mb-1"
             onClick={() => pushState(`tag:${tag}`)}
           >
             {tag}
@@ -42,8 +42,8 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           <div id="edit-tags-btn-wrapper-for-tooltip" className="d-print-none">
             <a
               className={
-                `btn btn-link btn-edit-tags text-muted d-flex align-items-center
-                ${isTagsEmpty && 'no-tags'}
+                `btn btn-link btn-edit-tags d-flex align-items-center py-0
+                ${isTagsEmpty ? '' : 'mb-1'}
                 ${isTagLabelsDisabled && 'disabled'}`
               }
               onClick={onClickEditTagsButton}
@@ -54,8 +54,7 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           </div>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
-    </>
-
+    </div>
   );
 
 });
