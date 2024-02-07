@@ -44,8 +44,8 @@ const RenderTagLabels = React.memo((props: RenderTagLabelsProps) => {
           <div id="edit-tags-btn-wrapper-for-tooltip" className="d-print-none">
             <a
               className={
-                `btn btn-link btn-edit-tags d-flex align-items-center py-0
-                ${isTagsEmpty ? '' : 'mb-1'}
+                `btn btn-link btn-edit-tags text-muted d-flex align-items-center py-0
+                ${isTagsEmpty ? 'no-tags' : 'mb-1'}
                 ${isTagLabelsDisabled && 'disabled'}`
               }
               onClick={onClickEditTagsButton}
