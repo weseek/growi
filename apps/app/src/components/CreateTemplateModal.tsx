@@ -4,7 +4,7 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
+import { useCreateTemplatePage } from '~/client/services/use-create-template-page';
 import { toastError } from '~/client/util/toastr';
 import type { TargetType, LabelType } from '~/interfaces/template';
 
@@ -55,16 +55,16 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { onClickHandler, isPageCreating } = useOnTemplateButtonClicked(path);
+  const { create, isPageCreating } = useCreateTemplatePage(path);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await onClickHandler?.(label);
+      await create?.(label);
     }
     catch (err) {
       toastError(err);
     }
-  }, [onClickHandler]);
+  }, [create]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 

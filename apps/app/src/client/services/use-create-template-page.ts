@@ -7,13 +7,13 @@ import { createPage, exist } from '~/client/services/page-operation';
 import type { LabelType } from '~/interfaces/template';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
-export const useOnTemplateButtonClicked = (
+export const useCreateTemplatePage = (
     currentPagePath?: string,
     isLoading?: boolean,
 ): {
   isCreatable: boolean,
   isPageCreating: boolean,
-  onClickHandler?: (label: LabelType) => Promise<void>,
+  create?: (label: LabelType) => Promise<void>,
 } => {
   const router = useRouter();
 
@@ -23,7 +23,7 @@ export const useOnTemplateButtonClicked = (
 
   const isCreatable = currentPagePath != null && isCreatablePage(`${currentPagePath}/_template`);
 
-  const onClickHandler = useCallback(async(label: LabelType) => {
+  const create = useCallback(async(label: LabelType) => {
     if (isLoading || !isCreatable) return;
 
     try {
@@ -51,6 +51,6 @@ export const useOnTemplateButtonClicked = (
   return {
     isCreatable,
     isPageCreating,
-    onClickHandler: isCreatable ? onClickHandler : undefined,
+    create: isCreatable ? create : undefined,
   };
 };

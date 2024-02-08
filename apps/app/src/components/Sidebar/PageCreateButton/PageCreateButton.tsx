@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'reactstrap';
 
-import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
+import { useCreateTemplatePage } from '~/client/services/use-create-template-page';
 import { toastError } from '~/client/util/toastr';
 import type { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
@@ -46,18 +46,18 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
   // TODO: https://redmine.weseek.co.jp/issues/138805
   const {
-    onClickHandler: onClickTemplateButton,
+    create,
     isPageCreating: isTemplatePageCreating, isCreatable: isTemplatePageCreatable,
-  } = useOnTemplateButtonClicked(currentPagePath, isLoadingPagePath);
+  } = useCreateTemplatePage(currentPagePath, isLoadingPagePath);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await onClickTemplateButton?.(label);
+      await create?.(label);
     }
     catch (err) {
       toastError(err);
     }
-  }, [onClickTemplateButton]);
+  }, [create]);
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);
