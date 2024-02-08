@@ -37,26 +37,26 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const onRenameFinish = () => {
+  const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
-  };
+  }, []);
 
-  const onRenameFailure = () => {
+  const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);
-  };
+  }, []);
 
-  const onInputChange = (inputText: string) => {
+  const onInputChange = useCallback((inputText: string) => {
     setEditedPagePath(inputText);
-  };
+  }, []);
 
-  const onPressEnter = () => {
+  const onPressEnter = useCallback(() => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
+  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const onPressEscape = () => {
+  const onPressEscape = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
-  };
+  }, [currentPagePath]);
 
   const onClickEditButton = useCallback(() => {
     if (isRenameInputShown) {
