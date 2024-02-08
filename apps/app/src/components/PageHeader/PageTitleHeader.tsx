@@ -61,7 +61,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [currentPagePath]);
 
-  const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
+  const PageTitle = <div onClick={onClickPageTitle}>{`/${pageTitle}`}</div>;
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
