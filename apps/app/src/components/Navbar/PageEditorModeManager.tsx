@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { toastError } from '~/client/util/toastr';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
-import { useCreatePageAndTransit } from './hooks';
+import { useCreatePageAndTransit } from '../../client/services/use-create-page-and-transit';
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -76,12 +76,11 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
       path,
       {
         onCreationStart: () => { setIsCreating(true) },
-        onAborted: () => { mutateEditorMode(EditorMode.Editor) },
         onError: () => { toastError(t('toaster.create_failed', { target: path })) },
         onTerminated: () => { setIsCreating(false) },
       },
     );
-  }, [createPageAndTransit, path, mutateEditorMode, t]);
+  }, [createPageAndTransit, path, t]);
 
   return (
     <>

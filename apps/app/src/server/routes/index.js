@@ -121,7 +121,6 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  apiV1Router.get('/pages.list'          , accessTokenParser , loginRequired , page.api.list);
   apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, page.api.update);
   apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
@@ -130,7 +129,6 @@ module.exports = function(crowi, app) {
   apiV1Router.post('/pages.remove'       , loginRequiredStrictly , excludeReadOnlyUser, page.validator.remove, apiV1FormValidator, page.api.remove); // (Avoid from API Token)
   apiV1Router.post('/pages.revertRemove' , loginRequiredStrictly , excludeReadOnlyUser, page.validator.revertRemove, apiV1FormValidator, page.api.revertRemove); // (Avoid from API Token)
   apiV1Router.post('/pages.unlink'       , loginRequiredStrictly , excludeReadOnlyUser, page.api.unlink); // (Avoid from API Token)
-  apiV1Router.post('/pages.duplicate'    , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, page.api.duplicate);
   apiV1Router.get('/tags.list'           , accessTokenParser, loginRequired, tag.api.list);
   apiV1Router.get('/tags.search'         , accessTokenParser, loginRequired, tag.api.search);
   apiV1Router.post('/tags.update'        , accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity, tag.api.update);

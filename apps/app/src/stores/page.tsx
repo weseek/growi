@@ -125,14 +125,21 @@ export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWR
   );
 };
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+export const useSWRxTagsInfo = (pageId: Nullable<string>, config?: SWRConfiguration): SWRResponse<IPageTagsInfo | null, Error> => {
   const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWRImmutable(
+  return useSWR(
     shareLinkId == null && pageId != null ? [endpoint, pageId] : null,
-    ([endpoint, pageId]) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
+    ([endpoint, pageId]) => apiGet<IPageTagsInfo>(endpoint, { pageId })
+      .then(result => result)
+      .catch(getPageApiErrorHandler),
+    {
+      ...config,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
