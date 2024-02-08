@@ -11,7 +11,7 @@ import { mutatePageTree, mutatePageList } from '~/stores/page-listing';
 type PagePathRenameHandler = (newPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void) => Promise<void>
 
 export const usePagePathRenameHandler = (
-    currentPage: IPagePopulatedToShowRevision,
+    currentPage?: IPagePopulatedToShowRevision | null,
 ): PagePathRenameHandler => {
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
@@ -42,7 +42,7 @@ export const usePagePathRenameHandler = (
         newPagePath,
       });
 
-      onRenamed(currentPage.path, newPagePath);
+      onRenamed(currentPage?.path, newPagePath);
       onRenameFinish?.();
 
       onRenameFinish?.();
@@ -53,7 +53,7 @@ export const usePagePathRenameHandler = (
       onRenameFailure?.();
       toastError(err);
     }
-  }, [currentPage._id, currentPage.path, currentPage.revision._id, currentPagePath, mutateCurrentPage, t]);
+  }, [currentPage?._id, currentPage?.path, currentPage?.revision._id, currentPagePath, mutateCurrentPage, t]);
 
   return pagePathRenameHandler;
 };
