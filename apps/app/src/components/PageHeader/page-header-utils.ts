@@ -35,9 +35,6 @@ export const usePagePathRenameHandler = (
       return;
     }
 
-    console.log(newPagePath);
-    console.log(currentPagePath);
-
     try {
       await apiv3Put('/pages/rename', {
         pageId: currentPage._id,
