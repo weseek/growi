@@ -1,18 +1,16 @@
 import type {
-  IGrantedGroup, IPageHasId, IRevisionHasId, ITag, PageGrant,
+  IPageHasId, IRevisionHasId, ITag,
 } from '@growi/core';
 
-export type IApiv3PageCreateParams = {
+import type { IOptionsForCreate, IOptionsForUpdate } from '../page';
+
+export type IApiv3PageCreateParams = IOptionsForCreate & {
   path?: string,
   parentPath?: string,
   optionalParentPath?: string,
 
   body?: string,
   pageTags?: string[],
-
-  grant?: PageGrant,
-  grantUserGroupIds?: IGrantedGroup[],
-  overwriteScopesOfDescendants?: boolean,
 
   isSlackEnabled?: boolean,
   slackChannels?: string,
@@ -24,14 +22,10 @@ export type IApiv3PageCreateResponse = {
   revision: IRevisionHasId,
 };
 
-export type IApiv3PageUpdateParams = {
+export type IApiv3PageUpdateParams = IOptionsForUpdate & {
   pageId: string,
   revisionId: string,
   body: string,
-
-  grant?: PageGrant,
-  userRelatedGrantUserGroupIds?: IGrantedGroup[],
-  overwriteScopesOfDescendants?: boolean,
 
   isSlackEnabled?: boolean,
   slackChannels?: string,

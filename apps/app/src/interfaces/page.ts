@@ -41,8 +41,8 @@ export type IOptionsForUpdate = {
 
 export type IOptionsForCreate = {
   // format?: string,
-  grantUserGroupIds?: IGrantedGroup[],
   grant?: PageGrant,
+  grantUserGroupIds?: IGrantedGroup[],
   overwriteScopesOfDescendants?: boolean,
   isSynchronously?: boolean,
 };
