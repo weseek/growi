@@ -54,9 +54,11 @@ export const PersonalDropdown = (): JSX.Element => {
         </DropdownToggle>
 
         <DropdownMenu container="body">
-          <DropdownItem className="px-4 pt-3 pb-2">
-            <UserPicture user={currentUser} size="lg" noLink noTooltip />
-            <h5>{currentUser.name}</h5>
+          <DropdownItem>
+            <div className="py-2">
+              <UserPicture user={currentUser} size="lg" noLink noTooltip />
+            </div>
+            <h5 className="ms-1">{currentUser.name}</h5>
             <div className="d-flex align-items-center">
               <span className="material-symbols-outlined me-1">person</span>
               {currentUser.username}
@@ -74,8 +76,7 @@ export const PersonalDropdown = (): JSX.Element => {
               href={pagePathUtils.userHomepagePath(currentUser)}
               data-testid="grw-personal-dropdown-menu-user-home"
             >
-              <span className="material-symbols-outlined me-1">home</span>
-              {t('personal_dropdown.home')}
+              <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
             </Link>
           </DropdownItem>
 
@@ -84,8 +85,7 @@ export const PersonalDropdown = (): JSX.Element => {
               href="/me"
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
-              <span className="material-symbols-outlined me-1">build</span>
-              {t('personal_dropdown.settings')}
+              <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
             </Link>
           </DropdownItem>
 
@@ -97,8 +97,7 @@ export const PersonalDropdown = (): JSX.Element => {
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler}>
-            <span className="material-symbols-outlined me-1">logout</span>
-            {t('Sign out')}
+            <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
