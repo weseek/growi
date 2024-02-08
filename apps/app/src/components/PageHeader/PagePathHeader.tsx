@@ -33,6 +33,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+
   const { t } = useTranslation();
 
   const onRenameFinish = () => {
@@ -47,15 +49,26 @@ export const PagePathHeader: FC<Props> = (props) => {
     setEditedPagePath(inputText);
   };
 
+  const onPressEnter = () => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+  };
+
   const onPressEscape = () => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
   };
 
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+  const onClickEditButton = useCallback(() => {
+    if (isRenameInputShown) {
+      pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+    }
+    else {
+      setEditedPagePath(currentPagePath);
+      setRenameInputShown(true);
+    }
+  }, [currentPagePath, editedPagePath, isRenameInputShown, pagePathRenameHandler]);
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
-
   const isViewMode = editorMode === EditorMode.View;
   const isEditorMode = !isViewMode;
 
@@ -67,15 +80,6 @@ export const PagePathHeader: FC<Props> = (props) => {
     />
   ), [currentPage._id, currentPagePath, isEditorMode]);
 
-  const onClickEditButton = useCallback(() => {
-    if (isRenameInputShown) {
-      pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-    }
-    else {
-      setEditedPagePath(currentPagePath);
-      setRenameInputShown(true);
-    }
-  }, [currentPagePath, editedPagePath, isRenameInputShown, pagePathRenameHandler]);
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
 
@@ -95,9 +99,6 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, []);
 
-  const onPressEnter = () => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
 
   return (
     <div
