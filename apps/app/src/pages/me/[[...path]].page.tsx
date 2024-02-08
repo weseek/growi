@@ -1,6 +1,6 @@
 import React, { type ReactNode, useMemo } from 'react';
 
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -10,7 +10,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
@@ -21,7 +21,7 @@ import {
 import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from '../_app.page';
+import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
@@ -122,8 +122,8 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root">
         <header className="py-3">
-          <div className="container-fluid">
-            <h1 className="title">{ targetPage.title }</h1>
+          <div className="container">
+            <h3 className="title mt-5">{ targetPage.title }</h3>
           </div>
         </header>
 
