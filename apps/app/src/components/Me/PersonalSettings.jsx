@@ -20,37 +20,38 @@ const PersonalSettings = () => {
   const navTabMapping = useMemo(() => {
     return {
       user_infomation: {
-        Icon: () => <i className="icon-fw icon-user"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">person</span>,
+
         Content: UserSettings,
         i18n: t('User Information'),
       },
       external_accounts: {
-        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">ungroup</span>,
         Content: ExternalAccountLinkedMe,
         i18n: t('admin:user_management.external_accounts'),
       },
       password_settings: {
-        Icon: () => <i className="icon-fw icon-lock"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">password</span>,
         Content: PasswordSettings,
         i18n: t('Password Settings'),
       },
       api_settings: {
-        Icon: () => <i className="icon-fw icon-paper-plane"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">api</span>,
         Content: ApiSettings,
         i18n: t('API Settings'),
       },
       // editor_settings: {
-      //   Icon: () => <span className="material-symbols-outlined">edit</span>,
+      //   Icon: () => <span className="material-symbols-outlined fs-5 me-1">edit</span>,
       //   Content: EditorSettings,
       //   i18n: t('editor_settings.editor_settings'),
       // },
       in_app_notification_settings: {
-        Icon: () => <i className="icon-fw icon-bell"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">notifications</span>,
         Content: InAppNotificationSettings,
         i18n: t('in_app_notification_settings.in_app_notification_settings'),
       },
       other_settings: {
-        Icon: () => <i className="icon-fw icon-settings"></i>,
+        Icon: () => <span className="material-symbols-outlined fs-5 me-1">settings</span>,
         Content: OtherSettings,
         i18n: t('Other Settings'),
       },
