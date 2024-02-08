@@ -12,9 +12,8 @@ import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathNav } from '../Common/PagePathNav';
+import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
-
-import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export type Props = {
@@ -66,7 +65,7 @@ export const PagePathHeader: FC<Props> = (props) => {
       setEditedPagePath(currentPagePath);
       setRenameInputShown(true);
     }
-  }, [currentPagePath, editedPagePath, isRenameInputShown, pagePathRenameHandler]);
+  }, [currentPagePath, editedPagePath, isRenameInputShown, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
   const isViewMode = editorMode === EditorMode.View;

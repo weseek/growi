@@ -6,7 +6,7 @@ import nodePath from 'path';
 import { type IPageForItem } from '~/interfaces/page';
 import { useSWRxCurrentPage } from '~/stores/page';
 
-import { usePagePathRenameHandler } from '../PageHeader/page-header-utils';
+import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import {
   SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';

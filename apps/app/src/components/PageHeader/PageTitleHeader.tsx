@@ -9,9 +9,9 @@ import { useTranslation } from 'next-i18next';
 import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
+import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import type { Props } from './PagePathHeader';
-import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
