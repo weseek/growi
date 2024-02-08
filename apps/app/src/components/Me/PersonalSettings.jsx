@@ -21,7 +21,6 @@ const PersonalSettings = () => {
     return {
       user_infomation: {
         Icon: () => <span className="material-symbols-outlined fs-5 me-1">person</span>,
-
         Content: UserSettings,
         i18n: t('User Information'),
       },
