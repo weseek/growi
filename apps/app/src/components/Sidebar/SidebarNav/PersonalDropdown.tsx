@@ -55,7 +55,7 @@ export const PersonalDropdown = (): JSX.Element => {
 
         <DropdownMenu container="body">
           <DropdownItem>
-            <div className="py-2">
+            <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
             <h5 className="ms-1">{currentUser.name}</h5>
