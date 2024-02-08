@@ -49,7 +49,10 @@ export const PersonalDropdown = (): JSX.Element => {
           <UserPicture user={currentUser} noLink noTooltip />
         </DropdownToggle>
 
-        <DropdownMenu container="body">
+        <DropdownMenu
+          container="body"
+          data-testid="personal-dropdown-menu"
+        >
           <DropdownItem header>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
