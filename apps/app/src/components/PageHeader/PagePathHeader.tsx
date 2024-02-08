@@ -6,6 +6,7 @@ import type { FC } from 'react';
 import nodePath from 'path';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
@@ -27,6 +28,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
+  const pageTitle = nodePath.basename(currentPagePath);
+  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPagePath));
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -48,7 +51,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   };
 
   const onInputChange = (inputText: string) => {
-    setEditedPagePath(inputText);
+    const newPagePath = nodePath.resolve(inputText, pageTitle);
+    setEditedPagePath(newPagePath);
   };
 
   const onPressEnter = () => {
@@ -77,10 +81,10 @@ export const PagePathHeader: FC<Props> = (props) => {
   const PagePath = useMemo(() => (
     <PagePathNav
       pageId={currentPage._id}
-      pagePath={currentPagePath}
+      pagePath={parentPagePath}
       isSingleLineMode={isEditorMode}
     />
-  ), [currentPage._id, currentPagePath, isEditorMode]);
+  ), [currentPage._id, parentPagePath, isEditorMode]);
 
 
   const buttonStyle = isButtonsShown ? '' : 'd-none';
@@ -115,7 +119,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           {isRenameInputShown ? (
             <div className="flex-fill">
               <ClosableTextInput
-                value={editedPagePath}
+                value={parentPagePath}
                 placeholder={t('Input page name')}
                 onPressEnter={onPressEnter}
                 onPressEscape={onPressEscape}

@@ -28,8 +28,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const editedPageTitle = nodePath.basename(editedPagePath);
-
   const onRenameFinish = () => {
     setRenameInputShown(false);
   };
@@ -73,7 +71,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         {isRenameInputShown ? (
           <div className="flex-fill">
             <ClosableTextInput
-              value={editedPageTitle}
+              value={pageTitle}
               placeholder={t('Input page name')}
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
