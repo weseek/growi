@@ -30,12 +30,12 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
 
   addRow(cm) {
     // get lines all of table from current position to beginning of table
-    const strFromBot = getStrFromBot(cm);
+    const strFromBot = getStrFromBot(cm.state);
     let table = MarkdownTable.fromMarkdownString(strFromBot);
 
     addRowToMarkdownTable(table);
 
-    const strToEot = getStrToEot(cm);
+    const strToEot = getStrToEot(cm.state);
     const tableBottom = MarkdownTable.fromMarkdownString(strToEot);
     if (tableBottom.table.length > 0) {
       table = mergeMarkdownTable([table, tableBottom]);
@@ -45,7 +45,7 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
   }
 
   reformTable(cm) {
-    const tableStr = getStrFromBot(cm) + getStrToEot(cm);
+    const tableStr = getStrFromBot(cm.state) + getStrToEot(cm.state);
     const table = MarkdownTable.fromMarkdownString(tableStr);
     replaceFocusedMarkdownTableWithEditor(cm, table);
   }
@@ -70,11 +70,11 @@ export default class MarkdownTableInterceptor extends BasicInterceptor {
 
     const cm = editor.getCodeMirror();
 
-    const isLastRow = getStrToEot(cm) === editor.getStrToEol();
+    const isLastRow = getStrToEot(cm.state) === editor.getStrToEol();
 
-    if (isInTable(cm)) {
+    if (isInTable(cm.state)) {
       // at EOL in the table
-      if (isEndOfLine(cm)) {
+      if (isEndOfLine(cm.state)) {
         this.addRow(cm);
       }
       // last empty row

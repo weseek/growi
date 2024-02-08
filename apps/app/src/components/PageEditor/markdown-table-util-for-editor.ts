@@ -1,3 +1,4 @@
+import type { EditorState } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
@@ -7,15 +8,15 @@ const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
 // https://regex101.com/r/1UuWBJ/3
 export const emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
-const curPos = (editor: EditorView): number => {
-  return editor.state.selection.main.head;
+const curPos = (editorState: EditorState): number => {
+  return editorState.selection.main.head;
 };
 
 /**
    * return boolean value whether the cursor position is in a table
    */
-export const isInTable = (editor: EditorView): boolean => {
-  const lineText = editor.state.doc.lineAt(curPos(editor)).text;
+export const isInTable = (editorState: EditorState): boolean => {
+  const lineText = editorState.doc.lineAt(curPos(editorState)).text;
   return linePartOfTableRE.test(lineText);
 };
 
@@ -23,14 +24,14 @@ export const isInTable = (editor: EditorView): boolean => {
    * return the postion of the BOT(beginning of table)
    * (If the cursor is not in a table, return its position)
    */
-const getBot = (editor: EditorView): number => {
-  if (!isInTable(editor)) {
-    return curPos(editor);
+const getBot = (editorState: EditorState): number => {
+  if (!isInTable(editorState)) {
+    return curPos(editorState);
   }
 
-  const doc = editor.state.doc;
+  const doc = editorState.doc;
   const firstLine = 1;
-  let line = doc.lineAt(curPos(editor)).number - 1;
+  let line = doc.lineAt(curPos(editorState)).number - 1;
   for (; line >= firstLine; line--) {
     const strLine = doc.line(line).text;
     if (!linePartOfTableRE.test(strLine)) {
@@ -45,14 +46,14 @@ const getBot = (editor: EditorView): number => {
    * return the postion of the EOT(end of table)
    * (If the cursor is not in a table, return its position)
    */
-const getEot = (editor: EditorView): number => {
-  if (!isInTable(editor)) {
-    return curPos(editor);
+const getEot = (editorState: EditorState): number => {
+  if (!isInTable(editorState)) {
+    return curPos(editorState);
   }
 
-  const doc = editor.state.doc;
+  const doc = editorState.doc;
   const lastLine = doc.lines;
-  let line = doc.lineAt(curPos(editor)).number + 1;
+  let line = doc.lineAt(curPos(editorState)).number + 1;
   for (; line <= lastLine; line++) {
     const strLine = doc.line(line).text;
     if (!linePartOfTableRE.test(strLine)) {
@@ -66,35 +67,35 @@ const getEot = (editor: EditorView): number => {
 /**
    * return strings from BOT(beginning of table) to the cursor position
    */
-export const getStrFromBot = (editor: EditorView): string => {
-  return editor.state.sliceDoc(getBot(editor), curPos(editor));
+export const getStrFromBot = (editorState: EditorState): string => {
+  return editorState.sliceDoc(getBot(editorState), curPos(editorState));
 };
 
 /**
    * return strings from the cursor position to EOT(end of table)
    */
-export const getStrToEot = (editor: EditorView): string => {
-  return editor.state.sliceDoc(curPos(editor), getEot(editor));
+export const getStrToEot = (editorState: EditorState): string => {
+  return editorState.sliceDoc(curPos(editorState), getEot(editorState));
 };
 
 /**
    * return MarkdownTable instance of the table where the cursor is
    * (If the cursor is not in a table, return null)
    */
-export const getMarkdownTable = (editor: EditorView): MarkdownTable | undefined => {
-  if (!isInTable(editor)) {
+export const getMarkdownTable = (editorState: EditorState): MarkdownTable | undefined => {
+  if (!isInTable(editorState)) {
     return;
   }
 
-  const strFromBotToEot = editor.state.sliceDoc(getBot(editor), getEot(editor));
+  const strFromBotToEot = editorState.sliceDoc(getBot(editorState), getEot(editorState));
   return MarkdownTable.fromMarkdownString(strFromBotToEot);
 };
 
 /**
    * return boolean value whether the cursor position is end of line
    */
-export const isEndOfLine = (editor: EditorView): boolean => {
-  return curPos(editor) === editor.state.doc.lineAt(curPos(editor)).to;
+export const isEndOfLine = (editorState: EditorState): boolean => {
+  return curPos(editorState) === editorState.doc.lineAt(curPos(editorState)).to;
 };
 
 /**
@@ -130,8 +131,8 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | 
    * (A replaced table is reformed by markdown-table.)
    */
 export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table: MarkdownTable): void => {
-  const botPos = getBot(editor);
-  const eotPos = getEot(editor);
+  const botPos = getBot(editor.state);
+  const eotPos = getEot(editor.state);
 
   editor.dispatch({
     changes: {
@@ -141,7 +142,7 @@ export const replaceFocusedMarkdownTableWithEditor = (editor: EditorView, table:
     },
   });
   editor.dispatch({
-    selection: { anchor: editor.state.doc.lineAt(curPos(editor)).to },
+    selection: { anchor: editor.state.doc.lineAt(curPos(editor.state)).to },
   });
   editor.focus();
 };

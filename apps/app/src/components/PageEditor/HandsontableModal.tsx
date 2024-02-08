@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
+import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse,
@@ -105,7 +105,7 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor) : table;
+    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor.state) : table;
     const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
     setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
