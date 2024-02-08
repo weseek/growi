@@ -24,7 +24,7 @@ export const SidebarNav = memo((props: SidebarNavProps) => {
         <PrimaryItems onItemHover={onPrimaryItemHover} />
       </div>
 
-      <div className="grw-sidebar-nav-secondary-container position-absolute">
+      <div className="grw-sidebar-nav-secondary-container">
         <SecondaryItems />
       </div>
     </div>
