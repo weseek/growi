@@ -37,8 +37,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
   }, []);
 
   const onInputChange = useCallback((inputText: string) => {
+    const newPageTitle = pathUtils.removeHeadingSlash(inputText);
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
-    const newPagePath = nodePath.resolve(parentPagePath, inputText);
+    const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
 
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
@@ -71,7 +72,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         {isRenameInputShown ? (
           <div className="flex-fill">
             <ClosableTextInput
-              value={pageTitle}
+              value={`/${pageTitle}`}
               placeholder={t('Input page name')}
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
