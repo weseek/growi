@@ -1,9 +1,10 @@
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { createPage } from '~/client/services/page-operation';
-import { useIsNotFound, useSWRxCurrentPage } from '~/stores/page';
+import { createPage, exist } from '~/client/services/page-operation';
+import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
+import { useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -18,106 +19,93 @@ type OnCreated = () => void;
  */
 type OnAborted = () => void;
 /**
- * Invoked when an error is occured
- */
-type OnError = (err) => void;
-/**
  * Always invoked after processing is terminated
  */
 type OnTerminated = () => void;
 
 type CreatePageAndTransitOpts = {
+  shouldCheckPageExists?: boolean,
   onCreationStart?: OnCreated,
   onCreated?: OnCreated,
   onAborted?: OnAborted,
-  onError?: OnError,
   onTerminated?: OnTerminated,
 }
 
 type CreatePageAndTransit = (
-  pagePath: string | undefined,
-  // grant?: number,
-  // grantUserGroupId?: string,
+  params: IApiv3PageCreateParams,
   opts?: CreatePageAndTransitOpts,
 ) => Promise<void>;
 
-export const useCreatePageAndTransit = (): CreatePageAndTransit => {
+type UseCreatePageAndTransit = () => {
+  isCreating: boolean,
+  createAndTransit: CreatePageAndTransit,
+};
+
+export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const router = useRouter();
 
-  const { data: isNotFound } = useIsNotFound();
-  const { data: currentPage, isLoading } = useSWRxCurrentPage();
+  const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
 
-  // const {
-  //   path: currentPagePath,
-  //   grant: currentPageGrant,
-  //   grantedGroups: currentPageGrantedGroups,
-  // } = currentPage ?? {};
+  const [isCreating, setCreating] = useState(false);
 
-  return useCallback(async(pagePath, opts = {}) => {
-    if (isLoading) {
-      return;
-    }
-
+  const createAndTransit: CreatePageAndTransit = useCallback(async(params, opts = {}) => {
     const {
-      onCreationStart, onCreated, onAborted, onError, onTerminated,
+      shouldCheckPageExists,
+      onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
 
-    if (isNotFound == null || !isNotFound || pagePath == null) {
-      mutateEditorMode(EditorMode.Editor);
+    // check the page existence
+    if (shouldCheckPageExists && params.path != null) {
+      const pagePath = params.path;
 
-      onAborted?.();
-      onTerminated?.();
-      return;
+      try {
+        const res = await exist(JSON.stringify([pagePath]));
+        const isExists = res.pages[pagePath];
+
+        if (isExists) {
+          // routing
+          if (pagePath !== currentPagePath) {
+            await router.push(`${pagePath}#edit`);
+          }
+          mutateEditorMode(EditorMode.Editor);
+          onAborted?.();
+          return;
+        }
+      }
+      catch (err) {
+        throw err;
+      }
+      finally {
+        onTerminated?.();
+      }
     }
 
+    // create and transit
     try {
+      setCreating(true);
       onCreationStart?.();
 
-      /**
-       * !! NOTICE !! - Verification of page createable or not is checked on the server side.
-       * since the new page path is not generated on the client side.
-       * need shouldGeneratePath flag.
-       */
-      // const shouldCreateUnderRoot = currentPagePath == null || currentPageGrant == null;
-      // const parentPath = shouldCreateUnderRoot
-      //   ? '/'
-      //   : currentPagePath;
+      const response = await createPage(params);
 
-      // const params = {
-      //   isSlackEnabled: false,
-      //   slackChannels: '',
-      //   grant: shouldCreateUnderRoot ? 1 : currentPageGrant,
-      //   grantUserGroupIds: shouldCreateUnderRoot ? undefined : currentPageGrantedGroups,
-      //   shouldGeneratePath: true,
-      // };
-
-      // !! NOTICE !! - if shouldGeneratePath is flagged, send the parent page path
-      // const response = await createPage(parentPath, '', params);
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant,
-        // grantUserGroupId,
-      };
-
-      const response = await createPage(pagePath, '', params);
-
-      await router.push(`${response.page.id}#edit`);
+      await router.push(`${response.page._id}#edit`);
       mutateEditorMode(EditorMode.Editor);
 
       onCreated?.();
     }
     catch (err) {
-      logger.warn(err);
-      onError?.(err);
+      throw err;
     }
     finally {
       onTerminated?.();
+      setCreating(false);
     }
 
-  }, [isLoading, isNotFound, mutateEditorMode, router]);
+  }, [currentPagePath, mutateEditorMode, router]);
+
+  return {
+    isCreating,
+    createAndTransit,
+  };
 };
