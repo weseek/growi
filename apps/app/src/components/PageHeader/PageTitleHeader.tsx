@@ -24,6 +24,8 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+
   const { t } = useTranslation();
 
   const editedPageTitle = nodePath.basename(editedPagePath);
@@ -37,15 +39,23 @@ export const PageTitleHeader: FC<Props> = (props) => {
   };
 
   const onInputChange = useCallback((inputText: string) => {
-    const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
+    const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
     const newPagePath = nodePath.resolve(parentPagePath, inputText);
 
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
 
+  const onPressEnter = () => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+  };
+
   const onPressEscape = () => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
+  };
+
+  const onClickButton = () => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
   };
 
   const onClickPageTitle = () => {
@@ -53,19 +63,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   };
 
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
-
   const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
-
-  const onClickButton = () => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
-
-  const onPressEnter = () => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
 
   return (
     <div className="row">
