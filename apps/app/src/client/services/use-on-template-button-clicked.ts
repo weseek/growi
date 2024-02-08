@@ -5,43 +5,40 @@ import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
 import type { LabelType } from '~/interfaces/template';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 export const useOnTemplateButtonClicked = (
     currentPagePath?: string,
     isLoading?: boolean,
 ): {
-  onClickHandler: (label: LabelType) => Promise<void>,
-  isPageCreating: boolean
+  isCreatable: boolean,
+  isPageCreating: boolean,
+  onClickHandler?: (label: LabelType) => Promise<void>,
 } => {
   const router = useRouter();
+
+  const { mutate: mutateEditorMode } = useEditorMode();
+
   const [isPageCreating, setIsPageCreating] = useState(false);
 
+  const isCreatable = currentPagePath != null && isCreatablePage(`${currentPagePath}/_template`);
+
   const onClickHandler = useCallback(async(label: LabelType) => {
-    if (isLoading) return;
+    if (isLoading || !isCreatable) return;
 
     try {
       setIsPageCreating(true);
 
-      const targetPath = currentPagePath == null || currentPagePath === '/'
-        ? `/${label}`
-        : `${currentPagePath}/${label}`;
+      const templatePagePath = `${currentPagePath}/${label}`;
+      const res = await exist(JSON.stringify([templatePagePath]));
+      const isExists = res.pages[templatePagePath];
 
-      const path = isCreatablePage(targetPath) ? targetPath : `/${label}`;
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        const params = {
-          isSlackEnabled: false,
-          slackChannels: '',
-          grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-        };
-
-        await createPage(path, '', params);
+      if (!isExists) {
+        await createPage({ path: templatePagePath });
       }
 
-      router.push(`${path}#edit`);
+      router.push(`${templatePagePath}#edit`);
+      mutateEditorMode(EditorMode.Editor);
     }
     catch (err) {
       throw err;
@@ -49,7 +46,11 @@ export const useOnTemplateButtonClicked = (
     finally {
       setIsPageCreating(false);
     }
-  }, [currentPagePath, isLoading, router]);
+  }, [currentPagePath, isCreatable, isLoading, mutateEditorMode, router]);
 
-  return { onClickHandler, isPageCreating };
+  return {
+    isCreatable,
+    isPageCreating,
+    onClickHandler: isCreatable ? onClickHandler : undefined,
+  };
 };

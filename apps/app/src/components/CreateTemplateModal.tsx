@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
-import { TargetType, LabelType } from '~/interfaces/template';
+import type { TargetType, LabelType } from '~/interfaces/template';
 
 
 type TemplateCardProps = {
@@ -55,16 +55,16 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
+  const { onClickHandler, isPageCreating } = useOnTemplateButtonClicked(path);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await onClickTemplateButton(label);
+      await onClickHandler?.(label);
     }
     catch (err) {
       toastError(err);
     }
-  }, [onClickTemplateButton]);
+  }, [onClickHandler]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -78,6 +78,10 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       />
     </div>
   );
+
+  if (!isPageCreating) {
+    return <></>;
+  }
 
   return (
     <Modal isOpen={isOpen} toggle={onClose} data-testid="page-template-modal">

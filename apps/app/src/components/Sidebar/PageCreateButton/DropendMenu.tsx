@@ -3,13 +3,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DropdownMenu, DropdownItem } from 'reactstrap';
 
-import { LabelType } from '~/interfaces/template';
+import type { LabelType } from '~/interfaces/template';
 
 
 type DropendMenuProps = {
   onClickCreateNewPageButtonHandler: () => Promise<void>
   onClickCreateTodaysButtonHandler: () => Promise<void>
-  onClickTemplateButtonHandler: (label: LabelType) => Promise<void>
+  onClickTemplateButtonHandler?: (label: LabelType) => Promise<void>
   todaysPath: string | null,
 }
 
@@ -32,6 +32,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       >
         {t('create_page_dropdown.new_page')}
       </DropdownItem>
+
       {todaysPath != null && (
         <>
           <DropdownItem divider />
@@ -43,18 +44,23 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           </DropdownItem>
         </>
       )}
-      <DropdownItem divider />
-      <li><span className="text-muted text-nowrap px-3">{t('create_page_dropdown.template.desc')}</span></li>
-      <DropdownItem
-        onClick={() => onClickTemplateButtonHandler('_template')}
-      >
-        {t('create_page_dropdown.template.children')}
-      </DropdownItem>
-      <DropdownItem
-        onClick={() => onClickTemplateButtonHandler('__template')}
-      >
-        {t('create_page_dropdown.template.descendants')}
-      </DropdownItem>
+
+      { onClickTemplateButtonHandler != null && (
+        <>
+          <DropdownItem divider />
+          <li><span className="text-muted text-nowrap px-3">{t('create_page_dropdown.template.desc')}</span></li>
+          <DropdownItem
+            onClick={() => onClickTemplateButtonHandler('_template')}
+          >
+            {t('create_page_dropdown.template.children')}
+          </DropdownItem>
+          <DropdownItem
+            onClick={() => onClickTemplateButtonHandler('__template')}
+          >
+            {t('create_page_dropdown.template.descendants')}
+          </DropdownItem>
+        </>
+      ) }
     </DropdownMenu>
   );
 });

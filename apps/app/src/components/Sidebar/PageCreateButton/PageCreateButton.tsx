@@ -45,11 +45,14 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   // TODO: https://redmine.weseek.co.jp/issues/138806
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
   // TODO: https://redmine.weseek.co.jp/issues/138805
-  const { onClickHandler: onClickTemplateButton, isPageCreating: isTemplatePageCreating } = useOnTemplateButtonClicked(currentPagePath, isLoadingPagePath);
+  const {
+    onClickHandler: onClickTemplateButton,
+    isPageCreating: isTemplatePageCreating, isCreatable: isTemplatePageCreatable,
+  } = useOnTemplateButtonClicked(currentPagePath, isLoadingPagePath);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await onClickTemplateButton(label);
+      await onClickTemplateButton?.(label);
     }
     catch (err) {
       toastError(err);
@@ -91,7 +94,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
           <DropendMenu
             onClickCreateNewPageButtonHandler={onClickNewButton}
             onClickCreateTodaysButtonHandler={onClickTodaysButton}
-            onClickTemplateButtonHandler={onClickTemplateButtonHandler}
+            onClickTemplateButtonHandler={isTemplatePageCreatable ? onClickTemplateButtonHandler : undefined}
             todaysPath={todaysPath}
           />
         </Dropdown>
