@@ -21,6 +21,10 @@ export const usePagePathRenameHandler = (
 
   const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure) => {
 
+    if (currentPage == null) {
+      return;
+    }
+
     const onRenamed = (fromPath: string | undefined, toPath: string) => {
       mutatePageTree();
       mutatePageList();
@@ -30,30 +34,30 @@ export const usePagePathRenameHandler = (
       }
     };
 
-    if (newPagePath === currentPage?.path || newPagePath === '') {
+    if (newPagePath === currentPage.path || newPagePath === '') {
       onRenameFinish?.();
       return;
     }
 
     try {
       await apiv3Put('/pages/rename', {
-        pageId: currentPage?._id,
-        revisionId: currentPage?.revision._id,
+        pageId: currentPage._id,
+        revisionId: currentPage.revision._id,
         newPagePath,
       });
 
-      onRenamed(currentPage?.path, newPagePath);
+      onRenamed(currentPage.path, newPagePath);
       onRenameFinish?.();
 
       onRenameFinish?.();
 
-      toastSuccess(t('renamed_pages', { path: currentPage?.path }));
+      toastSuccess(t('renamed_pages', { path: currentPage.path }));
     }
     catch (err) {
       onRenameFailure?.();
       toastError(err);
     }
-  }, [currentPage?._id, currentPage?.path, currentPage?.revision._id, currentPagePath, mutateCurrentPage, t]);
+  }, [currentPage, currentPagePath, mutateCurrentPage, t]);
 
   return pagePathRenameHandler;
 };
