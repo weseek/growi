@@ -107,8 +107,8 @@ const ProfileImageSettings = (): JSX.Element => {
               <label className="form-label form-check-label" htmlFor="radioGravatar">
                 <img src={GRAVATAR_DEFAULT} className="me-1" data-vrt-blackout-profile /> Gravatar
               </label>
-              <a href="https://gravatar.com/">
-                <small><i className="icon-arrow-right-circle ms-2" aria-hidden="true"></i></small>
+              <a href="https://gravatar.com/" target="_blank" rel="noopener noreferrer">
+                <small><span className="material-symbols-outlined ms-2 text-secondary" aria-hidden="true">info</span></small>
               </a>
             </div>
           </h5>
