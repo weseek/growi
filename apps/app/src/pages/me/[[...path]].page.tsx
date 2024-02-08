@@ -130,7 +130,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className="main">
-          <div id="content-main" className="content-main container-lg">
+          <div id="content-main" className="content-main container">
             {targetPage.component}
           </div>
         </div>

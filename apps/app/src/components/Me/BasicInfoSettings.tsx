@@ -150,7 +150,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row my-4">
+      <div className="row my-5 my-md-4">
         <div className="offset-4 col-5">
           <button
             data-testid="grw-besic-info-settings-update-button"
