@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -57,6 +58,7 @@ export const PageSelectModal: FC = () => {
         />
       </ModalBody>
       <ModalFooter>
+        <Button color="secondary" onClick={closeModal}>{t('Cancel')}</Button>{' '}
         <Button color="primary" onClick={closeModal}>{t('Done')}</Button>{' '}
       </ModalFooter>
     </Modal>
