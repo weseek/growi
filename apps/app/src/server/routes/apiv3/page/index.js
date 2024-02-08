@@ -21,6 +21,7 @@ import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
 import { createPageHandlersFactory } from './create-page';
+import { updatePageHandlersFactory } from './update-page';
 
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
@@ -316,7 +317,7 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /pages:
+   *    /page:
    *      post:
    *        tags: [Page]
    *        operationId: createPage
@@ -369,6 +370,52 @@ module.exports = (crowi) => {
    *            description: page path is already existed
    */
   router.post('/', createPageHandlersFactory(crowi));
+
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      put:
+   *        tags: [Page]
+   *        operationId: updatePage
+   *        description: Update page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revision_id:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                required:
+   *                  - body
+   *                  - page_id
+   *                  - revision_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to update page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  router.put('/', updatePageHandlersFactory(crowi));
 
   /**
    * @swagger
