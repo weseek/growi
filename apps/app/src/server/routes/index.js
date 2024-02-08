@@ -121,7 +121,6 @@ module.exports = function(crowi, app) {
   apiV1Router.get('/search'                        , accessTokenParser , loginRequired , search.api.search);
 
   // HTTP RPC Styled API (に徐々に移行していいこうと思う)
-  apiV1Router.post('/pages.update'       , accessTokenParser , loginRequiredStrictly , excludeReadOnlyUser, addActivity, page.api.update);
   apiV1Router.get('/pages.exist'         , accessTokenParser , loginRequired , page.api.exist);
   apiV1Router.get('/pages.updatePost'    , accessTokenParser, loginRequired, page.api.getUpdatePost);
   apiV1Router.get('/pages.getPageTag'    , accessTokenParser , loginRequired , page.api.getPageTag);
