@@ -41,11 +41,13 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
   return path;
 }
 
-async function determinePath(parentPath?: string, path?: string, optionalParentPath?: string): Promise<string> {
+async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
   // TODO: i18n
   const basePathname = 'Untitled';
 
-  if (path != null) {
+  if (_path != null) {
+    const path = normalizePath(_path);
+
     // when path is valid
     if (isCreatablePage(path)) {
       return normalizePath(path);
@@ -55,10 +57,12 @@ async function determinePath(parentPath?: string, path?: string, optionalParentP
       return generateUntitledPath(optionalParentPath, basePathname);
     }
     // when path is invalid
-    throw new Error('Could not create the page');
+    throw new Error('Could not create the page for the path');
   }
 
-  if (parentPath != null) {
+  if (_parentPath != null) {
+    const parentPath = normalizePath(_parentPath);
+
     // when parentPath is valid
     if (isCreatablePage(parentPath)) {
       return generateUntitledPath(parentPath, basePathname);
@@ -68,7 +72,7 @@ async function determinePath(parentPath?: string, path?: string, optionalParentP
       return generateUntitledPath(optionalParentPath, basePathname);
     }
     // when parentPath is invalid
-    throw new Error('Could not create the page');
+    throw new Error('Could not create the page for the parentPath');
   }
 
   // when both path and parentPath are not specified
@@ -176,7 +180,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
         pathToCreate = await determinePath(parentPath, path, optionalParentPath);
       }
       catch (err) {
-        return res.apiv3Err(new ErrorV3('Could not create the page.', 'could_not_create_page'));
+        return res.apiv3Err(new ErrorV3(err.toString(), 'could_not_create_page'));
       }
 
       if (isUserPage(pathToCreate)) {
