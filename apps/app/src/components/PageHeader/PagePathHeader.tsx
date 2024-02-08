@@ -1,17 +1,19 @@
 import {
-  useMemo, useState, useEffect, useCallback,
+  useMemo, useState, useEffect, useCallback, useTransition,
 } from 'react';
 import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
+import { ValidationTarget } from '~/client/util/input-validator';
 import { usePageSelectModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
+import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathNav } from '../Common/PagePathNav';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 
@@ -33,6 +35,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
+  const { t } = useTranslation();
 
   const onRenameFinish = () => {
     setRenameInputShown(false);
@@ -53,8 +56,6 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const stateHandler = { isRenameInputShown, setRenameInputShown };
-
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const isViewMode = editorMode === EditorMode.View;
@@ -73,7 +74,6 @@ export const PagePathHeader: FC<Props> = (props) => {
       pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
     }
     else {
-      console.log(currentPagePath);
       setEditedPagePath(currentPagePath);
       setRenameInputShown(true);
     }
@@ -97,6 +97,10 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, []);
 
+  const onPressEnter = () => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+  };
+
   return (
     <div
       id="page-path-header"
@@ -107,14 +111,20 @@ export const PagePathHeader: FC<Props> = (props) => {
           className="col-4"
           onMouseEnter={() => setButtonShown(true)}
         >
-          <TextInputForPageTitleAndPath
-            currentPage={currentPage}
-            stateHandler={stateHandler}
-            inputValue={editedPagePath}
-            CustomComponent={PagePath}
-            onInputChange={onInputChange}
-            onPressEscape={onPressEscape}
-          />
+          {isRenameInputShown ? (
+            <div className="flex-fill">
+              <ClosableTextInput
+                value={editedPagePath}
+                placeholder={t('Input page name')}
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                validationTarget={ValidationTarget.PAGE}
+                handleInputChange={onInputChange}
+              />
+            </div>
+          ) : (
+            <>{ PagePath }</>
+          )}
         </div>
         <div className={`${buttonStyle} col-4 row`}>
           <div className="col-4">

@@ -4,9 +4,13 @@ import { useState, useMemo, useCallback } from 'react';
 import nodePath from 'path';
 
 import { pathUtils } from '@growi/core/dist/utils';
+import { useTranslation } from 'next-i18next';
+
+import { ValidationTarget } from '~/client/util/input-validator';
+
+import ClosableTextInput from '../Common/ClosableTextInput';
 
 import type { Props } from './PagePathHeader';
-import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
 
@@ -20,6 +24,8 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
+  const { t } = useTranslation();
+
   const editedPageTitle = nodePath.basename(editedPagePath);
 
   const onRenameFinish = () => {
@@ -31,8 +37,8 @@ export const PageTitleHeader: FC<Props> = (props) => {
   };
 
   const onInputChange = useCallback((inputText: string) => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+    const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
+    const newPagePath = nodePath.resolve(parentPagePath, inputText);
 
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
@@ -43,16 +49,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
   };
 
   const onClickPageTitle = () => {
-    console.log(currentPagePath);
     setEditedPagePath(currentPagePath);
     setRenameInputShown(true);
   };
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const stateHandler = { isRenameInputShown, setRenameInputShown };
-
-  const PageTitle = useMemo(() => (<div onClick={onClickPageTitle}>{pageTitle}</div>), [pageTitle]);
+  const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
 
   const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
@@ -60,17 +63,27 @@ export const PageTitleHeader: FC<Props> = (props) => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
   };
 
+  const onPressEnter = () => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+  };
+
   return (
     <div className="row">
       <div className="col-4">
-        <TextInputForPageTitleAndPath
-          currentPage={currentPage}
-          stateHandler={stateHandler}
-          inputValue={editedPageTitle}
-          CustomComponent={PageTitle}
-          onInputChange={onInputChange}
-          onPressEscape={onPressEscape}
-        />
+        {isRenameInputShown ? (
+          <div className="flex-fill">
+            <ClosableTextInput
+              value={editedPageTitle}
+              placeholder={t('Input page name')}
+              onPressEnter={onPressEnter}
+              onPressEscape={onPressEscape}
+              validationTarget={ValidationTarget.PAGE}
+              handleInputChange={onInputChange}
+            />
+          </div>
+        ) : (
+          <>{ PageTitle }</>
+        )}
       </div>
       <div className={`col-4 ${buttonStyle}`}>
         <button type="button" onClick={onClickButton}>
