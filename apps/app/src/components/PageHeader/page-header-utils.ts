@@ -17,8 +17,6 @@ export const usePagePathRenameHandler = (
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { t } = useTranslation();
 
-  const currentPagePath = currentPage?.path;
-
   const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure) => {
 
     if (currentPage == null) {
@@ -29,7 +27,7 @@ export const usePagePathRenameHandler = (
       mutatePageTree();
       mutatePageList();
 
-      if (currentPagePath === fromPath || currentPagePath === toPath) {
+      if (currentPage.path === fromPath || currentPage.path === toPath) {
         mutateCurrentPage();
       }
     };
@@ -49,15 +47,13 @@ export const usePagePathRenameHandler = (
       onRenamed(currentPage.path, newPagePath);
       onRenameFinish?.();
 
-      onRenameFinish?.();
-
       toastSuccess(t('renamed_pages', { path: currentPage.path }));
     }
     catch (err) {
       onRenameFailure?.();
       toastError(err);
     }
-  }, [currentPage, currentPagePath, mutateCurrentPage, t]);
+  }, [currentPage, mutateCurrentPage, t]);
 
   return pagePathRenameHandler;
 };
