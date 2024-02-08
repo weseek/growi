@@ -58,10 +58,12 @@ export const PersonalDropdown = (): JSX.Element => {
             <UserPicture user={currentUser} size="lg" noLink noTooltip />
             <h5>{currentUser.name}</h5>
             <div className="d-flex align-items-center">
-              <i className="icon-user icon-fw"></i>{currentUser.username}
+              <span className="material-symbols-outlined me-1">person</span>
+              {currentUser.username}
             </div>
             <div className="d-flex align-items-center">
-              <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{currentUser.email}</span>
+              <span className="material-symbols-outlined me-1">mail</span>
+              <span className="grw-email-sm">{currentUser.email}</span>
             </div>
           </DropdownItem>
 
@@ -72,7 +74,8 @@ export const PersonalDropdown = (): JSX.Element => {
               href={pagePathUtils.userHomepagePath(currentUser)}
               data-testid="grw-personal-dropdown-menu-user-home"
             >
-              <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
+              <span className="material-symbols-outlined me-1">home</span>
+              {t('personal_dropdown.home')}
             </Link>
           </DropdownItem>
 
@@ -81,7 +84,8 @@ export const PersonalDropdown = (): JSX.Element => {
               href="/me"
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
-              <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
+              <span className="material-symbols-outlined me-1">build</span>
+              {t('personal_dropdown.settings')}
             </Link>
           </DropdownItem>
 
@@ -89,11 +93,12 @@ export const PersonalDropdown = (): JSX.Element => {
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
             onClick={() => setQuestionnaireModalOpen(true)}
           >
-            <span className="material-symbols-outlined">edit</span>{t('personal_dropdown.feedback')}
+            <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler}>
-            <i className="icon-fw icon-power"></i>{t('Sign out')}
+            <span className="material-symbols-outlined me-1">logout</span>
+            {t('Sign out')}
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
