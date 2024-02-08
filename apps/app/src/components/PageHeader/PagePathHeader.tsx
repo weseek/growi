@@ -1,5 +1,5 @@
 import {
-  useMemo, useState, useEffect, useCallback, useTransition,
+  useMemo, useState, useEffect, useCallback,
 } from 'react';
 import type { FC } from 'react';
 
@@ -21,8 +21,6 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
-  // inputValue: string
-  // onInputChange?: (inputText: string) => void
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
