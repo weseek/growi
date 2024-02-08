@@ -31,7 +31,7 @@ export class UserNotificationService {
    * @param {Comment} comment
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async fire(page, user, slackChannelsStr, mode, option, comment = {}): Promise<PromiseSettledResult<any>[]> {
+  async fire(page, user, slackChannelsStr, mode, option?: { previousRevision: string }, comment = {}): Promise<PromiseSettledResult<any>[]> {
     const {
       appService, slackIntegrationService,
     } = this.crowi;
@@ -43,8 +43,7 @@ export class UserNotificationService {
     // update slackChannels attribute asynchronously
     page.updateSlackChannels(slackChannelsStr);
 
-    const opt = option || {};
-    const previousRevision = opt.previousRevision || '';
+    const { previousRevision } = option ?? {};
 
     // "dev,slacktest" => [dev,slacktest]
     const slackChannels: (string|null)[] = toArrayFromCsv(slackChannelsStr);

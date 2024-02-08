@@ -3,7 +3,8 @@ import React from 'react';
 import type { IRevisionHasPageId } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { createPatch } from 'diff';
-import { html, Diff2HtmlConfig } from 'diff2html';
+import type { Diff2HtmlConfig } from 'diff2html';
+import { html } from 'diff2html';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
@@ -43,7 +44,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
     drawFileList: false,
   };
 
-  const diffViewHTML = (currentRevision.body && previousRevision.body && revisionDiffOpened) ? html(patch, option) : '';
+  const diffViewHTML = revisionDiffOpened ? html(patch, option) : '';
 
   const diffView = { __html: diffViewHTML };
 

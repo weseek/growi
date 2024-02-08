@@ -98,7 +98,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
     if (grantData == null) {
       return;
     }
-    const grantedGroups = grantData.grantedGroups?.map((group) => {
+    const userRelatedGrantedGroups = grantData.userRelatedGrantedGroups?.map((group) => {
       return { item: group.id, type: group.type };
     });
     const optionsToSave = {
@@ -106,7 +106,7 @@ export const PageEditorByHackmd = (): JSX.Element => {
       slackChannels: '', // set in save method by opts in SavePageControlls.tsx
       grant: grantData.grant,
       pageTags: pageTags ?? [],
-      grantUserGroupIds: grantedGroups,
+      userRelatedGrantUserGroupIds: userRelatedGrantedGroups,
     };
     return optionsToSave;
   }, [grantData, isSlackEnabled, pageTags]);

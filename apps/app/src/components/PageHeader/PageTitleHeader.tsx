@@ -28,13 +28,15 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const onRenameFinish = () => {
-    setRenameInputShown(false);
-  };
+  const editedPageTitle = nodePath.basename(editedPagePath);
 
-  const onRenameFailure = () => {
+  const onRenameFinish = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
+
+  const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);
-  };
+  }, []);
 
   const onInputChange = useCallback((inputText: string) => {
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
@@ -43,23 +45,23 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
 
-  const onPressEnter = () => {
+  const onPressEnter = useCallback(() => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
+  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const onPressEscape = () => {
+  const onPressEscape = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
-  };
+  }, [currentPagePath]);
 
-  const onClickButton = () => {
+  const onClickButton = useCallback(() => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
+  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const onClickPageTitle = () => {
+  const onClickPageTitle = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(true);
-  };
+  }, [currentPagePath]);
 
   const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
 
@@ -71,7 +73,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         {isRenameInputShown ? (
           <div className="flex-fill">
             <ClosableTextInput
-              value={pageTitle}
+              value={editedPageTitle}
               placeholder={t('Input page name')}
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}

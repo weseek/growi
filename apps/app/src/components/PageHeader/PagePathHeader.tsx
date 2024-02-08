@@ -28,7 +28,6 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
-  const pageTitle = nodePath.basename(currentPagePath);
   const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPagePath));
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -42,27 +41,26 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const { t } = useTranslation();
 
-  const onRenameFinish = () => {
+  const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
-  };
+  }, []);
 
-  const onRenameFailure = () => {
+  const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);
-  };
+  }, []);
 
-  const onInputChange = (inputText: string) => {
-    const newPagePath = nodePath.resolve(inputText, pageTitle);
-    setEditedPagePath(newPagePath);
-  };
+  const onInputChange = useCallback((inputText: string) => {
+    setEditedPagePath(inputText);
+  }, []);
 
-  const onPressEnter = () => {
+  const onPressEnter = useCallback(() => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  };
+  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const onPressEscape = () => {
+  const onPressEscape = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
-  };
+  }, [currentPagePath]);
 
   const onClickEditButton = useCallback(() => {
     if (isRenameInputShown) {
@@ -119,7 +117,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           {isRenameInputShown ? (
             <div className="flex-fill">
               <ClosableTextInput
-                value={parentPagePath}
+                value={editedPagePath}
                 placeholder={t('Input page name')}
                 onPressEnter={onPressEnter}
                 onPressEscape={onPressEscape}

@@ -1,7 +1,13 @@
 /* eslint-disable no-unused-vars */
+import { GroupType } from '@growi/core';
 import { advanceTo } from 'jest-date-mock';
 
+import { PageSingleDeleteCompConfigValue, PageRecursiveDeleteCompConfigValue } from '~/interfaces/page-delete-config';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import Tag from '~/server/models/tag';
+import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
+
 
 const mongoose = require('mongoose');
 
@@ -12,6 +18,7 @@ let rootPage;
 let dummyUser1;
 let testUser1;
 let testUser2;
+let testUser3;
 let parentTag;
 let childTag;
 
@@ -39,6 +46,7 @@ let parentForDelete2;
 
 let childForDelete;
 
+let canDeleteCompletelyTestPage;
 let parentForDeleteCompletely;
 
 let parentForRevert1;
@@ -55,7 +63,6 @@ describe('PageService', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -68,7 +75,6 @@ describe('PageService', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
@@ -76,12 +82,46 @@ describe('PageService', () => {
     await User.insertMany([
       { name: 'someone1', username: 'someone1', email: 'someone1@example.com' },
       { name: 'someone2', username: 'someone2', email: 'someone2@example.com' },
+      { name: 'someone3', username: 'someone3', email: 'someone3@example.com' },
     ]);
 
     testUser1 = await User.findOne({ username: 'someone1' });
     testUser2 = await User.findOne({ username: 'someone2' });
+    testUser3 = await User.findOne({ username: 'someone3' });
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
+
+    await UserGroup.insertMany([
+      {
+        name: 'userGroupForCanDeleteCompletelyTest1',
+        parent: null,
+      },
+      {
+        name: 'userGroupForCanDeleteCompletelyTest2',
+        parent: null,
+      },
+    ]);
+    const userGroupForCanDeleteCompletelyTest1 = await UserGroup.findOne({ name: 'userGroupForCanDeleteCompletelyTest1' });
+    const userGroupForCanDeleteCompletelyTest2 = await UserGroup.findOne({ name: 'userGroupForCanDeleteCompletelyTest2' });
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: userGroupForCanDeleteCompletelyTest1._id,
+        relatedUser: testUser1._id,
+      },
+      {
+        relatedGroup: userGroupForCanDeleteCompletelyTest2._id,
+        relatedUser: testUser2._id,
+      },
+      {
+        relatedGroup: userGroupForCanDeleteCompletelyTest1._id,
+        relatedUser: testUser3._id,
+      },
+      {
+        relatedGroup: userGroupForCanDeleteCompletelyTest2._id,
+        relatedUser: testUser3._id,
+      },
+    ]);
 
     rootPage = await Page.findOne({ path: '/' });
 
@@ -171,6 +211,16 @@ describe('PageService', () => {
         lastUpdateUser: testUser1,
       },
       {
+        path: '/canDeleteCompletelyTestPage',
+        grant: Page.GRANT_USER_GROUP,
+        creator: testUser2,
+        grantedGroups: [
+          { item: userGroupForCanDeleteCompletelyTest1._id, type: GroupType.userGroup },
+          { item: userGroupForCanDeleteCompletelyTest2._id, type: GroupType.userGroup },
+        ],
+        lastUpdateUser: testUser1,
+      },
+      {
         path: '/parentForDuplicate',
         grant: Page.GRANT_PUBLIC,
         creator: testUser1,
@@ -255,6 +305,7 @@ describe('PageService', () => {
     parentForDelete1 = await Page.findOne({ path: '/parentForDelete1' });
     parentForDelete2 = await Page.findOne({ path: '/parentForDelete2' });
 
+    canDeleteCompletelyTestPage = await Page.findOne({ path: '/canDeleteCompletelyTestPage' });
     parentForDeleteCompletely = await Page.findOne({ path: '/parentForDeleteCompletely' });
     parentForRevert1 = await Page.findOne({ path: '/trash/parentForRevert1' });
     parentForRevert2 = await Page.findOne({ path: '/trash/parentForRevert2' });
@@ -703,67 +754,151 @@ describe('PageService', () => {
   });
 
   describe('delete page completely', () => {
-    let pageEventSpy;
-    let deleteCompletelyOperationSpy;
-    let deleteCompletelyDescendantsWithStreamSpy;
+    describe('canDeleteCompletely', () => {
+      describe(`when user is not admin or author,
+        pageCompleteDeletionAuthority is 'anyone',
+        user is not related to all granted groups,
+        and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
+        beforeEach(async() => {
+          const config = {
+            'security:isAllGroupMembershipRequiredForPageCompleteDeletion': true,
+            'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
+            'security:pageRecursiveCompleteDeletionAuthority': PageRecursiveDeleteCompConfigValue.Anyone,
+          };
+          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', config);
+        });
 
-    let deleteManyBookmarkSpy;
-    let deleteManyCommentSpy;
-    let deleteManyPageTagRelationSpy;
-    let deleteManyShareLinkSpy;
-    let deleteManyRevisionSpy;
-    let deleteManyPageSpy;
-    let removeAllAttachmentsSpy;
-
-    beforeEach(async() => {
-      pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
-      deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
-      deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
-
-      deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
-      deleteManyCommentSpy = jest.spyOn(Comment, 'deleteMany').mockImplementation();
-      deleteManyPageTagRelationSpy = jest.spyOn(PageTagRelation, 'deleteMany').mockImplementation();
-      deleteManyShareLinkSpy = jest.spyOn(ShareLink, 'deleteMany').mockImplementation();
-      deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
-      deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
-      removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
-    });
-
-    test('deleteCompletelyOperation', async() => {
-      await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
-
-      expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [parentForDeleteCompletely._id] } });
-      expect(deleteManyPageSpy).toHaveBeenCalledWith({ _id: { $in: [parentForDeleteCompletely._id] } });
-      expect(removeAllAttachmentsSpy).toHaveBeenCalled();
-    });
-
-    test('delete completely without options', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, false, false, {
-        ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/deletecompletely',
+        test('is not deletable', async() => {
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
+          expect(isDeleteable).toBe(false);
+        });
       });
 
-      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
-      expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
+      describe(`when user is not admin or author,
+        pageCompleteDeletionAuthority is 'anyone',
+        user is related to all granted groups,
+        and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
+        beforeEach(async() => {
+          const config = {
+            'security:isAllGroupMembershipRequiredForPageCompleteDeletion': true,
+            'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
+            'security:pageRecursiveCompleteDeletionAuthority': PageRecursiveDeleteCompConfigValue.Anyone,
+          };
+          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', config);
+        });
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
-    });
-
-
-    test('delete completely with isRecursively', async() => {
-      await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true, false, {
-        ip: '::ffff:127.0.0.1',
-        endpoint: '/_api/v3/pages/deletecompletely',
+        test('is not deletable', async() => {
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser3);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser3, false, userRelatedGroups);
+          expect(isDeleteable).toBe(true);
+        });
       });
 
-      expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
-      expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
+      describe(`when user is not admin or author,
+        pageCompleteDeletionAuthority is 'anyone',
+        user is not related to all granted groups,
+        and isAllGroupMembershipRequiredForPageCompleteDeletion is false`, () => {
+        beforeEach(async() => {
+          const config = {
+            'security:isAllGroupMembershipRequiredForPageCompleteDeletion': false,
+            'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
+            'security:pageRecursiveCompleteDeletionAuthority': PageRecursiveDeleteCompConfigValue.Anyone,
+          };
+          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', config);
+        });
 
-      expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
+        test('is deletable', async() => {
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
+          expect(isDeleteable).toBe(true);
+        });
+      });
+
+      describe(`when user is author,
+        pageCompleteDeletionAuthority is 'anyone',
+        user is not related to all granted groups,
+        and isAllGroupMembershipRequiredForPageCompleteDeletion is true`, () => {
+        beforeEach(async() => {
+          const config = {
+            'security:isAllGroupMembershipRequiredForPageCompleteDeletion': false,
+            'security:pageCompleteDeletionAuthority': PageSingleDeleteCompConfigValue.Anyone,
+            'security:pageRecursiveCompleteDeletionAuthority': PageRecursiveDeleteCompConfigValue.Anyone,
+          };
+          await crowi.configManager.updateConfigsInTheSameNamespace('crowi', config);
+        });
+
+        test('is deletable', async() => {
+          const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser2);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser2, false, userRelatedGroups);
+          expect(isDeleteable).toBe(true);
+        });
+      });
+    });
+
+    describe('actual delete process', () => {
+      let pageEventSpy;
+      let deleteCompletelyOperationSpy;
+      let deleteCompletelyDescendantsWithStreamSpy;
+
+      let deleteManyBookmarkSpy;
+      let deleteManyCommentSpy;
+      let deleteManyPageTagRelationSpy;
+      let deleteManyShareLinkSpy;
+      let deleteManyRevisionSpy;
+      let deleteManyPageSpy;
+      let removeAllAttachmentsSpy;
+
+      beforeEach(async() => {
+        pageEventSpy = jest.spyOn(crowi.pageService.pageEvent, 'emit');
+        deleteCompletelyOperationSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyOperation');
+        deleteCompletelyDescendantsWithStreamSpy = jest.spyOn(crowi.pageService, 'deleteCompletelyDescendantsWithStream').mockImplementation();
+
+        deleteManyBookmarkSpy = jest.spyOn(Bookmark, 'deleteMany').mockImplementation();
+        deleteManyCommentSpy = jest.spyOn(Comment, 'deleteMany').mockImplementation();
+        deleteManyPageTagRelationSpy = jest.spyOn(PageTagRelation, 'deleteMany').mockImplementation();
+        deleteManyShareLinkSpy = jest.spyOn(ShareLink, 'deleteMany').mockImplementation();
+        deleteManyRevisionSpy = jest.spyOn(Revision, 'deleteMany').mockImplementation();
+        deleteManyPageSpy = jest.spyOn(Page, 'deleteMany').mockImplementation();
+        removeAllAttachmentsSpy = jest.spyOn(crowi.attachmentService, 'removeAllAttachments').mockImplementation();
+      });
+
+      test('deleteCompletelyOperation', async() => {
+        await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
+
+        expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
+        expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
+        expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
+        expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
+        expect(deleteManyRevisionSpy).toHaveBeenCalledWith({ pageId: { $in: [parentForDeleteCompletely._id] } });
+        expect(deleteManyPageSpy).toHaveBeenCalledWith({ _id: { $in: [parentForDeleteCompletely._id] } });
+        expect(removeAllAttachmentsSpy).toHaveBeenCalled();
+      });
+
+      test('delete completely without options', async() => {
+        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, false, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/deletecompletely',
+        });
+
+        expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+        expect(deleteCompletelyDescendantsWithStreamSpy).not.toHaveBeenCalled();
+
+        expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
+      });
+
+
+      test('delete completely with isRecursively', async() => {
+        await crowi.pageService.deleteCompletely(parentForDeleteCompletely, testUser2, { }, true, false, {
+          ip: '::ffff:127.0.0.1',
+          endpoint: '/_api/v3/pages/deletecompletely',
+        });
+
+        expect(deleteCompletelyOperationSpy).toHaveBeenCalled();
+        expect(deleteCompletelyDescendantsWithStreamSpy).toHaveBeenCalled();
+
+        expect(pageEventSpy).toHaveBeenCalledWith('deleteCompletely', parentForDeleteCompletely, testUser2);
+      });
     });
   });
 

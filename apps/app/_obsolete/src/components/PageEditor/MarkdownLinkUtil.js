@@ -1,5 +1,4 @@
-import Linker from '~/client/models/Linker';
-
+import Linker from '@growi/editor/src/services/link-util/Linker';
 /**
  * Utility for markdown link
  */
