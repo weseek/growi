@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
 import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
 import { toastError } from '~/client/util/toastr';
-import { TargetType, LabelType } from '~/interfaces/template';
+import type { TargetType, LabelType } from '~/interfaces/template';
 
 
 type TemplateCardProps = {
@@ -60,11 +60,12 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
       await onClickTemplateButton(label);
+      onClose();
     }
     catch (err) {
       toastError(err);
     }
-  }, [onClickTemplateButton]);
+  }, [onClickTemplateButton, onClose]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
