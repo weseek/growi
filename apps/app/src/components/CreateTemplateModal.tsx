@@ -55,7 +55,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { create, isPageCreating } = useCreateTemplatePage(path);
+  const { create, isPageCreating, isCreatable } = useCreateTemplatePage(path);
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
@@ -79,7 +79,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     </div>
   );
 
-  if (!isPageCreating) {
+  if (!isCreatable) {
     return <></>;
   }
 
