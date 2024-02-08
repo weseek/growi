@@ -70,7 +70,7 @@ export const PagePathHeader: FC<Props> = (props) => {
       setEditedPagePath(currentPagePath);
       setRenameInputShown(true);
     }
-  }, [currentPagePath, editedPagePath, isRenameInputShown, pagePathRenameHandler]);
+  }, [currentPagePath, editedPagePath, isRenameInputShown, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
   const isViewMode = editorMode === EditorMode.View;
