@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
@@ -21,7 +21,6 @@ export const PersonalDropdown = (): JSX.Element => {
   const { t } = useTranslation('commons');
   const { data: currentUser } = useCurrentUser();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [isQuestionnaireModalOpen, setQuestionnaireModalOpen] = useState(false);
 
   if (currentUser == null) {
@@ -40,11 +39,8 @@ export const PersonalDropdown = (): JSX.Element => {
 
   return (
     <>
-      <Dropdown
+      <UncontrolledDropdown
         direction="end"
-        isOpen={isOpen}
-        toggle={() => setIsOpen(!isOpen)}
-        aria-expanded={false}
       >
         <DropdownToggle
           className="btn btn-primary"
@@ -100,7 +96,7 @@ export const PersonalDropdown = (): JSX.Element => {
             <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
           </DropdownItem>
         </DropdownMenu>
-      </Dropdown>
+      </UncontrolledDropdown>
 
       <ProactiveQuestionnaireModal isOpen={isQuestionnaireModalOpen} onClose={() => setQuestionnaireModalOpen(false)} />
     </>
