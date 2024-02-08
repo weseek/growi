@@ -55,16 +55,16 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  const { create, isPageCreating, isCreatable } = useCreateTemplatePage(path);
+  const { createTemplate, isCreating, isCreatable } = useCreateTemplatePage();
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await create?.(label);
+      await createTemplate?.(label);
     }
     catch (err) {
       toastError(err);
     }
-  }, [create]);
+  }, [createTemplate]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -73,7 +73,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       <TemplateCard
         target={target}
         label={label}
-        isPageCreating={isPageCreating}
+        isPageCreating={isCreating}
         onClickHandler={() => onClickTemplateButtonHandler(label)}
       />
     </div>

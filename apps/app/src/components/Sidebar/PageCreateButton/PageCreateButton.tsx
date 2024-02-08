@@ -10,7 +10,7 @@ import { useCreateTemplatePage } from '~/client/services/use-create-template-pag
 import { toastError } from '~/client/util/toastr';
 import type { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
@@ -27,7 +27,6 @@ const generateTodaysPath = (currentUser: IUserHasId, parentDirName: string) => {
 export const PageCreateButton = React.memo((): JSX.Element => {
   const { t } = useTranslation('commons');
 
-  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
   const { data: currentPage, isLoading } = useSWRxCurrentPage();
   const { data: currentUser } = useCurrentUser();
 
@@ -46,18 +45,18 @@ export const PageCreateButton = React.memo((): JSX.Element => {
   const { onClickHandler: onClickTodaysButton, isPageCreating: isTodaysPageCreating } = useOnTodaysButtonClicked(todaysPath);
   // TODO: https://redmine.weseek.co.jp/issues/138805
   const {
-    create,
-    isPageCreating: isTemplatePageCreating, isCreatable: isTemplatePageCreatable,
-  } = useCreateTemplatePage(currentPagePath, isLoadingPagePath);
+    createTemplate,
+    isCreating: isTemplatePageCreating, isCreatable: isTemplatePageCreatable,
+  } = useCreateTemplatePage();
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await create?.(label);
+      await createTemplate?.(label);
     }
     catch (err) {
       toastError(err);
     }
-  }, [create]);
+  }, [createTemplate]);
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);

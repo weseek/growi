@@ -1,56 +1,38 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
-import { useRouter } from 'next/router';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 
-import { createPage, exist } from '~/client/services/page-operation';
 import type { LabelType } from '~/interfaces/template';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useCurrentPagePath } from '~/stores/page';
 
-export const useCreateTemplatePage = (
-    currentPagePath?: string,
-    isLoading?: boolean,
-): {
+import { useCreatePageAndTransit } from './use-create-page-and-transit';
+
+type UseCreateTemplatePage = () => {
   isCreatable: boolean,
-  isPageCreating: boolean,
-  create?: (label: LabelType) => Promise<void>,
-} => {
-  const router = useRouter();
+  isCreating: boolean,
+  createTemplate?: (label: LabelType) => Promise<void>,
+}
 
-  const { mutate: mutateEditorMode } = useEditorMode();
+export const useCreateTemplatePage: UseCreateTemplatePage = () => {
 
-  const [isPageCreating, setIsPageCreating] = useState(false);
+  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
 
-  const isCreatable = currentPagePath != null && isCreatablePage(`${currentPagePath}/_template`);
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const isCreatable = currentPagePath != null && isCreatablePage(normalizePath(`${currentPagePath}/_template`));
 
-  const create = useCallback(async(label: LabelType) => {
-    if (isLoading || !isCreatable) return;
+  const createTemplate = useCallback(async(label: LabelType) => {
+    if (isLoadingPagePath || !isCreatable) return;
 
-    try {
-      setIsPageCreating(true);
-
-      const templatePagePath = `${currentPagePath}/${label}`;
-      const res = await exist(JSON.stringify([templatePagePath]));
-      const isExists = res.pages[templatePagePath];
-
-      if (!isExists) {
-        await createPage({ path: templatePagePath });
-      }
-
-      router.push(`${templatePagePath}#edit`);
-      mutateEditorMode(EditorMode.Editor);
-    }
-    catch (err) {
-      throw err;
-    }
-    finally {
-      setIsPageCreating(false);
-    }
-  }, [currentPagePath, isCreatable, isLoading, mutateEditorMode, router]);
+    return createAndTransit(
+      { path: normalizePath(`${currentPagePath}/${label}`) },
+      { shouldCheckPageExists: true },
+    );
+  }, [currentPagePath, isCreatable, isLoadingPagePath, createAndTransit]);
 
   return {
     isCreatable,
-    isPageCreating,
-    create: isCreatable ? create : undefined,
+    isCreating,
+    createTemplate: isCreatable ? createTemplate : undefined,
   };
 };
