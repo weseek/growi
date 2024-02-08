@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
