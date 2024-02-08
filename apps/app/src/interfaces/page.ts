@@ -11,7 +11,7 @@ export {
 export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
 
 export type IPageGrantData = {
-  grant: number,
+  grant: PageGrant,
   userRelatedGrantedGroups?: {
     id: string,
     name: string,

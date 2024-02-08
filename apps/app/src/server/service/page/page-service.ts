@@ -1,15 +1,18 @@
 import type EventEmitter from 'events';
 
-import type { IPageInfo, IPageInfoForEntity, IUser } from '@growi/core';
+import type {
+  IPageInfo, IPageInfoForEntity, IUser,
+} from '@growi/core';
 import type { ObjectId } from 'mongoose';
 
-import type { IOptionsForCreate } from '~/interfaces/page';
+import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { PageDocument } from '~/server/models/page';
 
 export interface IPageService {
   create(path: string, body: string, user: IUser, options: IOptionsForCreate): Promise<PageDocument>,
+  updatePage(pageData: PageDocument, body: string | null, previousBody: string | null, user: IUser, options: IOptionsForUpdate,): Promise<PageDocument>,
   updateDescendantCountOfAncestors: (pageId: ObjectIdLike, inc: number, shouldIncludeTarget: boolean) => Promise<void>,
   deleteCompletelyOperation: (pageIds: string[], pagePaths: string[]) => Promise<void>,
   getEventEmitter: () => EventEmitter,

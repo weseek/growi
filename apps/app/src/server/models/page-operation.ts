@@ -42,6 +42,7 @@ type IUserForResuming = {
 };
 
 type IOptionsForResuming = {
+  format: 'md' | 'pdf',
   updateMetadata?: boolean,
   createRedirectPage?: boolean,
   prevDescendantCount?: number,

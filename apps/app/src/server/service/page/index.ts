@@ -3744,8 +3744,6 @@ class PageService implements IPageService {
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
   async create(path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
-
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3755,9 +3753,7 @@ class PageService implements IPageService {
     // Values
     // eslint-disable-next-line no-param-reassign
     path = this.crowi.xss.process(path); // sanitize path
-    const {
-      format = 'markdown', grantUserGroupIds,
-    } = options;
+    const { grantUserGroupIds } = options;
     const grant = isTopPage(path) ? PageGrant.GRANT_PUBLIC : options.grant;
     const grantData = {
       grant,
@@ -3797,7 +3793,7 @@ class PageService implements IPageService {
 
     // Create revision
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -4016,7 +4012,6 @@ class PageService implements IPageService {
     const options: IOptionsForUpdate = {
       grant,
       userRelatedGrantUserGroupIds: userRelatedGrantedGroups,
-      isSyncRevisionToHackmd: false,
     };
 
     return this.updatePage(page, null, null, user, options);
@@ -4091,7 +4086,7 @@ class PageService implements IPageService {
       pageData: PageDocument,
       body: string | null,
       previousBody: string | null,
-      user,
+      user: IUserHasId,
       options: IOptionsForUpdate = {},
   ): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
@@ -4230,7 +4225,6 @@ class PageService implements IPageService {
     const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
       ? (await this.getNewGrantedGroups(options.userRelatedGrantUserGroupIds, pageData, user))
       : pageData.grantedGroups;
-    const isSyncRevisionToHackmd = options.isSyncRevisionToHackmd;
 
     // validate multiple group grant before save using pageData and options
     await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
