@@ -50,7 +50,7 @@ export const PersonalDropdown = (): JSX.Element => {
         </DropdownToggle>
 
         <DropdownMenu container="body">
-          <DropdownItem>
+          <DropdownItem header>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
@@ -72,7 +72,9 @@ export const PersonalDropdown = (): JSX.Element => {
               href={pagePathUtils.userHomepagePath(currentUser)}
               data-testid="grw-personal-dropdown-menu-user-home"
             >
-              <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+              <span className="text-muted">
+                <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+              </span>
             </Link>
           </DropdownItem>
 
@@ -81,7 +83,9 @@ export const PersonalDropdown = (): JSX.Element => {
               href="/me"
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
-              <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+              <span className="text-muted">
+                <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+              </span>
             </Link>
           </DropdownItem>
 
@@ -89,11 +93,15 @@ export const PersonalDropdown = (): JSX.Element => {
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
             onClick={() => setQuestionnaireModalOpen(true)}
           >
-            <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
+            <span className="text-muted">
+              <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
+            </span>
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler}>
-            <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
+            <span className="text-muted">
+              <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
+            </span>
           </DropdownItem>
         </DropdownMenu>
       </UncontrolledDropdown>
