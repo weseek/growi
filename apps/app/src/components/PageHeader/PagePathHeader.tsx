@@ -29,6 +29,7 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
   const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPagePath));
+  const pageTitle = nodePath.basename(currentPagePath) || '/';
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -50,8 +51,9 @@ export const PagePathHeader: FC<Props> = (props) => {
   }, []);
 
   const onInputChange = useCallback((inputText: string) => {
-    setEditedPagePath(inputText);
-  }, []);
+    const newPagePath = nodePath.resolve(inputText, pageTitle);
+    setEditedPagePath(newPagePath);
+  }, [pageTitle]);
 
   const onPressEnter = useCallback(() => {
     pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
@@ -117,7 +119,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           {isRenameInputShown ? (
             <div className="flex-fill">
               <ClosableTextInput
-                value={editedPagePath}
+                value={parentPagePath}
                 placeholder={t('Input page name')}
                 onPressEnter={onPressEnter}
                 onPressEscape={onPressEscape}
