@@ -31,8 +31,9 @@ import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
+import type { CreateMethod } from '~/server/models/page';
 import {
-  type CreateMethod, type PageCreateOptions, type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
+  type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
@@ -419,14 +420,6 @@ class PageService implements IPageService {
     const isLiked: boolean = page.isLiked(user);
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
-
-    let creatorId = page.creator;
-    if (page.isEmpty) {
-      // Need non-empty ancestor page to get its creatorId because empty page does NOT have it.
-      // Use creatorId of ancestor page to determine whether the empty page is deletable
-      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      creatorId = notEmptyClosestAncestor.creator;
-    }
 
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
 
@@ -1124,7 +1117,7 @@ class PageService implements IPageService {
     const copyPage = { ...page };
 
     // 3. Duplicate target
-    const options: PageCreateOptions = {
+    const options: IOptionsForCreate = {
       grant,
       grantUserGroupIds: grantedGroupIds,
     };
@@ -2626,7 +2619,7 @@ class PageService implements IPageService {
   }
 
   async normalizeParentByPath(path: string, user): Promise<void> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     // This validation is not 100% correct since it ignores user to count
@@ -2664,16 +2657,14 @@ class PageService implements IPageService {
     if (shouldCreateNewPage) {
       const notEmptyParent = await Page.findNotEmptyParentByPathRecursively(path);
 
-      const options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] | undefined } = {
-        grant: notEmptyParent.grant,
-        grantUserGroupIds: notEmptyParent.grantedGroups,
-        grantedUsers: notEmptyParent.grantedUsers,
-      };
-
       systematicallyCreatedPage = await this.forceCreateBySystem(
         path,
         '',
-        options,
+        {
+          grant: notEmptyParent?.grant,
+          grantUserIds: notEmptyParent?.grantedUsers.map(u => getIdForRef(u)),
+          grantUserGroupIds: notEmptyParent?.grantedGroups,
+        },
       );
       page = systematicallyCreatedPage;
     }
@@ -3680,12 +3671,12 @@ class PageService implements IPageService {
       path: string,
       grantData: {
         grant?: PageGrant,
-        grantedUserIds?: ObjectIdLike[],
+        grantUserIds?: ObjectIdLike[],
         grantUserGroupIds?: IGrantedGroup[],
       },
       shouldValidateGrant: boolean,
       user?,
-      options?: Partial<PageCreateOptions>,
+      options?: IOptionsForCreate,
   ): Promise<boolean> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
@@ -3704,7 +3695,7 @@ class PageService implements IPageService {
     }
 
     // UserGroup & Owner validation
-    const { grant, grantedUserIds, grantUserGroupIds } = grantData;
+    const { grant, grantUserIds, grantUserGroupIds } = grantData;
     if (shouldValidateGrant) {
       if (user == null) {
         throw Error('user is required to validate grant');
@@ -3716,7 +3707,7 @@ class PageService implements IPageService {
         const isEmptyPageAlreadyExist = await Page.count({ path, isEmpty: true }) > 0;
         const shouldCheckDescendants = isEmptyPageAlreadyExist && !options?.overwriteScopesOfDescendants;
 
-        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants);
+        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, path, grant, grantUserIds, grantUserGroupIds, shouldCheckDescendants);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${path}" of grant ${grant}:`, err);
@@ -3743,7 +3734,7 @@ class PageService implements IPageService {
    * Create a page
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
-  async create(_path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
+  async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<PageDocument> {
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
@@ -3828,12 +3819,7 @@ class PageService implements IPageService {
       throw err;
     }
 
-    if (options.isSynchronously) {
-      await this.createSubOperation(savedPage, user, options, pageOp._id);
-    }
-    else {
-      this.createSubOperation(savedPage, user, options, pageOp._id);
-    }
+    this.createSubOperation(savedPage, user, options, pageOp._id);
 
     return savedPage;
   }
@@ -3919,7 +3905,7 @@ class PageService implements IPageService {
       path: string,
       grantData: {
         grant: PageGrant,
-        grantedUserIds?: ObjectIdLike[],
+        grantUserIds?: ObjectIdLike[],
         grantUserGroupId?: ObjectIdLike,
       },
   ): Promise<boolean> {
@@ -3928,13 +3914,13 @@ class PageService implements IPageService {
 
   /**
    * @private
-   * This method receives the same arguments as the PageService.create method does except for the added type '{ grantedUsers?: ObjectIdLike[] }'.
+   * This method receives the same arguments as the PageService.create method does except for the added type '{ grantUserIds?: ObjectIdLike[] }'.
    * This additional value is used to determine the grantedUser of the page to be created by system.
    * This method must not run isGrantNormalized method to validate grant. **If necessary, run it before use this method.**
    * -- Reason 1: This is because it is not expected to use this method when the grant validation is required.
    * -- Reason 2: This is because it is not expected to use this method when the program cannot determine the operator.
    */
-  private async forceCreateBySystem(path: string, body: string, options: PageCreateOptions & { grantedUsers?: ObjectIdLike[] }): Promise<PageDocument> {
+  async forceCreateBySystem(path: string, body: string, options: IOptionsForCreate & { grantUserIds?: ObjectIdLike[] }): Promise<PageDocument> {
     const Page = mongoose.model('Page') as unknown as PageModel;
 
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
@@ -3947,7 +3933,7 @@ class PageService implements IPageService {
     path = this.crowi.xss.process(path); // sanitize path
 
     const {
-      format = 'markdown', grantUserGroupIds, grantedUsers,
+      grantUserGroupIds, grantUserIds,
     } = options;
     const grant = isTopPage(path) ? Page.GRANT_PUBLIC : options.grant;
 
@@ -3956,12 +3942,12 @@ class PageService implements IPageService {
 
     const grantData = {
       grant,
-      grantedUserIds: isGrantOwner ? grantedUsers : undefined,
+      grantUserIds: isGrantOwner ? grantUserIds : undefined,
       grantUserGroupIds,
     };
 
     // Validate
-    if (isGrantOwner && grantedUsers?.length !== 1) {
+    if (isGrantOwner && grantUserIds?.length !== 1) {
       throw Error('grantedUser must exist when grant is GRANT_OWNER');
     }
     const canProcessForceCreateBySystem = await this.canProcessForceCreateBySystem(path, grantData);
@@ -3977,7 +3963,7 @@ class PageService implements IPageService {
     this.setFieldExceptForGrantRevisionParent(page, path);
 
     // Apply scope
-    page.applyScope({ _id: grantedUsers?.[0] }, grant, grantUserGroupIds);
+    page.applyScope({ _id: grantUserIds?.[0] }, grant, grantUserGroupIds);
 
     // Set parent
     if (isTopPage(path) || isGrantRestricted) { // set parent to null when GRANT_RESTRICTED
@@ -3994,7 +3980,7 @@ class PageService implements IPageService {
     // Create revision
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
     const dummyUser = { _id: new mongoose.Types.ObjectId() };
-    const newRevision = Revision.prepareRevision(savedPage, body, null, dummyUser, { format });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, dummyUser);
     savedPage = await pushRevision(savedPage, newRevision, dummyUser);
 
     // Update descendantCount

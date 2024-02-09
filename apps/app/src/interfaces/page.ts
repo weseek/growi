@@ -40,9 +40,7 @@ export type IOptionsForUpdate = {
 };
 
 export type IOptionsForCreate = {
-  // format?: string,
   grant?: PageGrant,
   grantUserGroupIds?: IGrantedGroup[],
   overwriteScopesOfDescendants?: boolean,
-  isSynchronously?: boolean,
 };
