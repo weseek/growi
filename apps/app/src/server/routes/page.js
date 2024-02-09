@@ -406,6 +406,7 @@ module.exports = function(crowi, app) {
       endpoint: req.originalUrl,
     };
 
+    /** @type {import('../models/page').PageDocument | undefined} */
     const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {
@@ -458,7 +459,7 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
+        if (!crowi.pageService.canDelete(page, creator, req.user, isRecursively)) {
           return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
         }
 
