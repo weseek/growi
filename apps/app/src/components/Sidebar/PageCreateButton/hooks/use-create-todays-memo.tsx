@@ -6,32 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { useCurrentUser } from '~/stores/context';
-import { useCurrentPagePath } from '~/stores/page';
-
-
-type UseCreateNewPage = () => {
-  isCreating: boolean,
-  createNewPage: () => Promise<void>,
-}
-
-export const useCreateNewPage: UseCreateNewPage = () => {
-  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
-
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
-
-  const createNewPage = useCallback(async() => {
-    if (isLoadingPagePath) return;
-
-    return createAndTransit(
-      { parentPath: currentPagePath },
-    );
-  }, [createAndTransit, currentPagePath, isLoadingPagePath]);
-
-  return {
-    isCreating,
-    createNewPage,
-  };
-};
 
 
 type UseCreateTodaysMemo = () => {
