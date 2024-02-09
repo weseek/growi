@@ -114,6 +114,32 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   ];
 
 
+  async function determineBodyAndTags(
+      path: string,
+      _body: string | null | undefined, _tags: string[] | null | undefined,
+  ): Promise<{ body: string, tags: string[] }> {
+
+    let body: string = _body ?? '';
+    let tags: string[] = _tags ?? [];
+
+    if (_body == null) {
+      const isEnabledAttachTitleHeader = await configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+      if (isEnabledAttachTitleHeader) {
+        body += `${attachTitleHeader(path)}\n`;
+      }
+
+      const templateData = await Page.findTemplate(path);
+      if (templateData.templateTags != null) {
+        tags = templateData.templateTags;
+      }
+      if (templateData.templateBody != null) {
+        body += `${templateData.templateBody}\n`;
+      }
+    }
+
+    return { body, tags };
+  }
+
   async function saveTags({ createdPage, pageTags }: { createdPage: PageDocument, pageTags: string[] }) {
     const tagEvent = crowi.event('tag');
     await PageTagRelation.updatePageTags(createdPage.id, pageTags);
@@ -171,7 +197,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     validator, apiV3FormValidator,
     async(req: CreatePageRequest, res: ApiV3Response) => {
       const {
-        body, pageTags,
+        body: bodyByParam, pageTags: tagsByParam,
       } = req.body;
 
       let pathToCreate: string;
@@ -190,22 +216,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
         }
       }
 
-      let initialTags: string[] = pageTags ?? [];
-      let initialBody = body ?? '';
-      if (body == null) {
-        const isEnabledAttachTitleHeader = await configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
-        if (isEnabledAttachTitleHeader) {
-          initialBody += `${attachTitleHeader(pathToCreate)}\n`;
-        }
-
-        const templateData = await Page.findTemplate(pathToCreate);
-        if (templateData.templateTags != null) {
-          initialTags = templateData.templateTags;
-        }
-        if (templateData.templateBody != null) {
-          initialBody += `${templateData.templateBody}\n`;
-        }
-      }
+      const { body, tags } = await determineBodyAndTags(pathToCreate, bodyByParam, tagsByParam);
 
       let createdPage;
       try {
@@ -217,7 +228,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
         }
         createdPage = await crowi.pageService.create(
           pathToCreate,
-          initialBody,
+          body,
           req.user,
           options,
         );
@@ -227,7 +238,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(err);
       }
 
-      const savedTags = await saveTags({ createdPage, pageTags: initialTags });
+      const savedTags = await saveTags({ createdPage, pageTags: tags });
 
       const result = {
         page: serializePageSecurely(createdPage),
