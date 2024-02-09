@@ -150,9 +150,13 @@ const removeRow = (state: EditorState, dispatch: (transaction: Transaction) => b
   ));
 };
 
-const reformTable = () => {};
+const reformTable = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
+  const tableStr = getStrFromBot(state) + getStrToEot(state);
+  const table = MarkdownTable.fromMarkdownString(tableStr);
+  replaceFocusedMarkdownTableWithEditor(state, dispatch, table);
+};
 
-export const insertNewRowToMarkdownTable: StateCommand = ({ state, dispatch }: ArgType) => {
+export const insertNewRowToMarkdownTable: StateCommand = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
 
   const curPos = getCurPos(state);
 
@@ -178,7 +182,7 @@ export const insertNewRowToMarkdownTable: StateCommand = ({ state, dispatch }: A
     }
 
     else {
-      reformTable();
+      reformTable(state, dispatch);
     }
 
   }
