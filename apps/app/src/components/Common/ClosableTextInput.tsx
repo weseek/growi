@@ -1,16 +1,19 @@
+import type { FC } from 'react';
 import React, {
-  FC, memo, useEffect, useRef, useState,
+  memo, useEffect, useRef, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { AlertInfo, AlertType, inputValidator } from '~/client/util/input-validator';
+import type { AlertInfo } from '~/client/util/input-validator';
+import { AlertType, inputValidator } from '~/client/util/input-validator';
 
 type ClosableTextInputProps = {
   value?: string
   placeholder?: string
   validationTarget?: string,
   onPressEnter?(inputText: string | null): void
+  onPressEscape?: () => void
   onClickOutside?(): void
   handleInputChange?: (string) => void
 }
@@ -65,6 +68,12 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
           return;
         }
         onPressEnter();
+        break;
+      case 'Escape':
+        if (isComposing) {
+          return;
+        }
+        props.onPressEscape?.();
         break;
       default:
         break;

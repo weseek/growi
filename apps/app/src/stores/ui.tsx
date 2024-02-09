@@ -352,10 +352,6 @@ export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRRes
   return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
-export const useGlobalSearchFormRef = (initialData?: RefObject<IFocusable>): SWRResponse<RefObject<IFocusable>, Error> => {
-  return useStaticSWR('globalSearchTypeahead', initialData);
-};
-
 type PageTreeDescCountMapUtils = {
   update(newData?: UpdateDescCountData): Promise<UpdateDescCountData | undefined>
   getDescCount(pageId?: string): number | null | undefined

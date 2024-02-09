@@ -1,12 +1,25 @@
+import { useMemo } from 'react';
+
+import Link from 'next/link';
 import {
   DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown,
 } from 'reactstrap';
 
-import LinkedPagePath from '~/models/linked-page-path';
-
+import type LinkedPagePath from '~/models/linked-page-path';
 
 import styles from './CollapsedParentsDropdown.module.scss';
 
+const getAncestorPathAndPathNames = (linkedPagePath: LinkedPagePath) => {
+  const pathAndPathName: Array<{ path: string, pathName: string }> = [];
+  let currentLinkedPagePath = linkedPagePath;
+
+  while (currentLinkedPagePath.parent != null) {
+    pathAndPathName.unshift({ path: currentLinkedPagePath.path, pathName: currentLinkedPagePath.pathName });
+    currentLinkedPagePath = currentLinkedPagePath.parent;
+  }
+
+  return pathAndPathName;
+};
 
 type Props = {
   linkedPagePath: LinkedPagePath,
@@ -15,20 +28,19 @@ type Props = {
 export const CollapsedParentsDropdown = (props: Props): JSX.Element => {
   const { linkedPagePath } = props;
 
+  const ancestorPathAndPathNames = useMemo(() => getAncestorPathAndPathNames(linkedPagePath), [linkedPagePath]);
+
   return (
     <UncontrolledDropdown className="d-inline-block">
       <DropdownToggle color="transparent">...</DropdownToggle>
       <DropdownMenu className={`dropdown-menu ${styles['collapsed-parents-dropdown-menu']}`} container="body">
-        {/* TODO: generate DropdownItems */}
-        <DropdownItem>
-          <a role="menuitem">foo</a>
-        </DropdownItem>
-        <DropdownItem>
-          <a role="menuitem">bar</a>
-        </DropdownItem>
-        <DropdownItem>
-          <a role="menuitem">baz</a>
-        </DropdownItem>
+        {ancestorPathAndPathNames.map(data => (
+          <DropdownItem key={data.path}>
+            <Link href={data.path} legacyBehavior>
+              <a role="menuitem">{data.pathName}</a>
+            </Link>
+          </DropdownItem>
+        ))}
       </DropdownMenu>
     </UncontrolledDropdown>
   );

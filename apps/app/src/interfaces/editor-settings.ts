@@ -1,4 +1,4 @@
-export const DEFAULT_THEME = 'elegant';
+export const DEFAULT_THEME = 'DefaultLight';
 
 const KeyMapMode = {
   default: 'default',

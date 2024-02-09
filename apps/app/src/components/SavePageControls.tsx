@@ -67,7 +67,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     return null;
   }
 
-  const { grant, grantedGroups } = grantData;
+  const { grant, userRelatedGrantedGroups } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = t('Update');
@@ -82,7 +82,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
             <GrantSelector
               grant={grant}
               disabled={isGrantSelectorDisabledPage}
-              grantedGroups={grantedGroups}
+              userRelatedGrantedGroups={userRelatedGrantedGroups}
               onUpdateGrant={updateGrantHandler}
             />
           </div>

@@ -1,18 +1,18 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useState,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
-import { Prec } from '@codemirror/state';
+import { Prec, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, AllEditorTheme,
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme,
 } from '../../services';
 import {
-  getStrFromBol, adjustPasteData,
+  adjustPasteData, getStrFromBol,
 } from '../../services/list-util/markdown-list-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
@@ -144,22 +144,35 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
+
+  const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
   useEffect(() => {
-    if (editorTheme == null) {
+    const settingTheme = async(name?: EditorTheme) => {
+      setThemeExtension(await getEditorTheme(name ?? 'DefaultLight'));
+    };
+    settingTheme(editorTheme as EditorTheme);
+  }, [codeMirrorEditor, editorTheme, setThemeExtension]);
+
+  useEffect(() => {
+    if (themeExtension == null) {
       return;
     }
-    if (AllEditorTheme[editorTheme] == null) {
-      return;
-    }
-
-    const extension = AllEditorTheme[editorTheme];
-
     // React CodeMirror has default theme which is default prec
     // and extension have to be higher prec here than default theme.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(themeExtension));
+    return cleanupFunction;
+  }, [codeMirrorEditor, themeExtension]);
+
+
+  useEffect(() => {
+
+    const keymap = editorKeymap ?? 'default';
+    const extension = getKeymap(keymap, onSave);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
     return cleanupFunction;
 
-  }, [codeMirrorEditor, editorTheme]);
+  }, [codeMirrorEditor, editorKeymap, onSave]);
 
 
   useEffect(() => {

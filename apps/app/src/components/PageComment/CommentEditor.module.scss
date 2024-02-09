@@ -4,6 +4,10 @@
 
 // display cheatsheet for comment form only
 .comment-editor-styles :global {
+  .cm-editor {
+    height: 300px !important;
+  }
+
   .comment-form {
     position: relative;
     margin-top: 1em;

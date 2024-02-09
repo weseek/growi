@@ -238,14 +238,14 @@ class SecuritySetting extends React.Component {
           </button>
         </div>
         <p className="form-text text-muted small">
-          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explain`)}
+          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explanation`)}
         </p>
       </div>
     );
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     const expantDeleteOptionsState = this.expantDeleteOptionsState(deletionType);
 
@@ -265,7 +265,28 @@ class SecuritySetting extends React.Component {
           {
             !isRecursiveDeletion(deletionType)
               ? (
-                <>{this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}</>
+                <>
+                  {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
+                  {currentState === PageDeleteConfigValue.Anyone && deletionType === DeletionType.CompleteDeletion && (
+                    <>
+                      <input
+                        id="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox"
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={adminGeneralSecurityContainer.state.isAllGroupMembershipRequiredForPageCompleteDeletion}
+                        onChange={() => { adminGeneralSecurityContainer.switchIsAllGroupMembershipRequiredForPageCompleteDeletion() }}
+                      />
+                      <label className="form-check-label" htmlFor="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox">
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion')}
+                      </label>
+                      <p
+                        className="form-text text-muted small mt-2"
+                      >
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion_explanation')}
+                      </p>
+                    </>
+                  )}
+                </>
               )
               : (
                 <>
