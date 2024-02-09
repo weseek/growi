@@ -10,7 +10,7 @@ import {
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 
-import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
+import { DEFAULT_THEME, type KeyMapMode } from '../../interfaces/editor-settings';
 
 
 const AVAILABLE_THEMES = [

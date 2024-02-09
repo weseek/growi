@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme,
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeyMap, type KeyMapMode,
 } from '../../services';
 import {
   adjustPasteData, getStrFromBol,
@@ -44,6 +44,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     editorKey,
     acceptedFileType,
     onChange,
+    onSave,
     onUpload,
     onScroll,
     indentSize,
@@ -165,21 +166,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
 
   useEffect(() => {
+    const keymap = (editorKeymap ?? 'default') as KeyMapMode;
+    const extension = getKeyMap(keymap, onSave);
 
-    const keymap = editorKeymap ?? 'default';
-    const extension = getKeymap(keymap, onSave);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorKeymap, onSave]);
-
-
-  useEffect(() => {
-
-    const keymap = editorKeymap ?? 'default';
-    const extension = getKeymap(keymap, onSave);
-
+    // Prevent these Keybind from overwriting the originally defined keymap.
     const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
     return cleanupFunction;
 

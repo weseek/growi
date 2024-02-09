@@ -9,8 +9,8 @@ import { vscodeKeymap } from '@replit/codemirror-vscode-keymap';
 Vim.map('jj', '<Esc>', 'insert');
 Vim.map('jk', '<Esc>', 'insert');
 
-export const getKeymap = (keymapName: string, onSave?: () => void): Extension => {
-  switch (keymapName) {
+export const getKeyMap = (keyMapName: KeyMapMode, onSave?: () => void): Extension => {
+  switch (keyMapName) {
     case 'vim':
       if (onSave != null) {
         Vim.defineEx('write', 'w', onSave);
@@ -20,6 +20,16 @@ export const getKeymap = (keymapName: string, onSave?: () => void): Extension =>
       return emacs();
     case 'vscode':
       return keymap.of(vscodeKeymap);
+    case 'default':
+      return keymap.of(defaultKeymap);
   }
-  return keymap.of(defaultKeymap);
 };
+
+const KeyMapMode = {
+  default: 'default',
+  vim: 'vim',
+  emacs: 'emacs',
+  vscode: 'vscode',
+} as const;
+
+export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];
