@@ -5,10 +5,11 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
+import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
-import { PagePathNav } from '../Common/PagePathNav';
+import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { usePagePathRenameHandler } from './page-header-utils';
@@ -22,6 +23,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
+  const linkedPagePath = new LinkedPagePath(currentPagePath);
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
@@ -106,13 +108,7 @@ export const PagePathHeader: FC<Props> = (props) => {
                 />
               </div>
             ) : (
-              <div className="">
-                <PagePathNav
-                  pageId={currentPage._id}
-                  pagePath={currentPagePath}
-                  isSingleLineMode
-                />
-              </div>
+              <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
             )}
         </div>
 
