@@ -3743,21 +3743,28 @@ class PageService implements IPageService {
    * Create a page
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
-  async create(path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
+  async create(_path: string, body: string, user, options: IOptionsForCreate = {}): Promise<PageDocument> {
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
-      return this.createV4(path, body, user, options);
+      return this.createV4(_path, body, user, options);
     }
 
     // Values
-    // eslint-disable-next-line no-param-reassign
-    path = this.crowi.xss.process(path); // sanitize path
-    const { grantUserGroupIds } = options;
-    const grant = isTopPage(path) ? PageGrant.GRANT_PUBLIC : options.grant;
+    const path = this.crowi.xss.process(_path); // sanitize path
+
+    // Retrieve closest ancestor document
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
+    const closestAncestor = await Page.findNonEmptyClosestAncestor(path);
+
+    // Determine grantData
+    const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
+    const grantedUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
+    const grantUserGroupIds = options.grantUserGroupIds
+      ?? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
     const grantData = {
       grant,
-      grantedUserIds: grant === PageGrant.GRANT_OWNER ? [user._id] : undefined,
+      grantedUserIds,
       grantUserGroupIds,
     };
 
