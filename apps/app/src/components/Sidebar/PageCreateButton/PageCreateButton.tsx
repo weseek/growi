@@ -6,7 +6,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'reactstrap';
 
-import { useCreateTemplatePage } from '~/client/services/use-create-template-page';
+import { useCreateTemplatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import type { LabelType } from '~/interfaces/template';
 import { useCurrentUser } from '~/stores/context';

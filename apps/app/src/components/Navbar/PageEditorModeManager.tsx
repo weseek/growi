@@ -2,11 +2,11 @@ import React, { type ReactNode, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
-import { useCreatePageAndTransit } from '../../client/services/use-create-page-and-transit';
 
 import styles from './PageEditorModeManager.module.scss';
 

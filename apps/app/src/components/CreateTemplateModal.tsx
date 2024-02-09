@@ -4,7 +4,7 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useCreateTemplatePage } from '~/client/services/use-create-template-page';
+import { useCreateTemplatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import type { TargetType, LabelType } from '~/interfaces/template';
 
