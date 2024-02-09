@@ -34,7 +34,7 @@ const logger = loggerFactory('growi:routes:apiv3:page:create-page');
 async function generateUntitledPath(parentPath: string, basePathname: string, index = 1): Promise<string> {
   const Page = mongoose.model<IPage>('Page');
 
-  const path = `${normalizePath(parentPath)}${normalizePath(basePathname)}-${index}`;
+  const path = normalizePath(`${normalizePath(parentPath)}/${basePathname}-${index}`);
   if (await Page.exists({ path, isEmpty: false }) != null) {
     return generateUntitledPath(parentPath, basePathname, index + 1);
   }
