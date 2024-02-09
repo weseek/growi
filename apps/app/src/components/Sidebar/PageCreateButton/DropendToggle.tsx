@@ -11,6 +11,7 @@ const moduleClass = styles['btn-toggle'];
 export const DropendToggle = (): JSX.Element => {
   return (
     <DropdownToggle
+      data-testid="grw-sidebar-nav-dropend-toggle"
       color="primary"
       className={`position-absolute z-1 ${moduleClass}`}
       aria-expanded={false}
