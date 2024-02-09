@@ -69,38 +69,31 @@ export const SetCaretLineRow = (): JSX.Element => {
   );
 };
 
-type SetThemeRowProps = {
-  setEditorTheme: (value: string) => void,
-}
-const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
 
-  const { setEditorTheme } = props;
-
-  const createItems = (items: string[]): JSX.Element => {
-    return (
-      <div>
-        { items.map((theme) => {
-          return (
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={() => {
-                setEditorTheme(theme);
-              }}
-            >{theme}
-            </button>
-          );
-        }) }
-      </div>
-    );
-  };
+const SetParamRow = (
+    set: (value: string) => void,
+    items: string[],
+)
 
   return (
     <>
       <div className="row mt-3">
         <h2>default</h2>
         <div className="col">
-          {createItems(AllEditorTheme)}
+          <div>
+            { items.map((item) => {
+              return (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => {
+                    set(item);
+                  }}
+                >{item}
+                </button>
+              );
+            }) }
+          </div>
         </div>
       </div>
     </>
@@ -110,15 +103,17 @@ const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
 
 type PlaygroundControllerProps = {
   setEditorTheme: (value: string) => void
+  setEditorKeymap: (value: string) => void
 };
 
 export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
-  const { setEditorTheme } = props;
+  const { setEditorTheme, setEditorKeymap } = props;
   return (
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
-      <SetThemeRow setEditorTheme={setEditorTheme} />
+      <SetParamRow set={setEditorTheme} items={AllEditorTheme} />
+      <SetParamRow set={setEditorKeymap} items={}/>
     </div>
   );
 };
