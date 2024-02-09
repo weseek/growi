@@ -230,7 +230,7 @@ const PageDuplicateModal = (): JSX.Element => {
           </div>
         </div>
 
-        <div className="form-check form-check-warning mb-3">
+        <div className="form-check form-check-warning mt-2">
           <input
             className="form-check-input"
             id="cbOnlyDuplicateUserRelatedResources"
@@ -243,7 +243,7 @@ const PageDuplicateModal = (): JSX.Element => {
             <p className="form-text text-muted my-0">{ t('modal_duplicate.help.only_user_related_resources') }</p>
           </label>
         </div>
-        <div>
+        <div className="mt-3">
           {isDuplicateRecursively && existingPaths.length !== 0 && (
             <DuplicatePathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
           ) }
