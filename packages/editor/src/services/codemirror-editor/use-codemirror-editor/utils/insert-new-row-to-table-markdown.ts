@@ -1,8 +1,7 @@
 import type {
   ChangeSpec, EditorState, StateCommand, Transaction,
 } from '@codemirror/state';
-
-import MarkdownTable from '~/client/models/MarkdownTable';
+import { MarkdownTable } from '@growi/core/dist/models';
 
 // https://regex101.com/r/7BN2fR/10
 const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
@@ -50,7 +49,7 @@ const getEot = (editorState: EditorState): number => {
   const doc = editorState.doc;
   const lastLine = doc.lines;
 
-  let line = doc.lineAt(getCurPos(editorState)).number + 1; // 常に1行先を監視する
+  let line = doc.lineAt(getCurPos(editorState)).number + 1;
 
   for (; line <= lastLine; line++) {
     const strLine = doc.line(line).text;
@@ -72,20 +71,84 @@ const getStrToEot = (editorState: EditorState): string => {
   return editorState.sliceDoc(getCurPos(editorState), getEot(editorState));
 };
 
-const addRow = ({ state, dispatch }: ArgType) => {
+const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
+  const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
+  const newRow: string[] = [];
+  (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
+  mdtable.table.push(newRow);
+};
+
+export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | undefined => {
+  if (mdtableList == null || !(mdtableList instanceof Array)) {
+    return undefined;
+  }
+
+  let newTable: any[] = [];
+  const options = mdtableList[0].options; // use option of first markdown-table
+  mdtableList.forEach((mdtable) => {
+    newTable = newTable.concat(mdtable.table);
+  });
+  return (new MarkdownTable(newTable, options));
+};
+
+export const replaceFocusedMarkdownTableWithEditor = (
+    state: EditorState, dispatch: (transaction: Transaction) => boolean, table: MarkdownTable,
+): void => {
+  const botPos = getBot(state);
+  const eotPos = getEot(state);
+
+  dispatch({
+    changes: {
+      from: botPos,
+      to: eotPos,
+      insert: table.toString(),
+    },
+  });
+  // dispatch({
+  //   selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
+  // });
+  // editor.focus();
+};
+
+const addRow = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
   const strFromBot = getStrFromBot(state);
 
-  const table = getMarkdownTable(); // MarkdownTable instance
+  let table = MarkdownTable.fromMarkdownString(strFromBot);
 
-  addRowToMarkdownTable();
+  addRowToMarkdownTable(table);
 
   const strToEot = getStrToEot(state);
 
-  const tableBottom = table.toString();
+  const tableBottom = MarkdownTable.fromMarkdownString(strToEot);
 
+  if (tableBottom.table.length > 0) {
+    table = mergeMarkdownTable([table, tableBottom]);
+  }
+
+  replaceFocusedMarkdownTableWithEditor(state, dispatch, table);
 };
 
-const removeRow = () => {};
+const removeRow = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
+
+  const curPos = getCurPos(state);
+
+  const curLine = state.doc.lineAt(curPos).number;
+
+  const bolPos = state.doc.line(curLine).from;
+  const eolPos = state.doc.line(curLine).to;
+
+  const insert = state.lineBreak;
+
+  dispatch(state.update(
+    {
+      changes: {
+        from: bolPos,
+        to: eolPos,
+        insert,
+      },
+    },
+  ));
+};
 
 const reformTable = () => {};
 
@@ -107,11 +170,11 @@ export const insertNewRowToMarkdownTable: StateCommand = ({ state, dispatch }: A
   if (isInTable(state)) {
 
     if (isEndOfLine) {
-      addRow();
+      addRow(state, dispatch);
     }
 
     else if (isLastRow && emptyLineOfTableRE.test(strFromBol + strToEol)) {
-      removeRow();
+      removeRow(state, dispatch);
     }
 
     else {
