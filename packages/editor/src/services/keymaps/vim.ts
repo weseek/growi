@@ -1,8 +1,6 @@
 import { Extension } from '@codemirror/state';
-// Avoiding compile errors at webpack build.
-// eslint-disable-next-line
-// @ts-ignore
-import { Vim, vim } from '@replit/codemirror-vim';
+
+import { Vim, vim } from './codemirror-vim';
 
 // vim useful keymap custom
 Vim.map('jj', '<Esc>', 'insert');
