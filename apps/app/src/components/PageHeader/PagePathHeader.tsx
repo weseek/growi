@@ -1,6 +1,4 @@
-import {
-  useMemo, useState, useEffect, useCallback,
-} from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -8,7 +6,6 @@ import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
 import { usePageSelectModal } from '~/stores/modal';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathNav } from '../Common/PagePathNav';
@@ -30,7 +27,6 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isButtonsShown, setButtonShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
-  const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
@@ -69,19 +65,6 @@ export const PagePathHeader: FC<Props> = (props) => {
   }, [currentPagePath, editedPagePath, isRenameInputShown, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
-  const isViewMode = editorMode === EditorMode.View;
-  const isEditorMode = !isViewMode;
-
-  const PagePath = useMemo(() => (
-    <PagePathNav
-      pageId={currentPage._id}
-      pagePath={currentPagePath}
-      isSingleLineMode={isEditorMode}
-    />
-  ), [currentPage._id, currentPagePath, isEditorMode]);
-
-
-  const buttonStyle = isButtonsShown ? '' : 'd-none';
 
   const clickOutSideHandler = useCallback((e) => {
     const container = document.getElementById('page-path-header');
@@ -110,30 +93,36 @@ export const PagePathHeader: FC<Props> = (props) => {
           className="col-4"
           onMouseEnter={() => setButtonShown(true)}
         >
-          {isRenameInputShown ? (
-            <div className="flex-fill">
-              <ClosableTextInput
-                value={editedPagePath}
-                placeholder={t('Input page name')}
-                onPressEnter={onPressEnter}
-                onPressEscape={onPressEscape}
-                validationTarget={ValidationTarget.PAGE}
-                handleInputChange={onInputChange}
-              />
-            </div>
-          ) : (
-            <>{ PagePath }</>
-          )}
+          {isRenameInputShown
+            ? (
+              <div className="flex-fill">
+                <ClosableTextInput
+                  value={editedPagePath}
+                  placeholder={t('Input page name')}
+                  onPressEnter={onPressEnter}
+                  onPressEscape={onPressEscape}
+                  validationTarget={ValidationTarget.PAGE}
+                  handleInputChange={onInputChange}
+                />
+              </div>
+            ) : (
+              <div className="">
+                <PagePathNav
+                  pageId={currentPage._id}
+                  pagePath={currentPagePath}
+                  isSingleLineMode
+                />
+              </div>
+            )}
         </div>
-        <div className={`${buttonStyle} col-4 row`}>
-          <div className="col-4">
-            <button type="button" onClick={onClickEditButton}>
-              {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
+
+        <div className={`${isButtonsShown ? '' : 'd-none'} col-4 row`}>
+          <div className="d-flex align-items-center">
+            <button type="button" className="btn btn-sm btn-link text-muted border border-secondary me-2" onClick={onClickEditButton}>
+              <span className="material-symbols-outlined fs-5">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
             </button>
-          </div>
-          <div className="col-4">
-            <button type="button" onClick={openPageSelectModal}>
-              <span className="material-symbols-outlined">account_tree</span>
+            <button type="button" className="btn btn-sm btn-link text-muted border border-secondary" onClick={openPageSelectModal}>
+              <span className="material-symbols-outlined fs-5">account_tree</span>
             </button>
           </div>
         </div>

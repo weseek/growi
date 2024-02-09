@@ -473,7 +473,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="flex-expand-vert justify-content-center" style={{ minHeight: '72px' }}>
+      <div className="justify-content-center ms-3 mt-3">
         <PageHeader />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
