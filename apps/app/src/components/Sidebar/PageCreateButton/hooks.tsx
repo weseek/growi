@@ -1,82 +1,71 @@
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
-import { useRouter } from 'next/router';
+import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
+import { format } from 'date-fns';
+import { useTranslation } from 'react-i18next';
 
-import { createPage, exist } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
 
-export const useOnNewButtonClicked = (
-    currentPagePath?: string,
-    isLoading?: boolean,
-): {
-  onClickHandler: () => Promise<void>,
-  isPageCreating: boolean
-} => {
-  const router = useRouter();
-  const [isPageCreating, setIsPageCreating] = useState(false);
 
-  const { mutate: mutateEditorMode } = useEditorMode();
+type UseCreateNewPage = () => {
+  isCreating: boolean,
+  createNewPage: () => Promise<void>,
+}
 
-  const onClickHandler = useCallback(async() => {
-    if (isLoading) return;
+export const useCreateNewPage: UseCreateNewPage = () => {
+  const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
 
-    try {
-      setIsPageCreating(true);
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
-      const response = await createPage({
-        parentPath: currentPagePath,
-        optionalParentPath: '/',
-      });
+  const createNewPage = useCallback(async() => {
+    if (isLoadingPagePath) return;
 
-      await router.push(`/${response.page._id}#edit`);
-      mutateEditorMode(EditorMode.Editor);
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setIsPageCreating(false);
-    }
-  }, [currentPagePath, isLoading, mutateEditorMode, router]);
+    return createAndTransit(
+      { parentPath: currentPagePath },
+    );
+  }, [createAndTransit, currentPagePath, isLoadingPagePath]);
 
-  return { onClickHandler, isPageCreating };
+  return {
+    isCreating,
+    createNewPage,
+  };
 };
 
-export const useOnTodaysButtonClicked = (
-    todaysPath: string | null,
-): {
-  onClickHandler: () => Promise<void>,
-  isPageCreating: boolean
-} => {
-  const router = useRouter();
-  const [isPageCreating, setIsPageCreating] = useState(false);
 
-  const { mutate: mutateEditorMode } = useEditorMode();
+type UseCreateTodaysMemo = () => {
+  isCreating: boolean,
+  todaysPath: string | null,
+  createTodaysMemo: () => Promise<void>,
+}
 
-  const onClickHandler = useCallback(async() => {
-    if (todaysPath == null) {
-      return;
-    }
+export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
+  const { t } = useTranslation('commons');
 
-    try {
-      setIsPageCreating(true);
+  const { data: currentUser } = useCurrentUser();
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
-      const res = await exist(JSON.stringify([todaysPath]));
-      if (!res.pages[todaysPath]) {
-        await createPage({ path: todaysPath });
-      }
+  const isCreatable = currentUser != null;
 
-      await router.push(`${todaysPath}#edit`);
-      mutateEditorMode(EditorMode.Editor);
-    }
-    catch (err) {
-      toastError(err);
-    }
-    finally {
-      setIsPageCreating(false);
-    }
-  }, [mutateEditorMode, router, todaysPath]);
+  const parentDirName = t('create_page_dropdown.todays.memo');
+  const now = format(new Date(), 'yyyy/MM/dd');
+  const todaysPath = isCreatable
+    ? `${userHomepagePath(currentUser)}/${parentDirName}/${now}`
+    : null;
 
-  return { onClickHandler, isPageCreating };
+  const createTodaysMemo = useCallback(async() => {
+    if (!isCreatable || todaysPath == null) return;
+
+    return createAndTransit(
+      { path: todaysPath },
+      { shouldCheckPageExists: true },
+    );
+  }, [createAndTransit, isCreatable, todaysPath]);
+
+  return {
+    isCreating,
+    todaysPath,
+    createTodaysMemo,
+  };
 };

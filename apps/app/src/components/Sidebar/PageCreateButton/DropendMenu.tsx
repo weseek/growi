@@ -7,17 +7,17 @@ import type { LabelType } from '~/interfaces/template';
 
 
 type DropendMenuProps = {
-  onClickCreateNewPageButtonHandler: () => Promise<void>
-  onClickCreateTodaysButtonHandler: () => Promise<void>
-  onClickTemplateButtonHandler?: (label: LabelType) => Promise<void>
+  onClickCreateNewPageButton: () => Promise<void>
+  onClickCreateTodaysButton: () => Promise<void>
+  onClickTemplateButton?: (label: LabelType) => Promise<void>
   todaysPath: string | null,
 }
 
 export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => {
   const {
-    onClickCreateNewPageButtonHandler,
-    onClickCreateTodaysButtonHandler,
-    onClickTemplateButtonHandler,
+    onClickCreateNewPageButton,
+    onClickCreateTodaysButton,
+    onClickTemplateButton,
     todaysPath,
   } = props;
 
@@ -28,34 +28,34 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       container="body"
     >
       <DropdownItem
-        onClick={onClickCreateNewPageButtonHandler}
+        onClick={onClickCreateNewPageButton}
       >
         {t('create_page_dropdown.new_page')}
       </DropdownItem>
 
-      {todaysPath != null && (
+      { todaysPath != null && (
         <>
           <DropdownItem divider />
           <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
           <DropdownItem
-            onClick={onClickCreateTodaysButtonHandler}
+            onClick={onClickCreateTodaysButton}
           >
             {todaysPath}
           </DropdownItem>
         </>
       )}
 
-      { onClickTemplateButtonHandler != null && (
+      { onClickTemplateButton != null && (
         <>
           <DropdownItem divider />
           <li><span className="text-muted text-nowrap px-3">{t('create_page_dropdown.template.desc')}</span></li>
           <DropdownItem
-            onClick={() => onClickTemplateButtonHandler('_template')}
+            onClick={() => onClickTemplateButton('_template')}
           >
             {t('create_page_dropdown.template.children')}
           </DropdownItem>
           <DropdownItem
-            onClick={() => onClickTemplateButtonHandler('__template')}
+            onClick={() => onClickTemplateButton('__template')}
           >
             {t('create_page_dropdown.template.descendants')}
           </DropdownItem>
