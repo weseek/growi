@@ -73,8 +73,10 @@ const getStrToEot = (editorState: EditorState): string => {
 
 const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
   const numCol = mdtable.table.length > 0 ? mdtable.table[0].length : 1;
-  const newRow: string[] = [];
-  (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
+  const newRow: string[] = new Array(numCol);
+
+  newRow.fill('');
+  // (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
   mdtable.table.push(newRow);
 };
 
@@ -99,6 +101,7 @@ export const replaceFocusedMarkdownTableWithEditor = (
       to: eotPos,
       insert: table.toString(),
     },
+    selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
   }));
   // dispatch({
   //   selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
