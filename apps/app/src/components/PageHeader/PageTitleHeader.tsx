@@ -54,41 +54,33 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(false);
   }, [currentPagePath]);
 
-  const onClickButton = useCallback(() => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
-
   const onClickPageTitle = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(true);
   }, [currentPagePath]);
 
-  const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
-
-  const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   return (
     <div className="row">
       <div className="col-4">
-        {isRenameInputShown ? (
-          <div className="flex-fill">
-            <ClosableTextInput
-              value={editedPageTitle}
-              placeholder={t('Input page name')}
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              validationTarget={ValidationTarget.PAGE}
-              handleInputChange={onInputChange}
-            />
-          </div>
-        ) : (
-          <>{ PageTitle }</>
-        )}
-      </div>
-      <div className={`col-4 ${buttonStyle}`}>
-        <button type="button" onClick={onClickButton}>
-          <span className="material-symbols-outlined">check_circle</span>
-        </button>
+        {isRenameInputShown
+          ? (
+            <div className="flex-fill">
+              <ClosableTextInput
+                value={editedPageTitle}
+                placeholder={t('Input page name')}
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                validationTarget={ValidationTarget.PAGE}
+                handleInputChange={onInputChange}
+              />
+            </div>
+          )
+          : (
+            <h2 onClick={onClickPageTitle}>
+              {pageTitle}
+            </h2>
+          )}
       </div>
     </div>
   );
