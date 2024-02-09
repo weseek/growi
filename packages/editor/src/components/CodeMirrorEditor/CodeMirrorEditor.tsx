@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme,
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeyMap, type KeyMapMode,
 } from '../../services';
 import {
   adjustPasteData, getStrFromBol,
@@ -31,10 +31,12 @@ type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
+  onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
   indentSize?: number,
   editorTheme?: string,
+  editorKeymap?: string,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -42,10 +44,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     editorKey,
     acceptedFileType,
     onChange,
+    onSave,
     onUpload,
     onScroll,
     indentSize,
     editorTheme,
+    editorKeymap,
   } = props;
 
   const containerRef = useRef(null);
@@ -159,6 +163,17 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(themeExtension));
     return cleanupFunction;
   }, [codeMirrorEditor, themeExtension]);
+
+
+  useEffect(() => {
+    const keymap = (editorKeymap ?? 'default') as KeyMapMode;
+    const extension = getKeyMap(keymap, onSave);
+
+    // Prevent these Keybind from overwriting the originally defined keymap.
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorKeymap, onSave]);
 
   const {
     getRootProps,
