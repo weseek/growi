@@ -89,7 +89,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
       const response = await createPage(params);
 
-      await router.push(`${response.page._id}#edit`);
+      await router.push(`/${response.page._id}#edit`);
       mutateEditorMode(EditorMode.Editor);
 
       onCreated?.();
