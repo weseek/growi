@@ -2863,10 +2863,10 @@
   resolved "https://registry.yarnpkg.com/@replit/codemirror-emacs/-/codemirror-emacs-6.0.1.tgz#6e74453e456f40cbb18ed1d15030fa0dbd218098"
   integrity sha512-2WYkODZGH1QVAXWuOxTMCwktkoZyv/BjYdJi2A5w4fRrmOQFuIACzb6pO9dgU3J+Pm2naeiX2C8veZr/3/r6AA==
 
-"@replit/codemirror-vim@^6.1.0":
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/@replit/codemirror-vim/-/codemirror-vim-6.1.0.tgz#bc38f594c0aece36313dcf083d278ccb6dddafb2"
-  integrity sha512-XATcrMBYphSgTTDHaL5cTdBKA+/kwg8x0kHpX9xFHkI8c2G9+nXdkIzFCtk76x1VDYQSlT6orNhudNt+9H9zOA==
+"@replit/codemirror-vim@6.0.14":
+  version "6.0.14"
+  resolved "https://registry.yarnpkg.com/@replit/codemirror-vim/-/codemirror-vim-6.0.14.tgz#8f44740b0497406b551726946c9b30f21c867671"
+  integrity sha512-wwhqhvL76FdRTdwfUWpKCbv0hkp2fvivfMosDVlL/popqOiNLtUhL02ThgHZH8mus/NkVr5Mj582lyFZqQrjOA==
 
 "@replit/codemirror-vscode-keymap@^6.0.2":
   version "6.0.2"
