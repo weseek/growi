@@ -78,11 +78,7 @@ const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
   mdtable.table.push(newRow);
 };
 
-export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | undefined => {
-  if (mdtableList == null || !(mdtableList instanceof Array)) {
-    return undefined;
-  }
-
+export const mergeMarkdownTable = (mdtableList: MarkdownTable[]): MarkdownTable => {
   let newTable: any[] = [];
   const options = mdtableList[0].options; // use option of first markdown-table
   mdtableList.forEach((mdtable) => {
@@ -97,13 +93,13 @@ export const replaceFocusedMarkdownTableWithEditor = (
   const botPos = getBot(state);
   const eotPos = getEot(state);
 
-  dispatch({
+  dispatch(state.update({
     changes: {
       from: botPos,
       to: eotPos,
       insert: table.toString(),
     },
-  });
+  }));
   // dispatch({
   //   selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
   // });
@@ -156,7 +152,7 @@ const reformTable = (state: EditorState, dispatch: (transaction: Transaction) =>
   replaceFocusedMarkdownTableWithEditor(state, dispatch, table);
 };
 
-export const insertNewRowToMarkdownTable: StateCommand = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
+export const insertNewRowToMarkdownTable = (state: EditorState, dispatch: (transaction: Transaction) => boolean): void => {
 
   const curPos = getCurPos(state);
 
@@ -186,5 +182,4 @@ export const insertNewRowToMarkdownTable: StateCommand = (state: EditorState, di
     }
 
   }
-
 };
