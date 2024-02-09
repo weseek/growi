@@ -1,10 +1,12 @@
-import type { ChangeSpec, StateCommand } from '@codemirror/state';
+import type {
+  ChangeSpec, StateCommand, EditorState, Transaction,
+} from '@codemirror/state';
 
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
-export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) => {
+export const insertNewlineContinueMarkup: StateCommand = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
 
   const changes: ChangeSpec[] = [];
 

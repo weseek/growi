@@ -34,13 +34,18 @@ import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 
+const onPressEnter = ({ state, dispatch }) => {
+  // insertNewlineContinueMarkup(state, dispatch);
+  insertNewRowToMarkdownTable(state, dispatch);
+};
+
 // set new markdownKeymap instead of default one
 // I also bound the deleteMarkupBackward to the backspace key to align with the existing keymap
 // https://github.com/codemirror/lang-markdown/blob/main/src/index.ts#L17
 const markdownKeymap = [
   { key: 'Backspace', run: deleteMarkupBackward },
   // { key: 'Enter', run: insertNewlineContinueMarkup },
-  { key: 'Enter', run: insertNewRowToMarkdownTable },
+  { key: 'Enter', run: onPressEnter },
 ];
 
 const markdownHighlighting = HighlightStyle.define([
