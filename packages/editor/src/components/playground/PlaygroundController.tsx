@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import { AllEditorTheme } from '../../services';
+import { AllEditorTheme, AllKeyMap } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -70,11 +70,15 @@ export const SetCaretLineRow = (): JSX.Element => {
 };
 
 
-const SetParamRow = (
-    set: (value: string) => void,
+type SetParamRowProps = {
+    update: (value: string) => void,
     items: string[],
-)
+}
 
+const SetParamRow = (
+    props: SetParamRowProps,
+): JSX.Element => {
+  const { update, items } = props;
   return (
     <>
       <div className="row mt-3">
@@ -87,7 +91,7 @@ const SetParamRow = (
                   type="button"
                   className="btn btn-outline-secondary"
                   onClick={() => {
-                    set(item);
+                    update(item);
                   }}
                 >{item}
                 </button>
@@ -112,8 +116,8 @@ export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Elem
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
-      <SetParamRow set={setEditorTheme} items={AllEditorTheme} />
-      <SetParamRow set={setEditorKeymap} items={}/>
+      <SetParamRow update={setEditorTheme} items={AllEditorTheme} />
+      <SetParamRow update={setEditorKeymap} items={AllKeyMap} />
     </div>
   );
 };

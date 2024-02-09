@@ -2,8 +2,8 @@ import { Extension } from '@codemirror/state';
 import { Vim, vim } from '@replit/codemirror-vim';
 
 // vim useful keymap custom
-vim.map('jj', '<esc>', 'insert');
-vim.map('jk', '<esc>', 'insert');
+Vim.map('jj', '<Esc>', 'insert');
+Vim.map('jk', '<Esc>', 'insert');
 
 export const vimKeymap = (onSave?: () => void): Extension => {
   if (onSave != null) {

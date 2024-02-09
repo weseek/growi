@@ -27,4 +27,5 @@ const KeyMapMode = {
   vscode: 'vscode',
 } as const;
 
+export const AllKeyMap = Object.values(KeyMapMode);
 export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];
