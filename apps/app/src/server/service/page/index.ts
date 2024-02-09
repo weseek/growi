@@ -3751,7 +3751,7 @@ class PageService implements IPageService {
     }
 
     // Values
-    const path = this.crowi.xss.process(_path); // sanitize path
+    const path: string = this.crowi.xss.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
     const Page = mongoose.model<PageDocument, PageModel>('Page');
@@ -3761,7 +3761,11 @@ class PageService implements IPageService {
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
     const grantedUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
     const grantUserGroupIds = options.grantUserGroupIds
-      ?? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
+      ?? (
+        closestAncestor != null
+          ? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user)
+          : undefined
+      );
     const grantData = {
       grant,
       grantedUserIds,
