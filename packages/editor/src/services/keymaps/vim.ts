@@ -1,5 +1,6 @@
 import { Extension } from '@codemirror/state';
-import { Vim, vim } from '@replit/codemirror-vim';
+
+import { Vim, vim } from './codemirror-vim';
 
 // vim useful keymap custom
 Vim.map('jj', '<Esc>', 'insert');
