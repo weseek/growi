@@ -74,9 +74,9 @@ export const PageCreateButton = React.memo((): JSX.Element => {
         >
           <DropendToggle />
           <DropendMenu
-            onClickCreateNewPageButton={createNewPageWithToastr}
-            onClickCreateTodaysButton={createTodaysMemoWithToastr}
-            onClickTemplateButton={isTemplatePageCreatable ? createTemplateWithToastr : undefined}
+            onClickCreateNewPage={createNewPageWithToastr}
+            onClickCreateTodaysMemo={createTodaysMemoWithToastr}
+            onClickCreateTemplate={isTemplatePageCreatable ? createTemplateWithToastr : undefined}
             todaysPath={todaysPath}
           />
         </Dropdown>
