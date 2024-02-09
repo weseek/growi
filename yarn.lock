@@ -2867,8 +2867,6 @@
   version "6.1.0"
   resolved "https://registry.yarnpkg.com/@replit/codemirror-vim/-/codemirror-vim-6.1.0.tgz#bc38f594c0aece36313dcf083d278ccb6dddafb2"
   integrity sha512-XATcrMBYphSgTTDHaL5cTdBKA+/kwg8x0kHpX9xFHkI8c2G9+nXdkIzFCtk76x1VDYQSlT6orNhudNt+9H9zOA==
-  dependencies:
-    "@codemirror/view" "6.0.3"
 
 "@replit/codemirror-vscode-keymap@^6.0.2":
   version "6.0.2"
