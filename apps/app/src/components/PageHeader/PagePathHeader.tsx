@@ -111,7 +111,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           )
         }
 
-        <div className={`d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
+        <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
           <button
             type="button"
             className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
