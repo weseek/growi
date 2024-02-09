@@ -14,7 +14,6 @@ import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { usePagePathRenameHandler } from './page-header-utils';
 
-
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
 }
@@ -90,43 +89,51 @@ export const PagePathHeader: FC<Props> = (props) => {
       id="page-path-header"
       onMouseLeave={() => setButtonShown(false)}
     >
-      <div className="row">
-        <div
-          className="col-4"
-          onMouseEnter={() => setButtonShown(true)}
-        >
-          {isRenameInputShown
-            ? (
-              <div className="flex-fill">
-                <ClosableTextInput
-                  value={editedPagePath}
-                  placeholder={t('Input page name')}
-                  onPressEnter={onPressEnter}
-                  onPressEscape={onPressEscape}
-                  validationTarget={ValidationTarget.PAGE}
-                  handleInputChange={onInputChange}
-                />
-              </div>
-            ) : (
+      <div
+        className="d-flex align-items-center"
+        onMouseEnter={() => setButtonShown(true)}
+      >
+        {isRenameInputShown
+          ? (
+            <ClosableTextInput
+              value={editedPagePath}
+              placeholder={t('Input page name')}
+              onPressEnter={onPressEnter}
+              onPressEscape={onPressEscape}
+              validationTarget={ValidationTarget.PAGE}
+              handleInputChange={onInputChange}
+            />
+          )
+          : (
+            <div className="me-2">
               <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
-            )}
-        </div>
+            </div>
+          )
+        }
 
-        <div className={`${isButtonsShown ? '' : 'd-none'} col-4 row`}>
-          <div className="d-flex align-items-center">
-            <button type="button" className="btn btn-sm btn-link text-muted border border-secondary me-2" onClick={onClickEditButton}>
-              <span className="material-symbols-outlined fs-5">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
-            </button>
-            <button type="button" className="btn btn-sm btn-link text-muted border border-secondary" onClick={openPageSelectModal}>
-              <span className="material-symbols-outlined fs-5">account_tree</span>
-            </button>
-          </div>
+        <div className={`d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
+          <button
+            type="button"
+            className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
+            onClick={onClickEditButton}
+          >
+            <span className="material-symbols-outlined fs-5 mt-1">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
+          </button>
+
+          <button
+            type="button"
+            className="btn btn-sm text-muted border border-secondary d-flex align-items-center justify-content-center"
+            onClick={openPageSelectModal}
+          >
+            <span className="material-symbols-outlined fs-5 mt-1">account_tree</span>
+          </button>
         </div>
-        {isOpened
+      </div>
+
+      {isOpened
           && (
             <PageSelectModal />
           )}
-      </div>
     </div>
   );
 };
