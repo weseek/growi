@@ -8,6 +8,7 @@ import { GlobalNotificationSettingEvent } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
+import { configManager } from '../service/config-manager';
 
 /**
  * @swagger
@@ -129,18 +130,23 @@ import UpdatePost from '../models/update-post';
  */
 
 /* eslint-disable no-use-before-define */
+/**
+ * @type { (crowi: import('../crowi').default, app) => any }
+ */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
 
+  /** @type {import('../models/page').PageModel} */
   const Page = crowi.model('Page');
+
   const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');
 
-  const { configManager, xssService } = crowi;
+  const { xssService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
 
   const Xss = require('~/services/xss/index');
