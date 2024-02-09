@@ -31,10 +31,12 @@ type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedFileType: AcceptedUploadFileType,
   onChange?: (value: string) => void,
+  onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
   indentSize?: number,
   editorTheme?: string,
+  editorKeymap?: string,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
@@ -46,6 +48,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     onScroll,
     indentSize,
     editorTheme,
+    editorKeymap,
   } = props;
 
   const containerRef = useRef(null);
@@ -158,6 +161,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, editorTheme]);
 
+
+  useEffect(() => {
+
+    const keymap = editorKeymap ?? 'default';
+    const extension = getKeymap(keymap, onSave);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, editorKeymap, onSave]);
 
   const {
     getRootProps,

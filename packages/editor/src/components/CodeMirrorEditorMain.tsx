@@ -1,10 +1,9 @@
 import { useEffect } from 'react';
 
-import { type Extension, Prec } from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
-import { getKeymap } from '../services';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
@@ -73,26 +72,18 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-  useEffect(() => {
-
-    const keymap = editorKeymap ?? 'default';
-    const extension = getKeymap(keymap, onSave);
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorKeymap, onSave]);
-
 
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      onSave={onSave}
       onUpload={onUpload}
       onScroll={onScroll}
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
       editorTheme={editorTheme}
+      editorKeymap={editorKeymap}
     />
   );
 };
