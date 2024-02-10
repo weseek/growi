@@ -19,6 +19,6 @@ export interface IPageService {
   shortBodiesMapByPageIds(pageIds?: ObjectId[], user?): Promise<Record<string, string | null>>,
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity,
   canDeleteCompletely(
-    page: PageDocument, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+    page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
   ): boolean,
 }

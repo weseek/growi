@@ -150,7 +150,7 @@ const routerFactory = (crowi: Crowi): Router => {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
-        // TODO: use pageService.getCreatorIdForCanDelete to get creatorId (add story number)
+        // TODO: use pageService.getCreatorIdForCanDelete to get creatorId (https://redmine.weseek.co.jp/issues/140574)
         const canDeleteCompletely = pageService.canDeleteCompletely(page, page.creator, req.user, false, userRelatedGroups); // use normal delete config
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))

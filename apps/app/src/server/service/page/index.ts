@@ -207,7 +207,7 @@ class PageService implements IPageService {
    */
   canDeleteCompletely(
       page: PageDocument,
-      creatorId: ObjectIdLike,
+      creatorId: ObjectIdLike | null,
       operator: any | null,
       isRecursively: boolean,
       userRelatedGroups: PopulatedGrantedGroup[],
@@ -251,18 +251,18 @@ class PageService implements IPageService {
   }
 
   // When page is empty, the 'canDelete' judgement should be done using the creator of the closest non-empty ancestor page.
-  async getCreatorIdForCanDelete(page: PageDocument): Promise<ObjectIdLike> {
+  async getCreatorIdForCanDelete(page: PageDocument): Promise<ObjectIdLike | null> {
     if (page.isEmpty) {
       const Page = mongoose.model<IPage, PageModel>('Page');
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      return notEmptyClosestAncestor.creator;
+      return notEmptyClosestAncestor?.creator ?? null;
     }
 
-    return page.creator;
+    return page.creator ?? null;
   }
 
   // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
-  canDelete(page: PageDocument, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
+  canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean {
     if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
@@ -288,7 +288,7 @@ class PageService implements IPageService {
   }
 
   private canDeleteLogic(
-      creatorId: ObjectIdLike,
+      creatorId: ObjectIdLike | null,
       operator,
       isRecursively: boolean,
       authority: IPageDeleteConfigValueToProcessValidation | null,

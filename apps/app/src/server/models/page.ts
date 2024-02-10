@@ -79,6 +79,7 @@ export interface PageModel extends Model<PageDocument> {
     templateBody?: string,
     templateTags?: string[],
   }>
+  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
