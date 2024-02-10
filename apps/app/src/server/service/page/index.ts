@@ -217,7 +217,7 @@ class PageService implements IPageService {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const pageRecursiveCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority');
 
-    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, operator, userRelatedGroups)) return false;
+    if (!this.canDeleteCompletelyAsMultiGroupGrantedPage(page, creatorId, operator, userRelatedGroups)) return false;
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
@@ -227,15 +227,18 @@ class PageService implements IPageService {
   /**
    * If page is multi-group granted, check if operator is allowed to completely delete the page.
    * see: https://dev.growi.org/656745fa52eafe1cf1879508#%E5%AE%8C%E5%85%A8%E3%81%AB%E5%89%8A%E9%99%A4%E3%81%99%E3%82%8B%E6%93%8D%E4%BD%9C
+   * creatorId must be obtained by getCreatorIdForCanDelete
    */
-  canDeleteCompletelyAsMultiGroupGrantedPage(page: PageDocument, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]): boolean {
+  canDeleteCompletelyAsMultiGroupGrantedPage(
+      page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[],
+  ): boolean {
     const pageCompleteDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority');
     const isAllGroupMembershipRequiredForPageCompleteDeletion = this.crowi.configManager.getConfig(
       'crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion',
     );
 
     const isAdmin = operator?.admin ?? false;
-    const isAuthor = operator?._id == null ? false : operator._id.equals(page.creator);
+    const isAuthor = operator?._id == null ? false : operator._id.equals(creatorId);
     const isAdminOrAuthor = isAdmin || isAuthor;
 
     if (page.grant === PageGrant.GRANT_USER_GROUP
