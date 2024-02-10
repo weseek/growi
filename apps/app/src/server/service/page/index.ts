@@ -199,13 +199,15 @@ class PageService implements IPageService {
 
   /**
    * Check if page can be deleted completely.
-   * Use pageGrantService.getUserRelatedGroups before execution of canDeleteCompletely to get value for userRelatedGroups.
-   * Do NOT use getUserRelatedGrantedGroups inside this method, because canDeleteCompletely should not be async as for now.
-   * The reason for this is because canDeleteCompletely is called in /page-listing/info in a for loop,
+   * Use the following methods before execution of canDeleteCompletely to get params.
+   *   - pageService.getCreatorIdForCanDelete: creatorId
+   *   - pageGrantService.getUserRelatedGroups: userRelatedGroups
+   * Do NOT make this method async as for now, because canDeleteCompletely is called in /page-listing/info in a for loop,
    * and /page-listing/info should not be an execution heavy API.
    */
   canDeleteCompletely(
       page: PageDocument,
+      creatorId: ObjectIdLike,
       operator: any | null,
       isRecursively: boolean,
       userRelatedGroups: PopulatedGrantedGroup[],
@@ -219,7 +221,7 @@ class PageService implements IPageService {
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageCompleteDeletionAuthority, pageRecursiveCompleteDeletionAuthority);
 
-    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   /**
@@ -248,7 +250,19 @@ class PageService implements IPageService {
     return true;
   }
 
-  canDelete(page: PageDocument, operator: any | null, isRecursively: boolean): boolean {
+  // When page is empty, the 'canDelete' judgement should be done using the creator of the closest non-empty ancestor page.
+  async getCreatorIdForCanDelete(page: PageDocument): Promise<ObjectIdLike> {
+    if (page.isEmpty) {
+      const Page = mongoose.model<IPage, PageModel>('Page');
+      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
+      return notEmptyClosestAncestor.creator;
+    }
+
+    return page.creator;
+  }
+
+  // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
+  canDelete(page: PageDocument, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean): boolean {
     if (operator == null || isTopPage(page.path) || isUsersTopPage(page.path)) return false;
 
     const pageDeletionAuthority = this.crowi.configManager.getConfig('crowi', 'security:pageDeletionAuthority');
@@ -256,7 +270,7 @@ class PageService implements IPageService {
 
     const [singleAuthority, recursiveAuthority] = prepareDeleteConfigValuesForCalc(pageDeletionAuthority, pageRecursiveDeletionAuthority);
 
-    return this.canDeleteLogic(page.creator, operator, isRecursively, singleAuthority, recursiveAuthority);
+    return this.canDeleteLogic(creatorId, operator, isRecursively, singleAuthority, recursiveAuthority);
   }
 
   canDeleteUserHomepageByConfig(): boolean {
@@ -328,12 +342,14 @@ class PageService implements IPageService {
       pages: PageDocument[],
       user: IUserHasId,
       isRecursively: boolean,
-      canDeleteFunction: (page: PageDocument, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
+      canDeleteFunction: (
+        page: PageDocument, creatorId: ObjectIdLike, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+      ) => boolean,
   ): Promise<PageDocument[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
       if (p.isEmpty) return true;
-      const canDelete = canDeleteFunction(p, user, isRecursively, userRelatedGroups);
+      const canDelete = canDeleteFunction(p, p.creator, user, isRecursively, userRelatedGroups);
       return canDelete;
     });
 
@@ -420,18 +436,12 @@ class PageService implements IPageService {
 
     const subscription = await Subscription.findByUserIdAndTargetId(user._id, pageId);
 
-    let creatorId = page.creator;
-    if (page.isEmpty) {
-      // Need non-empty ancestor page to get its creatorId because empty page does NOT have it.
-      // Use creatorId of ancestor page to determine whether the empty page is deletable
-      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      creatorId = notEmptyClosestAncestor.creator;
-    }
+    const creatorId = await this.getCreatorIdForCanDelete(page);
 
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
 
-    const isDeletable = this.canDelete(page, user, false);
-    const isAbleToDeleteCompletely = this.canDeleteCompletely(page, user, false, userRelatedGroups); // use normal delete config
+    const isDeletable = this.canDelete(page, creatorId, user, false);
+    const isAbleToDeleteCompletely = this.canDeleteCompletely(page, creatorId, user, false, userRelatedGroups); // use normal delete config
 
     return {
       data: page,

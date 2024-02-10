@@ -18,5 +18,7 @@ export interface IPageService {
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>,
   shortBodiesMapByPageIds(pageIds?: ObjectId[], user?): Promise<Record<string, string | null>>,
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity,
-  canDeleteCompletely(page: PageDocument, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]): boolean,
+  canDeleteCompletely(
+    page: PageDocument, creatorId: ObjectIdLike, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+  ): boolean,
 }

@@ -573,15 +573,7 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Empty pages cannot be single deleted', 'single_deletion_empty_pages'));
     }
 
-    let creator;
-    if (page.isEmpty) {
-      // If empty, the creator is inherited from the closest non-empty ancestor page.
-      const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      creator = notEmptyClosestAncestor.creator;
-    }
-    else {
-      creator = page.creator;
-    }
+    const creatorId = await crowi.pageService.getCreatorIdForCanDelete(page);
 
     debug('Delete page', page._id, page.path);
 
@@ -615,8 +607,8 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!crowi.pageService.canDelete(page.path, creator, req.user, isRecursively)) {
-          return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
+        if (!crowi.pageService.canDelete(page, creatorId, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You cannot delete this page', 'user_not_admin'));
         }
 
         if (pagePathUtils.isUsersHomepage(page.path)) {
