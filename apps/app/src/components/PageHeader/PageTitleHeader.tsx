@@ -61,27 +61,25 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
 
   return (
-    <div className="row">
-      <div className="col-4">
-        {isRenameInputShown
-          ? (
-            <div className="flex-fill">
-              <ClosableTextInput
-                value={editedPageTitle}
-                placeholder={t('Input page name')}
-                onPressEnter={onPressEnter}
-                onPressEscape={onPressEscape}
-                validationTarget={ValidationTarget.PAGE}
-                handleInputChange={onInputChange}
-              />
-            </div>
-          )
-          : (
-            <h2 onClick={onClickPageTitle}>
-              {pageTitle}
-            </h2>
-          )}
-      </div>
-    </div>
+    <>
+      {isRenameInputShown
+        ? (
+          <div className="page-title-header-input">
+            <ClosableTextInput
+              useAutosizeInput
+              value={editedPageTitle}
+              onPressEnter={onPressEnter}
+              onPressEscape={onPressEscape}
+              handleInputChange={onInputChange}
+              validationTarget={ValidationTarget.PAGE}
+            />
+          </div>
+        )
+        : (
+          <h2 onClick={onClickPageTitle}>
+            {pageTitle}
+          </h2>
+        )}
+    </>
   );
 };

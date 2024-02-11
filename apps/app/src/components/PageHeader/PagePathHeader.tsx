@@ -95,14 +95,17 @@ export const PagePathHeader: FC<Props> = (props) => {
       >
         {isRenameInputShown
           ? (
-            <ClosableTextInput
-              value={editedPagePath}
-              placeholder={t('Input page name')}
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              validationTarget={ValidationTarget.PAGE}
-              handleInputChange={onInputChange}
-            />
+            <div className="page-path-header-input me-2">
+              <ClosableTextInput
+                useAutosizeInput
+                value={editedPagePath}
+                placeholder={t('Input page name')}
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                handleInputChange={onInputChange}
+                validationTarget={ValidationTarget.PAGE}
+              />
+            </div>
           )
           : (
             <div className="me-2">
@@ -131,9 +134,9 @@ export const PagePathHeader: FC<Props> = (props) => {
       </div>
 
       {isOpened
-          && (
-            <PageSelectModal />
-          )}
+        && (
+          <PageSelectModal />
+        )}
     </div>
   );
 };

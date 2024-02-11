@@ -13,7 +13,7 @@ type ClosableTextInputProps = {
   value?: string
   placeholder?: string
   validationTarget?: string,
-  useAutosize?: boolean
+  useAutosizeInput?: boolean
   onPressEnter?(inputText: string | null): void
   onPressEscape?: () => void
   onClickOutside?(): void
@@ -134,7 +134,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
 
   return (
     <div>
-      { props.useAutosize
+      { props.useAutosizeInput
         ? <AutosizeInput {...inputProps} />
         : <input className="form-control" {...inputProps} />
       }
