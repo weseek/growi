@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
@@ -67,11 +67,29 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
+  const clickOutSideHandler = useCallback((e) => {
+    const container = document.getElementById('page-path-header');
+
+    if (container && !container.contains(e.target)) {
+      setRenameInputShown(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    document.addEventListener('click', clickOutSideHandler);
+
+    return () => {
+      document.removeEventListener('click', clickOutSideHandler);
+    };
+  }, [clickOutSideHandler]);
+
+
   return (
     <div
+      id="page-path-header"
       className="d-flex align-items-center"
-      onMouseEnter={() => setButtonShown(true)}
       onMouseLeave={() => setButtonShown(false)}
+      onMouseEnter={() => setButtonShown(true)}
     >
       {isRenameInputShown
         ? (
@@ -83,7 +101,6 @@ export const PagePathHeader: FC<Props> = (props) => {
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
-              onClickOutside={() => setRenameInputShown(false)}
               validationTarget={ValidationTarget.PAGE}
             />
           </div>
