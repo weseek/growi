@@ -16,7 +16,7 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <nav className={`${styles['page-header']} `}>
+    <nav className={`${styles['page-header']}`}>
       <PagePathHeader
         currentPage={currentPage}
       />

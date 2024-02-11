@@ -87,50 +87,47 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
+      className="d-flex align-items-center"
       onMouseLeave={() => setButtonShown(false)}
+      onMouseEnter={() => setButtonShown(true)}
     >
-      <div
-        className="d-flex align-items-center"
-        onMouseEnter={() => setButtonShown(true)}
-      >
-        {isRenameInputShown
-          ? (
-            <div className="page-path-header-input me-2">
-              <ClosableTextInput
-                useAutosizeInput
-                value={editedPagePath}
-                placeholder={t('Input page name')}
-                onPressEnter={onPressEnter}
-                onPressEscape={onPressEscape}
-                onChange={onInputChange}
-                validationTarget={ValidationTarget.PAGE}
-              />
-            </div>
-          )
-          : (
-            <div className="me-2">
-              <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
-            </div>
-          )
-        }
+      {isRenameInputShown
+        ? (
+          <div className="page-path-header-input me-2">
+            <ClosableTextInput
+              useAutosizeInput
+              value={editedPagePath}
+              placeholder={t('Input page name')}
+              onPressEnter={onPressEnter}
+              onPressEscape={onPressEscape}
+              onChange={onInputChange}
+              validationTarget={ValidationTarget.PAGE}
+            />
+          </div>
+        )
+        : (
+          <div className="me-2">
+            <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+          </div>
+        )
+      }
 
-        <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
-          <button
-            type="button"
-            className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
-            onClick={onClickEditButton}
-          >
-            <span className="material-symbols-outlined fs-5 mt-1">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
-          </button>
+      <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
+        <button
+          type="button"
+          className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
+          onClick={onClickEditButton}
+        >
+          <span className="material-symbols-outlined fs-5 mt-1">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
+        </button>
 
-          <button
-            type="button"
-            className="btn btn-sm text-muted border border-secondary d-flex align-items-center justify-content-center"
-            onClick={openPageSelectModal}
-          >
-            <span className="material-symbols-outlined fs-5 mt-1">account_tree</span>
-          </button>
-        </div>
+        <button
+          type="button"
+          className="btn btn-sm text-muted border border-secondary d-flex align-items-center justify-content-center"
+          onClick={openPageSelectModal}
+        >
+          <span className="material-symbols-outlined fs-5 mt-1">account_tree</span>
+        </button>
       </div>
 
       {isOpened
