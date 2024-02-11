@@ -62,7 +62,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   return (
     <div className="d-flex">
-      <div className="me-2">
+      <div className="me-1">
         {isRenameInputShown
           ? (
             <div className="page-title-header-input">

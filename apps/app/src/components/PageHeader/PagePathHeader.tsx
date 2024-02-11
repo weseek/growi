@@ -86,12 +86,12 @@ export const PagePathHeader: FC<Props> = (props) => {
     <div
       id="page-path-header"
       className="d-flex"
-      onMouseLeave={() => setButtonShown(false)}
       onMouseEnter={() => setButtonShown(true)}
+      onMouseLeave={() => setButtonShown(false)}
     >
-      {isRenameInputShown
-        ? (
-          <div className="page-path-header-input me-2">
+      <div className="me-2">
+        {isRenameInputShown
+          ? (
             <ClosableTextInput
               useAutosizeInput
               value={editedPagePath}
@@ -101,14 +101,12 @@ export const PagePathHeader: FC<Props> = (props) => {
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
             />
-          </div>
-        )
-        : (
-          <div className="me-2">
+          )
+          : (
             <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
-          </div>
-        )
-      }
+          )
+        }
+      </div>
 
       <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
         <button
@@ -128,10 +126,7 @@ export const PagePathHeader: FC<Props> = (props) => {
         </button>
       </div>
 
-      {isOpened
-        && (
-          <PageSelectModal />
-        )}
+      {isOpened && <PageSelectModal />}
     </div>
   );
 };
