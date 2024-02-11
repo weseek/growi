@@ -1,22 +1,20 @@
 import React from 'react';
 
-import type { IUserHasId } from '@growi/core';
+import { USER_STATUS, type IUserHasId } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 import { Link as ScrollLink } from 'react-scroll';
 
-import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
-
-import styles from './ContentLinkButtons.module.scss';
-
-const BookMarkLinkButton = React.memo(() => {
-
+const BookMarkLinkButton = React.memo(({ fontSize }: { fontSize: number }) => {
+  const { t } = useTranslation();
   return (
     <ScrollLink to="bookmarks-list" offset={-120}>
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm px-2"
+        className="btn btn-sm btn-outline-neutral-secondary rounded-pill d-flex align-items-center"
+        style={{ fontSize }}
       >
-        <span className="material-symbols-outlined">bookmark</span>
-        <span>Bookmarks</span>
+        <span className="material-symbols-outlined p-0">bookmark</span>
+        <span>{t('footer.bookmarks')}</span>
       </button>
     </ScrollLink>
   );
@@ -24,16 +22,18 @@ const BookMarkLinkButton = React.memo(() => {
 
 BookMarkLinkButton.displayName = 'BookMarkLinkButton';
 
-const RecentlyCreatedLinkButton = React.memo(() => {
-
+const RecentlyCreatedLinkButton = React.memo(({ fontSize }: { fontSize: number }) => {
+  const { t } = useTranslation();
   return (
     <ScrollLink to="recently-created-list" offset={-120}>
       <button
         type="button"
-        className="btn btn-outline-secondary btn-sm px-3"
+        className="btn btn-sm btn-outline-neutral-secondary rounded-pill d-flex align-items-center"
+        style={{ fontSize }}
       >
-        <i className={`${styles['grw-icon-container-recently-created']} grw-icon-container-recently-created me-2`}><RecentlyCreatedIcon /></i>
-        <span>Recently Created</span>
+        {/* TODO: use <span className="growi-custom-icons">recently_created</span> */}
+        <span className="material-symbols-outlined p-0">bookmark</span>
+        <span>{t('footer.recently_created')}</span>
       </button>
     </ScrollLink>
   );
@@ -47,18 +47,23 @@ export type ContentLinkButtonsProps = {
 }
 
 export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {
-
   const { author } = props;
+  const fontSize = 12;
 
-  if (author == null || author.status === 4) {
+  if (author == null || author.status === USER_STATUS.DELETED) {
     return <></>;
   }
 
   return (
-    <div className="mt-3 d-flex justify-content-between">
-      <BookMarkLinkButton />
-      <RecentlyCreatedLinkButton />
+    <div className="container">
+      <div className="row">
+        <div className="col-5 p-0 d-flex align-items-center justify-content-center">
+          <BookMarkLinkButton fontSize={fontSize} />
+        </div>
+        <div className="col-7 p-0 d-flex align-items-center justify-content-center">
+          <RecentlyCreatedLinkButton fontSize={fontSize} />
+        </div>
+      </div>
     </div>
   );
-
 };
