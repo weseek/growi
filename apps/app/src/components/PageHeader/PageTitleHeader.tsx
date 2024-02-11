@@ -9,6 +9,7 @@ import { useTranslation } from 'next-i18next';
 import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
+import { CopyDropdown } from '../Common/CopyDropdown';
 
 import type { Props } from './PagePathHeader';
 import { usePagePathRenameHandler } from './page-header-utils';
@@ -61,26 +62,37 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   return (
     <div className="d-flex">
-      {isRenameInputShown
-        ? (
-          <div className="page-title-header-input">
-            <ClosableTextInput
-              useAutosizeInput
-              value={editedPageTitle}
-              placeholder={t('Input page name')}
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              onClickOutside={() => setRenameInputShown(false)}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </div>
-        )
-        : (
-          <h2 onClick={onClickPageTitle}>
-            {pageTitle}
-          </h2>
-        )}
+      <div className="me-2">
+        {isRenameInputShown
+          ? (
+            <div className="page-title-header-input">
+              <ClosableTextInput
+                useAutosizeInput
+                value={editedPageTitle}
+                placeholder={t('Input page name')}
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                onChange={onInputChange}
+                onClickOutside={() => setRenameInputShown(false)}
+                validationTarget={ValidationTarget.PAGE}
+              />
+            </div>
+          )
+          : (
+            <h2 onClick={onClickPageTitle}>
+              {pageTitle}
+            </h2>
+          )}
+      </div>
+
+      <CopyDropdown
+        pageId={currentPage._id}
+        pagePath={currentPage.path}
+        dropdownToggleId={`copydropdown-${currentPage._id}`}
+        dropdownToggleClassName="p-2"
+      >
+        <span className="material-symbols-outlined fs-5">content_paste</span>
+      </CopyDropdown>
     </div>
   );
 };
