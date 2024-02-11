@@ -16,13 +16,13 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <nav className={`${styles['page-header']}`}>
+    <div className={`${styles['page-header']}`}>
       <PagePathHeader
         currentPage={currentPage}
       />
       <PageTitleHeader
         currentPage={currentPage}
       />
-    </nav>
+    </div>
   );
 };

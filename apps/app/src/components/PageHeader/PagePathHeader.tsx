@@ -19,6 +19,7 @@ export type Props = {
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
+  const { t } = useTranslation();
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
@@ -29,10 +30,9 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
+  const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
-
-  const { t } = useTranslation();
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
@@ -65,8 +65,6 @@ export const PagePathHeader: FC<Props> = (props) => {
     }
   }, [currentPagePath, editedPagePath, isRenameInputShown, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const isOpened = PageSelectModalData?.isOpened ?? false;
-
   const clickOutSideHandler = useCallback((e) => {
     const container = document.getElementById('page-path-header');
 
@@ -87,7 +85,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className="d-flex align-items-center"
+      className="d-flex"
       onMouseLeave={() => setButtonShown(false)}
       onMouseEnter={() => setButtonShown(true)}
     >

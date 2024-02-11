@@ -15,6 +15,7 @@ import { usePagePathRenameHandler } from './page-header-utils';
 
 
 export const PageTitleHeader: FC<Props> = (props) => {
+  const { t } = useTranslation();
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
@@ -25,8 +26,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
-
-  const { t } = useTranslation();
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
@@ -68,6 +67,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
             <ClosableTextInput
               useAutosizeInput
               value={editedPageTitle}
+              placeholder={t('Input page name')}
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
