@@ -102,7 +102,7 @@ export const PagePathHeader: FC<Props> = (props) => {
                 placeholder={t('Input page name')}
                 onPressEnter={onPressEnter}
                 onPressEscape={onPressEscape}
-                handleInputChange={onInputChange}
+                onChange={onInputChange}
                 validationTarget={ValidationTarget.PAGE}
               />
             </div>

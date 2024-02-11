@@ -70,7 +70,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
               value={editedPageTitle}
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
-              handleInputChange={onInputChange}
+              onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
             />
           </div>

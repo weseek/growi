@@ -17,7 +17,7 @@ type ClosableTextInputProps = {
   onPressEnter?(inputText: string | null): void
   onPressEscape?: () => void
   onClickOutside?(): void
-  handleInputChange?: (string) => void
+  onChange?(inputText: string): void
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
@@ -45,7 +45,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     setInputText(inputText);
     setIsAbleToShowAlert(true);
 
-    props.handleInputChange?.(inputText);
+    props.onChange?.(inputText);
   };
 
   const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
