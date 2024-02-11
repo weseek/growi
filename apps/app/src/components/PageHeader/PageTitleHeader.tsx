@@ -71,6 +71,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
+              onClickOutside={() => setRenameInputShown(false)}
               validationTarget={ValidationTarget.PAGE}
             />
           </div>
