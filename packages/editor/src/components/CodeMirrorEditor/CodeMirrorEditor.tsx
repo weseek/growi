@@ -178,8 +178,19 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return;
     }
 
+    const handleCtrlN = (event: KeyboardEvent) => {
+      if (event.ctrlKey && event.key === 'n') {
+        event.preventDefault();
+      }
+    };
+
     // Prevent these Keybind from overwriting the originally defined keymap.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(keymapExtension));
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(
+      [
+        Prec.low(keymapExtension),
+        EditorView.domEventHandlers({ keydown: handleCtrlN }),
+      ],
+    );
     return cleanupFunction;
 
   }, [codeMirrorEditor, keymapExtension, onSave]);
