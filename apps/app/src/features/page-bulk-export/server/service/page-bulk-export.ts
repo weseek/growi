@@ -4,12 +4,18 @@ import { Writable } from 'stream';
 
 import { type IPage, isPopulated } from '@growi/core';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
-import archiver, { Archiver } from 'archiver';
+import type { Archiver } from 'archiver';
+import archiver from 'archiver';
 import mongoose from 'mongoose';
+import type { Browser } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import remark from 'remark';
+import html from 'remark-html';
 
-import { PageModel, PageDocument } from '~/server/models/page';
+import type { PageModel, PageDocument } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
+import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
@@ -28,7 +34,7 @@ class PageBulkExportService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find())
-      .addConditionToListOnlyDescendants(basePagePath);
+      .addConditionToListWithDescendants(basePagePath);
 
     return builder
       .query
@@ -37,9 +43,9 @@ class PageBulkExportService {
       .cursor({ batchSize: 100 }); // convert to stream
   }
 
-  setUpZipArchiver(): Archiver {
+  setUpZipArchiver(format: string): Archiver {
     const timeStamp = (new Date()).getTime();
-    const zipFilePath = path.join(__dirname, `${timeStamp}.md.zip`);
+    const zipFilePath = path.join(__dirname, `${timeStamp}.${format}.zip`);
 
     const archive = archiver('zip', {
       zlib: { level: 9 }, // maximum compression
@@ -63,20 +69,25 @@ class PageBulkExportService {
   async bulkExportWithBasePagePath(basePagePath: string, format: string): Promise<void> {
     // get pages with descendants as stream
     const pageReadableStream = this.getPageReadableStream(basePagePath);
+    const extension = format === PageBulkExportFormat.pdf ? 'pdf' : 'md';
 
-    const archive = this.setUpZipArchiver();
+    const archive = this.setUpZipArchiver(extension);
+
+    // Create a browser instance
+    const browser = await puppeteer.launch();
 
     const pagesWritable = new Writable({
       objectMode: true,
-      async write(page: PageDocument, encoding, callback) {
+      write: async(page: PageDocument, encoding, callback) => {
         try {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
-            const markdownBody = revision.body;
+            const body = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body, browser)) : revision.body;
+
             // write to zip
             const pathNormalized = normalizePath(page.path);
-            archive.append(markdownBody, { name: `${pathNormalized}.md` });
+            archive.append(body, { name: `${pathNormalized}.${extension}` });
           }
         }
         catch (err) {
@@ -95,6 +106,29 @@ class PageBulkExportService {
     pageReadableStream.pipe(pagesWritable);
 
     await streamToPromise(archive);
+
+    await browser.close();
+  }
+
+  async convertMdToPdf(md: string, browser: Browser): Promise<Buffer> {
+    const htmlString = (await remark()
+      .use(html)
+      .process(md))
+      .toString();
+    // Create a new page
+    const page = await browser.newPage();
+
+    await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+    await page.emulateMediaType('screen');
+    const result = await page.pdf({
+      margin: {
+        top: '100px', right: '50px', bottom: '100px', left: '50px',
+      },
+      printBackground: true,
+      format: 'A4',
+    });
+
+    return result;
   }
 
 }

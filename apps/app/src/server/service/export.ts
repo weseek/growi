@@ -7,13 +7,13 @@ import archiver from 'archiver';
 import { toArrayIfNot } from '~/utils/array-utils';
 import loggerFactory from '~/utils/logger';
 
-import CollectionProgress from '../models/vo/collection-progress';
+import type CollectionProgress from '../models/vo/collection-progress';
 import CollectionProgressingStatus from '../models/vo/collection-progressing-status';
 
-import AppService from './app';
+import type AppService from './app';
 import ConfigLoader from './config-loader';
-import GrowiBridgeService from './growi-bridge';
-import { ZipFileStat } from './interfaces/export';
+import type GrowiBridgeService from './growi-bridge';
+import type { ZipFileStat } from './interfaces/export';
 
 
 const logger = loggerFactory('growi:services:ExportService');
