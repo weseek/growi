@@ -171,6 +171,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       setKeymapExtension(await getKeymap(name ?? 'default'));
     };
     settingKeyMap(editorKeymap as KeyMapMode);
+
   }, [codeMirrorEditor, editorKeymap, setKeymapExtension]);
 
   useEffect(() => {
@@ -178,19 +179,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return;
     }
 
-    const handleCtrlN = (event: KeyboardEvent) => {
-      if (event.ctrlKey && event.key === 'n') {
-        event.preventDefault();
-      }
-    };
-
     // Prevent these Keybind from overwriting the originally defined keymap.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(
-      [
-        Prec.low(keymapExtension),
-        EditorView.domEventHandlers({ keydown: handleCtrlN }),
-      ],
-    );
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(keymapExtension));
     return cleanupFunction;
 
   }, [codeMirrorEditor, keymapExtension, onSave]);
