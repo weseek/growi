@@ -21,7 +21,7 @@ import styles from './PagePathHeader.module.scss';
 const moduleClass = styles['page-path-header'];
 
 
-export type Props = {
+type Props = {
   currentPage: IPagePopulatedToShowRevision
 }
 
@@ -102,13 +102,13 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass}`}
+      className={`d-flex ${moduleClass} small`}
       onMouseEnter={() => setButtonShown(true)}
       onMouseLeave={() => setButtonShown(false)}
     >
       <div className="me-2">
-        {isRenameInputShown
-          ? (
+        { isRenameInputShown && (
+          <div className="position-absolute">
             <ClosableTextInput
               useAutosizeInput
               value={editingParentPagePath}
@@ -119,28 +119,28 @@ export const PagePathHeader: FC<Props> = (props) => {
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
             />
-          )
-          : (
-            <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
-          )
-        }
+          </div>
+        ) }
+        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
+          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+        </div>
       </div>
 
       <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
         <button
           type="button"
-          className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
+          className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
           onClick={onClickEditButton}
         >
-          <span className="material-symbols-outlined fs-5 mt-1">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
+          <span className="material-symbols-outlined fs-6">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
         </button>
 
         <button
           type="button"
-          className="btn btn-sm text-muted border border-secondary d-flex align-items-center justify-content-center"
+          className="btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center"
           onClick={openPageSelectModal}
         >
-          <span className="material-symbols-outlined fs-5 mt-1">account_tree</span>
+          <span className="material-symbols-outlined fs-6">account_tree</span>
         </button>
       </div>
 
