@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 
-import { SubscriptionStatusType, type Nullable } from '@growi/core';
+import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
-import { OptionsToSave } from '~/interfaces/page-operation';
-import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
+import type {
+  IApiv3PageCreateParams, IApiv3PageCreateResponse, IApiv3PageUpdateParams, IApiv3PageUpdateResponse,
+} from '~/interfaces/apiv3';
+import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -14,6 +16,7 @@ import { apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
+
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
@@ -87,71 +90,14 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
-// TODO: define return type
-export const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
-  // clone
-  const params = Object.assign(tmpParams, {
-    path: pagePath,
-    body: markdown,
-  });
-
-  const res = await apiv3Post('/pages/', params);
-  const { page, tags, revision } = res.data;
-
-  return { page, tags, revision };
+export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3PageCreateResponse> => {
+  const res = await apiv3Post<IApiv3PageCreateResponse>('/page', params);
+  return res.data;
 };
 
-// TODO: define return type
-const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
-  // clone
-  const params = Object.assign(tmpParams, {
-    page_id: pageId,
-    revision_id: revisionId,
-    body: markdown,
-  });
-
-  const res: any = await apiPost('/pages.update', params);
-  if (!res.ok) {
-    throw new Error(res.error);
-  }
-  return res;
-};
-
-type PageInfo= {
-  path: string,
-  pageId: Nullable<string>,
-  revisionId: Nullable<string>,
-}
-
-type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => any;
-
-// TODO: define return type
-export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
-  /* eslint-disable react-hooks/rules-of-hooks */
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  /* eslint-enable react-hooks/rules-of-hooks */
-
-  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
-    const { path, pageId, revisionId } = pageInfo;
-
-    const options: OptionsToSave = Object.assign({}, optionsToSave);
-
-    let res;
-    if (pageId == null || revisionId == null) {
-      res = await createPage(path, markdown, options);
-    }
-    else {
-      if (revisionId == null) {
-        const msg = '\'revisionId\' is required to update page';
-        throw new Error(msg);
-      }
-      res = await updatePage(pageId, revisionId, markdown, options);
-    }
-
-    mutateIsEnabledUnsavedWarning(false);
-
-    return res;
-  }, [mutateIsEnabledUnsavedWarning]);
+export const updatePage = async(params: IApiv3PageUpdateParams): Promise<IApiv3PageUpdateResponse> => {
+  const res = await apiv3Put<IApiv3PageUpdateResponse>('/page', params);
+  return res.data;
 };
 
 export type UpdateStateAfterSaveOption = {

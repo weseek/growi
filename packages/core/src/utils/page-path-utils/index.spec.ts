@@ -52,6 +52,9 @@ describe.concurrent('isCreatablePage test', () => {
   test('should decide creatable or not', () => {
     expect(isCreatablePage('/hoge')).toBeTruthy();
 
+    // starts with multiple slash
+    expect(isCreatablePage('//multiple-slash')).toBeFalsy();
+
     // edge cases
     expect(isCreatablePage('/me')).toBeFalsy();
     expect(isCreatablePage('/me/')).toBeFalsy();
