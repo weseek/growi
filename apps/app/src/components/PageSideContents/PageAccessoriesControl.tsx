@@ -13,12 +13,13 @@ type Props = {
   icon: ReactNode,
   label: ReactNode,
   count?: number,
+  offset?: number,
   onClick?: () => void,
 }
 
 export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
   const {
-    icon, label, count,
+    icon, label, count, offset,
     className,
     onClick,
   } = props;
@@ -34,7 +35,7 @@ export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
         {label}
         {/* Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600 */}
         { count != null
-          ? <CountBadge count={count} />
+          ? <CountBadge count={count} offset={offset} />
           : <div className="px-2"></div>}
       </span>
     </button>
