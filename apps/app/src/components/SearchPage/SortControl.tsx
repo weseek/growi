@@ -1,5 +1,8 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
+
 import { useTranslation } from 'next-i18next';
+
 import { SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
 const { DESC, ASC } = SORT_ORDER;
@@ -30,10 +33,8 @@ const SortControl: FC <Props> = (props: Props) => {
   return (
     <>
       <div className="input-group flex-nowrap">
-        <div>
-          <div className="input-group-text border text-muted" id="btnGroupAddon">
-            {renderOrderIcon()}
-          </div>
+        <div className="input-group-text text-muted border rounded-start" id="btnGroupAddon">
+          {renderOrderIcon()}
         </div>
         <div className="border rounded-end">
           <button
