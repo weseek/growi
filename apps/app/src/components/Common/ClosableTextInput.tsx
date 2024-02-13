@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import AutosizeInput from 'react-input-autosize';
 
 import type { AlertInfo } from '~/client/util/input-validator';
 import { AlertType, inputValidator } from '~/client/util/input-validator';
@@ -12,10 +13,11 @@ type ClosableTextInputProps = {
   value?: string
   placeholder?: string
   validationTarget?: string,
+  useAutosizeInput?: boolean
   onPressEnter?(inputText: string | null): void
   onPressEscape?: () => void
   onClickOutside?(): void
-  handleInputChange?: (string) => void
+  onChange?(inputText: string): void
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
@@ -43,7 +45,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     setInputText(inputText);
     setIsAbleToShowAlert(true);
 
-    props.handleInputChange?.(inputText);
+    props.onChange?.(inputText);
   };
 
   const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,25 +117,27 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     );
   };
 
+  const inputProps = {
+    'data-testid': 'closable-text-input',
+    value: inputText || '',
+    ref: inputRef,
+    type: 'text',
+    placeholder: props.placeholder,
+    name: 'input',
+    onFocus: onFocusHandler,
+    onChange: onChangeHandler,
+    onKeyDown: onKeyDownHandler,
+    onCompositionStart: () => setComposing(true),
+    onCompositionEnd: () => setComposing(false),
+    onBlur: onBlurHandler,
+  };
 
   return (
     <div>
-      <input
-        value={inputText || ''}
-        ref={inputRef}
-        type="text"
-        className="form-control"
-        placeholder={props.placeholder}
-        name="input"
-        data-testid="closable-text-input"
-        onFocus={onFocusHandler}
-        onChange={onChangeHandler}
-        onKeyDown={onKeyDownHandler}
-        onCompositionStart={() => setComposing(true)}
-        onCompositionEnd={() => setComposing(false)}
-        onBlur={onBlurHandler}
-        autoFocus={false}
-      />
+      { props.useAutosizeInput
+        ? <AutosizeInput {...inputProps} />
+        : <input className="form-control" {...inputProps} />
+      }
       {isAbleToShowAlert && <AlertInfo />}
     </div>
   );
