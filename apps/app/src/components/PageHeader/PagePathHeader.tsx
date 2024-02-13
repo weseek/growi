@@ -35,7 +35,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const linkedPagePath = new LinkedPagePath(parentPagePath);
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
-  const [isButtonsShown, setButtonShown] = useState(false);
+  const [isHover, setHover] = useState(false);
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -67,16 +67,10 @@ export const PagePathHeader: FC<Props> = (props) => {
   }, [parentPagePath]);
 
   const onClickEditButton = useCallback(() => {
-    if (isRenameInputShown) {
-      const pathToRename = normalizePath(`${editingParentPagePath}/${dPagePath.latter}`);
-      pagePathRenameHandler(pathToRename, onRenameFinish, onRenameFailure);
-      return;
-    }
-
     // reset
     setEditingParentPagePath(parentPagePath);
     setRenameInputShown(true);
-  }, [isRenameInputShown, parentPagePath, editingParentPagePath, dPagePath.latter, pagePathRenameHandler, onRenameFinish, onRenameFailure]);
+  }, [parentPagePath]);
 
   const clickOutSideHandler = useCallback((e) => {
     const container = document.getElementById('page-path-header');
@@ -103,8 +97,8 @@ export const PagePathHeader: FC<Props> = (props) => {
     <div
       id="page-path-header"
       className={`d-flex ${moduleClass} small`}
-      onMouseEnter={() => setButtonShown(true)}
-      onMouseLeave={() => setButtonShown(false)}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
     >
       <div className="me-2">
         { isRenameInputShown && (
@@ -126,13 +120,13 @@ export const PagePathHeader: FC<Props> = (props) => {
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
+      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
           onClick={onClickEditButton}
         >
-          <span className="material-symbols-outlined fs-6">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
+          <span className="material-symbols-outlined fs-6">edit</span>
         </button>
 
         <button
