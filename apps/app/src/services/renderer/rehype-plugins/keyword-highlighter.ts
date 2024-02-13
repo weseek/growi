@@ -42,7 +42,7 @@ function splitWithKeyword(lowercasedKeyword: string, value: string): string[] {
 function wrapWithEm(textElement: Text): Element {
   return {
     type: 'element',
-    tagName: 'em',
+    tagName: 'mark',
     properties: {
       className: 'highlighted-keyword',
     },
