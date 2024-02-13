@@ -113,6 +113,7 @@ export const PagePathHeader: FC<Props> = (props) => {
               useAutosizeInput
               value={editingParentPagePath}
               placeholder={t('Input page name')}
+              inputClassName="form-control-sm"
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}

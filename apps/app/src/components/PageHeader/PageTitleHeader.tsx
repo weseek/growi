@@ -3,6 +3,7 @@ import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
@@ -21,7 +22,8 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
 
-  const pageTitle = nodePath.basename(currentPagePath) || '/';
+  const dPagePath = new DevidedPagePath(currentPage.path, true);
+  const pageTitle = dPagePath.latter;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
@@ -61,7 +63,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
 
   return (
-    <div className="d-flex">
+    <div className="d-flex align-items-center">
       <div className="me-1">
         {isRenameInputShown
           ? (
@@ -79,9 +81,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
             </div>
           )
           : (
-            <h2 onClick={onClickPageTitle}>
+            <h1 className="mb-0 fs-4" onClick={onClickPageTitle}>
               {pageTitle}
-            </h2>
+            </h1>
           )}
       </div>
 
@@ -89,9 +91,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
         pageId={currentPage._id}
         pagePath={currentPage.path}
         dropdownToggleId={`copydropdown-${currentPage._id}`}
-        dropdownToggleClassName="p-2"
+        dropdownToggleClassName="ms-2 p-1"
       >
-        <span className="material-symbols-outlined fs-5">content_paste</span>
+        <span className="material-symbols-outlined fs-6">content_paste</span>
       </CopyDropdown>
     </div>
   );
