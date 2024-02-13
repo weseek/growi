@@ -1,84 +1,77 @@
-import {
-  FC, useEffect, useMemo, useState,
-} from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { useTranslation } from 'next-i18next';
 
+import { ValidationTarget } from '~/client/util/input-validator';
+import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
-import { PagePathNav } from '../Common/PagePathNav';
+import ClosableTextInput from '../Common/ClosableTextInput';
+import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
-import { TextInputForPageTitleAndPath } from './TextInputForPageTitleAndPath';
 import { usePagePathRenameHandler } from './page-header-utils';
 
-type Props = {
-  currentPagePath: string
+export type Props = {
   currentPage: IPagePopulatedToShowRevision
 }
 
 export const PagePathHeader: FC<Props> = (props) => {
-  const { currentPagePath, currentPage } = props;
+  const { t } = useTranslation();
+  const { currentPage } = props;
+
+  const currentPagePath = currentPage.path;
+  const linkedPagePath = new LinkedPagePath(currentPagePath);
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isButtonsShown, setButtonShown] = useState(false);
-  const [inputText, setInputText] = useState('');
+  const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
-  const { data: editorMode } = useEditorMode();
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
-
-  const onRenameFinish = () => {
-    setRenameInputShown(false);
-  };
-
-  const onRenameFailure = () => {
-    setRenameInputShown(true);
-  };
-
-  const pagePathRenameHandler = usePagePathRenameHandler(currentPage, onRenameFinish, onRenameFailure);
-
-  const stateHandler = { isRenameInputShown, setRenameInputShown };
-
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
-  const isViewMode = editorMode === EditorMode.View;
-  const isEditorMode = !isViewMode;
+  const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const PagePath = useMemo(() => (
-    <>
-      {currentPagePath != null && (
-        <PagePathNav
-          pageId={currentPage._id}
-          pagePath={currentPagePath}
-          isSingleLineMode={isEditorMode}
-        />
-      )}
-    </>
-  ), [currentPage._id, currentPagePath, isEditorMode]);
+  const onRenameFinish = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
 
-  const handleInputChange = (inputText: string) => {
-    setInputText(inputText);
-  };
+  const onRenameFailure = useCallback(() => {
+    setRenameInputShown(true);
+  }, []);
 
-  const handleEditButtonClick = () => {
+  const onInputChange = useCallback((inputText: string) => {
+    setEditedPagePath(inputText);
+  }, []);
+
+  const onPressEnter = useCallback(() => {
+    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
+  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
+
+  const onPressEscape = useCallback(() => {
+    setEditedPagePath(currentPagePath);
+    setRenameInputShown(false);
+  }, [currentPagePath]);
+
+  const onClickEditButton = useCallback(() => {
     if (isRenameInputShown) {
-      pagePathRenameHandler(inputText);
+      pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
     }
     else {
+      setEditedPagePath(currentPagePath);
       setRenameInputShown(true);
     }
-  };
+  }, [currentPagePath, editedPagePath, isRenameInputShown, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
 
-  const buttonStyle = isButtonsShown ? '' : 'd-none';
-
-  const clickOutSideHandler = (e) => {
+  const clickOutSideHandler = useCallback((e) => {
     const container = document.getElementById('page-path-header');
 
     if (container && !container.contains(e.target)) {
       setRenameInputShown(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     document.addEventListener('click', clickOutSideHandler);
@@ -86,45 +79,54 @@ export const PagePathHeader: FC<Props> = (props) => {
     return () => {
       document.removeEventListener('click', clickOutSideHandler);
     };
-  }, []);
+  }, [clickOutSideHandler]);
+
 
   return (
-    <>
-      <div
-        id="page-path-header"
-        onMouseLeave={() => setButtonShown(false)}
-      >
-        <div className="row">
-          <div
-            className="col-4"
-            onMouseEnter={() => setButtonShown(true)}
-          >
-            <TextInputForPageTitleAndPath
-              currentPage={currentPage}
-              stateHandler={stateHandler}
-              inputValue={currentPagePath}
-              CustomComponent={PagePath}
-              handleInputChange={handleInputChange}
+    <div
+      id="page-path-header"
+      className="d-flex"
+      onMouseEnter={() => setButtonShown(true)}
+      onMouseLeave={() => setButtonShown(false)}
+    >
+      <div className="me-2">
+        {isRenameInputShown
+          ? (
+            <ClosableTextInput
+              useAutosizeInput
+              value={editedPagePath}
+              placeholder={t('Input page name')}
+              onPressEnter={onPressEnter}
+              onPressEscape={onPressEscape}
+              onChange={onInputChange}
+              validationTarget={ValidationTarget.PAGE}
             />
-          </div>
-          <div className={`${buttonStyle} col-4 row`}>
-            <div className="col-4">
-              <button type="button" onClick={handleEditButtonClick}>
-                {isRenameInputShown ? <span className="material-symbols-outlined">check_circle</span> : <span className="material-symbols-outlined">edit</span>}
-              </button>
-            </div>
-            <div className="col-4">
-              <button type="button" onClick={openPageSelectModal}>
-                <span className="material-symbols-outlined">account_tree</span>
-              </button>
-            </div>
-          </div>
-          {isOpened
-            && (
-              <PageSelectModal />
-            )}
-        </div>
+          )
+          : (
+            <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+          )
+        }
       </div>
-    </>
+
+      <div className={`page-path-header-buttons d-flex align-items-center ${isButtonsShown ? '' : 'd-none'}`}>
+        <button
+          type="button"
+          className="btn btn-sm text-muted border border-secondary me-2 d-flex align-items-center justify-content-center"
+          onClick={onClickEditButton}
+        >
+          <span className="material-symbols-outlined fs-5 mt-1">{isRenameInputShown ? 'check_circle' : 'edit'}</span>
+        </button>
+
+        <button
+          type="button"
+          className="btn btn-sm text-muted border border-secondary d-flex align-items-center justify-content-center"
+          onClick={openPageSelectModal}
+        >
+          <span className="material-symbols-outlined fs-5 mt-1">account_tree</span>
+        </button>
+      </div>
+
+      {isOpened && <PageSelectModal />}
+    </div>
   );
 };

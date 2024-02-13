@@ -1,0 +1,14 @@
+.page-header :global {
+  .page-title-header-input {
+    input {
+      font-size: 2rem;
+    }
+  }
+
+  .page-path-header-buttons {
+    button {
+      width: 25px;
+      height: 20px;
+    }
+  }
+}

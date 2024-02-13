@@ -4,7 +4,7 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import { useOnTemplateButtonClicked } from '~/client/services/use-on-template-button-clicked';
+import { useCreateTemplatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import type { TargetType, LabelType } from '~/interfaces/template';
 
@@ -53,19 +53,19 @@ type CreateTemplateModalProps = {
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   path, isOpen, onClose,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
-  const { onClickHandler: onClickTemplateButton, isPageCreating } = useOnTemplateButtonClicked(path);
+  const { createTemplate, isCreating, isCreatable } = useCreateTemplatePage();
 
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
-      await onClickTemplateButton(label);
+      await createTemplate?.(label);
       onClose();
     }
     catch (err) {
-      toastError(err);
+      toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [onClickTemplateButton, onClose]);
+  }, [createTemplate, path, t]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 
@@ -74,11 +74,15 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       <TemplateCard
         target={target}
         label={label}
-        isPageCreating={isPageCreating}
+        isPageCreating={isCreating}
         onClickHandler={() => onClickTemplateButtonHandler(label)}
       />
     </div>
   );
+
+  if (!isCreatable) {
+    return <></>;
+  }
 
   return (
     <Modal isOpen={isOpen} toggle={onClose} data-testid="page-template-modal">

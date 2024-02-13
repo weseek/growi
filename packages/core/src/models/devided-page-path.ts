@@ -5,12 +5,19 @@ const PATTERN_INCLUDE_DATE = /^(.+\/[^/]+)\/(\d{4}|\d{4}\/\d{2}|\d{4}\/\d{2}\/\d
 
 export class DevidedPagePath {
 
-  constructor(path, skipNormalize = false, evalDatePath = false) {
+  isRoot: boolean;
+
+  isFormerRoot: boolean;
+
+  former: string;
+
+  latter: string;
+
+  constructor(path: string, skipNormalize = false, evalDatePath = false) {
 
     this.isRoot = false;
     this.isFormerRoot = false;
-    this.former = null;
-    this.latter = null;
+    this.former = '';
 
     // root
     if (path == null || path === '' || path === '/') {
