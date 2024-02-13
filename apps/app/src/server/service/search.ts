@@ -30,7 +30,6 @@ const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 // Do not change the property key name to 'whitelist" because it depends on the 'xss' library
 const filterXssOptions = {
   whiteList: {
-    em: ['class'],
     strong: [],
   },
 };
