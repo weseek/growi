@@ -3750,7 +3750,7 @@ class PageService implements IPageService {
 
     // Determine grantData
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
-    const grantedUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
+    const grantUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
     const grantUserGroupIds = options.grantUserGroupIds
       ?? (
         closestAncestor != null
@@ -3759,7 +3759,7 @@ class PageService implements IPageService {
       );
     const grantData = {
       grant,
-      grantedUserIds,
+      grantUserIds,
       grantUserGroupIds,
     };
 
