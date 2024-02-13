@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 
+import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'reactstrap';
 
 import { useCreateTemplatePage } from '~/client/services/create-page';
@@ -12,14 +13,16 @@ import { useCreateNewPage, useCreateTodaysMemo } from './hooks';
 
 
 const useToastrOnError = <P, R>(method?: (param?: P) => Promise<R|undefined>): (param?: P) => Promise<R|undefined> => {
+  const { t } = useTranslation('commons');
+
   return useCallback(async(param) => {
     try {
       return await method?.(param);
     }
     catch (err) {
-      toastError(err);
+      toastError(t('toaster.create_failed', { target: 'a page' }));
     }
-  }, [method]);
+  }, [method, t]);
 };
 
 
