@@ -123,7 +123,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       <div className="dynamic-layout-root">
         <header className="py-3">
           <div className="container">
-            <h3 className="title mt-5">{ targetPage.title }</h3>
+            <h1 className="title fs-3 mt-5">{ targetPage.title }</h1>
           </div>
         </header>
 

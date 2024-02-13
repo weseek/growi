@@ -49,7 +49,7 @@ export const BasicInfoSettings = (): JSX.Element => {
   return (
     <>
 
-      <div className="row mb-3">
+      <div className="row mt-3 mt-md-4">
         <label htmlFor="userForm[name]" className="text-start text-md-end col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
           <input
@@ -62,7 +62,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row mb-3">
+      <div className="row mt-3">
         <label htmlFor="userForm[email]" className="text-start text-md-end col-md-3 col-form-label">{t('Email')}</label>
         <div className="col-md-6">
           <input
@@ -83,7 +83,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row mb-3">
+      <div className="row mt-3">
         <label className="text-start text-md-end col-md-3 col-form-label">{t('Disclose E-mail')}</label>
         <div className="col-md-6 my-auto">
           <div className="form-check form-check-inline me-4">
@@ -111,7 +111,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row mb-3">
+      <div className="row mt-3">
         <label className="text-start text-md-end col-md-3 col-form-label">{t('Language')}</label>
         <div className="col-md-6 my-auto">
           {
@@ -136,7 +136,7 @@ export const BasicInfoSettings = (): JSX.Element => {
           }
         </div>
       </div>
-      <div className="row">
+      <div className="row mt-3">
         <label htmlFor="userForm[slackMemberId]" className="text-start text-md-end col-md-3 col-form-label">{t('Slack Member ID')}</label>
         <div className="col-md-6">
           <input
@@ -150,7 +150,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row my-5 my-md-4">
+      <div className="row mt-4">
         <div className="offset-4 col-5">
           <button
             data-testid="grw-besic-info-settings-update-button"
