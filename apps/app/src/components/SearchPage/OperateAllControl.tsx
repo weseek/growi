@@ -1,11 +1,10 @@
-import React, {
-  ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef,
-} from 'react';
+import type { ChangeEvent, ForwardRefRenderFunction } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 
 import { Input } from 'reactstrap';
 
-import { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
+import type { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import type { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 
 type Props = {
   isCheckboxDisabled?: boolean,
@@ -58,6 +57,7 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
         type="checkbox"
         id="cb-check-all"
         data-testid="cb-select-all"
+        className="me-2"
         innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}

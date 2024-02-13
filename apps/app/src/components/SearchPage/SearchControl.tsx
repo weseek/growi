@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
-import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
+import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
 import SearchForm from '../SearchForm';
 
@@ -133,7 +133,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
-              <div className="border rounded px-2 py-1 me-3">
+              <div className="px-2 py-1 me-3">
                 <div className="form-check form-check-succsess">
                   <input
                     className="form-check-input me-2"
@@ -150,7 +150,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                   </label>
                 </div>
               </div>
-              <div className="border rounded px-2 py-1">
+              <div className="px-2 py-1">
                 <div className="form-check form-check-succsess">
                   <input
                     className="form-check-input me-2"
@@ -160,7 +160,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     onChange={e => changeIncludeTrashPagesHandler(e.target.checked)}
                   />
                   <label
-                    className="form-label form-check-label d-flex align-items-center text-secondary with-no-font-weight"
+                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
                     htmlFor="flexCheckChecked"
                   >
                     {t('Include Subordinated Target Page', { target: '/trash' })}
