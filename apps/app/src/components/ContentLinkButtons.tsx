@@ -31,8 +31,7 @@ const RecentlyCreatedLinkButton = React.memo(({ fontSize }: { fontSize: number }
         className="btn btn-sm btn-outline-neutral-secondary rounded-pill d-flex align-items-center"
         style={{ fontSize }}
       >
-        {/* TODO: use <span className="growi-custom-icons">recently_created</span> */}
-        <span className="material-symbols-outlined p-0">bookmark</span>
+        <span className="growi-custom-icons me-1">recently_created</span>
         <span>{t('footer.recently_created')}</span>
       </button>
     </ScrollLink>
@@ -48,7 +47,7 @@ export type ContentLinkButtonsProps = {
 
 export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {
   const { author } = props;
-  const fontSize = 12;
+  const fontSize = 10;
 
   if (author == null || author.status === USER_STATUS.DELETED) {
     return <></>;
