@@ -28,8 +28,6 @@ const INITIAL_PAGIONG_SIZE = 20;
 
 type SearchResultListHeadProps = {
   searchResult: IFormattedSearchResult,
-  searchingKeyword: string,
-  offset: number,
   pagingSize: number,
   onPagingSizeChanged: (size: number) => void,
 }
@@ -38,13 +36,10 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const { t } = useTranslation();
 
   const {
-    searchResult, searchingKeyword, offset, pagingSize,
-    onPagingSizeChanged,
+    searchResult, // pagingSize, onPagingSizeChanged,
   } = props;
 
-  const { took, total, hitsCount } = searchResult.meta;
-  const leftNum = offset + 1;
-  const rightNum = offset + hitsCount;
+  const { took, total } = searchResult.meta;
 
   if (total === 0) {
     return (
@@ -63,6 +58,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
           <span data-vrt-blackout className="ms-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
+      {/* TODO: infinite scroll for search result */}
       {/* <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
         <div>
           <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
@@ -183,7 +179,7 @@ export const SearchPage = (): JSX.Element => {
           >
             <button
               type="button"
-              className="btn btn-outline-danger text-nowrap border-0 px-2"
+              className="btn btn-outline-danger text-nowrap border-0 px-2 py-1"
               disabled={isDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
@@ -219,13 +215,11 @@ export const SearchPage = (): JSX.Element => {
     return (
       <SearchResultListHead
         searchResult={data}
-        searchingKeyword={keyword ?? ''}
-        offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
       />
     );
-  }, [data, keyword, limit, offset, pagingSizeChangedHandler]);
+  }, [data, limit, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed
