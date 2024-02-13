@@ -60,6 +60,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   const onClickTemplateButtonHandler = useCallback(async(label: LabelType) => {
     try {
       await createTemplate?.(label);
+      onClose();
     }
     catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
