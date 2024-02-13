@@ -14,6 +14,11 @@ import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
 import { usePagePathRenameHandler } from './page-header-utils';
 
+import styles from './PagePathHeader.module.scss';
+
+const moduleClass = styles['page-path-header'];
+
+
 export type Props = {
   currentPage: IPagePopulatedToShowRevision
 }
@@ -85,7 +90,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className="d-flex"
+      className={`d-flex ${moduleClass}`}
       onMouseEnter={() => setButtonShown(true)}
       onMouseLeave={() => setButtonShown(false)}
     >
