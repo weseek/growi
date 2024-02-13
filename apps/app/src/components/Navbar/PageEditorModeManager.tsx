@@ -56,7 +56,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     path,
   } = props;
 
-  const { t } = useTranslation('common');
+  const { t } = useTranslation('commons');
 
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
@@ -64,14 +64,14 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
-  const editButtonClickedHandler = useCallback(() => {
+  const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
       mutateEditorMode(EditorMode.Editor);
       return;
     }
 
     try {
-      createAndTransit(
+      await createAndTransit(
         { path },
         { shouldCheckPageExists: true },
       );

@@ -53,7 +53,7 @@ type CreateTemplateModalProps = {
 export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
   path, isOpen, onClose,
 }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(['translation', 'commons']);
 
   const { createTemplate, isCreating, isCreatable } = useCreateTemplatePage();
 
@@ -62,9 +62,9 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
       await createTemplate?.(label);
     }
     catch (err) {
-      toastError(err);
+      toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [createTemplate]);
+  }, [createTemplate, path, t]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 

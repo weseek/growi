@@ -61,10 +61,9 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       const pagePath = params.path;
 
       try {
-        const res = await exist(JSON.stringify([pagePath]));
-        const isExists = res.pages[pagePath];
+        const { isExist } = await exist(pagePath);
 
-        if (isExists) {
+        if (isExist) {
           // routing
           if (pagePath !== currentPagePath) {
             await router.push(`${pagePath}#edit`);
