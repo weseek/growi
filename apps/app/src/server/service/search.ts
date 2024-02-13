@@ -4,15 +4,15 @@ import { FilterXSS } from 'xss';
 
 import { CommentEvent, commentEvent } from '~/features/comment/server';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
+import type { IFormattedSearchResult, IPageWithSearchMeta, ISearchResult } from '~/interfaces/search';
 import loggerFactory from '~/utils/logger';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
-import {
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type {
   SearchDelegator, SearchQueryParser, SearchResolver, ParsedQuery, SearchableData, QueryTerms,
 } from '../interfaces/search';
 import NamedQuery from '../models/named-query';
-import { PageModel } from '../models/page';
+import type { PageModel } from '../models/page';
 import { serializeUserSecurely } from '../models/serializers/user-serializer';
 import { SearchError } from '../models/vo/search-error';
 import { hasIntersection } from '../util/compare-objectId';
@@ -31,6 +31,7 @@ const nonNullable = <T>(value: T): value is NonNullable<T> => value != null;
 const filterXssOptions = {
   whiteList: {
     em: ['class'],
+    strong: [],
   },
 };
 
