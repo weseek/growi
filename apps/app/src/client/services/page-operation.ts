@@ -11,8 +11,8 @@ import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stor
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { apiGet, apiPost } from '../util/apiv1-client';
-import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+import { apiPost } from '../util/apiv1-client';
+import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
@@ -151,17 +151,11 @@ export const unlink = async(path: string): Promise<void> => {
 };
 
 
-interface PageExistRequest {
-  pagePaths: string;
-}
-
 interface PageExistResponse {
-  pages: Record<string, boolean>;
-  ok: boolean
+  isExist: boolean,
 }
 
-export const exist = async(pagePaths: string): Promise<PageExistResponse> => {
-  const request: PageExistRequest = { pagePaths };
-  const res = await apiGet<PageExistResponse>('/pages.exist', request);
-  return res;
+export const exist = async(path: string): Promise<PageExistResponse> => {
+  const res = await apiv3Get<PageExistResponse>('/page/exist', { path });
+  return res.data;
 };

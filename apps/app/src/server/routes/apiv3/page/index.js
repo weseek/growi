@@ -20,6 +20,7 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
+import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { updatePageHandlersFactory } from './update-page';
 
@@ -313,6 +314,8 @@ module.exports = (crowi) => {
 
     return res.apiv3({ page, pages });
   });
+
+  router.get('/exist', checkPageExistenceHandlersFactory(crowi));
 
   /**
    * @swagger
