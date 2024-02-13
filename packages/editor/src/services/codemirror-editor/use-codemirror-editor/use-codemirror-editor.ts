@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { indentWithTab, defaultKeymap } from '@codemirror/commands';
+import { indentWithTab, defaultKeymap, deleteCharBackward } from '@codemirror/commands';
 import {
-  markdown, markdownLanguage, deleteMarkupBackward,
+  markdown, markdownLanguage,
 } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -32,11 +32,11 @@ import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
+
 // set new markdownKeymap instead of default one
-// I also bound the deleteMarkupBackward to the backspace key to align with the existing keymap
 // https://github.com/codemirror/lang-markdown/blob/main/src/index.ts#L17
 const markdownKeymap = [
-  { key: 'Backspace', run: deleteMarkupBackward },
+  { key: 'Backspace', run: deleteCharBackward },
   { key: 'Enter', run: insertNewlineContinueMarkup },
 ];
 
