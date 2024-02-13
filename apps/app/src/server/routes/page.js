@@ -220,63 +220,6 @@ module.exports = function(crowi, app) {
   /**
    * @swagger
    *
-   *    /pages.exist:
-   *      get:
-   *        tags: [Pages]
-   *        operationId: getPageExistence
-   *        summary: /pages.exist
-   *        description: Get page existence
-   *        parameters:
-   *          - in: query
-   *            name: pagePaths
-   *            schema:
-   *              type: string
-   *              description: Page path list in JSON Array format
-   *              example: '["/", "/user/unknown"]'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get page existence.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: string
-   *                      description: Properties of page path and existence
-   *                      example: '{"/": true, "/user/unknown": false}'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /pages.exist Get if page exists
-   * @apiName GetPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} pages (stringified JSON)
-   */
-  api.exist = async function(req, res) {
-    const pagePaths = JSON.parse(req.query.pagePaths || '[]');
-
-    const pages = {};
-    await Promise.all(pagePaths.map(async(path) => {
-      // check page existence
-      const isExist = await Page.count({ path }) > 0;
-      pages[path] = isExist;
-      return;
-    }));
-
-    const result = { pages };
-
-    return res.json(ApiResponse.success(result));
-  };
-
-  /**
-   * @swagger
-   *
    *    /pages.getPageTag:
    *      get:
    *        tags: [Pages]
