@@ -37,6 +37,8 @@ import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 const onPressEnter = ({ state, dispatch }) => {
   // insertNewlineContinueMarkup(state, dispatch);
   insertNewRowToMarkdownTable(state, dispatch);
+
+  return true;
 };
 
 // set new markdownKeymap instead of default one

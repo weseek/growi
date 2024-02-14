@@ -6,7 +6,7 @@ import type {
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
-export const insertNewlineContinueMarkup: StateCommand = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
+export const insertNewlineContinueMarkup = (state: EditorState, dispatch: (transaction: Transaction) => boolean): boolean => {
 
   const changes: ChangeSpec[] = [];
 

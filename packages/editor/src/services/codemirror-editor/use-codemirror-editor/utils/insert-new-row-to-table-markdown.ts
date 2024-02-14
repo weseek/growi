@@ -1,5 +1,5 @@
 import type {
-  ChangeSpec, EditorState, StateCommand, Transaction,
+  EditorState, Transaction,
 } from '@codemirror/state';
 import { MarkdownTable } from '@growi/core/dist/models';
 
@@ -8,10 +8,10 @@ const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
 // https://regex101.com/r/1UuWBJ/3
 export const emptyLineOfTableRE = /^([^\r\n|]*)\|((\s*\|)+)$/;
 
-type ArgType = {
-  state: EditorState,
-  dispatch: (transaction: Transaction) => boolean
-}
+// type ArgType = {
+//   state: EditorState,
+//   dispatch: (transaction: Transaction) => boolean
+// }
 
 const getCurPos = (editorState: EditorState): number => {
   return editorState.selection.main.head;
@@ -95,18 +95,26 @@ export const replaceFocusedMarkdownTableWithEditor = (
   const botPos = getBot(state);
   const eotPos = getEot(state);
 
+  const nextLine = state.doc.lineAt(getCurPos(state)).number + 1;
+
+  const nextCurPos = state.doc.line(nextLine).from + 2;
+  // const nextCurPos = state.doc.lineAt(getCurPos(state) + 2).from + 3;
+
   dispatch(state.update({
     changes: {
       from: botPos,
       to: eotPos,
       insert: table.toString(),
     },
-    selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
+    // selection: { anchor: nextCurPos },
+    // selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
   }));
-  // dispatch({
-  //   selection: { anchor: state.doc.lineAt(getCurPos(state)).to },
-  // });
-  // editor.focus();
+
+  // const nextCurPos = state.doc.lineAt(getCurPos(state) + 1).from + 3;
+
+  // dispatch(state.update({
+  //   selection: { anchor: 10 },
+  // }));
 };
 
 const addRow = (state: EditorState, dispatch: (transaction: Transaction) => boolean) => {
@@ -138,6 +146,9 @@ const removeRow = (state: EditorState, dispatch: (transaction: Transaction) => b
 
   const insert = state.lineBreak;
 
+  const nextCurPos = state.doc.lineAt(getCurPos(state)).to + 1;
+  // console.log(nextCurPos);
+
   dispatch(state.update(
     {
       changes: {
@@ -145,6 +156,7 @@ const removeRow = (state: EditorState, dispatch: (transaction: Transaction) => b
         to: eolPos,
         insert,
       },
+      // selection: { anchor: nextCurPos },
     },
   ));
 };
@@ -183,6 +195,13 @@ export const insertNewRowToMarkdownTable = (state: EditorState, dispatch: (trans
     else {
       reformTable(state, dispatch);
     }
-
   }
+
+  // const nextCurPos = state.doc.lineAt(getCurPos(state) + 1).from + 3;
+
+  // console.log(nextCurPos);
+
+  // dispatch(state.update({
+  //   selection: { anchor: nextCurPos },
+  // }));
 };
