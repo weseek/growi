@@ -25,32 +25,32 @@ const PersonalSettings = () => {
         i18n: t('User Information'),
       },
       external_accounts: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">ungroup</span>,
+        Icon: () => <span className="material-symbols-outlined">ungroup</span>,
         Content: ExternalAccountLinkedMe,
         i18n: t('admin:user_management.external_accounts'),
       },
       password_settings: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">password</span>,
+        Icon: () => <span className="material-symbols-outlined">password</span>,
         Content: PasswordSettings,
         i18n: t('Password Settings'),
       },
       api_settings: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">api</span>,
+        Icon: () => <span className="material-symbols-outlined">api</span>,
         Content: ApiSettings,
         i18n: t('API Settings'),
       },
       // editor_settings: {
-      //   Icon: () => <span className="material-symbols-outlined fs-5 me-1">edit</span>,
+      //   Icon: () => <span className="material-symbols-outlined">edit</span>,
       //   Content: EditorSettings,
       //   i18n: t('editor_settings.editor_settings'),
       // },
       in_app_notification_settings: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">notifications</span>,
+        Icon: () => <span className="material-symbols-outlined">notifications</span>,
         Content: InAppNotificationSettings,
         i18n: t('in_app_notification_settings.in_app_notification_settings'),
       },
       other_settings: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">settings</span>,
+        Icon: () => <span className="material-symbols-outlined">settings</span>,
         Content: OtherSettings,
         i18n: t('Other Settings'),
       },
