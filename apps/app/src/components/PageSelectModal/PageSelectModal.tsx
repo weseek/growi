@@ -27,7 +27,7 @@ export const PageSelectModal: FC = () => {
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
-  const [clickedParentPagePath, setClickedParentPagePath] = useState('');
+  const [clickedParentPagePath, setClickedParentPagePath] = useState<string>();
 
   const { t } = useTranslation();
 
@@ -56,10 +56,12 @@ export const PageSelectModal: FC = () => {
   }, [closeModal]);
 
   const onClickDone = useCallback(() => {
-    const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
-    const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
+    if (clickedParentPagePath != null) {
+      const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
+      const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
 
-    pagePathRenameHandler(newPagePath);
+      pagePathRenameHandler(newPagePath);
+    }
 
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
@@ -92,8 +94,8 @@ export const PageSelectModal: FC = () => {
         />
       </ModalBody>
       <ModalFooter>
-        <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>{' '}
-        <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>{' '}
+        <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
+        <Button color="primary" onClick={onClickDone}>{t('Done')}</Button>
       </ModalFooter>
     </Modal>
   );
