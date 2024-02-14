@@ -5,9 +5,10 @@ import {
 import { indentUnit } from '@codemirror/language';
 import { Prec, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeyMap, type KeyMapMode,
 } from '../../services';

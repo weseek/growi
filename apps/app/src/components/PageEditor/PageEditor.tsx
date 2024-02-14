@@ -9,7 +9,7 @@ import type { IPageHasId } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import detectIndent from 'detect-indent';
@@ -27,8 +27,6 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
-  // useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
   useEditorSettings,
@@ -36,6 +34,7 @@ import {
   useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
+  useAcceptedUploadFileType,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
@@ -110,9 +109,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
-  const { data: isUploadEnabled } = useIsUploadEnabled();
-  // const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
+  const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -317,17 +314,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
 
   }, [codeMirrorEditor, pageId]);
-
-  const acceptedUploadFileType = useMemo(() => {
-    if (!isUploadEnabled) {
-      return AcceptedUploadFileType.NONE;
-    }
-    if (isUploadAllFileAllowed) {
-      return AcceptedUploadFileType.ALL;
-    }
-    return AcceptedUploadFileType.IMAGE;
-  }, [isUploadAllFileAllowed, isUploadEnabled]);
-
 
   const scrollEditorHandler = useCallback(() => {
     if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {

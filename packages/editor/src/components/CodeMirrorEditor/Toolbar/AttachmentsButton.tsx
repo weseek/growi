@@ -1,8 +1,7 @@
+import { AcceptedUploadFileType } from '@growi/core';
 import {
   DropdownItem,
 } from 'reactstrap';
-
-import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
 
 type Props = {
   onFileOpen: () => void,

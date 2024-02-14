@@ -1,3 +1,4 @@
+import { AcceptedUploadFileType } from '@growi/core';
 import {
   UncontrolledDropdown,
   DropdownToggle,
@@ -6,7 +7,6 @@ import {
 } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
-import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
 
 import { AttachmentsButton } from './AttachmentsButton';
 import { LinkEditButton } from './LinkEditButton';

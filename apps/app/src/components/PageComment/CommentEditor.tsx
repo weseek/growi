@@ -17,11 +17,11 @@ import { toastError } from '~/client/util/toastr';
 import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
-  useIsUploadAllFileAllowed, useIsUploadEnabled,
-  // useAcceptedUploadFileType,
   useCurrentUser, useIsSlackConfigured,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useAcceptedUploadFileType,
+} from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
 
@@ -71,11 +71,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
-  const { data: isUploadEnabled } = useIsUploadEnabled();
-  // const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
@@ -334,7 +332,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
               <CodeMirrorEditorComment
-                // acceptedUploadFileType={acceptedUploadFileType}
+                acceptedUploadFileType={acceptedUploadFileType}
                 onChange={onChangeHandler}
               />
               {/* <Editor

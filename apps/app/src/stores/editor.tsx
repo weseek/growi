@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import type { Nullable } from '@growi/core';
+import { AcceptedUploadFileType, type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils } from '@growi/core/dist/swr';
 import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -11,7 +11,7 @@ import type { IEditorSettings } from '~/interfaces/editor-settings';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
-  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
+  useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser, useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from './context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
@@ -73,6 +73,24 @@ export const useCurrentIndentSize = (): SWRResponse<number, Error> => {
     defaultIndentSize == null ? null : 'currentIndentSize',
     undefined,
     { fallbackData: defaultIndentSize },
+  );
+};
+
+export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
+  const { data: isUploadEnabled } = useIsUploadEnabled();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+
+  return useSWRImmutable(
+    ['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed],
+    ([, isUploadEnabled, isUploadAllFileAllowed]) => {
+      if (!isUploadEnabled) {
+        return AcceptedUploadFileType.NONE;
+      }
+      if (isUploadAllFileAllowed) {
+        return AcceptedUploadFileType.ALL;
+      }
+      return AcceptedUploadFileType.IMAGE;
+    },
   );
 };
 

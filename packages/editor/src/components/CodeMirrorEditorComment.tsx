@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import { AcceptedUploadFileType } from '@growi/core';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor } from '.';
