@@ -75,7 +75,7 @@ export const PageSelectModal: FC = () => {
   return (
     <Modal
       isOpen={isOpened}
-      toggle={() => closeModal()}
+      toggle={closeModal}
       centered
       size="sm"
     >
