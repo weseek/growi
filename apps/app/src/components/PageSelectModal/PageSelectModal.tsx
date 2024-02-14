@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
@@ -42,13 +42,9 @@ export const PageSelectModal: FC = () => {
 
   const targetPathOrId = targetId || currentPath;
 
-  if (isGuestUser == null) {
-    return null;
-  }
-
   const path = currentPath || '/';
 
-  const onClickTreeItem = (page: IPageForItem) => {
+  const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
 
     if (parentPagePath == null) {
@@ -56,21 +52,25 @@ export const PageSelectModal: FC = () => {
     }
 
     setClickedParentPagePath(parentPagePath);
-  };
+  }, []);
 
-  const onClickCancel = () => {
+  const onClickCancel = useCallback(() => {
     setClickedParentPagePath('');
     closeModal();
-  };
+  }, [closeModal]);
 
-  const onClickDone = () => {
+  const onClickDone = useCallback(() => {
     const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
     const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
 
     pagePathRenameHandler(newPagePath);
 
     closeModal();
-  };
+  }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
+
+  if (isGuestUser == null) {
+    return null;
+  }
 
   return (
     <Modal
