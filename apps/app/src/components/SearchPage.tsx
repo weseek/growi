@@ -179,11 +179,10 @@ export const SearchPage = (): JSX.Element => {
           >
             <button
               type="button"
-              className="btn btn-outline-danger text-nowrap border-0 px-2 py-1"
+              className="btn"
               disabled={isDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
-              <span className="material-symbols-outlined">delete</span>
               {t('search_result.delete_all_selected_page')}
             </button>
           </OperateAllControl>

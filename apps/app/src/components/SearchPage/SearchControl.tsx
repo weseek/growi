@@ -93,26 +93,12 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             onSubmit={searchFormSubmittedHandler}
           />
         </div>
-
-        {/* sort option: show when screen is larger than lg */}
-        {isEnableSort && (
-          <div className="me-4 d-lg-flex d-none">
-            <SortControl
-              sort={sort}
-              order={order}
-              onChange={changeSortHandler}
-            />
-          </div>
-        )}
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-        <div className="d-flex">
-          {allControl}
-        </div>
-        {/* sort option: show when screen is smaller than lg */}
+        {/* sort option */}
         {isEnableSort && (
-          <div className="me-md-4 me-2 d-flex d-lg-none ms-auto">
+          <div className="d-flex me-auto">
             <SortControl
               sort={sort}
               order={order}
@@ -129,7 +115,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 className="btn"
                 onClick={() => setIsFileterOptionModalShown(true)}
               >
-                <i className="icon-equalizer"></i>
+                <span className="material-symbols-outlined">
+                  tune
+                </span>
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
@@ -170,6 +158,17 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             </div>
           </>
         )}
+        <div className="d-flex">
+          <div className="btn-group">
+            <button className="btn rounded" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span className="material-symbols-outlined text-secondary">delete</span>
+              <span className="material-symbols-outlined text-secondary">expand_more</span>
+            </button>
+            <ul className="dropdown-menu">
+              {allControl}
+            </ul>
+          </div>
+        </div>
       </div>
 
       <SearchOptionModal

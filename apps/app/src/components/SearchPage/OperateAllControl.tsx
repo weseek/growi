@@ -57,7 +57,7 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
         type="checkbox"
         id="cb-check-all"
         data-testid="cb-select-all"
-        className="me-2"
+        className="ms-2 me-1"
         innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
