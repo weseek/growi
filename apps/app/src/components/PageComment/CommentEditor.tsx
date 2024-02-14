@@ -6,6 +6,7 @@ import {
   CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import {
@@ -94,6 +95,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const editorRef = useRef<IEditorMethods>(null);
 
   const router = useRouter();
+  const { t } = useTranslation('commons');
 
   // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
   const onRouterChangeComplete = useCallback(() => {
@@ -263,7 +265,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <i className="icon-bubble"></i> Add Comment
+              <i className="icon-bubble"></i> { t('comment.add_comment', 'Add Comment')}
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>

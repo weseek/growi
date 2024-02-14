@@ -148,6 +148,10 @@
     "page_not_exist": "This page does not exist."
   },
 
+  "comment": {
+    "add_comment": "Add Comment"
+  },
+
   "g2g_data_transfer": {
     "tab": "Data transfer",
     "data_transfer": "Data Transfer",

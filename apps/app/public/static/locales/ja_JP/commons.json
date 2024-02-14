@@ -150,6 +150,10 @@
     "page_not_exist": "このページは存在しません。"
   },
 
+  "comment": {
+    "add_comment": "コメントを追加"
+  },
+
   "g2g_data_transfer": {
     "tab": "データ移行",
     "data_transfer": "データ移行",
