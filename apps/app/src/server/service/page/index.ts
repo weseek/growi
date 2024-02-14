@@ -4110,7 +4110,7 @@ class PageService implements IPageService {
 
     // Do not consider it for automatic deletion if updated at least once
     if (newPageData.wipExpiredAt != null) {
-      newPageData.wipExpiredAt = null;
+      newPageData.wipExpiredAt = undefined;
     }
 
     // use the previous data if absent
