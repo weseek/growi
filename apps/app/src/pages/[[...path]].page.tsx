@@ -11,7 +11,6 @@ import type {
 import {
   isClient, pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
-import { AcceptedUploadFileType } from '@growi/editor';
 import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -43,7 +42,6 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useEditorConfig, useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
-  // useAcceptedUploadFileType,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -225,7 +223,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
   useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
-  // useAcceptedUploadFileType(props.editorConfig.acceptedUploadFileType);
 
   const { pageWithMeta } = props;
 

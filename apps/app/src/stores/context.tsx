@@ -166,10 +166,6 @@ export const useIsUploadAllFileAllowed = (initialData?: boolean): SWRResponse<bo
   return useContextSWR('isUploadAllFileAllowed', initialData);
 };
 
-// export const useAcceptedUploadFileType = (initialData?: AcceptedUploadFileType): SWRResponse<AcceptedUploadFileType, Error> => {
-//   return useContextSWR('acceptedUploadFileType', initialData, { fallbackData: AcceptedUploadFileType.NONE });
-// };
-
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('showPageLimitationL', initialData);
 };
@@ -265,6 +261,23 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     },
   );
 };
+
+// export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
+//   const { data: editorConfig } = useEditorConfig();
+
+//   return useSWRImmutable(
+//     ['acceptedUploadFileType', editorConfig],
+//     ([, editorConfig]) => {
+//       if (!editorConfig?.upload.isUploadEnabled) {
+//         return AcceptedUploadFileType.NONE;
+//       }
+//       if (editorConfig?.upload.isUploadAllFileAllowed) {
+//         return AcceptedUploadFileType.ALL;
+//       }
+//       return AcceptedUploadFileType.IMAGE;
+//     },
+//   );
+// };
 
 // export const useAcceptedMimeType = (): SWRResponse<string, Error> => {
 //   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();

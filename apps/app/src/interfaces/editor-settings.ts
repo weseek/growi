@@ -1,5 +1,3 @@
-import type { AcceptedUploadFileType } from '@growi/editor';
-
 export const DEFAULT_THEME = 'DefaultLight';
 
 const KeyMapMode = {
@@ -23,5 +21,4 @@ export type EditorConfig = {
     isUploadAllFileAllowed: boolean,
     isUploadEnabled: boolean,
   }
-  // acceptedUploadFileType: AcceptedUploadFileType,
 }
