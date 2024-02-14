@@ -1,7 +1,6 @@
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
-import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
 
@@ -9,11 +8,7 @@ import { GlobalNotificationSettingEvent } from '../models';
 import { PathAlreadyExistsError } from '../models/errors';
 import PageTagRelation from '../models/page-tag-relation';
 import UpdatePost from '../models/update-post';
-import { preNotifyService } from '../service/pre-notify';
-
-const { serializePageSecurely } = require('../models/serializers/page-serializer');
-const { serializeRevisionSecurely } = require('../models/serializers/revision-serializer');
-const { serializeUserSecurely } = require('../models/serializers/user-serializer');
+import { configManager } from '../service/config-manager';
 
 /**
  * @swagger
@@ -135,22 +130,24 @@ const { serializeUserSecurely } = require('../models/serializers/user-serializer
  */
 
 /* eslint-disable no-use-before-define */
+/**
+ * @type { (crowi: import('../crowi').default, app) => any }
+ */
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:routes:page');
   const logger = loggerFactory('growi:routes:page');
 
   const { pagePathUtils } = require('@growi/core/dist/utils');
 
+  /** @type {import('../models/page').PageModel} */
   const Page = crowi.model('Page');
+
   const PageRedirect = mongoose.model('PageRedirect');
 
   const ApiResponse = require('../util/apiResponse');
 
-  const { configManager, xssService } = crowi;
+  const { xssService } = crowi;
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const userNotificationService = crowi.getUserNotificationService();
-
-  const activityEvent = crowi.event('activity');
 
   const Xss = require('~/services/xss/index');
   const initializedConfig = {
@@ -219,211 +216,6 @@ module.exports = function(crowi, app) {
 
   actions.api = api;
   actions.validator = validator;
-
-  /**
-   * @swagger
-   *
-   *    /pages.update:
-   *      post:
-   *        tags: [Pages, CrowiCompatibles]
-   *        operationId: updatePage
-   *        summary: /pages.update
-   *        description: Update page
-   *        requestBody:
-   *          content:
-   *            application/json:
-   *              schema:
-   *                properties:
-   *                  body:
-   *                    $ref: '#/components/schemas/Revision/properties/body'
-   *                  page_id:
-   *                    $ref: '#/components/schemas/Page/properties/_id'
-   *                  revision_id:
-   *                    $ref: '#/components/schemas/Revision/properties/_id'
-   *                  grant:
-   *                    $ref: '#/components/schemas/Page/properties/grant'
-   *                required:
-   *                  - body
-   *                  - page_id
-   *                  - revision_id
-   *        responses:
-   *          200:
-   *            description: Succeeded to update page.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    page:
-   *                      $ref: '#/components/schemas/Page'
-   *                    revision:
-   *                      $ref: '#/components/schemas/Revision'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {post} /pages.update Update page
-   * @apiName UpdatePage
-   * @apiGroup Page
-   *
-   * @apiParam {String} body
-   * @apiParam {String} page_id
-   * @apiParam {String} revision_id
-   * @apiParam {String} grant
-   *
-   * In the case of the page exists:
-   * - If revision_id is specified => update the page,
-   * - If revision_id is not specified => force update by the new contents.
-   */
-  api.update = async function(req, res) {
-    const pageBody = req.body.body ?? null;
-    const pageId = req.body.page_id || null;
-    const revisionId = req.body.revision_id || null;
-    const grant = req.body.grant || null;
-    const userRelatedGrantUserGroupIds = req.body.userRelatedGrantUserGroupIds || null;
-    const overwriteScopesOfDescendants = req.body.overwriteScopesOfDescendants || null;
-    const isSlackEnabled = !!req.body.isSlackEnabled; // cast to boolean
-    const slackChannels = req.body.slackChannels || null;
-
-    if (pageId === null || pageBody === null || revisionId === null) {
-      return res.json(ApiResponse.error('page_id, body and revision_id are required.'));
-    }
-
-    // check page existence
-    const isExist = await Page.count({ _id: pageId }) > 0;
-    if (!isExist) {
-      return res.json(ApiResponse.error(`Page('${pageId}' is not found or forbidden`, 'notfound_or_forbidden'));
-    }
-
-    // check revision
-    const Revision = crowi.model('Revision');
-    let page = await Page.findByIdAndViewer(pageId, req.user);
-    if (page != null && revisionId != null && !page.isUpdatable(revisionId)) {
-      const latestRevision = await Revision.findById(page.revision).populate('author');
-      const returnLatestRevision = {
-        revisionId: latestRevision._id.toString(),
-        revisionBody: xss.process(latestRevision.body),
-        createdAt: latestRevision.createdAt,
-        user: serializeUserSecurely(latestRevision.author),
-      };
-      return res.json(ApiResponse.error('Posted param "revisionId" is outdated.', 'conflict', returnLatestRevision));
-    }
-
-    const options = { overwriteScopesOfDescendants };
-    if (grant != null) {
-      options.grant = grant;
-      options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
-    }
-
-    const previousRevision = await Revision.findById(revisionId);
-    try {
-      page = await crowi.pageService.updatePage(page, pageBody, previousRevision.body, req.user, options);
-    }
-    catch (err) {
-      logger.error('error on _api/pages.update', err);
-      return res.json(ApiResponse.error(err));
-    }
-
-
-    const result = {
-      page: serializePageSecurely(page),
-      revision: serializeRevisionSecurely(page.revision),
-    };
-    res.json(ApiResponse.success(result));
-
-    // global notification
-    try {
-      await globalNotificationService.fire(GlobalNotificationSettingEvent.PAGE_EDIT, page, req.user);
-    }
-    catch (err) {
-      logger.error('Edit notification failed', err);
-    }
-
-    // user notification
-    if (isSlackEnabled) {
-      try {
-        const results = await userNotificationService.fire(page, req.user, slackChannels, 'update', { previousRevision });
-        results.forEach((result) => {
-          if (result.status === 'rejected') {
-            logger.error('Create user notification failed', result.reason);
-          }
-        });
-      }
-      catch (err) {
-        logger.error('Create user notification failed', err);
-      }
-    }
-
-    const parameters = {
-      targetModel: SupportedTargetModel.MODEL_PAGE,
-      target: page,
-      action: SupportedAction.ACTION_PAGE_UPDATE,
-    };
-
-    activityEvent.emit(
-      'update', res.locals.activity._id, parameters, { path: page.path, creator: page.creator._id.toString() }, preNotifyService.generatePreNotify,
-    );
-  };
-
-  /**
-   * @swagger
-   *
-   *    /pages.exist:
-   *      get:
-   *        tags: [Pages]
-   *        operationId: getPageExistence
-   *        summary: /pages.exist
-   *        description: Get page existence
-   *        parameters:
-   *          - in: query
-   *            name: pagePaths
-   *            schema:
-   *              type: string
-   *              description: Page path list in JSON Array format
-   *              example: '["/", "/user/unknown"]'
-   *        responses:
-   *          200:
-   *            description: Succeeded to get page existence.
-   *            content:
-   *              application/json:
-   *                schema:
-   *                  properties:
-   *                    ok:
-   *                      $ref: '#/components/schemas/V1Response/properties/ok'
-   *                    pages:
-   *                      type: string
-   *                      description: Properties of page path and existence
-   *                      example: '{"/": true, "/user/unknown": false}'
-   *          403:
-   *            $ref: '#/components/responses/403'
-   *          500:
-   *            $ref: '#/components/responses/500'
-   */
-  /**
-   * @api {get} /pages.exist Get if page exists
-   * @apiName GetPage
-   * @apiGroup Page
-   *
-   * @apiParam {String} pages (stringified JSON)
-   */
-  api.exist = async function(req, res) {
-    const pagePaths = JSON.parse(req.query.pagePaths || '[]');
-
-    const pages = {};
-    await Promise.all(pagePaths.map(async(path) => {
-      // check page existence
-      const isExist = await Page.count({ path }) > 0;
-      pages[path] = isExist;
-      return;
-    }));
-
-    const result = { pages };
-
-    return res.json(ApiResponse.success(result));
-  };
 
   /**
    * @swagger
@@ -563,6 +355,7 @@ module.exports = function(crowi, app) {
       endpoint: req.originalUrl,
     };
 
+    /** @type {import('../models/page').PageDocument | undefined} */
     const page = await Page.findByIdAndViewer(pageId, req.user, null, true);
 
     if (page == null) {

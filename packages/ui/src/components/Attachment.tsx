@@ -37,8 +37,8 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
       </a>
     )
     : '';
-  const fileType = <span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span>;
-  const fileInUse = (inUse) ? <span className="attachment-in-use badge badge-pill badge-info">In Use</span> : '';
+  const fileType = <span className="attachment-filetype badge bg-secondary rounded-pill">{attachment.fileFormat}</span>;
+  const fileInUse = (inUse) ? <span className="attachment-in-use badge bg-info rounded-pill">In Use</span> : '';
   // Should UserDate be used like PageRevisionTable ?
   const formatType = 'yyyy/MM/dd HH:mm:ss';
   const createdAt = format(new Date(attachment.createdAt), formatType);
@@ -51,11 +51,11 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
       <a className="me-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
         <i className={formatIcon}></i> {attachment.originalName}
       </a>
-      <span className="mr-2">{fileType}</span>
-      <span className="mr-2">{createdAt}</span>
-      <span className="mr-2">{fileInUse}</span>
-      <span className="mr-2">{btnDownload}</span>
-      <span className="mr-2">{btnTrash}</span>
+      <span className="me-2">{fileType}</span>
+      <span className="me-2">{createdAt}</span>
+      <span className="me-2">{fileInUse}</span>
+      <span className="me-2">{btnDownload}</span>
+      <span className="me-2">{btnTrash}</span>
     </div>
   );
 };

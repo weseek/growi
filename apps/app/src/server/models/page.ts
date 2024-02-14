@@ -5,10 +5,8 @@ import nodePath from 'path';
 
 import {
   type IPage,
-  type IGrantedGroup,
   GroupType, type HasObjectId,
 } from '@growi/core';
-import type { ITag } from '@growi/core/dist/interfaces';
 import { isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -21,6 +19,7 @@ import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
@@ -61,7 +60,8 @@ type PaginatedPages = {
   offset: number
 }
 
-export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
+export type CreateMethod = (path: string, body: string, user, options: IOptionsForCreate) => Promise<PageDocument & { _id: any }>
+
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean): Promise<PageDocument[]>
@@ -74,6 +74,8 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
+  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
+  findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
   findTemplate(path: string): Promise<{
     templateBody?: string,
@@ -93,7 +95,6 @@ export interface PageModel extends Model<PageDocument> {
   STATUS_DELETED
 }
 
-type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<PageDocument, PageModel>({
@@ -1050,13 +1051,6 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();
 };
-
-export type PageCreateOptions = {
-  format?: string
-  grantUserGroupIds?: IGrantedGroup[],
-  grant?: number
-  overwriteScopesOfDescendants?: boolean
-}
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
