@@ -20,7 +20,7 @@ const PersonalSettings = () => {
   const navTabMapping = useMemo(() => {
     return {
       user_infomation: {
-        Icon: () => <span className="material-symbols-outlined fs-5 me-1">person</span>,
+        Icon: () => <span className="material-symbols-outlined">person</span>,
         Content: UserSettings,
         i18n: t('User Information'),
       },
