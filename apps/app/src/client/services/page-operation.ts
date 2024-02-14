@@ -159,3 +159,8 @@ export const exist = async(path: string): Promise<PageExistResponse> => {
   const res = await apiv3Get<PageExistResponse>('/page/exist', { path });
   return res.data;
 };
+
+export const unpublish = async(pageId: string): Promise<any> => {
+  const res = await apiv3Put(`/page/${pageId}/unpublish`);
+  return res.data;
+};

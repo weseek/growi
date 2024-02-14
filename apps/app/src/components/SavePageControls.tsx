@@ -18,6 +18,8 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
+import { unpublish } from '../client/services/page-operation';
+
 import { GrantSelector } from './SavePageControls/GrantSelector';
 
 
@@ -43,6 +45,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
+  const isWipPage = currentPage?.wip === true;
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -58,6 +61,16 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true, slackChannels });
   }, [slackChannels]);
 
+  const clickUnpublishButtonHandler = useCallback(async() => {
+    const pageId = currentPage?._id;
+
+    if (pageId == null) {
+      return;
+    }
+
+    await unpublish(pageId);
+  }, [currentPage?._id]);
+
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
     return null;
@@ -72,6 +85,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
+  const labelUnpublishPage = 'WIP (執筆中) として保存'; // TODO: i18n
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
@@ -107,6 +121,9 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
         <DropdownMenu container="body" end>
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
+          </DropdownItem>
+          <DropdownItem onClick={clickUnpublishButtonHandler} disabled={isWipPage}>
+            {labelUnpublishPage}
           </DropdownItem>
         </DropdownMenu>
       </UncontrolledButtonDropdown>
