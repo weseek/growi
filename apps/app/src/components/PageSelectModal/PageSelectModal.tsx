@@ -40,10 +40,6 @@ export const PageSelectModal: FC = () => {
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const targetPathOrId = targetId || currentPath;
-
-  const path = currentPath || '/';
-
   const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
 
@@ -67,6 +63,10 @@ export const PageSelectModal: FC = () => {
 
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
+
+  const targetPathOrId = targetId || currentPath;
+
+  const path = currentPath || '/';
 
   if (isGuestUser == null) {
     return null;
