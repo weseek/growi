@@ -63,7 +63,8 @@
     "no_notification": "通知はありません",
     "all": "全て",
     "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
+    "mark_all_as_read": "全て既読にする",
+    "only_unread": "未読のみ"
   },
 
   "personal_dropdown": {

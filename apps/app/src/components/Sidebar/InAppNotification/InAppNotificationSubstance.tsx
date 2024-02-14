@@ -12,11 +12,12 @@ type InAppNotificationFormsProps = {
 }
 export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.Element => {
   const { onChangeUnopendNotificationsVisible } = props;
+  const { t } = useTranslation('commons');
 
   return (
     <div className="my-2">
       <div className="form-check form-switch">
-        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">Only unread</label>
+        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">{t('in_app_notification.only_unread', 'Only unread')}</label>
         <input
           id="flexSwitchCheckDefault"
           className="form-check-input"
