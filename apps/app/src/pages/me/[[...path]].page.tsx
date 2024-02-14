@@ -124,15 +124,15 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root">
         <header className="py-3">
-          <div className="container-fluid">
-            <h1 className="title">{ targetPage.title }</h1>
+          <div className="container">
+            <h1 className="title fs-3 mt-5">{ targetPage.title }</h1>
           </div>
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className="main">
-          <div id="content-main" className="content-main container-lg">
+          <div id="content-main" className="content-main container">
             {targetPage.component}
           </div>
         </div>
