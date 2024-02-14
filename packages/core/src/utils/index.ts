@@ -13,3 +13,4 @@ export * as pageUtils from './page-utils';
 export * from './basic-interceptor';
 export * from './browser-utils';
 export * from './growi-theme-metadata';
+export * from './should-create-wip-page';
