@@ -27,6 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
+  useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
   useEditorSettings,
@@ -34,7 +35,6 @@ import {
   useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
-  useAcceptedUploadFileType,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {

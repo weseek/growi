@@ -17,10 +17,10 @@ import { toastError } from '~/client/util/toastr';
 import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
-  useCurrentUser, useIsSlackConfigured,
+  useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useAcceptedUploadFileType,
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';

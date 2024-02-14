@@ -1,3 +1,4 @@
+import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
@@ -253,6 +254,24 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
     ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
+    },
+  );
+};
+
+export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
+  const { data: isUploadEnabled } = useIsUploadEnabled();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+
+  return useSWRImmutable(
+    ['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed],
+    ([, isUploadEnabled, isUploadAllFileAllowed]) => {
+      if (!isUploadEnabled) {
+        return AcceptedUploadFileType.NONE;
+      }
+      if (isUploadAllFileAllowed) {
+        return AcceptedUploadFileType.ALL;
+      }
+      return AcceptedUploadFileType.IMAGE;
     },
   );
 };
