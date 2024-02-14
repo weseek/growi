@@ -39,6 +39,8 @@ export type IPage = {
   latestRevision?: Ref<IRevision>,
   latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
+  wip?: boolean,
+  wipExpiredAt?: Date,
 }
 
 export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
