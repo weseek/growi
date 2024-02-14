@@ -366,25 +366,14 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Empty pages cannot be single deleted', 'single_deletion_empty_pages'));
     }
 
-    // -- canDelete no longer needs creator,
-    //  however it might be required to retrieve the closest non-empty ancestor page's owner -- 2024.02.09 Yuki Takei
-    //
-    // let creator;
-    // if (page.isEmpty) {
-    //   // If empty, the creator is inherited from the closest non-empty ancestor page.
-    //   const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-    //   creator = notEmptyClosestAncestor.creator;
-    // }
-    // else {
-    //   creator = page.creator;
-    // }
+    const creatorId = await crowi.pageService.getCreatorIdForCanDelete(page);
 
     debug('Delete page', page._id, page.path);
 
     try {
       if (isCompletely) {
         const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(req.user);
-        const canDeleteCompletely = crowi.pageService.canDeleteCompletely(page, req.user, isRecursively, userRelatedGroups);
+        const canDeleteCompletely = crowi.pageService.canDeleteCompletely(page, creatorId, req.user, isRecursively, userRelatedGroups);
         if (!canDeleteCompletely) {
           return res.json(ApiResponse.error('You cannot delete this page completely', 'complete_deletion_not_allowed_for_user'));
         }
@@ -411,8 +400,8 @@ module.exports = function(crowi, app) {
           return res.json(ApiResponse.error('Someone could update this page, so couldn\'t delete.', 'outdated'));
         }
 
-        if (!crowi.pageService.canDelete(page, req.user, isRecursively)) {
-          return res.json(ApiResponse.error('You can not delete this page', 'user_not_admin'));
+        if (!crowi.pageService.canDelete(page, creatorId, req.user, isRecursively)) {
+          return res.json(ApiResponse.error('You cannot delete this page', 'user_not_admin'));
         }
 
         if (pagePathUtils.isUsersHomepage(page.path)) {
