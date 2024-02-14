@@ -1,12 +1,12 @@
-import React, { type ReactNode, useCallback, useState } from 'react';
+import React, { type ReactNode, useCallback } from 'react';
 
-import type { IGrantedGroup } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
+import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
+import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
-import { useCreatePageAndTransit } from '../../client/services/use-create-page-and-transit';
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -47,9 +47,6 @@ type Props = {
   editorMode: EditorMode | undefined,
   isBtnDisabled: boolean,
   path?: string,
-  grant?: number,
-  // grantUserGroupId?: string
-  grantUserGroupIds?: IGrantedGroup[]
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
@@ -57,30 +54,34 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     editorMode = EditorMode.View,
     isBtnDisabled,
     path,
-    // grant,
-    // grantUserGroupId,
   } = props;
 
-  const { t } = useTranslation('common');
-  const [isCreating, setIsCreating] = useState(false);
+  const { t } = useTranslation('commons');
 
+  const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+
+  const editButtonClickedHandler = useCallback(async() => {
+    if (isNotFound == null || isNotFound === false) {
+      mutateEditorMode(EditorMode.Editor);
+      return;
+    }
+
+    try {
+      await createAndTransit(
+        { path },
+        { shouldCheckPageExists: true },
+      );
+    }
+    catch (err) {
+      toastError(t('toaster.create_failed', { target: path }));
+    }
+  }, [createAndTransit, isNotFound, mutateEditorMode, path, t]);
+
   const _isBtnDisabled = isCreating || isBtnDisabled;
-
-  const createPageAndTransit = useCreatePageAndTransit();
-
-  const editButtonClickedHandler = useCallback(() => {
-    createPageAndTransit(
-      path,
-      {
-        onCreationStart: () => { setIsCreating(true) },
-        onError: () => { toastError(t('toaster.create_failed', { target: path })) },
-        onTerminated: () => { setIsCreating(false) },
-      },
-    );
-  }, [createPageAndTransit, path, t]);
 
   return (
     <>

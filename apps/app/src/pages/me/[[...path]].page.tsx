@@ -16,9 +16,9 @@ import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
@@ -101,6 +101,8 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
   mutate(undefined, { revalidate: false });
+  useCurrentPageId(null);
+  useCurrentPathname('/me');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
