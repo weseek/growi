@@ -858,5 +858,10 @@
   },
   "page_select_modal": {
     "select_page_location": "ページの場所を選択"
+  },
+  "wip_page": {
+    "save_as_wip": "WIP (執筆中) として保存",
+    "success_save_as_wip": "WIP ページとして保存しました",
+    "fail_save_as_wip": "WIP ページとして保存できませんでした"
   }
 }

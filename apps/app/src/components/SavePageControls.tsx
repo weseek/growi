@@ -9,12 +9,13 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
 } from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -43,6 +44,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: isAclEnabled } = useIsAclEnabled();
   const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
   const isWipPage = currentPage?.wip === true;
@@ -68,8 +70,16 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
       return;
     }
 
-    await unpublish(pageId);
-  }, [currentPage?._id]);
+    try {
+      await unpublish(pageId);
+      await mutateCurrentPage();
+      toastSuccess(t('wip_page.success_save_as_wip'));
+    }
+    catch (err) {
+      logger.error(err);
+      toastError(t('wip_page.fail_save_as_wip'));
+    }
+  }, [currentPage?._id, mutateCurrentPage, t]);
 
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
@@ -85,7 +95,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
-  const labelUnpublishPage = 'WIP (執筆中) として保存'; // TODO: i18n
+  const labelUnpublishPage = t('wip_page.save_as_wip');
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
