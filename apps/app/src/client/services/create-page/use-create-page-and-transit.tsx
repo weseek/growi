@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 
+import { shouldCreateWipPage } from '@growi/core/dist/utils';
 import { useRouter } from 'next/router';
 
 import { createPage, exist } from '~/client/services/page-operation';
@@ -86,7 +87,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       setCreating(true);
       onCreationStart?.();
 
-      const response = await createPage(params);
+      const response = await createPage({ ...params, wip: shouldCreateWipPage(params.path) });
 
       await router.push(`/${response.page._id}#edit`);
       mutateEditorMode(EditorMode.Editor);

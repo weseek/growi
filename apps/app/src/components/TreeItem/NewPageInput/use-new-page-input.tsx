@@ -1,5 +1,7 @@
 import React, { useState, type FC, useCallback } from 'react';
 
+import { shouldCreateWipPage } from '@growi/core/dist/utils';
+
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -73,6 +75,7 @@ export const useNewPageInput = (): UseNewPageInput => {
         grant: page.grant,
         // grantUserGroupId: page.grantedGroup,
         grantUserGroupIds: page.grantedGroups,
+        wip: shouldCreateWipPage(newPagePath),
       });
 
       mutateChildren();
