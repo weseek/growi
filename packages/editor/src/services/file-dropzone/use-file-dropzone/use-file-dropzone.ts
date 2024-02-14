@@ -3,20 +3,20 @@ import { useCallback, useState } from 'react';
 import { useDropzone, Accept } from 'react-dropzone';
 import type { DropzoneState } from 'react-dropzone';
 
-import { AcceptedUploadFileType } from '../../../consts';
+import { AcceptedUploadFileType, getMimeType } from '../../../consts';
 
 type FileDropzoneState = DropzoneState & {
   isUploading: boolean,
 }
 
 type DropzoneEditor = {
+  acceptedUploadFileType: AcceptedUploadFileType,
   onUpload?: (files: File[]) => void,
-  acceptedFileType: AcceptedUploadFileType,
 }
 
 export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
 
-  const { onUpload, acceptedFileType } = props;
+  const { onUpload, acceptedUploadFileType } = props;
 
   const [isUploading, setIsUploading] = useState(false);
 
@@ -24,7 +24,7 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
     if (onUpload == null) {
       return;
     }
-    if (acceptedFileType === AcceptedUploadFileType.NONE) {
+    if (acceptedUploadFileType === AcceptedUploadFileType.NONE) {
       return;
     }
 
@@ -32,11 +32,11 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
     onUpload(acceptedFiles);
     setIsUploading(false);
 
-  }, [onUpload, setIsUploading, acceptedFileType]);
+  }, [onUpload, setIsUploading, acceptedUploadFileType]);
 
   const accept: Accept = {
   };
-  accept[acceptedFileType] = [];
+  accept[getMimeType(acceptedUploadFileType)] = [];
 
   const dzState = useDropzone({
     noKeyboard: true,

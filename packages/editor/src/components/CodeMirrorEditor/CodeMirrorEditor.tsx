@@ -27,29 +27,32 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   );
 });
 
-type Props = {
-  editorKey: string | GlobalCodeMirrorEditorKey,
-  acceptedFileType: AcceptedUploadFileType,
+export type CodeMirrorEditorProps = {
+  acceptedUploadFileType?: AcceptedUploadFileType,
+  indentSize?: number,
+  editorTheme?: string,
+  editorKeymap?: string,
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
-  indentSize?: number,
-  editorTheme?: string,
-  editorKeymap?: string,
+}
+
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
-    acceptedFileType,
+    acceptedUploadFileType = AcceptedUploadFileType.NONE,
+    indentSize,
+    editorTheme,
+    editorKeymap,
     onChange,
     onSave,
     onUpload,
     onScroll,
-    indentSize,
-    editorTheme,
-    editorKeymap,
   } = props;
 
   const containerRef = useRef(null);
@@ -182,7 +185,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     isDragReject,
     isUploading,
     open,
-  } = useFileDropzone({ onUpload, acceptedFileType });
+  } = useFileDropzone({ onUpload, acceptedUploadFileType });
 
   const fileUploadState = useMemo(() => {
 
@@ -190,7 +193,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return 'dropzone-uploading';
     }
 
-    switch (acceptedFileType) {
+    switch (acceptedUploadFileType) {
       case AcceptedUploadFileType.NONE:
         return 'dropzone-disabled';
 
@@ -214,14 +217,14 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
+  }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
+        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedUploadFileType={acceptedUploadFileType} />
       </div>
     </div>
   );

@@ -14,11 +14,11 @@ import { LinkEditButton } from './LinkEditButton';
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   onFileOpen: () => void,
-  acceptedFileType: AcceptedUploadFileType,
+  acceptedUploadFileType: AcceptedUploadFileType,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
-  const { onFileOpen, acceptedFileType, editorKey } = props;
+  const { onFileOpen, acceptedUploadFileType, editorKey } = props;
 
   return (
     <>
@@ -31,7 +31,7 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
             Attachments
           </DropdownItem>
           <DropdownItem divider />
-          <AttachmentsButton onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
+          <AttachmentsButton onFileOpen={onFileOpen} acceptedUploadFileType={acceptedUploadFileType} />
           <LinkEditButton editorKey={editorKey} />
         </DropdownMenu>
       </UncontrolledDropdown>

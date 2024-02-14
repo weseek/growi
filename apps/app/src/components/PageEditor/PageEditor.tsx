@@ -26,7 +26,9 @@ import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
+  useIsEditable, useIsIndentSizeForced,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  // useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
   useEditorSettings,
@@ -110,6 +112,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
   const { data: isUploadEnabled } = useIsUploadEnabled();
+  // const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -315,7 +318,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, pageId]);
 
-  const acceptedFileType = useMemo(() => {
+  const acceptedUploadFileType = useMemo(() => {
     if (!isUploadEnabled) {
       return AcceptedUploadFileType.NONE;
     }
@@ -460,7 +463,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
-            acceptedFileType={acceptedFileType}
+            acceptedUploadFileType={acceptedUploadFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             userName={user?.name}

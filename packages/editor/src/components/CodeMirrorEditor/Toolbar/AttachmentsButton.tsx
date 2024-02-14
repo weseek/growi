@@ -6,14 +6,14 @@ import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-typ
 
 type Props = {
   onFileOpen: () => void,
-  acceptedFileType: AcceptedUploadFileType,
+  acceptedUploadFileType: AcceptedUploadFileType,
 }
 
 export const AttachmentsButton = (props: Props): JSX.Element => {
 
-  const { onFileOpen, acceptedFileType } = props;
+  const { onFileOpen, acceptedUploadFileType } = props;
 
-  if (acceptedFileType === AcceptedUploadFileType.ALL) {
+  if (acceptedUploadFileType === AcceptedUploadFileType.ALL) {
     return (
       <>
         <DropdownItem className="d-flex gap-2 align-items-center" onClick={onFileOpen}>
@@ -23,7 +23,7 @@ export const AttachmentsButton = (props: Props): JSX.Element => {
       </>
     );
   }
-  if (acceptedFileType === AcceptedUploadFileType.IMAGE) {
+  if (acceptedUploadFileType === AcceptedUploadFileType.IMAGE) {
     return (
       <>
         <DropdownItem className="d-flex gap-2 align-items-center" onClick={onFileOpen}>

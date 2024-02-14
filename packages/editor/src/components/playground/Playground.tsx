@@ -62,7 +62,7 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
-            acceptedFileType={AcceptedUploadFileType.ALL}
+            acceptedUploadFileType={AcceptedUploadFileType.ALL}
             editorTheme={editorTheme}
             editorKeymap={editorKeymap}
           />

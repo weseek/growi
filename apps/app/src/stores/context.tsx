@@ -1,13 +1,15 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import { AcceptedUploadFileType } from '@growi/editor';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { SupportedActionType } from '~/interfaces/activity';
-import { EditorConfig } from '~/interfaces/editor-settings';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import type { SupportedActionType } from '~/interfaces/activity';
+import type { EditorConfig } from '~/interfaces/editor-settings';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
-import { TargetAndAncestors } from '../interfaces/page-listing-results';
+import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
 import { useStaticSWR } from './use-static-swr';
@@ -164,6 +166,10 @@ export const useIsUploadAllFileAllowed = (initialData?: boolean): SWRResponse<bo
   return useContextSWR('isUploadAllFileAllowed', initialData);
 };
 
+// export const useAcceptedUploadFileType = (initialData?: AcceptedUploadFileType): SWRResponse<AcceptedUploadFileType, Error> => {
+//   return useContextSWR('acceptedUploadFileType', initialData, { fallbackData: AcceptedUploadFileType.NONE });
+// };
+
 export const useShowPageLimitationL = (initialData?: number): SWRResponse<number, Error> => {
   return useContextSWR('showPageLimitationL', initialData);
 };
@@ -259,3 +265,14 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     },
   );
 };
+
+// export const useAcceptedMimeType = (): SWRResponse<string, Error> => {
+//   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
+
+//   return useSWRImmutable(
+//     ['acceptedMimeType', acceptedUploadFileType],
+//     ([, acceptedUploadFileType]) => {
+//       return getMimeType(acceptedUploadFileType ?? AcceptedUploadFileType.NONE);
+//     },
+//   );
+// };

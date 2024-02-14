@@ -17,8 +17,9 @@ import { toastError } from '~/client/util/toastr';
 import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
-  useCurrentUser, useIsSlackConfigured,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
+  // useAcceptedUploadFileType,
+  useCurrentUser, useIsSlackConfigured,
 } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
@@ -74,6 +75,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
   const { data: isUploadEnabled } = useIsUploadEnabled();
+  // const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
@@ -325,8 +327,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       </Button>
     );
 
-    const isUploadable = isUploadEnabled || isUploadAllFileAllowed;
-
     return (
       <>
         <div className="comment-write">
@@ -334,6 +334,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
               <CodeMirrorEditorComment
+                // acceptedUploadFileType={acceptedUploadFileType}
                 onChange={onChangeHandler}
               />
               {/* <Editor

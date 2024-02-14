@@ -11,6 +11,7 @@ import type {
 import {
   isClient, pagePathUtils, pathUtils,
 } from '@growi/core/dist/utils';
+import { AcceptedUploadFileType } from '@growi/editor';
 import ExtensibleCustomError from 'extensible-custom-error';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
@@ -40,7 +41,9 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsContainerFluid, useIsNotCreatable,
+  useEditorConfig, useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
+  // useAcceptedUploadFileType,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -222,6 +225,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
   useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
+  // useAcceptedUploadFileType(props.editorConfig.acceptedUploadFileType);
 
   const { pageWithMeta } = props;
 
@@ -567,7 +571,17 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
       isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
       isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
     },
+    // acceptedUploadFileType: (() => {
+    //   if (!crowi.fileUploadService.getIsUploadable()) {
+    //     return AcceptedUploadFileType.NONE;
+    //   }
+    //   if (crowi.fileUploadService.getFileUploadEnabled()) {
+    //     return AcceptedUploadFileType.ALL;
+    //   }
+    //   return AcceptedUploadFileType.IMAGE;
+    // })(),
   };
+
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
