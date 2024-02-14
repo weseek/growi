@@ -12,6 +12,8 @@ import SearchForm from '../SearchForm';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 
+import styles from './SearchControl.module.scss';
+
 type Props = {
   isSearchServiceReachable: boolean,
   isEnableSort: boolean,
@@ -160,9 +162,9 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         )}
         <div className="d-flex">
           <div className="btn-group">
-            <button className="btn rounded" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span className="material-symbols-outlined text-secondary">delete</span>
-              <span className="material-symbols-outlined text-secondary">expand_more</span>
+            <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span className="material-symbols-outlined ">delete</span>
+              <span className="material-symbols-outlined ">expand_more</span>
             </button>
             <ul className="dropdown-menu">
               {allControl}

@@ -25,26 +25,17 @@ const SortControl: FC <Props> = (props: Props) => {
     }
   };
 
-  const renderOrderIcon = () => {
-    const iconClassName = ASC === order ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc';
-    return <i className={iconClassName} aria-hidden="true" />;
-  };
 
   return (
     <>
-      <div className="input-group flex-nowrap">
-        <div className="input-group-text text-muted border rounded-start" id="btnGroupAddon">
-          {renderOrderIcon()}
-        </div>
-        <div className="border rounded-end">
-          <button
-            type="button"
-            className="btn dropdown-toggle py-1"
-            data-bs-toggle="dropdown"
-          >
-            <span className="me-2 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
+      <div className="d-flex">
+        <div className="btn-group">
+          <button className="d-flex btn btn-sm btn-outline-neutral-secondary rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span className="material-symbols-outlined text-secondary">sort</span>
+            <span className="ms-2 me-6 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
+            <span className="material-symbols-outlined text-secondary">expand_more</span>
           </button>
-          <div className="dropdown-menu dropdown-menu-right">
+          <ul className="dropdown-menu">
             {Object.values(SORT_AXIS).map((sortAxis) => {
               const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
               return (
@@ -58,7 +49,7 @@ const SortControl: FC <Props> = (props: Props) => {
                 </button>
               );
             })}
-          </div>
+          </ul>
         </div>
       </div>
     </>
