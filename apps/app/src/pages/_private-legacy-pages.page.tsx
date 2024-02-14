@@ -1,5 +1,5 @@
-import type { IUser, IUserHasId } from '@growi/core';
-import {
+import type { IUser } from '@growi/core';
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -12,9 +12,9 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -50,6 +50,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
   mutate(undefined, { revalidate: false });
+  useCurrentPageId(null);
+  useCurrentPathname('/_private-legacy-pages');
 
   // Search
   useIsSearchPage(true);

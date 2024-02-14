@@ -3,30 +3,39 @@ import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
+import { CopyDropdown } from '../Common/CopyDropdown';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
-import type { Props } from './PagePathHeader';
+import styles from './PageTitleHeader.module.scss';
 
+const moduleClass = styles['page-title-header'];
+
+type Props = {
+  currentPage: IPagePopulatedToShowRevision,
+  className?: string,
+};
 
 export const PageTitleHeader: FC<Props> = (props) => {
+  const { t } = useTranslation();
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
 
-  const pageTitle = nodePath.basename(currentPagePath) || '/';
+  const dPagePath = new DevidedPagePath(currentPage.path, true);
+  const pageTitle = dPagePath.latter;
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
-
-  const { t } = useTranslation();
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
@@ -54,41 +63,44 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(false);
   }, [currentPagePath]);
 
-  const onClickButton = useCallback(() => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
-
   const onClickPageTitle = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(true);
   }, [currentPagePath]);
 
-  const PageTitle = <div onClick={onClickPageTitle}>{pageTitle}</div>;
-
-  const buttonStyle = isRenameInputShown ? '' : 'd-none';
 
   return (
-    <div className="row">
-      <div className="col-4">
-        {isRenameInputShown ? (
-          <div className="flex-fill">
+    <div className={`d-flex align-items-center ${moduleClass} ${props.className ?? ''}`}>
+      <div className="me-1">
+        { isRenameInputShown && (
+          <div className="position-absolute">
             <ClosableTextInput
+              useAutosizeInput
               value={editedPageTitle}
               placeholder={t('Input page name')}
+              inputClassName="fs-4"
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
+              onChange={onInputChange}
+              onClickOutside={() => setRenameInputShown(false)}
               validationTarget={ValidationTarget.PAGE}
-              handleInputChange={onInputChange}
             />
           </div>
-        ) : (
-          <>{ PageTitle }</>
-        )}
+        ) }
+        <h1 className={`mb-0 fs-4 ${isRenameInputShown ? 'invisible' : ''}`} onClick={onClickPageTitle}>
+          {pageTitle}
+        </h1>
       </div>
-      <div className={`col-4 ${buttonStyle}`}>
-        <button type="button" onClick={onClickButton}>
-          <span className="material-symbols-outlined">check_circle</span>
-        </button>
+
+      <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
+        <CopyDropdown
+          pageId={currentPage._id}
+          pagePath={currentPage.path}
+          dropdownToggleId={`copydropdown-${currentPage._id}`}
+          dropdownToggleClassName="ms-2 p-1"
+        >
+          <span className="material-symbols-outlined fs-6">content_paste</span>
+        </CopyDropdown>
       </div>
     </div>
   );
