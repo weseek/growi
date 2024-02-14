@@ -4108,6 +4108,11 @@ class PageService implements IPageService {
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
 
+    // Do not consider it for automatic deletion if updated at least once
+    if (newPageData.wipExpiredAt != null) {
+      newPageData.wipExpiredAt = null;
+    }
+
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
     const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
