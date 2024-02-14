@@ -221,8 +221,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       let createdPage;
       try {
-        const { grant, grantUserGroupIds, overwriteScopesOfDescendants, wip } = req.body;
-        console.log('wip', wip);
+        const {
+          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip,
+        } = req.body;
+
         const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip };
         if (grant != null) {
           options.grant = grant;
