@@ -27,7 +27,7 @@ export const PageSelectModal: FC = () => {
 
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
-  const [clickedParentPagePath, setClickedParentPagePath] = useState<string>();
+  const [clickedParentPagePath, setClickedParentPagePath] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -51,7 +51,7 @@ export const PageSelectModal: FC = () => {
   }, []);
 
   const onClickCancel = useCallback(() => {
-    setClickedParentPagePath('');
+    setClickedParentPagePath(null);
     closeModal();
   }, [closeModal]);
 
