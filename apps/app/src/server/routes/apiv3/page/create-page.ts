@@ -111,6 +111,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('pageTags').optional().isArray().withMessage('pageTags must be array'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
+    body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
 
 
@@ -220,8 +221,9 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
 
       let createdPage;
       try {
-        const { grant, grantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForCreate = { overwriteScopesOfDescendants };
+        const { grant, grantUserGroupIds, overwriteScopesOfDescendants, wip } = req.body;
+        console.log('wip', wip);
+        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;

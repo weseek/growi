@@ -3790,6 +3790,10 @@ class PageService implements IPageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
+
+    // Set wip
+    page.wip = options.wip ?? false;
+
     // Save
     let savedPage = await page.save();
 

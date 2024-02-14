@@ -139,6 +139,7 @@ const schema = new Schema<PageDocument, PageModel>({
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
+  wip: { type: Boolean },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
