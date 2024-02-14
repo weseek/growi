@@ -2,7 +2,7 @@ import { checkTemplatePath } from './template-checker';
 
 /**
  * Returns Whether to create pages with the wip flag
- * @param {string} path
+ * @param {string|undefined} path
  * @returns {boolean}
  */
 export const shouldCreateWipPage = (path?: string): boolean => {
