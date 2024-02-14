@@ -1058,9 +1058,12 @@ schema.methods.publish = function() {
   this.wipExpiredAt = undefined;
 };
 
-schema.methods.unpublish = function() {
+schema.methods.unpublish = function(isNewPage: boolean) {
   this.wip = true;
-  this.wipExpiredAt = new Date();
+
+  if (isNewPage) {
+    this.wipExpiredAt = new Date();
+  }
 };
 
 /*
