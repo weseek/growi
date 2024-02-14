@@ -123,7 +123,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
-              <div className="px-2 py-1 me-3">
+              <div className="px-2 py-1">
                 <div className="form-check form-check-succsess">
                   <input
                     className="form-check-input me-2"
