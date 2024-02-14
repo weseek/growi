@@ -140,6 +140,7 @@ const schema = new Schema<PageDocument, PageModel>({
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
   wip: { type: Boolean },
+  wipExpiredAt: { type: Date },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -1050,6 +1051,16 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();
+};
+
+schema.methods.publish = function() {
+  this.wip = false;
+  this.wipExpiredAt = undefined;
+};
+
+schema.methods.unpublish = function() {
+  this.wip = true;
+  this.wipExpiredAt = new Date();
 };
 
 /*

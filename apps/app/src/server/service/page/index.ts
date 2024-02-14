@@ -3792,7 +3792,9 @@ class PageService implements IPageService {
     }
 
     // Set wip
-    page.wip = options.wip ?? false;
+    if (options.wip) {
+      page.unpublish();
+    }
 
     // Save
     let savedPage = await page.save();
