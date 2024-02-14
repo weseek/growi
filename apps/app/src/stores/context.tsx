@@ -1,5 +1,4 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { AcceptedUploadFileType } from '@growi/editor';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -142,10 +141,6 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
-export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
-  return useContextSWR<EditorConfig, Error>('editorConfig', initialData);
-};
-
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useContextSWR('growiRendererConfig', initialData);
 };
@@ -261,31 +256,3 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     },
   );
 };
-
-// export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
-//   const { data: editorConfig } = useEditorConfig();
-
-//   return useSWRImmutable(
-//     ['acceptedUploadFileType', editorConfig],
-//     ([, editorConfig]) => {
-//       if (!editorConfig?.upload.isUploadEnabled) {
-//         return AcceptedUploadFileType.NONE;
-//       }
-//       if (editorConfig?.upload.isUploadAllFileAllowed) {
-//         return AcceptedUploadFileType.ALL;
-//       }
-//       return AcceptedUploadFileType.IMAGE;
-//     },
-//   );
-// };
-
-// export const useAcceptedMimeType = (): SWRResponse<string, Error> => {
-//   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-
-//   return useSWRImmutable(
-//     ['acceptedMimeType', acceptedUploadFileType],
-//     ([, acceptedUploadFileType]) => {
-//       return getMimeType(acceptedUploadFileType ?? AcceptedUploadFileType.NONE);
-//     },
-//   );
-// };

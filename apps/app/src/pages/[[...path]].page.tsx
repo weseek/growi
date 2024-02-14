@@ -40,7 +40,7 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
@@ -187,7 +187,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // commons
-  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -568,15 +567,6 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
       isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
       isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
     },
-    // acceptedUploadFileType: (() => {
-    //   if (!crowi.fileUploadService.getIsUploadable()) {
-    //     return AcceptedUploadFileType.NONE;
-    //   }
-    //   if (crowi.fileUploadService.getFileUploadEnabled()) {
-    //     return AcceptedUploadFileType.ALL;
-    //   }
-    //   return AcceptedUploadFileType.IMAGE;
-    // })(),
   };
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
