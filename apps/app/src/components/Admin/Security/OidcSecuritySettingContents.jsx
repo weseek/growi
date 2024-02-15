@@ -79,11 +79,10 @@ class OidcSecurityManagementContents extends React.Component {
             <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
-                {/* TODO:Replace with material symabols */}
-                <i
-                  className="icon-exclamation"
+                <span className="material-symbols-outlined">error</span>
+                <span
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<i class="icon-login"></i></a>`, ns: 'commons' }) }}
+                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
                 />
               </div>
             )}
@@ -376,11 +375,10 @@ class OidcSecurityManagementContents extends React.Component {
                 <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
                 {(siteUrl == null || siteUrl === '') && (
                   <div className="alert alert-danger">
-                    {/* TODO:Replace with material symbols */}
-                    <i
-                      className="icon-exclamation"
+                    <span className="material-symbols-outlined">error</span>
+                    <span
                       // eslint-disable-next-line max-len
-                      dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<i class="icon-login"></i></a>`, ns: 'commons' }) }}
+                      dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
                     />
                   </div>
                 )}
