@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 
-import { AcceptedUploadFileType, getMimeType } from '@growi/core';
+import { AcceptedUploadFileType } from '@growi/core';
 import { useDropzone, Accept } from 'react-dropzone';
 import type { DropzoneState } from 'react-dropzone';
 
@@ -34,9 +34,11 @@ export const useFileDropzone = (props: DropzoneEditor): FileDropzoneState => {
 
   }, [onUpload, setIsUploading, acceptedUploadFileType]);
 
-  const accept: Accept = {
-  };
-  accept[getMimeType(acceptedUploadFileType)] = [];
+  const accept: Accept | undefined = acceptedUploadFileType === AcceptedUploadFileType.IMAGE
+    ? {
+      'image/*': [],
+    }
+    : undefined;
 
   const dzState = useDropzone({
     noKeyboard: true,
