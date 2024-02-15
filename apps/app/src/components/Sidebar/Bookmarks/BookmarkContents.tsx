@@ -45,8 +45,11 @@ export const BookmarkContents = (): JSX.Element => {
           className="btn btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
           onClick={onClickNewBookmarkFolder}
         >
-          <FolderPlusIcon />
-          <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+
+          <div className="d-flex align-items-center">
+            <FolderPlusIcon />
+            <span className="ms-2">{t('bookmark_folder.new_folder')}</span>
+          </div>
         </button>
       </div>
       {isCreateAction && (
