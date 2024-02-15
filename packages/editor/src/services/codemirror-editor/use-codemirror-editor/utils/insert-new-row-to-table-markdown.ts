@@ -1,6 +1,3 @@
-// import type {
-//   Transaction,
-// } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { MarkdownTable } from '@growi/core/dist/models';
 

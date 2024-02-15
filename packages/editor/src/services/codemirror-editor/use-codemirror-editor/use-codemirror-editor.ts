@@ -52,7 +52,6 @@ const onPressEnter: Command = (editor) => {
 // https://github.com/codemirror/lang-markdown/blob/main/src/index.ts#L17
 const markdownKeymap = [
   { key: 'Backspace', run: deleteMarkupBackward },
-  // { key: 'Enter', run: insertNewlineContinueMarkup },
   { key: 'Enter', run: onPressEnter },
 ];
 
