@@ -1060,11 +1060,11 @@ schema.methods.publish = function() {
 
 schema.methods.unpublish = function() {
   this.wip = true;
-  this.wipExpiredAt = new Date();
 };
 
 schema.methods.makeWip = function() {
   this.wip = true;
+  this.wipExpiredAt = new Date();
 };
 
 /*
