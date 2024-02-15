@@ -2,12 +2,12 @@ import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
 
-import { Breakpoint } from '@growi/ui/dist/interfaces';
+import type { Breakpoint } from '@growi/ui/dist/interfaces';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-import { ICustomNavTabMappings } from '~/interfaces/ui';
+import type { ICustomNavTabMappings } from '~/interfaces/ui';
 
 import styles from './CustomNav.module.scss';
 
@@ -49,7 +49,7 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
   }, [onNavSelected]);
 
   return (
-    <div className="grw-custom-nav-dropdown btn-group">
+    <div className="btn-group">
       <button
         className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"

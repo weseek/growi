@@ -107,6 +107,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
               label={t('page_list')}
               // Do not display CountBadge if '/trash/*': https://github.com/weseek/growi/pull/7600
               count={!isTrash && pageInfo != null ? (pageInfo as IPageInfoForOperation).descendantCount : undefined}
+              offset={1}
               onClick={() => openDescendantPageListModal(pagePath)}
             />
           </div>

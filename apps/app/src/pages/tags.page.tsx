@@ -1,7 +1,8 @@
-import React, { useState, useCallback, ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React, { useState, useCallback } from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
-import { GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { IUser } from '@growi/core';
+import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
@@ -10,17 +11,17 @@ import Head from 'next/head';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri,
+  useIsSearchScopeChildrenAsDefault, useGrowiCloudUri, useCurrentPathname,
 } from '../stores/context';
 
-import { NextPageWithLayout } from './_app.page';
+import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, useInitSidebarConfig,
@@ -49,6 +50,8 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
   mutate(undefined, { revalidate: false });
+  useCurrentPageId(null);
+  useCurrentPathname('/tags');
 
   const { data: tagDataList, error } = useSWRxTagsList(PAGING_LIMIT, offset);
   const { t } = useTranslation('');
