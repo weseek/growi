@@ -55,27 +55,25 @@ export const PageTags:FC<Props> = (props: Props) => {
         </NotAvailableForGuest>
       </div>
       <div className="d-none d-lg-flex row">
-        <div
-          className="text-secondary mb-1"
-          onMouseEnter={onMouseEnterHandler}
-          onMouseLeave={onMouseLeaveHandler}
-        >
-          <span className="material-symbols-outlined me-1">local_offer</span>
-          <span className="me-2">{t('Tags')}</span>
-          {(isHovered && !isTagLabelsDisabled) && (
-            <NotAvailableForGuest>
-              <NotAvailableForReadOnlyUser>
-                <button
-                  id="edit-tags-btn-wrapper-for-tooltip"
-                  type="button"
-                  className="btn btn-link text-secondary p-0 border-0"
-                  onClick={onClickEditTagsButton}
-                >
+        <div className="mb-2">
+          <NotAvailableForGuest>
+            <NotAvailableForReadOnlyUser>
+              <button
+                id="edit-tags-btn-wrapper-for-tooltip"
+                type="button"
+                className="btn btn-link text-secondary p-0 border-0"
+                onMouseEnter={onMouseEnterHandler}
+                onMouseLeave={onMouseLeaveHandler}
+                onClick={onClickEditTagsButton}
+              >
+                <span className="material-symbols-outlined me-1">local_offer</span>
+                <span className="me-2">{t('Tags')}</span>
+                {(isHovered && !isTagLabelsDisabled) && (
                   <span className="material-symbols-outlined p-0">edit</span>
-                </button>
-              </NotAvailableForReadOnlyUser>
-            </NotAvailableForGuest>
-          )}
+                )}
+              </button>
+            </NotAvailableForReadOnlyUser>
+          </NotAvailableForGuest>
         </div>
         <div>
           <RenderTagLabels tags={tags} maxWidth={tagLabelsMaxWidth} />
