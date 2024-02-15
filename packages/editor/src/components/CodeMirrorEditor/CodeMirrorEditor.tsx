@@ -196,8 +196,15 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     isDragAccept,
     isDragReject,
     isUploading,
-    open,
-  } = useFileDropzone({ onUpload, acceptedUploadFileType });
+  } = useFileDropzone({
+    acceptedUploadFileType,
+    onUpload,
+    // ignore mouse and key events
+    dropzoneOpts: {
+      noClick: true,
+      noKeyboard: true,
+    },
+  });
 
   const fileUploadState = useMemo(() => {
 
@@ -237,12 +244,12 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar
-          editorKey={editorKey}
-          acceptedUploadFileType={acceptedUploadFileType}
-          onAttachmentMenuItemClicked={open}
-        />
       </div>
+      <Toolbar
+        editorKey={editorKey}
+        acceptedUploadFileType={acceptedUploadFileType}
+        onUpload={onUpload}
+      />
     </div>
   );
 };

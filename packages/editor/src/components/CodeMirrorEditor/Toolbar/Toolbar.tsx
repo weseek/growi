@@ -16,15 +16,15 @@ import styles from './Toolbar.module.scss';
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedUploadFileType: AcceptedUploadFileType,
-  onAttachmentMenuItemClicked: () => void,
+  onUpload?: (files: File[]) => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
-  const { editorKey, onAttachmentMenuItemClicked, acceptedUploadFileType } = props;
+  const { editorKey, acceptedUploadFileType, onUpload } = props;
   return (
     <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
-      <AttachmentsDropup editorKey={editorKey} onMenuItemClicked={onAttachmentMenuItemClicked} acceptedUploadFileType={acceptedUploadFileType} />
+      <AttachmentsDropup editorKey={editorKey} onUpload={onUpload} acceptedUploadFileType={acceptedUploadFileType} />
       <TextFormatTools editorKey={editorKey} />
       <EmojiButton
         editorKey={editorKey}

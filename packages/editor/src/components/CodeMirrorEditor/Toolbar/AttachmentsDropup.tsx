@@ -10,26 +10,19 @@ import {
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 
-import { AttachmentsButton } from './AttachmentsButton';
+import { AttachmentsDropdownItem } from './AttachmentsDropdownItem';
 import { LinkEditButton } from './LinkEditButton';
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedUploadFileType: AcceptedUploadFileType,
-  onMenuItemClicked: () => void,
+  onUpload?: (files: File[]) => void,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
-  const { onMenuItemClicked, acceptedUploadFileType, editorKey } = props;
+  const { acceptedUploadFileType, editorKey, onUpload } = props;
 
   const [isOpen, setOpen] = useState(false);
-
-  const itemClickedHandler = useCallback(() => {
-    onMenuItemClicked();
-
-    // Force close against react-dropzone's { noClick: true } option
-    setOpen(false);
-  }, [onMenuItemClicked]);
 
   return (
     <>
@@ -41,8 +34,23 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
           <DropdownItem className="mt-1" header>
             Attachments
           </DropdownItem>
+
           <DropdownItem divider />
-          <AttachmentsButton onItemClicked={itemClickedHandler} acceptedUploadFileType={acceptedUploadFileType} />
+
+          { acceptedUploadFileType === AcceptedUploadFileType.ALL && (
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload}>
+              <span className="material-symbols-outlined fs-5">attach_file</span>
+              Files
+            </AttachmentsDropdownItem>
+          ) }
+
+          { acceptedUploadFileType !== AcceptedUploadFileType.NONE && (
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload}>
+              <span className="material-symbols-outlined fs-5">image</span>
+              Images
+            </AttachmentsDropdownItem>
+          ) }
+
           <LinkEditButton editorKey={editorKey} />
         </DropdownMenu>
       </Dropdown>

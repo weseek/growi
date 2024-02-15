@@ -1,37 +1,38 @@
+import { ReactNode } from 'react';
+
 import { AcceptedUploadFileType } from '@growi/core';
 import {
   DropdownItem,
 } from 'reactstrap';
 
+import { useFileDropzone } from '../../../services';
+
 type Props = {
-  onItemClicked: () => void,
   acceptedUploadFileType: AcceptedUploadFileType,
+  children?: ReactNode,
+  onUpload?: (files: File[]) => void,
 }
 
-export const AttachmentsButton = (props: Props): JSX.Element => {
+export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
 
-  const { onItemClicked, acceptedUploadFileType } = props;
+  const {
+    acceptedUploadFileType,
+    children,
+    onUpload,
+  } = props;
 
-  if (acceptedUploadFileType === AcceptedUploadFileType.ALL) {
-    return (
-      <>
-        <DropdownItem className="d-flex gap-2 align-items-center" onClick={onItemClicked}>
-          <span className="material-symbols-outlined fs-5">attach_file</span>
-          Files
-        </DropdownItem>
-      </>
-    );
-  }
-  if (acceptedUploadFileType === AcceptedUploadFileType.IMAGE) {
-    return (
-      <>
-        <DropdownItem className="d-flex gap-2 align-items-center" onClick={onItemClicked}>
-          <span className="material-symbols-outlined fs-5">image</span>
-          Images
-        </DropdownItem>
-      </>
-    );
-  }
+  const {
+    getRootProps,
+    getInputProps,
+    open,
+  } = useFileDropzone({ onUpload, acceptedUploadFileType });
 
-  return <></>;
+  return (
+    <div {...getRootProps()} className="dropzone">
+      <input {...getInputProps()} />
+      <DropdownItem className="d-flex gap-2 align-items-center" onClick={open}>
+        {children}
+      </DropdownItem>
+    </div>
+  );
 };
