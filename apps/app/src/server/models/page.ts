@@ -1054,16 +1054,17 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
 };
 
 schema.methods.publish = function() {
-  this.wip = false;
+  this.wip = undefined;
   this.wipExpiredAt = undefined;
 };
 
-schema.methods.unpublish = function(isNewPage: boolean) {
+schema.methods.unpublish = function() {
   this.wip = true;
+  this.wipExpiredAt = new Date();
+};
 
-  if (isNewPage) {
-    this.wipExpiredAt = new Date();
-  }
+schema.methods.makeWip = function() {
+  this.wip = true;
 };
 
 /*

@@ -3793,7 +3793,7 @@ class PageService implements IPageService {
 
     // Set wip
     if (options.wip) {
-      page.unpublish(true); // isNewPage = true
+      page.unpublish();
     }
 
     // Save
@@ -4109,9 +4109,7 @@ class PageService implements IPageService {
     const newPageData = pageData;
 
     // Do not consider it for automatic deletion if updated at least once
-    if (newPageData.wipExpiredAt != null) {
-      newPageData.wipExpiredAt = undefined;
-    }
+    newPageData.wipExpiredAt = undefined;
 
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
