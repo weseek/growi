@@ -1,4 +1,4 @@
-import { checkTemplatePath } from './template-checker';
+import { checkTemplatePath } from '@growi/core/dist/utils/template-checker';
 
 /**
  * Returns Whether to create pages with the wip flag

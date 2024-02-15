@@ -1,12 +1,13 @@
 import React, { type ReactNode, useCallback } from 'react';
 
-import { shouldCreateWipPage } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+
+import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
 
 
 import styles from './PageEditorModeManager.module.scss';
