@@ -5,7 +5,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId, IUser, IUserHasId } from '@growi/core';
+import type { IPageHasId, IUserHasId } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
