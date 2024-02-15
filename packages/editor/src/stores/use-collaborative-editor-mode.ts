@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
+import { GlobalSocketEventName, IUser } from '@growi/core/dist/interfaces';
 import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
 // see: https://github.com/yjs/y-codemirror.next#example
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -12,11 +12,19 @@ import * as Y from 'yjs';
 import { userColor } from '../consts';
 import { UseCodeMirrorEditor } from '../services';
 
+type UserLocalState = {
+  name: string;
+  user?: IUser;
+  color: string;
+  colorLight: string;
+}
+
 export const useCollaborativeEditorMode = (
-    userName?: string,
+    user?: IUser,
     pageId?: string,
     initialValue?: string,
     onOpenEditor?: (markdown: string) => void,
+    onUserList?: (userList: IUser[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -34,8 +42,8 @@ export const useCollaborativeEditorMode = (
     ydoc?.destroy();
     setYdoc(null);
 
-    // NOTICE: Destorying the provider leaves awareness in the other user's connection,
-    // so only awareness is destoryed here
+    // NOTICE: Destroying the provider leaves awareness in the other user's connection,
+    // so only awareness is destroyed here
     provider?.awareness.destroy();
 
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
@@ -50,7 +58,7 @@ export const useCollaborativeEditorMode = (
       return;
     }
 
-    // NOTICE: Old provider destory at the time of ydoc setup,
+    // NOTICE: Old provider destroy at the time of ydoc setup,
     // because the awareness destroying is not sync to other clients
     provider?.destroy();
     setProvider(null);
@@ -71,15 +79,29 @@ export const useCollaborativeEditorMode = (
       { autoConnect: true },
     );
 
-    socketIOProvider.awareness.setLocalStateField('user', {
-      name: userName ? `${userName}` : `Guest User ${Math.floor(Math.random() * 100)}`,
+    const userLocalState: UserLocalState = {
+      name: user?.name ? `${user.name}` : `Guest User ${Math.floor(Math.random() * 100)}`,
+      user,
       color: userColor.color,
       colorLight: userColor.light,
-    });
+    };
+
+    socketIOProvider.awareness.setLocalStateField('user', userLocalState);
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
         socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
+      }
+    });
+
+    // update args type see: SocketIOProvider.Awareness.awarenessUpdate
+    socketIOProvider.awareness.on('update', (update: any) => {
+      if (onUserList) {
+        const { added, removed } = update;
+        if (added.length > 0 || removed.length > 0) {
+          const userList: IUser[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
+          onUserList(userList);
+        }
       }
     });
 
@@ -115,7 +137,7 @@ export const useCollaborativeEditorMode = (
 
   useEffect(cleanupYDocAndProvider, [cPageId, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
-  useEffect(setupProvider, [initialValue, pageId, provider, socket, userName, ydoc]);
+  useEffect(setupProvider, [initialValue, onUserList, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
   useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 };

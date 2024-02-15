@@ -5,7 +5,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import type { IPageHasId, IUser } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -165,7 +165,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     initialValueRef.current = initialValue;
   }, [initialValue]);
 
-
+  const [userList, setUserList] = useState<IUser[]>([]);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -440,7 +440,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
       <div className="px-4 py-2">
-        <PageHeader />
+        <PageHeader userList={userList} />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
@@ -463,10 +463,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedFileType={acceptedFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            userName={user?.name}
+            user={user}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
+            onUserList={setUserList}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
           />
