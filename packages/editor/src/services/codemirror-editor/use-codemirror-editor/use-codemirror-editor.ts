@@ -27,7 +27,7 @@ import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
-import { insertNewRowToMarkdownTable } from './utils/insert-new-row-to-table-markdown';
+import { insertNewRowToMarkdownTable, isInTable } from './utils/insert-new-row-to-table-markdown';
 import { insertNewlineContinueMarkup } from './utils/insert-newline-continue-markup';
 import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
@@ -36,8 +36,13 @@ import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 
 const onPressEnter: Command = (editor) => {
-  // insertNewlineContinueMarkup(state, dispatch);
-  insertNewRowToMarkdownTable(editor);
+
+  if (isInTable(editor)) {
+    insertNewRowToMarkdownTable(editor);
+    return true;
+  }
+
+  insertNewlineContinueMarkup(editor);
 
   return true;
 };

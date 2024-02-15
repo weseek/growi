@@ -13,7 +13,7 @@ const getCurPos = (editor: EditorView): number => {
   return editor.state.selection.main.head;
 };
 
-const isInTable = (editor: EditorView): boolean => {
+export const isInTable = (editor: EditorView): boolean => {
   const curPos = getCurPos(editor);
   const lineText = editor.state.doc.lineAt(curPos).text;
   return linePartOfTableRE.test(lineText);
@@ -170,18 +170,13 @@ export const insertNewRowToMarkdownTable = (editor: EditorView): void => {
   const isLastRow = getStrToEot(editor) === strToEol;
   const isEndOfLine = curPos === eolPos;
 
-  if (isInTable(editor)) {
-
-    if (isEndOfLine) {
-      addRow(editor);
-    }
-
-    else if (isLastRow && emptyLineOfTableRE.test(strFromBol + strToEol)) {
-      removeRow(editor);
-    }
-
-    else {
-      reformTable(editor);
-    }
+  if (isEndOfLine) {
+    addRow(editor);
+  }
+  else if (isLastRow && emptyLineOfTableRE.test(strFromBol + strToEol)) {
+    removeRow(editor);
+  }
+  else {
+    reformTable(editor);
   }
 };
