@@ -10,6 +10,7 @@ import {
   EditorState, Prec, type Extension,
 } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
+import type { Command } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
@@ -34,9 +35,9 @@ import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
 
-const onPressEnter = ({ state, dispatch }) => {
+const onPressEnter: Command = (editor) => {
   // insertNewlineContinueMarkup(state, dispatch);
-  insertNewRowToMarkdownTable(state, dispatch);
+  insertNewRowToMarkdownTable(editor);
 
   return true;
 };
