@@ -32,6 +32,7 @@ import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
 import { CommentPreview } from './CommentPreview';
 
+import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
 
 
