@@ -159,7 +159,8 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
-  editorConfig: EditorConfig,
+  isUploadEnabled: boolean,
+  isUploadAllFileAllowed: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -219,8 +220,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
-  useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
+  useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
@@ -561,12 +562,8 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  props.editorConfig = {
-    upload: {
-      isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
-    },
-  };
+  props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
+  props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
