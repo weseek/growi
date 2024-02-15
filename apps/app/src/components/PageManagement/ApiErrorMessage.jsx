@@ -18,21 +18,21 @@ const ApiErrorMessage = (props) => {
       case 'already_exists':
         return (
           <>
-            <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.already_exists') }</strong>
+            <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.already_exists') }</strong>
             <small><a href={targetPath}>{targetPath} <i className="icon-login"></i></a></small>
           </>
         );
       case 'notfound_or_forbidden':
         return (
-          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.notfound_or_forbidden') }</strong>
+          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.notfound_or_forbidden') }</strong>
         );
       case 'user_not_admin':
         return (
-          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.user_not_admin') }</strong>
+          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.user_not_admin') }</strong>
         );
       case 'complete_deletion_not_allowed_for_user':
         return (
-          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.complete_deletion_not_allowed_for_user') }</strong>
+          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.complete_deletion_not_allowed_for_user') }</strong>
         );
       case 'outdated':
         return (
@@ -45,15 +45,15 @@ const ApiErrorMessage = (props) => {
         );
       case 'invalid_path':
         return (
-          <strong><i className="icon-fw icon-ban"></i> Invalid path</strong>
+          <strong><span className="material-symbols-outlined">cancel</span> Invalid path</strong>
         );
       case 'single_deletion_empty_pages':
         return (
-          <strong><i className="icon-fw icon-ban"></i>{ t('page_api_error.single_deletion_empty_pages') }</strong>
+          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.single_deletion_empty_pages') }</strong>
         );
       default:
         return (
-          <strong><i className="icon-fw icon-ban"></i> Unknown error occured</strong>
+          <strong><span className="material-symbols-outlined">cancel</span> Unknown error occured</strong>
         );
     }
   }

@@ -368,11 +368,11 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><i className="icon-fw icon-check text-success"></i>{ t('security_settings.always_displayed') }</td>
+                <td><span className="material-symbols-outlined text-success">check_circle</span>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><i className="icon-fw icon-ban text-danger"></i>{ t('security_settings.always_hidden') }</td>
+                <td><span className="material-symbols-outlined text-danger">cancel</span>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
