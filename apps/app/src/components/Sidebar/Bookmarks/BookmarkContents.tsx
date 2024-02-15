@@ -38,15 +38,18 @@ export const BookmarkContents = (): JSX.Element => {
   }, [mutateBookmarkFolders]);
 
   return (
-    <>
-      <div className="col-8 mb-2 ">
+    <div className='ms-3'>
+      <div className="col-8 mb-2">
         <button
           type="button"
           className="btn btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
           onClick={onClickNewBookmarkFolder}
         >
-          <FolderPlusIcon />
-          <span className="mx-2 ">{t('bookmark_folder.new_folder')}</span>
+
+          <div className="d-flex align-items-center">
+            <FolderPlusIcon />
+            <span className="ms-2">{t('bookmark_folder.new_folder')}</span>
+          </div>
         </button>
       </div>
       {isCreateAction && (
@@ -58,6 +61,6 @@ export const BookmarkContents = (): JSX.Element => {
         </div>
       )}
       <BookmarkFolderTree isOperable userId={currentUser?._id} />
-    </>
+    </div>
   );
 };
