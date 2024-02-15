@@ -167,7 +167,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const itemRef = (c) => { drag(c); drop(c) };
 
-  const mainClassName = `${styles['pagetree-item']} ${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
+  const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
