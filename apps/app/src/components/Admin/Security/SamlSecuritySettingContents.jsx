@@ -98,7 +98,6 @@ class SamlSecurityManagementContents extends React.Component {
               <div className="alert alert-danger">
                 <span className="material-symbols-outlined">error</span>
                 <span
-                  className="icon-exclamation"
                   // eslint-disable-next-line max-len
                   dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
                 />
