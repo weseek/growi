@@ -2,6 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 
 import { publish } from '../../client/services/page-operation';
@@ -17,9 +18,15 @@ export const WipPageAlert = (): JSX.Element => {
       return;
     }
 
-    await publish(currentPage._id);
-    await mutateCurrentPage();
-  }, [currentPage._id, mutateCurrentPage]);
+    try {
+      await publish(currentPage._id);
+      await mutateCurrentPage();
+      toastSuccess(t('wip_page.success_publish_page'));
+    }
+    catch {
+      toastError(t('wip_page.fail_publish_page'));
+    }
+  }, [currentPage._id, mutateCurrentPage, t]);
 
 
   if (!currentPage?.wip) {

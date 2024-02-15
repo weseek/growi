@@ -831,6 +831,8 @@
     "success_save_as_wip": "Successfully saved as a WIP page",
     "fail_save_as_wip": "Failed to save as a WIP page",
     "alert": "This page is a work in progress",
-    "publish_page": "Publish page"
+    "publish_page": "Publish page",
+    "success_publish_page": "Page has been published",
+    "fail_publish_page": "Failed to publish the Page"
   }
 }

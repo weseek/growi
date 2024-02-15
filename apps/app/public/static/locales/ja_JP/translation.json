@@ -864,6 +864,8 @@
     "success_save_as_wip": "WIP ページとして保存しました",
     "fail_save_as_wip": "WIP ページとして保存できませんでした",
     "alert": "このページは作業途中です",
-    "publish_page": "WIP を解除"
+    "publish_page": "WIP を解除",
+    "success_publish_page": "WIP を解除しました",
+    "fail_publish_page": "WIP を解除できませんでした"
   }
 }
