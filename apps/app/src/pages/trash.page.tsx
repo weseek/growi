@@ -69,7 +69,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        {/* z-1 for UserIconList */}
+        {/* z-1 for UserList */}
         <nav className="sticky-top z-1">
           TODO: implement navigation for /trash
         </nav>
