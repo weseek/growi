@@ -1,4 +1,4 @@
-import Logger from 'bunyan';
+import type Logger from 'bunyan';
 
 import loggerFactory from '~/utils/logger';
 import { hasProcessFlag } from '~/utils/process-utils';
@@ -24,6 +24,7 @@ async function main() {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
     const growi = new Crowi();
     const server = await growi.start();
+    console.log('hello GROWI');
 
     if (hasProcessFlag('ci')) {
       logger.info('"--ci" flag is detected. Exit process.');
