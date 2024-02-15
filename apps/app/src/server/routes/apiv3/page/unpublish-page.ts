@@ -49,7 +49,7 @@ export const unpublishPageHandlersFactory: UnpublishPageHandlersFactory = (crowi
           return res.apiv3Err(new ErrorV3(`Page ${pageId} is not exist.`), 404);
         }
 
-        page.unpublish(false); // isNewPage = false
+        page.makeWip();
         const updatedPage = await page.save();
 
         return res.apiv3(updatedPage);
