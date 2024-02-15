@@ -1,6 +1,5 @@
-import type { FC } from 'react';
 import React, {
-  useCallback, useState,
+  useCallback, useState, FC,
 } from 'react';
 
 import nodePath from 'path';
@@ -129,7 +128,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   return (
     <>
       {isRenameInputShown ? (
-        <div className="position-absolute ms-5">
+        <div className="flex-fill">
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
