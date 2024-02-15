@@ -87,6 +87,7 @@ class GitHubSecurityManagementContents extends React.Component {
             <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'OAuth' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
+                {/* TODO:Replace with material symbols */}
                 <i
                   className="icon-exclamation"
                   // eslint-disable-next-line max-len

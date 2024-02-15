@@ -175,7 +175,8 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
     >
       {/* show error */}
       { error != null && (
-        <span className="text-muted"><i className="icon-fw icon-exclamation"></i>
+        <span className="text-muted">
+          <span className="material-symbols-outlined">error</span>
           {error.name && <strong>{error.name}: </strong>}
           {error.message}
         </span>

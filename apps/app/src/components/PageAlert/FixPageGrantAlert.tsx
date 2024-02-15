@@ -8,8 +8,8 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IPageGrantData } from '~/interfaces/page';
-import { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -297,7 +297,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
+          <span className="material-symbols-outlined ms-1" aria-hidden="true">error</span>
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">
