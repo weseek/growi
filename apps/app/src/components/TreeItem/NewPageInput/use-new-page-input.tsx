@@ -1,9 +1,11 @@
 import React, { useState, type FC, useCallback } from 'react';
 
+
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
+import { shouldCreateWipPage } from '../../../utils/should-create-wip-page';
 import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
@@ -73,6 +75,7 @@ export const useNewPageInput = (): UseNewPageInput => {
         grant: page.grant,
         // grantUserGroupId: page.grantedGroup,
         grantUserGroupIds: page.grantedGroups,
+        wip: shouldCreateWipPage(newPagePath),
       });
 
       mutateChildren();

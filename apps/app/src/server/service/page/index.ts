@@ -3790,6 +3790,12 @@ class PageService implements IPageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
+
+    // Set wip
+    if (options.wip) {
+      page.makeWip();
+    }
+
     // Save
     let savedPage = await page.save();
 
@@ -4101,6 +4107,9 @@ class PageService implements IPageService {
     // Clone page document
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
+
+    // Do not consider it for automatic deletion if updated at least once
+    newPageData.wipExpiredAt = undefined;
 
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
