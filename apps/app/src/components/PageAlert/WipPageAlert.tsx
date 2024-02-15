@@ -14,19 +14,21 @@ export const WipPageAlert = (): JSX.Element => {
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const clickPagePublishButton = useCallback(async() => {
-    if (currentPage?._id == null) {
+    const pageId = currentPage?._id;
+
+    if (pageId == null) {
       return;
     }
 
     try {
-      await publish(currentPage._id);
+      await publish(pageId);
       await mutateCurrentPage();
       toastSuccess(t('wip_page.success_publish_page'));
     }
     catch {
       toastError(t('wip_page.fail_publish_page'));
     }
-  }, [currentPage._id, mutateCurrentPage, t]);
+  }, [currentPage?._id, mutateCurrentPage, t]);
 
 
   if (!currentPage?.wip) {
