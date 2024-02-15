@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -14,7 +14,7 @@ import styles from './PageHeader.module.scss';
 const moduleClass = styles['page-header'] ?? '';
 
 type Props = {
-  userList: IUser[]
+  userList: IUserHasId[]
 }
 
 export const PageHeader: FC<Props> = (props) => {

@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
-import { IUser } from '@growi/core/dist/interfaces';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
@@ -24,11 +24,11 @@ type Props = {
   onScroll?: () => void,
   acceptedFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  user?: IUser
+  user?: IUserHasId
   pageId?: string,
   initialValue?: string,
   onOpenEditor?: (markdown: string) => void,
-  onUserList?: (userList: any[]) => void,
+  onUserList?: (userList: IUserHasId[]) => void,
   editorTheme?: string,
   editorKeymap?: string,
 }

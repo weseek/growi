@@ -5,7 +5,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId, IUser } from '@growi/core';
+import type { IPageHasId, IUser, IUserHasId } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -165,7 +165,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     initialValueRef.current = initialValue;
   }, [initialValue]);
 
-  const [userList, setUserList] = useState<IUser[]>([]);
+  const [userList, setUserList] = useState<IUserHasId[]>([]);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -463,7 +463,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedFileType={acceptedFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            user={user}
+            user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}

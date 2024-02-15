@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { GlobalSocketEventName, IUser } from '@growi/core/dist/interfaces';
+import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
 // see: https://github.com/yjs/y-codemirror.next#example
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -14,17 +14,17 @@ import { UseCodeMirrorEditor } from '../services';
 
 type UserLocalState = {
   name: string;
-  user?: IUser;
+  user?: IUserHasId;
   color: string;
   colorLight: string;
 }
 
 export const useCollaborativeEditorMode = (
-    user?: IUser,
+    user?: IUserHasId,
     pageId?: string,
     initialValue?: string,
     onOpenEditor?: (markdown: string) => void,
-    onUserList?: (userList: IUser[]) => void,
+    onUserList?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -99,7 +99,7 @@ export const useCollaborativeEditorMode = (
       if (onUserList) {
         const { added, removed } = update;
         if (added.length > 0 || removed.length > 0) {
-          const userList: IUser[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
+          const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
           onUserList(userList);
         }
       }

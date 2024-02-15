@@ -1,11 +1,11 @@
 import type { FC } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 
 type Props = {
   className: string,
-  userList: IUser[]
+  userList: IUserHasId[]
 }
 
 export const UserList: FC<Props> = (props) => {
