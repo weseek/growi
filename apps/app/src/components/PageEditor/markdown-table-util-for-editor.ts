@@ -1,6 +1,7 @@
 import type { EditorView } from '@codemirror/view';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+
 // https://regex101.com/r/7BN2fR/10
 const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
 // https://regex101.com/r/1UuWBJ/3
@@ -39,6 +40,7 @@ const getBot = (editor: EditorView): number => {
   const botLine = Math.max(firstLine, line + 1);
   return doc.line(botLine).from;
 };
+
 /**
    * return the postion of the EOT(end of table)
    * (If the cursor is not in a table, return its position)
@@ -60,6 +62,7 @@ const getEot = (editor: EditorView): number => {
   const eotLine = Math.min(line - 1, lastLine);
   return doc.line(eotLine).to;
 };
+
 /**
    * return strings from BOT(beginning of table) to the cursor position
    */
@@ -104,6 +107,7 @@ export const addRowToMarkdownTable = (mdtable: MarkdownTable): any => {
   (new Array(numCol)).forEach(() => { return newRow.push('') }); // create cols
   mdtable.table.push(newRow);
 };
+
 /**
    * return markdown table that is merged all of markdown table in array
    * (The merged markdown table options are used for the first markdown table.)
@@ -112,6 +116,7 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | 
   if (mdtableList == null || !(mdtableList instanceof Array)) {
     return undefined;
   }
+
   let newTable = [];
   const options = mdtableList[0].options; // use option of first markdown-table
   mdtableList.forEach((mdtable) => {
@@ -119,6 +124,7 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable): MarkdownTable | 
   });
   return (new MarkdownTable(newTable, options));
 };
+
 /**
    * replace focused markdown table with editor
    * (A replaced table is reformed by markdown-table.)
