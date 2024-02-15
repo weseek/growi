@@ -105,7 +105,7 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor.state) : table;
+    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor) : table;
     const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
     setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
