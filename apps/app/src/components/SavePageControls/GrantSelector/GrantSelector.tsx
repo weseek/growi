@@ -1,6 +1,8 @@
 import React, { useCallback, useState } from 'react';
 
-import { isPopulated, GroupType, type IGrantedGroup } from '@growi/core';
+import {
+  PageGrant, isPopulated, GroupType, type IGrantedGroup,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -16,24 +18,28 @@ import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
-    grant: 1, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
+    grant: PageGrant.GRANT_PUBLIC, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
   },
   {
-    grant: 2, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
+    grant: PageGrant.GRANT_RESTRICTED, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
   },
   // { grant: 3, iconClass: '', label: 'Specified users only' },
   {
-    grant: 4, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
+    grant: PageGrant.GRANT_OWNER, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
   },
   {
-    grant: 5, iconClass: 'icon-options', btnStyleClass: 'outline-purple', label: 'Only inside the group', reselectLabel: 'Reselect the group',
+    grant: PageGrant.GRANT_USER_GROUP,
+    iconClass: 'icon-options',
+    btnStyleClass: 'outline-purple',
+    label: 'Only inside the group',
+    reselectLabel: 'Reselect the group',
   },
 ];
 
 
 type Props = {
   disabled?: boolean,
-  grant: number,
+  grant: PageGrant,
   userRelatedGrantedGroups?: {
     id: string,
     name: string,
@@ -72,7 +78,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
   /**
    * change event handler for grant selector
    */
-  const changeGrantHandler = useCallback((grant: number) => {
+  const changeGrantHandler = useCallback((grant: PageGrant) => {
     // select group
     if (grant === 5) {
       showSelectGroupModal();

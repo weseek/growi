@@ -9,7 +9,7 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
 import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
 import {
-  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeyMap, type KeyMapMode,
+  useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeymap, type KeyMapMode,
 } from '../../services';
 import {
   adjustPasteData, getStrFromBol,
@@ -165,15 +165,25 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [codeMirrorEditor, themeExtension]);
 
 
+  const [keymapExtension, setKeymapExtension] = useState<Extension | undefined>(undefined);
   useEffect(() => {
-    const keymap = (editorKeymap ?? 'default') as KeyMapMode;
-    const extension = getKeyMap(keymap, onSave);
+    const settingKeyMap = async(name?: KeyMapMode) => {
+      setKeymapExtension(await getKeymap(name ?? 'default'));
+    };
+    settingKeyMap(editorKeymap as KeyMapMode);
+
+  }, [codeMirrorEditor, editorKeymap, setKeymapExtension]);
+
+  useEffect(() => {
+    if (keymapExtension == null) {
+      return;
+    }
 
     // Prevent these Keybind from overwriting the originally defined keymap.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(extension));
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.low(keymapExtension));
     return cleanupFunction;
 
-  }, [codeMirrorEditor, editorKeymap, onSave]);
+  }, [codeMirrorEditor, keymapExtension, onSave]);
 
   const {
     getRootProps,

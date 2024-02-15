@@ -3,19 +3,20 @@ import type {
 } from '@growi/core';
 import { isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
 
-import { IPageGrantService } from '~/server/service/page-grant';
+import type { IPageGrantService } from '~/server/service/page-grant';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../../crowi';
+import type Crowi from '../../crowi';
 import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { PageModel } from '../../models/page';
+import type { PageModel } from '../../models/page';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import type { ApiV3Response } from './interfaces/apiv3-response';
 
 const logger = loggerFactory('growi:routes:apiv3:page-tree');
 
@@ -149,7 +150,8 @@ const routerFactory = (crowi: Crowi): Router => {
         // construct isIPageInfoForListing
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
-        const canDeleteCompletely = pageService.canDeleteCompletely(page, req.user, false, userRelatedGroups); // use normal delete config
+        // TODO: use pageService.getCreatorIdForCanDelete to get creatorId (https://redmine.weseek.co.jp/issues/140574)
+        const canDeleteCompletely = pageService.canDeleteCompletely(page, page.creator, req.user, false, userRelatedGroups); // use normal delete config
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

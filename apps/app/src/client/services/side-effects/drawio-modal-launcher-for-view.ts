@@ -1,16 +1,16 @@
 import { useCallback, useEffect } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
-import type { OptionsToSave } from '~/interfaces/page-operation';
 import { useShareLinkId } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
-import { useSWRxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
+
+import { updatePage } from '../page-operation';
 
 
 const logger = loggerFactory('growi:cli:side-effects:useDrawioModalLauncherForView');
@@ -33,8 +33,6 @@ export const useDrawioModalLauncherForView = (opts?: {
 
   const { open: openDrawioModal } = useDrawioModal();
 
-  const saveOrUpdate = useSaveOrUpdate();
-
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
     if (currentPage == null || shareLinkId != null) {
       return;
@@ -43,28 +41,13 @@ export const useDrawioModalLauncherForView = (opts?: {
     const currentMarkdown = currentPage.revision.body;
     const newMarkdown = replaceDrawioInMarkdown(drawioMxFile, currentMarkdown, bol, eol);
 
-    const grantUserGroupIds = currentPage.grantedGroups.map((g) => {
-      return {
-        type: g.type,
-        item: g.item._id,
-      };
-    });
-
-    const optionsToSave: OptionsToSave = {
-      isSlackEnabled: false,
-      slackChannels: '',
-      grant: currentPage.grant,
-      // grantUserGroupIds,
-      // pageTags: tagsInfo.tags,
-    };
-
     try {
       const currentRevisionId = currentPage.revision._id;
-      await saveOrUpdate(
-        newMarkdown,
-        { pageId: currentPage._id, path: currentPage.path, revisionId: currentRevisionId },
-        optionsToSave,
-      );
+      await updatePage({
+        pageId: currentPage._id,
+        revisionId: currentRevisionId,
+        body: newMarkdown,
+      });
 
       opts?.onSaveSuccess?.();
     }
@@ -72,7 +55,7 @@ export const useDrawioModalLauncherForView = (opts?: {
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [currentPage, opts, saveOrUpdate, shareLinkId]);
+  }, [currentPage, opts, shareLinkId]);
 
 
   // set handler to open DrawioModal

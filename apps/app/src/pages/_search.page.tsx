@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
@@ -12,9 +12,9 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { SearchPage } from '../components/SearchPage';
 
@@ -54,6 +54,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
   mutate(undefined, { revalidate: false });
+  useCurrentPageId(null);
+  useCurrentPathname('/_search');
 
   // Search
   useIsSearchPage(true);
