@@ -23,7 +23,11 @@ export interface IPageService {
   findChildrenByParentPathOrIdAndViewer(parentPathOrId: string, user, userGroups?): Promise<PageDocument[]>,
   shortBodiesMapByPageIds(pageIds?: ObjectId[], user?): Promise<Record<string, string | null>>,
   constructBasicPageInfo(page: PageDocument, isGuestUser?: boolean): IPageInfo | IPageInfoForEntity,
-  canDelete(page: PageDocument, operator: any | null, isRecursively: boolean): boolean,
-  canDeleteCompletely(page: PageDocument, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]): boolean,
-  canDeleteCompletelyAsMultiGroupGrantedPage(page: PageDocument, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]): boolean,
+  canDelete(page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean): boolean,
+  canDeleteCompletely(
+    page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+  ): boolean,
+  canDeleteCompletelyAsMultiGroupGrantedPage(
+    page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]
+  ): boolean,
 }

@@ -14,6 +14,7 @@ type ClosableTextInputProps = {
   placeholder?: string
   validationTarget?: string,
   useAutosizeInput?: boolean
+  inputClassName?: string,
   onPressEnter?(inputText: string | null): void
   onPressEscape?: () => void
   onClickOutside?(): void
@@ -132,11 +133,13 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     onBlur: onBlurHandler,
   };
 
+  const inputClassName = `form-control ${props.inputClassName ?? ''}`;
+
   return (
     <div>
       { props.useAutosizeInput
-        ? <AutosizeInput {...inputProps} />
-        : <input className="form-control" {...inputProps} />
+        ? <AutosizeInput inputClassName={inputClassName} {...inputProps} />
+        : <input className={inputClassName} {...inputProps} />
       }
       {isAbleToShowAlert && <AlertInfo />}
     </div>
