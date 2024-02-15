@@ -1,5 +1,6 @@
 import React, { type ReactNode, useCallback } from 'react';
 
+import { shouldCreateWipPage } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
@@ -72,7 +73,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
     try {
       await createAndTransit(
-        { path },
+        { path, wip: shouldCreateWipPage(path) },
         { shouldCheckPageExists: true },
       );
     }
