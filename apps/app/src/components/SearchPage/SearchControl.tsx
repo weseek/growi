@@ -100,7 +100,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
         {/* sort option */}
         {isEnableSort && (
-          <div className="d-flex me-auto">
+          <div className="flex-grow-1">
             <SortControl
               sort={sort}
               order={order}
@@ -122,7 +122,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 </span>
               </button>
             </div>
-            <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
+            <div className="d-none d-lg-flex align-items-center search-control-include-options">
               <div className="px-2 py-1">
                 <div className="form-check form-check-succsess">
                   <input

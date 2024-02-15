@@ -5,6 +5,8 @@ import { useTranslation } from 'next-i18next';
 
 import { SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
 
+import styles from './SortControl.module.scss';
+
 const { DESC, ASC } = SORT_ORDER;
 
 type Props = {
@@ -28,29 +30,32 @@ const SortControl: FC <Props> = (props: Props) => {
 
   return (
     <>
-      <div className="d-flex">
-        <div className="btn-group">
-          <button className="d-flex btn btn-sm btn-outline-neutral-secondary rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <span className="material-symbols-outlined text-secondary">sort</span>
-            <span className="ms-2 me-6 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
-            <span className="material-symbols-outlined text-secondary">expand_more</span>
-          </button>
-          <ul className="dropdown-menu">
-            {Object.values(SORT_AXIS).map((sortAxis) => {
-              const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
-              return (
-                <button
-                  key={sortAxis}
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
-                >
-                  <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
-                </button>
-              );
-            })}
-          </ul>
-        </div>
+      <div className={`btn-group ${styles['sort-control']}`}>
+        <button
+          className="d-flex align-items-center btn btn-sm btn-outline-neutral-secondary rounded-pill"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <span className="material-symbols-outlined py-0">sort</span>
+          <span className="ms-2 me-auto">{t(`search_result.sort_axis.${sort}`)}</span>
+          <span className="material-symbols-outlined py-0">expand_more</span>
+        </button>
+        <ul className="dropdown-menu">
+          {Object.values(SORT_AXIS).map((sortAxis) => {
+            const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
+            return (
+              <button
+                key={sortAxis}
+                className="dropdown-item"
+                type="button"
+                onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
+              >
+                <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
+              </button>
+            );
+          })}
+        </ul>
       </div>
     </>
   );
