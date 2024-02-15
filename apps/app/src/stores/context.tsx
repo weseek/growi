@@ -5,7 +5,6 @@ import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
-import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
