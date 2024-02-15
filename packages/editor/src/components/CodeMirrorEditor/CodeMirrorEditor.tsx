@@ -237,7 +237,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedUploadFileType={acceptedUploadFileType} />
+        <Toolbar
+          editorKey={editorKey}
+          acceptedUploadFileType={acceptedUploadFileType}
+          onAttachmentMenuItemClicked={open}
+        />
       </div>
     </div>
   );

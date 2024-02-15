@@ -1,9 +1,11 @@
+import { useCallback, useState } from 'react';
+
 import { AcceptedUploadFileType } from '@growi/core';
 import {
-  UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Dropdown,
 } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
@@ -13,16 +15,25 @@ import { LinkEditButton } from './LinkEditButton';
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
-  onFileOpen: () => void,
   acceptedUploadFileType: AcceptedUploadFileType,
+  onMenuItemClicked: () => void,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
-  const { onFileOpen, acceptedUploadFileType, editorKey } = props;
+  const { onMenuItemClicked, acceptedUploadFileType, editorKey } = props;
+
+  const [isOpen, setOpen] = useState(false);
+
+  const itemClickedHandler = useCallback(() => {
+    onMenuItemClicked();
+
+    // Force close against react-dropzone's { noClick: true } option
+    setOpen(false);
+  }, [onMenuItemClicked]);
 
   return (
     <>
-      <UncontrolledDropdown direction="up" className="lh-1">
+      <Dropdown isOpen={isOpen} toggle={() => setOpen(!isOpen)} direction="up" className="lh-1">
         <DropdownToggle className="btn-toolbar-button rounded-circle">
           <span className="material-symbols-outlined fs-6">add</span>
         </DropdownToggle>
@@ -31,10 +42,10 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
             Attachments
           </DropdownItem>
           <DropdownItem divider />
-          <AttachmentsButton onFileOpen={onFileOpen} acceptedUploadFileType={acceptedUploadFileType} />
+          <AttachmentsButton onItemClicked={itemClickedHandler} acceptedUploadFileType={acceptedUploadFileType} />
           <LinkEditButton editorKey={editorKey} />
         </DropdownMenu>
-      </UncontrolledDropdown>
+      </Dropdown>
     </>
   );
 };
