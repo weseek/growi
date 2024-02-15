@@ -328,7 +328,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <nav className="sticky-top">
+        {/* z-1 for UserIconList */}
+        <nav className="sticky-top z-1">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
 

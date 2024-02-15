@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -68,7 +69,8 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <nav className="sticky-top">
+        {/* z-1 for UserIconList */}
+        <nav className="sticky-top z-1">
           TODO: implement navigation for /trash
         </nav>
 
