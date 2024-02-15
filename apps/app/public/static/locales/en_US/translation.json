@@ -829,6 +829,8 @@
   "wip_page": {
     "save_as_wip": "Save as WIP (Currently drafting)",
     "success_save_as_wip": "Successfully saved as a WIP page",
-    "fail_save_as_wip": "Failed to save as a WIP page"
+    "fail_save_as_wip": "Failed to save as a WIP page",
+    "alert": "This page is a work in progress",
+    "publish_page": "Publish page"
   }
 }
