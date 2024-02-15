@@ -2,12 +2,11 @@ import { useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
-import { AcceptedUploadFileType } from '@growi/core';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 
 const additionalExtensions: Extension[] = [
@@ -15,16 +14,12 @@ const additionalExtensions: Extension[] = [
 ];
 
 
-type Props = {
-  acceptedUploadFileType?: AcceptedUploadFileType,
-  onChange?: (value: string) => void,
-  onComment?: () => void,
-}
+type Props = CodeMirrorEditorProps & object
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
     acceptedUploadFileType,
-    onComment, onChange,
+    onSave, onChange, onUpload,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
@@ -36,7 +31,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   // set handler to comment with ctrl/cmd + Enter key
   useEffect(() => {
-    if (onComment == null) {
+    if (onSave == null) {
       return;
     }
 
@@ -47,7 +42,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
         run: () => {
           const doc = codeMirrorEditor?.getDoc();
           if (doc != null) {
-            onComment();
+            onSave();
           }
           return true;
         },
@@ -57,13 +52,14 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
 
     return cleanupFunction;
-  }, [codeMirrorEditor, onComment]);
+  }, [codeMirrorEditor, onSave]);
 
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
       acceptedUploadFileType={acceptedUploadFileType}
       onChange={onChange}
+      onUpload={onUpload}
     />
   );
 };
