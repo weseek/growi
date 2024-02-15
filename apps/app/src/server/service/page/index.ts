@@ -3793,7 +3793,7 @@ class PageService implements IPageService {
 
     // Set wip
     if (options.wip) {
-      page.unpublish();
+      page.makeWip();
     }
 
     // Save
