@@ -160,10 +160,10 @@ const PageDuplicateModal = (): JSX.Element => {
 
     return (
       <>
-        <div><label className="form-label">{t('modal_duplicate.label.Current page name')}</label><br />
+        <div className="mt-3"><label className="form-label">{t('modal_duplicate.label.Current page name')}</label><br />
           <code>{path}</code>
         </div>
-        <div>
+        <div className="mt-3">
           <label className="form-label" htmlFor="duplicatePageName">{ t('modal_duplicate.label.New page name') }</label><br />
           <div className="input-group">
             <div>
@@ -196,7 +196,7 @@ const PageDuplicateModal = (): JSX.Element => {
           <p className="text-danger">Error: Target path is duplicated.</p>
         ) }
 
-        <div className="form-check form-check-warning">
+        <div className="form-check form-check-warning mt-3">
           <input
             className="form-check-input"
             name="recursively"
@@ -210,7 +210,7 @@ const PageDuplicateModal = (): JSX.Element => {
             <p className="form-text text-muted my-0">{ t('modal_duplicate.help.recursive') }</p>
           </label>
 
-          <div>
+          <div className="mt-3">
             {isDuplicateRecursively && existingPaths.length !== 0 && (
               <div className="form-check form-check-warning">
                 <input
@@ -230,7 +230,7 @@ const PageDuplicateModal = (): JSX.Element => {
           </div>
         </div>
 
-        <div className="form-check form-check-warning mb-3">
+        <div className="form-check form-check-warning mt-2">
           <input
             className="form-check-input"
             id="cbOnlyDuplicateUserRelatedResources"
@@ -243,7 +243,7 @@ const PageDuplicateModal = (): JSX.Element => {
             <p className="form-text text-muted my-0">{ t('modal_duplicate.help.only_user_related_resources') }</p>
           </label>
         </div>
-        <div>
+        <div className="mt-3">
           {isDuplicateRecursively && existingPaths.length !== 0 && (
             <DuplicatePathsTable existingPaths={existingPaths} fromPath={path} toPath={pageNameInput} />
           ) }

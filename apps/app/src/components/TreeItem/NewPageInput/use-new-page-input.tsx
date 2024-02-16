@@ -67,7 +67,7 @@ export const useNewPageInput = (): UseNewPageInput => {
 
       setShowInput(false);
 
-      await apiv3Post('/pages/', {
+      await apiv3Post('/page', {
         path: newPagePath,
         body: undefined,
         grant: page.grant,
