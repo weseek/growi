@@ -43,7 +43,7 @@ export const BookmarkFolderItemControl: React.FC<{
           onClick={onClickRename}
           className="grw-page-control-dropdown-item"
         >
-          <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+          <span className="material-symbols-outlined grw-page-control-dropdown-icon">redo</span>
           {t('Rename')}
         </DropdownItem>
 

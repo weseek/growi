@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { IPageOperationProcessData } from '~/interfaces/page-operation';
+import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -182,7 +182,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-move-rename-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">redo</span>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
@@ -194,7 +194,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-duplicate-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">file_copy</span>
             {t('Duplicate')}
           </DropdownItem>
         ) }
