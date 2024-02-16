@@ -32,11 +32,10 @@ const PageTags = dynamic(() => import('../PageTags').then(mod => mod.PageTags), 
 type TagsProps = {
   pageId: string,
   revisionId: string,
-  tagLabelsMaxWidth?: number
 }
 
 const Tags = (props: TagsProps): JSX.Element => {
-  const { pageId, revisionId, tagLabelsMaxWidth } = props;
+  const { pageId, revisionId } = props;
 
   const { data: tagsInfoData } = useSWRxTagsInfo(pageId, { suspense: true });
 
@@ -64,7 +63,6 @@ const Tags = (props: TagsProps): JSX.Element => {
         tags={tagsInfoData.tags}
         isTagLabelsDisabled={isTagLabelsDisabled}
         onClickEditTagsButton={onClickEditTagsButton}
-        tagLabelsMaxWidth={tagLabelsMaxWidth}
       />
     </div>
   );
@@ -89,13 +87,12 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const isTopPagePath = isTopPage(pagePath);
   const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
-  const grwSideContentsContainerElm = document.querySelector('.grw-side-contents-container');
 
   return (
     <>
       {/* Tags */}
       <Suspense fallback={<PageTagsSkeleton />}>
-        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} tagLabelsMaxWidth={grwSideContentsContainerElm?.clientWidth} />
+        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
       </Suspense>
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
