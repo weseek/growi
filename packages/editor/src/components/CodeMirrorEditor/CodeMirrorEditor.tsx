@@ -5,9 +5,10 @@ import {
 import { indentUnit } from '@codemirror/language';
 import { Prec, Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
+import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeymap, type KeyMapMode,
 } from '../../services';
@@ -27,29 +28,32 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
   );
 });
 
-type Props = {
-  editorKey: string | GlobalCodeMirrorEditorKey,
-  acceptedFileType: AcceptedUploadFileType,
+export type CodeMirrorEditorProps = {
+  acceptedUploadFileType?: AcceptedUploadFileType,
+  indentSize?: number,
+  editorTheme?: string,
+  editorKeymap?: string,
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
-  indentSize?: number,
-  editorTheme?: string,
-  editorKeymap?: string,
+}
+
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
-    acceptedFileType,
+    acceptedUploadFileType = AcceptedUploadFileType.NONE,
+    indentSize,
+    editorTheme,
+    editorKeymap,
     onChange,
     onSave,
     onUpload,
     onScroll,
-    indentSize,
-    editorTheme,
-    editorKeymap,
   } = props;
 
   const containerRef = useRef(null);
@@ -187,12 +191,20 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   const {
     getRootProps,
+    getInputProps,
     isDragActive,
     isDragAccept,
     isDragReject,
     isUploading,
-    open,
-  } = useFileDropzone({ onUpload, acceptedFileType });
+  } = useFileDropzone({
+    acceptedUploadFileType,
+    onUpload,
+    // ignore mouse and key events
+    dropzoneOpts: {
+      noClick: true,
+      noKeyboard: true,
+    },
+  });
 
   const fileUploadState = useMemo(() => {
 
@@ -200,7 +212,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return 'dropzone-uploading';
     }
 
-    switch (acceptedFileType) {
+    switch (acceptedUploadFileType) {
       case AcceptedUploadFileType.NONE:
         return 'dropzone-disabled';
 
@@ -224,15 +236,20 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
+  }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+        <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>
+      <Toolbar
+        editorKey={editorKey}
+        acceptedUploadFileType={acceptedUploadFileType}
+        onUpload={onUpload}
+      />
     </div>
   );
 };

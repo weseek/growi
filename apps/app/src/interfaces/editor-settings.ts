@@ -15,10 +15,3 @@ export interface IEditorSettings {
   styleActiveLine: boolean,
   autoFormatMarkdownTable: boolean,
 }
-
-export type EditorConfig = {
-  upload: {
-    isUploadAllFileAllowed: boolean,
-    isUploadEnabled: boolean,
-  }
-}

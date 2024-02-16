@@ -4,11 +4,11 @@ import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -17,33 +17,25 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-type Props = {
-  onChange?: (value: string) => void,
-  onSave?: () => void,
-  onUpload?: (files: File[]) => void,
-  onScroll?: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
-  indentSize?: number,
-  user?: IUserHasId
+type Props = CodeMirrorEditorProps & {
+  user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
   onOpenEditor?: (markdown: string) => void,
   onUserList?: (userList: IUserHasId[]) => void,
-  editorTheme?: string,
-  editorKeymap?: string,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize,
-    user, pageId, initialValue, onOpenEditor, onUserList, editorTheme, editorKeymap,
+    acceptedUploadFileType,
+    indentSize, user, pageId, initialValue,
+    editorTheme, editorKeymap,
+    onSave, onChange, onUpload, onScroll, onOpenEditor, onUserList,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   useCollaborativeEditorMode(user, pageId, initialValue, onOpenEditor, onUserList, codeMirrorEditor);
-
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -83,7 +75,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
       onSave={onSave}
       onUpload={onUpload}
       onScroll={onScroll}
-      acceptedFileType={acceptedFileTypeNoOpt}
+      acceptedUploadFileType={acceptedUploadFileType}
       indentSize={indentSize}
       editorTheme={editorTheme}
       editorKeymap={editorKeymap}
