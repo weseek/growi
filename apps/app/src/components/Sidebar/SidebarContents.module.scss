@@ -11,17 +11,4 @@
     --bs-list-group-bg: transparent;
   }
 
-
-  @include bs.color-mode(light) {
-    .list-group-item {
-      --bs-list-group-active-bg: var(--grw-primary-100);
-
-    }
-  }
-
-  @include bs.color-mode(dark) {
-    .list-group-item {
-      --bs-list-group-active-bg: var(--grw-primary-800);
-    }
-  }
 }
