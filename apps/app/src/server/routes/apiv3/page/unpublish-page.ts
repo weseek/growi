@@ -30,7 +30,7 @@ export const unpublishPageHandlersFactory: UnpublishPageHandlersFactory = (crowi
   const Page = mongoose.model<IPage, PageModel>('Page');
 
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
-  const loginRequired = require('../../../middlewares/login-required')(crowi, true);
+  const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
   // define validators for req.body
   const validator: ValidationChain[] = [
@@ -38,7 +38,7 @@ export const unpublishPageHandlersFactory: UnpublishPageHandlersFactory = (crowi
   ];
 
   return [
-    accessTokenParser, loginRequired,
+    accessTokenParser, loginRequiredStrictly,
     validator, apiV3FormValidator,
     async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;

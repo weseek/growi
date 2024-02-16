@@ -47,7 +47,6 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
-  const isWipPage = currentPage?.wip === true;
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -132,7 +131,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
             {labelOverwriteScopes}
           </DropdownItem>
-          <DropdownItem onClick={clickUnpublishButtonHandler} disabled={isWipPage}>
+          <DropdownItem onClick={clickUnpublishButtonHandler}>
             {labelUnpublishPage}
           </DropdownItem>
         </DropdownMenu>
