@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
@@ -160,12 +161,12 @@ export const exist = async(path: string): Promise<PageExistResponse> => {
   return res.data;
 };
 
-export const publish = async(pageId: string): Promise<any> => {
+export const publish = async(pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/publish`);
   return res.data;
 };
 
-export const unpublish = async(pageId: string): Promise<any> => {
+export const unpublish = async(pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/unpublish`);
   return res.data;
 };
