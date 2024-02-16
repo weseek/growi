@@ -62,7 +62,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                         type="button"
                         onClick={() => props.onClickRemoveUserBtn(relatedUser.username)}
                       >
-                        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
+                        <span className="material-symbols-outlined">person_remove</span> {t('admin:user_group_management.remove_from_group')}
                       </button>
                     </div>
                   </div>
