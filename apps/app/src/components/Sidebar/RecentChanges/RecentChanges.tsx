@@ -18,8 +18,8 @@ export const RecentChanges = (): JSX.Element => {
   const [isSmall, setIsSmall] = useState(false);
 
   return (
-    // TODO : #140878 Match the space specification method to others
-    // ref.  https://redmine.weseek.co.jp/issues/140878
+    // TODO : #139425 Match the space specification method to others
+    // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
