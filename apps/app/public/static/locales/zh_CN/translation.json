@@ -832,6 +832,10 @@
   "wip_page": {
     "save_as_wip": "保存为 WIP（书面）",
     "success_save_as_wip": "成功保存为 WIP 页面",
-    "fail_save_as_wip": "保存为 WIP 页失败"
+    "fail_save_as_wip": "保存为 WIP 页失败",
+    "alert": "本页面正在制作中",
+    "publish_page": "发布 WIP",
+    "success_publish_page": "WIP 已停用",
+    "fail_publish_page": "无法停用 WIP"
   }
 }
