@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 
 const additionalExtensions: Extension[] = [
@@ -14,19 +14,15 @@ const additionalExtensions: Extension[] = [
 ];
 
 
-type Props = {
-  onChange?: (value: string) => void,
-  onComment?: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
-}
+type Props = CodeMirrorEditorProps & object
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    onComment, onChange, acceptedFileType,
+    acceptedUploadFileType,
+    onSave, onChange, onUpload,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -35,7 +31,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   // set handler to comment with ctrl/cmd + Enter key
   useEffect(() => {
-    if (onComment == null) {
+    if (onSave == null) {
       return;
     }
 
@@ -46,7 +42,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
         run: () => {
           const doc = codeMirrorEditor?.getDoc();
           if (doc != null) {
-            onComment();
+            onSave();
           }
           return true;
         },
@@ -56,13 +52,14 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
 
     return cleanupFunction;
-  }, [codeMirrorEditor, onComment]);
+  }, [codeMirrorEditor, onSave]);
 
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
+      acceptedUploadFileType={acceptedUploadFileType}
       onChange={onChange}
-      acceptedFileType={acceptedFileTypeNoOpt}
+      onUpload={onUpload}
     />
   );
 };
