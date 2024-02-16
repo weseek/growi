@@ -4133,12 +4133,17 @@ class PageService implements IPageService {
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
     const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(clonedPageData.path))}`), parent: { $ne: null } });
 
+    const isGrantChangeable = await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
+    if (!isGrantChangeable) {
+      throw Error('The selected grant or grantedGroup is not assignable to this page.');
+    }
+
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         // eslint-disable-next-line max-len
-        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants, false, pageData.grantedGroups);
+        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
