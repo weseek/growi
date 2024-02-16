@@ -5,9 +5,9 @@ import { DevidedPagePath } from '@growi/core/dist/models';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
+import { EditingUserList } from './EditingUserList';
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
-import { UserList } from './UserList';
 
 import styles from './PageHeader.module.scss';
 
@@ -37,7 +37,7 @@ export const PageHeader: FC<Props> = (props) => {
           className="col"
           currentPage={currentPage}
         />
-        <UserList
+        <EditingUserList
           className={`z-2 ${dPagePath.isRoot ? '' : 'col mt-2'}`}
           userList={userList}
         />
