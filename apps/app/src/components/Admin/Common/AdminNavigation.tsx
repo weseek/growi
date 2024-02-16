@@ -46,7 +46,7 @@ const MenuLink = ({
 }: MenuLinkProps) => {
 
   const pageTransitionClassName = isListGroupItems
-    ? 'list-group-item list-group-item-action border-0 round-corner'
+    ? 'list-group-item list-group-item-action rounded border-0'
     : 'dropdown-item px-3 py-2';
 
   const href = isRoot ? '/admin' : urljoin('/admin', menu);
