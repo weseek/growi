@@ -28,11 +28,12 @@ type Props = {
   initialValue?: string,
   onOpenEditor?: (markdown: string) => void,
   editorTheme?: string,
+  editorKeymap?: string,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor, editorTheme,
+    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor, editorTheme, editorKeymap,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -76,11 +77,13 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      onSave={onSave}
       onUpload={onUpload}
       onScroll={onScroll}
       acceptedFileType={acceptedFileTypeNoOpt}
       indentSize={indentSize}
       editorTheme={editorTheme}
+      editorKeymap={editorKeymap}
     />
   );
 };

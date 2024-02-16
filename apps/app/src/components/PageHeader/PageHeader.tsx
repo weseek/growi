@@ -1,28 +1,30 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
 
+import styles from './PageHeader.module.scss';
+
+const moduleClass = styles['page-header'] ?? '';
+
 export const PageHeader: FC = () => {
-  const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPage } = useSWRxCurrentPage();
 
-  if (currentPage == null || currentPagePath == null) {
+  if (currentPage == null) {
     return <></>;
   }
 
   return (
-    <>
+    <div className={moduleClass}>
       <PagePathHeader
-        currentPagePath={currentPagePath}
         currentPage={currentPage}
       />
       <PageTitleHeader
-        currentPagePath={currentPagePath}
+        className="mt-2"
         currentPage={currentPage}
       />
-    </>
+    </div>
   );
 };

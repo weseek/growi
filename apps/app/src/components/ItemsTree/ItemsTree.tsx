@@ -11,12 +11,13 @@ import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import {
-  IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
-} from '~/stores/modal';
+import type { IPageForItem } from '~/interfaces/page';
+import type { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName } from '~/interfaces/websocket';
+import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
   useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutatePageList,
@@ -30,6 +31,7 @@ import { ItemNode, type TreeItemProps } from '../TreeItem';
 import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
+
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -93,6 +95,7 @@ type ItemsTreeProps = {
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
   CustomTreeItem: React.FunctionComponent<TreeItemProps>
+  onClickTreeItem?: (page: IPageForItem) => void;
 }
 
 /*
@@ -100,7 +103,7 @@ type ItemsTreeProps = {
  */
 export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem, onClickTreeItem,
   } = props;
 
   const { t } = useTranslation();
@@ -282,6 +285,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}
           onClickDeleteMenuItem={onClickDeleteMenuItem}
+          onClick={onClickTreeItem}
         />
       </ul>
     );

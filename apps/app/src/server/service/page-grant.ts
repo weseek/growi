@@ -10,12 +10,12 @@ import mongoose from 'mongoose';
 
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
-import { PageDocument, PageModel } from '~/server/models/page';
+import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
 import { includesObjectIds, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import UserGroupRelation from '../models/user-group-relation';
 import { divideByType } from '../util/granted-group';
 

@@ -1,8 +1,9 @@
-import React, { type FC } from 'react';
+import type { FC } from 'react';
 
 import {
   SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
+
 
 type PageTreeItemProps = TreeItemProps & {
   key?: React.Key | null,
@@ -10,7 +11,8 @@ type PageTreeItemProps = TreeItemProps & {
 
 export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
 
-  const { isOpen } = props;
+  const { isOpen, onClick } = props;
+
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
@@ -27,6 +29,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
       customEndComponents={[NewPageCreateButton]}
+      onClick={onClick}
     />
   );
 };

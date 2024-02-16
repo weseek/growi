@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -27,8 +28,11 @@ type Props = {
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
-const Separator = (): JSX.Element => {
+const RootSlash = (): JSX.Element => {
   return <span className={styles['grw-mr-02em']}>/</span>;
+};
+const Separator = (): JSX.Element => {
+  return <span className={styles['grw-mx-02em']}>/</span>;
 };
 
 export const PagePathNav: FC<Props> = (props: Props) => {
@@ -66,10 +70,15 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   else {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    formerLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />;
+    formerLink = (
+      <>
+        <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
+        <Separator />
+      </>
+    );
     latterLink = (
       <>
-        <Separator />
+        <RootSlash />
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
       </>
     );
