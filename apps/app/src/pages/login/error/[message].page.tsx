@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -8,9 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import {
-  CommonProps, getServerSideCommonProps, getNextI18NextConfig,
-} from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { getServerSideCommonProps, getNextI18NextConfig } from '~/pages/utils/commons';
 
 
 type Props = CommonProps;
@@ -54,7 +53,7 @@ const LoginPage: NextPage<CommonProps> = () => {
           <h2>{ t('forgot_password.incorrect_token_or_expired_url') }</h2>
         </div>
         <a href="/forgot-password" className="link-switch">
-          <i className="icon-key"></i> { t('forgot_password.forgot_password') }
+          <span className="material-symbols-outlined">key</span> { t('forgot_password.forgot_password') }
         </a>
       </>
     );
