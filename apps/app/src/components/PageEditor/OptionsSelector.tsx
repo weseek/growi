@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
 import {
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -13,6 +14,48 @@ import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 import {
   type EditorTheme, type KeyMapMode, DEFAULT_THEME, DEFAULT_KEYMAP,
 } from '../../interfaces/editor-settings';
+
+
+type RaitoListProps = {
+  onClick: () => void,
+  icon?: React.ReactNode,
+  text: string,
+  checked?: boolean
+}
+const RaitoListItem = (props: RaitoListProps): JSX.Element => {
+  const {
+    onClick, icon, text, checked,
+  } = props;
+  return (
+    <li className="list-group-item border-0">
+      <input onClick={onClick} className="form-check-input me-1" type="radio" name="listGroupRadio" id={`editor_config_radio_item_${text}`} checked={checked} />
+      {icon}
+      <label className="form-check-label stretched-link" htmlFor={`editor_config_radio_item_${text}`}>{text}</label>
+    </li>
+  );
+};
+
+type SelectorProps = {
+  header: string,
+  onClickBefore: () => void,
+  items: JSX.Element,
+}
+const Selector = (props: SelectorProps): JSX.Element => {
+
+  const { header, onClickBefore, items } = props;
+  return (
+    <div className="d-flex flex-column">
+      <button type="button" className="btn btn-sm" onClick={onClickBefore}>
+        <span className="material-symbols-outlined">navigate_before</span>
+        {header}
+      </button>
+      <ul className="list-group">
+        { items }
+      </ul>
+    </div>
+  );
+
+};
 
 
 type EditorThemeToLabel = {
@@ -32,53 +75,27 @@ const EDITORTHEME_LABEL_MAP: EditorThemeToLabel = {
   kimbie: 'Kimbie',
 };
 
-const TYPICAL_INDENT_SIZE = [2, 4];
-
-
-const ThemeSelector = (): JSX.Element => {
-
-  const [isThemeMenuOpened, setIsThemeMenuOpened] = useState(false);
+const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
   const { data: editorSettings, update } = useEditorSettings();
+  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
 
-  const menuItems = useMemo(() => (
+  const listItems = useMemo(() => (
     <>
       { (Object.keys(EDITORTHEME_LABEL_MAP) as EditorTheme[]).map((theme) => {
         const themeLabel = EDITORTHEME_LABEL_MAP[theme];
         return (
-          <DropdownItem className="menuitem-label" onClick={() => update({ theme })}>
-            {themeLabel}
-          </DropdownItem>
+          <RaitoListItem onClick={() => update({ theme })} text={themeLabel} checked={theme === selectedTheme} />
         );
       }) }
     </>
-  ), [update]);
-
-  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
+  ), [update, selectedTheme]);
 
   return (
-    <div className="input-group flex-nowrap">
-      <div>
-        <span className="input-group-text" id="igt-theme">Theme</span>
-      </div>
-
-      <Dropdown
-        direction="up"
-        isOpen={isThemeMenuOpened}
-        toggle={() => setIsThemeMenuOpened(!isThemeMenuOpened)}
-      >
-        <DropdownToggle color="outline-secondary" caret>
-          {selectedTheme}
-        </DropdownToggle>
-
-        <DropdownMenu container="body">
-          {menuItems}
-        </DropdownMenu>
-
-      </Dropdown>
-    </div>
+    <Selector header="Theme" onClickBefore={onClickBefore} items={listItems} />
   );
-};
+});
+ThemeSelector.displayName = 'ThemeSelector';
 
 
 type KeyMapModeToLabel = {
@@ -92,98 +109,53 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
   vscode: 'Visual Studio Code',
 };
 
-const KeymapSelector = memo((): JSX.Element => {
-
-  const [isKeyMenuOpened, setIsKeyMenuOpened] = useState(false);
+const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
   const { data: editorSettings, update } = useEditorSettings();
+  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
-  const menuItems = useMemo(() => (
+  const listItems = useMemo(() => (
     <>
       { (Object.keys(KEYMAP_LABEL_MAP) as KeyMapMode[]).map((keymapMode) => {
         const keymapLabel = KEYMAP_LABEL_MAP[keymapMode];
         const icon = (keymapMode !== 'default')
-          ? <img src={`/images/icons/${keymapMode}.png`} width="16px" className="me-2"></img>
+          ? <Image src={`/images/icons/${keymapMode}.png`} width={16} height={16} className="me-2" alt={keymapMode} />
           : null;
         return (
-          <DropdownItem className="menuitem-label" onClick={() => update({ keymapMode })}>
-            {icon}{keymapLabel}
-          </DropdownItem>
+          <RaitoListItem onClick={() => update({ keymapMode })} icon={icon} text={keymapLabel} checked={keymapMode === selectedKeymapMode} />
         );
       }) }
     </>
-  ), [update]);
+  ), [update, selectedKeymapMode]);
 
-  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
   return (
-    <div className="input-group flex-nowrap">
-      <span className="input-group-text" id="igt-keymap">Keymap</span>
-      <Dropdown
-        direction="up"
-        isOpen={isKeyMenuOpened}
-        toggle={() => setIsKeyMenuOpened(!isKeyMenuOpened)}
-      >
-        <DropdownToggle color="outline-secondary" caret>
-          {selectedKeymapMode}
-        </DropdownToggle>
-
-        <DropdownMenu container="body">
-          {menuItems}
-        </DropdownMenu>
-
-      </Dropdown>
-    </div>
+    <Selector header="Keymap" onClickBefore={onClickBefore} items={listItems} />
   );
-
 });
-
 KeymapSelector.displayName = 'KeymapSelector';
 
-type IndentSizeSelectorProps = {
-  isIndentSizeForced: boolean,
-  selectedIndentSize: number,
-  onChange: (indentSize: number) => void,
-}
 
-const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onChange }: IndentSizeSelectorProps): JSX.Element => {
+const TYPICAL_INDENT_SIZE = [2, 4];
 
-  const [isIndentMenuOpened, setIsIndentMenuOpened] = useState(false);
+const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
-  const menuItems = useMemo(() => (
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+
+  const listItems = useMemo(() => (
     <>
       { TYPICAL_INDENT_SIZE.map((indent) => {
         return (
-          <DropdownItem className="menuitem-label" onClick={() => onChange(indent)}>
-            {indent}
-          </DropdownItem>
+          <RaitoListItem onClick={() => mutateCurrentIndentSize(indent)} text={indent.toString()} checked={indent === currentIndentSize} />
         );
       }) }
     </>
-  ), [onChange]);
+  ), [currentIndentSize, mutateCurrentIndentSize]);
 
   return (
-    <div className="input-group flex-nowrap">
-      <span className="input-group-text" id="igt-indent">Indent</span>
-      <Dropdown
-        direction="up"
-        isOpen={isIndentMenuOpened}
-        toggle={() => setIsIndentMenuOpened(!isIndentMenuOpened)}
-        disabled={isIndentSizeForced}
-      >
-        <DropdownToggle color="outline-secondary" caret>
-          {selectedIndentSize}
-        </DropdownToggle>
-
-        <DropdownMenu container="body">
-          {menuItems}
-        </DropdownMenu>
-
-      </Dropdown>
-    </div>
+    <Selector header="Indent" onClickBefore={onClickBefore} items={listItems} />
   );
 });
-
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
@@ -264,43 +236,82 @@ const ConfigurationDropdown = memo((): JSX.Element => {
       </Dropdown>
     </div>
   );
-
 });
-
 ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
+type OptionStatus = 'home' | 'theme' | 'keymap' | 'indent';
 
 export const OptionsSelector = (): JSX.Element => {
 
-  const { data: editorSettings } = useEditorSettings();
-  const { data: isIndentSizeForced } = useIsIndentSizeForced();
-  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
-  if (editorSettings == null || isIndentSizeForced == null || currentIndentSize == null) {
-    return <></>;
-  }
+  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [status, setStatus] = useState<OptionStatus>('home');
+
+  const [count, setCount] = useState(0);
 
   return (
-    <>
-      <div className="d-flex flex-row zindex-dropdown">
-        <span>
-          <ThemeSelector />
-        </span>
-        <span className="d-none d-sm-block ms-2 ms-sm-4">
-          <KeymapSelector />
-        </span>
-        <span className="ms-2 ms-sm-4">
-          <IndentSizeSelector
-            isIndentSizeForced={isIndentSizeForced}
-            selectedIndentSize={currentIndentSize}
-            onChange={newValue => mutateCurrentIndentSize(newValue)}
-          />
-        </span>
-        <span className="ms-2 ms-sm-4">
-          <ConfigurationDropdown />
-        </span>
-      </div>
-    </>
+    <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
+      <DropdownToggle color="transparent" className="btn btn-sm border d-flex align-items-center justify-content-center">
+        <span className="material-symbols-outlined py-0"> settings </span>
+        Editor Config
+      </DropdownToggle>
+      <DropdownMenu container="body">
+        {
+          status === 'home' && (
+            <>
+              <div>
+                Editor Config
+              </div>
+              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('theme')}>
+                Theme
+              </button>
+              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('keymap')}>
+                Keymap
+              </button>
+              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('indent')}>
+                Indent
+              </button>
+            </>
+          )
+        }
+        { status === 'theme' && (
+          <ThemeSelector onClickBefore={() => setStatus('home')} />
+        )
+        }
+        { status === 'keymap' && (
+          <KeymapSelector onClickBefore={() => setStatus('home')} />
+        )
+        }
+        { status === 'indent' && (
+          <IndentSizeSelector onClickBefore={() => setStatus('home')} />
+        )
+        }
+      </DropdownMenu>
+    </Dropdown>
   );
+
+
+  // return (
+  //   <>
+  //     <div className="d-flex flex-row zindex-dropdown">
+  //       <span>
+  //         <ThemeSelector />
+  //       </span>
+  //       <span className="d-none d-sm-block ms-2 ms-sm-4">
+  //         <KeymapSelector />
+  //       </span>
+  //       <span className="ms-2 ms-sm-4">
+  //         <IndentSizeSelector
+  //           isIndentSizeForced={isIndentSizeForced}
+  //           selectedIndentSize={currentIndentSize}
+  //           onChange={newValue => mutateCurrentIndentSize(newValue)}
+  //         />
+  //       </span>
+  //       <span className="ms-2 ms-sm-4">
+  //         <ConfigurationDropdown />
+  //       </span>
+  //     </div>
+  //   </>
+  // );
 
 };
