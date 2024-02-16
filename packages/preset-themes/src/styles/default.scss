@@ -9,7 +9,7 @@
   @include generate-color-palette('primary', $primary, #000010, white, 22%, 22%);
   @include generate-color-palette('highlight', $highlight);
 
-  $body-color:                #223246;
+  $body-color:                $gray-800;
   $body-bg:                   white;
 
   $body-secondary-color:      rgba($body-color, .75);
@@ -29,8 +29,8 @@
 
   @import '@growi/core/scss/bootstrap/theming/apply-light';
 
-  --grw-wiki-link-color-rgb: var(--grw-highlight-800-rgb);
-  --grw-wiki-link-hover-color-rgb: var(--grw-highlight-900-rgb);
+  --grw-wiki-link-color-rgb: var(--grw-highlight-700-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-highlight-600-rgb);
   --grw-sidebar-nav-btn-color: var(--grw-highlight-600);
 }
 
@@ -43,7 +43,7 @@
   $highlight: #c4c2bd;
 
   @include generate-color-palette('primary', $primary, #000010, white, 22%, 22%);
-  @include generate-color-palette('highlight', $highlight, black, white);
+  @include generate-color-palette('highlight', $highlight, black, white, 22%, 22%);
 
   $body-color-dark:                   $gray-300;
   $body-bg-dark:                      #1c1a1a;
@@ -65,8 +65,8 @@
 
   @import '@growi/core/scss/bootstrap/theming/apply-dark';
 
-  --grw-wiki-link-color-rgb: var(--grw-highlight-500-rgb);
-  --grw-wiki-link-hover-color-rgb: var(--grw-highlight-300-rgb);
+  --grw-wiki-link-color-rgb: var(--grw-highlight-600-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-highlight-400-rgb);
   --grw-sidebar-nav-btn-color: rgba(var(--grw-highlight-400-rgb), 0.8);
 }
 

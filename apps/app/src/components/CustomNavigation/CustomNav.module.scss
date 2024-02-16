@@ -1,15 +1,3 @@
-.grw-custom-nav-tab,
-.grw-custom-nav-dropdown {
-  :global {
-    svg {
-      width: 17px;
-      height: 17px;
-      margin-right: 5px;
-      vertical-align: text-bottom;
-    }
-  }
-}
-
 .grw-custom-nav-tab :global {
   .nav-title {
     flex-wrap: nowrap;
@@ -23,5 +11,10 @@
     border-top: 0rem;
     border-bottom: 3px solid;
     transition: 0.3s ease-in-out;
+  }
+
+  .material-symbols-outlined {
+    margin-right: 6px;
+    font-size: 18px;
   }
 }
