@@ -20,6 +20,8 @@ import deepmerge from 'ts-deepmerge';
 import { yUndoManagerKeymap } from 'y-codemirror.next';
 
 import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
+import { insertNewlineContinueMarkup } from '../../list-util/insert-newline-continue-markup';
+import { insertNewRowToMarkdownTable, isInTable } from '../../table-util/insert-new-row-to-table-markdown';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -27,8 +29,6 @@ import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
-import { insertNewRowToMarkdownTable, isInTable } from './utils/insert-new-row-to-table-markdown';
-import { insertNewlineContinueMarkup } from './utils/insert-newline-continue-markup';
 import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';

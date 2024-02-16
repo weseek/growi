@@ -1,5 +1,6 @@
 import { EditorView } from '@codemirror/view';
-import { MarkdownTable } from '@growi/core/dist/models';
+
+import { MarkdownTable } from './markdown-table';
 
 // https://regex101.com/r/7BN2fR/10
 const linePartOfTableRE = /^([^\r\n|]*)\|(([^\r\n|]*\|)+)$/;
