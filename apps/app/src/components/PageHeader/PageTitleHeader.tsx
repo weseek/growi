@@ -12,8 +12,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { CopyDropdown } from '../Common/CopyDropdown';
-
-import { usePagePathRenameHandler } from './page-header-utils';
+import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import styles from './PageTitleHeader.module.scss';
 
