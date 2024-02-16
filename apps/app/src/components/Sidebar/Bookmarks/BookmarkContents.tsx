@@ -38,7 +38,7 @@ export const BookmarkContents = (): JSX.Element => {
   }, [mutateBookmarkFolders]);
 
   return (
-    <div className='ms-3'>
+    <div className="ms-3">
       <div className="col-8 mb-2">
         <button
           type="button"
