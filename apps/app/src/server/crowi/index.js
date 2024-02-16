@@ -741,6 +741,7 @@ Crowi.prototype.setupPageService = async function() {
 Crowi.prototype.setupPageCleanupCronService = async function() {
   if (this.pageCleanupCronService == null) {
     this.pageCleanupCronService = new PageCleanupCronService(this);
+    this.pageCleanupCronService.startCron();
   }
 };
 
