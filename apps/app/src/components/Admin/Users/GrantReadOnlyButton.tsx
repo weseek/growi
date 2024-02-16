@@ -26,7 +26,7 @@ const GrantReadOnlyButton: React.FC<{
 
   return (
     <button className="dropdown-item" type="button" onClick={onClickGrantReadOnlyBtnHandler}>
-      <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.grant_read_only_access')}
+      <span className="material-symbols-outlined">person_add</span>{t('user_management.user_table.grant_read_only_access')}
     </button>
   );
 };
