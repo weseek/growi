@@ -828,5 +828,10 @@
   },
   "page_select_modal": {
     "select_page_location": "选择页面位置"
+  },
+  "wip_page": {
+    "save_as_wip": "保存为 WIP（书面）",
+    "success_save_as_wip": "成功保存为 WIP 页面",
+    "fail_save_as_wip": "保存为 WIP 页失败"
   }
 }
