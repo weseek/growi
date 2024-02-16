@@ -149,7 +149,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
   useEffect(() => {
     const settingTheme = async(name?: EditorTheme) => {
-      setThemeExtension(await getEditorTheme(name ?? 'DefaultLight'));
+      setThemeExtension(await getEditorTheme(name ?? 'defaultlight'));
     };
     settingTheme(editorTheme as EditorTheme);
   }, [codeMirrorEditor, editorTheme, setThemeExtension]);

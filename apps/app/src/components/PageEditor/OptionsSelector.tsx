@@ -10,12 +10,27 @@ import {
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 
-import { DEFAULT_THEME, type KeyMapMode } from '../../interfaces/editor-settings';
+import {
+  type EditorTheme, type KeyMapMode, DEFAULT_THEME, DEFAULT_KEYMAP,
+} from '../../interfaces/editor-settings';
 
 
-const AVAILABLE_THEMES = [
-  'DefaultLight', 'Eclipse', 'Basic', 'Ayu', 'Rosé Pine', 'DefaultDark', 'Material', 'Nord', 'Cobalt', 'Kimbie',
-];
+type EditorThemeToLabel = {
+  [key in EditorTheme]: string;
+}
+
+const EDITORTHEME_LABEL_MAP: EditorThemeToLabel = {
+  defaultlight: 'DefaultLight',
+  eclipse: 'Eclipse',
+  basic: 'Basic',
+  ayu: 'Ayu',
+  rosepine: 'Rosé Pine',
+  defaultdark: 'DefaultDark',
+  material: 'Material',
+  nord: 'Nord',
+  cobalt: 'Cobalt',
+  kimbie: 'Kimbie',
+};
 
 const TYPICAL_INDENT_SIZE = [2, 4];
 
@@ -28,10 +43,11 @@ const ThemeSelector = (): JSX.Element => {
 
   const menuItems = useMemo(() => (
     <>
-      { AVAILABLE_THEMES.map((theme) => {
+      { (Object.keys(EDITORTHEME_LABEL_MAP) as EditorTheme[]).map((theme) => {
+        const themeLabel = EDITORTHEME_LABEL_MAP[theme];
         return (
           <DropdownItem className="menuitem-label" onClick={() => update({ theme })}>
-            {theme}
+            {themeLabel}
           </DropdownItem>
         );
       }) }
@@ -98,7 +114,7 @@ const KeymapSelector = memo((): JSX.Element => {
     </>
   ), [update]);
 
-  const selectedKeymapMode = editorSettings?.keymapMode ?? 'default';
+  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
   return (
     <div className="input-group flex-nowrap">
@@ -255,6 +271,7 @@ ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
 
 export const OptionsSelector = (): JSX.Element => {
+
   const { data: editorSettings } = useEditorSettings();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
