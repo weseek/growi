@@ -2406,7 +2406,7 @@ class PageService implements IPageService {
         newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
       }
       const canChangeGrant = this.pageGrantService
-        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, grant, newChildGrantedGroups);
       if (canChangeGrant) {
         operations.push({
           updateOne: {
