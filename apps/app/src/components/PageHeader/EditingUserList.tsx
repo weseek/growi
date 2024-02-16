@@ -36,8 +36,8 @@ export const EditingUserList: FC<Props> = ({ className, userList }) => {
           ))}
           {remainingUsers.length > 0 && (
             <div className="ms-1">
-              <button type="button" id="btn-editing-user" className="btn btn-sm border-0 p-0">
-                <span className="material-symbols-outlined p-0">group</span>
+              <button type="button" id="btn-editing-user" className="btn border-0 bg-info-subtle rounded-pill p-0">
+                <span className="fw-bold text-info p-1">+{remainingUsers.length}</span>
               </button>
               <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-editing-user" toggle={togglePopover} trigger="legacy">
                 <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
