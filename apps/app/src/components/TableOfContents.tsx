@@ -11,7 +11,7 @@ import { StickyStretchableScroller } from './StickyStretchableScroller';
 
 import styles from './TableOfContents.module.scss';
 
-const { isUserPage: _isUserPage } = pagePathUtils;
+const { isUsersHomepage: _isUsersHomepage } = pagePathUtils;
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const logger = loggerFactory('growi:TableOfContents');
@@ -19,7 +19,7 @@ const logger = loggerFactory('growi:TableOfContents');
 const TableOfContents = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const isUserPage = currentPagePath != null && _isUserPage(currentPagePath);
+  const isUsersHomePage = currentPagePath != null && _isUsersHomepage(currentPagePath);
 
   const { data: rendererOptions } = useTocOptions();
 
@@ -41,13 +41,13 @@ const TableOfContents = (): JSX.Element => {
     // get smaller bottom line of window height - .system-version height - margin 5px) and containerTop
     let bottom = Math.min(window.innerHeight - 20 - 5, parentBottom);
 
-    if (isUserPage) {
+    if (isUsersHomePage) {
       // raise the bottom line by the height and margin-top of UserContentLinks
-      bottom -= 45;
+      bottom -= 90;
     }
     // bottom - revisionToc top
     return bottom - (containerTop + containerPaddingTop);
-  }, [isUserPage, rendererOptions]);
+  }, [isUsersHomePage, rendererOptions]);
 
   return (
     <div id="revision-toc" className={`revision-toc ${styles['revision-toc']}`}>
