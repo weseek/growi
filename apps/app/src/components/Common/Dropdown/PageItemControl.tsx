@@ -205,7 +205,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={revertItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-undo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">undo</span>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
