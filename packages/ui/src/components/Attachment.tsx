@@ -26,7 +26,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
   const btnDownload = (isUserLoggedIn)
     ? (
       <a className="attachment-download" href={attachment.downloadPathProxied}>
-        <i className="icon-cloud-download" />
+        <span className="material-symbols-outlined">cloud_download</span>
       </a>
     )
     : '';
