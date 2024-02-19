@@ -223,7 +223,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-wrench grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">build</span>
             {t('PathRecovery')}
           </DropdownItem>
         ) }
@@ -239,7 +239,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
             >
-              <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+              <span className="material-symbols-outlined grw-page-control-dropdown-icon">delete</span>
               {t('Delete')}
             </DropdownItem>
           </>
