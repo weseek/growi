@@ -4409,7 +4409,7 @@ class PageService implements IPageService {
   }
 
   async createTtlIndex(): Promise<void> {
-    const pageExpirationSeconds = 60; // TODO: Allow to retrieve from environment variables
+    const pageExpirationSeconds = configManager.getConfig('crowi', 'app:pageExpirationSeconds') ?? 172800;
     const collection = mongoose.connection.collection('pages');
 
     try {
