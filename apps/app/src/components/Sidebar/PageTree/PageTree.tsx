@@ -16,7 +16,7 @@ const PageTreeContent = dynamic(
 export const PageTree = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const [isShownWipPage, setIsShownWipPage] = useState(true);
+  const [isWipPageShown, setIsWipPageShown] = useState(true);
 
   return (
     <div className="px-3">
@@ -24,8 +24,8 @@ export const PageTree = (): JSX.Element => {
         <h3 className="mb-0">{t('Page Tree')}</h3>
         <Suspense>
           <PageTreeHeader
-            isShownWipPage={isShownWipPage}
-            onClickWipPageVisibilityItem={() => { setIsShownWipPage(!isShownWipPage) }}
+            isWipPageShown={isWipPageShown}
+            onClickWipPageVisibilitySwitch={() => { setIsWipPageShown(!isWipPageShown) }}
           />
         </Suspense>
       </div>

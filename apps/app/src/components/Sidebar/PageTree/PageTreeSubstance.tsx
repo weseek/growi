@@ -16,13 +16,13 @@ import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 type PageTreeHeaderProps = {
-  isShownWipPage: boolean,
-  onClickWipPageVisibilityItem: () => void
+  isWipPageShown: boolean,
+  onClickWipPageVisibilitySwitch: () => void
 }
 
 export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
   const { t } = useTranslation();
-  const { isShownWipPage, onClickWipPageVisibilityItem } = props;
+  const { isWipPageShown, onClickWipPageVisibilitySwitch } = props;
 
   const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
   useSWRxV5MigrationStatus({ suspense: true });
@@ -42,13 +42,14 @@ export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
         </DropdownToggle>
 
         <DropdownMenu container="body">
-          <DropdownItem onClick={onClickWipPageVisibilityItem} className="mt-2">
+          <DropdownItem onClick={onClickWipPageVisibilitySwitch} className="mt-2">
             <div className="form-check form-switch">
               <input
                 id="switchWipPageVisibility"
                 className="form-check-input"
                 type="checkbox"
-                checked={isShownWipPage}
+                checked={isWipPageShown}
+                onChange={() => {}}
               />
               <label className="form-label form-check-label text-muted" htmlFor="switchWipPageVisibility">
                 {t('page_tree_header.show_wip_page')}
