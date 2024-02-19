@@ -4408,6 +4408,34 @@ class PageService implements IPageService {
     });
   }
 
+  async createTtlIndex(): Promise<void> {
+    const pageExpirationSeconds = 60; // TODO: Allow to retrieve from environment variables
+    const collection = mongoose.connection.collection('pages');
+
+    try {
+      const targetField = 'wipExpiredAt_1';
+
+      const indexes = await collection.indexes();
+      const foundTargetField = indexes.find(i => i.name === targetField);
+
+      const isNotSpec = foundTargetField?.expireAfterSeconds == null || foundTargetField?.expireAfterSeconds !== pageExpirationSeconds;
+      const shoudDropIndex = foundTargetField != null && isNotSpec;
+      const shoudCreateIndex = foundTargetField == null || shoudDropIndex;
+
+      if (shoudDropIndex) {
+        await collection.dropIndex(targetField);
+      }
+
+      if (shoudCreateIndex) {
+        await collection.createIndex({ wipExpiredAt: 1 }, { expireAfterSeconds: pageExpirationSeconds });
+      }
+    }
+    catch (err) {
+      logger.error('Failed to create TTL Index', err);
+      throw err;
+    }
+  }
+
 }
 
 export default PageService;
