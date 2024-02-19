@@ -47,7 +47,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none">
+    <div className="flex-grow-1 d-flex align-items-center pe-none w-100">
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
