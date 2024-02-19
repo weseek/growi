@@ -1,6 +1,9 @@
 import React, { memo, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import {
+  UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem,
+} from 'reactstrap';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
@@ -12,8 +15,14 @@ import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
+type PageTreeHeaderProps = {
+  isShownWipPage: boolean,
+  onClickWipPageVisibilityItem: () => void
+}
 
-export const PageTreeHeader = memo(() => {
+export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
+  const { isShownWipPage, onClickWipPageVisibilityItem } = props;
+
   const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
   useSWRxV5MigrationStatus({ suspense: true });
 
@@ -25,6 +34,28 @@ export const PageTreeHeader = memo(() => {
   return (
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
+
+      <UncontrolledButtonDropdown className="me-1">
+        <DropdownToggle color="transparent" className="p-0 border-0">
+          <span className="material-symbols-outlined">more_horiz</span>
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
+          <DropdownItem onClick={onClickWipPageVisibilityItem} className="mt-2">
+            <div className="form-check form-switch">
+              <input
+                id="switchWipPageVisibility"
+                className="form-check-input"
+                type="checkbox"
+                checked={isShownWipPage}
+              />
+              <label className="form-label form-check-label text-muted" htmlFor="switchWipPageVisibility">
+                WIP を表示
+              </label>
+            </div>
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
     </>
   );
 });
