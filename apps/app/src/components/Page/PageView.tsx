@@ -103,7 +103,7 @@ export const PageView = (props: Props): JSX.Element => {
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
   const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
+    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />
   );
 
   const sideContents = !isNotFound && !isNotCreatable
