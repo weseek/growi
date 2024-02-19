@@ -837,5 +837,8 @@
     "publish_page": "发布 WIP",
     "success_publish_page": "WIP 已停用",
     "fail_publish_page": "无法停用 WIP"
+  },
+  "page_tree_header": {
+    "show_wip_page": "显示 WIP"
   }
 }

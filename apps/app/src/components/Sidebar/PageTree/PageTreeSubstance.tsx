@@ -21,6 +21,7 @@ type PageTreeHeaderProps = {
 }
 
 export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
+  const { t } = useTranslation();
   const { isShownWipPage, onClickWipPageVisibilityItem } = props;
 
   const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
@@ -50,7 +51,7 @@ export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
                 checked={isShownWipPage}
               />
               <label className="form-label form-check-label text-muted" htmlFor="switchWipPageVisibility">
-                WIP を表示
+                {t('page_tree_header.show_wip_page')}
               </label>
             </div>
           </DropdownItem>
