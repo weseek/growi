@@ -1,11 +1,12 @@
+import type { ForwardRefRenderFunction } from 'react';
 import React, {
-  Fragment, useState, useCallback, useRef, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
+  Fragment, useState, useCallback, forwardRef,
 } from 'react';
 
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
-import { IClearable } from '~/client/interfaces/clearable';
+import type { IClearable } from '~/client/interfaces/clearable';
 import { useSWRxUsernames } from '~/stores/user';
 
 
@@ -30,8 +31,6 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
   const { onChange } = props;
   const { t } = useTranslation();
 
-  const typeaheadRef = useRef<IClearable>(null);
-
   /*
    * State
    */
@@ -41,11 +40,11 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
    * Fetch
    */
   const requestOptions = { isIncludeActiveUser: true, isIncludeInactiveUser: true, isIncludeActivitySnapshotUser: true };
-  const { data: usernameData, error } = useSWRxUsernames(searchKeyword, 0, 5, requestOptions);
+  const { data: usernameData, error, isLoading: _isLoading } = useSWRxUsernames(searchKeyword, 0, 5, requestOptions);
   const activeUsernames = usernameData?.activeUser?.usernames != null ? usernameData.activeUser.usernames : [];
   const inactiveUsernames = usernameData?.inactiveUser?.usernames != null ? usernameData.inactiveUser.usernames : [];
   const activitySnapshotUsernames = usernameData?.activitySnapshotUser?.usernames != null ? usernameData.activitySnapshotUser.usernames : [];
-  const isLoading = usernameData === undefined && error == null;
+  const isLoading = _isLoading === true && error == null;
 
   const allUser: UserDataType[] = [];
   const pushToAllUser = (usernames: string[], category: CategoryType) => {
@@ -59,10 +58,8 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
    * Functions
    */
   const changeHandler = useCallback((userData: UserDataType[]) => {
-    if (onChange != null) {
-      const usernames = userData.map(user => user.username);
-      onChange(usernames);
-    }
+    const usernames = userData.map(user => user.username);
+    onChange(usernames);
   }, [onChange]);
 
   const searchHandler = useCallback((text: string) => {
@@ -99,28 +96,17 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
     );
   }, []);
 
-  useImperativeHandle(ref, () => ({
-    clear() {
-      const instance = typeaheadRef?.current;
-      if (instance != null) {
-        instance.clear();
-      }
-    },
-  }));
-
   return (
     <div className="input-group me-2">
       <span className="input-group-text">
         <span className="material-symbols-outlined">person</span>
       </span>
       <AsyncTypeahead
-        ref={typeaheadRef}
         id="search-username-typeahead-asynctypeahead"
         multiple
         delay={400}
         minLength={0}
         placeholder={t('admin:audit_log_management.username')}
-        caseSensitive={false}
         isLoading={isLoading}
         options={allUser}
         onSearch={searchHandler}
