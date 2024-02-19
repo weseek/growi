@@ -4413,7 +4413,7 @@ class PageService implements IPageService {
     const collection = mongoose.connection.collection('pages');
 
     try {
-      const targetField = 'wipExpiredAt_1';
+      const targetField = 'ttlTimestamp_1';
 
       const indexes = await collection.indexes();
       const foundTargetField = indexes.find(i => i.name === targetField);
@@ -4427,7 +4427,7 @@ class PageService implements IPageService {
       }
 
       if (shoudCreateIndex) {
-        await collection.createIndex({ wipExpiredAt: 1 }, { expireAfterSeconds: pageExpirationSeconds });
+        await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: pageExpirationSeconds });
       }
     }
     catch (err) {
