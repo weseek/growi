@@ -126,10 +126,12 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     }
   };
 
+  const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
+
   return (
     <>
       {isRenameInputShown ? (
-        <div className="position-absolute ms-5">
+        <div className={`position-absolute ${hasChildren ? 'ms-5' : 'ms-4'}`}>
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
