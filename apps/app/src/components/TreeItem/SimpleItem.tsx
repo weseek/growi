@@ -90,7 +90,7 @@ type SimpleItemProps = TreeItemProps & {
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass, mainClassName,
   } = props;
 
@@ -165,6 +165,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
+    isWipPageShown,
     targetPathOrId,
     onRenamed,
     onClickDuplicateMenuItem,
@@ -178,6 +179,9 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const CustomNextComponents = props.customNextComponents;
 
+  if (!isWipPageShown && page.wip) {
+    return <></>;
+  }
 
   return (
     <div

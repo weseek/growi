@@ -31,7 +31,7 @@ export const PageTree = (): JSX.Element => {
       </div>
 
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <PageTreeContent />
+        <PageTreeContent isWipPageShown={isWipPageShown} />
       </Suspense>
     </div>
   );

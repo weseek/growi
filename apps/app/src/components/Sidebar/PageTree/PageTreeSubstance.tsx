@@ -77,7 +77,13 @@ const PageTreeUnavailable = () => {
   );
 };
 
-export const PageTreeContent = memo(() => {
+type PageTreeContentProps = {
+  isWipPageShown: boolean,
+}
+
+export const PageTreeContent = memo((props: PageTreeContentProps) => {
+  const { isWipPageShown } = props;
+
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: currentPath } = useCurrentPagePath();
@@ -106,6 +112,7 @@ export const PageTreeContent = memo(() => {
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
+        isWipPageShown={isWipPageShown}
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}
