@@ -17,7 +17,7 @@ import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 type PageTreeHeaderProps = {
   isWipPageShown: boolean,
-  onClickWipPageVisibilitySwitch: () => void
+  onClickWipPageVisibilitySwitch?: () => void
 }
 
 export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
