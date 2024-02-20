@@ -28,7 +28,14 @@ const RaitoListItem = (props: RaitoListProps): JSX.Element => {
   } = props;
   return (
     <li className="list-group-item border-0">
-      <input onClick={onClick} className="form-check-input me-1" type="radio" name="listGroupRadio" id={`editor_config_radio_item_${text}`} checked={checked} />
+      <input
+        onClick={onClick}
+        className="form-check-input ms-2 me-3"
+        type="radio"
+        name="listGroupRadio"
+        id={`editor_config_radio_item_${text}`}
+        checked={checked}
+      />
       {icon}
       <label className="form-check-label stretched-link" htmlFor={`editor_config_radio_item_${text}`}>{text}</label>
     </li>
@@ -45,10 +52,11 @@ const Selector = (props: SelectorProps): JSX.Element => {
   const { header, onClickBefore, items } = props;
   return (
     <div className="d-flex flex-column">
-      <button type="button" className="btn btn-sm" onClick={onClickBefore}>
+      <button type="button" className="btn btn-sm d-flex" onClick={onClickBefore}>
         <span className="material-symbols-outlined">navigate_before</span>
         {header}
       </button>
+      <hr />
       <ul className="list-group">
         { items }
       </ul>
@@ -239,6 +247,27 @@ const ConfigurationDropdown = memo((): JSX.Element => {
 });
 ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
+type ChangeStateButtonProps = {
+  onClick: () => void,
+  header: string,
+  data: string,
+}
+const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
+  const {
+    onClick, header, data,
+  } = props;
+  return (
+    <button type="button" className="d-flex align-items-center btn btn-sm border-0" onClick={onClick}>
+      <label className="me-auto">{header}</label>
+      <label className="text-secondary">
+        {data}
+        <span className="material-symbols-outlined">navigate_next</span>
+      </label>
+    </button>
+
+  );
+});
+
 type OptionStatus = 'home' | 'theme' | 'keymap' | 'indent';
 
 export const OptionsSelector = (): JSX.Element => {
@@ -246,32 +275,30 @@ export const OptionsSelector = (): JSX.Element => {
 
   const [dropdownOpen, setDropdownOpen] = useState(true);
   const [status, setStatus] = useState<OptionStatus>('home');
-
-  const [count, setCount] = useState(0);
+  const { data: editorSettings } = useEditorSettings();
+  const { data: currentIndentSize } = useCurrentIndentSize();
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
-      <DropdownToggle color="transparent" className="btn btn-sm border d-flex align-items-center justify-content-center">
+      <DropdownToggle color="transparent" className="btn btn-sm border border-secondary d-flex align-items-center justify-content-center">
         <span className="material-symbols-outlined py-0"> settings </span>
         Editor Config
       </DropdownToggle>
       <DropdownMenu container="body">
         {
           status === 'home' && (
-            <>
+            <div className="d-flex flex-column">
               <div>
                 Editor Config
               </div>
-              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('theme')}>
-                Theme
-              </button>
-              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('keymap')}>
-                Keymap
-              </button>
-              <button type="button" className="btn btn-sm border-0" onClick={() => setStatus('indent')}>
-                Indent
-              </button>
-            </>
+              <hr className="my-1" />
+              <ChangeStateButton onClick={() => setStatus('theme')} header="Theme" data={editorSettings?.theme ?? ''} />
+              <hr className="my-1" />
+              <ChangeStateButton onClick={() => setStatus('keymap')} header="Keymap" data={editorSettings?.keymapMode ?? ''} />
+              <hr className="my-1" />
+              <ChangeStateButton onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize?.toString() ?? ''} />
+              <hr className="my-1" />
+            </div>
           )
         }
         { status === 'theme' && (
