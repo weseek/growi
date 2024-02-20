@@ -47,7 +47,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none w-100">
+    <div className="flex-grow-1 d-flex align-items-center pe-none col-8">
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
@@ -188,13 +188,13 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item list-group-item-action rounded border-0 py-0 pr-3 d-flex align-items-center
+        className={`list-group-item list-group-item-action rounded border-0 py-0 pr-3 d-flex align-items-center row
         ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
 
-        <div className="grw-triangle-container d-flex justify-content-center">
+        <div className="grw-triangle-container d-flex justify-content-center col-2">
           {hasDescendants && (
             <button
               type="button"
@@ -210,10 +210,12 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent page={page} />
 
-        {EndComponents.map((EndComponent, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <EndComponent key={index} {...toolProps} />
-        ))}
+        <div className="col-2 d-flex">
+          {EndComponents.map((EndComponent, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <EndComponent key={index} {...toolProps} />
+          ))}
+        </div>
 
       </li>
 
