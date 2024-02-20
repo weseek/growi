@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 
 import { publish } from '../../client/services/page-operation';
 
@@ -23,6 +24,7 @@ export const WipPageAlert = (): JSX.Element => {
     try {
       await publish(pageId);
       await mutateCurrentPage();
+      await mutatePageTree();
       toastSuccess(t('wip_page.success_publish_page'));
     }
     catch {
