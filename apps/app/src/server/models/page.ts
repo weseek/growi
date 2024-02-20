@@ -1063,9 +1063,12 @@ schema.methods.unpublish = function() {
   this.ttlTimestamp = undefined;
 };
 
-schema.methods.makeWip = function() {
+schema.methods.makeWip = function(disableTtl: boolean) {
   this.wip = true;
-  this.ttlTimestamp = new Date();
+
+  if (!disableTtl) {
+    this.ttlTimestamp = new Date();
+  }
 };
 
 /*

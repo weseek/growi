@@ -3814,7 +3814,9 @@ class PageService implements IPageService {
 
     // Set wip
     if (options.wip) {
-      page.makeWip();
+      const children = await Page.find({ parent: page._id });
+      const disableTtl = children.length > 0;
+      page.makeWip(disableTtl);
     }
 
     // Save
@@ -3846,6 +3848,7 @@ class PageService implements IPageService {
       throw err;
     }
 
+    this.disableAncestorPagesTTL(path);
     this.createSubOperation(savedPage, user, options, pageOp._id);
 
     return savedPage;
@@ -3937,6 +3940,21 @@ class PageService implements IPageService {
       },
   ): Promise<boolean> {
     return this.canProcessCreate(path, grantData, false);
+  }
+
+  private async disableAncestorPagesTTL(path: string): Promise<void> {
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
+
+    const ancestorPaths = collectAncestorPaths(path);
+    const builder = new PageQueryBuilder(Page.find()); // includeEmpty false
+    const nonEmptyAncestors = await builder
+      .addConditionAsNonRootPage()
+      .addConditionToListByPathsArray(ancestorPaths)
+      .query
+      .exec();
+
+    const nonEmptyAncestorIds = nonEmptyAncestors.map(page => page._id);
+    await Page.updateMany({ _id: { $in: nonEmptyAncestorIds } }, { $set: { ttlTimestamp: null } });
   }
 
   /**
