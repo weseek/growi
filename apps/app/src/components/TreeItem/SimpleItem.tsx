@@ -194,7 +194,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
         onClick={itemClickHandler}
       >
 
-        <div className="grw-triangle-container d-flex justify-content-center">
+        <div className="grw-triangle-container d-flex justify-content-center col-2">
           {hasDescendants && (
             <button
               type="button"
