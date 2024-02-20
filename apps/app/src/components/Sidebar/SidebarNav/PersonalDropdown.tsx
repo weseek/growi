@@ -15,6 +15,8 @@ import { useCurrentUser } from '~/stores/context';
 
 import { SkeletonItem } from './SkeletonItem';
 
+import styles from './PersonalDropdown.module.scss';
+
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
 export const PersonalDropdown = (): JSX.Element => {
@@ -52,6 +54,7 @@ export const PersonalDropdown = (): JSX.Element => {
         <DropdownMenu
           container="body"
           data-testid="personal-dropdown-menu"
+          className={styles['personal-dropdown-wrapper']}
         >
           <DropdownItem header>
             <div className="mt-2 mb-3">
