@@ -271,31 +271,23 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
-      {
-        collapsed ? (
-          <DropdownToggle
-            color="transparent"
-            className={`btn text-muted d-flex align-items-center justify-content-center p-1 m-1 border-0 ${styles['grw-collapsed-editorconfig']}`}
-          >
-            <span className="material-symbols-outlined py-0 fs-5"> settings </span>
-          </DropdownToggle>
-
-        ) : (
-          <DropdownToggle
-            color="transparent"
-            className="btn text-muted d-flex align-items-center justify-content-center p-1 m-1 border border secondary"
-          >
-            <span className="material-symbols-outlined py-0 fs-5"> settings </span>
-            <label className="ms-1 me-1">Editor Config</label>
-          </DropdownToggle>
-
-        )
-      }
+      <DropdownToggle
+        className={`btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center p-1 m-1
+              ${collapsed ? 'border-0' : 'border border-secondary'}
+              ${dropdownOpen ? 'active' : ''}
+              `}
+      >
+        <span className="material-symbols-outlined py-0 fs-5"> settings </span>
+        {
+          collapsed ? <></>
+            : <label className="ms-1 me-1">Editor Config</label>
+        }
+      </DropdownToggle>
       <DropdownMenu container="body">
         {
           status === OptionsStatus.Home && (
             <div className="d-flex flex-column">
-              <label className="text-muted ms-2">
+              <label className="text-muted ms-3">
                 Editor Config
               </label>
               <hr className="my-1" />
