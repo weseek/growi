@@ -585,7 +585,7 @@ class PageService implements IPageService {
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
 
-    this.disableAncestorPagesTTL(newPagePath);
+    this.disableAncestorPagesTtl(newPagePath);
     return renamedPage;
   }
 
@@ -3851,7 +3851,7 @@ class PageService implements IPageService {
       throw err;
     }
 
-    this.disableAncestorPagesTTL(path);
+    this.disableAncestorPagesTtl(path);
     this.createSubOperation(savedPage, user, options, pageOp._id);
 
     return savedPage;
@@ -3945,18 +3945,18 @@ class PageService implements IPageService {
     return this.canProcessCreate(path, grantData, false);
   }
 
-  private async disableAncestorPagesTTL(path: string): Promise<void> {
+  private async disableAncestorPagesTtl(path: string): Promise<void> {
     const Page = mongoose.model<PageDocument, PageModel>('Page');
 
     const ancestorPaths = collectAncestorPaths(path);
-    const builder = new PageQueryBuilder(Page.find()); // includeEmpty false
-    const nonEmptyAncestors = await builder
+    const builder = new PageQueryBuilder(Page.find());
+    const ancestorPages = await builder
       .addConditionAsNonRootPage()
       .addConditionToListByPathsArray(ancestorPaths)
       .query
       .exec();
 
-    const nonEmptyAncestorIds = nonEmptyAncestors.map(page => page._id);
+    const nonEmptyAncestorIds = ancestorPages.map(page => page._id);
     await Page.updateMany({ _id: { $in: nonEmptyAncestorIds } }, { $unset: { ttlTimestamp: true } });
   }
 
