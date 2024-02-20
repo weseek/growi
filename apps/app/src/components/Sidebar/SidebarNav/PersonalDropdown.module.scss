@@ -1,13 +1,31 @@
 
 
-.personal-dropdown-header {
-  span, h5 {
+.personal-dropdown-header :global {
+  .username {
+    font-size: 16px;
+    color: var(--bs-gray-600);
+  }
+  .item-icon {
+    font-size: 16px;
+    color: var(--bs-gray-600);
+  }
+  .item-text {
+    font-size: 12px;
+    color: var(--bs-gray-600);
+  }
+  .item-text-email {
+    font-size: 10.5px;
     color: var(--bs-gray-600);
   }
 }
 
-.personal-dropdown-item {
-  span {
+.personal-dropdown-item :global {
+  .item-icon {
+    font-size: 16px;
+    color: var(--bs-gray-600);
+  }
+  .item-text {
+    font-size: 14px;
     color: var(--bs-gray-600);
   }
 }

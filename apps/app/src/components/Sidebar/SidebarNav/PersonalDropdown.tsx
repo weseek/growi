@@ -59,14 +59,14 @@ export const PersonalDropdown = (): JSX.Element => {
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
-            <h5 className="ms-1">{currentUser.name}</h5>
+            <h5 className="username ms-1">{currentUser.name}</h5>
             <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">person</span>
-              {currentUser.username}
+              <span className="item-icon material-symbols-outlined me-1">person</span>
+              <span className="item-text">{currentUser.username}</span>
             </div>
             <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">mail</span>
-              <span className="grw-email-sm">{currentUser.email}</span>
+              <span className="item-icon material-symbols-outlined me-1">mail</span>
+              <span className="item-text-email">{currentUser.email}</span>
             </div>
           </DropdownItem>
 
@@ -78,7 +78,8 @@ export const PersonalDropdown = (): JSX.Element => {
               data-testid="grw-personal-dropdown-menu-user-home"
             >
               <span className="text-muted">
-                <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+                <span className="item-icon material-symbols-outlined me-1">home</span>
+                <span className="item-text">{t('personal_dropdown.home')}</span>
               </span>
             </Link>
           </DropdownItem>
@@ -89,7 +90,8 @@ export const PersonalDropdown = (): JSX.Element => {
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
               <span className="text-muted">
-                <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+                <span className="item-icon material-symbols-outlined me-1">build</span>
+                <span className="item-text">{t('personal_dropdown.settings')}</span>
               </span>
             </Link>
           </DropdownItem>
@@ -100,13 +102,15 @@ export const PersonalDropdown = (): JSX.Element => {
             className={styles['personal-dropdown-item']}
           >
             <span className="text-muted">
-              <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
+              <span className="item-icon material-symbols-outlined me-1">edit</span>
+              <span className="item-text">{t('personal_dropdown.feedback')}</span>
             </span>
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler} className={styles['personal-dropdown-item']}>
             <span className="text-muted">
-              <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
+              <span className="item-icon material-symbols-outlined me-1">logout</span>
+              <span className="item-text">{t('Sign out')}</span>
             </span>
           </DropdownItem>
         </DropdownMenu>
