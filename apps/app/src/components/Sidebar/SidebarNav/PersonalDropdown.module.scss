@@ -1,7 +1,13 @@
 
 
-.personal-dropdown-wrapper {
+.personal-dropdown-header {
   span, h5 {
+    color: var(--bs-gray-600);
+  }
+}
+
+.personal-dropdown-item {
+  span {
     color: var(--bs-gray-600);
   }
 }

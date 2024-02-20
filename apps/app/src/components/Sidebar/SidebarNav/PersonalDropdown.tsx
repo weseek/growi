@@ -54,9 +54,8 @@ export const PersonalDropdown = (): JSX.Element => {
         <DropdownMenu
           container="body"
           data-testid="personal-dropdown-menu"
-          className={styles['personal-dropdown-wrapper']}
         >
-          <DropdownItem header>
+          <DropdownItem className={styles['personal-dropdown-header']} header>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
@@ -73,7 +72,7 @@ export const PersonalDropdown = (): JSX.Element => {
 
           <DropdownItem divider />
 
-          <DropdownItem>
+          <DropdownItem className={styles['personal-dropdown-item']}>
             <Link
               href={pagePathUtils.userHomepagePath(currentUser)}
               data-testid="grw-personal-dropdown-menu-user-home"
@@ -84,7 +83,7 @@ export const PersonalDropdown = (): JSX.Element => {
             </Link>
           </DropdownItem>
 
-          <DropdownItem>
+          <DropdownItem className={styles['personal-dropdown-item']}>
             <Link
               href="/me"
               data-testid="grw-personal-dropdown-menu-user-settings"
@@ -98,13 +97,14 @@ export const PersonalDropdown = (): JSX.Element => {
           <DropdownItem
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
             onClick={() => setQuestionnaireModalOpen(true)}
+            className={styles['personal-dropdown-item']}
           >
             <span className="text-muted">
               <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
             </span>
           </DropdownItem>
 
-          <DropdownItem onClick={logoutHandler}>
+          <DropdownItem onClick={logoutHandler} className={styles['personal-dropdown-item']}>
             <span className="text-muted">
               <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
             </span>
