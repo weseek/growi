@@ -51,6 +51,8 @@
     "ts-deepmerge": "^6.2.0",
     "y-codemirror.next": "^0.3.2",
     "y-socket.io": "^1.1.0",
-    "yjs": "^13.6.7"
+    "yjs": "^13.6.7",
+    "csv-to-markdown-table": "1.4.1",
+     "string-width": "7.1.0"
   }
 }
