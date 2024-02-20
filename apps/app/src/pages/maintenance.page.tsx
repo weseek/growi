@@ -45,20 +45,20 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
                 {props.currentUser?.admin
               && (
                 <p>
-                  <i className="icon-arrow-right"></i>
+                  <span className="material-symbols-outlined">arrow_circle_right</span>
                   <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
                 </p>
               )}
                 {props.currentUser != null
                   ? (
                     <p>
-                      <i className="icon-arrow-right"></i>
+                      <span className="material-symbols-outlined">arrow_circle_right</span>
                       <a className="btn btn-link" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
                     </p>
                   )
                   : (
                     <p>
-                      <i className="icon-arrow-right"></i>
+                      <span className="material-symbols-outlined">arrow_circle_right</span>
                       <a className="btn btn-link" href="/login">{ t('maintenance_mode.login') }</a>
                     </p>
                   )
