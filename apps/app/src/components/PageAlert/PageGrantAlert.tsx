@@ -37,7 +37,7 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 5) {
         return (
           <>
-            <i className="icon-fw icon-organization"></i>
+            <span className="material-symbols-outlined">account_tree</span>
             <strong>{
               populatedGrantedGroups().map(g => g.item.name).join(', ')
             }

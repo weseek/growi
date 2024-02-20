@@ -137,7 +137,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 0) {
       const labelElm = (
         <span>
-          <i className="icon icon-fw icon-organization"></i>
+          <span className="material-symbols-outlined">account_tree</span>
           <span className="label">
             {userRelatedGrantedGroups.length > 1
               ? (
