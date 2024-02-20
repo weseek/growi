@@ -217,12 +217,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           ))}
         </div>
 
-        {/* {EndComponents.map((EndComponent, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <EndComponent key={index} {...toolProps} />
-        ))} */}
-
-
       </li>
 
       {CustomNextComponents?.map((UnderItemContent, index) => (
