@@ -2,9 +2,10 @@ import {
   useCallback, useEffect, useState,
 } from 'react';
 
+import { AcceptedUploadFileType } from '@growi/core';
 import { toast } from 'react-toastify';
 
-import { AcceptedUploadFileType, GlobalCodeMirrorEditorKey } from '../../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
@@ -62,7 +63,7 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
-            acceptedFileType={AcceptedUploadFileType.ALL}
+            acceptedUploadFileType={AcceptedUploadFileType.ALL}
             editorTheme={editorTheme}
             editorKeymap={editorKeymap}
           />

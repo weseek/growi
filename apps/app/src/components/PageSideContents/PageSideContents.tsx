@@ -58,7 +58,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
   return (
-    <div className="grw-taglabels-container">
+    <div className="grw-tag-labels-container">
       <PageTags
         tags={tagsInfoData.tags}
         isTagLabelsDisabled={isTagLabelsDisabled}
@@ -87,7 +87,6 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const isTopPagePath = isTopPage(pagePath);
   const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
-
 
   return (
     <>
