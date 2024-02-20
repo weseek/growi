@@ -37,7 +37,7 @@ const ApiErrorMessage = (props) => {
       case 'outdated':
         return (
           <>
-            <strong><i className="icon-fw icon-bulb"></i> { t('page_api_error.outdated') }</strong>
+            <strong><span className="material-symbols-outlined">lightbulb</span> { t('page_api_error.outdated') }</strong>
             <a className="btn-link" onClick={reload}>
               <i className="fa fa-angle-double-right"></i> { t('Load latest') }
             </a>
