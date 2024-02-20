@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Input, FormGroup,
 } from 'reactstrap';
 
 import { useIsIndentSizeForced } from '~/stores/context';
@@ -22,6 +22,7 @@ type RaitoListProps = {
   text: string,
   checked?: boolean
 }
+
 const RaitoListItem = (props: RaitoListProps): JSX.Element => {
   const {
     onClick, icon, text, checked,
@@ -42,21 +43,23 @@ const RaitoListItem = (props: RaitoListProps): JSX.Element => {
   );
 };
 
+
 type SelectorProps = {
   header: string,
   onClickBefore: () => void,
   items: JSX.Element,
 }
+
 const Selector = (props: SelectorProps): JSX.Element => {
 
   const { header, onClickBefore, items } = props;
   return (
     <div className="d-flex flex-column">
-      <button type="button" className="btn btn-sm d-flex" onClick={onClickBefore}>
+      <button type="button" className="btn d-flex align-items-center text-muted" onClick={onClickBefore}>
         <span className="material-symbols-outlined">navigate_before</span>
-        {header}
+        <label>{header}</label>
       </button>
-      <hr />
+      <hr className="my-1" />
       <ul className="list-group">
         { items }
       </ul>
@@ -167,10 +170,24 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
-const ConfigurationDropdown = memo((): JSX.Element => {
-  const { t } = useTranslation();
+type SwitchItemProps = {
+  onClick: () => void,
+  checked: boolean,
+  text: string,
+};
+const SwitchItem = memo((props: SwitchItemProps): JSX.Element => {
+  const { onClick, checked, text } = props;
+  return (
+    <FormGroup switch>
+      <Input type="switch" checked={checked} onClick={onClick} />
+      <label>{text}</label>
+    </FormGroup>
 
-  const [isCddMenuOpened, setCddMenuOpened] = useState(false);
+  );
+});
+
+const ConfigurationSelector = memo((): JSX.Element => {
+  const { t } = useTranslation();
 
   const { data: editorSettings, update } = useEditorSettings();
 
@@ -181,20 +198,8 @@ const ConfigurationDropdown = memo((): JSX.Element => {
 
     const isActive = editorSettings.styleActiveLine;
 
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
     return (
-      <DropdownItem toggle={false} onClick={() => update({ styleActiveLine: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"></span>
-          <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
+      <SwitchItem onClick={() => update({ styleActiveLine: !isActive })} checked={isActive} text={t('page_edit.Show active line')} />
     );
   }, [editorSettings, update, t]);
 
@@ -205,47 +210,20 @@ const ConfigurationDropdown = memo((): JSX.Element => {
 
     const isActive = editorSettings.autoFormatMarkdownTable;
 
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
     return (
-      <DropdownItem toggle={false} onClick={() => update({ autoFormatMarkdownTable: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"></span>
-          <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
+      <SwitchItem onClick={() => update({ autoFormatMarkdownTable: !isActive })} checked={isActive} text={t('page_edit.auto_format_table')} />
     );
   }, [editorSettings, t, update]);
 
   return (
-    <div className="my-0">
-      <Dropdown
-        direction="up"
-        className="grw-editor-configuration-dropdown"
-        isOpen={isCddMenuOpened}
-        toggle={() => setCddMenuOpened(!isCddMenuOpened)}
-      >
-
-        <DropdownToggle color="outline-secondary" caret>
-          <i className="icon-settings"></i>
-        </DropdownToggle>
-
-        <DropdownMenu container="body">
-          {renderActiveLineMenuItem()}
-          {renderMarkdownTableAutoFormattingMenuItem()}
-          {/* <DropdownItem divider /> */}
-        </DropdownMenu>
-
-      </Dropdown>
+    <div className="mx-2 mt-1">
+      {renderActiveLineMenuItem()}
+      {renderMarkdownTableAutoFormattingMenuItem()}
     </div>
   );
 });
-ConfigurationDropdown.displayName = 'ConfigurationDropdown';
+ConfigurationSelector.displayName = 'ConfigurationSelector';
+
 
 type ChangeStateButtonProps = {
   onClick: () => void,
@@ -258,20 +236,18 @@ const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
   } = props;
   return (
     <button type="button" className="d-flex align-items-center btn btn-sm border-0" onClick={onClick}>
-      <label className="me-auto">{header}</label>
-      <label className="text-secondary">
+      <label className="ms-2 me-auto">{header}</label>
+      <label className="text-muted d-flex align-items-center me-1">
         {data}
         <span className="material-symbols-outlined">navigate_next</span>
       </label>
     </button>
-
   );
 });
 
+
 type OptionStatus = 'home' | 'theme' | 'keymap' | 'indent';
-
 export const OptionsSelector = (): JSX.Element => {
-
 
   const [dropdownOpen, setDropdownOpen] = useState(true);
   const [status, setStatus] = useState<OptionStatus>('home');
@@ -280,7 +256,7 @@ export const OptionsSelector = (): JSX.Element => {
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
-      <DropdownToggle color="transparent" className="btn btn-sm border border-secondary d-flex align-items-center justify-content-center">
+      <DropdownToggle color="transparent" className="btn btn-sm border border-secondary text-muted d-flex align-items-center justify-content-center">
         <span className="material-symbols-outlined py-0"> settings </span>
         Editor Config
       </DropdownToggle>
@@ -288,9 +264,9 @@ export const OptionsSelector = (): JSX.Element => {
         {
           status === 'home' && (
             <div className="d-flex flex-column">
-              <div>
+              <label className="text-muted ms-2">
                 Editor Config
-              </div>
+              </label>
               <hr className="my-1" />
               <ChangeStateButton onClick={() => setStatus('theme')} header="Theme" data={editorSettings?.theme ?? ''} />
               <hr className="my-1" />
@@ -298,6 +274,7 @@ export const OptionsSelector = (): JSX.Element => {
               <hr className="my-1" />
               <ChangeStateButton onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize?.toString() ?? ''} />
               <hr className="my-1" />
+              <ConfigurationSelector />
             </div>
           )
         }
