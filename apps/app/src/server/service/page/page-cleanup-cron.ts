@@ -23,7 +23,7 @@ class CleanupPageCronService {
   }
 
   private async executeJob(): Promise<void> {
-    // TODO: implement
+    // TODO: https://redmine.weseek.co.jp/issues/141122
   }
 
   private generateCronJob(cronSchedule: string) {
