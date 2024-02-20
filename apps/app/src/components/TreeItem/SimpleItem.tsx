@@ -47,7 +47,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none col-8">
+    <div className="flex-grow-1 d-flex align-items-center pe-none col-7">
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
@@ -194,7 +194,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
         onClick={itemClickHandler}
       >
 
-        <div className="grw-triangle-container d-flex justify-content-center col-2">
+        <div className="grw-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
               type="button"
@@ -210,10 +210,18 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent page={page} />
 
-        {EndComponents.map((EndComponent, index) => (
+        <div className="col2 d-flex">
+          {EndComponents.map((EndComponent, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <EndComponent key={index} {...toolProps} />
+          ))}
+        </div>
+
+        {/* {EndComponents.map((EndComponent, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <EndComponent key={index} {...toolProps} />
-        ))}
+        ))} */}
+
 
       </li>
 
