@@ -37,7 +37,7 @@ export const PageStaleAlert = ():JSX.Element => {
 
   return (
     <div className={`alert ${alertClass}`}>
-      <i className="icon-fw icon-hourglass"></i>
+      <span className="material-symbols-outlined">hourglass</span>
       <strong>{ t('page_page.notice.stale', { count: contentAge }) }</strong>
     </div>
   );

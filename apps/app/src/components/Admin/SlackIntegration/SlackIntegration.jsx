@@ -211,7 +211,7 @@ const SlackIntegration = () => {
         <h2 className="admin-setting-header mb-4">
           {t('admin:slack_integration.selecting_bot_types.slack_bot')}
           <a className="ms-2 btn-link small" href={t('admin:slack_integration.docs_url.slack_integration')} target="_blank" rel="noopener noreferrer">
-            <i className="icon icon-question ms-1" aria-hidden="true"></i>
+            <span className="material-symbols-outlined ms-1" aria-hidden="true">help</span>
           </a>
         </h2>
 

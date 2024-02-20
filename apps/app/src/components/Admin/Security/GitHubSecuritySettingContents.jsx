@@ -171,7 +171,7 @@ class GitHubSecurityManagementContents extends React.Component {
 
         <div style={{ minHeight: '300px' }}>
           <h4>
-            <i className="icon-question" aria-hidden="true"></i>
+            <span className="material-symbols-outlined" aria-hidden="true">help</span>
             <a href="#collapseHelpForGitHubOauth" data-bs-toggle="collapse"> {t('security_settings.OAuth.how_to.github')}</a>
           </h4>
           <ol id="collapseHelpForGitHubOauth" className="collapse">

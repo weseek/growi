@@ -63,7 +63,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                   data-html="true"
                   title={t('user_management.password_setting_help')}
                 >
-                  <small><i className="icon-question" aria-hidden="true"></i></small>
+                  <small><span className="material-symbols-outlined" aria-hidden="true">help</span></small>
                 </span>
               </div>
             </th>
