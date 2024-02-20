@@ -247,12 +247,19 @@ const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
 });
 
 
-type OptionStatus = 'home' | 'theme' | 'keymap' | 'indent';
+const OptionsStatus = {
+  Home: 'Home',
+  Theme: 'Theme',
+  Keymap: 'Keymap',
+  Indent: 'Indent',
+} as const;
+type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
+
 export const OptionsSelector = (): JSX.Element => {
 
-  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const [status, setStatus] = useState<OptionStatus>('home');
+  const [status, setStatus] = useState<OptionStatus>(OptionsStatus.Home);
   const { data: editorSettings } = useEditorSettings();
   const { data: currentIndentSize } = useCurrentIndentSize();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
@@ -262,39 +269,48 @@ export const OptionsSelector = (): JSX.Element => {
   }
 
   return (
-    <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
+    <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
       <DropdownToggle color="transparent" className="btn border border-secondary text-muted d-flex align-items-center justify-content-center p-1 m-1">
         <span className="material-symbols-outlined py-0 fs-5"> settings </span>
         <label className="ms-1 me-1">Editor Config</label>
       </DropdownToggle>
-      <DropdownMenu container="body" className="d-flex">
+      <DropdownMenu container="body">
         {
-          status === 'home' && (
+          status === OptionsStatus.Home && (
             <div className="d-flex flex-column">
               <label className="text-muted ms-2">
                 Editor Config
               </label>
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus('theme')} header="Theme" data={editorSettings.theme ?? ''} />
+              <ChangeStateButton onClick={() => setStatus(OptionsStatus.Theme)} header="Theme" data={EDITORTHEME_LABEL_MAP[editorSettings.theme ?? ''] ?? ''} />
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus('keymap')} header="Keymap" data={editorSettings.keymapMode ?? ''} />
+              <ChangeStateButton
+                onClick={() => setStatus(OptionsStatus.Keymap)}
+                header="Keymap"
+                data={KEYMAP_LABEL_MAP[editorSettings.keymapMode ?? ''] ?? ''}
+              />
               <hr className="my-1" />
-              <ChangeStateButton disabled={isIndentSizeForced} onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize.toString() ?? ''} />
+              <ChangeStateButton
+                disabled={isIndentSizeForced}
+                onClick={() => setStatus(OptionsStatus.Indent)}
+                header="Indent"
+                data={currentIndentSize.toString() ?? ''}
+              />
               <hr className="my-1" />
               <ConfigurationSelector />
             </div>
           )
         }
-        { status === 'theme' && (
-          <ThemeSelector onClickBefore={() => setStatus('home')} />
+        { status === OptionsStatus.Theme && (
+          <ThemeSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
         )
         }
-        { status === 'keymap' && (
-          <KeymapSelector onClickBefore={() => setStatus('home')} />
+        { status === OptionsStatus.Keymap && (
+          <KeymapSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
         )
         }
-        { status === 'indent' && (
-          <IndentSizeSelector onClickBefore={() => setStatus('home')} />
+        { status === OptionsStatus.Indent && (
+          <IndentSizeSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
         )
         }
       </DropdownMenu>
