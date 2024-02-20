@@ -3814,10 +3814,10 @@ class PageService implements IPageService {
       page.parent = parent._id;
     }
 
-    // Set wip
+    // Make WIP
     if (options.wip) {
-      const children = await Page.find({ parent: page._id });
-      const disableTtl = children.length > 0;
+      const childrenCount = await Page.count({ parent: page._id });
+      const disableTtl = childrenCount > 0;
       page.makeWip(disableTtl);
     }
 
