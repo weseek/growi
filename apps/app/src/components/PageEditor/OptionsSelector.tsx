@@ -217,7 +217,7 @@ const ConfigurationSelector = memo((): JSX.Element => {
   }, [editorSettings, t, update]);
 
   return (
-    <div className="mx-2 mt-1">
+    <div className="mx-3 mt-1">
       {renderActiveLineMenuItem()}
       {renderMarkdownTableAutoFormattingMenuItem()}
     </div>
