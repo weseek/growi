@@ -162,13 +162,14 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
         )}
         <div className="d-flex">
           <div className="btn-group">
-            <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            {/* TODO: imprv to delete all result UI */}
+            {/* <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
               <span className="material-symbols-outlined ">delete</span>
               <span className="material-symbols-outlined ">expand_more</span>
-            </button>
-            <ul className="dropdown-menu">
-              {allControl}
-            </ul>
+            </button> */}
+            {/* <ul className="dropdown-menu"> */}
+            {allControl}
+            {/* </ul> */}
           </div>
         </div>
       </div>
