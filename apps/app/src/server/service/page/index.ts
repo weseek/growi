@@ -3949,14 +3949,12 @@ class PageService implements IPageService {
     const Page = mongoose.model<PageDocument, PageModel>('Page');
 
     const ancestorPaths = collectAncestorPaths(path);
-    const builder = new PageQueryBuilder(Page.find());
-    const ancestorPages = await builder
-      .addConditionAsNonRootPage()
-      .addConditionToListByPathsArray(ancestorPaths)
-      .query
-      .exec();
+    const ancestorPageIds = await Page.aggregate([
+      { $match: { path: { $in: ancestorPaths, $nin: ['/'] }, isEmpty: false } },
+      { $project: { _id: 1 } },
+    ]);
 
-    const ancestorPageIds = ancestorPages.map(page => page._id);
+    // const ancestorPageIds = ancestorPages.map(page => page._id);
     await Page.updateMany({ _id: { $in: ancestorPageIds } }, { $unset: { ttlTimestamp: true } });
   }
 
