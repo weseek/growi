@@ -229,13 +229,14 @@ type ChangeStateButtonProps = {
   onClick: () => void,
   header: string,
   data: string,
+  disabled?: boolean,
 }
 const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
   const {
-    onClick, header, data,
+    onClick, header, data, disabled,
   } = props;
   return (
-    <button type="button" className="d-flex align-items-center btn btn-sm border-0" onClick={onClick}>
+    <button type="button" className="d-flex align-items-center btn btn-sm border-0" disabled={disabled} onClick={onClick}>
       <label className="ms-2 me-auto">{header}</label>
       <label className="text-muted d-flex align-items-center me-1">
         {data}
@@ -250,9 +251,11 @@ type OptionStatus = 'home' | 'theme' | 'keymap' | 'indent';
 export const OptionsSelector = (): JSX.Element => {
 
   const [dropdownOpen, setDropdownOpen] = useState(true);
+
   const [status, setStatus] = useState<OptionStatus>('home');
   const { data: editorSettings } = useEditorSettings();
   const { data: currentIndentSize } = useCurrentIndentSize();
+  const { data: isIndentSizeForced } = useIsIndentSizeForced();
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
@@ -272,7 +275,7 @@ export const OptionsSelector = (): JSX.Element => {
               <hr className="my-1" />
               <ChangeStateButton onClick={() => setStatus('keymap')} header="Keymap" data={editorSettings?.keymapMode ?? ''} />
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize?.toString() ?? ''} />
+              <ChangeStateButton disabled={isIndentSizeForced} onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize?.toString() ?? ''} />
               <hr className="my-1" />
               <ConfigurationSelector />
             </div>
