@@ -28,17 +28,17 @@ const RaitoListItem = (props: RaitoListProps): JSX.Element => {
     onClick, icon, text, checked,
   } = props;
   return (
-    <li className="list-group-item border-0">
+    <li className="list-group-item border-0 d-flex align-items-center">
       <input
         onClick={onClick}
-        className="form-check-input ms-2 me-3"
+        className="form-check-input me-3"
         type="radio"
         name="listGroupRadio"
         id={`editor_config_radio_item_${text}`}
         checked={checked}
       />
       {icon}
-      <label className="form-check-label stretched-link" htmlFor={`editor_config_radio_item_${text}`}>{text}</label>
+      <label className="form-check-label stretched-link fs-6" htmlFor={`editor_config_radio_item_${text}`}>{text}</label>
     </li>
   );
 };
@@ -54,13 +54,13 @@ const Selector = (props: SelectorProps): JSX.Element => {
 
   const { header, onClickBefore, items } = props;
   return (
-    <div className="d-flex flex-column">
-      <button type="button" className="btn d-flex align-items-center text-muted" onClick={onClickBefore}>
-        <span className="material-symbols-outlined">navigate_before</span>
+    <div className="d-flex flex-column w-100">
+      <button type="button" className="btn border-0 d-flex align-items-center text-muted ms-2" onClick={onClickBefore}>
+        <span className="material-symbols-outlined fs-5 py-0 me-1">navigate_before</span>
         <label>{header}</label>
       </button>
       <hr className="my-1" />
-      <ul className="list-group">
+      <ul className="list-group d-flex ms-2">
         { items }
       </ul>
     </div>
@@ -236,11 +236,11 @@ const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
     onClick, header, data, disabled,
   } = props;
   return (
-    <button type="button" className="d-flex align-items-center btn btn-sm border-0" disabled={disabled} onClick={onClick}>
+    <button type="button" className="d-flex align-items-center btn btn-sm border-0 my-1" disabled={disabled} onClick={onClick}>
       <label className="ms-2 me-auto">{header}</label>
       <label className="text-muted d-flex align-items-center me-1">
         {data}
-        <span className="material-symbols-outlined">navigate_next</span>
+        <span className="material-symbols-outlined fs-5 py-0">navigate_next</span>
       </label>
     </button>
   );
@@ -257,13 +257,17 @@ export const OptionsSelector = (): JSX.Element => {
   const { data: currentIndentSize } = useCurrentIndentSize();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
 
+  if (editorSettings == null || currentIndentSize == null || isIndentSizeForced == null) {
+    return <></>;
+  }
+
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus('home'); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
-      <DropdownToggle color="transparent" className="btn btn-sm border border-secondary text-muted d-flex align-items-center justify-content-center">
-        <span className="material-symbols-outlined py-0"> settings </span>
-        Editor Config
+      <DropdownToggle color="transparent" className="btn border border-secondary text-muted d-flex align-items-center justify-content-center p-1 m-1">
+        <span className="material-symbols-outlined py-0 fs-5"> settings </span>
+        <label className="ms-1 me-1">Editor Config</label>
       </DropdownToggle>
-      <DropdownMenu container="body">
+      <DropdownMenu container="body" className="d-flex">
         {
           status === 'home' && (
             <div className="d-flex flex-column">
@@ -271,11 +275,11 @@ export const OptionsSelector = (): JSX.Element => {
                 Editor Config
               </label>
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus('theme')} header="Theme" data={editorSettings?.theme ?? ''} />
+              <ChangeStateButton onClick={() => setStatus('theme')} header="Theme" data={editorSettings.theme ?? ''} />
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus('keymap')} header="Keymap" data={editorSettings?.keymapMode ?? ''} />
+              <ChangeStateButton onClick={() => setStatus('keymap')} header="Keymap" data={editorSettings.keymapMode ?? ''} />
               <hr className="my-1" />
-              <ChangeStateButton disabled={isIndentSizeForced} onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize?.toString() ?? ''} />
+              <ChangeStateButton disabled={isIndentSizeForced} onClick={() => setStatus('indent')} header="Indent" data={currentIndentSize.toString() ?? ''} />
               <hr className="my-1" />
               <ConfigurationSelector />
             </div>
@@ -296,29 +300,4 @@ export const OptionsSelector = (): JSX.Element => {
       </DropdownMenu>
     </Dropdown>
   );
-
-
-  // return (
-  //   <>
-  //     <div className="d-flex flex-row zindex-dropdown">
-  //       <span>
-  //         <ThemeSelector />
-  //       </span>
-  //       <span className="d-none d-sm-block ms-2 ms-sm-4">
-  //         <KeymapSelector />
-  //       </span>
-  //       <span className="ms-2 ms-sm-4">
-  //         <IndentSizeSelector
-  //           isIndentSizeForced={isIndentSizeForced}
-  //           selectedIndentSize={currentIndentSize}
-  //           onChange={newValue => mutateCurrentIndentSize(newValue)}
-  //         />
-  //       </span>
-  //       <span className="ms-2 ms-sm-4">
-  //         <ConfigurationDropdown />
-  //       </span>
-  //     </div>
-  //   </>
-  // );
-
 };
