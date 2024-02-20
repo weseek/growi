@@ -192,7 +192,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
           { currentUser?.admin && (
-            <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
+            <p><a href="/admin/user-groups"><span className="material-symbols-outlined">login</span>{t('user_group.manage_user_groups')}</a></p>
           ) }
         </div>
       );

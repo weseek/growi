@@ -91,7 +91,7 @@ const LoginPage: NextPage<CommonProps> = () => {
           </div>
           {/* If the transition source is "/login", use <a /> tag since the transition will not occur if next/link is used. */}
           <a href="/login">
-            <i className="icon-login me-1" />{t('Sign in is here')}
+            <span className="material-symbols-outlined me-1">login</span>{t('Sign in is here')}
           </a>
         </div>
       </div>

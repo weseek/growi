@@ -19,7 +19,7 @@ const ApiErrorMessage = (props) => {
         return (
           <>
             <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.already_exists') }</strong>
-            <small><a href={targetPath}>{targetPath} <i className="icon-login"></i></a></small>
+            <small><a href={targetPath}>{targetPath} <span className="material-symbols-outlined">login</span></a></small>
           </>
         );
       case 'notfound_or_forbidden':
