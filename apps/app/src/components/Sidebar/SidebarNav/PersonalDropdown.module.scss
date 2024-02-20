@@ -6,6 +6,7 @@
     color: var(--bs-gray-600);
   }
   .item-icon {
+    padding-bottom: 0px;
     font-size: 16px;
     color: var(--bs-gray-600);
   }
@@ -21,6 +22,7 @@
 
 .personal-dropdown-item :global {
   .item-icon {
+    padding-bottom: 0px;
     font-size: 16px;
     color: var(--bs-gray-600);
   }

@@ -77,7 +77,7 @@ export const PersonalDropdown = (): JSX.Element => {
               href={pagePathUtils.userHomepagePath(currentUser)}
               data-testid="grw-personal-dropdown-menu-user-home"
             >
-              <span className="text-muted">
+              <span className="text-muted d-flex align-items-center">
                 <span className="item-icon material-symbols-outlined me-2">home</span>
                 <span className="item-text">{t('personal_dropdown.home')}</span>
               </span>
@@ -89,7 +89,7 @@ export const PersonalDropdown = (): JSX.Element => {
               href="/me"
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
-              <span className="text-muted">
+              <span className="text-muted d-flex align-items-center">
                 <span className="item-icon material-symbols-outlined me-2">discover_tune</span>
                 <span className="item-text">{t('personal_dropdown.settings')}</span>
               </span>
@@ -101,14 +101,14 @@ export const PersonalDropdown = (): JSX.Element => {
             onClick={() => setQuestionnaireModalOpen(true)}
             className={`my-1 ${styles['personal-dropdown-item']}`}
           >
-            <span className="text-muted">
+            <span className="text-muted d-flex align-items-center">
               <span className="item-icon material-symbols-outlined me-2">edit_note</span>
               <span className="item-text">{t('personal_dropdown.feedback')}</span>
             </span>
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
-            <span className="text-muted">
+            <span className="text-muted d-flex align-items-center">
               <span className="item-icon material-symbols-outlined me-2">logout</span>
               <span className="item-text">{t('Sign out')}</span>
             </span>
