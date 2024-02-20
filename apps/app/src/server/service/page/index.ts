@@ -584,6 +584,8 @@ class PageService implements IPageService {
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
+
+    this.disableAncestorPagesTTL(newPagePath);
     return renamedPage;
   }
 
@@ -3756,6 +3758,7 @@ class PageService implements IPageService {
    * Set options.isSynchronously to true to await all process when you want to run this method multiple times at short intervals.
    */
   async create(_path: string, body: string, user: HasObjectId, options: IOptionsForCreate = {}): Promise<PageDocument> {
+    console.log('呼ばれた！');
     // Switch method
     const isV5Compatible = this.crowi.configManager.getConfig('crowi', 'app:isV5Compatible');
     if (!isV5Compatible) {
