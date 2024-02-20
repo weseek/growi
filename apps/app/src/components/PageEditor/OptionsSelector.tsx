@@ -15,6 +15,7 @@ import {
   type EditorTheme, type KeyMapMode, DEFAULT_THEME, DEFAULT_KEYMAP,
 } from '../../interfaces/editor-settings';
 
+import styles from './OptionsSelector.module.scss';
 
 type RaitoListProps = {
   onClick: () => void,
@@ -255,7 +256,7 @@ const OptionsStatus = {
 } as const;
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
-export const OptionsSelector = (): JSX.Element => {
+export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Element => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -270,10 +271,26 @@ export const OptionsSelector = (): JSX.Element => {
 
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
-      <DropdownToggle color="transparent" className="btn border border-secondary text-muted d-flex align-items-center justify-content-center p-1 m-1">
-        <span className="material-symbols-outlined py-0 fs-5"> settings </span>
-        <label className="ms-1 me-1">Editor Config</label>
-      </DropdownToggle>
+      {
+        collapsed ? (
+          <DropdownToggle
+            color="transparent"
+            className={`btn text-muted d-flex align-items-center justify-content-center p-1 m-1 border-0 ${styles['grw-collapsed-editorconfig']}`}
+          >
+            <span className="material-symbols-outlined py-0 fs-5"> settings </span>
+          </DropdownToggle>
+
+        ) : (
+          <DropdownToggle
+            color="transparent"
+            className="btn text-muted d-flex align-items-center justify-content-center p-1 m-1 border border secondary"
+          >
+            <span className="material-symbols-outlined py-0 fs-5"> settings </span>
+            <label className="ms-1 me-1">Editor Config</label>
+          </DropdownToggle>
+
+        )
+      }
       <DropdownMenu container="body">
         {
           status === OptionsStatus.Home && (

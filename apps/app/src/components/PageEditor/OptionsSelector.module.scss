@@ -1,2 +1,8 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+@use '@growi/ui/scss/atoms/btn-muted';
+
+// == Colors
+.grw-collapsed-editorconfig {
+  @include btn-muted.colorize(bs.$gray-500);
+}
