@@ -3955,8 +3955,8 @@ class PageService implements IPageService {
       .query
       .exec();
 
-    const nonEmptyAncestorIds = ancestorPages.map(page => page._id);
-    await Page.updateMany({ _id: { $in: nonEmptyAncestorIds } }, { $unset: { ttlTimestamp: true } });
+    const ancestorPageIds = ancestorPages.map(page => page._id);
+    await Page.updateMany({ _id: { $in: ancestorPageIds } }, { $unset: { ttlTimestamp: true } });
   }
 
   /**
