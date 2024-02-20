@@ -711,9 +711,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 30000,
   },
-  PAGE_EXPIRATION_SECONDS: {
+  WIP_PAGE_EXPIRATION_SECONDS: {
     ns: 'crowi',
-    key: 'app:pageExpirationSeconds',
+    key: 'app:wipPageExpirationSeconds',
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },

@@ -3850,7 +3850,6 @@ class PageService implements IPageService {
       throw err;
     }
 
-    this.disableAncestorPagesTtl(path);
     this.createSubOperation(savedPage, user, options, pageOp._id);
 
     return savedPage;
@@ -3860,6 +3859,8 @@ class PageService implements IPageService {
    * Used to run sub operation in create method
    */
   async createSubOperation(page, user, options: IOptionsForCreate, pageOpId: ObjectIdLike): Promise<void> {
+    await this.disableAncestorPagesTtl(page.path);
+
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(page._id, 1, false);
 
@@ -4429,7 +4430,7 @@ class PageService implements IPageService {
   }
 
   async createTtlIndex(): Promise<void> {
-    const pageExpirationSeconds = configManager.getConfig('crowi', 'app:pageExpirationSeconds') ?? 172800;
+    const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
     const collection = mongoose.connection.collection('pages');
 
     try {
@@ -4438,7 +4439,7 @@ class PageService implements IPageService {
       const indexes = await collection.indexes();
       const foundTargetField = indexes.find(i => i.name === targetField);
 
-      const isNotSpec = foundTargetField?.expireAfterSeconds == null || foundTargetField?.expireAfterSeconds !== pageExpirationSeconds;
+      const isNotSpec = foundTargetField?.expireAfterSeconds == null || foundTargetField?.expireAfterSeconds !== wipPageExpirationSeconds;
       const shoudDropIndex = foundTargetField != null && isNotSpec;
       const shoudCreateIndex = foundTargetField == null || shoudDropIndex;
 
@@ -4447,7 +4448,7 @@ class PageService implements IPageService {
       }
 
       if (shoudCreateIndex) {
-        await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: pageExpirationSeconds });
+        await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: wipPageExpirationSeconds });
       }
     }
     catch (err) {
