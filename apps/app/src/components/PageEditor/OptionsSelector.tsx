@@ -17,14 +17,14 @@ import {
 
 import styles from './OptionsSelector.module.scss';
 
-type RaitoListProps = {
+type RadioListItemProps = {
   onClick: () => void,
   icon?: React.ReactNode,
   text: string,
   checked?: boolean
 }
 
-const RaitoListItem = (props: RaitoListProps): JSX.Element => {
+const RadioListItem = (props: RadioListItemProps): JSX.Element => {
   const {
     onClick, icon, text, checked,
   } = props;
@@ -97,7 +97,7 @@ const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX
       { (Object.keys(EDITORTHEME_LABEL_MAP) as EditorTheme[]).map((theme) => {
         const themeLabel = EDITORTHEME_LABEL_MAP[theme];
         return (
-          <RaitoListItem onClick={() => update({ theme })} text={themeLabel} checked={theme === selectedTheme} />
+          <RadioListItem onClick={() => update({ theme })} text={themeLabel} checked={theme === selectedTheme} />
         );
       }) }
     </>
@@ -134,7 +134,7 @@ const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JS
           ? <Image src={`/images/icons/${keymapMode}.png`} width={16} height={16} className="me-2" alt={keymapMode} />
           : null;
         return (
-          <RaitoListItem onClick={() => update({ keymapMode })} icon={icon} text={keymapLabel} checked={keymapMode === selectedKeymapMode} />
+          <RadioListItem onClick={() => update({ keymapMode })} icon={icon} text={keymapLabel} checked={keymapMode === selectedKeymapMode} />
         );
       }) }
     </>
@@ -158,7 +158,7 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
     <>
       { TYPICAL_INDENT_SIZE.map((indent) => {
         return (
-          <RaitoListItem onClick={() => mutateCurrentIndentSize(indent)} text={indent.toString()} checked={indent === currentIndentSize} />
+          <RadioListItem onClick={() => mutateCurrentIndentSize(indent)} text={indent.toString()} checked={indent === currentIndentSize} />
         );
       }) }
     </>
