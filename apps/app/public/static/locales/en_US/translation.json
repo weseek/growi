@@ -391,11 +391,11 @@
       "Recursively": "Recursively",
       "Duplicate without exist path": "Duplicate without exist path",
       "Same page already exists": "Same page already exists",
-      "Only duplicate user related resources": "Only duplicate user related resources"
+      "Only duplicate user related pages": "Only duplicate pages you can access"
     },
     "help": {
       "recursive": "Duplicate children of under this path recursively",
-      "only_user_related_resources": "This will only duplicate pages that the user has permission to view. If the page permission is set to \"Only specific groups\", only user related groups will be set to the page duplicate."
+      "only_inherit_user_related_groups": "If the page privilege is set to \"Only inside the group\", groups you do not belong to will lose access to the duplicated page"
     }
   },
   "duplicated_pages": "{{fromPath}} has been duplicated",
