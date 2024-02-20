@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Input, FormGroup,
+  Dropdown, DropdownToggle, DropdownMenu, Input, FormGroup,
 } from 'reactstrap';
 
 import { useIsIndentSizeForced } from '~/stores/context';
