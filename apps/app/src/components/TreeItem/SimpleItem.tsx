@@ -210,12 +210,17 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent page={page} />
 
-        <div className="col2 d-flex">
+        {/* <div className="col2 d-flex">
           {EndComponents.map((EndComponent, index) => (
             // eslint-disable-next-line react/no-array-index-key
             <EndComponent key={index} {...toolProps} />
           ))}
-        </div>
+        </div> */}
+
+        {EndComponents.map((EndComponent, index) => (
+          // eslint-disable-next-line react/no-array-index-key
+          <EndComponent key={index} {...toolProps} />
+        ))}
 
       </li>
 
