@@ -239,7 +239,7 @@ const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
   return (
     <button type="button" className="d-flex align-items-center btn btn-sm border-0 my-1" disabled={disabled} onClick={onClick}>
       <label className="ms-2 me-auto">{header}</label>
-      <label className="text-muted d-flex align-items-center me-1">
+      <label className="text-muted d-flex align-items-center ms-2 me-1">
         {data}
         <span className="material-symbols-outlined fs-5 py-0">navigate_next</span>
       </label>
