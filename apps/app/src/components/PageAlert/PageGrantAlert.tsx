@@ -23,7 +23,7 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 2) {
         return (
           <>
-            <i className="icon-fw icon-link"></i><strong>{t('Anyone with the link')}</strong>
+            <span className="material-symbols-outlined">link</span><strong>{t('Anyone with the link')}</strong>
           </>
         );
       }
