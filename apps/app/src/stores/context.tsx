@@ -1,13 +1,14 @@
+import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import { SupportedActionType } from '~/interfaces/activity';
-import { EditorConfig } from '~/interfaces/editor-settings';
-import { RendererConfig } from '~/interfaces/services/renderer';
+import type { SupportedActionType } from '~/interfaces/activity';
+import type { RendererConfig } from '~/interfaces/services/renderer';
 import InterceptorManager from '~/services/interceptor-manager';
 
-import { TargetAndAncestors } from '../interfaces/page-listing-results';
+import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
 import { useStaticSWR } from './use-static-swr';
@@ -140,10 +141,6 @@ export const useIsEnabledStaleNotification = (initialData?: boolean): SWRRespons
   return useContextSWR('isEnabledStaleNotification', initialData);
 };
 
-export const useEditorConfig = (initialData?: EditorConfig): SWRResponse<EditorConfig, Error> => {
-  return useContextSWR<EditorConfig, Error>('editorConfig', initialData);
-};
-
 export const useRendererConfig = (initialData?: RendererConfig): SWRResponse<RendererConfig, any> => {
   return useContextSWR('growiRendererConfig', initialData);
 };
@@ -256,6 +253,24 @@ export const useIsEditable = (): SWRResponse<boolean, Error> => {
     ['isEditable', isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath],
     ([, isGuestUser, isReadOnlyUser, isForbidden, isNotCreatable, isIdenticalPath]) => {
       return (!isForbidden && !isIdenticalPath && !isNotCreatable && !isGuestUser && !isReadOnlyUser);
+    },
+  );
+};
+
+export const useAcceptedUploadFileType = (): SWRResponse<AcceptedUploadFileType, Error> => {
+  const { data: isUploadEnabled } = useIsUploadEnabled();
+  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
+
+  return useSWRImmutable(
+    ['acceptedUploadFileType', isUploadEnabled, isUploadAllFileAllowed],
+    ([, isUploadEnabled, isUploadAllFileAllowed]) => {
+      if (!isUploadEnabled) {
+        return AcceptedUploadFileType.NONE;
+      }
+      if (isUploadAllFileAllowed) {
+        return AcceptedUploadFileType.ALL;
+      }
+      return AcceptedUploadFileType.IMAGE;
     },
   );
 };

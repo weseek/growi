@@ -17,8 +17,9 @@ import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
+import type { ItemNode } from '../../TreeItem';
 import {
-  SimpleItem, useNewPageInput, ItemNode, type TreeItemProps,
+  SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';

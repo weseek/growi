@@ -12,9 +12,8 @@ import { usePageSelectModal } from '~/stores/modal';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
+import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
-
-import { usePagePathRenameHandler } from './page-header-utils';
 
 import styles from './PagePathHeader.module.scss';
 
