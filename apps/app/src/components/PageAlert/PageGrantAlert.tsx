@@ -30,7 +30,7 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 4) {
         return (
           <>
-            <i className="icon-fw icon-lock"></i><strong>{t('Only me')}</strong>
+            <span className="material-symbols-outlined">lock</span><strong>{t('Only me')}</strong>
           </>
         );
       }
