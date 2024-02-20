@@ -58,7 +58,12 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <div className="d-flex align-items-center">
+            <span className={`text-truncate ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            { page.wip && (
+              <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
+            )}
+          </div>
         </div>
       )}
     </div>
