@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -16,9 +16,8 @@ import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
 
-import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle,
-} from './utils/commons';
+import type { CommonProps } from './utils/commons';
+import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
 
 
 const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });

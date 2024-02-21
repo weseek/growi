@@ -507,17 +507,9 @@ class PageGrantService implements IPageGrantService {
       grantedGroupIds?: IGrantedGroup[],
       shouldCheckDescendants = false,
       includeNotMigratedPages = false,
-      previousGrantedGroupIds?: IGrantedGroup[],
   ): Promise<boolean> {
     if (isTopPage(targetPath)) {
       return true;
-    }
-
-    if (previousGrantedGroupIds != null) {
-      const isGrantChangeable = await this.validateGrantChange(user, previousGrantedGroupIds, grant, grantedGroupIds);
-      if (!isGrantChangeable) {
-        return false;
-      }
     }
 
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);

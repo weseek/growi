@@ -368,11 +368,11 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><i className="icon-fw icon-check text-success"></i>{ t('security_settings.always_displayed') }</td>
+                <td><span className="material-symbols-outlined text-success me-1">check_circle</span>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><i className="icon-fw icon-ban text-danger"></i>{ t('security_settings.always_hidden') }</td>
+                <td><span className="material-symbols-outlined text-danger me-1">cancel</span>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
@@ -444,8 +444,8 @@ class SecuritySetting extends React.Component {
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
               <p className="alert alert-warning mt-2 col-6">
-                <i className="icon-exclamation icon-fw">
-                </i><b>FIXED</b><br />
+                <span className="material-symbols-outlined me-1">error</span>
+                <b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_settings.Fixed by env var',
