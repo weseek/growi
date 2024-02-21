@@ -54,7 +54,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                       className="btn btn-outline-secondary btn-sm dropdown-toggle"
                       data-toggle="dropdown"
                     >
-                      <i className="icon-settings"></i>
+                      <span className="material-symbols-outlined">settings</span>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
                       <button

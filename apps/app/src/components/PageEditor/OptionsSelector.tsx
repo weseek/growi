@@ -236,7 +236,7 @@ const ConfigurationDropdown = memo((): JSX.Element => {
       >
 
         <DropdownToggle color="outline-secondary" caret>
-          <i className="icon-settings"></i>
+          <span className="material-symbols-outlined">settings</span>
         </DropdownToggle>
 
         <DropdownMenu container="body">

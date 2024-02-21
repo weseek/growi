@@ -95,7 +95,8 @@ const UserMenu = (props: UserMenuProps) => {
   return (
     <UncontrolledDropdown id="userMenu" size="sm">
       <DropdownToggle caret color="secondary" outline>
-        <i className="icon-settings" />
+        {/* TODO:fontsize: 20px */}
+        <span className="material-symbols-outlined">settings</span>
         {(user.status === USER_STATUS.INVITED && !isInvitationEmailSended)
         && <i className={`fa fa-circle text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`} />}
       </DropdownToggle>
