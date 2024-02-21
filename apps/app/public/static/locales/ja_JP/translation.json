@@ -424,11 +424,11 @@
       "Recursively": "再帰的に複製",
       "Duplicate without exist path": "存在するパス以外を複製する",
       "Same page already exists": "同じページがすでに存在します",
-      "Only duplicate user related resources": "ユーザに関連のあるリソースのみを複製する"
+      "Only duplicate user related pages": "自分が閲覧可能なページのみを複製する"
     },
     "help": {
       "recursive": "配下のページも複製します",
-      "only_user_related_resources": "ユーザが閲覧可能なページのみを複製します。また、閲覧権限が「特定グループのみ」で設定されている場合、複製後のページにはユーザが所属するグループのみを閲覧可能なグループとして設定します。"
+      "only_inherit_user_related_groups": "閲覧権限が「特定グループのみ」で設定されている場合、複製されたページを閲覧可能なグループ一覧から、自分が所属していないものは取り除かれます"
     }
   },
   "duplicated_pages": "{{fromPath}} を複製しました",
