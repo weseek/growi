@@ -96,7 +96,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         onClick={openPageBulkExportSelectModal}
         className="grw-page-control-dropdown-item"
       >
-        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
         {t('page_export.bulk_export')}
       </DropdownItem>
 
