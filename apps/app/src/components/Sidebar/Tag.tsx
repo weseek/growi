@@ -1,9 +1,10 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { IDataTagCount } from '~/interfaces/tag';
+import type { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import TagCloudBox from '../TagCloudBox';
@@ -48,7 +49,7 @@ const Tag: FC = () => {
     // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="container-lg px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0">{t('Tags')}</h3>
+        <h4 className="mb-0">{t('Tags')}</h4>
         <SidebarHeaderReloadButton onClick={() => onReload()} />
       </div>
 

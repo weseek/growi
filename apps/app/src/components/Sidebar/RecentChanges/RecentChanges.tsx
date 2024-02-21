@@ -22,7 +22,7 @@ export const RecentChanges = (): JSX.Element => {
     // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="px-3" data-testid="grw-recent-changes">
       <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
+        <h4 className="mb-0 text-nowrap">{t('Recent Changes')}</h4>
         <Suspense>
           <RecentChangesHeader isSmall={isSmall} onSizeChange={setIsSmall} />
         </Suspense>

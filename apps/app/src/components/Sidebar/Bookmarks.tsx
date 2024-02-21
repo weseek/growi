@@ -16,7 +16,7 @@ export const Bookmarks = () : JSX.Element => {
       {/* TODO : #139425 Match the space specification method to others */}
       {/* ref.  https://redmine.weseek.co.jp/issues/139425 */}
       <div className="grw-sidebar-content-header p-3">
-        <h3 className="mb-0">{t('Bookmarks')}</h3>
+        <h4 className="mb-0">{t('Bookmarks')}</h4>
       </div>
       {isGuestUser ? (
         <h4 className="ps-3">
