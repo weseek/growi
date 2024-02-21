@@ -131,8 +131,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   return (
     <>
       {isRenameInputShown ? (
-        <div className={`position-absolute w-100 ${hasChildren ? 'ms-5' : 'ms-4'}`}>
-          {/* <div className="flex-fill"> */}
+        <div className={`position-absolute ${hasChildren ? 'ms-5' : 'ms-4'}`}>
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
