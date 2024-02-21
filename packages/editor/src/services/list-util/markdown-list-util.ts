@@ -1,7 +1,9 @@
 import type { EditorView } from '@codemirror/view';
 
-// https://regex101.com/r/7BN2fR/5
-const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
+// https://regex101.com/r/r9plEA/1
+const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]\s))(\s*)/;
+// https://regex101.com/r/HFYoFN/1
+const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
 const getBol = (editor: EditorView) => {
   const curPos = editor.state.selection.main.head;
@@ -26,7 +28,7 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
 
     const replacedLines = lines?.map((line, index) => {
 
-      if (index === 0 && strFromBol.match(indentAndMarkRE)) {
+      if (index === 0 && strFromBol.match(indentAndMarkOnlyRE)) {
         return line.replace(indentAndMarkRE, '');
       }
 

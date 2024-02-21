@@ -16,6 +16,7 @@ import {
 } from '~/stores/context';
 import { useWaitingSaveProcessing } from '~/stores/editor';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
+import { mutatePageTree } from '~/stores/page-listing';
 import { useSelectedGrant } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -72,6 +73,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
     try {
       await unpublish(pageId);
       await mutateCurrentPage();
+      await mutatePageTree();
       toastSuccess(t('wip_page.success_save_as_wip'));
     }
     catch (err) {
