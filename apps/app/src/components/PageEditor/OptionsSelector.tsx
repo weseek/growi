@@ -2,6 +2,9 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
+import type {
+  EditorTheme, KeyMapMode,
+} from '@growi/editor';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
 import {
@@ -12,8 +15,9 @@ import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 
 import {
-  type EditorTheme, type KeyMapMode, DEFAULT_THEME, DEFAULT_KEYMAP,
+  DEFAULT_THEME, DEFAULT_KEYMAP,
 } from '../../interfaces/editor-settings';
+
 
 type RadioListItemProps = {
   onClick: () => void,
