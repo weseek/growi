@@ -297,7 +297,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <span className="material-symbols-outlined ms-1" aria-hidden="true">error</span>
+          <span className="material-symbols-outlined mx-1" aria-hidden="true">error</span>
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

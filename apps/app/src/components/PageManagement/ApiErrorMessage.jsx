@@ -18,26 +18,26 @@ const ApiErrorMessage = (props) => {
       case 'already_exists':
         return (
           <>
-            <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.already_exists') }</strong>
-            <small><a href={targetPath}>{targetPath} <span className="material-symbols-outlined">login</span></a></small>
+            <strong><span className="material-symbols-outlined me-1">cancel</span>{ t('page_api_error.already_exists') }</strong>
+            <small><a href={targetPath}>{targetPath} <span className="material-symbols-outlined me-1">login</span></a></small>
           </>
         );
       case 'notfound_or_forbidden':
         return (
-          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.notfound_or_forbidden') }</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span>{ t('page_api_error.notfound_or_forbidden') }</strong>
         );
       case 'user_not_admin':
         return (
-          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.user_not_admin') }</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span>{ t('page_api_error.user_not_admin') }</strong>
         );
       case 'complete_deletion_not_allowed_for_user':
         return (
-          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.complete_deletion_not_allowed_for_user') }</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span>{ t('page_api_error.complete_deletion_not_allowed_for_user') }</strong>
         );
       case 'outdated':
         return (
           <>
-            <strong><span className="material-symbols-outlined">lightbulb</span> { t('page_api_error.outdated') }</strong>
+            <strong><span className="material-symbols-outlined me-1">lightbulb</span> { t('page_api_error.outdated') }</strong>
             <a className="btn-link" onClick={reload}>
               <i className="fa fa-angle-double-right"></i> { t('Load latest') }
             </a>
@@ -45,15 +45,15 @@ const ApiErrorMessage = (props) => {
         );
       case 'invalid_path':
         return (
-          <strong><span className="material-symbols-outlined">cancel</span> Invalid path</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span> Invalid path</strong>
         );
       case 'single_deletion_empty_pages':
         return (
-          <strong><span className="material-symbols-outlined">cancel</span>{ t('page_api_error.single_deletion_empty_pages') }</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span>{ t('page_api_error.single_deletion_empty_pages') }</strong>
         );
       default:
         return (
-          <strong><span className="material-symbols-outlined">cancel</span> Unknown error occured</strong>
+          <strong><span className="material-symbols-outlined me-1">cancel</span> Unknown error occured</strong>
         );
     }
   }

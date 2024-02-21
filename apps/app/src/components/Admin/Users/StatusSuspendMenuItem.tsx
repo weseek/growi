@@ -14,7 +14,7 @@ const SuspendAlert = React.memo((): JSX.Element => {
 
   return (
     <div className="px-4">
-      <span className="material-symbols-outlined mb-2">cancel</span>{t('admin:user_management.user_table.deactivate_account')}
+      <span className="material-symbols-outlined me-1 mb-2">cancel</span>{t('admin:user_management.user_table.deactivate_account')}
       <p className="alert alert-danger">{t('admin:user_management.user_table.your_own')}</p>
     </div>
   );
@@ -47,7 +47,7 @@ const StatusSuspendMenuItem = (props: Props): JSX.Element => {
   return user.username !== currentUser?.username
     ? (
       <button className="dropdown-item" type="button" onClick={clickDeactiveBtnHandler}>
-        <span className="material-symbols-outlined">cancel</span> {t('user_management.user_table.deactivate_account')}
+        <span className="material-symbols-outlined me-1">cancel</span> {t('user_management.user_table.deactivate_account')}
       </button>
     )
     : <SuspendAlert />;

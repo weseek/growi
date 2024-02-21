@@ -23,21 +23,21 @@ export const PageGrantAlert = (): JSX.Element => {
       if (pageData.grant === 2) {
         return (
           <>
-            <span className="material-symbols-outlined">link</span><strong>{t('Anyone with the link')}</strong>
+            <span className="material-symbols-outlined me-1">link</span><strong>{t('Anyone with the link')}</strong>
           </>
         );
       }
       if (pageData.grant === 4) {
         return (
           <>
-            <span className="material-symbols-outlined">lock</span><strong>{t('Only me')}</strong>
+            <span className="material-symbols-outlined me-1">lock</span><strong>{t('Only me')}</strong>
           </>
         );
       }
       if (pageData.grant === 5) {
         return (
           <>
-            <span className="material-symbols-outlined">account_tree</span>
+            <span className="material-symbols-outlined me-1">account_tree</span>
             <strong>{
               populatedGrantedGroups().map(g => g.item.name).join(', ')
             }

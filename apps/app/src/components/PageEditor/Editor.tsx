@@ -250,7 +250,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     return (
       <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size="lg">
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
-          <span className="material-symbols-outlined">help</span>Markdown help
+          <span className="material-symbols-outlined me-1">help</span>Markdown help
         </ModalHeader>
         <ModalBody>
           <Cheatsheet />

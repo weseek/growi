@@ -152,7 +152,7 @@ export const SyncExecution = ({
         toggle={() => setIsAlertModalOpen(false)}
       >
         <ModalHeader tag="h4" toggle={() => setIsAlertModalOpen(false)} className="bg-purple text-light">
-          <span className="material-symbols-outlined align-middle">error</span>
+          <span className="material-symbols-outlined me-1 align-middle">error</span>
           <span className="align-middle">{t('external_user_group.confirmation_before_sync')}</span>
         </ModalHeader>
         <ModalBody>

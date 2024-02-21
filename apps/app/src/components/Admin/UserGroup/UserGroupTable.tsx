@@ -209,7 +209,7 @@ export const UserGroupTable: FC<Props> = ({
                         </button>
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
-                            <span className="material-symbols-outlined">edit_square</span> {t('Edit')}
+                            <span className="material-symbols-outlined me-1">edit_square</span> {t('Edit')}
                           </button>
                           {onRemove != null
                           && (
