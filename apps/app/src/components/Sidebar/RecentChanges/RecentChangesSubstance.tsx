@@ -204,13 +204,13 @@ export const RecentChangesHeader = ({
           <DropdownItem onClick={onWipPageShownChange}>
             <div className="form-check form-switch">
               <input
-                id="switchWipPageVisibility"
+                id="wipPageVisibility"
                 className="form-check-input"
                 type="checkbox"
                 checked={isWipPageShown}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="switchWipPageVisibility">
+              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
