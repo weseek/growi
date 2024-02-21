@@ -17,12 +17,12 @@ import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
 type PageTreeHeaderProps = {
   isWipPageShown: boolean,
-  onClickWipPageVisibilitySwitch?: () => void
+  onWipPageShownChange?: () => void
 }
 
 export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
   const { t } = useTranslation();
-  const { isWipPageShown, onClickWipPageVisibilitySwitch } = props;
+  const { isWipPageShown, onWipPageShownChange } = props;
 
   const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
   useSWRxV5MigrationStatus({ suspense: true });
@@ -42,7 +42,7 @@ export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
         </DropdownToggle>
 
         <DropdownMenu container="body">
-          <DropdownItem onClick={onClickWipPageVisibilitySwitch} className="mt-2">
+          <DropdownItem onClick={onWipPageShownChange} className="mt-2">
             <div className="form-check form-switch">
               <input
                 id="switchWipPageVisibility"

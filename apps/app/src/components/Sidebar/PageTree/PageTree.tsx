@@ -27,7 +27,7 @@ export const PageTree = (): JSX.Element => {
         <Suspense>
           <PageTreeHeader
             isWipPageShown={isWipPageShown}
-            onClickWipPageVisibilitySwitch={() => { setIsWipPageShown(!isWipPageShown) }}
+            onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
           />
         </Suspense>
       </div>
