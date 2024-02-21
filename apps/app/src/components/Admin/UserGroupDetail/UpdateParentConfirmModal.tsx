@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -39,7 +40,7 @@ export const UpdateParentConfirmModal: FC = () => {
                 {t('admin:user_group_management.update_parent_confirm_modal.caution_change_parent', { groupName: targetGroup.name })}
               </div>
               <div className="text-danger mb-3">
-                <i className="icon-exclamation"></i>
+                <span className="material-symbols-outlined">error</span>
                 {t('admin:user_group_management.update_parent_confirm_modal.danger_message')}
               </div>
 
