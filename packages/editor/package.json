@@ -53,6 +53,7 @@
     "y-socket.io": "^1.1.0",
     "yjs": "^13.6.7",
     "csv-to-markdown-table": "1.4.1",
-     "string-width": "7.1.0"
+    "markdown-table": "3.0.3",
+    "string-width": "7.1.0"
   }
 }
