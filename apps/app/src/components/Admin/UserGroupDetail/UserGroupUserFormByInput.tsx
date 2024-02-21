@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { FC, KeyboardEvent } from 'react';
 import React, { useState } from 'react';
 
 import type { IUserGroupHasId, IUserHasId } from '@growi/core';
@@ -64,7 +64,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     setInputUser(inputUser);
   };
 
-  const handleSearch = (keyword) => {
+  const handleSearch = (keyword: string) => {
     if (keyword === '') {
       return;
     }
@@ -74,9 +74,8 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     searchApplicableUsersDebounce();
   };
 
-  const onKeyDown = (event) => {
-    // 13 is Enter key
-    if (event.keyCode === 13) {
+  const onKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
       addUserBySubmit();
     }
   };

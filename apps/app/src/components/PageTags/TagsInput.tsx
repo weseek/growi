@@ -27,7 +27,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
     onTagsUpdated(selected);
   }, [onTagsUpdated]);
 
-  const searchHandler = useCallback(async(query: string) => {
+  const searchHandler = useCallback((query: string) => {
     const tagsSearchData = tagsSearch?.tags || [];
     setSearchQuery(query);
     tagsSearchData.unshift(query);
@@ -38,15 +38,15 @@ export const TagsInput: FC<Props> = (props: Props) => {
     <div className="tag-typeahead">
       <AsyncTypeahead
         id="tag-typeahead-asynctypeahead"
-        options={resultTags} // Search result (Some tag names)
         isLoading={isLoading}
-        onSearch={searchHandler}
+        minLength={1}
         defaultSelected={tags}
         multiple
         onChange={changeHandler}
+        onSearch={searchHandler}
+        options={resultTags} // Search result (Some tag names)
         placeholder={t('tag_edit_modal.tags_input.tag_name')}
         autoFocus={autoFocus}
-        minLength={1}
       />
     </div>
   );
