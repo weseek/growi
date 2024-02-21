@@ -838,7 +838,7 @@
     "success_publish_page": "WIP 已停用",
     "fail_publish_page": "无法停用 WIP"
   },
-  "page_tree_header": {
+  "sidebar_header": {
     "show_wip_page": "显示 WIP"
   }
 }

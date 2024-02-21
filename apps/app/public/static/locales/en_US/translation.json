@@ -835,7 +835,7 @@
     "success_publish_page": "Page has been published",
     "fail_publish_page": "Failed to publish the Page"
   },
-  "page_tree_header": {
+  "sidebar_header": {
     "show_wip_page": "Show WIP"
   }
 }

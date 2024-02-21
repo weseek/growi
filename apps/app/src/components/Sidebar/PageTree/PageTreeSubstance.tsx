@@ -52,7 +52,7 @@ export const PageTreeHeader = memo((props: PageTreeHeaderProps) => {
                 onChange={() => {}}
               />
               <label className="form-label form-check-label text-muted" htmlFor="switchWipPageVisibility">
-                {t('page_tree_header.show_wip_page')}
+                {t('sidebar_header.show_wip_page')}
               </label>
             </div>
           </DropdownItem>
