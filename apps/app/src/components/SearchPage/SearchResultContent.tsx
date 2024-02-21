@@ -1,5 +1,6 @@
+import type { FC } from 'react';
 import React, {
-  FC, useCallback, useEffect, useRef, useState,
+  useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import { getIdForRef } from '@growi/core';
@@ -56,7 +57,7 @@ const AdditionalMenuItems = (props: AdditionalMenuItemsProps): JSX.Element => {
       onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
       className="grw-page-control-dropdown-item"
     >
-      <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
+      <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
       {t('page_export.export_page_markdown')}
     </DropdownItem>
   );

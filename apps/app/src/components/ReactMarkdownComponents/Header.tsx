@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { useRouter } from 'next/router';
-import { Element } from 'react-markdown/lib/rehype-filter';
+import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -42,7 +42,7 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
   return (
     <span className="revision-head-edit-button">
       <a href="#edit" aria-disabled={isDisabled} onClick={() => setCaretLine(props.line)}>
-        <i className="icon-note"></i>
+        <span className="material-symbols-outlined">edit_square</span>
       </a>
     </span>
   );
@@ -116,7 +116,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
     <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
-        <span className="icon-link"></span>
+        <span className="material-symbols-outlined">link</span>
       </NextLink>
       {showEditButton && (
         <EditLink line={node.position?.start.line} />

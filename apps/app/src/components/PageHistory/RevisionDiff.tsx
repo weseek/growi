@@ -61,7 +61,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
                 onClick={onClose}
                 prefetch={false}
               >
-                <i className="icon-login"></i>
+                <span className="material-symbols-outlined">login</span>
               </Link>
             </div>
             <div className="col comparison-target-wrapper pt-1">
@@ -72,7 +72,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
                 onClick={onClose}
                 prefetch={false}
               >
-                <i className="icon-login"></i>
+                <span className="material-symbols-outlined">login</span>
               </Link>
             </div>
           </div>
