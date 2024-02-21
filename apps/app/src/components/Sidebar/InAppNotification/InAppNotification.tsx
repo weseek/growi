@@ -15,10 +15,8 @@ export const InAppNotification = (): JSX.Element => {
   const [isUnopendNotificationsVisible, setUnopendNotificationsVisible] = useState(false);
 
   return (
-    // TODO : #139425 Match the space specification method to others
-    // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="px-3">
-      <div className="grw-sidebar-content-header py-3 d-flex">
+      <div className="grw-sidebar-content-header py-4 d-flex">
         <h4 className="mb-0">
           {t('In-App Notification')}
         </h4>
