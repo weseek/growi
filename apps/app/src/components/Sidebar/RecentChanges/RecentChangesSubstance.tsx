@@ -51,9 +51,6 @@ const PageItemLower = memo(({ page }: PageItemLowerProps): JSX.Element => {
           <span className="material-symbols-outlined p-0">chat</span>
           <span className="grw-list-counts ms-1">{page.commentCount}</span>
         </div>
-        {/* { page.wip && (
-          <span className="badge rounded-pill text-bg-secondary ms-2" style={{ height: '0.8rem', fontSize: '0.5rem' }}>WIP</span>
-        ) } */}
       </div>
       <div className="grw-formatted-distance-date mt-auto" data-vrt-blackout-datetime>
         <FormattedDistanceDate id={page._id} date={page.updatedAt} />
