@@ -15,8 +15,6 @@ import {
   type EditorTheme, type KeyMapMode, DEFAULT_THEME, DEFAULT_KEYMAP,
 } from '../../interfaces/editor-settings';
 
-import styles from './OptionsSelector.module.scss';
-
 type RadioListItemProps = {
   onClick: () => void,
   icon?: React.ReactNode,
