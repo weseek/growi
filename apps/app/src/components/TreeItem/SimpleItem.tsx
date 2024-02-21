@@ -61,7 +61,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
           <div className="d-flex align-items-center">
             <span className={`text-truncate ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
             { page.wip && (
-              <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
+              <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
             )}
           </div>
         </div>
