@@ -1,13 +1,14 @@
 import React, { useState, type FC, useCallback } from 'react';
 
 import { createPage } from '~/client/services/page-operation';
-import { useSWRxPageChildren } from '~/stores/page-listing';
+import { useSWRxPageChildren, mutatePageTree } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';
+
 
 type UseNewPageInput = {
   Input: FC<TreeItemToolProps>,
@@ -76,6 +77,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       });
 
       mutateChildren();
+      mutatePageTree();
 
       if (!hasDescendants) {
         stateHandlers?.setIsOpen(true);
