@@ -26,7 +26,11 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-  const currentPageName = (new DevidedPagePath(currentPagePath ?? '', true, true)).latter;
+
+  const dPagePath = (new DevidedPagePath(currentPagePath ?? '', true, true));
+  const currentPageName = `
+  ${(!(dPagePath.isRoot || dPagePath.isFormerRoot) ? '...' : '')}/${(dPagePath.isRoot ? '' : `${dPagePath.latter}/`)}
+  `;
 
   const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
@@ -58,7 +62,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
         >
           <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
           <span>
-            <code> ...{currentPageName}/ </code>
+            <code className="text-break">{currentPageName}</code>
           </span>
           <span className="ms-2 text-break">{searchKeyword}</span>
           <div className="ms-auto">
