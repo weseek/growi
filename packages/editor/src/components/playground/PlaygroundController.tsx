@@ -3,7 +3,9 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
-import { AllEditorTheme, AllKeyMap } from '../../services';
+import {
+  AllEditorTheme, AllKeyMap, EditorTheme, KeyMapMode,
+} from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -71,7 +73,7 @@ export const SetCaretLineRow = (): JSX.Element => {
 
 
 type SetParamRowProps = {
-    update: (value: string) => void,
+    update: (value: any) => void,
     items: string[],
 }
 
@@ -106,8 +108,8 @@ const SetParamRow = (
 
 
 type PlaygroundControllerProps = {
-  setEditorTheme: (value: string) => void
-  setEditorKeymap: (value: string) => void
+  setEditorTheme: (value: EditorTheme) => void
+  setEditorKeymap: (value: KeyMapMode) => void
 };
 
 export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
