@@ -69,7 +69,7 @@ export const PageTreeContent = memo(() => {
   const path = currentPath || '/';
 
   return (
-    <>
+    <div className="py-3">
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
@@ -78,7 +78,6 @@ export const PageTreeContent = memo(() => {
         targetAndAncestorsData={targetAndAncestorsData}
         CustomTreeItem={PageTreeItem}
       />
-
       {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
         <div className="grw-pagetree-footer border-top py-3 w-100">
           <div className="private-legacy-pages-link px-3 py-2">
@@ -86,7 +85,7 @@ export const PageTreeContent = memo(() => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 });
 
