@@ -5,12 +5,14 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
-import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
+import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
 import SearchForm from '../SearchForm';
 
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
+
+import styles from './SearchControl.module.scss';
 
 type Props = {
   isSearchServiceReachable: boolean,
@@ -93,26 +95,12 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             onSubmit={searchFormSubmittedHandler}
           />
         </div>
-
-        {/* sort option: show when screen is larger than lg */}
-        {isEnableSort && (
-          <div className="me-4 d-lg-flex d-none">
-            <SortControl
-              sort={sort}
-              order={order}
-              onChange={changeSortHandler}
-            />
-          </div>
-        )}
       </div>
       {/* TODO: replace the following elements deleteAll button , relevance button and include specificPath button component */}
       <div className="search-control d-flex align-items-center py-md-2 py-3 px-md-4 px-3 border-bottom border-gray">
-        <div className="d-flex">
-          {allControl}
-        </div>
-        {/* sort option: show when screen is smaller than lg */}
+        {/* sort option */}
         {isEnableSort && (
-          <div className="me-md-4 me-2 d-flex d-lg-none ms-auto">
+          <div className="flex-grow-1">
             <SortControl
               sort={sort}
               order={order}
@@ -129,11 +117,13 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 className="btn"
                 onClick={() => setIsFileterOptionModalShown(true)}
               >
-                <i className="icon-equalizer"></i>
+                <span className="material-symbols-outlined">
+                  tune
+                </span>
               </button>
             </div>
-            <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
-              <div className="border rounded px-2 py-1 me-3">
+            <div className="d-none d-lg-flex align-items-center search-control-include-options">
+              <div className="px-2 py-1">
                 <div className="form-check form-check-succsess">
                   <input
                     className="form-check-input me-2"
@@ -150,7 +140,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                   </label>
                 </div>
               </div>
-              <div className="border rounded px-2 py-1">
+              <div className="px-2 py-1">
                 <div className="form-check form-check-succsess">
                   <input
                     className="form-check-input me-2"
@@ -160,7 +150,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                     onChange={e => changeIncludeTrashPagesHandler(e.target.checked)}
                   />
                   <label
-                    className="form-label form-check-label d-flex align-items-center text-secondary with-no-font-weight"
+                    className="form-label form-check-label mb-0 d-flex align-items-center text-secondary with-no-font-weight"
                     htmlFor="flexCheckChecked"
                   >
                     {t('Include Subordinated Target Page', { target: '/trash' })}
@@ -170,6 +160,18 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             </div>
           </>
         )}
+        <div className="d-flex">
+          <div className="btn-group">
+            {/* TODO: imprv to delete all result UI */}
+            {/* <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span className="material-symbols-outlined ">delete</span>
+              <span className="material-symbols-outlined ">expand_more</span>
+            </button> */}
+            {/* <ul className="dropdown-menu"> */}
+            {allControl}
+            {/* </ul> */}
+          </div>
+        </div>
       </div>
 
       <SearchOptionModal
