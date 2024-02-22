@@ -1,5 +1,5 @@
 import type { FC, KeyboardEvent } from 'react';
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 
 import type { IUserGroupHasId, IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
@@ -25,6 +25,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
   } = props;
 
   const { t } = useTranslation();
+  const typeaheadRef = useRef(null);
   const [inputUser, setInputUser] = useState<IUserHasId[]>([]);
   const [applicableUsers, setApplicableUsers] = useState<IUserHasId[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -92,6 +93,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
         <AsyncTypeahead
           key={`${searchType}-${isAlsoNameSearched}-${isAlsoMailSearched}`} // The searched keywords are not re-searched, so re-rendered by key.
           id="name-typeahead-asynctypeahead"
+          inputProps={{ autoComplete: 'off' }}
           isLoading={isLoading}
           labelKey={(user: IUserHasId) => `${user.username} ${user.name} ${user.email}`}
           options={applicableUsers} // Search result
