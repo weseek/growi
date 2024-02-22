@@ -37,7 +37,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             getItemProps={getItemProps}
             url={`/_search?q=${searchKeyword}`}
           >
-            <span className="material-symbols-outlined fs-4 me-3">search</span>
+            <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
             <span>{searchKeyword}</span>
             <div className="ms-auto">
               <span className="method-range-explain">{t('search_method_menu_item.search_in_all')}</span>
