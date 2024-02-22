@@ -201,8 +201,6 @@ const SidebarContentsWrapper = memo(() => {
           <SidebarContents />
         </StickyStretchableScroller>
       </div>
-
-      {/* <DrawerToggler iconClass="icon-arrow-left" /> */}
     </>
   );
 });
@@ -246,7 +244,6 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
-            {/* <SidebarContents /> */}
             <SidebarContentsWrapper />
           </CollapsibleContainer>
         </ResizableContainer>

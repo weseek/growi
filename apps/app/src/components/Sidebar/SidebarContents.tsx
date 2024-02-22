@@ -1,7 +1,5 @@
 import React, { memo, useMemo } from 'react';
 
-import SimpleBar from 'simplebar-react';
-
 import { SidebarContentsType } from '~/interfaces/ui';
 import { useCollapsedContentsOpened, useCurrentSidebarContents, useSidebarMode } from '~/stores/ui';
 
