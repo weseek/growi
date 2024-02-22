@@ -56,7 +56,7 @@ const SearchModal = (): JSX.Element => {
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
-      <ModalBody>
+      <ModalBody className="pb-2">
         <Downshift
           onSelect={selectSearchMenuItemHandler}
           stateReducer={stateReducer}
@@ -100,6 +100,7 @@ const SearchModal = (): JSX.Element => {
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
+                <div className="border-top mt-2" />
               </ul>
             </div>
           )}

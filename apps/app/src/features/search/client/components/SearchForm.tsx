@@ -2,7 +2,9 @@ import React, {
   useCallback, useRef, useEffect, useMemo,
 } from 'react';
 
-import { GetInputProps } from '../interfaces/downshift';
+import type { GetInputProps } from '../interfaces/downshift';
+
+import styles from './SearchForm.module.scss';
 
 type Props = {
   searchKeyword: string,
@@ -52,11 +54,18 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   return (
     <form
-      className="w-100"
+      className={`${styles['search-form']}`}
       onSubmit={submitHandler}
       data-testid="search-form"
     >
       <input {...inputOptions} />
+      <button
+        type="button"
+        className="btn btn-neutral-secondary search-cancel"
+        onClick={() => { onChange?.('') }}
+      >
+        <span className="material-symbols-outlined p-0">cancel</span>
+      </button>
     </form>
   );
 };

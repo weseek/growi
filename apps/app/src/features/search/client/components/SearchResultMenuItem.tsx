@@ -69,7 +69,6 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
           </SearchMenuItem>
         ))
       }
-      <div className="border-top mt-2 mb-2" />
     </>
   );
 };

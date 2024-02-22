@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Collapse } from 'reactstrap';
 
+import styles from './SearchHelp.module.scss';
+
 export const SearchHelp = (): JSX.Element => {
   const { t } = useTranslation();
 
@@ -16,7 +18,7 @@ export const SearchHelp = (): JSX.Element => {
         <span className="material-symbols-outlined ms-2">{isOpen ? 'expand_less' : 'expand_more'}</span>
       </button>
       <Collapse isOpen={isOpen}>
-        <table className="table m-0">
+        <table className={`table m-0 ${styles['search-helper']}`}>
           <tbody>
             <tr>
               <th className="py-2">
