@@ -1,8 +1,9 @@
 import type { ForwardRefRenderFunction } from 'react';
 import React, {
-  Fragment, useState, useCallback, forwardRef,
+  Fragment, useState, useCallback, forwardRef, useRef, useImperativeHandle,
 } from 'react';
 
+import type { TypeaheadRef } from 'react-bootstrap-typeahead';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 import { useTranslation } from 'react-i18next';
 
@@ -30,6 +31,8 @@ type Props = {
 const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Props> = ((props: Props, ref) => {
   const { onChange } = props;
   const { t } = useTranslation();
+
+  const typeaheadRef = useRef<TypeaheadRef>(null);
 
   /*
    * State
@@ -96,12 +99,22 @@ const SearchUsernameTypeaheadSubstance: ForwardRefRenderFunction<IClearable, Pro
     );
   }, []);
 
+  useImperativeHandle(ref, () => ({
+    clear() {
+      const instance = typeaheadRef?.current;
+      if (instance != null) {
+        instance.clear();
+      }
+    },
+  }));
+
   return (
     <div className="input-group me-2">
       <span className="input-group-text">
         <span className="material-symbols-outlined">person</span>
       </span>
       <AsyncTypeahead
+        ref={typeaheadRef}
         id="search-username-typeahead-asynctypeahead"
         multiple
         delay={400}
