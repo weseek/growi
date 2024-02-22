@@ -71,11 +71,12 @@ const PagePresentationModal = (): JSX.Element => {
     >
       <div className="grw-presentation-controls d-flex">
         <button
-          className={`btn ${fullscreen.active ? 'icon-size-actual' : 'icon-size-fullscreen'}`}
+          className="btn material-symbols-outlined"
           type="button"
           aria-label="fullscreen"
           onClick={toggleFullscreenHandler}
         >
+          {fullscreen.active ? 'close_fullscreen' : 'open_in_full'}
         </button>
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
