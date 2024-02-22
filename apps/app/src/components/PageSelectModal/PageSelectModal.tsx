@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import {
+  useState, useCallback, memo, useRef,
+} from 'react';
 
 import nodePath from 'path';
 
@@ -7,6 +9,7 @@ import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
+import SimpleBar from 'simplebar-react';
 
 import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
@@ -15,9 +18,58 @@ import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stor
 
 import { ItemsTree } from '../ItemsTree';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
+import 'simplebar-react/dist/simplebar.min.css';
+
+import styles from './PageSelectModal.module.scss';
+
+const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
+
+  const { children } = props;
+
+  const calcViewHeight = useCallback(() => {
+    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+    return window.innerHeight / 2;
+  }, []);
+
+  return (
+    <div
+      id="grw-page-select-modal-wrapper"
+      className={`${styles['tree-for-modal-wrapper']} overflow-y-scroll`}
+      style={{ height: '50vh' }}
+    >
+      <StickyStretchableScroller
+        stickyElemSelector=".modal-body"
+        calcViewHeight={calcViewHeight}
+      >
+        { children }
+      </StickyStretchableScroller>
+    </div>
+  );
+
+  // const calcViewHeight = useCallback(() => {
+  //   const elem = document.querySelector('#grw-page-select-modal-wrapper');
+  //   return elem != null
+  //     ? window.innerHeight - elem?.getBoundingClientRect().top
+  //     : window.innerHeight;
+  // }, []);
+
+  // return (
+  //   <div id="grw-page-select-modal-wrapper" style={{ minHeight: '100%' }}>
+  //     <StickyStretchableScroller
+  //       simplebarRef={ref}
+  //       stickyElemSelector=".grw-sidebar"
+  //       calcViewHeight={calcViewHeight}
+  //     >
+  //       { children }
+  //     </StickyStretchableScroller>
+  //   </div>
+  // );
+
+});
 
 export const PageSelectModal: FC = () => {
   const {
@@ -82,16 +134,20 @@ export const PageSelectModal: FC = () => {
       size="sm"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
-      <ModalBody>
-        <ItemsTree
-          CustomTreeItem={TreeItemForModal}
-          isEnableActions={!isGuestUser}
-          isReadOnlyUser={!!isReadOnlyUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-          onClickTreeItem={onClickTreeItem}
-        />
+      <ModalBody className="p-0">
+        <TreeForModalWrapper>
+          <div className="p-3">
+            <ItemsTree
+              CustomTreeItem={TreeItemForModal}
+              isEnableActions={!isGuestUser}
+              isReadOnlyUser={!!isReadOnlyUser}
+              targetPath={path}
+              targetPathOrId={targetPathOrId}
+              targetAndAncestorsData={targetAndAncestorsData}
+              onClickTreeItem={onClickTreeItem}
+            />
+          </div>
+        </TreeForModalWrapper>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
