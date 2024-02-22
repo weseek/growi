@@ -40,7 +40,7 @@ export const usePagePathRenameHandler = (
     try {
       await apiv3Put('/pages/rename', {
         pageId: currentPage._id,
-        revisionId: currentPage.revision._id,
+        revisionId: currentPage.revision?._id,
         newPagePath,
       });
 

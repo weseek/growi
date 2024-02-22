@@ -26,7 +26,6 @@ const OptionsSelector = dynamic(() => import('~/components/PageEditor/OptionsSel
 
 const EditorNavbarBottom = (): JSX.Element => {
 
-  const [isExpanded, setExpanded] = useState(false);
   const [isSlackExpanded, setSlackExpanded] = useState(false);
 
   const { data: editorMode } = useEditorMode();
@@ -57,23 +56,8 @@ const EditorNavbarBottom = (): JSX.Element => {
     setSlackChannelsStr(slackChannels);
   }, []);
 
-
-  const renderExpandButton = () => (
-    <div className="d-md-none ms-2">
-      <button
-        type="button"
-        className={`btn btn-outline-secondary btn-expand border-0 ${isExpanded ? 'expand' : ''}`}
-        onClick={() => setExpanded(!isExpanded)}
-      >
-        <i className="icon-arrow-up"></i>
-      </button>
-    </div>
-  );
-
-  const isCollapsedOptionsSelectorEnabled = !isDeviceLargerThanLg;
-
   return (
-    <div className={`${isCollapsedOptionsSelectorEnabled ? 'fixed-bottom' : ''} `} data-testid="grw-editor-navbar-bottom">
+    <div data-testid="grw-editor-navbar-bottom">
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && !isDeviceLargerThanLg}>
@@ -95,7 +79,7 @@ const EditorNavbarBottom = (): JSX.Element => {
       }
       <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
         <form>
-          { isDeviceLargerThanMd && <OptionsSelector /> }
+          <OptionsSelector collapsed={!isDeviceLargerThanMd} />
         </form>
         <form className="row row-cols-lg-auto g-3 align-items-center ms-auto">
           {/* Responsive Design for the SlackNotification */}
@@ -125,21 +109,8 @@ const EditorNavbarBottom = (): JSX.Element => {
             </div>
           ))}
           <SavePageControls slackChannels={slackChannelsStr} />
-          { isCollapsedOptionsSelectorEnabled && renderExpandButton() }
         </form>
       </div>
-      {/* Collapsed OptionsSelector */}
-      { isCollapsedOptionsSelectorEnabled && (
-        <Collapse isOpen={isExpanded}>
-          <div className="px-2"> {/* set padding for border-top */}
-            <div className={`navbar navbar-expand border-top px-0 ${moduleClass}`}>
-              <form className="ms-auto">
-                <OptionsSelector />
-              </form>
-            </div>
-          </div>
-        </Collapse>
-      ) }
     </div>
   );
 };

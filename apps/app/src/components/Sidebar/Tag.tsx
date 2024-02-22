@@ -44,6 +44,8 @@ const Tag: FC = () => {
 
   // todo: adjust design by XD
   return (
+    // TODO : #139425 Match the space specification method to others
+    // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="container-lg px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">{t('Tags')}</h3>

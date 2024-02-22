@@ -133,13 +133,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
+  const currentRevisionId = currentPage?.revision?._id;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -193,12 +187,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsConflict(isConflict);
 
   }, [markdownToPreview, mutateIsConflict]);
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment(undefined);
-  }, [router]);
 
   useEffect(() => {
     if (socket == null) { return }
@@ -359,7 +347,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsConflict(false);
 
     // set resolved markdown in editing markdown
-    const markdown = pageData?.revision.body ?? '';
+    const markdown = pageData?.revision?.body ?? '';
     mutateEditingMarkdown(markdown);
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);

@@ -60,7 +60,7 @@ const PagePresentationModal = (): JSX.Element => {
     return <></>;
   }
 
-  const markdown = currentPage?.revision.body;
+  const markdown = currentPage?.revision?.body;
 
   return (
     <Modal

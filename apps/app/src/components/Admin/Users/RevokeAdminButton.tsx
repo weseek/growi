@@ -33,7 +33,7 @@ const RevokeAdminButton = (props: RevokeAdminButtonProps): JSX.Element => {
   const renderRevokeAdminBtn = () => {
     return (
       <button className="dropdown-item" type="button" onClick={() => onClickRevokeAdminBtnHandler()}>
-        <i className="icon-fw icon-user-unfollow"></i>{t('user_management.user_table.revoke_admin_access')}
+        <span className="material-symbols-outlined me-1">person_remove</span>{t('user_management.user_table.revoke_admin_access')}
       </button>
     );
   };
@@ -41,7 +41,7 @@ const RevokeAdminButton = (props: RevokeAdminButtonProps): JSX.Element => {
   const renderRevokeAdminAlert = () => {
     return (
       <div className="px-4">
-        <i className="icon-fw icon-user-unfollow mb-2"></i>{t('user_management.user_table.revoke_admin_access')}
+        <span className="material-symbols-outlined me-1 mb-2">person_remove</span>{t('user_management.user_table.revoke_admin_access')}
         <p className="alert alert-danger">{t('user_management.user_table.cannot_revoke')}</p>
       </div>
     );

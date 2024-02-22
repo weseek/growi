@@ -34,7 +34,7 @@ export const useDrawioModalLauncherForView = (opts?: {
   const { open: openDrawioModal } = useDrawioModal();
 
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
-    if (currentPage == null || shareLinkId != null) {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
     }
 
