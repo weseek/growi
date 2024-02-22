@@ -63,8 +63,8 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
             </span>
 
             <span className="ms-2 d-flex justify-content-center align-items-center">
-              <span className="material-symbols-outlined fs-5">footprint</span>
-              <span>{item.data.seenUsers.length}</span>
+              <span className="material-symbols-outlined fs-6">footprint</span>
+              <span className="fs-6">{item.data.seenUsers.length}</span>
             </span>
           </SearchMenuItem>
         ))
