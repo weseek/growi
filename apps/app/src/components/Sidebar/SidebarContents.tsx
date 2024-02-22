@@ -41,11 +41,9 @@ export const SidebarContents = memo(() => {
   const classToHide = isHidden ? 'd-none' : '';
 
   return (
-    <>
-      <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']} ${classToHide}`} data-testid="grw-sidebar-contents">
-        <Contents />
-      </div>
-    </>
+    <div className={`grw-sidebar-contents ${styles['grw-sidebar-contents']} ${classToHide}`} data-testid="grw-sidebar-contents">
+      <Contents />
+    </div>
   );
 });
 SidebarContents.displayName = 'SidebarContents';

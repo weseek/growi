@@ -1,7 +1,5 @@
-import React, {
-  type FC,
-  memo, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import { memo, useCallback, useEffect, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -191,17 +189,15 @@ const SidebarContentsWrapper = memo(() => {
   }, []);
 
   return (
-    <>
-      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
-        <StickyStretchableScroller
-          simplebarRef={mutateSidebarScroller}
-          stickyElemSelector=".grw-sidebar"
-          calcViewHeight={calcViewHeight}
-        >
-          <SidebarContents />
-        </StickyStretchableScroller>
-      </div>
-    </>
+    <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+      <StickyStretchableScroller
+        simplebarRef={mutateSidebarScroller}
+        stickyElemSelector=".sidebar-contents-container"
+        calcViewHeight={calcViewHeight}
+      >
+        <SidebarContents />
+      </StickyStretchableScroller>
+    </div>
   );
 });
 SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
