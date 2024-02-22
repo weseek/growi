@@ -13,14 +13,17 @@ import {
   useCurrentProductNavWidth,
   usePreferCollapsedMode,
   useSidebarMode,
+  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
+import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
+
 
 import styles from './Sidebar.module.scss';
 
@@ -136,7 +139,10 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div
+        className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass} ${styles['scroll-bar']}`}
+        style={{ width: collapsibleContentsWidth }}
+      >
         {children}
       </div>
     </div>
@@ -174,6 +180,33 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
+const SidebarContentsWrapper = memo(() => {
+  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+
+  const calcViewHeight = useCallback(() => {
+    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+    return elem != null
+      ? window.innerHeight - elem?.getBoundingClientRect().top
+      : window.innerHeight;
+  }, []);
+
+  return (
+    <>
+      <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+        <StickyStretchableScroller
+          simplebarRef={mutateSidebarScroller}
+          stickyElemSelector=".grw-sidebar"
+          calcViewHeight={calcViewHeight}
+        >
+          <SidebarContents />
+        </StickyStretchableScroller>
+      </div>
+
+      {/* <DrawerToggler iconClass="icon-arrow-left" /> */}
+    </>
+  );
+});
+SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
 
 export const Sidebar = (): JSX.Element => {
 
@@ -213,7 +246,8 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
-            <SidebarContents />
+            {/* <SidebarContents /> */}
+            <SidebarContentsWrapper />
           </CollapsibleContainer>
         </ResizableContainer>
       </DrawableContainer>

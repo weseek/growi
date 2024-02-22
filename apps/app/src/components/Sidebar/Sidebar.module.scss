@@ -115,3 +115,15 @@
     }
   }
 }
+
+.scroll-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-bar::-webkit-scrollbar-thumb {
+
+}
+
+.scroll-bar::-webkit-scrollbar-track {
+
+}
