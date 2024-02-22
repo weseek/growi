@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/stores/page';
@@ -25,6 +26,8 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
+  const currentPageName = (new DevidedPagePath(currentPagePath ?? '', true, true)).latter;
+
   const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
   return (
@@ -38,7 +41,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             url={`/_search?q=${searchKeyword}`}
           >
             <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
-            <span>{searchKeyword}</span>
+            <span className="text-break">{searchKeyword}</span>
             <div className="ms-auto">
               <span className="method-range-explain">{t('search_method_menu_item.search_in_all')}</span>
             </div>
@@ -53,9 +56,11 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           getItemProps={getItemProps}
           url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
         >
-          <span className="material-symbols-outlined fs-4 me-3">search</span>
-          <code>prefix: {currentPagePath}</code>
-          <span className="ms-2">{searchKeyword}</span>
+          <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
+          <span>
+            <code> ...{currentPageName}/ </code>
+          </span>
+          <span className="ms-2 text-break">{searchKeyword}</span>
           <div className="ms-auto">
             <span className="method-range-explain">{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
@@ -69,8 +74,8 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           getItemProps={getItemProps}
           url={`/_search?q="${searchKeyword}"`}
         >
-          <span className="material-symbols-outlined fs-4 me-2">search</span>
-          <span>{`"${searchKeyword}"`}</span>
+          <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
+          <span className="text-break">{`"${searchKeyword}"`}</span>
           <div className="ms-auto">
             <span className="method-range-explain">{t('search_method_menu_item.exact_mutch')}</span>
           </div>
