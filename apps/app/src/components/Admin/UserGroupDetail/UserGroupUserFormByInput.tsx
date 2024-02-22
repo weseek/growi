@@ -5,26 +5,26 @@ import type { IUserGroupHasId, IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { AsyncTypeahead } from 'react-bootstrap-typeahead';
-import { debounce } from 'throttle-debounce';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import type { SearchType } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 
 type Props = {
-  isAlsoMailSearched: boolean,
-  isAlsoNameSearched: boolean,
+  userGroup: IUserGroupHasId,
   onClickAddUserBtn: (username: string) => Promise<void>,
   onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>,
-  userGroup: IUserGroupHasId,
+  isAlsoNameSearched: boolean,
+  isAlsoMailSearched: boolean,
+  searchType: SearchType,
 }
 
 export const UserGroupUserFormByInput: FC<Props> = (props) => {
   const {
-    isAlsoMailSearched, isAlsoNameSearched, onClickAddUserBtn, onSearchApplicableUsers, userGroup,
+    userGroup, onClickAddUserBtn, onSearchApplicableUsers, isAlsoNameSearched, isAlsoMailSearched, searchType,
   } = props;
 
   const { t } = useTranslation();
-  const [keyword, setKeyword] = useState('');
   const [inputUser, setInputUser] = useState<IUserHasId[]>([]);
   const [applicableUsers, setApplicableUsers] = useState<IUserHasId[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +46,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     }
   };
 
-  const searchApplicableUsers = async() => {
+  const searchApplicableUsers = async(keyword: string) => {
     try {
       const users = await onSearchApplicableUsers(keyword);
       setApplicableUsers(users);
@@ -58,20 +58,13 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     }
   };
 
-  const searchApplicableUsersDebounce = debounce(1000, searchApplicableUsers);
-
   const handleChange = (inputUser: IUserHasId[]) => {
     setInputUser(inputUser);
   };
 
-  const handleSearch = (keyword: string) => {
-    if (keyword === '') {
-      return;
-    }
-
-    setKeyword(keyword);
+  const handleSearch = async(keyword: string) => {
     setIsLoading(true);
-    searchApplicableUsersDebounce();
+    await searchApplicableUsers(keyword);
   };
 
   const onKeyDown = (event: KeyboardEvent) => {
@@ -80,7 +73,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     }
   };
 
-  const renderMenuItemChildren = (option) => {
+  const renderMenuItemChildren = (option: IUserHasId) => {
     const user = option;
 
     return (
@@ -97,6 +90,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
     <div className="row">
       <div className="col-8 pe-0">
         <AsyncTypeahead
+          key={`${searchType}-${isAlsoNameSearched}-${isAlsoMailSearched}`} // The searched keywords are not re-searched, so re-rendered by key.
           id="name-typeahead-asynctypeahead"
           isLoading={isLoading}
           labelKey={(user: IUserHasId) => `${user.username} ${user.name} ${user.email}`}
@@ -104,7 +98,7 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
           onSearch={handleSearch}
           onChange={handleChange}
           onKeyDown={onKeyDown}
-          minLength={0}
+          minLength={1}
           searchText={isLoading ? 'Searching...' : (isSearchError && 'Error on searching.')}
           renderMenuItemChildren={renderMenuItemChildren}
           align="left"
