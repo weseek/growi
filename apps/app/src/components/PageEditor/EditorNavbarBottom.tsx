@@ -62,10 +62,10 @@ const EditorNavbarBottom = (): JSX.Element => {
     <div className="d-md-none ms-2">
       <button
         type="button"
-        className={`btn btn-outline-secondary btn-expand border-0 ${isExpanded ? 'expand' : ''}`}
+        className="btn btn-outline-secondary btn-expand border-0 material-symbols-outlined"
         onClick={() => setExpanded(!isExpanded)}
       >
-        <i className="icon-arrow-up"></i>
+        {isExpanded ? 'expand_more' : 'expand_less'}
       </button>
     </div>
   );
