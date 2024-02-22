@@ -61,7 +61,7 @@ export const SearchForm = (props: Props): JSX.Element => {
       <input {...inputOptions} />
       <button
         type="button"
-        className="btn btn-neutral-secondary search-cancel"
+        className="btn btn-neutral-secondary search-cancel text-muted"
         onClick={() => { onChange?.('') }}
       >
         <span className="material-symbols-outlined p-0">cancel</span>

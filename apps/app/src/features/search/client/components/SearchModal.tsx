@@ -83,7 +83,7 @@ const SearchModal = (): JSX.Element => {
                   className="btn border-0 d-flex justify-content-center p-0"
                   onClick={closeSearchModal}
                 >
-                  <span className="material-symbols-outlined fs-4 ms-3">close</span>
+                  <span className="material-symbols-outlined fs-4 ms-3 py-0">close</span>
                 </button>
               </div>
 
