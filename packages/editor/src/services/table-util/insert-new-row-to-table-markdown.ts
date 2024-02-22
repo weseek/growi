@@ -86,10 +86,17 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable[]): MarkdownTable 
 export const replaceFocusedMarkdownTableWithEditor = (
     editor: EditorView, table: MarkdownTable,
 ): void => {
+  const curPos = getCurPos(editor);
   const botPos = getBot(editor);
   const eotPos = getEot(editor);
 
-  const nextLine = editor.state.doc.lineAt(getCurPos(editor)).number + 1;
+  const curLine = editor.state.doc.lineAt(curPos).number;
+  const nextLine = curLine + 1;
+
+  const eolPos = editor.state.doc.line(curLine).to;
+  const strToEol = editor.state.sliceDoc(curPos, eolPos);
+
+  const isLastRow = getStrToEot(editor) === strToEol;
 
   editor.dispatch({
     changes: {
@@ -99,7 +106,8 @@ export const replaceFocusedMarkdownTableWithEditor = (
     },
   });
 
-  const nextCurPos = editor.state.doc.line(nextLine).from + 2;
+
+  const nextCurPos = isLastRow ? editor.state.doc.line(curLine).from + 2 : editor.state.doc.line(nextLine).from + 2;
 
   editor.dispatch({
     selection: { anchor: nextCurPos },

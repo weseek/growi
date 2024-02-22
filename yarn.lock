@@ -12008,6 +12008,11 @@ markdown-it@^13.0.1:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
+markdown-table@3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.3.tgz#e6331d30e493127e031dd385488b5bd326e4a6bd"
+  integrity sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==
+
 markdown-table@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.1.tgz#4b3dd3a133d1518b8ef0dbc709bf2a1b4824bc8c"

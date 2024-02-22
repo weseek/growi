@@ -1,5 +1,5 @@
 import csvToMarkdown from 'csv-to-markdown-table';
-import markdownTable from 'markdown-table';
+import { markdownTable } from 'markdown-table';
 import stringWidth from 'string-width';
 
 // https://github.com/markdown-it/markdown-it/blob/d29f421927e93e88daf75f22089a3e732e195bd2/lib/rules_block/table.js#L83
