@@ -26,7 +26,6 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
-
   const dPagePath = (new DevidedPagePath(currentPagePath ?? '', true, true));
   const currentPageName = `
   ${(!(dPagePath.isRoot || dPagePath.isFormerRoot) ? '...' : '')}/${(dPagePath.isRoot ? '' : `${dPagePath.latter}/`)}
@@ -45,14 +44,13 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             url={`/_search?q=${searchKeyword}`}
           >
             <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
-            <span className="text-break">{searchKeyword}</span>
-            <div className="ms-auto">
+            <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
+              <span className="text-break me-auto">{searchKeyword}</span>
               <span className="method-range-explain">{t('search_method_menu_item.search_in_all')}</span>
             </div>
           </SearchMenuItem>
         </div>
       )}
-
       <div data-testid="search-prefix-menu-item">
         <SearchMenuItem
           index={shouldShowMenuItem ? 1 : 0}
@@ -61,11 +59,9 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
         >
           <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
-          <span>
+          <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
             <code className="text-break">{currentPageName}</code>
-          </span>
-          <span className="ms-2 text-break">{searchKeyword}</span>
-          <div className="ms-auto">
+            <span className="ms-md-2 text-break me-auto">{searchKeyword}</span>
             <span className="method-range-explain">{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
         </SearchMenuItem>
@@ -79,12 +75,13 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           url={`/_search?q="${searchKeyword}"`}
         >
           <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
-          <span className="text-break">{`"${searchKeyword}"`}</span>
-          <div className="ms-auto">
+          <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
+            <span className="text-break me-auto">{`"${searchKeyword}"`}</span>
             <span className="method-range-explain">{t('search_method_menu_item.exact_mutch')}</span>
           </div>
         </SearchMenuItem>
       ) }
     </div>
+
   );
 };
