@@ -87,7 +87,7 @@ const SearchModal = (): JSX.Element => {
                 </button>
               </div>
 
-              <ul {...getMenuProps()} className="list-unstyled">
+              <ul {...getMenuProps()} className="list-unstyled m-0">
                 <div className="border-top mt-3 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
@@ -100,7 +100,7 @@ const SearchModal = (): JSX.Element => {
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
-                <div className="border-top mt-2" />
+                <div className="border-top mt-2 mb-2" />
               </ul>
             </div>
           )}

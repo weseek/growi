@@ -56,14 +56,16 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
             getItemProps={getItemProps}
             url={item.data._id}
           >
-            <UserPicture user={item.data.creator} />
+            <span className="d-flex justify-content-center align-items-center">
+              <UserPicture user={item.data.creator} />
+            </span>
 
             <span className="ms-3 text-break text-wrap">
               <PagePathLabel path={item.data.path} />
             </span>
 
             <span className="ms-2 d-flex justify-content-center align-items-center">
-              <span className="material-symbols-outlined fs-6">footprint</span>
+              <span className="material-symbols-outlined fs-6 p-0">footprint</span>
               <span className="fs-6">{item.data.seenUsers.length}</span>
             </span>
           </SearchMenuItem>
