@@ -81,7 +81,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let commentCount;
   if (page.commentCount > 0) {
-    commentCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
+    commentCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">comment</span>{page.commentCount}</span>;
   }
 
   let likerCount;

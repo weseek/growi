@@ -263,7 +263,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <i className="icon-bubble"></i> Add Comment
+              <span className="material-symbols-outlined">comment</span> Add Comment
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
