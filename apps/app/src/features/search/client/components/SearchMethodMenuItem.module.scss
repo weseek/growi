@@ -1,0 +1,9 @@
+
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.search-method-menu-item :global {
+  .method-range-explain{
+    font-size: 14px;
+    color: var(--bs-gray-500);
+  }
+}

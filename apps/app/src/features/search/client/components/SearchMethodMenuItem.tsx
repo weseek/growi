@@ -8,6 +8,8 @@ import type { GetItemProps } from '../interfaces/downshift';
 
 import { SearchMenuItem } from './SearchMenuItem';
 
+import styles from './SearchMethodMenuItem.module.scss';
+
 type Props = {
   activeIndex: number | null
   searchKeyword: string
@@ -26,7 +28,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
   return (
-    <>
+    <div className={`${styles['search-method-menu-item']} search-method-menu-item `}>
       { shouldShowMenuItem && (
         <div data-testid="search-all-menu-item">
           <SearchMenuItem
@@ -38,7 +40,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             <span className="material-symbols-outlined fs-4 me-3">search</span>
             <span>{searchKeyword}</span>
             <div className="ms-auto">
-              <span>{t('search_method_menu_item.search_in_all')}</span>
+              <span className="method-range-explain">{t('search_method_menu_item.search_in_all')}</span>
             </div>
           </SearchMenuItem>
         </div>
@@ -55,7 +57,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           <code>prefix: {currentPagePath}</code>
           <span className="ms-2">{searchKeyword}</span>
           <div className="ms-auto">
-            <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
+            <span className="method-range-explain">{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
         </SearchMenuItem>
       </div>
@@ -70,10 +72,10 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           <span className="material-symbols-outlined fs-4 me-3">search</span>
           <span>{`"${searchKeyword}"`}</span>
           <div className="ms-auto">
-            <span>{t('search_method_menu_item.exact_mutch')}</span>
+            <span className="method-range-explain">{t('search_method_menu_item.exact_mutch')}</span>
           </div>
         </SearchMenuItem>
       ) }
-    </>
+    </div>
   );
 };
