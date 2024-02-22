@@ -3816,9 +3816,8 @@ class PageService implements IPageService {
 
     // Make WIP
     if (options.wip) {
-      const childrenCount = await Page.count({ parent: page._id });
-      const disableTtl = childrenCount > 0;
-      page.makeWip(disableTtl);
+      const hasChildren = await Page.exists({ parent: page._id });
+      page.makeWip(hasChildren != null); // disableTtl = hasChildren != null
     }
 
     // Save
