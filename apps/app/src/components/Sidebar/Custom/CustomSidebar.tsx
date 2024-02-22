@@ -18,6 +18,8 @@ export const CustomSidebar = (): JSX.Element => {
   const { mutate, isLoading } = useSWRxPageByPath('/Sidebar');
 
   return (
+    // TODO : #139425 Match the space specification method to others
+    // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="px-3">
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0">

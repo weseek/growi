@@ -67,7 +67,7 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
                 {attachmentName || originalName}
               </a>
               <a className="ms-2 attachment-download" href={downloadPathProxied}>
-                <i className="icon-cloud-download" />
+                <span className="material-symbols-outlined">cloud_download</span>
               </a>
               <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
                 <span className="material-symbols-outlined">delete</span>

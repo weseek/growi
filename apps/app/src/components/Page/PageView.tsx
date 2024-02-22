@@ -68,7 +68,7 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: viewOptions } = useViewOptions();
 
   const page = pageBySWR ?? initialPage;
-  const isNotFound = isNotFoundMeta || page?.revision == null;
+  const isNotFound = isNotFoundMeta || page == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
 
   const shouldExpandContent = useShouldExpandContent(page);
@@ -124,7 +124,7 @@ export const PageView = (props: Props): JSX.Element => {
     : null;
 
   const Contents = () => {
-    if (isNotFound) {
+    if (isNotFound || page?.revision == null) {
       return <NotFoundPage path={pagePath} />;
     }
 

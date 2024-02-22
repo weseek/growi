@@ -30,7 +30,7 @@ const TimelineCard = ({ page }: TimelineCardProps): JSX.Element => {
         </Link>
       </div>
       <div className="card-body">
-        { rendererOptions != null && (
+        { rendererOptions != null && page.revision != null && (
           <RevisionLoader
             rendererOptions={rendererOptions}
             pageId={page._id}

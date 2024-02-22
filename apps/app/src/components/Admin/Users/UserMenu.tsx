@@ -48,7 +48,7 @@ const UserMenu = (props: UserMenuProps) => {
         <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
         <li>
           <button className="dropdown-item" type="button" onClick={onClickPasswordResetHandler}>
-            <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
+            <span className="material-symbols-outlined me-1">key</span>{ t('user_management.reset_password') }
           </button>
         </li>
       </>

@@ -424,11 +424,11 @@
       "Recursively": "再帰的に複製",
       "Duplicate without exist path": "存在するパス以外を複製する",
       "Same page already exists": "同じページがすでに存在します",
-      "Only duplicate user related resources": "ユーザに関連のあるリソースのみを複製する"
+      "Only duplicate user related pages": "自分が閲覧可能なページのみを複製する"
     },
     "help": {
       "recursive": "配下のページも複製します",
-      "only_user_related_resources": "ユーザが閲覧可能なページのみを複製します。また、閲覧権限が「特定グループのみ」で設定されている場合、複製後のページにはユーザが所属するグループのみを閲覧可能なグループとして設定します。"
+      "only_inherit_user_related_groups": "閲覧権限が「特定グループのみ」で設定されている場合、複製されたページを閲覧可能なグループ一覧から、自分が所属していないものは取り除かれます"
     }
   },
   "duplicated_pages": "{{fromPath}} を複製しました",
@@ -571,6 +571,7 @@
     "search_again" : "再検索",
     "number_of_list_to_display" : "表示件数",
     "page_number_unit" : "件",
+    "hit_number_unit" : "件",
     "sort_axis": {
       "relationScore": "関連度順",
       "createdAt": "作成日時",
@@ -673,7 +674,7 @@
     "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
     "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
     "user_not_found": "ユーザーが見つかりません",
-    "provider_duplicated_username_exception": "<p><strong><i class='icon-fw icon-ban'></i>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
+    "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },
   "grid_edit":{
     "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",

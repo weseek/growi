@@ -98,7 +98,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span><i className="icon-lock ms-2" /></span>;
+    locked = <span className="material-symbols-outlined ms-2">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));

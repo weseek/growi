@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -40,7 +41,7 @@ const ShareLinkAlert: FC<Props> = (props: Props) => {
 
   return (
     <p className={`alert alert-${alertColor} px-4 d-edit-none`}>
-      <i className="icon-fw icon-link"></i>
+      <span className="material-symbols-outlined me-1">link</span>
       {(expiredAt === null ? <span>{t('page_page.notice.no_deadline')}</span>
       // eslint-disable-next-line react/no-danger
         : <span dangerouslySetInnerHTML={{ __html: t('page_page.notice.expiration', { expiredAt }) }} />
