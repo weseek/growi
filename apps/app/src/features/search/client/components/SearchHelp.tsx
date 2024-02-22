@@ -13,9 +13,9 @@ export const SearchHelp = (): JSX.Element => {
   return (
     <>
       <button type="button" className="btn border-0 text-muted d-flex justify-content-center align-items-center ms-1 p-0" onClick={() => setIsOpen(!isOpen)}>
-        <span className="material-symbols-outlined me-2">help</span>
-        { t('search_help.title') }
-        <span className="material-symbols-outlined ms-2">{isOpen ? 'expand_less' : 'expand_more'}</span>
+        <span className="material-symbols-outlined me-2 p-0">help</span>
+        <span>{t('search_help.title')}</span>
+        <span className="material-symbols-outlined ms-2 p-0">{isOpen ? 'expand_less' : 'expand_more'}</span>
       </button>
       <Collapse isOpen={isOpen}>
         <table className={`table m-0 ${styles['search-helper']}`}>
