@@ -1,6 +1,6 @@
 import type { IRevision, Ref } from '@growi/core';
 
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from './apiv3-client';
 
@@ -31,7 +31,7 @@ export const deleteBookmarkFolder = async(bookmarkFolderId: string): Promise<voi
 };
 
 // Rename page from bookmark item control
-export const renamePage = async(pageId: string, revisionId: Ref<IRevision>, newPagePath: string): Promise<void> => {
+export const renamePage = async(pageId: string, revisionId: Ref<IRevision> | undefined, newPagePath: string): Promise<void> => {
   await apiv3Put('/pages/rename', { pageId, revisionId, newPagePath });
 };
 

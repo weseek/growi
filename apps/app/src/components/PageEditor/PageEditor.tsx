@@ -347,7 +347,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsConflict(false);
 
     // set resolved markdown in editing markdown
-    const markdown = pageData?.revision.body ?? '';
+    const markdown = pageData?.revision?.body ?? '';
     mutateEditingMarkdown(markdown);
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
