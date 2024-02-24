@@ -2513,7 +2513,7 @@ class PageService implements IPageService {
       case 'public': {
         const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
         const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
-          const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item)));
+          const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item).toString()));
           acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
           return acc;
         }, { canPublicize: [], cannotPublicize: [] });
@@ -2525,7 +2525,7 @@ class PageService implements IPageService {
           return {
             updateOne: {
               filter: { _id: page._id },
-              update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item))) } },
+              update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item).toString())) } },
             },
           };
         });

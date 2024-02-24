@@ -14,10 +14,17 @@ import UserGroupRelation from '../models/user-group-relation';
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
+export interface IUserGroupService {
+  init(): Promise<void>;
+  updateGroup(id: ObjectIdLike, name?: string, description?: string, parentId?: ObjectIdLike | null, forceUpdateParents?: boolean): Promise<UserGroupDocument>;
+  removeCompletelyByRootGroupId(deleteRootGroupId: ObjectIdLike, action: string, user: IUser, transferToUserGroup?: IGrantedGroup): Promise<DeleteResult>;
+  removeUserByUsername(userGroupId: ObjectIdLike, username: string): Promise<{user: IUser, deletedGroupsCount: number}>;
+}
+
 /**
  * the service class of UserGroupService
  */
-class UserGroupService {
+class UserGroupService implements IUserGroupService {
 
   crowi: any;
 
@@ -25,13 +32,13 @@ class UserGroupService {
     this.crowi = crowi;
   }
 
-  async init() {
+  async init(): Promise<void> {
     logger.debug('removing all invalid relations');
     return UserGroupRelation.removeAllInvalidRelations();
   }
 
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
-  async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false) {
+  async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false): Promise<UserGroupDocument> {
     const userGroup = await UserGroup.findById(id);
     if (userGroup == null) {
       throw new Error('The group does not exist');
