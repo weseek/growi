@@ -1,6 +1,5 @@
-import React, {
-  FC, useCallback, useState, useMemo,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 
 import type { IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -196,7 +195,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
-          <div className="d-flex mb-0">
+          <div className="d-flex mb-0 me-3          ">
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>
@@ -204,6 +203,9 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
             <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </form>
+        <div className="form-text text-muted">
+          <small>{t('admin:user_group_management.delete_modal.option_explanation')}</small>
+        </div>
       </ModalFooter>
     </Modal>
   );

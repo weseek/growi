@@ -834,9 +834,10 @@
       "dropdown_desc": "Choose an action for private pages",
       "select_group": "Select a group",
       "no_groups": "No groups to select",
-      "publish_pages": "Publish all",
+      "publish_pages": "Publish pages that are publishable",
       "delete_pages": "Delete all",
-      "transfer_pages": "Transfer to another group"
+      "transfer_pages": "Transfer to another group",
+      "option_explanation": "A \"publishable\" page is a page visible only to the group you want to delete. Pages that can be viewed by other groups will not be published."
     },
     "update_parent_confirm_modal": {
       "header": "The parent of the group will be changed",

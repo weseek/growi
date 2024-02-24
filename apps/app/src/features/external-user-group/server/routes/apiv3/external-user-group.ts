@@ -1,6 +1,7 @@
 import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { Router, Request } from 'express';
+import type { Request } from 'express';
+import { Router } from 'express';
 import {
   body, param, query, validationResult,
 } from 'express-validator';
@@ -8,13 +9,13 @@ import {
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
-import Crowi from '~/server/crowi';
+import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import UserGroupService from '~/server/service/user-group';
+import type UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');

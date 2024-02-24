@@ -18,6 +18,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -37,6 +38,7 @@ import {
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import type { UserGroupDocument } from '~/server/models/user-group';
 import { createBatchStream } from '~/server/util/batch-stream';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
@@ -2501,20 +2503,36 @@ class PageService implements IPageService {
   }
 
 
-  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: IGrantedGroup, user) {
-    const Page = this.crowi.model('Page');
-    const pages = await Page.find({
-      grantedGroups: {
-        $elemMatch: {
-          item: { $in: groupsToDelete },
-        },
-      },
-    });
+  async handlePrivatePagesForGroupsToDelete(
+      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: string, transferToUserGroup: IGrantedGroup, user,
+  ): Promise<void> {
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    const pages = await Page.find({ grantedGroups: { $elemMatch: { item: { $in: groupsToDelete } } } });
 
     switch (action) {
-      case 'public':
-        await Page.publicizePages(pages);
+      case 'public': {
+        const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
+        const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
+          const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item)));
+          acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
+          return acc;
+        }, { canPublicize: [], cannotPublicize: [] });
+
+        // Only publicize pages that can only be accessed by the groups to be deleted
+        await Page.publicizePages(pageGroups.canPublicize);
+        // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
+        const queries = pageGroups.cannotPublicize.map((page) => {
+          return {
+            updateOne: {
+              filter: { _id: page._id },
+              update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item))) } },
+            },
+          };
+        });
+        await Page.bulkWrite(queries);
+
         break;
+      }
       case 'delete':
         return this.deleteMultipleCompletely(pages, user);
       case 'transfer':

@@ -1,6 +1,5 @@
-import {
-  FC, useCallback, useMemo, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
@@ -11,7 +10,7 @@ import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDele
 import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
 import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';

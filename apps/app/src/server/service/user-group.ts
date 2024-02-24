@@ -1,13 +1,15 @@
 import type { IUser, IGrantedGroup } from '@growi/core';
-import { DeleteResult } from 'mongodb';
-import { Model } from 'mongoose';
+import type { DeleteResult } from 'mongodb';
+import type { Model } from 'mongoose';
 
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
+import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, includesObjectIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
-import UserGroupRelation, { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
+import type { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
+import UserGroupRelation from '../models/user-group-relation';
 
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
@@ -144,7 +146,7 @@ class UserGroupService {
       User.findUserByUsername(username),
     ]);
 
-    const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+    const groupsOfRelationsToDelete = userGroup != null ? await UserGroup.findGroupsWithDescendantsRecursively([userGroup]) : [];
     const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
 
     const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });

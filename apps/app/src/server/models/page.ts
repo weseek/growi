@@ -1052,6 +1052,8 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   await this.save();
 };
 
+schema.methods.removeGroupsFromAllPageGrantedGroups = async function(pages: PageDocument[], groupIds: ObjectIdLike[]): Promise<void> {};
+
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */
