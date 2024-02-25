@@ -98,7 +98,7 @@ const getFilePathOnStorage = (attachment) => {
 };
 
 export interface IAwsFileUploader {
-  createMultipartUploader: (uploadKey: string) => Promise<AwsMultipartUploader>
+  createMultipartUploader: (uploadKey: string) => AwsMultipartUploader
 }
 
 // TODO: rewrite this module to be a type-safe implementation
@@ -225,7 +225,7 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
   }
 
-  async createMultipartUploader(uploadKey: string) {
+  createMultipartUploader(uploadKey: string) {
     const s3 = S3Factory();
     const awsConfig = getAwsConfig();
     return new AwsMultipartUploader(s3, awsConfig.bucket, uploadKey);
