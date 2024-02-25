@@ -107,7 +107,7 @@ type CommonProps = {
 type PageControlsSubstanceProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId: string | null,
+  revisionId?: string | null,
   path?: string | null,
   pageInfo: IPageInfoForOperation,
   expandContentWidth?: boolean,
@@ -178,7 +178,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     const page: IPageToRenameWithMeta = {
       data: {
         _id: pageId,
-        revision: revisionId,
+        revision: revisionId ?? null,
         path,
       },
       meta: pageInfo,
@@ -195,7 +195,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     const pageToDelete: IPageToDeleteWithMeta = {
       data: {
         _id: pageId,
-        revision: revisionId,
+        revision: revisionId ?? null,
         path,
       },
       meta: pageInfo,
@@ -311,7 +311,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 type PageControlsProps = CommonProps & {
   pageId: string,
   shareLinkId?: string | null,
-  revisionId?: string,
+  revisionId?: string | null,
   path?: string | null,
   expandContentWidth?: boolean,
 };
@@ -346,7 +346,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
       {...props}
       pageInfo={pageInfo}
       pageId={pageId}
-      revisionId={revisionId ?? null}
+      revisionId={revisionId}
       path={path}
       onClickEditTagsButton={onClickEditTagsButton}
       onClickDuplicateMenuItem={onClickDuplicateMenuItem}
