@@ -164,7 +164,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       <select
         name="transferToUserGroup"
         className={`form-control ${actionName === actionForPages.transfer ? '' : 'd-none'}`}
-        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : undefined}
+        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : ''}
         onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
