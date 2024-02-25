@@ -56,7 +56,28 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
   const key = 'currentPage';
 
   const { cache } = useSWRConfig();
-  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData !== undefined;
+
+  // Problem 1: https://github.com/weseek/growi/pull/7772/files#diff-4c1708c4f959974166c15435c6b35950ba01bbf35e7e4b8e99efeb125a8000a7
+  // Problem 2: https://redmine.weseek.co.jp/issues/141027
+  const shouldMutate = (() => {
+    if (initialData === undefined) {
+      return false;
+    }
+
+    // reset when null
+    if (initialData == null) {
+      return true;
+    }
+
+    const cachedData = cache.get(key)?.data as IPagePopulatedToShowRevision|null;
+    if (initialData._id !== cachedData?._id) {
+      return true;
+    }
+
+    if (initialData.revision?._id !== cachedData?.revision?._id) {
+      return true;
+    }
+  })();
 
   useEffect(() => {
     if (shouldMutate) {
