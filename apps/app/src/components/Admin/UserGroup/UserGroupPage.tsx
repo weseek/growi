@@ -1,15 +1,18 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
-import type { IUserGroup, IUserGroupHasId } from '@growi/core';
+import {
+  GroupType, getIdForRef, type IGrantedGroup, type IUserGroup, type IUserGroupHasId,
+} from '@growi/core';
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
+import { useSWRxExternalUserGroupList } from '~/features/external-user-group/client/stores/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
-import { useSWRxExternalUserGroupList } from '~/features/external-user-group/client/stores/external-user-group';
 
 
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
@@ -27,7 +30,12 @@ export const UserGroupPage: FC = () => {
   const { data: userGroupList, mutate: mutateUserGroups } = useSWRxUserGroupList();
   const { data: externalUserGroupList } = useSWRxExternalUserGroupList();
   const userGroups = userGroupList != null ? userGroupList : [];
-  const externalUserGroups = externalUserGroupList != null ? externalUserGroupList : [];
+  const userGroupsForDeleteModal: IGrantedGroup[] = userGroups.map((group) => {
+    return { item: group, type: GroupType.userGroup };
+  });
+  const externalUserGroupsForDeleteModal: IGrantedGroup[] = externalUserGroupList != null ? externalUserGroupList.map((group) => {
+    return { item: group, type: GroupType.externalUserGroup };
+  }) : [];
   const userGroupIds = userGroups.map(group => group._id);
 
   const { data: userGroupRelationList } = useSWRxUserGroupRelationList(userGroupIds);
@@ -129,11 +137,14 @@ export const UserGroupPage: FC = () => {
     }
   }, [t, mutateUserGroups, hideUpdateModal]);
 
-  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroup: IGrantedGroup | null) => {
+    const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
+    const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
     try {
       await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,
         transferToUserGroupId,
+        transferToUserGroupType,
       });
 
       // sync
@@ -190,7 +201,7 @@ export const UserGroupPage: FC = () => {
       />
 
       <UserGroupDeleteModal
-        userGroups={userGroups.concat(externalUserGroups)}
+        userGroups={userGroupsForDeleteModal.concat(externalUserGroupsForDeleteModal)}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}
