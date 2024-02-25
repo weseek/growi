@@ -9,6 +9,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { useSWRxExternalUserGroupList } from '~/features/external-user-group/client/stores/external-user-group';
 
 
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
@@ -24,7 +25,9 @@ export const UserGroupPage: FC = () => {
    * Fetch
    */
   const { data: userGroupList, mutate: mutateUserGroups } = useSWRxUserGroupList();
+  const { data: externalUserGroupList } = useSWRxExternalUserGroupList();
   const userGroups = userGroupList != null ? userGroupList : [];
+  const externalUserGroups = externalUserGroupList != null ? externalUserGroupList : [];
   const userGroupIds = userGroups.map(group => group._id);
 
   const { data: userGroupRelationList } = useSWRxUserGroupRelationList(userGroupIds);
@@ -187,7 +190,7 @@ export const UserGroupPage: FC = () => {
       />
 
       <UserGroupDeleteModal
-        userGroups={userGroups}
+        userGroups={userGroups.concat(externalUserGroups)}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteUserGroupById}
         isShow={isDeleteModalShown}

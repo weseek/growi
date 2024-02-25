@@ -18,10 +18,13 @@ import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWR
 
 import { KeycloakGroupManagement } from './KeycloakGroupManagement';
 import { LdapGroupManagement } from './LdapGroupManagement';
+import { useSWRxUserGroupList } from '~/stores/user-group';
 
 export const ExternalGroupManagement: FC = () => {
   const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
+  const { data: userGroupList } = useSWRxUserGroupList();
   const externalUserGroups = externalUserGroupList != null ? externalUserGroupList : [];
+  const userGroups = userGroupList != null ? userGroupList : [];
   const externalUserGroupIds = externalUserGroups.map(group => group._id);
 
   const { data: externalUserGroupRelationList } = useSWRxExternalUserGroupRelationList(externalUserGroupIds);
@@ -154,7 +157,7 @@ export const ExternalGroupManagement: FC = () => {
       />
 
       <UserGroupDeleteModal
-        userGroups={externalUserGroups}
+        userGroups={userGroups.concat(externalUserGroups)}
         deleteUserGroup={selectedExternalUserGroup}
         onDelete={deleteExternalUserGroupById}
         isShow={isDeleteModalShown}
