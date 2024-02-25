@@ -203,9 +203,11 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
             <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </form>
-        <div className="form-text text-muted">
-          <small>{t('admin:user_group_management.delete_modal.option_explanation')}</small>
-        </div>
+        {actionName === 'public' && (
+          <div className="form-text text-muted">
+            <small>{t('admin:user_group_management.delete_modal.option_explanation')}</small>
+          </div>
+        )}
       </ModalFooter>
     </Modal>
   );
