@@ -31,8 +31,8 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 export type CodeMirrorEditorProps = {
   acceptedUploadFileType?: AcceptedUploadFileType,
   indentSize?: number,
-  editorTheme?: string,
-  editorKeymap?: string,
+  editorTheme?: EditorTheme,
+  editorKeymap?: KeyMapMode,
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
@@ -153,9 +153,9 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const [themeExtension, setThemeExtension] = useState<Extension | undefined>(undefined);
   useEffect(() => {
     const settingTheme = async(name?: EditorTheme) => {
-      setThemeExtension(await getEditorTheme(name ?? 'DefaultLight'));
+      setThemeExtension(await getEditorTheme(name ?? 'defaultlight'));
     };
-    settingTheme(editorTheme as EditorTheme);
+    settingTheme(editorTheme);
   }, [codeMirrorEditor, editorTheme, setThemeExtension]);
 
   useEffect(() => {
@@ -174,7 +174,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     const settingKeyMap = async(name?: KeyMapMode) => {
       setKeymapExtension(await getKeymap(name ?? 'default'));
     };
-    settingKeyMap(editorKeymap as KeyMapMode);
+    settingKeyMap(editorKeymap);
 
   }, [codeMirrorEditor, editorKeymap, setKeymapExtension]);
 

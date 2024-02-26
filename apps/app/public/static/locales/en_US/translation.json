@@ -538,6 +538,7 @@
     "search_again" : "Search again",
     "number_of_list_to_display" : "Display",
     "page_number_unit" : "pages",
+    "hit_number_unit" : "hit",
     "sort_axis": {
       "relationScore": "Sort by relevance",
       "createdAt": "Creation date",
