@@ -9,8 +9,6 @@ import type { GetItemProps } from '../interfaces/downshift';
 
 import { SearchMenuItem } from './SearchMenuItem';
 
-import styles from './SearchMethodMenuItem.module.scss';
-
 type Props = {
   activeIndex: number | null
   searchKeyword: string
@@ -34,7 +32,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
   const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
   return (
-    <div className={`${styles['search-method-menu-item']} search-method-menu-item `}>
+    <div>
       { shouldShowMenuItem && (
         <div data-testid="search-all-menu-item">
           <SearchMenuItem
@@ -46,7 +44,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
             <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
               <span className="text-break me-auto">{searchKeyword}</span>
-              <span className="method-range-explain">{t('search_method_menu_item.search_in_all')}</span>
+              <span className="small text-body-tertiary">{t('search_method_menu_item.search_in_all')}</span>
             </div>
           </SearchMenuItem>
         </div>
@@ -62,7 +60,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
             <code className="text-break">{currentPageName}</code>
             <span className="ms-md-2 text-break me-auto">{searchKeyword}</span>
-            <span className="method-range-explain">{t('search_method_menu_item.only_children_of_this_tree')}</span>
+            <span className="small text-body-tertiary">{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
         </SearchMenuItem>
       </div>
@@ -77,7 +75,7 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
           <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
             <span className="text-break me-auto">{`"${searchKeyword}"`}</span>
-            <span className="method-range-explain">{t('search_method_menu_item.exact_mutch')}</span>
+            <span className="small text-body-tertiary">{t('search_method_menu_item.exact_mutch')}</span>
           </div>
         </SearchMenuItem>
       ) }
