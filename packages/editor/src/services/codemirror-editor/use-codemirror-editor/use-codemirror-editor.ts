@@ -99,6 +99,8 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
         basicSetup: {
           defaultKeymap: false,
           dropCursor: false,
+          highlightActiveLine: false,
+          highlightActiveLineGutter: false,
           // Disabled react-codemirror history for Y.UndoManager
           history: false,
         },
