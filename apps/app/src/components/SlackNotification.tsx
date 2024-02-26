@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { FC } from 'react';
+import type { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
+import {
+  Form, FormGroup, Label, Input,
+  PopoverBody, PopoverHeader, UncontrolledPopover,
+} from 'reactstrap';
 
 import styles from './SlackNotification.module.scss';
 
@@ -18,6 +21,7 @@ type SlackNotificationProps = {
 export const SlackNotification: FC<SlackNotificationProps> = ({
   id, isSlackEnabled, slackChannels, onEnabledFlagChange, onChannelChange,
 }) => {
+
   const { t } = useTranslation();
   const idForSlackPopover = `${id}ForSlackPopover`;
 
@@ -39,7 +43,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
   return (
     <div className={`grw-slack-notification ${styles['grw-slack-notification']} w-100`}>
       <div className="grw-input-group-slack-notification input-group extended-setting">
-        <label className="form-label input-group-addon">
+        {/* <label className="form-label input-group-addon m-0">
           <div className="form-check form-switch form-switch-lg form-switch-slack">
             <input
               type="checkbox"
@@ -50,9 +54,16 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
             />
             <label className="form-label form-check-label align-center" htmlFor={id}></label>
           </div>
-        </label>
+        </label> */}
+        <Form>
+          <FormGroup switch>
+            <Input type="switch" role="switch">
+              <p>kohsei</p>
+            </Input>
+          </FormGroup>
+        </Form>
         <input
-          className="grw-form-control-slack-notification form-control align-top ps-0"
+          className="grw-form-control-slack-notification form-control align-top ps-0 h-100"
           id={idForSlackPopover}
           type="text"
           value={slackChannels}

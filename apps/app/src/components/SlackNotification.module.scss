@@ -39,6 +39,28 @@
   //     border: transparent;
   //   }
   // }
+  .form-switch-slack {
+
+    .form-check-input {
+
+    }
+
+    .form-check-input:not(:checked):not(:focus) {
+      background-color: #E4E7EA;
+      --bs-form-switch-bg: url('/images/icons/slack/slack-logo-off.svg');
+    }
+
+    .form-check-input:not(:checked) {
+      background-color: #E4E7EA;
+      --bs-form-switch-bg: url('/images/icons/slack/slack-logo-off.svg');
+    }
+
+    .form-check-input:checked {
+      background-color: #E7A9E8;
+      --bs-form-switch-bg: url('/images/icons/slack/slack-logo-on.svg');
+    }
+
+  }
 }
 //　TODO デザインの使用が確定して実装、本タスクのスコープ外
 // .grw-slack-notification-xd {
