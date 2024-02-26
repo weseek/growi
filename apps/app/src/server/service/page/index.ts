@@ -38,6 +38,7 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -68,7 +69,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath, collectAncestorPaths,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
   canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
