@@ -344,6 +344,11 @@
     }
   },
   "page_edit": {
+    "input_channels": "チャンネル名",
+    "theme": "テーマ",
+    "keymap": "キーマップ",
+    "indent": "インデント",
+    "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",

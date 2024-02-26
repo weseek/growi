@@ -301,6 +301,11 @@
 		}
 	},
 	"page_edit": {
+    "input_channels": "频道名",
+    "theme": "主题",
+    "keymap": "键表",
+    "indent": "缩进",
+    "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
