@@ -74,9 +74,12 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
-    if (initialData.revision?._id !== cachedData?.revision?._id) {
+    // mutate when the empty page has updated
+    if (cachedData?.revision == null && initialData.revision != null) {
       return true;
     }
+
+    return false;
   })();
 
   useEffect(() => {
