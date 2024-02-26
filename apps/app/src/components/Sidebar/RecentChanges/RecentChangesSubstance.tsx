@@ -170,7 +170,7 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
       <div className="d-flex align-items-center">
-        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ms-1`}>
+        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ms-3`}>
           <input
             id="recentChangesResize"
             className="form-check-input"
