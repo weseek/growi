@@ -92,7 +92,11 @@ export const PageTitleHeader: FC<Props> = (props) => {
         </h1>
       </div>
 
-      <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
+      <div className={`${isRenameInputShown ? 'invisible' : ''} d-flex align-items-center`}>
+        { currentPage.wip && (
+          <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
+        )}
+
         <CopyDropdown
           pageId={currentPage._id}
           pagePath={currentPage.path}

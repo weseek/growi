@@ -584,6 +584,8 @@ class PageService implements IPageService {
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
+
+    this.disableAncestorPagesTtl(newPagePath);
     return renamedPage;
   }
 
@@ -3811,6 +3813,13 @@ class PageService implements IPageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
+
+    // Make WIP
+    if (options.wip) {
+      const hasChildren = await Page.exists({ parent: page._id });
+      page.makeWip(hasChildren != null); // disableTtl = hasChildren != null
+    }
+
     // Save
     let savedPage = await page.save();
 
@@ -3849,6 +3858,8 @@ class PageService implements IPageService {
    * Used to run sub operation in create method
    */
   async createSubOperation(page, user, options: IOptionsForCreate, pageOpId: ObjectIdLike): Promise<void> {
+    await this.disableAncestorPagesTtl(page.path);
+
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(page._id, 1, false);
 
@@ -3931,6 +3942,18 @@ class PageService implements IPageService {
       },
   ): Promise<boolean> {
     return this.canProcessCreate(path, grantData, false);
+  }
+
+  private async disableAncestorPagesTtl(path: string): Promise<void> {
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
+
+    const ancestorPaths = collectAncestorPaths(path);
+    const ancestorPageIds = await Page.aggregate([
+      { $match: { path: { $in: ancestorPaths, $nin: ['/'] }, isEmpty: false } },
+      { $project: { _id: 1 } },
+    ]);
+
+    await Page.updateMany({ _id: { $in: ancestorPageIds } }, { $unset: { ttlTimestamp: true } });
   }
 
   /**
@@ -4122,6 +4145,10 @@ class PageService implements IPageService {
     // Clone page document
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
+
+    // If updated at least once, publish
+    pageData.publish();
+
 
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
@@ -4401,6 +4428,34 @@ class PageService implements IPageService {
         page.processData = processData;
       }
     });
+  }
+
+  async createTtlIndex(): Promise<void> {
+    const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
+    const collection = mongoose.connection.collection('pages');
+
+    try {
+      const targetField = 'ttlTimestamp_1';
+
+      const indexes = await collection.indexes();
+      const foundTargetField = indexes.find(i => i.name === targetField);
+
+      const isNotSpec = foundTargetField?.expireAfterSeconds == null || foundTargetField?.expireAfterSeconds !== wipPageExpirationSeconds;
+      const shoudDropIndex = foundTargetField != null && isNotSpec;
+      const shoudCreateIndex = foundTargetField == null || shoudDropIndex;
+
+      if (shoudDropIndex) {
+        await collection.dropIndex(targetField);
+      }
+
+      if (shoudCreateIndex) {
+        await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: wipPageExpirationSeconds });
+      }
+    }
+    catch (err) {
+      logger.error('Failed to create TTL Index', err);
+      throw err;
+    }
   }
 
 }

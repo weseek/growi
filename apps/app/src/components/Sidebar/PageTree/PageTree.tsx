@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
@@ -16,17 +16,22 @@ const PageTreeContent = dynamic(
 export const PageTree = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const [isWipPageShown, setIsWipPageShown] = useState(true);
+
   return (
     <div className="pt-4 pb-3 px-3">
       <div className="grw-sidebar-content-header d-flex">
         <h4 className="mb-0">{t('Page Tree')}</h4>
         <Suspense>
-          <PageTreeHeader />
+          <PageTreeHeader
+            isWipPageShown={isWipPageShown}
+            onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
+          />
         </Suspense>
       </div>
 
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <PageTreeContent />
+        <PageTreeContent isWipPageShown={isWipPageShown} />
       </Suspense>
     </div>
   );

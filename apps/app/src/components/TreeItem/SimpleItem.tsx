@@ -58,7 +58,12 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <div className="d-flex align-items-center">
+            <span className={`text-truncate ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            { page.wip && (
+              <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -90,7 +95,7 @@ type SimpleItemProps = TreeItemProps & {
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass, mainClassName,
   } = props;
 
@@ -165,6 +170,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
+    isWipPageShown,
     targetPathOrId,
     onRenamed,
     onClickDuplicateMenuItem,
@@ -178,6 +184,9 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const CustomNextComponents = props.customNextComponents;
 
+  if (!isWipPageShown && page.wip) {
+    return <></>;
+  }
 
   return (
     <div
