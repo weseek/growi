@@ -91,7 +91,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-lock" /></span>;
+    locked = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">lock</span></span>;
   }
 
   let bookmarkCount;
