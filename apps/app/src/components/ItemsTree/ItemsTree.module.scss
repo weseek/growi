@@ -3,6 +3,7 @@ $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 $grw-pagetree-item-padding-left: 10px;
 $grw-pagetree-item-container-height: 40px;
+$grw-pagetree-item-container-width: 40px;
 
 .grw-pagetree {
 
@@ -65,6 +66,7 @@ $grw-pagetree-item-container-height: 40px;
 
     .grw-pagetree-item-container {
       .grw-triangle-container {
+        width: $grw-pagetree-item-container-width;
         min-width: 35px;
         height: $grw-pagetree-item-container-height;
       }
