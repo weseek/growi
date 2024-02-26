@@ -59,6 +59,13 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     return new Xss(xssOption);
   })();
 
+  const validateOrigin = (value: string) => {
+    if (value === 'view' || value === 'editor') {
+      return true;
+    }
+    return false;
+  };
+
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
@@ -72,6 +79,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
+    body('origin').optional().custom(validateOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -120,7 +128,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
-      const { pageId, revisionId, body } = req.body;
+      const {
+        pageId, revisionId, body, origin,
+      } = req.body;
 
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;

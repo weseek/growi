@@ -27,6 +27,7 @@ export type IApiv3PageUpdateParams = IOptionsForUpdate & {
   revisionId: string,
   body: string,
 
+  origin?: 'view' | 'edit',
   isSlackEnabled?: boolean,
   slackChannels?: string,
 };
