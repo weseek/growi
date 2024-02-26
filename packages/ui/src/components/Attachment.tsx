@@ -22,7 +22,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
     }
   };
 
-  const formatIcon = (attachment.fileFormat.match(/image\/.+/i)) ? 'icon-picture' : 'icon-doc';
+  const formatIcon = (attachment.fileFormat.match(/image\/.+/i)) ? 'image' : 'description';
   const btnDownload = (isUserLoggedIn)
     ? (
       <a className="attachment-download" href={attachment.downloadPathProxied}>
@@ -49,7 +49,7 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
         <UserPicture user={attachment.creator} size="sm"></UserPicture>
       </span>
       <a className="me-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
-        <i className={formatIcon}></i> {attachment.originalName}
+        <span className="material-symbols-outlined ms-1">{formatIcon}</span> {attachment.originalName}
       </a>
       <span className="me-2">{fileType}</span>
       <span className="me-2">{createdAt}</span>
