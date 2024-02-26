@@ -215,6 +215,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         revisionId: currentRevisionId,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
+        origin: 'editor',
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),

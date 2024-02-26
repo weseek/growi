@@ -46,6 +46,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
+        origin: 'view',
       });
 
       opts?.onSaveSuccess?.();

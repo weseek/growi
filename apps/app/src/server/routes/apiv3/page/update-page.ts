@@ -132,6 +132,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
+      const ignoreLatestRevision = origin === 'editor';
+
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
       if (!isExist) {
@@ -140,7 +142,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
-      if (currentPage != null && !currentPage.isUpdatable(revisionId)) {
+      if (!ignoreLatestRevision && currentPage != null && !currentPage.isUpdatable(revisionId)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),

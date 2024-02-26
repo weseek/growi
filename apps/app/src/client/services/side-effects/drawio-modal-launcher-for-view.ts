@@ -47,6 +47,7 @@ export const useDrawioModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
+        origin: 'view',
       });
 
       opts?.onSaveSuccess?.();
