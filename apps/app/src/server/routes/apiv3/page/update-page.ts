@@ -59,8 +59,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     return new Xss(xssOption);
   })();
 
-  const validateOrigin = (origin: string) => {
-    if (origin === Origin.View || origin === Origin.Editor) {
+  const validateOrigin = (value: string) => {
+    if (value === Origin.View || value === Origin.Editor) {
       return true;
     }
     return false;
