@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
-import { ISearchConditions, ISearchConfigurations } from '~/stores/search';
+import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
 import SearchForm from '../SearchForm';
 
@@ -129,7 +129,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
                 className="btn"
                 onClick={() => setIsFileterOptionModalShown(true)}
               >
-                <i className="icon-equalizer"></i>
+                <span className="material-symbols-outlined">instant_mix</span>
               </button>
             </div>
             <div className="d-none d-lg-flex align-items-center ms-auto search-control-include-options">
