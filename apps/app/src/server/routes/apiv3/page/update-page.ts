@@ -8,7 +8,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import type { IApiv3PageUpdateParams } from '~/interfaces/apiv3';
+import { type IApiv3PageUpdateParams, Origin } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
@@ -59,8 +59,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     return new Xss(xssOption);
   })();
 
-  const validateOrigin = (value: string) => {
-    if (value === 'view' || value === 'editor') {
+  const validateOrigin = (origin: string) => {
+    if (origin === Origin.View || origin === Origin.Editor) {
       return true;
     }
     return false;

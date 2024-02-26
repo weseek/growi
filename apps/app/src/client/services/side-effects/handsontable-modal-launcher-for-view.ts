@@ -4,6 +4,7 @@ import type EventEmitter from 'events';
 
 import type MarkdownTable from '~/client/models/MarkdownTable';
 import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/Page/markdown-table-util-for-view';
+import { Origin } from '~/interfaces/apiv3';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -46,7 +47,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
-        origin: 'view',
+        origin: Origin.View,
       });
 
       opts?.onSaveSuccess?.();

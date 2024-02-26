@@ -5,6 +5,7 @@ import type EventEmitter from 'events';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
+import { Origin } from '~/interfaces/apiv3';
 import { useShareLinkId } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
@@ -47,7 +48,7 @@ export const useDrawioModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
-        origin: 'view',
+        origin: Origin.View,
       });
 
       opts?.onSaveSuccess?.();

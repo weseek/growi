@@ -65,6 +65,7 @@ import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
+import { Origin } from '~/interfaces/apiv3';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -215,7 +216,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         revisionId: currentRevisionId,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
-        origin: 'editor',
+        origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),

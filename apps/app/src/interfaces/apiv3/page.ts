@@ -22,12 +22,19 @@ export type IApiv3PageCreateResponse = {
   revision: IRevisionHasId,
 };
 
+export const Origin = {
+  View: 'view',
+  Editor: 'editor',
+} as const;
+
+export type Origin = typeof Origin[keyof typeof Origin];
+
 export type IApiv3PageUpdateParams = IOptionsForUpdate & {
   pageId: string,
   revisionId: string,
   body: string,
 
-  origin?: 'view' | 'editor',
+  origin?: Origin,
   isSlackEnabled?: boolean,
   slackChannels?: string,
 };
