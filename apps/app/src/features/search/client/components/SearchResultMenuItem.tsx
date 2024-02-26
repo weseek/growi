@@ -9,8 +9,6 @@ import type { GetItemProps } from '../interfaces/downshift';
 
 import { SearchMenuItem } from './SearchMenuItem';
 
-import styles from './SearchResultMenuItem.module.scss';
-
 type Props = {
   activeIndex: number | null,
   searchKeyword: string,
@@ -48,7 +46,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
   }
 
   return (
-    <div className={`search-result-menu-item ${styles['search-result-menu-item']}`}>
+    <div>
       {searchResult?.data
         .map((item, index) => (
           <SearchMenuItem
@@ -64,7 +62,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
               <PagePathLabel path={item.data.path} />
             </span>
 
-            <span className="foot-count ms-2 d-flex justify-content-center align-items-center">
+            <span className="text-body-tertiary ms-2 d-flex justify-content-center align-items-center">
               <span className="material-symbols-outlined fs-6 p-0">footprint</span>
               <span className="fs-6">{item.data.seenUsers.length}</span>
             </span>
