@@ -35,7 +35,7 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   const inputOptions = useMemo(() => {
     return getInputProps({
-      type: 'search',
+      type: 'text',
       placeholder: 'Search...',
       className: 'form-control',
       ref: inputRef,
