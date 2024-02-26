@@ -4,8 +4,6 @@ import React, {
 
 import type { GetInputProps } from '../interfaces/downshift';
 
-import styles from './SearchForm.module.scss';
-
 type Props = {
   searchKeyword: string,
   onChange?: (text: string) => void,
@@ -61,7 +59,7 @@ export const SearchForm = (props: Props): JSX.Element => {
       <input {...inputOptions} />
       <button
         type="button"
-        className="btn btn-neutral-secondary text-muted position-absolute top-0 end-0 h-100 border-0 lh-1"
+        className="btn btn-neutral-secondary text-muted position-absolute bottom-0 end-0 w-auto h-100 border-0"
         onClick={() => { onChange?.('') }}
       >
         <span className="material-symbols-outlined p-0">cancel</span>
