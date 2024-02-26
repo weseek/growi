@@ -4,7 +4,7 @@ import {
 
 import { indentUnit } from '@codemirror/language';
 import { Prec, Extension } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import { EditorView, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
@@ -33,6 +33,8 @@ export type CodeMirrorEditorProps = {
   indentSize?: number,
   editorTheme?: EditorTheme,
   editorKeymap?: KeyMapMode,
+  styleActiveLine?: boolean,
+  autoFormatMarkdownTable?: boolean,
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
@@ -50,6 +52,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     indentSize,
     editorTheme,
     editorKeymap,
+    styleActiveLine,
+    autoFormatMarkdownTable,
     onChange,
     onSave,
     onUpload,
@@ -75,6 +79,17 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
+
+  useEffect(() => {
+    if (styleActiveLine == null) {
+      return;
+    }
+    const extensions = (styleActiveLine) ? [[]] : [[highlightActiveLine(), highlightActiveLineGutter()]];
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extensions);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, styleActiveLine]);
 
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
