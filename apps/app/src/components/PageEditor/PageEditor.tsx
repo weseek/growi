@@ -133,13 +133,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
+  const currentRevisionId = currentPage?.revision?._id;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -194,12 +188,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [markdownToPreview, mutateIsConflict]);
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment(undefined);
-  }, [router]);
-
   useEffect(() => {
     if (socket == null) { return }
 
@@ -212,9 +200,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [socket, checkIsConflict]);
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (pageId == null || currentPagePath == null || currentRevisionId == null || grantData == null) {
+    if (pageId == null || currentRevisionId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
-        pageId, currentPagePath, currentRevisionId, grantData,
+        pageId, currentRevisionId, grantData,
       });
       throw new Error('Some materials to save are invalid');
     }
@@ -254,7 +242,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, grantData, pageId, currentPagePath, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
+  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const page = await save(opts);
@@ -359,7 +347,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsConflict(false);
 
     // set resolved markdown in editing markdown
-    const markdown = pageData?.revision.body ?? '';
+    const markdown = pageData?.revision?.body ?? '';
     mutateEditingMarkdown(markdown);
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);

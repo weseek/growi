@@ -102,7 +102,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span><i className="icon-lock ms-2" /></span>;
+    locked = <span className="material-symbols-outlined ms-2">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -236,7 +236,7 @@ export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps):
   const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
   return (
-    <div className="grw-recent-changes py-3">
+    <div className="grw-recent-changes">
       <ul className="list-group list-group-flush">
         <InfiniteScroll
           swrInifiniteResponse={swrInifinitexRecentlyUpdated}

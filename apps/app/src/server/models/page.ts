@@ -1064,6 +1064,7 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   // eslint-disable-next-line rulesdir/no-populate
   const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
 
+  assert(populatedPageDocument.revision != null);
   assert(isPopulated(populatedPageDocument.revision));
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;

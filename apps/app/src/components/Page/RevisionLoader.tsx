@@ -49,11 +49,11 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     if (error != null) {
       const isForbidden = error != null && error[0].code === 'forbidden-page';
       if (isForbidden) {
-        setMarkdown(`<i class="icon-exclamation p-1"></i>${t('not_allowed_to_see_this_page')}`);
+        setMarkdown(`<span className="material-symbols-outlined p-1">cancel</span>${t('not_allowed_to_see_this_page')}`);
       }
       else {
         const errorMessages = error.map((error) => {
-          return `<i class="icon-exclamation p-1"></i><span class="text-muted"><em>${error.message}</em></span>`;
+          return `<span className="material-symbols-outlined p-1">cancel</span><span class="text-muted"><em>${error.message}</em></span>`;
         });
         setMarkdown(errorMessages.join('\n'));
       }

@@ -32,10 +32,6 @@ import {
 } from '~/stores/ui';
 
 import { CreateTemplateModal } from '../CreateTemplateModal';
-import AttachmentIcon from '../Icons/AttachmentIcon';
-import HistoryIcon from '../Icons/HistoryIcon';
-import PresentationIcon from '../Icons/PresentationIcon';
-import ShareLinkIcon from '../Icons/ShareLinkIcon';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
@@ -80,9 +76,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         data-testid="open-presentation-modal-btn"
         className="grw-page-control-dropdown-item"
       >
-        <i className="icon-fw grw-page-control-dropdown-icon">
-          <PresentationIcon />
-        </i>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">jamboard_kiosk</span>
         {t('Presentation Mode')}
       </DropdownItem>
 
@@ -91,7 +85,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         onClick={() => exportAsMarkdown(pageId, revisionId, 'md')}
         className="grw-page-control-dropdown-item"
       >
-        <i className="icon-fw icon-cloud-download grw-page-control-dropdown-icon"></i>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">cloud_download</span>
         {t('export_bulk.export_page_markdown')}
       </DropdownItem>
 
@@ -107,9 +101,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         data-testid="open-page-accessories-modal-btn-with-history-tab"
         className="grw-page-control-dropdown-item"
       >
-        <span className="grw-page-control-dropdown-icon">
-          <HistoryIcon />
-        </span>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">history</span>
         {t('History')}
       </DropdownItem>
 
@@ -118,9 +110,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
         data-testid="open-page-accessories-modal-btn-with-attachment-data-tab"
         className="grw-page-control-dropdown-item"
       >
-        <span className="grw-page-control-dropdown-icon">
-          <AttachmentIcon />
-        </span>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">attachment</span>
         {t('attachment_data')}
       </DropdownItem>
 
@@ -131,9 +121,7 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
             data-testid="open-page-accessories-modal-btn-with-share-link-management-data-tab"
             className="grw-page-control-dropdown-item"
           >
-            <span className="grw-page-control-dropdown-icon">
-              <ShareLinkIcon />
-            </span>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">share</span>
             {t('share_links.share_link_management')}
           </DropdownItem>
         </NotAvailable>
@@ -163,7 +151,7 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
         className="grw-page-control-dropdown-item"
         data-testid="open-page-template-modal-btn"
       >
-        <i className="icon-fw icon-magic-wand grw-page-control-dropdown-icon"></i>
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">contract_edit</span>
         {t('template.option_label.create/edit')}
       </DropdownItem>
     </>

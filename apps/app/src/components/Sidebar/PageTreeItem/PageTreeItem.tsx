@@ -24,6 +24,7 @@ import {
 
 import { Ellipsis } from './Ellipsis';
 
+import styles from './PageTreeItem.module.scss';
 
 const logger = loggerFactory('growi:cli:Item');
 

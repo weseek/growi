@@ -125,7 +125,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     await mutateCurrentPageId(pageId);
     const updatedPage = await mutateCurrentPage();
 
-    if (updatedPage == null) { return }
+    if (updatedPage == null || updatedPage.revision == null) { return }
 
     // supress to mutate only when updated from built-in editor
     // and see: https://github.com/weseek/growi/pull/7118
