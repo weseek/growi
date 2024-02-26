@@ -84,7 +84,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     if (styleActiveLine == null) {
       return;
     }
-    const extensions = (styleActiveLine) ? [[]] : [[highlightActiveLine(), highlightActiveLineGutter()]];
+    const extensions = (styleActiveLine) ? [[highlightActiveLine(), highlightActiveLineGutter()]] : [[]];
 
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extensions);
     return cleanupFunction;
