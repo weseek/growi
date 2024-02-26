@@ -199,7 +199,7 @@ export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => 
   const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
   return (
-    <div className="grw-recent-changes py-3">
+    <div className="grw-recent-changes">
       <ul className="list-group list-group-flush">
         <InfiniteScroll
           swrInifiniteResponse={swrInifinitexRecentlyUpdated}
