@@ -3,7 +3,7 @@ import type {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import type { ValidationChain } from 'express-validator';
+import type { ValidationChain, CustomValidator } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
@@ -59,7 +59,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     return new Xss(xssOption);
   })();
 
-  const validateOrigin = (value: string) => {
+  const validateOrigin: CustomValidator = (value) => {
     if (value === Origin.View || value === Origin.Editor) {
       return true;
     }
