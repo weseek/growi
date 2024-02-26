@@ -61,7 +61,8 @@
     "no_notification": "You don't have any notificatios.",
     "all": "All",
     "unopend": "Unread",
-    "mark_all_as_read": "Mark all as read"
+    "mark_all_as_read": "Mark all as read",
+    "only_unread": "Only unread"
   },
 
   "personal_dropdown": {
@@ -145,6 +146,10 @@
 
   "not_found_page": {
     "page_not_exist": "This page does not exist."
+  },
+
+  "comment": {
+    "add_comment": "Add Comment"
   },
 
   "g2g_data_transfer": {

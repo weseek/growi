@@ -63,7 +63,8 @@
     "no_notification": "通知はありません",
     "all": "全て",
     "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
+    "mark_all_as_read": "全て既読にする",
+    "only_unread": "未読のみ"
   },
 
   "personal_dropdown": {
@@ -147,6 +148,10 @@
 
   "not_found_page": {
     "page_not_exist": "このページは存在しません。"
+  },
+
+  "comment": {
+    "add_comment": "コメントを追加"
   },
 
   "g2g_data_transfer": {
