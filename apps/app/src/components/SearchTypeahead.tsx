@@ -1,14 +1,17 @@
+import type {
+  FC, ForwardRefRenderFunction,
+  KeyboardEvent, MouseEvent,
+} from 'react';
 import React, {
-  FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
-  KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
+  forwardRef, useImperativeHandle, useCallback, useRef, useState, useEffect,
 } from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
-import { IFocusable } from '~/client/interfaces/focusable';
-import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { IPageWithSearchMeta } from '~/interfaces/search';
+import type { IFocusable } from '~/client/interfaces/focusable';
+import type { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
+import type { IPageWithSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
 
 
@@ -225,14 +228,14 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
       <AsyncTypeahead
         {...props}
         id="search-typeahead-asynctypeahead"
-        ref={typeaheadRef}
+        // ref={typeaheadRef}
         delay={400}
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         inputProps={{ autoComplete: 'off', ...(inputProps as any ?? {}) }}
         isLoading={isLoading}
-        labelKey={labelKey}
+        // labelKey={labelKey}
         defaultInputValue={keywordOnInit}
-        options={searchResult?.data} // Search result (Some page names)
+        options={searchResult?.data ?? []} // Search result (Some page names)
         align="left"
         open={isOpenAlways || undefined}
         renderMenu={renderMenu}
