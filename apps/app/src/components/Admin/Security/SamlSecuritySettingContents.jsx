@@ -471,7 +471,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           target="_blank"
                           rel="noreferer noreferrer"
                         >
-                          Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
+                          Apache Lucene - Query Parser Syntax <span className="growi-custom-icons">external_link</span>
                         </a>.
                       </p>
                       <div className="accordion" id="accordionId">

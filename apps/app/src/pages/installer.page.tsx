@@ -47,7 +47,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
         i18n: t('installer.tab'),
       },
       external_accounts: {
-        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        Icon: () => <span className="growi-custom-icons">external_link</span>,
         Content: DataTransferForm,
         i18n: tCommons('g2g_data_transfer.tab'),
       },
