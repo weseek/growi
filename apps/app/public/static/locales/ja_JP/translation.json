@@ -867,5 +867,8 @@
     "publish_page": "WIP を解除",
     "success_publish_page": "WIP を解除しました",
     "fail_publish_page": "WIP を解除できませんでした"
+  },
+  "sidebar_header": {
+    "show_wip_page": "WIP を表示"
   }
 }

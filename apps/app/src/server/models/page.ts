@@ -204,6 +204,18 @@ export class PageQueryBuilder {
     return this;
   }
 
+  addConditionToExcludeWipPage(): PageQueryBuilder {
+    this.query = this.query
+      .and({
+        $or: [
+          { wip: undefined },
+          { wip: false },
+        ],
+      });
+
+    return this;
+  }
+
   /**
    * generate the query to find the pages '{path}/*' and '{path}' self.
    * If top page, return without doing anything.
@@ -655,8 +667,13 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const baseQuery = this.find({});
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   if (!options.includeTrashed) {
     queryBuilder.addConditionToExcludeTrashed();
+  }
+
+  if (!options.includeWipPage) {
+    queryBuilder.addConditionToExcludeWipPage();
   }
 
   queryBuilder.addConditionToListWithDescendants(path, options);

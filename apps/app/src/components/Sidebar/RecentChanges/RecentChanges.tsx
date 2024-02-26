@@ -16,6 +16,7 @@ export const RecentChanges = (): JSX.Element => {
   const { t } = useTranslation();
 
   const [isSmall, setIsSmall] = useState(false);
+  const [isWipPageShown, setIsWipPageShown] = useState(true);
 
   return (
     // TODO : #139425 Match the space specification method to others
@@ -24,12 +25,17 @@ export const RecentChanges = (): JSX.Element => {
       <div className="grw-sidebar-content-header py-3 d-flex">
         <h3 className="mb-0 text-nowrap">{t('Recent Changes')}</h3>
         <Suspense>
-          <RecentChangesHeader isSmall={isSmall} onSizeChange={setIsSmall} />
+          <RecentChangesHeader
+            isSmall={isSmall}
+            onSizeChange={setIsSmall}
+            isWipPageShown={isWipPageShown}
+            onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
+          />
         </Suspense>
       </div>
 
       <Suspense fallback={<RecentChangesContentSkeleton />}>
-        <RecentChangesContent isSmall={isSmall} />
+        <RecentChangesContent isWipPageShown={isWipPageShown} isSmall={isSmall} />
       </Suspense>
     </div>
   );
