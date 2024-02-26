@@ -54,14 +54,14 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   return (
     <form
-      className={`${styles['search-form']}`}
+      className="w-100 position-relative"
       onSubmit={submitHandler}
       data-testid="search-form"
     >
       <input {...inputOptions} />
       <button
         type="button"
-        className="btn btn-neutral-secondary search-cancel text-muted"
+        className="btn btn-neutral-secondary text-muted position-absolute top-0 end-0 h-100 border-0 lh-1"
         onClick={() => { onChange?.('') }}
       >
         <span className="material-symbols-outlined p-0">cancel</span>
