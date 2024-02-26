@@ -27,7 +27,6 @@ export const UserInfo = (props: UserInfoProps): JSX.Element => {
         </h1>
         <div className="user-page-meta mt-3 mb-0">
           <span className="user-page-username me-4">
-            {/* TODO:Replace with Material Symbols Outlined */}
             <span className="user-page-username me-4"><span className="material-symbols-outlined">person</span>{author.username}</span>
           </span>
           <span className="user-page-email me-2">
