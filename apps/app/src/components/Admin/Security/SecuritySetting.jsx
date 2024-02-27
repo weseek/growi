@@ -303,7 +303,7 @@ class SecuritySetting extends React.Component {
                     <div className="pb-4">
                       <p className="card custom-card">
                         <span className="text-warning">
-                          <i className="icon-info"></i>
+                          <span className="material-symbols-outlined">info</span>
                           {/* eslint-disable-next-line react/no-danger */}
                           <span dangerouslySetInnerHTML={{ __html: t('security_settings.page_delete_rights_caution') }} />
                         </span>
@@ -526,7 +526,7 @@ class SecuritySetting extends React.Component {
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
             <p className="card custom-card">
               <span className="text-warning">
-                <i className="icon-info"></i> {t('security_settings.max_age_caution')}
+                <span className="material-symbols-outlined">info</span> {t('security_settings.max_age_caution')}
               </span>
             </p>
           </div>

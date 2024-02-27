@@ -1,6 +1,7 @@
 import React, { Suspense, useCallback } from 'react';
 
-import { getIdForRef, type IPageHasId, type IPageInfoForOperation } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { getIdForRef, type IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -70,7 +71,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 
 
 export type PageSideContentsProps = {
-  page: IPageHasId,
+  page: IPagePopulatedToShowRevision,
   isSharedUser?: boolean,
 }
 
@@ -91,9 +92,11 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   return (
     <>
       {/* Tags */}
-      <Suspense fallback={<PageTagsSkeleton />}>
-        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
-      </Suspense>
+      { page.revision != null && (
+        <Suspense fallback={<PageTagsSkeleton />}>
+          <Tags pageId={page._id} revisionId={page.revision._id} />
+        </Suspense>
+      ) }
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
         {/* Page list */}

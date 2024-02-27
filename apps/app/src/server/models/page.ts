@@ -8,7 +8,7 @@ import {
   GroupType, type HasObjectId,
 } from '@growi/core';
 import { isPopulated } from '@growi/core/dist/interfaces';
-import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Model, Document, AnyObject } from 'mongoose';
@@ -23,6 +23,7 @@ import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
+import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
@@ -139,6 +140,8 @@ const schema = new Schema<PageDocument, PageModel>({
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
+  wip: { type: Boolean },
+  ttlTimestamp: { type: Date, index: true },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -196,6 +199,18 @@ export class PageQueryBuilder {
         $or: [
           { status: null },
           { status: STATUS_PUBLISHED },
+        ],
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeWipPage(): PageQueryBuilder {
+    this.query = this.query
+      .and({
+        $or: [
+          { wip: undefined },
+          { wip: false },
         ],
       });
 
@@ -653,8 +668,13 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const baseQuery = this.find({});
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   if (!options.includeTrashed) {
     queryBuilder.addConditionToExcludeTrashed();
+  }
+
+  if (!options.includeWipPage) {
+    queryBuilder.addConditionToExcludeWipPage();
   }
 
   queryBuilder.addConditionToListWithDescendants(path, options);
@@ -1045,10 +1065,29 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   // eslint-disable-next-line rulesdir/no-populate
   const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
 
+  assert(populatedPageDocument.revision != null);
   assert(isPopulated(populatedPageDocument.revision));
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();
+};
+
+schema.methods.publish = function() {
+  this.wip = undefined;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.unpublish = function() {
+  this.wip = true;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.makeWip = function(disableTtl: boolean) {
+  this.wip = true;
+
+  if (!disableTtl) {
+    this.ttlTimestamp = new Date();
+  }
 };
 
 /*

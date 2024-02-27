@@ -181,7 +181,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
+              <span className="material-symbols-outlined p-1">more_vert</span>
             </DropdownToggle>
           </PageItemControl>
         </div>

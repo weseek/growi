@@ -1,9 +1,10 @@
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react';
 
 import dynamic from 'next/dynamic';
 import { useTranslation } from 'react-i18next';
 
 import ItemsTreeContentSkeleton from '../../ItemsTree/ItemsTreeContentSkeleton';
+
 import { PageTreeHeader } from './PageTreeSubstance';
 
 const PageTreeContent = dynamic(
@@ -15,19 +16,22 @@ const PageTreeContent = dynamic(
 export const PageTree = (): JSX.Element => {
   const { t } = useTranslation();
 
+  const [isWipPageShown, setIsWipPageShown] = useState(true);
+
   return (
-    // TODO : #139425 Match the space specification method to others
-    // ref.  https://redmine.weseek.co.jp/issues/139425
     <div className="pt-4 pb-3 px-3">
       <div className="grw-sidebar-content-header d-flex">
-        <h3 className="mb-0">{t('Page Tree')}</h3>
+        <h4 className="mb-0">{t('Page Tree')}</h4>
         <Suspense>
-          <PageTreeHeader />
+          <PageTreeHeader
+            isWipPageShown={isWipPageShown}
+            onWipPageShownChange={() => { setIsWipPageShown(!isWipPageShown) }}
+          />
         </Suspense>
       </div>
 
       <Suspense fallback={<ItemsTreeContentSkeleton />}>
-        <PageTreeContent />
+        <PageTreeContent isWipPageShown={isWipPageShown} />
       </Suspense>
     </div>
   );

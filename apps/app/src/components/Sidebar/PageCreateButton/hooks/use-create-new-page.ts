@@ -18,7 +18,7 @@ export const useCreateNewPage: UseCreateNewPage = () => {
     if (isLoadingPagePath) return;
 
     return createAndTransit(
-      { parentPath: currentPagePath, optionalParentPath: '/' },
+      { parentPath: currentPagePath, optionalParentPath: '/', wip: true },
     );
   }, [createAndTransit, currentPagePath, isLoadingPagePath]);
 
