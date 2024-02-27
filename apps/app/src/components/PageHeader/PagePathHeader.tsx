@@ -95,7 +95,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small`}
+      className={`d-flex col-6 small ${moduleClass}`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -114,12 +114,16 @@ export const PagePathHeader: FC<Props> = (props) => {
             />
           </div>
         ) }
-        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
+        <div
+          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          style={{ direction: 'rtl' }}
+        >
           <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+      {/* <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}> */}
+      <div className="page-path-header-buttons d-flex align-items-center">
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
