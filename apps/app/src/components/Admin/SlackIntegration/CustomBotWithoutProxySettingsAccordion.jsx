@@ -115,7 +115,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="me-3">3</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ms-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="me-3">3</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <span className="material-symbols-outlined ms-3 text-success">check</span>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           onUpdatedSecretToken={props.onUpdatedSecretToken}
@@ -138,7 +138,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="me-3">5</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="me-3">5</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <p className="text-center text-warning">

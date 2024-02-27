@@ -391,7 +391,7 @@ const WithProxyAccordions = (props) => {
               <>
                 <span className="me-3">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
-                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}
+                {value.title === 'test_connection' && isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}
               </>
             )}
             key={key}
