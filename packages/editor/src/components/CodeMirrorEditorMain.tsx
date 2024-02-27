@@ -25,7 +25,7 @@ type Props = CodeMirrorEditorProps & {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    userName, pageId, initialValue, onOpenEditor, onSave, ...codeMirrorEditorProps
+    userName, pageId, initialValue, onOpenEditor, onSave, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -66,7 +66,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onSave={onSave}
-      {...codeMirrorEditorProps}
+      {...otherProps}
     />
   );
 };
