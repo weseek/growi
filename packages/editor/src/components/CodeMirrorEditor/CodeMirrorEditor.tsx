@@ -1,10 +1,12 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useState,
+  forwardRef, useMemo, useRef, useEffect, useState, useCallback,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
 import { Prec, Extension } from '@codemirror/state';
-import { EditorView, highlightActiveLine, highlightActiveLineGutter } from '@codemirror/view';
+import {
+  keymap, type Command, EditorView, highlightActiveLine, highlightActiveLineGutter,
+} from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
@@ -12,9 +14,11 @@ import { GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay, getEditorTheme, type EditorTheme, getKeymap, type KeyMapMode,
 } from '../../services';
+import { insertNewlineContinueMarkup } from '../../services/list-util/insert-newline-continue-markup';
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
+import { insertNewRowToMarkdownTable, isInTable } from '../../services/table-util/insert-new-row-to-table-markdown';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -90,6 +94,27 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, styleActiveLine]);
+
+  const onPressEnter: Command = useCallback((editor) => {
+    if (isInTable(editor) && autoFormatMarkdownTable) {
+      insertNewRowToMarkdownTable(editor);
+      return true;
+    }
+    insertNewlineContinueMarkup(editor);
+    return true;
+  }, [autoFormatMarkdownTable]);
+
+
+  useEffect(() => {
+
+    const extension = keymap.of([
+      { key: 'Enter', run: onPressEnter },
+    ]);
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions?.(extension);
+    return cleanupFunction;
+
+  }, [codeMirrorEditor, onPressEnter]);
 
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
