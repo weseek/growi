@@ -124,7 +124,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         name="actionName"
         className="form-control"
         placeholder="select"
-        value={actionName?.toString() ?? ''}
+        value={actionName ?? ''}
         onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
