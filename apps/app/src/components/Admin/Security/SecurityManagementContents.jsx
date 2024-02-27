@@ -81,7 +81,7 @@ const SecurityManagementContents = () => {
             href="/admin/markdown/#preventXSS"
             style={{ fontSize: 'large' }}
           >
-            <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
+            <span className="material-symbols-outlined me-1">login</span> {t('security_settings.xss_prevent_setting_link')}
           </Link>
         </div>
       </div>

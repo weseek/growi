@@ -149,15 +149,16 @@ const UserManagement = (props: UserManagementProps) => {
               {
                 adminUsersContainer.state.searchText.length > 0
                   ? (
-                    <i
-                      className="icon-close search-clear"
+                    <span
+                      className="material-symbols-outlined me-1 search-clear"
                       onClick={async() => {
                         await adminUsersContainer.clearSearchText();
                         if (inputRef.current != null) {
                           inputRef.current.value = '';
                         }
                       }}
-                    />
+                    >cancel
+                    </span>
                   )
                   : ''
               }

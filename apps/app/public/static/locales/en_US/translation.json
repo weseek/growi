@@ -826,5 +826,17 @@
   },
   "page_select_modal": {
     "select_page_location": "Select page location"
+  },
+  "wip_page": {
+    "save_as_wip": "Save as WIP (Currently drafting)",
+    "success_save_as_wip": "Successfully saved as a WIP page",
+    "fail_save_as_wip": "Failed to save as a WIP page",
+    "alert": "This page is a work in progress",
+    "publish_page": "Publish page",
+    "success_publish_page": "Page has been published",
+    "fail_publish_page": "Failed to publish the Page"
+  },
+  "sidebar_header": {
+    "show_wip_page": "Show WIP"
   }
 }

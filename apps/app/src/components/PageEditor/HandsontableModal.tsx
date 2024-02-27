@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
+import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse,
