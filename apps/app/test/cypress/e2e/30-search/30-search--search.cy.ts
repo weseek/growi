@@ -123,7 +123,7 @@ context('Search all pages', () => {
     cy.waitUntil(() => {
       // do
       cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
-      cy.get('@tagLabels').find('a.grw-tag').as('btn').click();
+      cy.get('@tagLabels').find('button').as('btn').click();
       // wait until
       return cy.get('body').within(() => {
         return Cypress.$('.modal.show').is(':visible');
@@ -180,7 +180,7 @@ context('Search all pages', () => {
     cy.waitUntil(() => {
       // do
       cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
-      cy.get('@tagLabels').find('a.grw-tag').contains(tag).as('tag').click();
+      cy.get('@tagLabels').find('a').contains(tag).as('tag').click();
       // wait until
       return cy.getByTestid('search-result-base').then($elem => $elem.is(':visible'));
     });
