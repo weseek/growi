@@ -26,7 +26,6 @@ import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { EditorConfig } from '~/interfaces/editor-settings';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
@@ -40,7 +39,8 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsContainerFluid, useIsNotCreatable,
+  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -159,7 +159,8 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
-  editorConfig: EditorConfig,
+  isUploadEnabled: boolean,
+  isUploadAllFileAllowed: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -186,7 +187,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // commons
-  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -220,8 +220,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadAllFileAllowed(props.editorConfig.upload.isUploadAllFileAllowed);
-  useIsUploadEnabled(props.editorConfig.upload.isUploadEnabled);
+  useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
@@ -260,7 +260,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     if (currentPageId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
+        mutateEditingMarkdown(pageData?.revision?.body);
       };
 
       // If skipSSR is true, use the API to retrieve page data.
@@ -562,12 +562,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  props.editorConfig = {
-    upload: {
-      isUploadAllFileAllowed: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadEnabled: crowi.fileUploadService.getIsUploadable(),
-    },
-  };
+  props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
+  props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 

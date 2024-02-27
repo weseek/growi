@@ -22,6 +22,8 @@ import loggerFactory from '~/utils/logger';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
+import { publishPageHandlersFactory } from './publish-page';
+import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
 
@@ -678,11 +680,6 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { grant, userRelatedGrantedGroups } = req.body;
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136137
-    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     const Page = crowi.model('Page');
 
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
@@ -924,6 +921,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(err, 500);
       }
     });
+
+
+  router.put('/:pageId/publish', publishPageHandlersFactory(crowi));
+
+  router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   return router;
 };

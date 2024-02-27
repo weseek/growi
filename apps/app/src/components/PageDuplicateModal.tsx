@@ -239,8 +239,8 @@ const PageDuplicateModal = (): JSX.Element => {
             onChange={() => setOnlyDuplicateUserRelatedResources(!onlyDuplicateUserRelatedResources)}
           />
           <label className="form-label form-check-label" htmlFor="cbOnlyDuplicateUserRelatedResources">
-            { t('modal_duplicate.label.Only duplicate user related resources') }
-            <p className="form-text text-muted my-0">{ t('modal_duplicate.help.only_user_related_resources') }</p>
+            { t('modal_duplicate.label.Only duplicate user related pages') }
+            <p className="form-text text-muted my-0">{ t('modal_duplicate.help.only_inherit_user_related_groups') }</p>
           </label>
         </div>
         <div className="mt-3">

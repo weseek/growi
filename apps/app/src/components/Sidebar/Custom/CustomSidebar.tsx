@@ -18,12 +18,12 @@ export const CustomSidebar = (): JSX.Element => {
   const { mutate, isLoading } = useSWRxPageByPath('/Sidebar');
 
   return (
-    <div className="px-3">
-      <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0">
+    <div className="pt-4 pb-3 px-3">
+      <div className="grw-sidebar-content-header d-flex">
+        <h4 className="mb-0">
           {t('CustomSidebar')}
           { !isLoading && <Link href="/Sidebar#edit" className="h6 ms-2"><span className="material-symbols-outlined">edit</span></Link> }
-        </h3>
+        </h4>
         { !isLoading && <SidebarHeaderReloadButton onClick={() => mutate()} /> }
       </div>
 

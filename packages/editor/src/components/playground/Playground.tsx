@@ -2,9 +2,11 @@ import {
   useCallback, useEffect, useState,
 } from 'react';
 
+import { AcceptedUploadFileType } from '@growi/core';
 import { toast } from 'react-toastify';
 
-import { AcceptedUploadFileType, GlobalCodeMirrorEditorKey } from '../../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorTheme, KeyMapMode } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
@@ -14,8 +16,8 @@ import { Preview } from './Preview';
 export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
-  const [editorTheme, setEditorTheme] = useState('');
-  const [editorKeymap, setEditorKeymap] = useState('');
+  const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
+  const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -62,7 +64,7 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
-            acceptedFileType={AcceptedUploadFileType.ALL}
+            acceptedUploadFileType={AcceptedUploadFileType.ALL}
             editorTheme={editorTheme}
             editorKeymap={editorKeymap}
           />

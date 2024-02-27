@@ -1,5 +1,6 @@
+import type { ForwardRefRenderFunction } from 'react';
 import React, {
-  useState, useRef, useImperativeHandle, useCallback, ForwardRefRenderFunction, forwardRef,
+  useState, useRef, useImperativeHandle, useCallback, forwardRef,
   memo,
   useEffect,
 } from 'react';
@@ -11,14 +12,14 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IEditorSettings } from '~/interfaces/editor-settings';
+import type { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
 
-import { IEditorMethods } from '../../interfaces/editor-methods';
+import type { IEditorMethods } from '../../interfaces/editor-methods';
 
-import AbstractEditor from './AbstractEditor';
+import type AbstractEditor from './AbstractEditor';
 import { Cheatsheet } from './Cheatsheet';
 // import CodeMirrorEditor from './CodeMirrorEditor';
 import pasteHelper from './PasteHelper';
@@ -249,7 +250,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
     return (
       <Modal isOpen={isCheatsheetModalShown} toggle={hideCheatsheetModal} className={`modal-gfm-cheatsheet ${styles['modal-gfm-cheatsheet']}`} size="lg">
         <ModalHeader tag="h4" toggle={hideCheatsheetModal} className="bg-primary text-light">
-          <i className="icon-fw icon-question" />Markdown help
+          <span className="material-symbols-outlined me-1">help</span>Markdown help
         </ModalHeader>
         <ModalBody>
           <Cheatsheet />
@@ -342,7 +343,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
               className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
-              <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+              <span className="material-symbols-outlined" aria-hidden="true">attachment</span>&nbsp;
               Attach files
               <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;

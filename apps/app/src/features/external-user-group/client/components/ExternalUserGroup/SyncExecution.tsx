@@ -1,6 +1,5 @@
-import {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -8,7 +7,7 @@ import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
-import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
+import type { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useAdminSocket } from '~/stores/socket-io';
 
@@ -153,7 +152,7 @@ export const SyncExecution = ({
         toggle={() => setIsAlertModalOpen(false)}
       >
         <ModalHeader tag="h4" toggle={() => setIsAlertModalOpen(false)} className="bg-purple text-light">
-          <i className="icon-fw icon-exclamation align-middle"></i>
+          <span className="material-symbols-outlined me-1 align-middle">error</span>
           <span className="align-middle">{t('external_user_group.confirmation_before_sync')}</span>
         </ModalHeader>
         <ModalBody>
