@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import DropdownToggle from 'reactstrap/esm/DropdownToggle';
@@ -15,7 +14,6 @@ import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
 import UserPictureList from '../Common/UserPictureList';
 
 import styles from './BookmarkButtons.module.scss';
-import popoverStyles from './user-list-popover.module.scss';
 
 interface Props {
   pageId: string,
@@ -94,7 +92,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
         {bookmarkCount}
       </button>
       <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
-        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
+        <PopoverBody className="user-list-popover">
           { isLoadingBookmarkedUsers && <i className="fa fa-spinner fa-pulse"></i> }
           { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
             <>
