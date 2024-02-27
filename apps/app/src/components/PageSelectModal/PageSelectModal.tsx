@@ -31,8 +31,7 @@ const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   return (
     <div
-      id="grw-page-select-modal-wrapper"
-      className={`${styles['tree-for-modal-wrapper']} overflow-y-scroll`}
+      className={`grw-page-select-modal-wrapper ${styles['tree-for-modal-wrapper']}`}
       style={{ height: '50vh' }}
     >
       <StickyStretchableScroller
