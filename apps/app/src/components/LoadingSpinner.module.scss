@@ -1,37 +1,38 @@
-// .spinner {
-//   animation: animation-rotate 750ms infinite linear;
-// }
-
-// @keyframes animation-rotate {
-//   100% {
-//     transform: rotate(360deg);
-//     transform: rotate(360deg);
-//   }
-// }
-
-/** refs: https://loading.io/css/ */
-.lds-dual-ring {
-  display: inline-block;
-  width: 30px;
-  height: 30px;
+.spinner {
+  animation: animation-rotate 750ms infinite linear;
 }
 
-.lds-dual-ring:after {
-  display: block;
-  width: 24px;
-  height: 24px;
-  margin: 2px;
-  content: ' ';
-  border: 2px solid #fff;
-  border-color: #fff transparent #fff transparent;
-  border-radius: 50%;
-  animation: lds-dual-ring 1.2s linear infinite;
-}
-@keyframes lds-dual-ring {
-  0% {
-    transform: rotate(0deg);
-  }
+@keyframes animation-rotate {
   100% {
+    transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes animation-rotate {
+  100% {
+    -o-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-ms-keyframes animation-rotate {
+  100% {
+    -ms-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes animation-rotate {
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-moz-keyframes animation-rotate {
+  100% {
+    -moz-transform: rotate(360deg);
     transform: rotate(360deg);
   }
 }
