@@ -10,6 +10,7 @@ import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
 import type { IUserGroupService } from '../../../src/server/service/user-group';
 import { getInstance } from '../setup-crowi';
+import { PageActionOnGroupDelete } from '../../../src/interfaces/user-group';
 
 describe('UserGroupService', () => {
   let crowi;
@@ -383,7 +384,7 @@ describe('UserGroupService', () => {
         ]));
         expect(normalizeGrantedGroups(cannotBePublicized?.grantedGroups)?.length).toBe(2);
 
-        await userGroupService.removeCompletelyByRootGroupId(groupId13, 'public', user1);
+        await userGroupService.removeCompletelyByRootGroupId(groupId13, PageActionOnGroupDelete.publicize, user1);
 
         const userGroup13AfterDeleteProcess = await UserGroup.findOne({ _id: groupId13 });
         const userGroup14AfterDeleteProcess = await UserGroup.findOne({ _id: groupId14 });
