@@ -19,8 +19,6 @@ import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
-import styles from './PageSelectModal.module.scss';
-
 const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   const { children } = props;
@@ -30,10 +28,7 @@ const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
   }, []);
 
   return (
-    <div
-      className={`grw-page-select-modal-wrapper ${styles['tree-for-modal-wrapper']}`}
-      style={{ height: '50vh' }}
-    >
+    <div className="grw-page-select-modal-wrapper">
       <StickyStretchableScroller
         stickyElemSelector=".modal-body"
         calcViewHeight={calcViewHeight}
