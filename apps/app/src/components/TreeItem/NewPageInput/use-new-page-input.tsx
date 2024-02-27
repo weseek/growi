@@ -4,6 +4,7 @@ import { createPage } from '~/client/services/page-operation';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
+import { shouldCreateWipPage } from '../../../utils/should-create-wip-page';
 import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
@@ -73,6 +74,7 @@ export const useNewPageInput = (): UseNewPageInput => {
         // keep grant info undefined to inherit from parent
         grant: undefined,
         grantUserGroupIds: undefined,
+        wip: shouldCreateWipPage(newPagePath),
       });
 
       mutateChildren();

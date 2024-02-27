@@ -119,7 +119,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
 
-  const page = pageWithMeta?.data;
+  const page = pageWithMeta.data;
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
@@ -183,7 +183,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       return <></>;
     }
 
-    const revisionId = getIdForRef(page.revision);
+    const revisionId = page.revision != null ? getIdForRef(page.revision) : null;
+    const additionalMenuItemRenderer = revisionId != null
+      ? props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />
+      : undefined;
 
     return (
       <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
@@ -194,7 +197,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
           expandContentWidth={shouldExpandContent}
           showPageControlDropdown={showPageControlDropdown}
           forceHideMenuItems={forceHideMenuItems}
-          additionalMenuItemRenderer={props => <AdditionalMenuItems {...props} pageId={page._id} revisionId={revisionId} />}
+          additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickDuplicateMenuItem={duplicateItemClickedHandler}
           onClickRenameMenuItem={renameItemClickedHandler}
           onClickDeleteMenuItem={deleteItemClickedHandler}
@@ -204,8 +207,6 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     );
   }, [page, shouldExpandContent, showPageControlDropdown, forceHideMenuItems,
       duplicateItemClickedHandler, renameItemClickedHandler, deleteItemClickedHandler, switchContentWidthHandler]);
-
-  const isRenderable = page != null && rendererOptions != null;
 
   const fluidLayoutClass = shouldExpandContent ? _fluidLayoutClass : '';
 
@@ -217,25 +218,23 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
     >
       <RightComponent />
 
-      { isRenderable && (
-        <div className="container-lg grw-container-convertible pt-2 pb-2">
-          <PagePathNav pageId={page._id} pagePath={page.path} formerLinkClassName="small" latterLinkClassName="fs-3" />
-        </div>
-      ) }
+      <div className="container-lg grw-container-convertible pt-2 pb-2">
+        <PagePathNav pageId={page._id} pagePath={page.path} formerLinkClassName="small" latterLinkClassName="fs-3" />
+      </div>
 
       <div
         id="search-result-content-body-container"
         ref={scrollElementRef}
         className="search-result-content-body-container container-lg grw-container-convertible overflow-y-scroll"
       >
-        { isRenderable && (
+        { page.revision != null && rendererOptions != null && (
           <RevisionLoader
             rendererOptions={rendererOptions}
             pageId={page._id}
             revisionId={page.revision}
           />
         )}
-        { isRenderable && (
+        { page.revision != null && (
           <PageComment
             rendererOptions={rendererOptions}
             pageId={page._id}
@@ -245,11 +244,10 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
             isReadOnly
           />
         )}
-        { isRenderable && (
-          <PageContentFooter
-            page={page}
-          />
-        )}
+
+        <PageContentFooter
+          page={page}
+        />
       </div>
     </div>
   );

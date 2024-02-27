@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';

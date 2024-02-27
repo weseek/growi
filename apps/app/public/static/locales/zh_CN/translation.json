@@ -541,6 +541,7 @@
     "search_again" : "再次搜索",
     "number_of_list_to_display" : "显示器的数量",
     "page_number_unit" : "例",
+    "hit_number_unit" : "例",
     "sort_axis": {
       "relationScore": "按相关性排序",
       "createdAt": "按创建日期排序",
@@ -828,5 +829,17 @@
   },
   "page_select_modal": {
     "select_page_location": "选择页面位置"
+  },
+  "wip_page": {
+    "save_as_wip": "保存为 WIP（书面）",
+    "success_save_as_wip": "成功保存为 WIP 页面",
+    "fail_save_as_wip": "保存为 WIP 页失败",
+    "alert": "本页面正在制作中",
+    "publish_page": "发布 WIP",
+    "success_publish_page": "WIP 已停用",
+    "fail_publish_page": "无法停用 WIP"
+  },
+  "sidebar_header": {
+    "show_wip_page": "显示 WIP"
   }
 }
