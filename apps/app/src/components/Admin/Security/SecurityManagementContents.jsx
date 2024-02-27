@@ -30,19 +30,19 @@ const SecurityManagementContents = () => {
   const navTabMapping = useMemo(() => {
     return {
       passport_local: {
-        Icon: () => <i className="fa fa-users" />,
+        Icon: () => <span className="material-symbols-outlined">groups</span>,
         i18n: 'ID/Pass',
       },
       passport_ldap: {
-        Icon: () => <i className="fa fa-sitemap" />,
+        Icon: () => <span className="material-symbols-outlined">map</span>,
         i18n: 'LDAP',
       },
       passport_saml: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'SAML',
       },
       passport_oidc: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,,
         i18n: 'OIDC',
       },
       passport_google: {
