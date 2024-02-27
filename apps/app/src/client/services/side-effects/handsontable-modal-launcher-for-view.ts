@@ -33,7 +33,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { open: openHandsontableModal } = useHandsontableModal();
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || shareLinkId != null) {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
     }
 
@@ -64,6 +64,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
     }
 
     const handler = (bol: number, eol: number) => {
+      if (currentPage.revision == null) return;
+
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
       openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));

@@ -91,6 +91,7 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   isReadOnlyUser: boolean
+  isWipPageShown?: boolean
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
@@ -103,7 +104,7 @@ type ItemsTreeProps = {
  */
 export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem, onClickTreeItem,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, isWipPageShown, CustomTreeItem, onClickTreeItem,
   } = props;
 
   const { t } = useTranslation();
@@ -274,13 +275,14 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-4`} ref={rootElemRef}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
           isOpen
           isEnableActions={isEnableActions}
+          isWipPageShown={isWipPageShown}
           isReadOnlyUser={isReadOnlyUser}
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}

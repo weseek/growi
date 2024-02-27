@@ -68,8 +68,8 @@ export const ReplyComments = (props: ReplycommentsProps): JSX.Element => {
   }
 
   const areThereHiddenReplies = (replyList.length > 2);
-  const toggleButtonIconName = isOlderRepliesShown ? 'icon-arrow-up' : 'icon-options-vertical';
-  const toggleButtonIcon = <i className={`icon-fw ${toggleButtonIconName}`}></i>;
+  const toggleButtonIconName = isOlderRepliesShown ? 'expand_less' : 'more_vert';
+  const toggleButtonIcon = <span className="material-icons-outlined me-1">{toggleButtonIconName}</span>;
   const toggleButtonLabel = isOlderRepliesShown ? '' : 'more';
   const shownReplies = replyList.slice(replyList.length - 2, replyList.length);
   const hiddenReplies = replyList.slice(0, replyList.length - 2);

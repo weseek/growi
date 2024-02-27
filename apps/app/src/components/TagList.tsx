@@ -53,7 +53,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
   }, [pushState]);
 
   if (!isTagExist) {
-    return <h3>{ t('You have no tag, You can set tags on pages') }</h3>;
+    return <h6>{ t('You have no tag, You can set tags on pages') }</h6>;
   }
 
   return (
