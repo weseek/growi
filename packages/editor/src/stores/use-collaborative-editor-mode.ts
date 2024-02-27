@@ -24,7 +24,7 @@ export const useCollaborativeEditorMode = (
     pageId?: string,
     initialValue?: string,
     onOpenEditor?: (markdown: string) => void,
-    onUserList?: (userList: IUserHasId[]) => void,
+    onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -96,11 +96,11 @@ export const useCollaborativeEditorMode = (
 
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
     socketIOProvider.awareness.on('update', (update: any) => {
-      if (onUserList) {
+      if (onEditorsUpdated) {
         const { added, removed } = update;
         if (added.length > 0 || removed.length > 0) {
           const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
-          onUserList(userList);
+          onEditorsUpdated(userList);
         }
       }
     });
@@ -137,7 +137,7 @@ export const useCollaborativeEditorMode = (
 
   useEffect(cleanupYDocAndProvider, [cPageId, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
-  useEffect(setupProvider, [initialValue, onUserList, pageId, provider, socket, user, ydoc]);
+  useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
   useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 };
