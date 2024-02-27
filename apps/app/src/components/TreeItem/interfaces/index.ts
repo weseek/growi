@@ -24,6 +24,7 @@ export type TreeItemToolProps = TreeItemBaseProps;
 export type TreeItemProps = TreeItemBaseProps & {
   targetPathOrId?: Nullable<string>,
   isOpen?: boolean,
+  isWipPageShown?: boolean,
   itemClass?: React.FunctionComponent<TreeItemProps>,
   mainClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
