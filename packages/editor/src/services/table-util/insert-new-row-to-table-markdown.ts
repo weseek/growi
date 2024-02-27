@@ -83,37 +83,6 @@ export const mergeMarkdownTable = (mdtableList: MarkdownTable[]): MarkdownTable 
   return (new MarkdownTable(newTable, options));
 };
 
-export const replaceFocusedMarkdownTableWithEditor = (
-    editor: EditorView, table: MarkdownTable,
-): void => {
-  const curPos = getCurPos(editor);
-  const botPos = getBot(editor);
-  const eotPos = getEot(editor);
-
-  const curLine = editor.state.doc.lineAt(curPos).number;
-  const nextLine = curLine + 1;
-
-  const eolPos = editor.state.doc.line(curLine).to;
-  const strToEol = editor.state.sliceDoc(curPos, eolPos);
-
-  const isLastRow = getStrToEot(editor) === strToEol;
-
-  editor.dispatch({
-    changes: {
-      from: botPos,
-      to: eotPos,
-      insert: table.toString(),
-    },
-  });
-
-
-  const nextCurPos = isLastRow ? editor.state.doc.line(curLine).from + 2 : editor.state.doc.line(nextLine).from + 2;
-
-  editor.dispatch({
-    selection: { anchor: nextCurPos },
-  });
-};
-
 const addRow = (editor: EditorView) => {
   const strFromBot = getStrFromBot(editor);
 
@@ -129,7 +98,27 @@ const addRow = (editor: EditorView) => {
     table = mergeMarkdownTable([table, tableBottom]);
   }
 
-  replaceFocusedMarkdownTableWithEditor(editor, table);
+  const curPos = getCurPos(editor);
+
+  const curLine = editor.state.doc.lineAt(curPos).number;
+  const nextLine = curLine + 1;
+
+  const botPos = getBot(editor);
+  const eotPos = getEot(editor);
+
+  editor.dispatch({
+    changes: {
+      from: botPos,
+      to: eotPos,
+      insert: table.toString(),
+    },
+  });
+
+  const nextCurPos = editor.state.doc.line(nextLine).from + 2;
+
+  editor.dispatch({
+    selection: { anchor: nextCurPos },
+  });
 };
 
 const removeRow = (editor: EditorView) => {
@@ -158,7 +147,32 @@ const removeRow = (editor: EditorView) => {
 const reformTable = (editor: EditorView) => {
   const tableStr = getStrFromBot(editor) + getStrToEot(editor);
   const table = MarkdownTable.fromMarkdownString(tableStr);
-  replaceFocusedMarkdownTableWithEditor(editor, table);
+
+  const curPos = getCurPos(editor);
+  const botPos = getBot(editor);
+  const eotPos = getEot(editor);
+
+  const curLine = editor.state.doc.lineAt(curPos).number;
+  const nextLine = curLine + 1;
+
+  const eolPos = editor.state.doc.line(curLine).to;
+  const strToEol = editor.state.sliceDoc(curPos, eolPos);
+
+  const isLastRow = getStrToEot(editor) === strToEol;
+
+  editor.dispatch({
+    changes: {
+      from: botPos,
+      to: eotPos,
+      insert: table.toString(),
+    },
+  });
+
+  const nextCurPos = isLastRow ? editor.state.doc.line(curLine).to : editor.state.doc.line(nextLine).from + 2;
+
+  editor.dispatch({
+    selection: { anchor: nextCurPos },
+  });
 };
 
 export const insertNewRowToMarkdownTable = (editor: EditorView): void => {
