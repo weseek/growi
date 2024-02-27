@@ -12,11 +12,9 @@ export const Bookmarks = () : JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
 
   return (
-    <>
-      {/* TODO : #139425 Match the space specification method to others */}
-      {/* ref.  https://redmine.weseek.co.jp/issues/139425 */}
-      <div className="grw-sidebar-content-header p-3">
-        <h3 className="mb-0">{t('Bookmarks')}</h3>
+    <div className="px-3">
+      <div className="grw-sidebar-content-header">
+        <h4 className="mb-0 py-4">{t('Bookmarks')}</h4>
       </div>
       {isGuestUser ? (
         <h4 className="ps-3">
@@ -25,6 +23,6 @@ export const Bookmarks = () : JSX.Element => {
       ) : (
         <BookmarkContents />
       )}
-    </>
+    </div>
   );
 };

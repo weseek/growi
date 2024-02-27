@@ -33,7 +33,7 @@ const PageAttachment = (): JSX.Element => {
   const { data: dataAttachments, remove } = useSWRxAttachments(pageId, pageNumber);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
   const { data: currentPage } = useSWRxCurrentPage();
-  const markdown = currentPage?.revision.body;
+  const markdown = currentPage?.revision?.body;
 
   // Custom hooks
   const inUseAttachmentsMap: { [id: string]: boolean } | undefined = useMemo(() => {

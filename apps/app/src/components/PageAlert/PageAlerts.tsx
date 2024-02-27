@@ -8,6 +8,7 @@ import { OldRevisionAlert } from './OldRevisionAlert';
 import { PageGrantAlert } from './PageGrantAlert';
 import { PageRedirectedAlert } from './PageRedirectedAlert';
 import { PageStaleAlert } from './PageStaleAlert';
+import { WipPageAlert } from './WipPageAlert';
 
 const FixPageGrantAlert = dynamic(() => import('./FixPageGrantAlert').then(mod => mod.FixPageGrantAlert), { ssr: false });
 // dynamic import because TrashPageAlert uses localStorageMiddleware
@@ -22,6 +23,7 @@ export const PageAlerts = (): JSX.Element => {
       <div className="col-sm-12">
         {/* alerts */}
         { !isNotFound && <FixPageGrantAlert /> }
+        <WipPageAlert />
         <PageGrantAlert />
         <TrashPageAlert />
         <PageStaleAlert />
