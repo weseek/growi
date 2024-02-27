@@ -207,7 +207,7 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
         </div>
         <div className="col-12">
           <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
-            <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
+            <span className="material-symbols-outlined">check_box_outline_blank</span> {t('admin:export_management.uncheck_all')}
           </button>
         </div>
       </form>
