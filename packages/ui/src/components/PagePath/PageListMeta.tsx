@@ -96,7 +96,12 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let bookmarkCount;
   if (props.bookmarkCount != null && props.bookmarkCount > 0) {
-    bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
+    bookmarkCount = (
+      <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}>
+        <span className="material-symbols-outlined">bookmark</span>
+        {props.bookmarkCount}
+      </span>
+    );
   }
 
   return (
