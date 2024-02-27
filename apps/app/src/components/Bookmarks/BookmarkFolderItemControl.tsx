@@ -23,7 +23,7 @@ export const BookmarkFolderItemControl: React.FC<{
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-          <i className="icon-options"></i>
+          <span className="material-symbols-outlined">more_horiz</span>
         </DropdownToggle>
       ) }
       <DropdownMenu

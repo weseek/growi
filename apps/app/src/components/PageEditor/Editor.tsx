@@ -343,7 +343,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
               className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
-              <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+              <span className="material-symbols-outlined" aria-hidden="true">attachment</span>&nbsp;
               Attach files
               <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;
