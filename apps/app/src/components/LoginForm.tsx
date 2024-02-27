@@ -516,8 +516,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                {/* spinner.Tentative decision meiri-k 11.17 */}
-                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <span className="material-symbols-outlined">login</span>
+                )}
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>
