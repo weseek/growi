@@ -1,5 +1,7 @@
 import type { FC } from 'react';
-import { memo, useCallback, useEffect, useState } from 'react';
+import {
+  memo, useCallback, useEffect, useState,
+} from 'react';
 
 import dynamic from 'next/dynamic';
 
@@ -138,7 +140,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
       <div
-        className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass} ${styles['scroll-bar']}`}
+        className={`sidebar-contents-container flex-grow-1 ${openClass} ${styles['scroll-bar']}`}
         style={{ width: collapsibleContentsWidth }}
       >
         {children}
