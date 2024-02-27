@@ -7,6 +7,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
+
 
 /**
  * Delete User Group Select component
@@ -18,24 +20,17 @@ import {
 type Props = {
   userGroups: IUserGroupHasId[],
   deleteUserGroup?: IUserGroupHasId,
-  onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroupId: string) => Promise<void> | void,
+  onDelete?: (deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => Promise<void> | void,
   isShow: boolean,
   onHide?: () => Promise<void> | void,
 };
 
 type AvailableOption = {
   id: number,
-  actionForPages: string,
+  actionForPages: PageActionOnGroupDelete,
   iconClass: string,
   styleClass: string,
   label: string,
-};
-
-// actionName master constants
-const actionForPages = {
-  public: 'public',
-  delete: 'delete',
-  transfer: 'transfer',
 };
 
 export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
@@ -50,21 +45,21 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     return [
       {
         id: 1,
-        actionForPages: actionForPages.public,
+        actionForPages: PageActionOnGroupDelete.publicize,
         iconClass: 'icon-people',
         styleClass: '',
         label: t('admin:user_group_management.delete_modal.publish_pages'),
       },
       {
         id: 2,
-        actionForPages: actionForPages.delete,
+        actionForPages: PageActionOnGroupDelete.delete,
         iconClass: 'icon-trash',
         styleClass: 'text-danger',
         label: t('admin:user_group_management.delete_modal.delete_pages'),
       },
       {
         id: 3,
-        actionForPages: actionForPages.transfer,
+        actionForPages: PageActionOnGroupDelete.transfer,
         iconClass: 'icon-options',
         styleClass: '',
         label: t('admin:user_group_management.delete_modal.transfer_pages'),
@@ -75,14 +70,14 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [actionName, setActionName] = useState<string>('');
+  const [actionName, setActionName] = useState<PageActionOnGroupDelete | null>(null);
   const [transferToUserGroupId, setTransferToUserGroupId] = useState<string>('');
 
   /*
    * Function
    */
   const resetStates = useCallback(() => {
-    setActionName('');
+    setActionName(null);
     setTransferToUserGroupId('');
   }, []);
 
@@ -106,7 +101,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   }, []);
 
   const handleSubmit = useCallback((e) => {
-    if (onDelete == null || deleteUserGroup == null) {
+    if (onDelete == null || deleteUserGroup == null || actionName == null) {
       return;
     }
 
@@ -129,7 +124,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
         name="actionName"
         className="form-control"
         placeholder="select"
-        value={actionName}
+        value={actionName?.toString() ?? ''}
         onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
@@ -157,7 +152,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     return (
       <select
         name="transferToUserGroupId"
-        className={`form-control ${actionName === actionForPages.transfer ? '' : 'd-none'}`}
+        className={`form-control ${actionName === PageActionOnGroupDelete.transfer ? '' : 'd-none'}`}
         value={transferToUserGroupId}
         onChange={handleGroupChange}
       >
@@ -170,10 +165,10 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   const validateForm = useCallback(() => {
     let isValid = true;
 
-    if (actionName === '') {
+    if (actionName === null) {
       isValid = false;
     }
-    else if (actionName === actionForPages.transfer) {
+    else if (actionName === PageActionOnGroupDelete.transfer) {
       isValid = transferToUserGroupId !== '';
     }
 
@@ -195,7 +190,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
-          <div className="d-flex mb-0 me-3          ">
+          <div className="d-flex mb-0 me-3">
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>
@@ -203,7 +198,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
             <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </form>
-        {actionName === 'public' && (
+        {actionName === PageActionOnGroupDelete.publicize && (
           <div className="form-text text-muted">
             <small>{t('admin:user_group_management.delete_modal.option_explanation')}</small>
           </div>

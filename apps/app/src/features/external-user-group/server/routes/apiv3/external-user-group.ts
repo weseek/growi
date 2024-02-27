@@ -9,6 +9,7 @@ import {
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
+import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
@@ -149,7 +150,8 @@ module.exports = (crowi: Crowi): Router => {
   router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const { id: deleteGroupId } = req.params;
-      const { actionName, transferToUserGroupId } = req.query;
+      const { transferToUserGroupId } = req.query;
+      const actionName = req.query.actionName as PageActionOnGroupDelete;
 
       const transferGroupInfo = transferToUserGroupId != null ? {
         item: transferToUserGroupId as string,

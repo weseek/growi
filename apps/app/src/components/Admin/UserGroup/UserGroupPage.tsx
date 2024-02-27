@@ -10,6 +10,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 
 
 const UserGroupDeleteModal = dynamic(() => import('./UserGroupDeleteModal').then(mod => mod.UserGroupDeleteModal), { ssr: false });
@@ -127,7 +128,7 @@ export const UserGroupPage: FC = () => {
     }
   }, [t, mutateUserGroups, hideUpdateModal]);
 
-  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => {
     try {
       await apiv3Delete(`/user-groups/${deleteGroupId}`, {
         actionName,

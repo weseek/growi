@@ -31,6 +31,7 @@ import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CreateMethod } from '~/server/models/page';
 import {
@@ -2504,38 +2505,18 @@ class PageService implements IPageService {
 
 
   async handlePrivatePagesForGroupsToDelete(
-      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: string, transferToUserGroup: IGrantedGroup, user,
+      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup, user,
   ): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const pages = await Page.find({ grantedGroups: { $elemMatch: { item: { $in: groupsToDelete } } } });
 
     switch (action) {
-      case 'public': {
-        const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
-        const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
-          const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item).toString()));
-          acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
-          return acc;
-        }, { canPublicize: [], cannotPublicize: [] });
-
-        // Only publicize pages that can only be accessed by the groups to be deleted
-        await Page.publicizePages(pageGroups.canPublicize);
-        // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
-        const queries = pageGroups.cannotPublicize.map((page) => {
-          return {
-            updateOne: {
-              filter: { _id: page._id },
-              update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item).toString())) } },
-            },
-          };
-        });
-        await Page.bulkWrite(queries);
-
+      case PageActionOnGroupDelete.publicize:
+        await Page.removeGroupsToDeleteFromPages(pages, groupsToDelete);
         break;
-      }
-      case 'delete':
+      case PageActionOnGroupDelete.delete:
         return this.deleteMultipleCompletely(pages, user);
-      case 'transfer':
+      case PageActionOnGroupDelete.transfer:
         await Page.transferPagesToGroup(pages, transferToUserGroup);
         break;
       default:

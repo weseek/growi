@@ -10,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
 import UserGroupRelation from '../models/user-group-relation';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
@@ -124,7 +125,7 @@ class UserGroupService implements IUserGroupService {
   }
 
   async removeCompletelyByRootGroupId(
-      deleteRootGroupId, action, user, transferToUserGroup?: IGrantedGroup,
+      deleteRootGroupId, action: PageActionOnGroupDelete, user, transferToUserGroup?: IGrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ): Promise<DeleteResult> {
