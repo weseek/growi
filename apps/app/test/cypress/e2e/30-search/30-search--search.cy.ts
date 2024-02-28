@@ -123,7 +123,7 @@ context('Search all pages', () => {
     cy.waitUntil(() => {
       // do
       cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
-      cy.get('@tagLabels').find('button').as('btn').click();
+      cy.get('@tagLabels').find('button').first().as('btn').click();
       // wait until
       return cy.get('body').within(() => {
         return Cypress.$('.modal.show').is(':visible');
