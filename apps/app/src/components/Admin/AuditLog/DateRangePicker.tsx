@@ -1,4 +1,5 @@
-import React, { FC, forwardRef, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 
 import { addDays, format } from 'date-fns';
 import DatePicker from 'react-datepicker';
@@ -19,7 +20,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
   return (
     <div className="input-group admin-audit-log">
       <span className="input-group-text">
-        <i className="fa fa-fw fa-calendar" />
+        <span className="material-symbols-outlined">calendar_month</span>
       </span>
       <input
         ref={ref}
