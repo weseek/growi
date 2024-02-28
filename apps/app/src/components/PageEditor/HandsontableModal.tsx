@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
+import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse,
@@ -471,7 +471,7 @@ export const HandsontableModal = (): JSX.Element => {
             onClick={toggleDataImportArea}
           >
             <span className="me-3">{t('handsontable_modal.data_import')}</span>
-            <i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
+            <span className="material-symbols-outlined">{isDataImportAreaExpanded ? 'expand_less' : 'expand_more'}</span>
           </button>
           <div role="group" className="btn-group">
             <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('l') }}>
