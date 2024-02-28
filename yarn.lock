@@ -2864,14 +2864,7 @@
   resolved "https://registry.yarnpkg.com/@replit/codemirror-vscode-keymap/-/codemirror-vscode-keymap-6.0.2.tgz#cc9b9092db5afb9800fda5a03801b4f6600b427e"
   integrity sha512-j45qTwGxzpsv82lMD/NreGDORFKSctMDVkGRopaP+OrzSzv+pXDQuU3LnFvKpasyjVT0lf+PKG1v2DSCn/vxxg==
 
-"@restart/hooks@^0.4.0":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.5.tgz#e7acbea237bfc9e479970500cf87538b41a1ed02"
-  integrity sha512-tLGtY0aHeIfT7aPwUkvQuhIy3+q3w4iqmUzFLPlOAf/vNUacLaBt1j/S//jv/dQhenRh8jvswyMojCwmLvJw8A==
-  dependencies:
-    dequal "^2.0.2"
-
-"@restart/hooks@^0.4.7":
+"@restart/hooks@^0.4.0", "@restart/hooks@^0.4.7":
   version "0.4.16"
   resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.16.tgz#95ae8ac1cc7e2bd4fed5e39800ff85604c6d59fb"
   integrity sha512-f7aCv7c+nU/3mF7NWLtVVr0Ra80RqsO89hO72r+Y/nvQr5+q0UFGkocElTH6MJApvReVh6JHUFYn2cw1WdHF3w==
@@ -6759,15 +6752,10 @@ csurf@^1.11.0:
     csrf "3.1.0"
     http-errors "~1.7.3"
 
-csv-to-markdown-table@1.4.1:
+csv-to-markdown-table@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.4.1.tgz#7167eb16cf76da45abd54e13993e99f029c05754"
   integrity sha512-jhLkfM7LXGQCuhxCwIw0QmpHCbMXy8ouC+T8KKoKaZ43DQAezpHCxNl74j2S9Sb4SEnVgMK8/RqJfNUk6xMHRQ==
-
-csv-to-markdown-table@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.1.0.tgz#1c4546b4a6d7265d7715df51825c1852a7286247"
-  integrity sha512-gsnCustJ+9ckvdsivA8pRkBSUbr7vaMK5uuXU+gn5df93hUe2EqGPTazAJFGjc3vy0R9hjKHoLRjphTFy04bPg==
 
 cubic2quad@^1.2.1:
   version "1.2.1"
@@ -7660,11 +7648,6 @@ emittery@^0.13.1:
   dependencies:
     "@babel/runtime" "^7.0.0"
     prop-types "^15.6.0"
-
-emoji-regex@^10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.3.0.tgz#76998b9268409eb3dae3de989254d456e70cfe23"
-  integrity sha512-QpLs9D9v9kArv4lfDEgg1X/gN5XLnf/A6l9cs8SPZLRZR3ZkY9+kwIQTxm+fsSej5UMYGE8fdoaZVIBlqG0XTw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -9007,11 +8990,6 @@ get-caller-file@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
-
-get-east-asian-width@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/get-east-asian-width/-/get-east-asian-width-1.2.0.tgz#5e6ebd9baee6fb8b7b6bd505221065f0cd91f64e"
-  integrity sha512-2nk+7SIVb14QrgXFHcm84tD4bKQz0RxPuMT8Ag5KPOq7J5fEmAg0UbXdTOSHqNuHSU28k55qnceesxXRZGzKWA==
 
 get-func-name@^2.0.0, get-func-name@^2.0.2:
   version "2.0.2"
@@ -11536,10 +11514,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.74, lib0@^0.2.82:
-  version "0.2.85"
-  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.85.tgz#2ccc3b6e02bd6165a4b8e68f89db5f9e7787dfc5"
-  integrity sha512-vtAhVttLXCu3ps2OIsTz8CdKYKdcMo7ds1MNBIcSXz6vrY8sxASqpTi4vmsAIn7xjWvyT7haKcWW6woP6jebjQ==
+lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.82, lib0@^0.2.86:
+  version "0.2.89"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.89.tgz#f695ba69be34e28f73b3eeb5da92006f3897a470"
+  integrity sha512-5j19vcCjsQhvLG6mcDD+nprtJUCbmqLz5Hzt5xgi9SV6RIW/Dty7ZkVZHGBuPOADMKjQuKDvuQTH495wsmw8DQ==
   dependencies:
     isomorphic.js "^0.2.4"
 
@@ -11978,16 +11956,7 @@ markdown-it@^13.0.1:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
-markdown-table@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.1.tgz#4b3dd3a133d1518b8ef0dbc709bf2a1b4824bc8c"
-
-markdown-table@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
-  integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
-
-markdown-table@^3.0.3:
+markdown-table@^3.0.0, markdown-table@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.3.tgz#e6331d30e493127e031dd385488b5bd326e4a6bd"
   integrity sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==
@@ -16566,15 +16535,6 @@ string-width@^5.0.1, string-width@^5.1.2:
     emoji-regex "^9.2.2"
     strip-ansi "^7.0.1"
 
-string-width@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-7.1.0.tgz#d994252935224729ea3719c49f7206dc9c46550a"
-  integrity sha512-SEIJCWiX7Kg4c129n48aDRwLbFb2LJmXXFrWBG4NGaRtMQ3myKPKbwrD1BKqQn74oCoNMBVrfDEr5M9YxCsrkw==
-  dependencies:
-    emoji-regex "^10.3.0"
-    get-east-asian-width "^1.0.0"
-    strip-ansi "^7.1.0"
-
 string.prototype.matchall@^4.0.7:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.7.tgz#8e6ecb0d8a1fb1fda470d81acecb2dba057a481d"
@@ -16662,7 +16622,7 @@ strip-ansi@^3.0.0:
   dependencies:
     ansi-regex "^2.0.0"
 
-strip-ansi@^7.0.1, strip-ansi@^7.1.0:
+strip-ansi@^7.0.1:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.1.0.tgz#d5b6568ca689d8561370b0707685d22434faff45"
   integrity sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==
@@ -18683,12 +18643,12 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-yjs@^13.6.7:
-  version "13.6.7"
-  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.7.tgz#f1176c37f65eb566cf390bd813e2099d598795f4"
-  integrity sha512-mCZTh4kjvUS2DnaktsYN6wLH3WZCJBLqrTdkWh1bIDpA/sB/GNFaLA/dyVJj2Hc7KwONuuoC/vWe9bwBBosZLQ==
+yjs@^13.6.12:
+  version "13.6.12"
+  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.12.tgz#dc8be640270f04c4bb92c1984fdabbc13fc9c49f"
+  integrity sha512-KOT8ILoyVH2f/PxPadeu5kVVS055D1r3x1iFfJVJzFdnN98pVGM8H07NcKsO+fG3F7/0tf30Vnokf5YIqhU/iw==
   dependencies:
-    lib0 "^0.2.74"
+    lib0 "^0.2.86"
 
 yn@3.1.1:
   version "3.1.1"
