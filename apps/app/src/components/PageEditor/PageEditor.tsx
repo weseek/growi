@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
@@ -12,9 +13,9 @@ import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
+import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 
@@ -85,9 +86,8 @@ type Props = {
 export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
-  const router = useRouter();
 
-  const previewRef = useRef<HTMLDivElement>(null);
+  const [previewRect, previewRef] = useRect();
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
@@ -411,6 +411,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   //   };
   // }, [onRouterChangeComplete, router.events]);
 
+  const pastEndStyle: CSSProperties | undefined = useMemo(() => {
+    if (previewRect == null) {
+      return undefined;
+    }
+
+    const previewRectHeight = previewRect.height;
+
+    // containerHeight - 1.5 line height
+    return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
+  }, [previewRect]);
+
   if (!isEditable) {
     return <></>;
   }
@@ -441,14 +452,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             editorKeymap={editorSettings?.keymapMode}
           />
         </div>
-        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div
+          ref={previewRef}
+          onScroll={scrollPreviewHandlerThrottle}
+          className="page-editor-preview-container flex-expand-vert d-none d-lg-flex"
+        >
           <Preview
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            // TODO: Dynamic changes by height or resizing the last element
-            pastEnd={500}
+            style={pastEndStyle}
           />
         </div>
         {/*
