@@ -86,7 +86,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let likerCount;
   if (props.likerCount != null && props.likerCount > 0) {
-    likerCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-heart-o" />{props.likerCount}</span>;
+    likerCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">favorite</span>{props.likerCount}</span>;
   }
 
   let locked;
