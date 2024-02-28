@@ -47,7 +47,10 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none col-7">
+    <div
+      className="flex-grow-1 d-flex align-items-center pe-none"
+      style={{ minWidth: 0 }}
+    >
       {shouldShowAttentionIcon && (
         <>
           <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
@@ -58,7 +61,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <p className={`text-truncate m-auto pe-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
         </div>
       )}
     </div>
@@ -198,7 +201,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn p-0 ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
