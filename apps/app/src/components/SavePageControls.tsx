@@ -22,6 +22,7 @@ import loggerFactory from '~/utils/logger';
 
 import { unpublish } from '../client/services/page-operation';
 
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 
 
@@ -47,7 +48,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
+  const isWaitingSaveProcessing = true;// _isWaitingSaveProcessing === true; // ignore undefined
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -124,7 +125,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           disabled={isWaitingSaveProcessing}
         >
           {isWaitingSaveProcessing && (
-            <i className="fa fa-spinner fa-pulse me-1"></i>
+            <LoadingSpinnerPulse />
           )}
           {labelSubmitButton}
         </Button>
