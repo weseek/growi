@@ -43,4 +43,6 @@ export type IOptionsForCreate = {
   grant?: PageGrant,
   grantUserGroupIds?: IGrantedGroup[],
   overwriteScopesOfDescendants?: boolean,
+
+  wip?: boolean,
 };

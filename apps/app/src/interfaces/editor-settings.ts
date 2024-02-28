@@ -1,16 +1,10 @@
-export const DEFAULT_THEME = 'DefaultLight';
+import { type EditorTheme, type KeyMapMode } from '@growi/editor';
 
-const KeyMapMode = {
-  default: 'default',
-  vim: 'vim',
-  emacs: 'emacs',
-  vscode: 'vscode',
-} as const;
-
-export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];
+export const DEFAULT_KEYMAP = 'default';
+export const DEFAULT_THEME = 'defaultlight';
 
 export interface IEditorSettings {
-  theme: undefined | string,
+  theme: undefined | EditorTheme,
   keymapMode: undefined | KeyMapMode,
   styleActiveLine: boolean,
   autoFormatMarkdownTable: boolean,

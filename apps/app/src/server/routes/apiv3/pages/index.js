@@ -160,6 +160,11 @@ module.exports = (crowi) => {
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const validator = {
+    recent: [
+      query('limit').optional().isInt().withMessage('limit must be integer'),
+      query('offset').optional().isInt().withMessage('offset must be integer'),
+      query('includeWipPage').optional().isBoolean().withMessage('includeWipPage must be boolean'),
+    ],
     renamePage: [
       body('pageId').isMongoId().withMessage('pageId is required'),
       body('revisionId').optional({ nullable: true }).isMongoId().withMessage('revisionId is required'), // required when v4
@@ -216,12 +221,15 @@ module.exports = (crowi) => {
    *            description: Return pages recently updated
    *
    */
-  router.get('/recent', accessTokenParser, loginRequired, async(req, res) => {
+  router.get('/recent', accessTokenParser, loginRequired, validator.recent, apiV3FormValidator, async(req, res) => {
     const limit = parseInt(req.query.limit) || 20;
     const offset = parseInt(req.query.offset) || 0;
+    const includeWipPage = req.query.includeWipPage === 'true'; // Need validation using express-validator
+
     const queryOptions = {
       offset,
       limit,
+      includeWipPage,
       includeTrashed: false,
       isRegExpEscapedFromPath: true,
       sort: 'updatedAt',

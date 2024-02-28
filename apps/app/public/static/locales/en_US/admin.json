@@ -746,7 +746,7 @@
       "description1":"Temporarily issue new users by email addresses.",
       "description2":"A temporary password will be generated for the first login.",
       "invite_thru_email": "Send invitation email",
-      "mail_setting_link":"<i class='icon-settings me-2'></i><a href='/admin/app'>Email settings</a>",
+      "mail_setting_link":"<span className='material-symbols-outlined me-2'>settings</span><a href='/admin/app'>Email settings</a>",
       "valid_email": "Valid email address is required",
       "temporary_password": "The created user has a temporary password",
       "send_new_password": "Please send the new password to the user.",
@@ -834,9 +834,10 @@
       "dropdown_desc": "Choose an action for private pages",
       "select_group": "Select a group",
       "no_groups": "No groups to select",
-      "publish_pages": "Publish all",
+      "publish_pages": "Publish pages that are publishable",
       "delete_pages": "Delete all",
-      "transfer_pages": "Transfer to another group"
+      "transfer_pages": "Transfer to another group",
+      "option_explanation": "A \"publishable\" page is a page visible only to the group you want to delete. Pages that can be viewed by other groups will not be published."
     },
     "update_parent_confirm_modal": {
       "header": "The parent of the group will be changed",

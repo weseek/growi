@@ -1,9 +1,10 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
-import { IDataTagCount } from '~/interfaces/tag';
+import type { IDataTagCount } from '~/interfaces/tag';
 import { useSWRxTagsList } from '~/stores/tag';
 
 import TagCloudBox from '../TagCloudBox';
@@ -44,15 +45,13 @@ const Tag: FC = () => {
 
   // todo: adjust design by XD
   return (
-    // TODO : #139425 Match the space specification method to others
-    // ref.  https://redmine.weseek.co.jp/issues/139425
-    <div className="container-lg px-4 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
+    <div className="container-lg px-3 mb-5 pb-5" data-testid="grw-sidebar-content-tags">
       <div className="grw-sidebar-content-header py-3 d-flex">
-        <h3 className="mb-0">{t('Tags')}</h3>
+        <h4 className="mb-0">{t('Tags')}</h4>
         <SidebarHeaderReloadButton onClick={() => onReload()} />
       </div>
 
-      <h3 className="my-3">{t('tag_list')}</h3>
+      <h6 className="my-3 pb-1 border-bottom">{t('tag_list')}</h6>
 
       { isLoading
         ? (
@@ -81,7 +80,7 @@ const Tag: FC = () => {
         </button>
       </div>
 
-      <h3 className="my-3">{t('popular_tags')}</h3>
+      <h6 className="my-3 pb-1 border-bottom">{t('popular_tags')}</h6>
 
       <TagCloudBox tags={tagCloudData} />
     </div>
