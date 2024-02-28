@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -29,11 +29,20 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
 
+  const untitledPageRegex = /^Untitled-\d+$/;
+
+  const isNewlyCreatedPage = currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPagePath));
+
+  // console.log(isNewlyCreatedPage);
+
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const pageTitle = dPagePath.latter;
 
-  const [isRenameInputShown, setRenameInputShown] = useState(false);
+  const [isRenameInputShown, setRenameInputShown] = useState(true);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
+
+  // console.log(isNewlyCreatedPage);
+  // console.log(isRenameInputShown);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
@@ -69,15 +78,23 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [currentPagePath]);
 
+  // useEffect(() => {
+  //   if (isNewlyCreatedPage) {
+  //     setRenameInputShown(true);
+  //   }
+  // });
+
+  // console.dir(currentPage);
 
   return (
     <div className={`d-flex align-items-center ${moduleClass} ${props.className ?? ''}`}>
       <div className="me-1">
-        { isRenameInputShown && (
+        {/* { (isRenameInputShown || isNewlyCreatedPage) && ( */}
+        { (isRenameInputShown) && (
           <div className="position-absolute">
             <ClosableTextInput
               useAutosizeInput
-              value={editedPageTitle}
+              value={isNewlyCreatedPage ? '' : editedPageTitle}
               placeholder={t('Input page name')}
               inputClassName="fs-4"
               onPressEnter={onPressEnter}
