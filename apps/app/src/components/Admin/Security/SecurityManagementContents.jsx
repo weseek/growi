@@ -34,7 +34,7 @@ const SecurityManagementContents = () => {
         i18n: 'ID/Pass',
       },
       passport_ldap: {
-        Icon: () => <span className="material-symbols-outlined">map</span>,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       passport_saml: {

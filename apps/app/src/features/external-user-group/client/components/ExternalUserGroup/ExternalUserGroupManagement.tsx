@@ -119,7 +119,7 @@ export const ExternalGroupManagement: FC = () => {
   const navTabMapping = useMemo(() => {
     return {
       ldap: {
-        Icon: () => <span className="material-symbols-outlined">map</span>,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       keycloak: {
