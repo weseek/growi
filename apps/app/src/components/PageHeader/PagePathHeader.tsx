@@ -115,7 +115,7 @@ export const PagePathHeader: FC<Props> = (props) => {
           </div>
         ) }
         <div
-          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          className={`${isRenameInputShown ? 'invisible' : ''} ${styles['ellipsize-left']}`}
           style={{ direction: 'rtl' }}
         >
           <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
