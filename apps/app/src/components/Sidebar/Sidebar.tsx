@@ -139,10 +139,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div
-        className={`sidebar-contents-container flex-grow-1 ${openClass} ${styles['scroll-bar']}`}
-        style={{ width: collapsibleContentsWidth }}
-      >
+      <div className={`sidebar-contents-container flex-grow-1 ${openClass}`} style={{ width: collapsibleContentsWidth }}>
         {children}
       </div>
     </div>
@@ -180,20 +177,19 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
-const determineScrollbarMaxHeight = (sidebarMode: SidebarMode) => {
+const determineScrollbarMaxHeight = (sidebarMode: SidebarMode): number => {
 
   const elem = document.querySelector('#grw-sidebar-contents-wrapper');
 
-  let maxHeight;
+  let maxHeight: number;
+
   switch (sidebarMode) {
+    case SidebarMode.DOCK:
     case SidebarMode.DRAWER:
       maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
       break;
     case SidebarMode.COLLAPSED:
       maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top - elem?.getBoundingClientRect().bottom : window.innerHeight;
-      break;
-    case SidebarMode.DOCK:
-      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
       break;
   }
 
@@ -212,7 +208,6 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
   }, [sidebarMode]);
 
   return (
-    // <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
     <div id="grw-sidebar-contents-wrapper">
       <StickyStretchableScroller
         simplebarRef={mutateSidebarScroller}
