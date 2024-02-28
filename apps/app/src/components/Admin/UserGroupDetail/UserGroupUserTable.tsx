@@ -52,9 +52,9 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                       type="button"
                       id={`admin-group-menu-button-${relatedUser._id}`}
                       className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                      data-toggle="dropdown"
+                      data-bs-toggle="dropdown"
                     >
-                      <i className="icon-settings"></i>
+                      <span className="material-symbols-outlined fs-5">settings</span>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
                       <button
@@ -62,7 +62,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                         type="button"
                         onClick={() => props.onClickRemoveUserBtn(relatedUser.username)}
                       >
-                        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
+                        <span className="material-symbols-outlined me-1">person_remove</span>{t('admin:user_group_management.remove_from_group')}
                       </button>
                     </div>
                   </div>

@@ -14,7 +14,8 @@ import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
+import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
@@ -180,7 +181,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
+              <span className="material-symbols-outlined p-1">more_vert</span>
             </DropdownToggle>
           </PageItemControl>
         </div>
@@ -191,7 +192,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           target={bookmarkItemId}
           fade={false}
         >
-          {formerPagePath !== null ? `${formerPagePath}/` : '/'}
+          {dPagePath.isFormerRoot ? '/' : `${formerPagePath}/`}
         </UncontrolledTooltip>
       </li>
     </DragAndDropWrapper>

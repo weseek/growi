@@ -1,13 +1,12 @@
-import React, {
-  FC, useState, useEffect,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 
 type Props = {
@@ -206,11 +205,11 @@ export const UserGroupTable: FC<Props> = ({
                           className="btn btn-outline-secondary btn-sm dropdown-toggle"
                           data-bs-toggle="dropdown"
                         >
-                          <i className="icon-settings"></i>
+                          <span className="material-symbols-outlined fs-5">settings</span>
                         </button>
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
-                            <i className="icon-fw icon-note"></i> {t('Edit')}
+                            <span className="material-symbols-outlined me-1">edit_square</span> {t('Edit')}
                           </button>
                           {onRemove != null
                           && (

@@ -1,6 +1,6 @@
+import type { ForwardRefRenderFunction } from 'react';
 import React, {
-  forwardRef, useState,
-  ForwardRefRenderFunction, memo, useCallback, useImperativeHandle, useRef, useEffect,
+  forwardRef, useState, memo, useCallback, useImperativeHandle, useRef, useEffect,
 } from 'react';
 
 import type {
@@ -16,11 +16,12 @@ import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 import { Input } from 'reactstrap';
 
-import { ISelectable } from '~/client/interfaces/selectable-all';
+import type { ISelectable } from '~/client/interfaces/selectable-all';
 import { unlink, bookmark, unbookmark } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import { IPageSearchMeta, IPageWithSearchMeta, isIPageSearchMeta } from '~/interfaces/search';
-import {
+import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
+import { isIPageSearchMeta } from '~/interfaces/search';
+import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction,
 } from '~/interfaces/ui';
 import LinkedPagePath from '~/models/linked-page-path';
@@ -31,7 +32,8 @@ import {
 import { useIsDeviceLargerThanLg } from '~/stores/ui';
 
 import { useSWRMUTxPageInfo, useSWRxPageInfo } from '../../stores/page';
-import { ForceHideMenuItems, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
 
 type Props = {
@@ -286,7 +288,7 @@ const PageListItemLSubstance: ForwardRefRenderFunction<ISelectable, Props> = (pr
                 {
                   !hasBrowsingRights && (
                     <>
-                      <i className="icon-exclamation p-1"></i>
+                      <span className="material-symbols-outlined p-1">error</span>
                       {t('not_allowed_to_see_this_page')}
                     </>
                   )

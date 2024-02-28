@@ -9,7 +9,7 @@ import type { IPageHasId } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import detectIndent from 'detect-indent';
@@ -19,20 +19,19 @@ import { throttle, debounce } from 'throttle-debounce';
 
 
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import type { OptionsToSave } from '~/interfaces/page-operation';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
+  useIsEditable, useIsIndentSizeForced,
+  useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
   useEditorSettings,
   useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
-  useIsEnabledUnsavedWarning,
   useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
@@ -90,10 +89,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const router = useRouter();
 
   const previewRef = useRef<HTMLDivElement>(null);
-  const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
@@ -111,8 +109,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
-  const { data: isUploadEnabled } = useIsUploadEnabled();
+  const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
@@ -125,26 +122,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: socket } = useGlobalSocket();
 
   const { data: rendererOptions } = usePreviewOptions();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
-  const saveOrUpdate = useSaveOrUpdate();
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
+  const currentRevisionId = currentPage?.revision?._id;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -199,12 +188,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [markdownToPreview, mutateIsConflict]);
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment(undefined);
-  }, [router]);
-
   useEffect(() => {
     if (socket == null) { return }
 
@@ -216,40 +199,27 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  const optionsToSave = useMemo((): OptionsToSave | undefined => {
-    if (grantData == null) {
-      return;
-    }
-    const userRelatedGrantedGroups = grantData.userRelatedGrantedGroups?.map((group) => {
-      return { item: group.id, type: group.type };
-    });
-    const optionsToSave = {
-      isSlackEnabled: isSlackEnabled ?? false,
-      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
-      grant: grantData.grant,
-      // pageTags: pageTags ?? [],
-      userRelatedGrantUserGroupIds: userRelatedGrantedGroups,
-    };
-    return optionsToSave;
-  }, [grantData, isSlackEnabled]);
-
-
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (currentPathname == null || optionsToSave == null) {
-      logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
+    if (pageId == null || currentRevisionId == null || grantData == null) {
+      logger.error('Some materials to save are invalid', {
+        pageId, currentRevisionId, grantData,
+      });
       throw new Error('Some materials to save are invalid');
     }
-
-    const options = Object.assign(optionsToSave, opts);
 
     try {
       mutateWaitingSaveProcessing(true);
 
-      const { page } = await saveOrUpdate(
-        codeMirrorEditor?.getDoc() ?? '',
-        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
-        options,
-      );
+      const { page } = await updatePage({
+        pageId,
+        revisionId: currentRevisionId,
+        body: codeMirrorEditor?.getDoc() ?? '',
+        grant: grantData?.grant,
+        userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
+          return { item: group.id, type: group.type };
+        }),
+        ...(opts ?? {}),
+      });
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
@@ -271,12 +241,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(false);
     }
 
-  }, [
-    codeMirrorEditor,
-    currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
-    currentPagePath, currentRevisionId,
-    mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const page = await save(opts);
@@ -284,14 +250,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    if (isNotFound) {
-      await router.push(`/${page._id}`);
-    }
-    else {
-      updateStateAfterSave?.();
-    }
     mutateEditorMode(EditorMode.View);
-  }, [save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+    updateStateAfterSave?.();
+  }, [mutateEditorMode, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     const page = await save();
@@ -299,16 +260,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       return;
     }
 
-    if (isNotFound) {
-      await router.push(`/${page._id}#edit`);
-    }
-    else {
-      updateStateAfterSave?.();
-    }
     toastSuccess(t('toaster.save_succeeded'));
-    mutateEditorMode(EditorMode.Editor);
-
-  }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
+    updateStateAfterSave?.();
+  }, [save, t, updateStateAfterSave]);
 
 
   // the upload event handler
@@ -348,17 +302,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
 
   }, [codeMirrorEditor, pageId]);
-
-  const acceptedFileType = useMemo(() => {
-    if (!isUploadEnabled) {
-      return AcceptedUploadFileType.NONE;
-    }
-    if (isUploadAllFileAllowed) {
-      return AcceptedUploadFileType.ALL;
-    }
-    return AcceptedUploadFileType.IMAGE;
-  }, [isUploadAllFileAllowed, isUploadEnabled]);
-
 
   const scrollEditorHandler = useCallback(() => {
     if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
@@ -404,7 +347,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     mutateIsConflict(false);
 
     // set resolved markdown in editing markdown
-    const markdown = pageData?.revision.body ?? '';
+    const markdown = pageData?.revision?.body ?? '';
     mutateEditingMarkdown(markdown);
 
   }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
@@ -447,6 +390,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
+  // set handler to set caret line
+  useEffect(() => {
+    const handler = (lineNumber?: number) => {
+      codeMirrorEditor?.setCaretLine(lineNumber);
+
+      // TODO: scroll to the caret line
+    };
+    globalEmitter.on('setCaretLine', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('setCaretLine', handler);
+    };
+  }, [codeMirrorEditor]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
@@ -473,7 +429,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="flex-expand-vert justify-content-center" style={{ minHeight: '72px' }}>
+      <div className="px-4 py-2">
         <PageHeader />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
@@ -494,7 +450,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
-            acceptedFileType={acceptedFileType}
+            acceptedUploadFileType={acceptedUploadFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
             userName={user?.name}
@@ -502,6 +458,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
             editorTheme={editorSettings?.theme}
+            editorKeymap={editorSettings?.keymapMode}
           />
         </div>
         <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

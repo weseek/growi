@@ -1,6 +1,6 @@
 import React, { type ReactNode, useMemo } from 'react';
 
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -10,18 +10,18 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from '../_app.page';
+import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
@@ -101,6 +101,8 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
   mutate(undefined, { revalidate: false });
+  useCurrentPageId(null);
+  useCurrentPathname('/me');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -122,15 +124,15 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root">
         <header className="py-3">
-          <div className="container-fluid">
-            <h1 className="title">{ targetPage.title }</h1>
+          <div className="container">
+            <h1 className="title fs-3 mt-5">{ targetPage.title }</h1>
           </div>
         </header>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <div id="main" className="main">
-          <div id="content-main" className="content-main container-lg">
+          <div id="content-main" className="content-main container">
             {targetPage.component}
           </div>
         </div>

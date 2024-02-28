@@ -26,7 +26,7 @@ const RevokeReadOnlyMenuItem: React.FC<{
 
   return (
     <button className="dropdown-item" type="button" onClick={clickRevokeReadOnlyBtnHandler}>
-      <i className="icon-fw icon-user-unfollow"></i> {t('user_management.user_table.revoke_read_only_access')}
+      <span className="material-symbols-outlined me-1">person_remove</span> {t('user_management.user_table.revoke_read_only_access')}
     </button>
   );
 };

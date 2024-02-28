@@ -20,6 +20,12 @@ import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
+import { checkPageExistenceHandlersFactory } from './check-page-existence';
+import { createPageHandlersFactory } from './create-page';
+import { publishPageHandlersFactory } from './publish-page';
+import { unpublishPageHandlersFactory } from './unpublish-page';
+import { updatePageHandlersFactory } from './update-page';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page'); // eslint-disable-line no-unused-vars
 
@@ -311,6 +317,111 @@ module.exports = (crowi) => {
     return res.apiv3({ page, pages });
   });
 
+  router.get('/exist', checkPageExistenceHandlersFactory(crowi));
+
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      post:
+   *        tags: [Page]
+   *        operationId: createPage
+   *        description: Create page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    type: string
+   *                    description: Text of page
+   *                  path:
+   *                    $ref: '#/components/schemas/Page/properties/path'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                  grantUserGroupId:
+   *                    type: string
+   *                    description: UserGroup ID
+   *                    example: 5ae5fccfc5577b0004dbd8ab
+   *                  pageTags:
+   *                    type: array
+   *                    items:
+   *                      $ref: '#/components/schemas/Tag'
+   *                  shouldGeneratePath:
+   *                    type: boolean
+   *                    description: Determine whether a new path should be generated
+   *                required:
+   *                  - body
+   *                  - path
+   *        responses:
+   *          201:
+   *            description: Succeeded to create page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        tags:
+   *                          type: array
+   *                          items:
+   *                            $ref: '#/components/schemas/Tags'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
+   *          409:
+   *            description: page path is already existed
+   */
+  router.post('/', createPageHandlersFactory(crowi));
+
+  /**
+   * @swagger
+   *
+   *    /page:
+   *      put:
+   *        tags: [Page]
+   *        operationId: updatePage
+   *        description: Update page
+   *        requestBody:
+   *          content:
+   *            application/json:
+   *              schema:
+   *                properties:
+   *                  body:
+   *                    $ref: '#/components/schemas/Revision/properties/body'
+   *                  page_id:
+   *                    $ref: '#/components/schemas/Page/properties/_id'
+   *                  revision_id:
+   *                    $ref: '#/components/schemas/Revision/properties/_id'
+   *                  grant:
+   *                    $ref: '#/components/schemas/Page/properties/grant'
+   *                required:
+   *                  - body
+   *                  - page_id
+   *                  - revision_id
+   *        responses:
+   *          200:
+   *            description: Succeeded to update page.
+   *            content:
+   *              application/json:
+   *                schema:
+   *                  properties:
+   *                    data:
+   *                      type: object
+   *                      properties:
+   *                        page:
+   *                          $ref: '#/components/schemas/Page'
+   *                        revision:
+   *                          $ref: '#/components/schemas/Revision'
+   *          403:
+   *            $ref: '#/components/responses/403'
+   *          500:
+   *            $ref: '#/components/responses/500'
+   */
+  router.put('/', updatePageHandlersFactory(crowi));
+
   /**
    * @swagger
    *
@@ -569,11 +680,6 @@ module.exports = (crowi) => {
     const { pageId } = req.params;
     const { grant, userRelatedGrantedGroups } = req.body;
 
-    // TODO: remove in https://redmine.weseek.co.jp/issues/136137
-    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 1) {
-      return res.apiv3Err('Cannot grant multiple groups to page at the moment');
-    }
-
     const Page = crowi.model('Page');
 
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
@@ -815,6 +921,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(err, 500);
       }
     });
+
+
+  router.put('/:pageId/publish', publishPageHandlersFactory(crowi));
+
+  router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   return router;
 };

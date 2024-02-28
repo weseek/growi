@@ -1,7 +1,6 @@
 @use '~/styles/mixins' as *;
 
 .grw-recent-changes-resize-button :global {
-  font-size: 12px;
   line-height: normal;
   transform: translateY(-2px);
 
@@ -32,10 +31,6 @@
   .grw-recent-changes-skeleton-date {
     @include grw-skeleton-text($font-size:10px, $line-height:12px);
     width: 80px;
-  }
-
-  .icon-lock {
-    font-size: 14px;
   }
 
   // For truncate-text

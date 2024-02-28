@@ -542,72 +542,57 @@ describe('PageGrantService', () => {
     });
   });
 
-  describe('Test isGrantNormalized method with previousGrantedGroupIds given', () => {
+  describe('Test validateGrantChange method', () => {
     test('Should return true when Target: completely owned by User1 (belongs to all groups)', async() => {
-      const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
       const grantedGroupIds = [];
-      const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(
-        user1, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      const result = await pageGrantService.validateGrantChange(
+        user1, multipleGroupTreesAndUsersPage.grantedGroups, grant, grantedGroupIds,
       );
 
       expect(result).toBe(true);
     });
 
     test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to public grant', async() => {
-      const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
       const grantedGroupIds = [];
-      const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(
-        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      const result = await pageGrantService.validateGrantChange(
+        user2, multipleGroupTreesAndUsersPage.grantedGroups, grant, grantedGroupIds,
       );
 
       expect(result).toBe(false);
     });
 
     test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to owner grant', async() => {
-      const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_OWNER;
-      const grantedUserIds = [user2._id];
       const grantedGroupIds = [];
-      const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(
-        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      const result = await pageGrantService.validateGrantChange(
+        user2, multipleGroupTreesAndUsersPage.grantedGroups, grant, grantedGroupIds,
       );
 
       expect(result).toBe(false);
     });
 
     test('Should return false when Target: partially owned by User2 (belongs to one of the groups), and change to restricted grant', async() => {
-      const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_RESTRICTED;
-      const grantedUserIds = null;
       const grantedGroupIds = [];
-      const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(
-        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      const result = await pageGrantService.validateGrantChange(
+        user2, multipleGroupTreesAndUsersPage.grantedGroups, grant, grantedGroupIds,
       );
 
       expect(result).toBe(false);
     });
 
     test('Should return false when Target: partially owned by User2, and change to group grant without any groups of user2', async() => {
-      const targetPath = pageMultipleGroupTreesAndUsersPath;
       const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
       const grantedGroupIds = [{ item: differentTreeGroup._id, type: GroupType.userGroup }];
-      const shouldCheckDescendants = false;
 
-      const result = await pageGrantService.isGrantNormalized(
-        user2, targetPath, grant, grantedUserIds, grantedGroupIds, shouldCheckDescendants, false, multipleGroupTreesAndUsersPage.grantedGroups,
+      const result = await pageGrantService.validateGrantChange(
+        user2, multipleGroupTreesAndUsersPage.grantedGroups, grant, grantedGroupIds,
       );
 
       expect(result).toBe(false);

@@ -4,7 +4,7 @@ import React, {
 
 import assert from 'assert';
 
-import { Lang } from '@growi/core';
+import type { Lang } from '@growi/core';
 import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/stores/use-template-modal';
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
@@ -70,7 +70,7 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
     >
       <h4 className="mb-1 d-flex">
         <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
-        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ms-2 text-muted small"></i> : ''}
+        {localizedTemplate.pluginId != null ? <span className="material-symbols-outlined me-1 ms-2 text-muted small">extension</span> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
@@ -99,7 +99,7 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
     >
       <h4 className="mb-1 d-flex">
         <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
-        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ms-2 text-muted small"></i> : ''}
+        {localizedTemplate.pluginId != null ? <span className="material-symbols-outlined me-1 ms-2 text-muted small">extension</span> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (

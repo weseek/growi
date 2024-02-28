@@ -1,8 +1,8 @@
 import { useMemo } from 'react';
 
-import { indentWithTab, defaultKeymap } from '@codemirror/commands';
+import { indentWithTab, defaultKeymap, deleteCharBackward } from '@codemirror/commands';
 import {
-  markdown, markdownLanguage, deleteMarkupBackward,
+  markdown, markdownLanguage,
 } from '@codemirror/lang-markdown';
 import { syntaxHighlighting, HighlightStyle, defaultHighlightStyle } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
@@ -10,6 +10,7 @@ import {
   EditorState, Prec, type Extension,
 } from '@codemirror/state';
 import { keymap, EditorView } from '@codemirror/view';
+import type { Command } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
@@ -19,6 +20,8 @@ import deepmerge from 'ts-deepmerge';
 import { yUndoManagerKeymap } from 'y-codemirror.next';
 
 import { emojiAutocompletionSettings } from '../../extensions/emojiAutocompletionSettings';
+import { insertNewlineContinueMarkup } from '../../list-util/insert-newline-continue-markup';
+import { insertNewRowToMarkdownTable, isInTable } from '../../table-util/insert-new-row-to-table-markdown';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
@@ -26,18 +29,29 @@ import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';
-import { insertNewlineContinueMarkup } from './utils/insert-newline-continue-markup';
 import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
 
+
+const onPressEnter: Command = (editor) => {
+
+  if (isInTable(editor)) {
+    insertNewRowToMarkdownTable(editor);
+    return true;
+  }
+
+  insertNewlineContinueMarkup(editor);
+
+  return true;
+};
+
 // set new markdownKeymap instead of default one
-// I also bound the deleteMarkupBackward to the backspace key to align with the existing keymap
 // https://github.com/codemirror/lang-markdown/blob/main/src/index.ts#L17
 const markdownKeymap = [
-  { key: 'Backspace', run: deleteMarkupBackward },
-  { key: 'Enter', run: insertNewlineContinueMarkup },
+  { key: 'Backspace', run: deleteCharBackward },
+  { key: 'Enter', run: onPressEnter },
 ];
 
 const markdownHighlighting = HighlightStyle.define([

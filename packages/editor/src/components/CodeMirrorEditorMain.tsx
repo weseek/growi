@@ -3,11 +3,11 @@ import { useEffect } from 'react';
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -16,30 +16,24 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-type Props = {
-  onChange?: (value: string) => void,
-  onSave?: () => void,
-  onUpload?: (files: File[]) => void,
-  onScroll?: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
-  indentSize?: number,
+type Props = CodeMirrorEditorProps & {
   userName?: string,
   pageId?: string,
   initialValue?: string,
   onOpenEditor?: (markdown: string) => void,
-  editorTheme?: string,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor, editorTheme,
+    acceptedUploadFileType,
+    indentSize, userName, pageId, initialValue,
+    editorTheme, editorKeymap,
+    onSave, onChange, onUpload, onScroll, onOpenEditor,
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   useCollaborativeEditorMode(userName, pageId, initialValue, onOpenEditor, codeMirrorEditor);
-
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
 
   // setup additional extensions
   useEffect(() => {
@@ -76,11 +70,13 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
       onChange={onChange}
+      onSave={onSave}
       onUpload={onUpload}
       onScroll={onScroll}
-      acceptedFileType={acceptedFileTypeNoOpt}
+      acceptedUploadFileType={acceptedUploadFileType}
       indentSize={indentSize}
       editorTheme={editorTheme}
+      editorKeymap={editorKeymap}
     />
   );
 };
