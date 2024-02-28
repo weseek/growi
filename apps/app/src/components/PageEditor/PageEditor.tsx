@@ -16,7 +16,6 @@ import {
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 
