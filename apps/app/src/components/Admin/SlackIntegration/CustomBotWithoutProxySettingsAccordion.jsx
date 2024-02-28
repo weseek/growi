@@ -148,7 +148,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
           <form className="align-items-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
               <div>
-                <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+                <span className="input-group-text" id="slack-channel-addon"><span className="material-symbols-outlined">tag</span></span>
               </div>
               <input
                 className="form-control"

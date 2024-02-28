@@ -112,7 +112,7 @@ class UserTriggerNotification extends React.Component {
               <td>
                 <div className="input-group notify-to-option" id="slack-input">
                   <div>
-                    <span className="input-group-text"><i className="fa fa-hashtag" /></span>
+                    <span className="input-group-text"><span className="material-symbols-outlined">tag</span></span>
                   </div>
                   <input
                     className="form-control"
