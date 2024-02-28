@@ -1061,8 +1061,6 @@ schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocumen
       },
     };
   });
-  await this.bulkWrite(publicizeQueries);
-
   // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
   const removeFromGrantedGroupsQueries = pageGroups.cannotPublicize.map((page) => {
     return {
@@ -1072,7 +1070,8 @@ schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocumen
       },
     };
   });
-  await this.bulkWrite(removeFromGrantedGroupsQueries);
+
+  await this.bulkWrite([...publicizeQueries, ...removeFromGrantedGroupsQueries]);
 };
 
 /*
