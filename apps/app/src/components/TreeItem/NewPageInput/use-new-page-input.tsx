@@ -76,7 +76,6 @@ export const useNewPageInput = (): UseNewPageInput => {
         grantUserGroupIds: undefined,
       });
 
-      mutateChildren();
       mutatePageTree();
 
       if (!hasDescendants) {
