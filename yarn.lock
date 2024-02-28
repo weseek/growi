@@ -2864,14 +2864,7 @@
   resolved "https://registry.yarnpkg.com/@replit/codemirror-vscode-keymap/-/codemirror-vscode-keymap-6.0.2.tgz#cc9b9092db5afb9800fda5a03801b4f6600b427e"
   integrity sha512-j45qTwGxzpsv82lMD/NreGDORFKSctMDVkGRopaP+OrzSzv+pXDQuU3LnFvKpasyjVT0lf+PKG1v2DSCn/vxxg==
 
-"@restart/hooks@^0.4.0":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.5.tgz#e7acbea237bfc9e479970500cf87538b41a1ed02"
-  integrity sha512-tLGtY0aHeIfT7aPwUkvQuhIy3+q3w4iqmUzFLPlOAf/vNUacLaBt1j/S//jv/dQhenRh8jvswyMojCwmLvJw8A==
-  dependencies:
-    dequal "^2.0.2"
-
-"@restart/hooks@^0.4.7":
+"@restart/hooks@^0.4.0", "@restart/hooks@^0.4.7":
   version "0.4.16"
   resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.16.tgz#95ae8ac1cc7e2bd4fed5e39800ff85604c6d59fb"
   integrity sha512-f7aCv7c+nU/3mF7NWLtVVr0Ra80RqsO89hO72r+Y/nvQr5+q0UFGkocElTH6MJApvReVh6JHUFYn2cw1WdHF3w==
@@ -11521,14 +11514,7 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.82:
-  version "0.2.85"
-  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.85.tgz#2ccc3b6e02bd6165a4b8e68f89db5f9e7787dfc5"
-  integrity sha512-vtAhVttLXCu3ps2OIsTz8CdKYKdcMo7ds1MNBIcSXz6vrY8sxASqpTi4vmsAIn7xjWvyT7haKcWW6woP6jebjQ==
-  dependencies:
-    isomorphic.js "^0.2.4"
-
-lib0@^0.2.86:
+lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.82, lib0@^0.2.86:
   version "0.2.89"
   resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.89.tgz#f695ba69be34e28f73b3eeb5da92006f3897a470"
   integrity sha512-5j19vcCjsQhvLG6mcDD+nprtJUCbmqLz5Hzt5xgi9SV6RIW/Dty7ZkVZHGBuPOADMKjQuKDvuQTH495wsmw8DQ==
@@ -11970,12 +11956,7 @@ markdown-it@^13.0.1:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
-markdown-table@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
-  integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
-
-markdown-table@^3.0.3:
+markdown-table@^3.0.0, markdown-table@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.3.tgz#e6331d30e493127e031dd385488b5bd326e4a6bd"
   integrity sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==
