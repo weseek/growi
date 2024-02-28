@@ -29,25 +29,19 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
 
-  // https://regex101.com/r/Wg2Hh6/1
-  const untitledPageRegex = /^Untitled-\d+$/;
-
-  const isNewlyCreatedPage = currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPagePath));
-
-  // console.log(isNewlyCreatedPage);
-
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const pageTitle = dPagePath.latter;
 
-  const [isRenameInputShown, setRenameInputShown] = useState(isNewlyCreatedPage);
+  const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
-
-  // console.log(isNewlyCreatedPage);
-  console.log(isRenameInputShown);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
   const editedPageTitle = nodePath.basename(editedPagePath);
+
+  // https://regex101.com/r/Wg2Hh6/1
+  const untitledPageRegex = /^Untitled-\d+$/;
+  const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
@@ -79,19 +73,16 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [currentPagePath]);
 
-  // useEffect(() => {
-  //   if (isNewlyCreatedPage) {
-  //     setRenameInputShown(true);
-  //   }
-  // });
-
-  // console.dir(currentPage);
+  useEffect(() => {
+    if (isNewlyCreatedPage) {
+      setRenameInputShown(true);
+    }
+  }, [currentPage._id, isNewlyCreatedPage]);
 
   return (
     <div className={`d-flex align-items-center ${moduleClass} ${props.className ?? ''}`}>
       <div className="me-1">
-        {/* { (isRenameInputShown || isNewlyCreatedPage) && ( */}
-        { (isRenameInputShown) && (
+        { isRenameInputShown && (
           <div className="position-absolute">
             <ClosableTextInput
               useAutosizeInput
