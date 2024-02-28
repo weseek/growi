@@ -13,14 +13,14 @@ export const SortIcons = (props: SortIconsProps): JSX.Element => {
   return (
     <div className="d-flex flex-column text-center">
       <a
-        className={`${isSelected && isAsc ? 'text-primary' : 'text-secondary'}`}
+        className={`${isSelected && isAsc ? 'text-primary' : 'text-muted'}`}
         aria-hidden="true"
         onClick={() => onClick('asc')}
       >
         <span className="material-symbols-outlined">expand_less</span>
       </a>
       <a
-        className={`${isSelected && !isAsc ? 'text-primary' : 'text-secondary'}`}
+        className={`${isSelected && !isAsc ? 'text-primary' : 'text-muted'}`}
         aria-hidden="true"
         onClick={() => onClick('desc')}
       >
