@@ -180,18 +180,40 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
-const SidebarContentsWrapper = memo(() => {
+const determineScrollbarMaxHeight = (sidebarMode: SidebarMode) => {
+
+  const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+
+  let maxHeight;
+  switch (sidebarMode) {
+    case SidebarMode.DRAWER:
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
+      break;
+    case SidebarMode.COLLAPSED:
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top - elem?.getBoundingClientRect().bottom : window.innerHeight;
+      break;
+    case SidebarMode.DOCK:
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
+      break;
+  }
+
+  return maxHeight;
+};
+
+const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
+
+  const { sidebarMode } = props;
+
   const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
 
   const calcViewHeight = useCallback(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    return elem != null
-      ? window.innerHeight - elem?.getBoundingClientRect().top
-      : window.innerHeight;
-  }, []);
+    const maxHeight = determineScrollbarMaxHeight(sidebarMode);
+    return maxHeight;
+  }, [sidebarMode]);
 
   return (
-    <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+    // <div id="grw-sidebar-contents-wrapper" style={{ minHeight: '100%' }}>
+    <div id="grw-sidebar-contents-wrapper">
       <StickyStretchableScroller
         simplebarRef={mutateSidebarScroller}
         stickyElemSelector=".sidebar-contents-container"
@@ -212,6 +234,11 @@ export const Sidebar = (): JSX.Element => {
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
+
+
+  if (sidebarMode == null) {
+    return <></>;
+  }
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -242,7 +269,7 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
-            <SidebarContentsWrapper />
+            <SidebarContentsWrapper sidebarMode={sidebarMode} />
           </CollapsibleContainer>
         </ResizableContainer>
       </DrawableContainer>
