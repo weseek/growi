@@ -1,8 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import type { FC } from 'react';
 
-import nodePath from 'path';
-
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
