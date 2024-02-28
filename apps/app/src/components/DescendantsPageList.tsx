@@ -16,7 +16,7 @@ import {
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
-import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 
@@ -86,7 +86,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+          <span className="me-1"><LoadingSpinnerPulse /></span>
         </div>
       </div>
     );
