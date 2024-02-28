@@ -42,7 +42,7 @@ const SecurityManagementContents = () => {
         i18n: 'SAML',
       },
       passport_oidc: {
-        Icon: () => <span className="material-symbols-outlined">key</span>,,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'OIDC',
       },
       passport_google: {
