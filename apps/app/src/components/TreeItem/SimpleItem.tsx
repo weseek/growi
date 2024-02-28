@@ -61,11 +61,10 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto pe-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
           <div className="d-flex align-items-center">
-            <span className={`text-truncate ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            <span className={`text-truncate me-2 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
             { page.wip && (
-              <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
+              <span className="wip-page-badge badge rounded-pill text-bg-secondary">WIP</span>
             )}
           </div>
         </div>
