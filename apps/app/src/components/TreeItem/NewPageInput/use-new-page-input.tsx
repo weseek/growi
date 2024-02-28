@@ -1,7 +1,7 @@
 import React, { useState, type FC, useCallback } from 'react';
 
 import { createPage } from '~/client/services/page-operation';
-import { useSWRxPageChildren } from '~/stores/page-listing';
+import { useSWRxPageChildren, mutatePageTree } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../utils/should-create-wip-page';
@@ -9,6 +9,7 @@ import type { TreeItemToolProps } from '../interfaces';
 
 import { NewPageCreateButton } from './NewPageCreateButton';
 import { NewPageInput } from './NewPageInput';
+
 
 type UseNewPageInput = {
   Input: FC<TreeItemToolProps>,
@@ -77,7 +78,7 @@ export const useNewPageInput = (): UseNewPageInput => {
         wip: shouldCreateWipPage(newPagePath),
       });
 
-      mutateChildren();
+      mutatePageTree();
 
       if (!hasDescendants) {
         stateHandlers?.setIsOpen(true);
