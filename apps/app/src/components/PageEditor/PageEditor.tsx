@@ -382,6 +382,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
+  // set handler to set caret line
+  useEffect(() => {
+    const handler = (lineNumber?: number) => {
+      codeMirrorEditor?.setCaretLine(lineNumber);
+
+      // TODO: scroll to the caret line
+    };
+    globalEmitter.on('setCaretLine', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('setCaretLine', handler);
+    };
+  }, [codeMirrorEditor]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
