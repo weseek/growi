@@ -51,7 +51,7 @@ export const AttachmentList = ({
     if (error != null) {
       return (
         <div className="text-warning">
-          <i className="fa fa-exclamation-triangle fa-fw"></i>
+          <span className="material-symbols-outlined me-1">warning</span>
           {refsContext.toString()} (-&gt; <small>{error.message}</small>)
         </div>
       );
