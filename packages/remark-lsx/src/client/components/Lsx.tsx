@@ -137,7 +137,7 @@ LsxSubstance.displayName = 'LsxSubstance';
 const LsxDisabled = React.memo((): JSX.Element => {
   return (
     <div className="text-muted">
-      <i className="fa fa-fw fa-info-circle"></i>
+      <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
       <small>lsx is not available on the share link page</small>
     </div>
   );

@@ -28,7 +28,7 @@ export const AttachmentList = ({
     return (
       <div className="text-muted">
         <small>
-          <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+          <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
           {
             refsContext.options?.prefix != null
               ? `${refsContext.options.prefix} and descendant pages have no attachments`
