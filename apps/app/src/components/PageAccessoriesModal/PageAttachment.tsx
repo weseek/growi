@@ -63,7 +63,7 @@ const PageAttachment = (): JSX.Element => {
     if (dataAttachments == null || inUseAttachmentsMap == null) {
       return (
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+          <span className="me-1"><LoadingSpinnerPulse /></span>
         </div>
       );
     }
