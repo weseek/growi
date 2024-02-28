@@ -29,6 +29,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const currentPagePath = currentPage.path;
 
+  // https://regex101.com/r/Wg2Hh6/1
   const untitledPageRegex = /^Untitled-\d+$/;
 
   const isNewlyCreatedPage = currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPagePath));
@@ -38,11 +39,11 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const pageTitle = dPagePath.latter;
 
-  const [isRenameInputShown, setRenameInputShown] = useState(true);
+  const [isRenameInputShown, setRenameInputShown] = useState(isNewlyCreatedPage);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
 
   // console.log(isNewlyCreatedPage);
-  // console.log(isRenameInputShown);
+  console.log(isRenameInputShown);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
@@ -100,7 +101,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
-              onClickOutside={() => setRenameInputShown(false)}
+              onClickOutside={() => { setRenameInputShown(false) }}
               validationTarget={ValidationTarget.PAGE}
             />
           </div>

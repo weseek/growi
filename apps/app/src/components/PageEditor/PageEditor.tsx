@@ -369,7 +369,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
-      codeMirrorEditor?.focus();
+      // codeMirrorEditor?.focus();
     }
   }, [codeMirrorEditor, editorMode]);
 
