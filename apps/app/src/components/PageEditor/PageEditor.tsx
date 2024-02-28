@@ -158,8 +158,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
-  const [userList, setUserList] = useState<IUserHasId[]>([]);
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -430,7 +428,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
       <div className="px-4 py-2">
-        <PageHeader userList={userList} />
+        <PageHeader />
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
@@ -457,7 +455,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
-            onEditorsUpdated={setUserList}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
           />

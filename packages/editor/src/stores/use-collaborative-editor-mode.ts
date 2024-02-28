@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
-import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
+import { useGlobalSocket, GLOBAL_SOCKET_NS, useEditingUsers } from '@growi/core/dist/swr';
 // see: https://github.com/yjs/y-codemirror.next#example
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -24,7 +24,6 @@ export const useCollaborativeEditorMode = (
     pageId?: string,
     initialValue?: string,
     onOpenEditor?: (markdown: string) => void,
-    onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -32,6 +31,7 @@ export const useCollaborativeEditorMode = (
   const [isInit, setIsInit] = useState(false);
   const [cPageId, setCPageId] = useState(pageId);
 
+  const { onEditorsUpdated } = useEditingUsers();
   const { data: socket } = useGlobalSocket();
 
   const cleanupYDocAndProvider = () => {
@@ -51,6 +51,9 @@ export const useCollaborativeEditorMode = (
 
     setIsInit(false);
     setCPageId(pageId);
+
+    // reset editors
+    onEditorsUpdated([]);
   };
 
   const setupYDoc = () => {
@@ -96,12 +99,10 @@ export const useCollaborativeEditorMode = (
 
     // update args type see: SocketIOProvider.Awareness.awarenessUpdate
     socketIOProvider.awareness.on('update', (update: any) => {
-      if (onEditorsUpdated) {
-        const { added, removed } = update;
-        if (added.length > 0 || removed.length > 0) {
-          const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
-          onEditorsUpdated(userList);
-        }
+      const { added, removed } = update;
+      if (added.length > 0 || removed.length > 0) {
+        const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
+        onEditorsUpdated(userList);
       }
     });
 
@@ -135,7 +136,7 @@ export const useCollaborativeEditorMode = (
     setIsInit(true);
   };
 
-  useEffect(cleanupYDocAndProvider, [cPageId, pageId, provider, socket, ydoc]);
+  useEffect(cleanupYDocAndProvider, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
   useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);

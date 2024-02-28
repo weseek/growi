@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
-import type { IUserHasId } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
+import { useEditingUsers } from '@growi/core/dist/swr';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -13,13 +13,9 @@ import styles from './PageHeader.module.scss';
 
 const moduleClass = styles['page-header'] ?? '';
 
-type Props = {
-  userList: IUserHasId[]
-}
-
-export const PageHeader: FC<Props> = (props) => {
-  const { userList } = props;
+export const PageHeader: FC = () => {
   const { data: currentPage } = useSWRxCurrentPage();
+  const { data: EditingUsers } = useEditingUsers();
 
   if (currentPage == null) {
     return <></>;
@@ -39,7 +35,7 @@ export const PageHeader: FC<Props> = (props) => {
         />
         <EditingUserList
           className={`z-2 ${dPagePath.isRoot ? '' : 'col mt-2'}`}
-          userList={userList}
+          userList={EditingUsers?.userList ?? []}
         />
       </div>
     </div>
