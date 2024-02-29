@@ -17,6 +17,7 @@ import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWR
 
 import { KeycloakGroupManagement } from './KeycloakGroupManagement';
 import { LdapGroupManagement } from './LdapGroupManagement';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 
 export const ExternalGroupManagement: FC = () => {
   const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
@@ -92,7 +93,7 @@ export const ExternalGroupManagement: FC = () => {
     }
   }, [t, mutateExternalUserGroups, hideUpdateModal]);
 
-  const deleteExternalUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteExternalUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => {
     try {
       await apiv3Delete(`/external-user-groups/${deleteGroupId}`, {
         actionName,

@@ -14,7 +14,7 @@ import {
 } from '../../services';
 import {
   adjustPasteData, getStrFromBol,
-} from '../../services/list-util/markdown-list-util';
+} from '../../services/paste-util/paste-markdown-util';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 import { Toolbar } from './Toolbar';
