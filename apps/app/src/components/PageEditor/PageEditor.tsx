@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
@@ -12,9 +13,9 @@ import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
+import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
 
@@ -31,7 +32,7 @@ import {
 } from '~/stores/context';
 import {
   useEditorSettings,
-  useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, usePageTagsForEditors,
   useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
@@ -59,7 +60,6 @@ import { PageHeader } from '../PageHeader/PageHeader';
 
 // import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
 // import { ConflictDiffModal } from './ConflictDiffModal';
-// import Editor from './Editor';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
@@ -87,9 +87,8 @@ type Props = {
 export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
-  const router = useRouter();
 
-  const previewRef = useRef<HTMLDivElement>(null);
+  const [previewRect, previewRef] = useRect();
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
@@ -106,7 +105,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
@@ -165,15 +163,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  // const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-  //   // Displays an unsaved warning alert
-  //   mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  // })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    // mutateIsEnabledUnsavedWarningWithDebounce(value);
-  // }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
   }, [setMarkdownPreviewWithDebounce]);
 
 
@@ -421,6 +413,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   //   };
   // }, [onRouterChangeComplete, router.events]);
 
+  const pastEndStyle: CSSProperties | undefined = useMemo(() => {
+    if (previewRect == null) {
+      return undefined;
+    }
+
+    const previewRectHeight = previewRect.height;
+
+    // containerHeight - 1.5 line height
+    return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
+  }, [previewRect]);
+
   if (!isEditable) {
     return <></>;
   }
@@ -436,18 +439,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       </div>
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
-          {/* <Editor
-            ref={editorRef}
-            value={initialValue}
-            isUploadable={isUploadable}
-            isUploadAllFileAllowed={isUploadAllFileAllowed}
-            indentSize={currentIndentSize}
-            onScroll={editorScrolledHandler}
-            onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
-            onChange={markdownChangedHandler}
-            onUpload={uploadHandler}
-            onSave={saveWithShortcut}
-          /> */}
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
@@ -463,14 +454,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             editorKeymap={editorSettings?.keymapMode}
           />
         </div>
-        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div
+          ref={previewRef}
+          onScroll={scrollPreviewHandlerThrottle}
+          className="page-editor-preview-container flex-expand-vert d-none d-lg-flex"
+        >
           <Preview
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            // TODO: Dynamic changes by height or resizing the last element
-            pastEnd={500}
+            style={pastEndStyle}
           />
         </div>
         {/*

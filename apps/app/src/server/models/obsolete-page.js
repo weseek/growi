@@ -646,21 +646,6 @@ export const getPageSchema = (crowi) => {
     return await queryBuilder.query.exec();
   };
 
-  pageSchema.statics.publicizePages = async function(pages) {
-    const operationsToPublicize = pages.map((page) => {
-      return {
-        updateOne: {
-          filter: { _id: page._id },
-          update: {
-            grantedGroups: [],
-            grant: this.GRANT_PUBLIC,
-          },
-        },
-      };
-    });
-    await this.bulkWrite(operationsToPublicize);
-  };
-
   /**
    * transfer pages grant to specified user group
    * @param {Page[]} pages
