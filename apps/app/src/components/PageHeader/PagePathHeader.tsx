@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FC } from 'react';
+import {
+  useState, useEffect, useCallback,
+} from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -87,6 +89,15 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, [clickOutSideHandler]);
 
+  const linkElem = document.getElementById('page-path-hierarchical-link');
+  const areaElem = document.getElementById('grw-page-path-header-area');
+
+  const linkElemWidth = linkElem?.offsetWidth ?? 0;
+  const areaElemWidth = areaElem?.offsetWidth ?? 0;
+
+  const styles: CSSProperties | undefined = linkElemWidth > areaElemWidth ? { direction: 'rtl' } : undefined;
+
+  // console.log(elemWidth);
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -98,8 +109,13 @@ export const PagePathHeader: FC<Props> = (props) => {
       className={`d-flex ${moduleClass} small`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={{ width: '50%' }}
     >
-      <div className="me-2">
+      <div
+        id="grw-page-path-header-area"
+        className="me-2"
+        style={{ minWidth: 0 }}
+      >
         { isRenameInputShown && (
           <div className="position-absolute">
             <ClosableTextInput
@@ -114,8 +130,14 @@ export const PagePathHeader: FC<Props> = (props) => {
             />
           </div>
         ) }
-        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
-          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+        <div
+          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          style={styles}
+        >
+          <PagePathHierarchicalLink
+            linkedPagePath={linkedPagePath}
+            isIconHidden={linkElemWidth > areaElemWidth}
+          />
         </div>
       </div>
 
