@@ -5,11 +5,11 @@
   transform: translateY(-2px);
 
   .form-check-label::before {
-    content: 'サイズ : L';
+    content: 'size : L';
   }
 
   .form-check-input:checked + .form-check-label::before {
-    content: 'サイズ : S';
+    content: 'size : S';
   }
 }
 
