@@ -1,10 +1,11 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { GroupType } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import { Comment } from '~/features/comment/server/models/comment';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import { Origin } from '~/interfaces/apiv3';
 import loggerFactory from '~/utils/logger';
 
 import UserGroup from './user-group';
@@ -141,7 +142,11 @@ export const getPageSchema = (crowi) => {
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function(previousRevision) {
+  pageSchema.methods.isUpdatable = function(previousRevision, origin) {
+    if (origin === Origin.Editor) {
+      return true;
+    }
+
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
