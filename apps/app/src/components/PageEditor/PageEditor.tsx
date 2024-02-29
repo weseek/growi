@@ -205,7 +205,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const { page } = await updatePage({
         pageId,
-        revisionId: currentRevisionId,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,

@@ -31,7 +31,7 @@ export type Origin = typeof Origin[keyof typeof Origin];
 
 export type IApiv3PageUpdateParams = IOptionsForUpdate & {
   pageId: string,
-  revisionId: string,
+  revisionId?: string,
   body: string,
 
   origin?: Origin,

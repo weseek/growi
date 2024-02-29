@@ -70,7 +70,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
       .withMessage("'pageId' must be specified"),
-    body('revisionId').exists().not().isEmpty({ ignore_whitespace: true })
+    body('revisionId').optional().exists().not()
+      .isEmpty({ ignore_whitespace: true })
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
       .withMessage("The empty value is not allowd for the 'body'"),
@@ -109,7 +110,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const { revisionId, isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', { previousRevision: revisionId });
+        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
