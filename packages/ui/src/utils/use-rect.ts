@@ -1,6 +1,8 @@
-// ref: https://gist.github.com/morajabi/523d7a642d8c0a2f71fcfa0d8b3d2846?permalink_comment_id=4688158#gistcomment-4688158
+// based on https://gist.github.com/morajabi/523d7a642d8c0a2f71fcfa0d8b3d2846?permalink_comment_id=4688158#gistcomment-4688158
 
-import { useState, useRef, useEffect } from 'react';
+import {
+  useState, useEffect, RefObject, useCallback,
+} from 'react';
 
 type MutableRefObject<T> = {
   current: T
@@ -24,29 +26,28 @@ const useEffectInEvent = (
 };
 
 export const useRect = <T extends HTMLDivElement | null>(
+  reference: RefObject<T>,
   event: EventType = 'resize',
 ): [DOMRect | undefined, MutableRefObject<T | null>, number] => {
   const [rect, setRect] = useState<DOMRect>();
 
-  const reference = useRef<T>(null);
-
   const [screenHeight, setScreenHeight] = useState(window.innerHeight);
 
-  const set = (): void => {
+  const set = useCallback(() => {
     setRect(reference.current?.getBoundingClientRect());
-  };
+  }, [reference]);
 
   useEffectInEvent(event, true, set);
-  const handleResize = () => {
+  const handleResize = useCallback(() => {
     setScreenHeight(window.innerHeight);
-  };
+  }, []);
 
   useEffect(() => {
     window.addEventListener(event, handleResize);
     return () => {
       window.removeEventListener(event, handleResize);
     };
-  }, [event]);
+  }, [event, handleResize]);
 
   return [rect, reference, screenHeight];
 };
