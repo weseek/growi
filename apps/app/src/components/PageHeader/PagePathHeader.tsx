@@ -97,7 +97,11 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const styles: CSSProperties | undefined = linkElemWidth > areaElemWidth ? { direction: 'rtl' } : undefined;
 
-  // console.log(elemWidth);
+  const subNavElem = document.getElementById('grw-contextual-sub-nav');
+
+  const subNavElemWidth = subNavElem?.offsetWidth ?? 0;
+
+  const pagePathHeaderWidth = `calc(100% - ${subNavElemWidth}px)`;
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -109,7 +113,7 @@ export const PagePathHeader: FC<Props> = (props) => {
       className={`d-flex ${moduleClass} small`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ width: '50%' }}
+      style={{ width: pagePathHeaderWidth }}
     >
       <div
         id="grw-page-path-header-area"
