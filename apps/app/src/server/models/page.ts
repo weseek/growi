@@ -7,8 +7,8 @@ import {
   type IPage,
   GroupType, type HasObjectId,
 } from '@growi/core';
-import { isPopulated } from '@growi/core/dist/interfaces';
-import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
+import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
 import type { Model, Document, AnyObject } from 'mongoose';
@@ -18,14 +18,17 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
+import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import type { UserGroupDocument } from './user-group';
 import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
@@ -81,6 +84,7 @@ export interface PageModel extends Model<PageDocument> {
     templateBody?: string,
     templateTags?: string[],
   }>
+  removeGroupsToDeleteFromPages(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]): Promise<void>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
@@ -139,6 +143,8 @@ const schema = new Schema<PageDocument, PageModel>({
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
+  wip: { type: Boolean },
+  ttlTimestamp: { type: Date, index: true },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -196,6 +202,18 @@ export class PageQueryBuilder {
         $or: [
           { status: null },
           { status: STATUS_PUBLISHED },
+        ],
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeWipPage(): PageQueryBuilder {
+    this.query = this.query
+      .and({
+        $or: [
+          { wip: undefined },
+          { wip: false },
         ],
       });
 
@@ -653,8 +671,13 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const baseQuery = this.find({});
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   if (!options.includeTrashed) {
     queryBuilder.addConditionToExcludeTrashed();
+  }
+
+  if (!options.includeWipPage) {
+    queryBuilder.addConditionToExcludeWipPage();
   }
 
   queryBuilder.addConditionToListWithDescendants(path, options);
@@ -1018,6 +1041,39 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
+schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]) {
+  const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
+  const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
+    const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item).toString()));
+    acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
+    return acc;
+  }, { canPublicize: [], cannotPublicize: [] });
+
+  // Only publicize pages that can only be accessed by the groups to be deleted
+  const publicizeQueries = pageGroups.canPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: {
+          grantedGroups: [],
+          grant: this.GRANT_PUBLIC,
+        },
+      },
+    };
+  });
+  // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
+  const removeFromGrantedGroupsQueries = pageGroups.cannotPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item).toString())) } },
+      },
+    };
+  });
+
+  await this.bulkWrite([...publicizeQueries, ...removeFromGrantedGroupsQueries]);
+};
+
 /*
  * get latest revision body length
  */
@@ -1050,6 +1106,24 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();
+};
+
+schema.methods.publish = function() {
+  this.wip = undefined;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.unpublish = function() {
+  this.wip = true;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.makeWip = function(disableTtl: boolean) {
+  this.wip = true;
+
+  if (!disableTtl) {
+    this.ttlTimestamp = new Date();
+  }
 };
 
 /*

@@ -1,25 +1,26 @@
-import type { ChangeSpec, StateCommand } from '@codemirror/state';
+import type { ChangeSpec } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 
 // https://regex101.com/r/7BN2fR/5
 const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
 const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
-export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) => {
+export const insertNewlineContinueMarkup = (editor: EditorView): void => {
 
   const changes: ChangeSpec[] = [];
 
   let selection;
 
-  const curPos = state.selection.main.head;
+  const curPos = editor.state.selection.main.head;
 
-  const aboveLine = state.doc.lineAt(curPos).number;
-  const bolPos = state.doc.line(aboveLine).from;
+  const aboveLine = editor.state.doc.lineAt(curPos).number;
+  const bolPos = editor.state.doc.line(aboveLine).from;
 
-  const strFromBol = state.sliceDoc(bolPos, curPos);
+  const strFromBol = editor.state.sliceDoc(bolPos, curPos);
 
   // If the text before the cursor is only markdown symbols
   if (indentAndMarkOnlyRE.test(strFromBol)) {
-    const insert = state.lineBreak;
+    const insert = editor.state.lineBreak;
 
     changes.push({
       from: bolPos,
@@ -33,10 +34,10 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
     const indentAndMark = strFromBol.match(indentAndMarkRE)?.[0];
 
     if (indentAndMark == null) {
-      return false;
+      return;
     }
 
-    const insert = state.lineBreak + indentAndMark;
+    const insert = editor.state.lineBreak + indentAndMark;
     const nextCurPos = curPos + insert.length;
 
     selection = { anchor: nextCurPos };
@@ -49,7 +50,7 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
 
   // If the text before the cursor is regular text
   else {
-    const insert = state.lineBreak;
+    const insert = editor.state.lineBreak;
     const nextCurPos = curPos + insert.length;
 
     selection = { anchor: nextCurPos };
@@ -60,11 +61,9 @@ export const insertNewlineContinueMarkup: StateCommand = ({ state, dispatch }) =
     });
   }
 
-  dispatch(state.update({
+  editor.dispatch({
     changes,
     selection,
     userEvent: 'input',
-  }));
-
-  return true;
+  });
 };

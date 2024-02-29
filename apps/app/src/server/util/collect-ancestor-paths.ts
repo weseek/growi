@@ -1,6 +1,6 @@
-import platformPath from 'path';
+import { dirname } from 'node:path';
 
-import { isTopPage } from './is-top-page';
+import { isTopPage } from '@growi/core/dist/utils/page-path-utils';
 
 /**
  * returns ancestors paths
@@ -11,7 +11,7 @@ import { isTopPage } from './is-top-page';
 export const collectAncestorPaths = (path: string, ancestorPaths: string[] = []): string[] => {
   if (isTopPage(path)) return ancestorPaths;
 
-  const parentPath = platformPath.dirname(path);
+  const parentPath = dirname(path);
   ancestorPaths.push(parentPath);
   return collectAncestorPaths(parentPath, ancestorPaths);
 };

@@ -54,11 +54,11 @@ export const PersonalDropdown = (): JSX.Element => {
           data-testid="personal-dropdown-menu"
         >
           <DropdownItem header>
-            <div className="mt-2 mb-3">
+            <div className="mt-2">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
-            <h5 className="ms-1">{currentUser.name}</h5>
-            <div className="d-flex align-items-center">
+            <div className="mt-3 ms-1 fs-5">{currentUser.name}</div>
+            <div className="mt-2 d-flex align-items-center">
               <span className="material-symbols-outlined me-1">person</span>
               {currentUser.username}
             </div>

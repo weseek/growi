@@ -32,7 +32,7 @@ export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
     if (!isCreatable || todaysPath == null) return;
 
     return createAndTransit(
-      { path: todaysPath },
+      { path: todaysPath, wip: true },
       { shouldCheckPageExists: true },
     );
   }, [createAndTransit, isCreatable, todaysPath]);

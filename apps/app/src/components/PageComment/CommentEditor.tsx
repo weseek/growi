@@ -44,11 +44,11 @@ const SlackNotification = dynamic(() => import('../SlackNotification').then(mod 
 
 const navTabMapping = {
   comment_editor: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
     i18n: 'Write',
   },
   comment_preview: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
     i18n: 'Preview',
   },
 };
@@ -263,7 +263,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <i className="icon-bubble"></i> Add Comment
+              <span className="material-symbols-outlined">comment</span> Add Comment
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>

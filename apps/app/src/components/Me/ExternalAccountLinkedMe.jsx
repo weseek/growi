@@ -64,7 +64,7 @@ class ExternalAccountLinkedMe extends React.Component {
             className="btn btn-outline-secondary btn-sm pull-right"
             onClick={this.openAssociateModal}
           >
-            <i className="icon-plus" aria-hidden="true" />
+            <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
             Add
           </button>
           { t('admin:user_management.external_accounts') }
