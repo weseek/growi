@@ -54,8 +54,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
   }, {
     name: PresetThemes.HUFFLEPUFF,
     schemeType: BOTH,
-    lightBg: '#26231E',
-    darkBg: '#16202C',
+    lightBg: '#FFFEFD',
+    darkBg: '#26231E',
     lightSidebar: '#FEEBA5',
     darkSidebar: '#5C4209',
     lightIcon: '#B88512',
