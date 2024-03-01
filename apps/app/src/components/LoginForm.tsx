@@ -14,7 +14,7 @@ import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
-
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 
 import styles from './LoginForm.module.scss';
 
@@ -181,8 +181,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
         <div className="visually-hidden">
-          {/* Unsettled 11.17 meiri-k */}
-          <i className="fa fa-spinner fa-pulse" />
+          <LoadingSpinnerPulse />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (

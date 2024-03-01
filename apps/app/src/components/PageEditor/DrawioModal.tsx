@@ -18,6 +18,8 @@ import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
 const logger = loggerFactory('growi:components:DrawioModal');
@@ -133,7 +135,7 @@ export const DrawioModal = (): JSX.Element => {
         {/* Loading spinner */}
         <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
-            <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
+            <span className="mx-auto text-muted"><LoadingSpinnerPulse /></span>
           </div>
         </div>
         {/* iframe */}

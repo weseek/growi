@@ -2,6 +2,8 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { LoadingSpinnerPulse } from '~/components/LoadingSpinnerPulse';
+
 type Props = {
   isEnabled?: boolean,
   isProcessing?: boolean,
@@ -21,7 +23,7 @@ const ReconnectControls = (props: Props): JSX.Element => {
         onClick={() => { props.onReconnectingRequested() }}
         disabled={!isEnabled}
       >
-        { isProcessing && <i className="fa fa-spinner fa-pulse me-2"></i> }
+        { isProcessing && <span className="me-2"><LoadingSpinnerPulse /></span> }
         { t('full_text_search_management.reconnect_button') }
       </button>
 

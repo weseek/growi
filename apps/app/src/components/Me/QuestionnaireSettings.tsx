@@ -8,6 +8,8 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
 import { useCurrentUser } from '~/stores/context';
 
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+
 
 export const QuestionnaireSettings = (): JSX.Element => {
   const { t } = useTranslation();
@@ -45,7 +47,7 @@ export const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <span className="me-1"><LoadingSpinnerPulse /></span>
         </div>
       )}
 

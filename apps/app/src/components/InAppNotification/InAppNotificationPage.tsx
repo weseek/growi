@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -11,6 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../stores/in-app-notification';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
 import PaginationWrapper from '../PaginationWrapper';
 
 import InAppNotificationList from './InAppNotificationList';
@@ -66,7 +66,7 @@ export const InAppNotificationPage: FC = () => {
       return (
         <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+            <span className="me-1"><LoadingSpinnerPulse /></span>
           </div>
         </div>
       );

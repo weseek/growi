@@ -15,13 +15,15 @@ import { usePresentationViewOptions } from '~/stores/renderer';
 import { useNextThemes } from '~/stores/use-next-themes';
 
 
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
+
 import styles from './PagePresentationModal.module.scss';
 
 
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
+    <span className="text-muted"><LoadingSpinnerPulse /></span>
   ),
 });
 
