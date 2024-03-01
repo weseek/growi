@@ -53,6 +53,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
@@ -117,6 +118,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
+  const { onEditorsUpdated } = useEditingUsers();
 
   const { data: socket } = useGlobalSocket();
 
@@ -447,6 +449,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
+            onEditorsUpdated={onEditorsUpdated}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
           />

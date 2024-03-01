@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
 import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
-import { useGlobalSocket, GLOBAL_SOCKET_NS, useEditingUsers } from '@growi/core/dist/swr';
+import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
 // see: https://github.com/yjs/y-codemirror.next#example
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
@@ -24,6 +24,7 @@ export const useCollaborativeEditorMode = (
     pageId?: string,
     initialValue?: string,
     onOpenEditor?: (markdown: string) => void,
+    onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
@@ -31,7 +32,6 @@ export const useCollaborativeEditorMode = (
   const [isInit, setIsInit] = useState(false);
   const [cPageId, setCPageId] = useState(pageId);
 
-  const { onEditorsUpdated } = useEditingUsers();
   const { data: socket } = useGlobalSocket();
 
   const cleanupYDocAndProvider = () => {
@@ -53,7 +53,7 @@ export const useCollaborativeEditorMode = (
     setCPageId(pageId);
 
     // reset editors
-    onEditorsUpdated([]);
+    onEditorsUpdated?.([]);
   };
 
   const setupYDoc = () => {
@@ -71,7 +71,7 @@ export const useCollaborativeEditorMode = (
   };
 
   const setupProvider = () => {
-    if (provider != null || ydoc == null || socket == null) {
+    if (provider != null || ydoc == null || socket == null || onEditorsUpdated == null) {
       return;
     }
 
@@ -94,6 +94,8 @@ export const useCollaborativeEditorMode = (
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
         socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
+        const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
+        onEditorsUpdated(userList);
       }
     });
 
