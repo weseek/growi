@@ -80,7 +80,7 @@ export const SelectActionDropdown: FC<Props> = (props: Props) => {
   return (
     <div className="btn-group me-2 admin-audit-log">
       <button className="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown">
-        <span className="material-symbols-outlined">bolt</span>{t('admin:audit_log_management.action')}
+        <span className="material-symbols-outlined me-1">bolt</span>{t('admin:audit_log_management.action')}
       </button>
       <ul className="dropdown-menu select-action-dropdown" aria-labelledby="dropdownMenuButton">
         {dropdownItems.map(item => (

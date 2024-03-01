@@ -20,7 +20,7 @@ const CustomInput = forwardRef<HTMLInputElement, CustomInputProps>((props: Custo
   return (
     <div className="input-group admin-audit-log">
       <span className="input-group-text">
-        <span className="material-symbols-outlined">calendar_month</span>
+        <span className="material-symbols-outlined me-1">calendar_month</span>
       </span>
       <input
         ref={ref}
