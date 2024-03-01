@@ -6,6 +6,8 @@ import { Popover, PopoverBody } from 'reactstrap';
 
 import UserPictureList from '../Common/UserPictureList';
 
+import popoverStyles from './user-list-popover.module.scss';
+
 type Props = {
   className: string,
   userList: IUserHasId[]
@@ -38,7 +40,7 @@ export const EditingUserList: FC<Props> = ({ className, userList }) => {
                 <span className="fw-bold text-info p-1">+{remainingUsers.length}</span>
               </button>
               <Popover placement="bottom" isOpen={isPopoverOpen} target="btn-editing-user" toggle={togglePopover} trigger="legacy">
-                <PopoverBody className="user-list-popover">
+                <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
                   <UserPictureList users={remainingUsers} />
                 </PopoverBody>
               </Popover>
