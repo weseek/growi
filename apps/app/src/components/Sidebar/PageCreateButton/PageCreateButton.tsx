@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 
 import { Dropdown } from 'reactstrap';
 
-import { useCreateTemplatePage, useToastrOnError } from '~/client/services/create-page';
+import { useCreateTemplatePage } from '~/client/services/create-page';
+import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
