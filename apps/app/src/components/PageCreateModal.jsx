@@ -43,7 +43,7 @@ const PageCreateModal = () => {
   const now = format(new Date(), 'yyyy/MM/dd');
   const todaysParentPath = [userHomepagePath, t('Memo'), now].join('/');
 
-  const [todayInput2, setTodayInput2] = useState('');
+  const [todayInput, setTodayInput] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
   const [isMatchedWithUserHomepagePath, setIsMatchedWithUserHomepagePath] = useState(false);
@@ -63,12 +63,18 @@ const PageCreateModal = () => {
   }, [isOpened, checkIsUsersHomepageDebounce, pageNameInput]);
 
 
+  function transitBySubmitEvent(e, transitHandler) {
+    // prevent page transition by submit
+    e.preventDefault();
+    transitHandler();
+  }
+
   /**
-   * change todayInput2
+   * change todayInput
    * @param {string} value
    */
-  function onChangeTodayInput2Handler(value) {
-    setTodayInput2(value);
+  function onChangeTodayInputHandler(value) {
+    setTodayInput(value);
   }
 
   /**
@@ -82,34 +88,28 @@ const PageCreateModal = () => {
   /**
    * access today page
    */
-  const createTodayPage = useCallback(async(e) => {
-    e.preventDefault();
-
-    const joinedPath = [todaysParentPath, todayInput2].join('/');
-
+  const createTodayPage = useCallback(async() => {
+    const joinedPath = [todaysParentPath, todayInput].join('/');
     return createAndTransit(
       { path: joinedPath, wip: true },
-      { shouldCheckPageExists: true, onCreated: closeCreateModal },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, todayInput2, todaysParentPath]);
+  }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
 
   /**
    * access input page
    */
-  const createInoutPage = useCallback(async(e) => {
-    e.preventDefault();
-
+  const createInputPage = useCallback(async() => {
     return createAndTransit(
       { path: pageNameInput, optionalParentPath: '/', wip: true },
-      { onCreated: closeCreateModal },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, pageNameInput]);
 
   /**
    * access template page
    */
-  const createTemplatePage = useCallback(async(e) => {
-    e.preventDefault();
+  const createTemplatePage = useCallback(async() => {
 
     const label = (template === 'children') ? '_template' : '__template';
 
@@ -117,8 +117,8 @@ const PageCreateModal = () => {
     closeCreateModal();
   }, [closeCreateModal, createTemplate, template]);
 
-  const createInputPageWithToastr = useToastrOnError(createInoutPage);
   const createTodaysMemoWithToastr = useToastrOnError(createTodayPage);
+  const createInputPageWithToastr = useToastrOnError(createInputPage);
   const createTemplateWithToastr = useToastrOnError(createTemplatePage);
 
   function renderCreateTodayForm() {
@@ -136,14 +136,14 @@ const PageCreateModal = () => {
               <div className="d-flex align-items-center">
                 <span>{todaysParentPath}/</span>
               </div>
-              <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={createTodaysMemoWithToastr}>
+              <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={(e) => { transitBySubmitEvent(e, createTodaysMemoWithToastr) }}>
                 <input
                   type="text"
                   className="page-today-input2 form-control w-100"
                   id="page-today-input2"
                   placeholder={t('Input page name (optional)')}
-                  value={todayInput2}
-                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
+                  value={todayInput}
+                  onChange={e => onChangeTodayInputHandler(e.target.value)}
                 />
               </form>
             </div>
@@ -188,7 +188,7 @@ const PageCreateModal = () => {
                   />
                 )
                 : (
-                  <form onSubmit={createInputPageWithToastr}>
+                  <form onSubmit={(e) => { transitBySubmitEvent(e, createInputPageWithToastr) }}>
                     <input
                       type="text"
                       value={pageNameInput}
