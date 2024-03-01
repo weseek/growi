@@ -11,6 +11,8 @@ import { i18n as i18nConfig } from '^/config/next-i18next.config';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
+
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();
 
@@ -205,7 +207,7 @@ const InstallerForm = memo((): JSX.Element => {
               <div className="eff"></div>
               <span className="btn-label">
                 {isLoading ? (
-                  <i className="fa fa-spinner fa-pulse me-1" />
+                  <LoadingSpinnerPulse />
                 ) : (
                   <i className="icon-user-follow" />
                 )}
