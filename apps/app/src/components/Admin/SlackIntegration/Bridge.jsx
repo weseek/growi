@@ -15,14 +15,14 @@ const ProxyCircle = () => (
 
 const BridgeCore = (props) => {
   const {
-    description, iconClass, hrClass, withProxy,
+    description, iconClass, iconName, hrClass, withProxy,
   } = props;
 
   return (
     <>
       <div id="grw-bridge-container" className={`grw-bridge-container ${withProxy ? 'with-proxy' : ''}`}>
         <p className={`${withProxy ? 'mt-0' : 'mt-2'}`}>
-          <i className={iconClass} />
+          <span className={iconClass}>{iconName}</span>
           <small
             className="ms-2 d-none d-lg-inline"
             // eslint-disable-next-line react/no-danger
@@ -47,6 +47,7 @@ const BridgeCore = (props) => {
 BridgeCore.propTypes = {
   description: PropTypes.string.isRequired,
   iconClass: PropTypes.string.isRequired,
+  iconName: PropTypes.string.isRequired,
   hrClass: PropTypes.string.isRequired,
   withProxy: PropTypes.bool,
 };
@@ -58,24 +59,28 @@ const Bridge = (props) => {
 
   let description;
   let iconClass;
+  let iconName;
   let hrClass;
 
   // empty or all failed
   if (totalCount === 0 || errorCount === totalCount) {
     description = t('admin:slack_integration.integration_sentence.integration_is_not_complete');
-    iconClass = 'icon-info text-danger';
+    iconClass = 'material-symbols-outlined text-danger';
+    iconName = 'info';
     hrClass = 'border-danger admin-border-failed';
   }
   // all green
   else if (errorCount === 0) {
     description = t('admin:slack_integration.integration_sentence.integration_successful');
     iconClass = 'fa fa-check text-success';
+    iconName = '';
     hrClass = 'border-success admin-border-success';
   }
   // some of them failed
   else {
     description = t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete');
     iconClass = 'fa fa-check text-warning';
+    iconName = '';
     hrClass = 'border-warning admin-border-failed';
   }
 
@@ -83,6 +88,7 @@ const Bridge = (props) => {
     <BridgeCore
       description={description}
       iconClass={iconClass}
+      iconName={iconName}
       hrClass={hrClass}
       withProxy={withProxy}
     />
