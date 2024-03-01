@@ -87,7 +87,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [previewRect, previewRef] = useRect();
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [previewRect] = useRect(previewRef);
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
@@ -305,7 +306,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncEditor = true;
     scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
 
@@ -321,7 +322,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncPreview = true;
     scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
