@@ -1,8 +1,8 @@
+import { useCallback } from 'react';
+
+import type { IUserHasId } from '@growi/core';
+import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
-
-import { IUserHasId } from '..';
-
-import { useSWRStatic } from './use-swr-static';
 
 type EditingUsersStatus = {
   userList: IUserHasId[],
@@ -22,9 +22,9 @@ export const useEditingUsers = (status?: EditingUsersStatus): SWRResponse<Editin
 
   const { mutate } = swrResponse;
 
-  const onEditorsUpdated = (userList: IUserHasId[]): void => {
+  const onEditorsUpdated = useCallback((userList: IUserHasId[]): void => {
     mutate({ userList });
-  };
+  }, [mutate]);
 
   return {
     ...swrResponse,
