@@ -5,7 +5,6 @@ import React, {
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import {
   Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
@@ -13,10 +12,8 @@ import { debounce } from 'throttle-debounce';
 
 import { useCreateTemplatePage, useToastrOnError } from '~/client/services/create-page';
 import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
-import { toastError } from '~/client/util/toastr';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
 import PagePathAutoComplete from './PagePathAutoComplete';
@@ -24,19 +21,18 @@ import PagePathAutoComplete from './PagePathAutoComplete';
 import styles from './PageCreateModal.module.scss';
 
 const {
-  isCreatablePage, generateEditorPath, isUsersHomepage,
+  isCreatablePage, isUsersHomepage,
 } = pagePathUtils;
 
 const PageCreateModal = () => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
 
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { createAndTransit } = useCreatePageAndTransit();
   const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
@@ -47,24 +43,10 @@ const PageCreateModal = () => {
   const now = format(new Date(), 'yyyy/MM/dd');
   const todaysParentPath = [userHomepagePath, t('Memo'), now].join('/');
 
-  const { mutate: mutateEditorMode } = useEditorMode();
-
-  // const [todayInput1, setTodayInput1] = useState(t('Memo'));
   const [todayInput2, setTodayInput2] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
   const [isMatchedWithUserHomepagePath, setIsMatchedWithUserHomepagePath] = useState(false);
-
-  // // ensure pageNameInput is synced with selectedPagePath || currentPagePath
-  // useEffect(() => {
-  //   if (isOpened) {
-  //     setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
-  //   }
-  // }, [isOpened, pathname, isCreatable]);
-
-  // useEffect(() => {
-  //   setTodayInput1(t('Memo'));
-  // }, [t]);
 
   const checkIsUsersHomepageDebounce = useMemo(() => {
     const checkIsUsersHomepage = () => {
@@ -80,19 +62,6 @@ const PageCreateModal = () => {
     }
   }, [isOpened, checkIsUsersHomepageDebounce, pageNameInput]);
 
-  function transitBySubmitEvent(e, transitHandler) {
-    // prevent page transition by submit
-    e.preventDefault();
-    transitHandler();
-  }
-
-  /**
-   * change todayInput1
-   * @param {string} value
-   */
-  // function onChangeTodayInput1Handler(value) {
-  //   setTodayInput1(value);
-  // }
 
   /**
    * change todayInput2
@@ -109,24 +78,6 @@ const PageCreateModal = () => {
   function onChangeTemplateHandler(value) {
     setTemplate(value);
   }
-
-  /**
-   * join path, check if creatable, then redirect
-   * @param {string} paths
-   */
-  const redirectToEditor = useCallback(async(...paths) => {
-    try {
-      const editorPath = generateEditorPath(...paths);
-      await router.push(editorPath);
-      mutateEditorMode(EditorMode.Editor);
-
-      // close modal
-      closeCreateModal();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [closeCreateModal, mutateEditorMode, router]);
 
   /**
    * access today page
@@ -165,7 +116,6 @@ const PageCreateModal = () => {
     await createTemplate(label);
     closeCreateModal();
   }, [closeCreateModal, createTemplate, template]);
-
 
   const createInputPageWithToastr = useToastrOnError(createInoutPage);
   const createTodaysMemoWithToastr = useToastrOnError(createTodayPage);
