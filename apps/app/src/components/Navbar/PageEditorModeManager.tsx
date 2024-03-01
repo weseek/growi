@@ -7,6 +7,8 @@ import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
+import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
+
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -72,7 +74,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
     try {
       await createAndTransit(
-        { path },
+        { path, wip: shouldCreateWipPage(path) },
         { shouldCheckPageExists: true },
       );
     }

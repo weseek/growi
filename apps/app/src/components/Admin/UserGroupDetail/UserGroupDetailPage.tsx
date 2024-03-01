@@ -13,8 +13,9 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
-import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
+import { SearchTypes } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
@@ -296,7 +297,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     setDeleteModalShown(false);
   }, [setSelectedUserGroup, setDeleteModalShown]);
 
-  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => {
     const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
     try {
       const res = await apiv3Delete(url, {

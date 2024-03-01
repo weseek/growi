@@ -8,6 +8,7 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
@@ -178,6 +179,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { currentPage } = props;
 
+  const { t } = useTranslation();
+
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
@@ -328,6 +331,17 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             // grantUserGroupId={grantUserGroupId}
           />
         )}
+
+        { isGuestUser && (
+          <div className="mt-2">
+            <Link href="/login#register" className="btn me-2" prefetch={false}>
+              <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+            </Link>
+            <Link href="/login#login" className="btn btn-primary" prefetch={false}>
+              <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
+            </Link>
+          </div>
+        ) }
       </div>
 
       {path != null && currentUser != null && !isReadOnlyUser && (

@@ -81,7 +81,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let commentCount;
   if (page.commentCount > 0) {
-    commentCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-bubble" />{page.commentCount}</span>;
+    commentCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">comment</span>{page.commentCount}</span>;
   }
 
   let likerCount;
@@ -91,7 +91,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="icon-lock" /></span>;
+    locked = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">lock</span></span>;
   }
 
   let bookmarkCount;

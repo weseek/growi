@@ -142,7 +142,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <p className="text-center text-warning">
-          <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+          <span className="material-symbols-outlined">info</span>{t('admin:slack_integration.accordion.test_connection_only_public_channel')}
         </p>
         <div className="d-flex justify-content-center">
           <form className="align-items-center" onSubmit={e => submitForm(e)}>

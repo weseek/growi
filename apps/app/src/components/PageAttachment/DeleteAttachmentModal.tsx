@@ -20,7 +20,7 @@ import styles from './DeleteAttachmentModal.module.scss';
 const logger = loggerFactory('growi:attachmentDelete');
 
 const iconByFormat = (format: string): string => {
-  return format.match(/image\/.+/i) ? 'icon-picture' : 'icon-doc';
+  return format.match(/image\/.+/i) ? 'image' : 'description';
 };
 
 export const DeleteAttachmentModal: React.FC = () => {
@@ -73,7 +73,7 @@ export const DeleteAttachmentModal: React.FC = () => {
     return (
       <div className="attachment-delete-image">
         <p>
-          <i className={iconByFormat(attachment.fileFormat)}></i> {attachment.originalName}
+          <span className="material-symbols-outlined">{iconByFormat(attachment.fileFormat)}</span> {attachment.originalName}
         </p>
         <p>
           uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator as IUser}></Username>

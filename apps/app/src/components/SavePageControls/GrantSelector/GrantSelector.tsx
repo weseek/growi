@@ -18,18 +18,18 @@ import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
-    grant: PageGrant.GRANT_PUBLIC, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
+    grant: PageGrant.GRANT_PUBLIC, iconName: 'group', btnStyleClass: 'outline-info', label: 'Public',
   },
   {
-    grant: PageGrant.GRANT_RESTRICTED, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
+    grant: PageGrant.GRANT_RESTRICTED, iconName: 'link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
   },
   // { grant: 3, iconClass: '', label: 'Specified users only' },
   {
-    grant: PageGrant.GRANT_OWNER, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
+    grant: PageGrant.GRANT_OWNER, iconName: 'lock', btnStyleClass: 'outline-danger', label: 'Only me',
   },
   {
     grant: PageGrant.GRANT_USER_GROUP,
-    iconClass: 'icon-options',
+    iconName: 'more_horiz',
     btnStyleClass: 'outline-purple',
     label: 'Only inside the group',
     reselectLabel: 'Reselect the group',
@@ -119,7 +119,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
       const labelElm = (
         <span>
-          <i className={`icon icon-fw ${opt.iconClass}`}></i>
+          <span className="material-symbols-outlined me-2">{opt.iconName}</span>
           <span className="label">{t(label)}</span>
         </span>
       );
