@@ -32,6 +32,8 @@ export const DefaultThemeMetadata: GrowiThemeMetadata = {
   darkBg: '#1C1A1A',
   lightSidebar: '#F8F7F7',
   darkSidebar: '#434240',
+  lightIcon: '#8A8887',
+  darkIcon: '#D1D0CC',
   createBtn: '#007EB0',
   isPresetTheme: true,
 };
@@ -46,6 +48,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#16202C',
     lightSidebar: '#EDFAFD',
     darkSidebar: '#0A2E53',
+    lightIcon: '#36819C',
+    darkIcon: '#69B0C7',
     createBtn: '#439CB9',
   }, {
     name: PresetThemes.HUFFLEPUFF,
@@ -54,6 +58,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#16202C',
     lightSidebar: '#FEEBA5',
     darkSidebar: '#5C4209',
+    lightIcon: '#B88512',
+    darkIcon: '#EBB845',
     createBtn: '#403C39',
   }, {
     name: PresetThemes.FIRE_RED,
@@ -62,6 +68,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#120700',
     lightSidebar: '#FADDD6',
     darkSidebar: '#5A4F4A',
+    lightIcon: '#94351E',
+    darkIcon: '#EE775B',
     createBtn: '#EA5532',
   }, {
     name: PresetThemes.JADE_GREEN,
@@ -70,6 +78,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#120700',
     lightSidebar: '#F1F3F2',
     darkSidebar: '#4B4E4C',
+    lightIcon: '#3A8F6F',
+    darkIcon: '#5FC2A2',
     createBtn: '#49B38A',
   }, {
     name: PresetThemes.CLASSIC,
@@ -78,6 +88,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#151A1F',
     lightSidebar: '#F0F4FA',
     darkSidebar: '#29343F',
+    lightIcon: '#53687E',
+    darkIcon: '#869BB1',
     createBtn: '#3491CB',
   },
   // light only
@@ -88,6 +100,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#FAF9F8',
     lightSidebar: '#EBF9CC',
     darkSidebar: '#D8F399',
+    lightIcon: '#3F8421',
+    darkIcon: '#1F4210',
     createBtn: '#4FA529',
   }, {
     name: PresetThemes.WOOD,
@@ -96,6 +110,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#FDFAF0',
     lightSidebar: '#EAE3D4',
     darkSidebar: '#DCCBA6',
+    lightIcon: '#86651A',
+    darkIcon: '#43320D',
     createBtn: '#A77E21',
   }, {
     name: PresetThemes.ISLAND,
@@ -104,6 +120,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#E8F7FA',
     lightSidebar: '#F3EEE0',
     darkSidebar: '#E8DDC0',
+    lightIcon: '#51C2D3',
+    darkIcon: '#204D54',
     createBtn: '#51C2D3',
   }, {
     name: PresetThemes.CHRISTMAS,
@@ -112,6 +130,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#323D52',
     lightSidebar: '#2E3E27',
     darkSidebar: '#455D3B',
+    lightIcon: '#DC7870',
+    darkIcon: '#E7A59F',
     createBtn: '#B90606',
   }, {
     name: PresetThemes.ANTARCTIC,
@@ -120,6 +140,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#E5FAFF',
     lightSidebar: '#EDF4FC',
     darkSidebar: '#DBE9F9',
+    lightIcon: '#2631AF',
+    darkIcon: '#131857',
     createBtn: '#303DDB',
   }, {
     name: PresetThemes.SPRING,
@@ -128,6 +150,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#FFFDF5',
     lightSidebar: '#FEE7EB',
     darkSidebar: '#F9CED7',
+    lightIcon: '#D76F7D',
+    darkIcon: '#8A423F',
     createBtn: '#6ABA55',
   }, {
     name: PresetThemes.KIBELA,
@@ -136,6 +160,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#F5F5F5',
     lightSidebar: '#FFFFFF',
     darkSidebar: '#F5F5F5',
+    lightIcon: '#737373',
+    darkIcon: '#525252',
     createBtn: '#3080C0',
   },
   // dark only
@@ -146,6 +172,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#1F4C4D',
     lightSidebar: '#2a2929',
     darkSidebar: '#27413D',
+    lightIcon: '#3F999B',
+    darkIcon: '#99E5E6',
     createBtn: '#03A2A8',
   }, {
     name: PresetThemes.HALLOWEEN,
@@ -154,6 +182,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#2F1155',
     lightSidebar: '#2F1155',
     darkSidebar: '#3B136C',
+    lightIcon: '#8C3C03',
+    darkIcon: '#DDB69B',
     createBtn: '#AA4A04',
   }, {
     name: PresetThemes.BLACKBOARD,
@@ -162,6 +192,8 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkBg: '#213E23',
     lightSidebar: '#1B431C',
     darkSidebar: '#29652B',
+    lightIcon: '#C89D3B',
+    darkIcon: '#E3CE9D',
     createBtn: '#BA840A',
   },
 ]

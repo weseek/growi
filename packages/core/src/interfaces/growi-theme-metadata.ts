@@ -14,6 +14,8 @@ export type GrowiThemeMetadata = {
   darkBg: string,
   lightSidebar: string,
   darkSidebar: string,
+  lightIcon: string,
+  darkIcon: string,
   createBtn: string,
   isPresetTheme?: boolean,
 };
