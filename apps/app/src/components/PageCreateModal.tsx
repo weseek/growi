@@ -24,13 +24,15 @@ const {
   isCreatablePage, isUsersHomepage,
 } = pagePathUtils;
 
-const PageCreateModal = () => {
+const PageCreateModal: React.FC = () => {
   const { t } = useTranslation();
 
   const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
-  const { isOpened, path } = pageCreateModalData;
+
+  const path = pageCreateModalData?.path;
+  const isOpened = pageCreateModalData?.isOpened ?? false;
 
   const { createAndTransit } = useCreatePageAndTransit();
   const { createTemplate } = useCreateTemplatePage();
@@ -58,7 +60,7 @@ const PageCreateModal = () => {
 
   useEffect(() => {
     if (isOpened) {
-      checkIsUsersHomepageDebounce(pageNameInput);
+      checkIsUsersHomepageDebounce();
     }
   }, [isOpened, checkIsUsersHomepageDebounce, pageNameInput]);
 
@@ -113,7 +115,7 @@ const PageCreateModal = () => {
 
     const label = (template === 'children') ? '_template' : '__template';
 
-    await createTemplate(label);
+    await createTemplate?.(label);
     closeCreateModal();
   }, [closeCreateModal, createTemplate, template]);
 
