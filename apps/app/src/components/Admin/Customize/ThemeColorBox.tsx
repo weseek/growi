@@ -19,6 +19,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
   } = metadata;
 
   return (
+    // TODO: Display a primary color border when icon is selected
     <div
       id={`theme-option-${name}`}
       className={`theme-option-container d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}

@@ -3,22 +3,22 @@ import { GrowiThemeMetadata, GrowiThemeSchemeType } from '../interfaces/growi-th
 const { BOTH, LIGHT, DARK } = GrowiThemeSchemeType;
 
 export const PresetThemes = {
-  DEFAULT: 'Default',
-  ANTARCTIC: 'Antarctic',
-  BLACKBOARD: 'Blackboard',
-  CHRISTMAS: 'Christmas',
-  FIRE_RED: 'Fire Red',
-  FUTURE: 'Future',
-  HALLOWEEN: 'Halloween',
-  HUFFLEPUFF: 'Hufflepuff',
-  ISLAND: 'Island',
-  JADE_GREEN: 'Jade Green',
-  KIBELA: 'Kibela',
-  MONO_BLUE: 'Mono Blue',
-  NATURE: 'Nature',
-  SPRING: 'Spring',
-  WOOD: 'Wood',
-  CLASSIC: 'Classic',
+  DEFAULT: 'default',
+  ANTARCTIC: 'antarctic',
+  BLACKBOARD: 'blackboard',
+  CHRISTMAS: 'christmas',
+  FIRE_RED: 'fire-red',
+  FUTURE: 'future',
+  HALLOWEEN: 'halloween',
+  HUFFLEPUFF: 'hufflepuff',
+  ISLAND: 'island',
+  JADE_GREEN: 'jade-green',
+  KIBELA: 'kibela',
+  MONO_BLUE: 'mono-blue',
+  NATURE: 'nature',
+  SPRING: 'spring',
+  WOOD: 'wood',
+  CLASSIC: 'classic',
 } as const;
 export type PresetThemes = typeof PresetThemes[keyof typeof PresetThemes];
 
