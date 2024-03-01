@@ -12,6 +12,6 @@ export type GrowiThemeMetadata = {
   bg: string,
   topbar: string,
   sidebar: string,
-  accent: string,
+  createBtn: string,
   isPresetTheme?: boolean,
 };

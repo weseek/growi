@@ -15,7 +15,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
     isSelected, metadata, onSelected,
   } = props;
   const {
-    name, bg, topbar, sidebar, accent, isPresetTheme,
+    name, bg, topbar, sidebar, createBtn, isPresetTheme,
   } = metadata;
 
   return (
@@ -38,7 +38,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
             d="M6.436,53.44H26.065V55.5H6.436Zm14.831-11.4h4.8v2.061H17.189L10,47.743H26.065V49.8l-19.629,0v-.259L0,52.8V64H32.5V36.364Z"
             fill="#434240"
           />
-          <path id="btn" d="M22.338,31.19l6.087-10.543L22.338,10.1H10.163L4.077,20.647,10.163,31.19Z" fill={accent} />
+          <path id="btn" d="M22.338,31.19l6.087-10.543L22.338,10.1H10.163L4.077,20.647,10.163,31.19Z" fill={createBtn} />
           <g id="icon-d">
             <path id="icon-3" d="M6.436,49.8l19.629,0V47.742H10l-3.561,1.8Z" fill="#d1d0cc" />
             <path id="icon-2" d="M26.065,44.106V42.044h-4.8L17.19,44.106Z" fill="#d1d0cc" />
