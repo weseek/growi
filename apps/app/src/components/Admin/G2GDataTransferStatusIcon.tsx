@@ -15,6 +15,7 @@ interface Props extends ComponentPropsWithoutRef<'i'>{
 const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.Element => {
   if (status === G2G_PROGRESS_STATUS.IN_PROGRESS) {
     return (
+      // TODO: https://redmine.weseek.co.jp/issues/141781
       <i className={`fa fa-spinner fa-pulse fa-fw ${className}`} aria-label="in progress" {...props} />
     );
   }
