@@ -10,9 +10,10 @@ export type GrowiThemeMetadata = {
   name: string,
   manifestKey: string,
   schemeType: GrowiThemeSchemeType,
-  bg: string,
-  topbar: string,
-  sidebar: string,
+  lightBg: string,
+  darkBg: string,
+  lightSidebar: string,
+  darkSidebar: string,
   createBtn: string,
   isPresetTheme?: boolean,
 };

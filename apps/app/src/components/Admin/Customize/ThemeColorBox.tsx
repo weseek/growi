@@ -15,7 +15,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
     isSelected, metadata, onSelected,
   } = props;
   const {
-    name, bg, topbar, sidebar, createBtn, isPresetTheme,
+    name, lightBg, darkBg, lightSidebar, darkSidebar, createBtn, isPresetTheme,
   } = metadata;
 
   return (
@@ -26,17 +26,17 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
     >
       <a id={name} role="button" className={`m-0 ${name} theme-button`}>
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-          <path id="bg-l" d="M32.5,0V36.364L64,20.437V0Z" fill="#fff" />
-          <path id="bg-d" d="M32.5,36.364V64H64V20.438Z" fill="#1c1a1a" />
+          <path id="bg-l" d="M32.5,0V36.364L64,20.437V0Z" fill={lightBg} />
+          <path id="bg-d" d="M32.5,36.364V64H64V20.438Z" fill={darkBg} />
           <path
             id="sidebar-l"
             d="M4.077,20.648,10.164,10.1H22.338l6.087,10.544L22.338,31.19H10.164ZM0,0V52.8l6.436-3.255v-1.8H10L17.189,44.1H6.436V42.044H21.267L32.5,36.364V0Z"
-            fill="#f8f7f7"
+            fill={lightSidebar}
           />
           <path
             id="sidebar-d"
             d="M6.436,53.44H26.065V55.5H6.436Zm14.831-11.4h4.8v2.061H17.189L10,47.743H26.065V49.8l-19.629,0v-.259L0,52.8V64H32.5V36.364Z"
-            fill="#434240"
+            fill={darkSidebar}
           />
           <path id="btn" d="M22.338,31.19l6.087-10.543L22.338,10.1H10.163L4.077,20.647,10.163,31.19Z" fill={createBtn} />
           <g id="icon-d">
