@@ -4,17 +4,19 @@ import { useEditingUsers } from '~/stores/use-editing-users';
 
 import { EditingUserList } from './EditingUserList';
 
+import styles from './EditorNavbar.module.scss';
+
+const moduleClass = styles['editor-navbar'] ?? '';
+
 export const EditorNavbar = (): JSX.Element => {
   const { data: editingUsers } = useEditingUsers();
 
   return (
-    <div className="px-4 py-2">
-      <div className="d-flex justify-content-between">
-        <PageHeader />
-        <EditingUserList
-          userList={editingUsers?.userList ?? []}
-        />
-      </div>
+    <div className={`${moduleClass} d-flex justify-content-between px-4 py-1`}>
+      <PageHeader />
+      <EditingUserList
+        userList={editingUsers?.userList ?? []}
+      />
     </div>
   );
 };
