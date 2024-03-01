@@ -11,10 +11,13 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
+import { useCreateTemplatePage } from '~/client/services/create-page';
+import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { EditorMode, useEditorMode } from '~/stores/ui';
+
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
@@ -32,6 +35,9 @@ const PageCreateModal = () => {
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
   const { isOpened, path } = pageCreateModalData;
+
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
@@ -124,32 +130,53 @@ const PageCreateModal = () => {
   /**
    * access today page
    */
-  function createTodayPage() {
+  const createTodayPage = useCallback(async() => {
     let tmpTodayInput1 = todayInput1;
     if (tmpTodayInput1 === '') {
       tmpTodayInput1 = t('Memo');
     }
-    redirectToEditor(userHomepagePath, tmpTodayInput1, now, todayInput2);
-  }
+
+    const joinedPath = [userHomepagePath, tmpTodayInput1, now, todayInput2].join('/');
+
+    try {
+      await createAndTransit(
+        { path: joinedPath, wip: true },
+        { shouldCheckPageExists: true },
+      );
+      closeCreateModal();
+    }
+    catch (err) {
+      //
+    }
+  }, [closeCreateModal, createAndTransit, now, t, todayInput1, todayInput2, userHomepagePath]);
 
   /**
    * access input page
    */
-  function createInputPage() {
-    redirectToEditor(pageNameInput);
-  }
-
-  const ppacSubmitHandler = useCallback((input) => {
-    redirectToEditor(input);
-  }, [redirectToEditor]);
+  const createInoutPage = useCallback(async() => {
+    try {
+      await createAndTransit({ path: pageNameInput, optionalParentPath: '/', wip: true });
+      closeCreateModal();
+    }
+    catch (err) {
+      //
+    }
+  }, [closeCreateModal, createAndTransit, pageNameInput]);
 
   /**
    * access template page
    */
-  function createTemplatePage(e) {
-    const pageName = (template === 'children') ? '_template' : '__template';
-    redirectToEditor(pathname, pageName);
-  }
+  const createTemplatePage = useCallback(async() => {
+    const label = (template === 'children') ? '_template' : '__template';
+
+    try {
+      await createTemplate(label);
+      closeCreateModal();
+    }
+    catch (err) {
+      //
+    }
+  }, [closeCreateModal, createTemplate, template]);
 
   function renderCreateTodayForm() {
     if (!isOpened) {
@@ -221,13 +248,13 @@ const PageCreateModal = () => {
                   <PagePathAutoComplete
                     initializedPath={pageNameInputInitialValue}
                     addTrailingSlash
-                    onSubmit={ppacSubmitHandler}
+                    onSubmit={createInoutPage}
                     onInputChange={value => setPageNameInput(value)}
                     autoFocus
                   />
                 )
                 : (
-                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                  <form onSubmit={createInoutPage}>
                     <input
                       type="text"
                       value={pageNameInput}
@@ -245,7 +272,7 @@ const PageCreateModal = () => {
                 type="button"
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
-                onClick={createInputPage}
+                onClick={createInoutPage}
                 disabled={isMatchedWithUserHomepagePath}
               >
                 <span className="material-symbols-outlined">description</span>{t('Create')}
