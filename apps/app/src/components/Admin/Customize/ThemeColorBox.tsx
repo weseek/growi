@@ -24,10 +24,10 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
       className={`theme-option-container d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}
       onClick={onSelected}
     >
-      <a id={name} role="button" className={`m-0 ${name} theme-button`}>
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
-          <path id="bg-l" d="M32.5,0V36.364L64,20.437V0Z" fill={lightBg} />
-          <path id="bg-d" d="M32.5,36.364V64H64V20.438Z" fill={darkBg} />
+      <a id={name} role="button" className={`m-0 rounded ${name} theme-button`}>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" className="rounded">
+          <path d="M32.5,0V36.364L64,20.437V0Z" fill={lightBg} />
+          <path d="M32.5,36.364V64H64V20.438Z" fill={darkBg} />
           <path
             d="M4.077,20.648,10.164,10.1H22.338l6.087,10.544L22.338,31.19H10.164ZM0,0V52.8l6.436-3.255v-1.8H10L17.189,44.1H6.436V42.044H21.267L32.5,36.364V0Z"
             fill={lightSidebar}
@@ -44,7 +44,7 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
           <rect width="19.629" height="2.062" transform="translate(6.436 53.439)" fill={darkIcon} />
         </svg>
       </a>
-      <span className="theme-option-name"><b>{ name }</b></span>
+      <span className="theme-option-name mt-2"><b>{ name }</b></span>
       { !isPresetTheme && <span className="theme-option-badge badge bg-primary mt-1">Plugin</span> }
     </div>
   );
