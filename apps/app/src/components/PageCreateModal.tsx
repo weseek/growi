@@ -10,8 +10,9 @@ import {
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { useCreateTemplatePage, useToastrOnError } from '~/client/services/create-page';
+import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
+import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
