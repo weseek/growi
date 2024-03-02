@@ -1,0 +1,17 @@
+.tag-edit-modal :global {
+  .rbt-token {
+    color: var(--bs-gray-600);
+
+    .rbt-token-label {
+      overflow: hidden;
+      font-size: 1rem;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  .rbt-token-active {
+    border-color: #80bdff !important;
+    box-shadow: 0 0 0 0.05rem #007bff40;
+  }
+}

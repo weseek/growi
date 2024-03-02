@@ -14,6 +14,8 @@ import { useTagEditModal, type TagEditModalStatus } from '~/stores/modal';
 
 import { TagsInput } from './TagsInput';
 
+import styles from './TagEditModal.module.scss';
+
 type TagEditModalSubstanceProps = {
   tagEditModalData: TagEditModalStatus,
   closeTagEditModal: () => void,
@@ -51,8 +53,8 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
   }, [closeTagEditModal, tags, pageId, revisionId, updateStateAfterSave]);
 
   return (
-    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeTagEditModal} className="bg-primary text-light">
+    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false} className={`tag-edit-modal ${styles['tag-edit-modal']}`}>
+      <ModalHeader tag="h4" toggle={closeTagEditModal}>
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
       <ModalBody>
