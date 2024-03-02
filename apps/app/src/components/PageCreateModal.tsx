@@ -131,7 +131,7 @@ const PageCreateModal: React.FC = () => {
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
-          <h3 className="grw-modal-head pb-2">{t("Create today's")}</h3>
+          <h3 className="grw-modal-head pb-2">{t('create_page_dropdown.todays.desc', { ns: 'commons' })}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
