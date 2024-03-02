@@ -52,7 +52,7 @@ const AdminHome = (props) => {
             </p>
             <hr />
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <i className="fa fa-link ms-1" aria-hidden="true"></i>
+              <span className="material-symbols-outlined ms-1" aria-hidden="true">link</span>
               <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
             </a>
           </div>
@@ -65,7 +65,7 @@ const AdminHome = (props) => {
           <div className={`alert ${migrationStatus.isV5Compatible == null ? 'alert-warning' : 'alert-info'}`}>
             {t('admin:v5_page_migration.migration_desc')}
             <a className="btn-link" href="/admin/app" rel="noopener noreferrer">
-              <i className="fa fa-link ms-1" aria-hidden="true"></i>
+              <span className="material-symbols-outlined ms-1" aria-hidden="true">link</span>
               <strong>{t('admin:v5_page_migration.upgrade_to_v5')}</strong>
             </a>
           </div>
