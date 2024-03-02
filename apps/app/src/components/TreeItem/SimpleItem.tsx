@@ -53,7 +53,7 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
     >
       {shouldShowAttentionIcon && (
         <>
-          <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+          <span id="path-recovery" className="material-symbols-outlined mr-2 text-warning">warning</span>
           <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
             {t('tooltip.operation.attention.rename')}
           </UncontrolledTooltip>
