@@ -3919,7 +3919,7 @@ class PageService implements IPageService {
     page.applyScope(user, grant, grantUserGroupIds);
 
     let savedPage = await page.save();
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, null, { format });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, undefined, { format });
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
