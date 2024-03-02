@@ -44,7 +44,7 @@ const PageCreateModal: React.FC = () => {
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
-  const todaysParentPath = [userHomepagePath, t('Memo'), now].join('/');
+  const todaysParentPath = [userHomepagePath, t('create_page_dropdown.todays.memo', { ns: 'commons' }), now].join('/');
 
   const [todayInput, setTodayInput] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
@@ -136,7 +136,7 @@ const PageCreateModal: React.FC = () => {
           <div className="d-sm-flex align-items-center justify-items-between">
 
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
-              <div className="d-flex align-items-center">
+              <div className="d-flex align-items-center text-nowrap">
                 <span>{todaysParentPath}/</span>
               </div>
               <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={(e) => { transitBySubmitEvent(e, createTodaysMemoWithToastr) }}>
