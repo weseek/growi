@@ -1,4 +1,4 @@
-import { Origin } from '@growi/core';
+import { allOrigin } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -74,7 +74,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
-    body('origin').optional().isIn(Object.values(Origin)).withMessage('origin must be "view" or "editor"'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
