@@ -2,10 +2,10 @@ import { useCallback, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { Origin } from '@growi/core';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
-import { Origin } from '~/interfaces/apiv3';
 import { useShareLinkId } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';

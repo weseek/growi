@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { Origin } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
@@ -10,7 +11,7 @@ export const SidebarNotFound = (): JSX.Element => {
   const { createAndTransit } = useCreatePageAndTransit();
 
   const clickCreateButtonHandler = useCallback(async() => {
-    createAndTransit({ path: '/Sidebar', wip: false });
+    createAndTransit({ path: '/Sidebar', wip: false, origin: Origin.View });
   }, [createAndTransit]);
 
   return (

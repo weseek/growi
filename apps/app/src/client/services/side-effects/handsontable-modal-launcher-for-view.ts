@@ -2,9 +2,10 @@ import { useCallback, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { Origin } from '@growi/core';
+
 import type MarkdownTable from '~/client/models/MarkdownTable';
 import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/Page/markdown-table-util-for-view';
-import { Origin } from '~/interfaces/apiv3';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';

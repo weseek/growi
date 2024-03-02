@@ -6,7 +6,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId, IUserHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -66,7 +66,6 @@ import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import { Origin } from '~/interfaces/apiv3';
 
 
 const logger = loggerFactory('growi:PageEditor');
