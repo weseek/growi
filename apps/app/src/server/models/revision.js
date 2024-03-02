@@ -1,3 +1,5 @@
+import { allOrigin } from '@growi/core';
+
 import loggerFactory from '~/utils/logger';
 
 // disable no-return-await for model functions
@@ -29,6 +31,7 @@ module.exports = function(crowi) {
     format: { type: String, default: 'markdown' },
     author: { type: ObjectId, ref: 'User' },
     hasDiffToPrev: { type: Boolean },
+    origin: { type: String, enum: allOrigin },
   }, {
     timestamps: { createdAt: true, updatedAt: false },
   });
@@ -38,7 +41,7 @@ module.exports = function(crowi) {
     return this.updateMany({ pageId }, { $set: updateData });
   };
 
-  revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, options) {
+  revisionSchema.statics.prepareRevision = function(pageData, body, previousBody, user, origin, options) {
     const Revision = this;
 
     if (!options) {
@@ -56,6 +59,7 @@ module.exports = function(crowi) {
     newRevision.body = body;
     newRevision.format = format;
     newRevision.author = user._id;
+    newRevision.origin = origin;
     if (pageData.revision != null) {
       newRevision.hasDiffToPrev = body !== previousBody;
     }

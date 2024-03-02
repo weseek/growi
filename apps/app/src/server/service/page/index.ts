@@ -3825,7 +3825,7 @@ class PageService implements IPageService {
 
     // Create revision
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user);
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, options.origin);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -4214,14 +4214,14 @@ class PageService implements IPageService {
     let savedPage = await newPageData.save();
 
     // Update body
-    const isBodyPresent = body != null && previousBody != null;
+    const isBodyPresent = body != null;
     const shouldUpdateBody = isBodyPresent;
     if (shouldUpdateBody) {
-      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+      const origin = options.origin;
+      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user, origin);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
     }
-
 
     this.pageEvent.emit('update', savedPage, user);
 

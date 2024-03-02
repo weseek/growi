@@ -1,14 +1,15 @@
+import { Origin } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
-import type { ValidationChain, CustomValidator } from 'express-validator';
+import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { type IApiv3PageUpdateParams, Origin } from '~/interfaces/apiv3';
+import { type IApiv3PageUpdateParams } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
@@ -59,13 +60,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     return new Xss(xssOption);
   })();
 
-  const validateOrigin: CustomValidator = (value) => {
-    if (value === Origin.View || value === Origin.Editor) {
-      return true;
-    }
-    return false;
-  };
-
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
@@ -80,7 +74,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
-    body('origin').optional().custom(validateOrigin).withMessage('origin must be "view" or "editor"'),
+    body('origin').optional().isIn(Object.values(Origin)).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -158,7 +152,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       let updatedPage;
       try {
         const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants };
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
