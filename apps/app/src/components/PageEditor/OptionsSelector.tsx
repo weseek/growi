@@ -102,7 +102,7 @@ const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX
   ), [update, selectedTheme]);
 
   return (
-    <Selector header={t('page_edit.theme', 'Theme')} onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.theme')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 ThemeSelector.displayName = 'ThemeSelector';
@@ -141,7 +141,7 @@ const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JS
 
 
   return (
-    <Selector header={t('page_edit.keymap', 'Keymap')} onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.keymap')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 KeymapSelector.displayName = 'KeymapSelector';
@@ -165,7 +165,7 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
   ), [currentIndentSize, mutateCurrentIndentSize]);
 
   return (
-    <Selector header={t('page_edit.indent', 'Indent')} onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.indent')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 IndentSizeSelector.displayName = 'IndentSizeSelector';
@@ -282,7 +282,7 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
         <span className="material-symbols-outlined py-0 fs-5"> settings </span>
         {
           collapsed ? <></>
-            : <label className="ms-1 me-1">{t('page_edit.editor_config', 'Editor Config')}</label>
+            : <label className="ms-1 me-1">{t('page_edit.editor_config')}</label>
         }
       </DropdownToggle>
       <DropdownMenu container="body">
@@ -290,25 +290,25 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
           status === OptionsStatus.Home && (
             <div className="d-flex flex-column">
               <label className="text-muted ms-3">
-                {t('page_edit.editor_config', 'Editor Config')}
+                {t('page_edit.editor_config')}
               </label>
               <hr className="my-1" />
               <ChangeStateButton
                 onClick={() => setStatus(OptionsStatus.Theme)}
-                header={t('page_edit.theme', 'Theme')}
+                header={t('page_edit.theme')}
                 data={EDITORTHEME_LABEL_MAP[editorSettings.theme ?? ''] ?? ''}
               />
               <hr className="my-1" />
               <ChangeStateButton
                 onClick={() => setStatus(OptionsStatus.Keymap)}
-                header={t('page_edit.keymap', 'Keymap')}
+                header={t('page_edit.keymap')}
                 data={KEYMAP_LABEL_MAP[editorSettings.keymapMode ?? ''] ?? ''}
               />
               <hr className="my-1" />
               <ChangeStateButton
                 disabled={isIndentSizeForced}
                 onClick={() => setStatus(OptionsStatus.Indent)}
-                header={t('page_edit.indent', 'Indent')}
+                header={t('page_edit.indent')}
                 data={currentIndentSize.toString() ?? ''}
               />
               <hr className="my-1" />
