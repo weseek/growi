@@ -2,6 +2,8 @@
  * @typedef {import('../../types').MigrationModule} MigrationModule
  */
 
+// Inspired by https://github.com/coliff/bootstrap-5-migrate-tool/blob/main/gulpfile.js
+
 module.exports = [
   /**
    * @type {MigrationModule}
