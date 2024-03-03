@@ -2,6 +2,7 @@
  * @typedef {import('../../types').MigrationModule} MigrationModule
  */
 
+// Script for migrating from Bootstrap4 to Bootstrap5 syntax
 // Inspired by https://github.com/coliff/bootstrap-5-migrate-tool/blob/main/gulpfile.js
 
 module.exports = [
