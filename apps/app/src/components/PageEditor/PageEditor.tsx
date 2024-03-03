@@ -457,10 +457,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
-            editorTheme={editorSettings?.theme}
-            editorKeymap={editorSettings?.keymapMode}
-            styleActiveLine={editorSettings?.styleActiveLine}
-            autoFormatMarkdownTable={editorSettings?.autoFormatMarkdownTable}
+            editorSettings={editorSettings}
           />
         </div>
         <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">

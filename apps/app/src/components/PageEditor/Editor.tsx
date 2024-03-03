@@ -5,7 +5,7 @@ import React, {
   useEffect,
 } from 'react';
 
-import type { IEditorSettings } from '@growi/editor';
+import type { EditorSettings } from '@growi/editor';
 import Dropzone from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import {
@@ -36,7 +36,7 @@ export type EditorPropsType = {
   isUploadAllFileAllowed?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
-  editorSettings?: IEditorSettings,
+  editorSettings?: EditorSettings,
   indentSize?: number,
   onDragEnter?: (event: any) => void,
   onMarkdownHelpButtonClicked?: () => void,

@@ -1,4 +1,4 @@
-import type { IEditorSettings } from '@growi/editor';
+import type { EditorSettings } from '@growi/editor';
 import type { Model, Document } from 'mongoose';
 import {
   Schema,
@@ -7,7 +7,7 @@ import {
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
-export interface EditorSettingsDocument extends IEditorSettings, Document {
+export interface EditorSettingsDocument extends EditorSettings, Document {
   userId: Schema.Types.ObjectId,
 }
 export type EditorSettingsModel = Model<EditorSettingsDocument>
