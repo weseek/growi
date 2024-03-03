@@ -2,12 +2,8 @@
 
 @include bs.color-mode(light) {
   .personal-dropdown-header :global {
-    .username,
-    .item-icon,
-    .item-text,
-    .item-text-email {
-      color: var(--bs-gray-600);
-    }
+    --bs-heading-color: var(--bs-gray-600);
+    --bs-dropdown-header-color: var(--bs-gray-600);
   }
 
   .personal-dropdown-item :global {
@@ -20,12 +16,8 @@
 
 @include bs.color-mode(dark) {
   .personal-dropdown-header :global {
-    .username,
-    .item-icon,
-    .item-text,
-    .item-text-email {
-      color: var(--bs-gray-500);
-    }
+    --bs-heading-color: var(--bs-gray-500);
+    --bs-dropdown-header-color: var(--bs-gray-500);
   }
 
   .personal-dropdown-item :global {
