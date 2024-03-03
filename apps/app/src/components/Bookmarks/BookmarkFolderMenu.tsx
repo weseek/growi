@@ -118,7 +118,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
           onClick={onUnbookmarkHandler}
           className="grw-bookmark-folder-menu-item text-danger"
         >
-          <i className="fa fa-bookmark"></i>{' '}
+          <span className="material-symbols-outlined">bookmark</span>{' '}
           <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}
           </span>

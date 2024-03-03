@@ -296,7 +296,7 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
+                    <span className={`material-symbols-outlined me-1 ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}>navigate_next</span>
                     { t('security_settings.other_options') }
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>

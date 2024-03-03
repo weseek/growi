@@ -844,27 +844,25 @@
     "@azure/abort-controller" "^1.0.0"
     tslib "^2.2.0"
 
-"@azure/identity@^3.3.2":
-  version "3.3.2"
-  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-3.3.2.tgz#052c33f1e5f952fd4701fb5cffc4da82994a5f28"
-  integrity sha512-aDLwgMXpNBEXOlfCP9r5Rn+inmbnTbadlOnrKI2dPS9Lpf4gHvpYBV+DEZKttakfJ+qn4iWWb7zONQSO3A4XSA==
+"@azure/identity@^4.0.1":
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/@azure/identity/-/identity-4.0.1.tgz#16a885d384fd06447a21da92c08960df492fe91e"
+  integrity sha512-yRdgF03SFLqUMZZ1gKWt0cs0fvrDIkq2bJ6Oidqcoo5uM85YMBnXWMzYKK30XqIT76lkFyAaoAAy5knXhrG4Lw==
   dependencies:
     "@azure/abort-controller" "^1.0.0"
     "@azure/core-auth" "^1.5.0"
     "@azure/core-client" "^1.4.0"
     "@azure/core-rest-pipeline" "^1.1.0"
     "@azure/core-tracing" "^1.0.0"
-    "@azure/core-util" "^1.0.0"
+    "@azure/core-util" "^1.3.0"
     "@azure/logger" "^1.0.0"
-    "@azure/msal-browser" "^2.37.1"
-    "@azure/msal-common" "^13.1.0"
-    "@azure/msal-node" "^1.17.3"
+    "@azure/msal-browser" "^3.5.0"
+    "@azure/msal-node" "^2.5.1"
     events "^3.0.0"
     jws "^4.0.0"
     open "^8.0.0"
     stoppable "^1.1.0"
     tslib "^2.2.0"
-    uuid "^8.3.0"
 
 "@azure/logger@^1.0.0":
   version "1.0.4"
@@ -873,24 +871,24 @@
   dependencies:
     tslib "^2.2.0"
 
-"@azure/msal-browser@^2.37.1":
-  version "2.38.3"
-  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-2.38.3.tgz#2f131fa9b7a8a9546fc8d34e5d99ce4c18b04147"
-  integrity sha512-2WuLFnWWPR1IdvhhysT18cBbkXx1z0YIchVss5AwVA95g7CU5CpT3d+5BcgVGNXDXbUU7/5p0xYHV99V5z8C/A==
+"@azure/msal-browser@^3.5.0":
+  version "3.10.0"
+  resolved "https://registry.yarnpkg.com/@azure/msal-browser/-/msal-browser-3.10.0.tgz#8925659e8d1a4bd21e389cca4683eb52658c778e"
+  integrity sha512-mnmi8dCXVNZI+AGRq0jKQ3YiodlIC4W9npr6FCB9WN6NQT+6rq+cIlxgUb//BjLyzKsnYo+i4LROGeMyU+6v1A==
   dependencies:
-    "@azure/msal-common" "13.3.1"
+    "@azure/msal-common" "14.7.1"
 
-"@azure/msal-common@13.3.1", "@azure/msal-common@^13.1.0":
-  version "13.3.1"
-  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-13.3.1.tgz#012465bf940d12375dc47387b754ccf9d6b92180"
-  integrity sha512-Lrk1ozoAtaP/cp53May3v6HtcFSVxdFrg2Pa/1xu5oIvsIwhxW6zSPibKefCOVgd5osgykMi5jjcZHv8XkzZEQ==
+"@azure/msal-common@14.7.1":
+  version "14.7.1"
+  resolved "https://registry.yarnpkg.com/@azure/msal-common/-/msal-common-14.7.1.tgz#b13443fbacc87ce2019a91e81a6582ea73847c75"
+  integrity sha512-v96btzjM7KrAu4NSEdOkhQSTGOuNUIIsUdB8wlyB9cdgl5KqEKnTonHUZ8+khvZ6Ap542FCErbnTyDWl8lZ2rA==
 
-"@azure/msal-node@^1.17.3":
-  version "1.18.4"
-  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-1.18.4.tgz#c921b0447c92fb3b0cb1ebf5a9a76fcad2ec7c21"
-  integrity sha512-Kc/dRvhZ9Q4+1FSfsTFDME/v6+R2Y1fuMty/TfwqE5p9GTPw08BPbKgeWinE8JRHRp+LemjQbUZsn4Q4l6Lszg==
+"@azure/msal-node@^2.5.1":
+  version "2.6.4"
+  resolved "https://registry.yarnpkg.com/@azure/msal-node/-/msal-node-2.6.4.tgz#457bd86a52461178ab2d1ba3d9d6705d95b2186e"
+  integrity sha512-nNvEPx009/80UATCToF+29NZYocn01uKrB91xtFr7bSqkqO1PuQGXRyYwryWRztUrYZ1YsSbw9A+LmwOhpVvcg==
   dependencies:
-    "@azure/msal-common" "13.3.1"
+    "@azure/msal-common" "14.7.1"
     jsonwebtoken "^9.0.0"
     uuid "^8.3.0"
 
@@ -2866,14 +2864,7 @@
   resolved "https://registry.yarnpkg.com/@replit/codemirror-vscode-keymap/-/codemirror-vscode-keymap-6.0.2.tgz#cc9b9092db5afb9800fda5a03801b4f6600b427e"
   integrity sha512-j45qTwGxzpsv82lMD/NreGDORFKSctMDVkGRopaP+OrzSzv+pXDQuU3LnFvKpasyjVT0lf+PKG1v2DSCn/vxxg==
 
-"@restart/hooks@^0.4.0":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.5.tgz#e7acbea237bfc9e479970500cf87538b41a1ed02"
-  integrity sha512-tLGtY0aHeIfT7aPwUkvQuhIy3+q3w4iqmUzFLPlOAf/vNUacLaBt1j/S//jv/dQhenRh8jvswyMojCwmLvJw8A==
-  dependencies:
-    dequal "^2.0.2"
-
-"@restart/hooks@^0.4.7":
+"@restart/hooks@^0.4.0", "@restart/hooks@^0.4.7":
   version "0.4.16"
   resolved "https://registry.yarnpkg.com/@restart/hooks/-/hooks-0.4.16.tgz#95ae8ac1cc7e2bd4fed5e39800ff85604c6d59fb"
   integrity sha512-f7aCv7c+nU/3mF7NWLtVVr0Ra80RqsO89hO72r+Y/nvQr5+q0UFGkocElTH6MJApvReVh6JHUFYn2cw1WdHF3w==
@@ -5102,7 +5093,7 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-attr-accept@^2.2.1, attr-accept@^2.2.2:
+attr-accept@^2.2.2:
   version "2.2.2"
   resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-2.2.2.tgz#646613809660110749e92f2c10833b70968d929b"
   integrity sha512-7prDjvt9HmqiZ0cl5CRjtS84sEyhsHP2coDkaZKRKVfCDo9s7iw7ChVmar78Gu9pC4SoR/28wFu/G5JJhTnqEg==
@@ -6761,15 +6752,10 @@ csurf@^1.11.0:
     csrf "3.1.0"
     http-errors "~1.7.3"
 
-csv-to-markdown-table@1.4.1:
+csv-to-markdown-table@^1.4.1:
   version "1.4.1"
   resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.4.1.tgz#7167eb16cf76da45abd54e13993e99f029c05754"
   integrity sha512-jhLkfM7LXGQCuhxCwIw0QmpHCbMXy8ouC+T8KKoKaZ43DQAezpHCxNl74j2S9Sb4SEnVgMK8/RqJfNUk6xMHRQ==
-
-csv-to-markdown-table@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/csv-to-markdown-table/-/csv-to-markdown-table-1.1.0.tgz#1c4546b4a6d7265d7715df51825c1852a7286247"
-  integrity sha512-gsnCustJ+9ckvdsivA8pRkBSUbr7vaMK5uuXU+gn5df93hUe2EqGPTazAJFGjc3vy0R9hjKHoLRjphTFy04bPg==
 
 cubic2quad@^1.2.1:
   version "1.2.1"
@@ -7370,7 +7356,7 @@ depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/depd/-/depd-1.1.2.tgz#9bcd52e14c097763e749b274c4346ed2e560b5a9"
 
-dequal@^2.0.0, dequal@^2.0.2, dequal@^2.0.3:
+dequal@^2.0.0, dequal@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/dequal/-/dequal-2.0.3.tgz#2644214f1997d39ed0ee0ece72335490a7ac67be"
   integrity sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==
@@ -7662,11 +7648,6 @@ emittery@^0.13.1:
   dependencies:
     "@babel/runtime" "^7.0.0"
     prop-types "^15.6.0"
-
-emoji-regex@^10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/emoji-regex/-/emoji-regex-10.3.0.tgz#76998b9268409eb3dae3de989254d456e70cfe23"
-  integrity sha512-QpLs9D9v9kArv4lfDEgg1X/gN5XLnf/A6l9cs8SPZLRZR3ZkY9+kwIQTxm+fsSej5UMYGE8fdoaZVIBlqG0XTw==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
@@ -8612,13 +8593,6 @@ file-entry-cache@^6.0.1:
   dependencies:
     flat-cache "^3.0.4"
 
-file-selector@^0.2.2:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.2.4.tgz#7b98286f9dbb9925f420130ea5ed0a69238d4d80"
-  integrity sha512-ZDsQNbrv6qRi1YTDOEWzf5J2KjZ9KMI1Q2SGeTkCJmNNW25Jg4TW4UMcmoqcg4WrAyKRcpBXdbWRxkfrOzVRbA==
-  dependencies:
-    tslib "^2.0.3"
-
 file-selector@^0.6.0:
   version "0.6.0"
   resolved "https://registry.yarnpkg.com/file-selector/-/file-selector-0.6.0.tgz#fa0a8d9007b829504db4d07dd4de0310b65287dc"
@@ -9009,11 +8983,6 @@ get-caller-file@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/get-caller-file/-/get-caller-file-2.0.5.tgz#4f94412a82db32f36e3b0b9741f8a97feb031f7e"
   integrity sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==
-
-get-east-asian-width@^1.0.0:
-  version "1.2.0"
-  resolved "https://registry.yarnpkg.com/get-east-asian-width/-/get-east-asian-width-1.2.0.tgz#5e6ebd9baee6fb8b7b6bd505221065f0cd91f64e"
-  integrity sha512-2nk+7SIVb14QrgXFHcm84tD4bKQz0RxPuMT8Ag5KPOq7J5fEmAg0UbXdTOSHqNuHSU28k55qnceesxXRZGzKWA==
 
 get-func-name@^2.0.0, get-func-name@^2.0.2:
   version "2.0.2"
@@ -11538,10 +11507,10 @@ levn@^0.4.1:
     prelude-ls "^1.2.1"
     type-check "~0.4.0"
 
-lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.74, lib0@^0.2.82:
-  version "0.2.85"
-  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.85.tgz#2ccc3b6e02bd6165a4b8e68f89db5f9e7787dfc5"
-  integrity sha512-vtAhVttLXCu3ps2OIsTz8CdKYKdcMo7ds1MNBIcSXz6vrY8sxASqpTi4vmsAIn7xjWvyT7haKcWW6woP6jebjQ==
+lib0@^0.2.31, lib0@^0.2.42, lib0@^0.2.52, lib0@^0.2.82, lib0@^0.2.86:
+  version "0.2.89"
+  resolved "https://registry.yarnpkg.com/lib0/-/lib0-0.2.89.tgz#f695ba69be34e28f73b3eeb5da92006f3897a470"
+  integrity sha512-5j19vcCjsQhvLG6mcDD+nprtJUCbmqLz5Hzt5xgi9SV6RIW/Dty7ZkVZHGBuPOADMKjQuKDvuQTH495wsmw8DQ==
   dependencies:
     isomorphic.js "^0.2.4"
 
@@ -11980,16 +11949,7 @@ markdown-it@^13.0.1:
     mdurl "^1.0.1"
     uc.micro "^1.0.5"
 
-markdown-table@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-1.1.1.tgz#4b3dd3a133d1518b8ef0dbc709bf2a1b4824bc8c"
-
-markdown-table@^3.0.0:
-  version "3.0.2"
-  resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.2.tgz#9b59eb2c1b22fe71954a65ff512887065a7bb57c"
-  integrity sha512-y8j3a5/DkJCmS5x4dMCQL+OR0+2EAq3DOtio1COSHsmW2BGXnNCK3v12hJt1LrUz5iZH5g0LmuYOjDdI+czghA==
-
-markdown-table@^3.0.3:
+markdown-table@^3.0.0, markdown-table@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/markdown-table/-/markdown-table-3.0.3.tgz#e6331d30e493127e031dd385488b5bd326e4a6bd"
   integrity sha512-Z1NL3Tb1M9wH4XESsCDEksWoKTdlUafKc4pt0GRwjUyXaCFZ+dc3g2erqB6zm3szA2IUSi7VnPI+o/9jnxh9hw==
@@ -14729,15 +14689,6 @@ react-dom@^18.2.0:
     loose-envify "^1.1.0"
     scheduler "^0.23.0"
 
-react-dropzone@^11.2.4:
-  version "11.2.4"
-  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-11.2.4.tgz#391a8d2e41a8a974340f83524d306540192e3313"
-  integrity sha512-EGSvK2CxFTuc28WxwuJCICyuYFX8b+sRumwU6Bs6sTbElV2HtQkT0d6C+HEee6XfbjiLIZ+Th9uji27rvo2wGw==
-  dependencies:
-    attr-accept "^2.2.1"
-    file-selector "^0.2.2"
-    prop-types "^15.7.2"
-
 react-dropzone@^14.2.3:
   version "14.2.3"
   resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-14.2.3.tgz#0acab68308fda2d54d1273a1e626264e13d4e84b"
@@ -16568,15 +16519,6 @@ string-width@^5.0.1, string-width@^5.1.2:
     emoji-regex "^9.2.2"
     strip-ansi "^7.0.1"
 
-string-width@^7.1.0:
-  version "7.1.0"
-  resolved "https://registry.yarnpkg.com/string-width/-/string-width-7.1.0.tgz#d994252935224729ea3719c49f7206dc9c46550a"
-  integrity sha512-SEIJCWiX7Kg4c129n48aDRwLbFb2LJmXXFrWBG4NGaRtMQ3myKPKbwrD1BKqQn74oCoNMBVrfDEr5M9YxCsrkw==
-  dependencies:
-    emoji-regex "^10.3.0"
-    get-east-asian-width "^1.0.0"
-    strip-ansi "^7.1.0"
-
 string.prototype.matchall@^4.0.7:
   version "4.0.7"
   resolved "https://registry.yarnpkg.com/string.prototype.matchall/-/string.prototype.matchall-4.0.7.tgz#8e6ecb0d8a1fb1fda470d81acecb2dba057a481d"
@@ -16664,7 +16606,7 @@ strip-ansi@^3.0.0:
   dependencies:
     ansi-regex "^2.0.0"
 
-strip-ansi@^7.0.1, strip-ansi@^7.1.0:
+strip-ansi@^7.0.1:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/strip-ansi/-/strip-ansi-7.1.0.tgz#d5b6568ca689d8561370b0707685d22434faff45"
   integrity sha512-iq6eVVI64nQQTRYq2KtEg2d2uU7LElhTJwsH4YzIHZshxlgZms/wIc4VoDQTlG/IvVIrBKG06CrZnp0qv7hkcQ==
@@ -18685,12 +18627,12 @@ yauzl@^2.10.0:
     buffer-crc32 "~0.2.3"
     fd-slicer "~1.1.0"
 
-yjs@^13.6.7:
-  version "13.6.7"
-  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.7.tgz#f1176c37f65eb566cf390bd813e2099d598795f4"
-  integrity sha512-mCZTh4kjvUS2DnaktsYN6wLH3WZCJBLqrTdkWh1bIDpA/sB/GNFaLA/dyVJj2Hc7KwONuuoC/vWe9bwBBosZLQ==
+yjs@^13.6.12:
+  version "13.6.12"
+  resolved "https://registry.yarnpkg.com/yjs/-/yjs-13.6.12.tgz#dc8be640270f04c4bb92c1984fdabbc13fc9c49f"
+  integrity sha512-KOT8ILoyVH2f/PxPadeu5kVVS055D1r3x1iFfJVJzFdnN98pVGM8H07NcKsO+fG3F7/0tf30Vnokf5YIqhU/iw==
   dependencies:
-    lib0 "^0.2.74"
+    lib0 "^0.2.86"
 
 yn@3.1.1:
   version "3.1.1"

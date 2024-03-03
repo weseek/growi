@@ -25,7 +25,13 @@ export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
     getRootProps,
     getInputProps,
     open,
-  } = useFileDropzone({ onUpload, acceptedUploadFileType });
+  } = useFileDropzone({
+    onUpload,
+    acceptedUploadFileType,
+    dropzoneOpts: {
+      noClick: true, noDrag: true, noKeyboard: true,
+    },
+  });
 
   return (
     <div {...getRootProps()} className="dropzone">

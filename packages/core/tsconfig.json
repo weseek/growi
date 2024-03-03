@@ -12,5 +12,5 @@
   },
   "include": [
     "src", "test"
-, "../../apps/app/src/server/util/collect-ancestor-paths.ts"  ]
+  ]
 }

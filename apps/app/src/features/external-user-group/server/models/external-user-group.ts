@@ -1,7 +1,8 @@
-import { Schema, Model, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
-import { IExternalUserGroup } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroup } from '~/features/external-user-group/interfaces/external-user-group';
 import UserGroup from '~/server/models/user-group';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 
@@ -12,7 +13,9 @@ export interface ExternalUserGroupModel extends Model<ExternalUserGroupDocument>
 
   PAGE_ITEMS: 10,
 
-  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
+  findGroupsWithDescendantsRecursively: (
+    groups: ExternalUserGroupDocument[], descendants?: ExternalUserGroupDocument[]
+  ) => Promise<ExternalUserGroupDocument[]>,
 }
 
 const schema = new Schema<ExternalUserGroupDocument, ExternalUserGroupModel>({

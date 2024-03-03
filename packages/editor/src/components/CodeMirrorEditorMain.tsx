@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
@@ -17,20 +18,22 @@ const additionalExtensions: Extension[] = [
 ];
 
 type Props = CodeMirrorEditorProps & {
-  userName?: string,
+  user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
   onOpenEditor?: (markdown: string) => void,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    userName, pageId, initialValue, onOpenEditor, onSave, ...otherProps
+    user, pageId, initialValue,
+    onSave, onOpenEditor, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(userName, pageId, initialValue, onOpenEditor, codeMirrorEditor);
+  useCollaborativeEditorMode(user, pageId, initialValue, onOpenEditor, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
