@@ -16,7 +16,7 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
-import { useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
+import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
 
@@ -64,6 +64,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
+  useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
 
   useEffect(() => {
