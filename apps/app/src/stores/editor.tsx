@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils } from '@growi/core/dist/swr';
+import type { IEditorSettings } from '@growi/editor';
 import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import type { IEditorSettings } from '~/interfaces/editor-settings';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {

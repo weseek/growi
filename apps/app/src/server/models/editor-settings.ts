@@ -1,8 +1,8 @@
+import type { IEditorSettings } from '@growi/editor';
+import type { Model, Document } from 'mongoose';
 import {
-  Schema, Model, Document,
+  Schema,
 } from 'mongoose';
-
-import { IEditorSettings } from '~/interfaces/editor-settings';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 

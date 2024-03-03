@@ -2,7 +2,7 @@ import { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 
 
-export const getKeymap = async(keyMapName: KeyMapMode, onSave?: () => void): Promise<Extension> => {
+export const getKeymap = async(keyMapName?: KeyMapMode, onSave?: () => void): Promise<Extension> => {
   switch (keyMapName) {
     case 'vim':
       return (await import('./vim')).vimKeymap(onSave);
@@ -10,9 +10,8 @@ export const getKeymap = async(keyMapName: KeyMapMode, onSave?: () => void): Pro
       return (await import('@replit/codemirror-emacs')).emacs();
     case 'vscode':
       return keymap.of((await import('@replit/codemirror-vscode-keymap')).vscodeKeymap);
-    case 'default':
-      return keymap.of((await import('@codemirror/commands')).defaultKeymap);
   }
+  return keymap.of((await import('@codemirror/commands')).defaultKeymap);
 };
 
 const KeyMapMode = {

@@ -14,11 +14,6 @@ import {
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 
-import {
-  DEFAULT_THEME, DEFAULT_KEYMAP,
-} from '../../interfaces/editor-settings';
-
-
 type RadioListItemProps = {
   onClick: () => void,
   icon?: React.ReactNode,
@@ -93,7 +88,7 @@ const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
-  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
+  const selectedTheme = editorSettings?.theme;
 
   const listItems = useMemo(() => (
     <>
@@ -128,7 +123,7 @@ const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JS
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
-  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
+  const selectedKeymapMode = editorSettings?.keymapMode;
 
   const listItems = useMemo(() => (
     <>

@@ -1,7 +1,4 @@
-import { type EditorTheme, type KeyMapMode } from '@growi/editor';
-
-export const DEFAULT_KEYMAP = 'default';
-export const DEFAULT_THEME = 'defaultlight';
+import { EditorTheme, KeyMapMode } from '../services';
 
 export interface IEditorSettings {
   theme: undefined | EditorTheme,

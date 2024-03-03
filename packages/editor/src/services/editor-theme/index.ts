@@ -1,6 +1,6 @@
 import { Extension } from '@codemirror/state';
 
-export const getEditorTheme = async(themeName: EditorTheme): Promise<Extension> => {
+export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {
     case 'eclipse':
       return (await import('@uiw/codemirror-theme-eclipse')).eclipse;
