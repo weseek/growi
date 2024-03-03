@@ -16,12 +16,10 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
-import { useCodeMirrorEditorIsolated } from '../../stores';
+import { useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
 
-
-import { useEditorSettings } from 'src/stores/use-editor-settings';
 
 import style from './CodeMirrorEditor.module.scss';
 
@@ -33,7 +31,7 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 
 export type CodeMirrorEditorProps = {
   acceptedUploadFileType?: AcceptedUploadFileType,
-  indentSize: number,
+  indentSize?: number,
   editorSettings?: EditorSettings,
   onChange?: (value: string) => void,
   onSave?: () => void,
