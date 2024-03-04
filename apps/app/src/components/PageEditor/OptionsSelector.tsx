@@ -2,8 +2,8 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
-import type {
-  EditorTheme, KeyMapMode,
+import {
+  type EditorTheme, type KeyMapMode, DEFAULT_KEYMAP, DEFAULT_THEME,
 } from '@growi/editor';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
@@ -88,7 +88,7 @@ const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
-  const selectedTheme = editorSettings?.theme;
+  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
 
   const listItems = useMemo(() => (
     <>
@@ -123,7 +123,7 @@ const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JS
 
   const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
-  const selectedKeymapMode = editorSettings?.keymapMode;
+  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
   const listItems = useMemo(() => (
     <>

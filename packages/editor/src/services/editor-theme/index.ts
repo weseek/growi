@@ -37,5 +37,6 @@ const EditorTheme = {
   kimbie: 'kimbie',
 } as const;
 
+export const DEFAULT_THEME = 'defaultlight';
 export const AllEditorTheme = Object.values(EditorTheme);
 export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]
