@@ -4,6 +4,7 @@ import {
 } from 'react';
 
 import dynamic from 'next/dynamic';
+import SimpleBar from 'simplebar-react';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores/context';
@@ -13,11 +14,10 @@ import {
   useCurrentProductNavWidth,
   usePreferCollapsedMode,
   useSidebarMode,
-  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
-import { StickyStretchableScroller } from '../StickyStretchableScroller';
+
 
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
@@ -200,22 +200,15 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   const { sidebarMode } = props;
 
-  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
-
-  const calcViewHeight = useCallback(() => {
-    const maxHeight = determineScrollbarMaxHeight(sidebarMode);
-    return maxHeight;
-  }, [sidebarMode]);
+  const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode);
 
   return (
     <div id="grw-sidebar-contents-wrapper">
-      <StickyStretchableScroller
-        simplebarRef={mutateSidebarScroller}
-        stickyElemSelector=".sidebar-contents-container"
-        calcViewHeight={calcViewHeight}
+      <SimpleBar
+        style={{ maxHeight: simplebarMaxHeight }}
       >
         <SidebarContents />
-      </StickyStretchableScroller>
+      </SimpleBar>
     </div>
   );
 });
