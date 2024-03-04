@@ -72,10 +72,10 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = (
-      <>
+      <div className="fs-5">
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
         <Separator />
-      </>
+      </div>
     );
     latterLink = (
       <>
