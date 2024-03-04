@@ -2,7 +2,7 @@ import type {
   IPage, IUser, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -62,6 +62,11 @@ async function determinePath(_parentPath?: string, _path?: string, optionalParen
 
   if (_parentPath != null) {
     const parentPath = normalizePath(_parentPath);
+
+    // when parentPath is user's homepage
+    if (isUsersHomepage(parentPath)) {
+      return generateUntitledPath(parentPath, basePathname);
+    }
 
     // when parentPath is valid
     if (isCreatablePage(parentPath)) {

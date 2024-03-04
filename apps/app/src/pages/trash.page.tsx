@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import type { IUser, IUserHasId } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';

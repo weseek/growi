@@ -166,10 +166,10 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
           <div className="row">
             <div className="col-sm-12">
               <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
-                <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
+                <span className="material-symbols-outlined">check_box</span> {t('admin:export_management.check_all')}
               </button>
               <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
-                <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
+                <span className="material-symbols-outlined">check_box_outline_blank</span> {t('admin:export_management.uncheck_all')}
               </button>
             </div>
           </div>

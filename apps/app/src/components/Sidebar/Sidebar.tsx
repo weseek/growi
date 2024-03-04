@@ -139,7 +139,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${openClass}`} style={{ width: collapsibleContentsWidth }}>
         {children}
       </div>
     </div>

@@ -28,7 +28,7 @@ export const AttachmentList = ({
     return (
       <div className="text-muted">
         <small>
-          <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+          <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
           {
             refsContext.options?.prefix != null
               ? `${refsContext.options.prefix} and descendant pages have no attachments`
@@ -51,7 +51,7 @@ export const AttachmentList = ({
     if (error != null) {
       return (
         <div className="text-warning">
-          <i className="fa fa-exclamation-triangle fa-fw"></i>
+          <span className="material-symbols-outlined me-1">warning</span>
           {refsContext.toString()} (-&gt; <small>{error.message}</small>)
         </div>
       );
