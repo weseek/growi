@@ -58,25 +58,6 @@ const EditorNavbarBottom = (): JSX.Element => {
 
   return (
     <div data-testid="grw-editor-navbar-bottom">
-      {/* Collapsed SlackNotification */}
-      {isSlackConfigured && (
-        <Collapse isOpen={isSlackExpanded && !isDeviceLargerThanLg}>
-          <nav className={`navbar navbar-expand-lg border-top ${moduleClass}`}>
-            {isSlackEnabled != null
-            && (
-              <SlackNotification
-                isSlackEnabled={isSlackEnabled}
-                slackChannels={slackChannelsStr}
-                onEnabledFlagChange={isSlackEnabledToggleHandler}
-                onChannelChange={slackChannelsChangedHandler}
-                id="idForEditorNavbarBottomForMobile"
-              />
-            )
-            }
-          </nav>
-        </Collapse>
-      )
-      }
       <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
         <form>
           <OptionsSelector collapsed={!isDeviceLargerThanMd} />
@@ -84,17 +65,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         <form className="row row-cols-lg-auto g-3 align-items-center ms-auto">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
-          {isSlackConfigured && (!isDeviceLargerThanMd ? (
-            <Button
-              className="grw-btn-slack border me-2"
-              onClick={() => (setSlackExpanded(!isSlackExpanded))}
-            >
-              <div className="grw-slack-logo">
-                <SlackLogo />
-                <span className="grw-btn-slack-triangle material-symbols-outlined ms-2">arrow_drop_up</span>
-              </div>
-            </Button>
-          ) : (
+          {isSlackConfigured && (
             <div className="me-2">
               {isSlackEnabled != null
               && (
@@ -107,7 +78,8 @@ const EditorNavbarBottom = (): JSX.Element => {
                 />
               )}
             </div>
-          ))}
+          )
+          }
           <SavePageControls slackChannels={slackChannelsStr} />
         </form>
       </div>

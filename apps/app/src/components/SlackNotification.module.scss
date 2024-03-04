@@ -1,5 +1,10 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+
+.grw-slack-switch :global {
+  flex-basis: 50px;
+}
+
 // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
 .grw-slack-notification :global {
   $input-height-slack: bs.$form-check-indicator-size * 1.5;

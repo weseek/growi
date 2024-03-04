@@ -104,22 +104,21 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
     //     </UncontrolledPopover>
     //   </div>
     // </div>
-    <InputGroup className={`d-flex ${styles['grw-slack-switch']}`}>
-      <InputGroupText className="">
-        <FormGroup switch className="">
+    <InputGroup className={`d-flex align-items-stretch  ${styles['grw-slack-switch']}`}>
+      <InputGroupText className="rounded-end rounded-pill d-flex flex-column align-items-stretch">
+        <FormGroup switch className="position-relative pe-2 m-0">
           <Input
-            className="grw-slack-switch"
+            className="position-absolute top-0 end-0 p-0 m-0 w-100 h-100 border-0"
             type="switch"
             role="switch"
             id={id}
             checked={isSlackEnabled}
             onChange={updateCheckboxHandler}
           />
-
         </FormGroup>
       </InputGroupText>
       <Input
-        className=""
+        className="rounded-start rounded-pill"
         id={idForSlackPopover}
         type="text"
         value={slackChannels}
