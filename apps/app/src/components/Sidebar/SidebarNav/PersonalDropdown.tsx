@@ -70,26 +70,22 @@ export const PersonalDropdown = (): JSX.Element => {
 
           <DropdownItem divider />
 
-          <DropdownItem>
-            <Link
-              href={pagePathUtils.userHomepagePath(currentUser)}
-              data-testid="grw-personal-dropdown-menu-user-home"
-            >
-              <span className="text-muted">
-                <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
-              </span>
-            </Link>
+          <DropdownItem
+            href={pagePathUtils.userHomepagePath(currentUser)}
+            data-testid="grw-personal-dropdown-menu-user-home"
+          >
+            <span className="text-muted">
+              <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+            </span>
           </DropdownItem>
 
-          <DropdownItem>
-            <Link
-              href="/me"
-              data-testid="grw-personal-dropdown-menu-user-settings"
-            >
-              <span className="text-muted">
-                <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
-              </span>
-            </Link>
+          <DropdownItem
+            href="/me"
+            data-testid="grw-personal-dropdown-menu-user-settings"
+          >
+            <span className="text-muted">
+              <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+            </span>
           </DropdownItem>
 
           <DropdownItem
