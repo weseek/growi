@@ -30,7 +30,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
   const RootElm = useCallback(({ children }) => {
     return isInnerElem
       ? <>{children}</>
-      : <span className="text-break" id="page-path-hierarchical-link">{children}</span>;
+      : <span className="text-break" id="grw-page-path-hierarchical-link">{children}</span>;
   }, [isInnerElem]);
 
   // render root element

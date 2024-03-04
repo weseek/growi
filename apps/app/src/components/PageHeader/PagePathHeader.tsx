@@ -89,8 +89,8 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, [clickOutSideHandler]);
 
-  const linkElem = document.getElementById('page-path-hierarchical-link');
-  const areaElem = document.getElementById('grw-page-path-header-area');
+  const linkElem = document.getElementById('grw-page-path-hierarchical-link');
+  const areaElem = document.getElementById('grw-page-path-header-container');
 
   const linkElemWidth = linkElem?.offsetWidth ?? 0;
   const areaElemWidth = areaElem?.offsetWidth ?? 0;
@@ -116,7 +116,7 @@ export const PagePathHeader: FC<Props> = (props) => {
       style={{ width: pagePathHeaderWidth }}
     >
       <div
-        id="grw-page-path-header-area"
+        id="grw-page-path-header-container"
         className="me-2"
         style={{ minWidth: 0 }}
       >
