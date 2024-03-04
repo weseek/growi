@@ -41,9 +41,10 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
   return path;
 }
 
+// TODO: i18n
+export const basePathname = 'Untitled';
+
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
-  const basePathname = 'Untitled';
 
   if (_path != null) {
     const path = normalizePath(_path);

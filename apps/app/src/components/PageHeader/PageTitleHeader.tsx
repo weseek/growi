@@ -9,10 +9,12 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
+import { basePathname } from '~/server/routes/apiv3/page/create-page';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+
 
 import styles from './PageTitleHeader.module.scss';
 
@@ -40,7 +42,10 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const editedPageTitle = nodePath.basename(editedPagePath);
 
   // https://regex101.com/r/Wg2Hh6/1
-  const untitledPageRegex = /^Untitled-\d+$/;
+  // const untitledPageRegex = /^Untitled-\d+$/;
+
+  const untitledPageRegex = new RegExp(`/^${basePathname}-\d+$/`);
+
   const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
   const onRenameFinish = useCallback(() => {
