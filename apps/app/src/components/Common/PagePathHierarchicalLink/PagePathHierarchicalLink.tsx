@@ -13,7 +13,6 @@ type PagePathHierarchicalLinkProps = {
   linkedPagePathByHtml?: LinkedPagePath,
   basePath?: string,
   isInTrash?: boolean,
-  isIconHidden?: boolean,
 
   // !!INTERNAL USE ONLY!!
   isInnerElem?: boolean,
@@ -24,22 +23,16 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash, isInnerElem,
   } = props;
 
-  const isIconHidden = props.isIconHidden ?? false;
-
   // eslint-disable-next-line react/prop-types
   const RootElm = useCallback(({ children }) => {
     return isInnerElem
       ? <>{children}</>
-      : <span className="text-break" id="page-path-hierarchical-link">{children}</span>;
+      : <span className="text-break">{children}</span>;
   }, [isInnerElem]);
 
   // render root element
   if (linkedPagePath.isRoot) {
     if (basePath != null) {
-      return <></>;
-    }
-
-    if (isIconHidden) {
       return <></>;
     }
 
@@ -84,7 +77,6 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
           basePath={basePath}
           isInTrash={isInTrash || linkedPagePath.isInTrash}
           isInnerElem
-          isIconHidden={isIconHidden}
         />
       ) }
       { isSeparatorRequired && (
