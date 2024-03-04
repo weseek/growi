@@ -35,11 +35,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
 
   // render root element
   if (linkedPagePath.isRoot) {
-    if (basePath != null) {
-      return <></>;
-    }
-
-    if (isIconHidden) {
+    if (basePath != null || isIconHidden) {
       return <></>;
     }
 
