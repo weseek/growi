@@ -6,7 +6,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import type { IPageHasId, IUserHasId } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -53,6 +53,7 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
@@ -87,7 +88,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
-  const [previewRect, previewRef] = useRect();
+  const previewRef = useRef<HTMLDivElement>(null);
+  const [previewRect] = useRect(previewRef);
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
@@ -116,6 +118,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
+  const { onEditorsUpdated } = useEditingUsers();
 
   const { data: socket } = useGlobalSocket();
 
@@ -156,8 +159,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
-
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -307,7 +308,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncEditor = true;
     scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
 
@@ -323,7 +324,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncPreview = true;
     scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
@@ -444,10 +445,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedUploadFileType={acceptedUploadFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            userName={user?.name}
+            user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
             onOpenEditor={markdown => setMarkdownToPreview(markdown)}
+            onEditorsUpdated={onEditorsUpdated}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
           />
