@@ -21,23 +21,23 @@ const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.
 
   if (status === G2G_PROGRESS_STATUS.COMPLETED) {
     return (
-      <i className={`fa fa-check-circle-o fa-fw text-info ${className}`} aria-label="completed" {...props} />
+      <span className={`material-symbols-outlined text-info ${className}`} aria-label="completed" {...props}>check_circle</span>
     );
   }
 
   if (status === G2G_PROGRESS_STATUS.ERROR) {
     return (
-      <i className={`fa fa-exclamation-circle fa-fw text-danger ${className}`} aria-label="error" {...props} />
+      <span className={`material-symbols-outlined text-danger ${className}`} aria-label="error" {...props}>error</span>
     );
   }
 
   if (status === G2G_PROGRESS_STATUS.SKIPPED) {
     return (
-      <i className={`fa fa-ban fa-fw ${className}`} aria-label="skipped" {...props} />
+      <span className={`material-symbols-outlined ${className}`} aria-label="skipped" {...props}>block</span>
     );
   }
 
-  return <i className={`fa fa-circle-o fa-fw ${className}`} aria-label="pending" {...props} />;
+  return <span className={`material-symbols-outlined ${className}`} aria-label="pending" {...props}>circle</span>;
 };
 
 export default G2GDataTransferStatusIcon;

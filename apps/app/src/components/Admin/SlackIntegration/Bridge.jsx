@@ -72,15 +72,15 @@ const Bridge = (props) => {
   // all green
   else if (errorCount === 0) {
     description = t('admin:slack_integration.integration_sentence.integration_successful');
-    iconClass = 'fa fa-check text-success';
-    iconName = '';
+    iconClass = 'material-symbols-outlined text-success';
+    iconName = 'check';
     hrClass = 'border-success admin-border-success';
   }
   // some of them failed
   else {
     description = t('admin:slack_integration.integration_sentence.integration_some_ws_is_not_complete');
-    iconClass = 'fa fa-check text-warning';
-    iconName = '';
+    iconClass = 'material-symbols-outlined text-warning';
+    iconName = 'check';
     hrClass = 'border-warning admin-border-failed';
   }
 

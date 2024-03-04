@@ -27,7 +27,7 @@ export const LsxListView = React.memo((props: Props): JSX.Element => {
       return (
         <div className="text-muted">
           <small>
-            <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+            <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
             $lsx(<a href={lsxContext.pagePath}>{lsxContext.pagePath}</a>) has no contents
           </small>
         </div>
