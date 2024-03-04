@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FC } from 'react';
+import {
+  useState, useEffect, useCallback,
+} from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -87,6 +89,19 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, [clickOutSideHandler]);
 
+  const linkElem = document.getElementById('page-path-hierarchical-link');
+  const areaElem = document.getElementById('grw-page-path-header-area');
+
+  const linkElemWidth = linkElem?.offsetWidth ?? 0;
+  const areaElemWidth = areaElem?.offsetWidth ?? 0;
+
+  const styles: CSSProperties | undefined = linkElemWidth > areaElemWidth ? { direction: 'rtl' } : undefined;
+
+  const subNavElem = document.getElementById('grw-contextual-sub-nav');
+
+  const subNavElemWidth = subNavElem?.offsetWidth ?? 0;
+
+  const pagePathHeaderWidth = `calc(100% - ${subNavElemWidth}px)`;
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -95,11 +110,16 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex col-6 small ${moduleClass}`}
+      className={`d-flex ${moduleClass} small`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
+      style={{ width: pagePathHeaderWidth }}
     >
-      <div className="me-2">
+      <div
+        id="grw-page-path-header-area"
+        className="me-2"
+        style={{ minWidth: 0 }}
+      >
         { isRenameInputShown && (
           <div className="position-absolute">
             <ClosableTextInput
@@ -115,15 +135,17 @@ export const PagePathHeader: FC<Props> = (props) => {
           </div>
         ) }
         <div
-          className={`${isRenameInputShown ? 'invisible' : ''} ${styles['ellipsize-left']}`}
-          style={{ direction: 'rtl' }}
+          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          style={styles}
         >
-          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+          <PagePathHierarchicalLink
+            linkedPagePath={linkedPagePath}
+            isIconHidden={linkElemWidth > areaElemWidth}
+          />
         </div>
       </div>
 
-      {/* <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}> */}
-      <div className="page-path-header-buttons d-flex align-items-center">
+      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
