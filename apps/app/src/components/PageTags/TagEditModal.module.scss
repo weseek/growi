@@ -1,10 +1,12 @@
 .tag-edit-modal :global {
   .rbt-token {
-    color: var(--bs-gray-600);
+    // override to .badge color
+    color: var(--bs-badge-color);
 
     .rbt-token-label {
+      // override to text-truncate
       overflow: hidden;
-      font-size: 1rem;
+      font-size: 1rem; // adjust font-size
       text-overflow: ellipsis;
       white-space: nowrap;
     }
