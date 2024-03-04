@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import type { IUser } from '@growi/core';
 import { FootstampIcon } from '@growi/ui/dist/components';

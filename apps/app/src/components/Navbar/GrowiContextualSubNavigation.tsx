@@ -322,14 +322,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         )}
 
         { isGuestUser && (
-          <>
-            <Link href="/login#register" className="btn" prefetch={false}>
+          <div className="mt-2">
+            <Link href="/login#register" className="btn me-2" prefetch={false}>
               <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
             </Link>
             <Link href="/login#login" className="btn btn-primary" prefetch={false}>
               <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
             </Link>
-          </>
+          </div>
         ) }
       </div>
 

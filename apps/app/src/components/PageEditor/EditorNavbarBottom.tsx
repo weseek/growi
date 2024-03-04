@@ -91,7 +91,7 @@ const EditorNavbarBottom = (): JSX.Element => {
             >
               <div className="grw-slack-logo">
                 <SlackLogo />
-                <span className="grw-btn-slack-triangle fa fa-caret-up ms-2"></span>
+                <span className="grw-btn-slack-triangle material-symbols-outlined ms-2">arrow_drop_up</span>
               </div>
             </Button>
           ) : (

@@ -214,7 +214,7 @@ export const UserGroupTable: FC<Props> = ({
                           {onRemove != null
                           && (
                             <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
-                              <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
+                              <span className="material-symbols-outlined me-1">group_remove</span> {t('admin:user_group_management.remove_child_group')}
                             </button>
                           )}
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>

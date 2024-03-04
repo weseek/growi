@@ -20,7 +20,7 @@ type Props = {
   onScroll?: (scrollTop: number) => void,
 }
 
-const Preview = React.forwardRef((props: Props): JSX.Element => {
+const Preview = (props: Props): JSX.Element => {
 
   const {
     rendererOptions,
@@ -41,8 +41,6 @@ const Preview = React.forwardRef((props: Props): JSX.Element => {
     </div>
   );
 
-});
-
-Preview.displayName = 'Preview';
+};
 
 export default Preview;
