@@ -6,7 +6,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -53,19 +53,19 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { PageHeader } from '../PageHeader/PageHeader';
-
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
+import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
 
+// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
+// import { ConflictDiffModal } from './ConflictDiffModal';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -117,6 +117,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
+  const { onEditorsUpdated } = useEditingUsers();
 
   const { data: socket } = useGlobalSocket();
 
@@ -157,8 +158,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
-
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -205,9 +204,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const { page } = await updatePage({
         pageId,
-        revisionId: currentRevisionId,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
+        origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
@@ -433,9 +432,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="px-4 py-2">
-        <PageHeader />
-      </div>
+
+      <EditorNavbar />
+
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert">
           <CodeMirrorEditorMain
@@ -445,12 +444,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedUploadFileType={acceptedUploadFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            userName={user?.name}
+            user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
-            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
-            editorTheme={editorSettings?.theme}
-            editorKeymap={editorSettings?.keymapMode}
+            editorSettings={editorSettings}
+            onEditorsUpdated={onEditorsUpdated}
           />
         </div>
         <div
@@ -476,7 +474,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         />
         */}
       </div>
+
       <EditorNavbarBottom />
+
     </div>
   );
 });

@@ -287,7 +287,7 @@ const PageRenameModal = (): JSX.Element => {
 
         <p className="mt-2">
           <button type="button" className="btn btn-link mt-2 p-0" aria-expanded="false" onClick={() => setExpandOtherOptions(!expandOtherOptions)}>
-            <i className={`fa fa-fw fa-arrow-right ${expandOtherOptions ? 'fa-rotate-90' : ''}`}></i>
+            <span className={`material-symbols-outlined me-1 ${expandOtherOptions ? 'fa-rotate-90' : ''}`}>navigate_next</span>
             { t('modal_rename.label.Other options') }
           </button>
         </p>

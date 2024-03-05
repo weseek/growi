@@ -180,8 +180,8 @@ export const LinkEditModal = (): JSX.Element => {
         </div>
         <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
-            <i className="d-none d-sm-block fa fa-caret-right"></i>
-            <i className="d-sm-none fa fa-caret-down"></i>
+            <span className="d-none d-sm-block material-symbols-outlined">arrow_right</span>
+            <span className="d-sm-none material-symbols-outlined">arrow_drop_down</span>
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
