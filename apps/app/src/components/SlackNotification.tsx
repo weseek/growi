@@ -42,8 +42,8 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
 
   return (
     <InputGroup className={`d-flex align-items-center ${styles['grw-slack-switch']}`}>
-      <InputGroupText className="rounded-end rounded-pill p-0 pe-1">
-        <FormGroup switch className="position-relative pe-4 py-3 m-0 grw-slack-switch">
+      <InputGroupText className="rounded-pill rounded-end border-end-0 border-secondary p-0 pe-1 grw-slack-switch">
+        <FormGroup switch className="position-relative pe-4 py-3 m-0">
           <Input
             className="position-absolute bottom-0 start-0 p-0 m-0 w-100 h-100 border-0"
             type="switch"
@@ -55,7 +55,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
         </FormGroup>
       </InputGroupText>
       <Input
-        className="rounded-start rounded-pill py-1 border-left-0"
+        className="rounded-pill rounded-start border-start-0 border-secondary py-1 text-muted"
         id={idForSlackPopover}
         type="text"
         value={slackChannels}

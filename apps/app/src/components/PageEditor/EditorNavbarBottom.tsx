@@ -1,15 +1,13 @@
 import React, { useCallback, useState, useEffect } from 'react';
 
 import dynamic from 'next/dynamic';
-import { Collapse, Button } from 'reactstrap';
-
 
 import type { SavePageControlsProps } from '~/components/SavePageControls';
 import { useIsSlackConfigured } from '~/stores/context';
 import { useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import {
-  useEditorMode, useIsDeviceLargerThanLg, useIsDeviceLargerThanMd,
+  useEditorMode, useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
 
@@ -17,21 +15,16 @@ import styles from './EditorNavbarBottom.module.scss';
 
 const moduleClass = styles['grw-editor-navbar-bottom'];
 
-
 const SavePageControls = dynamic<SavePageControlsProps>(() => import('~/components/SavePageControls').then(mod => mod.SavePageControls), { ssr: false });
-const SlackLogo = dynamic(() => import('~/components/SlackLogo').then(mod => mod.SlackLogo), { ssr: false });
 const SlackNotification = dynamic(() => import('~/components/SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 const OptionsSelector = dynamic(() => import('~/components/PageEditor/OptionsSelector').then(mod => mod.OptionsSelector), { ssr: false });
 
 
 const EditorNavbarBottom = (): JSX.Element => {
 
-  const [isSlackExpanded, setSlackExpanded] = useState(false);
-
   const { data: editorMode } = useEditorMode();
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const { data: isDeviceLargerThanLg } = useIsDeviceLargerThanLg();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
 
@@ -59,14 +52,14 @@ const EditorNavbarBottom = (): JSX.Element => {
   return (
     <div data-testid="grw-editor-navbar-bottom">
       <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
-        <form>
+        <form className="m-2 me-auto">
           <OptionsSelector collapsed={!isDeviceLargerThanMd} />
         </form>
-        <form className="row row-cols-lg-auto g-3 align-items-center ms-auto">
+        <form className="m-2">
           {/* Responsive Design for the SlackNotification */}
           {/* Button or the normal Slack banner */}
           {isSlackConfigured && (
-            <div className="me-2">
+            <>
               {isSlackEnabled != null
               && (
                 <SlackNotification
@@ -77,11 +70,11 @@ const EditorNavbarBottom = (): JSX.Element => {
                   id="idForEditorNavbarBottom"
                 />
               )}
-            </div>
+            </>
           )
           }
-          <SavePageControls slackChannels={slackChannelsStr} />
         </form>
+        <SavePageControls slackChannels={slackChannelsStr} />
       </div>
     </div>
   );
