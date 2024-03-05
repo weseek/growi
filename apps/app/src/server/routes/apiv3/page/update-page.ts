@@ -1,3 +1,4 @@
+import { allOrigin } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -8,7 +9,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import type { IApiv3PageUpdateParams } from '~/interfaces/apiv3';
+import { type IApiv3PageUpdateParams } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
@@ -63,7 +64,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
       .withMessage("'pageId' must be specified"),
-    body('revisionId').exists().not().isEmpty({ ignore_whitespace: true })
+    body('revisionId').optional().exists().not()
+      .isEmpty({ ignore_whitespace: true })
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
       .withMessage("The empty value is not allowd for the 'body'"),
@@ -72,6 +74,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -101,7 +104,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const { revisionId, isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', { previousRevision: revisionId });
+        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -120,7 +124,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
-      const { pageId, revisionId, body } = req.body;
+      const {
+        pageId, revisionId, body, origin,
+      } = req.body;
 
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
@@ -130,7 +136,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
-      if (currentPage != null && !currentPage.isUpdatable(revisionId)) {
+      if (currentPage != null && !currentPage.isUpdatable(revisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -146,7 +152,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       let updatedPage;
       try {
         const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants };
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
