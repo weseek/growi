@@ -104,11 +104,11 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
     //     </UncontrolledPopover>
     //   </div>
     // </div>
-    <InputGroup className={`d-flex align-items-stretch  ${styles['grw-slack-switch']}`}>
-      <InputGroupText className="rounded-end rounded-pill d-flex flex-column align-items-stretch">
-        <FormGroup switch className="position-relative pe-2 m-0">
+    <InputGroup className={`d-flex align-items-center ${styles['grw-slack-switch']}`}>
+      <InputGroupText className="rounded-end rounded-pill p-0 pe-1">
+        <FormGroup switch className="position-relative pe-3 py-3 m-0 grw-slack-switch">
           <Input
-            className="position-absolute top-0 end-0 p-0 m-0 w-100 h-100 border-0"
+            className="position-absolute bottom-0 start-0 p-0 m-0 w-100 h-100 border-0"
             type="switch"
             role="switch"
             id={id}
@@ -118,7 +118,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
         </FormGroup>
       </InputGroupText>
       <Input
-        className="rounded-start rounded-pill"
+        className="rounded-start rounded-pill py-1 border-left-0"
         id={idForSlackPopover}
         type="text"
         value={slackChannels}
