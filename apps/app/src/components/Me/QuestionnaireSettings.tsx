@@ -41,7 +41,7 @@ export const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <>
-      <h2 className="border-bottom mb-4">{t('questionnaire.settings')}</h2>
+      <h2 className="border-bottom pb-2 mb-4 fs-4">{t('questionnaire.settings')}</h2>
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
@@ -49,8 +49,8 @@ export const QuestionnaireSettings = (): JSX.Element => {
         </div>
       )}
 
-      <div className="row">
-        <div className="offset-md-3 col-md-6 text-start">
+      <div className="container">
+        <div className="offset-md-3 col-md-6 text-start row">
           {!isLoadingCurrentUser && (
             <div className="form-check form-switch">
               <span id="grw-questionnaire-settings-toggle-wrapper">
@@ -66,14 +66,14 @@ export const QuestionnaireSettings = (): JSX.Element => {
                   {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>
-              <p className="form-text text-muted small">
-                {t('questionnaire.personal_settings_explanation')}
-              </p>
               {!growiIsQuestionnaireEnabled && (
                 <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
                   {t('questionnaire.disabled_by_admin')}
                 </UncontrolledTooltip>
               ) }
+              <p className="form-text text-muted small">
+                {t('questionnaire.personal_settings_explanation')}
+              </p>
             </div>
           )}
         </div>

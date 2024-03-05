@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import pullAllBy from 'lodash/pullAllBy';
 import { useTranslation } from 'next-i18next';
@@ -67,7 +66,7 @@ const InAppNotificationSettings: FC = () => {
 
   return (
     <>
-      <h2 className="border-bottom my-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
+      <h2 className="border-bottom pb-2 my-4 fs-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
 
       <div className="row">
         <div className="offset-md-3 col-md-6 text-start">
