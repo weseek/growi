@@ -9,8 +9,6 @@ import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
-import { CompressIcon } from './Icons/CompressIcon';
-import { ExpandIcon } from './Icons/ExpandIcon';
 
 export type UsersHomepageFooterProps = {
   creatorId: string,
@@ -36,8 +34,8 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
               onClick={() => setIsExpanded(!isExpanded)}
             >
               { isExpanded
-                ? <ExpandIcon />
-                : <CompressIcon />
+                ? <span className="material-symbols-outlined">expand</span>
+                : <span className="material-symbols-outlined">compress</span>
               }
             </button>
           </span>
