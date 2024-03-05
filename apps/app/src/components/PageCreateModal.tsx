@@ -107,7 +107,6 @@ const PageCreateModal: React.FC = () => {
     return createAndTransit(
       {
         path: pageNameInput,
-        optionalParentPath: '/',
         wip: true,
         origin: Origin.View,
       },
