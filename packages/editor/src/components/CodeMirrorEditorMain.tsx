@@ -1,4 +1,4 @@
-useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
@@ -27,7 +27,7 @@ type Props = CodeMirrorEditorProps & {
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
     user, pageId, initialValue,
-    onSave, onOpenEditor, onEditorsUpdated, ...otherProps
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
