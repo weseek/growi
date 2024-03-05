@@ -23,18 +23,16 @@ export const useCollaborativeEditorMode = (
     user?: IUserHasId,
     pageId?: string,
     initialValue?: string,
-    onOpenEditor?: (markdown: string) => void,
     onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
-  const [isInit, setIsInit] = useState(false);
   const [cPageId, setCPageId] = useState(pageId);
 
   const { data: socket } = useGlobalSocket();
 
-  const cleanupYDocAndProvider = () => {
+  const cleanupYDoc = () => {
     if (cPageId === pageId) {
       return;
     }
@@ -49,7 +47,6 @@ export const useCollaborativeEditorMode = (
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
     socket?.off(GlobalSocketEventName.YDocSync);
 
-    setIsInit(false);
     setCPageId(pageId);
 
     // reset editors
@@ -112,35 +109,24 @@ export const useCollaborativeEditorMode = (
   };
 
   const setupYDocExtensions = () => {
-    if (ydoc == null || provider == null) {
+    if (ydoc == null || provider == null || codeMirrorEditor == null) {
       return;
     }
 
     const ytext = ydoc.getText('codemirror');
     const undoManager = new Y.UndoManager(ytext);
 
-    const cleanup = codeMirrorEditor?.appendExtensions?.([
+    codeMirrorEditor.initDoc(ytext.toString());
+
+    const cleanup = codeMirrorEditor.appendExtensions([
       yCollab(ytext, provider.awareness, { undoManager }),
     ]);
 
     return cleanup;
   };
 
-  const initializeEditor = () => {
-    if (ydoc == null || onOpenEditor == null || isInit === true) {
-      return;
-    }
-
-    const ytext = ydoc.getText('codemirror');
-    codeMirrorEditor?.initDoc(ytext.toString());
-    onOpenEditor(ytext.toString());
-
-    setIsInit(true);
-  };
-
-  useEffect(cleanupYDocAndProvider, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);
+  useEffect(cleanupYDoc, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
   useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
-  useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 };

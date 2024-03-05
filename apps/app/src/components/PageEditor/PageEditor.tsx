@@ -6,7 +6,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId, IUserHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -205,9 +205,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const { page } = await updatePage({
         pageId,
-        revisionId: currentRevisionId,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
+        origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
@@ -448,7 +448,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
-            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
             onEditorsUpdated={onEditorsUpdated}
             editorTheme={editorSettings?.theme}
             editorKeymap={editorSettings?.keymapMode}
