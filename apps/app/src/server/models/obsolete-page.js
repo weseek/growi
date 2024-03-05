@@ -1,4 +1,4 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { GroupType, Origin } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
@@ -141,7 +141,14 @@ export const getPageSchema = (crowi) => {
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function(previousRevision) {
+  pageSchema.methods.isUpdatable = async function(previousRevision, origin) {
+    const populatedPageDataWithRevisionOrigin = await this.populate('revision', 'origin');
+    const latestRevisionOrigin = populatedPageDataWithRevisionOrigin.revision.origin;
+    const ignoreLatestRevision = origin === Origin.Editor && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.View);
+    if (ignoreLatestRevision) {
+      return true;
+    }
+
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq

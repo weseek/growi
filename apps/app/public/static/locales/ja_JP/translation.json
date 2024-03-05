@@ -344,6 +344,11 @@
     }
   },
   "page_edit": {
+    "input_channels": "チャンネル名",
+    "theme": "テーマ",
+    "keymap": "キーマップ",
+    "indent": "インデント",
+    "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
@@ -866,10 +871,10 @@
     "select_page_location": "ページの場所を選択"
   },
   "wip_page": {
-    "save_as_wip": "WIP (執筆中) として保存",
+    "save_as_wip": "WIP (執筆途中) として保存",
     "success_save_as_wip": "WIP ページとして保存しました",
     "fail_save_as_wip": "WIP ページとして保存できませんでした",
-    "alert": "このページは作業途中です",
+    "alert": "このページは執筆途中です",
     "publish_page": "WIP を解除",
     "success_publish_page": "WIP を解除しました",
     "fail_publish_page": "WIP を解除できませんでした"
