@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
@@ -13,16 +13,23 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
+  useIsSlackConfigured,
 } from '~/stores/context';
-import { useWaitingSaveProcessing } from '~/stores/editor';
-import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
+import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
+import { useSWRMUTxCurrentPage, useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-import { useSelectedGrant } from '~/stores/ui';
+import {
+  useSelectedGrant,
+  useEditorMode, useIsDeviceLargerThanMd,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
 
 import { unpublish } from '../client/services/page-operation';
 
+
 import { GrantSelector } from './SavePageControls/GrantSelector';
+import { SlackNotification } from './SlackNotification';
 
 
 declare global {
@@ -33,12 +40,8 @@ declare global {
 
 const logger = loggerFactory('growi:SavePageControls');
 
-export type SavePageControlsProps = {
-  slackChannels: string
-}
 
-export const SavePageControls = (props: SavePageControlsProps): JSX.Element | null => {
-  const { slackChannels } = props;
+export const SavePageControls = (): JSX.Element | null => {
   const { t } = useTranslation();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
@@ -47,7 +50,35 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
+  const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
+
+  const [slackChannels, setSlackChannels] = useState<string>('');
+
+  // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
+  const slackChannelsDataString = slackChannelsData?.toString();
+  useEffect(() => {
+    if (editorMode === 'editor') {
+      setSlackChannels(slackChannelsDataString ?? '');
+      mutateIsSlackEnabled(false);
+    }
+  }, [editorMode, mutateIsSlackEnabled, slackChannelsDataString]);
+
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
+
+
+  const isSlackEnabledToggleHandler = (bool: boolean) => {
+    mutateIsSlackEnabled(bool, false);
+  };
+
+  const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
+    setSlackChannels(slackChannels);
+  }, []);
+
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);
@@ -100,6 +131,22 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
+
+      {isSlackConfigured && (
+        <div className="me-2">
+          {isSlackEnabled != null
+              && (
+                <SlackNotification
+                  isSlackEnabled={isSlackEnabled}
+                  slackChannels={slackChannels}
+                  onEnabledFlagChange={isSlackEnabledToggleHandler}
+                  onChannelChange={slackChannelsChangedHandler}
+                  id="idForEditorNavbarBottom"
+                />
+              )}
+        </div>
+      )
+      }
 
       {isAclEnabled
         && (
