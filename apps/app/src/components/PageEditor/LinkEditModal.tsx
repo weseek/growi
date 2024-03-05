@@ -20,7 +20,6 @@ import { useCurrentPagePath } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
 
 import Preview from './Preview';
