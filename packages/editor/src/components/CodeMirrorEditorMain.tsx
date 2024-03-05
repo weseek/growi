@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
@@ -21,7 +21,6 @@ type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  onOpenEditor?: (markdown: string) => void,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
@@ -33,7 +32,7 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(user, pageId, initialValue, onOpenEditor, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
