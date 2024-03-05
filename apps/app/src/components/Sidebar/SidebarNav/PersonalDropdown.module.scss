@@ -2,15 +2,12 @@
 
 @include bs.color-mode(light) {
   .personal-dropdown-header :global {
-    --bs-heading-color: var(--bs-gray-600);
-    --bs-dropdown-header-color: var(--bs-gray-600);
+    color: var(--bs-gray-600);
   }
 
   .personal-dropdown-item :global {
-    .item-icon,
-    .item-text {
-      color: var(--bs-gray-600);
-    }
+    --bs-link-color-rgb:var(--bs-gray-600);
+    color: var(--bs-gray-600);
   }
 }
 
@@ -28,17 +25,12 @@
   }
 }
 
-.personal-dropdown-header :global {
-  .item-text {
-    font-size: 12px;
-  }
-  .item-text-email {
-    font-size: 10.5px;
-  }
+.personal-dropdown-menu :global {
+  --bs-dropdown-font-size: 14px;
 }
 
-.personal-dropdown-item :global {
-  .item-text {
-    font-size: 14px;
+.personal-dropdown-header :global {
+  .item-text-email {
+    font-size: 10.5px;
   }
 }
