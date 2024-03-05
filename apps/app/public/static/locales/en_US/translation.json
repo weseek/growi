@@ -311,6 +311,11 @@
     }
   },
   "page_edit": {
+    "input_channels": "Input channels",
+    "theme": "Theme",
+    "keymap": "Keymap",
+    "indent": "Indent",
+    "editor_config": "Editor Config",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",

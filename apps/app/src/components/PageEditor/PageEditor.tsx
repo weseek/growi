@@ -447,9 +447,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
+            editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
-            editorTheme={editorSettings?.theme}
-            editorKeymap={editorSettings?.keymapMode}
           />
         </div>
         <div
