@@ -256,7 +256,7 @@ export const LinkEditModal = (): JSX.Element => {
               />
               <div className="d-none d-sm-block">
                 <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
-                  <PagePreviewIcon />
+                  <span className="material-symbols-outlined">find_in_page</span>
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={isPreviewOpen} target="preview-btn" toggle={toggleIsPreviewOpen}>
                   <PopoverBody>
