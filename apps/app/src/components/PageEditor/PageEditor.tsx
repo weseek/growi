@@ -448,7 +448,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
-            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
             editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
           />
