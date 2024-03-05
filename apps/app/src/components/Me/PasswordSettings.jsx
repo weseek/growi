@@ -87,8 +87,8 @@ class PasswordSettings extends React.Component {
         ) }
 
         {(this.state.isPasswordSet)
-          ? <h2 className="border-bottom my-4">{t('personal_settings.update_password')}</h2>
-          : <h2 className="border-bottom my-4">{t('personal_settings.set_new_password')}</h2>}
+          ? <h2 className="border-bottom mt-4 mb-5 pb-2 fs-4">{t('personal_settings.update_password')}</h2>
+          : <h2 className="border-bottom mt-4 mb-5 pb-2 fs-4">{t('personal_settings.set_new_password')}</h2>}
         {(this.state.isPasswordSet)
         && (
           <div className="row mb-3">
@@ -135,7 +135,7 @@ class PasswordSettings extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="offset-5">
+          <div className="text-center">
             <button
               data-testid="grw-password-settings-update-button"
               type="button"
