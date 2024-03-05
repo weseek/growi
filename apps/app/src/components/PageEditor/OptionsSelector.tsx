@@ -13,6 +13,9 @@ import {
 
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
+import {
+  useIsDeviceLargerThanMd,
+} from '~/stores/ui';
 
 import {
   DEFAULT_THEME, DEFAULT_KEYMAP,
@@ -258,7 +261,7 @@ const OptionsStatus = {
 } as const;
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
-export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Element => {
+export const OptionsSelector = (): JSX.Element => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -266,6 +269,7 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
   const { data: editorSettings } = useEditorSettings();
   const { data: currentIndentSize } = useCurrentIndentSize();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   if (editorSettings == null || currentIndentSize == null || isIndentSizeForced == null) {
     return <></>;
@@ -275,14 +279,15 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
       <DropdownToggle
         className={`btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center
-              ${collapsed ? 'border-0' : 'border border-secondary'}
+              ${isDeviceLargerThanMd ? 'border border-secondary' : 'border-0'}
               ${dropdownOpen ? 'active' : ''}
               `}
       >
         <span className="material-symbols-outlined py-0 fs-5"> settings </span>
         {
-          collapsed ? <></>
-            : <label className="ms-1 me-1">Editor Config</label>
+          isDeviceLargerThanMd
+            ? <label className="ms-1 me-1">Editor Config</label>
+            : <></>
         }
       </DropdownToggle>
       <DropdownMenu container="body">
