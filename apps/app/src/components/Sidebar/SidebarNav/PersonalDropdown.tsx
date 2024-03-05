@@ -59,13 +59,13 @@ export const PersonalDropdown = (): JSX.Element => {
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
-            <h5 className="username ms-1">{currentUser.name}</h5>
+            <h5 className="ms-1 fs-6">{currentUser.name}</h5>
             <div className="d-flex align-items-center my-2">
-              <span className="item-icon material-symbols-outlined me-1">person</span>
-              <span className="item-text">{currentUser.username}</span>
+              <span className="material-symbols-outlined me-1 pb-0 fs-6">person</span>
+              <span className="item-text fs-7">{currentUser.username}</span>
             </div>
             <div className="d-flex align-items-center">
-              <span className="item-icon material-symbols-outlined me-1">mail</span>
+              <span className="material-symbols-outlined me-1 pb-0 fs-6">mail</span>
               <span className="item-text-email">{currentUser.email}</span>
             </div>
           </DropdownItem>
@@ -78,7 +78,7 @@ export const PersonalDropdown = (): JSX.Element => {
               data-testid="grw-personal-dropdown-menu-user-home"
             >
               <span className="d-flex align-items-center">
-                <span className="item-icon material-symbols-outlined me-2">home</span>
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">home</span>
                 <span className="item-text">{t('personal_dropdown.home')}</span>
               </span>
             </Link>
@@ -90,7 +90,7 @@ export const PersonalDropdown = (): JSX.Element => {
               data-testid="grw-personal-dropdown-menu-user-settings"
             >
               <span className="d-flex align-items-center">
-                <span className="item-icon material-symbols-outlined me-2">discover_tune</span>
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">discover_tune</span>
                 <span className="item-text">{t('personal_dropdown.settings')}</span>
               </span>
             </Link>
@@ -102,14 +102,14 @@ export const PersonalDropdown = (): JSX.Element => {
             className={`my-1 ${styles['personal-dropdown-item']}`}
           >
             <span className="d-flex align-items-center">
-              <span className="item-icon material-symbols-outlined me-2">edit_note</span>
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">edit_note</span>
               <span className="item-text">{t('personal_dropdown.feedback')}</span>
             </span>
           </DropdownItem>
 
           <DropdownItem onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
             <span className="d-flex align-items-center">
-              <span className="item-icon material-symbols-outlined me-2">logout</span>
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">logout</span>
               <span className="item-text">{t('Sign out')}</span>
             </span>
           </DropdownItem>
