@@ -13,15 +13,12 @@
 
 @include bs.color-mode(dark) {
   .personal-dropdown-header :global {
-    --bs-heading-color: var(--bs-gray-500);
-    --bs-dropdown-header-color: var(--bs-gray-500);
+    color: var(--bs-gray-500);
   }
 
   .personal-dropdown-item :global {
-    .item-icon,
-    .item-text {
-      color: var(--bs-gray-500);
-    }
+    --bs-link-color-rgb:var(--bs-gray-500);
+    color: var(--bs-gray-500);
   }
 }
 
