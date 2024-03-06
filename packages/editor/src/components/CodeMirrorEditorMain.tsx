@@ -26,10 +26,8 @@ type Props = CodeMirrorEditorProps & {
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    acceptedUploadFileType,
-    indentSize, user, pageId, initialValue,
-    editorTheme, editorKeymap,
-    onSave, onChange, onUpload, onScroll, onEditorsUpdated,
+    user, pageId, initialValue,
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
@@ -66,18 +64,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
       onSave={onSave}
-      onUpload={onUpload}
-      onScroll={onScroll}
-      acceptedUploadFileType={acceptedUploadFileType}
-      indentSize={indentSize}
-      editorTheme={editorTheme}
-      editorKeymap={editorKeymap}
+      {...otherProps}
     />
   );
 };

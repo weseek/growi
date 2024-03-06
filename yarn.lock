@@ -1848,7 +1848,7 @@
   version "7.0.0-RC.0"
 
 "@growi/editor@link:packages/editor":
-  version "6.2.0-RC.0"
+  version "7.0.0-RC.0"
   dependencies:
     markdown-table "^3.0.3"
     react "^18.2.0"

@@ -20,7 +20,7 @@ import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning,
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
@@ -79,6 +79,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
@@ -336,6 +337,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onChange={onChangeHandler}
                 onSave={postCommentHandler}
                 onUpload={uploadHandler}
+                editorSettings={editorSettings}
               />
               {/* <Editor
                 ref={editorRef}
