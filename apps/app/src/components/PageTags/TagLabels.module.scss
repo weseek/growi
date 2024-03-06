@@ -17,14 +17,18 @@ $grw-tag-label-font-size: 12px;
     }
   }
 
-  // apply larger font when smaller than lg
-  @include bs.media-breakpoint-down(lg) {
-    .material-symbols-outlined {
-      font-size: 2em;
+}
+
+// apply font-size
+.grw-tag-labels :global {
+  .btn-edit-tags {
+    --bs-btn-font-size: 14px;
+
+    @include bs.media-breakpoint-down(lg) {
+      --bs-btn-font-size: 16px;
     }
   }
 }
-
 
 .grw-tag-labels-skeleton :global {
   width: 137px;
