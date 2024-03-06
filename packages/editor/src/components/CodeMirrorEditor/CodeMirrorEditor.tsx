@@ -33,6 +33,7 @@ export type CodeMirrorEditorProps = {
   indentSize?: number,
   editorTheme?: EditorTheme,
   editorKeymap?: KeyMapMode,
+  hideToolbar?: boolean,
   onChange?: (value: string) => void,
   onSave?: () => void,
   onUpload?: (files: File[]) => void,
@@ -50,6 +51,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     indentSize,
     editorTheme,
     editorKeymap,
+    hideToolbar,
     onChange,
     onSave,
     onUpload,
@@ -245,11 +247,16 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
       </div>
-      <Toolbar
-        editorKey={editorKey}
-        acceptedUploadFileType={acceptedUploadFileType}
-        onUpload={onUpload}
-      />
+
+      {
+        !hideToolbar && (
+          <Toolbar
+            editorKey={editorKey}
+            acceptedUploadFileType={acceptedUploadFileType}
+            onUpload={onUpload}
+          />
+        )
+      }
     </div>
   );
 };

@@ -34,6 +34,7 @@ export const CodeMirrorEditorDiff = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.DIFF}
       onChange={onChange}
+      hideToolbar
     />
   );
 };
