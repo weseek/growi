@@ -1,12 +1,5 @@
-.user-list-popover :global {
-  --bs-popover-max-width: 200px;
-  --bs-popover-body-padding-x: .5rem;
-  --bs-popover-body-padding-y: .5rem;
+@use '@growi/ui/scss/molecules/user-list-popover';
 
-  .user-list-content {
-    direction: rtl;
-  }
-  .cls-1 {
-    isolation: isolate;
-  }
+.user-list-popover :global {
+  @extend %user-list-popover
 }

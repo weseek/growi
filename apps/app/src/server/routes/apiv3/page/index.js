@@ -22,6 +22,8 @@ import loggerFactory from '~/utils/logger';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
+import { publishPageHandlersFactory } from './publish-page';
+import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
 
@@ -919,6 +921,11 @@ module.exports = (crowi) => {
         return res.apiv3Err(err, 500);
       }
     });
+
+
+  router.put('/:pageId/publish', publishPageHandlersFactory(crowi));
+
+  router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   return router;
 };

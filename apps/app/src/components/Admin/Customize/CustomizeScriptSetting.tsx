@@ -66,7 +66,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
             aria-expanded="false"
             aria-controls="collapseExampleScript"
           >
-            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+            <span className="material-symbols-outlined me-1" aria-hidden="true">navigate_next</span>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleScript">

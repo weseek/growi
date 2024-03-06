@@ -1,11 +1,15 @@
 import React, { type ReactNode, useCallback } from 'react';
 
+import { Origin } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+
+import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
 
 
 import styles from './PageEditorModeManager.module.scss';
@@ -72,7 +76,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
     try {
       await createAndTransit(
-        { path },
+        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
         { shouldCheckPageExists: true },
       );
     }

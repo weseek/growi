@@ -18,7 +18,7 @@ export type IGrantedGroup = {
 export type IPage = {
   path: string,
   status: string,
-  revision: Ref<IRevision>,
+  revision?: Ref<IRevision>,
   tags: Ref<ITag>[],
   creator: any,
   createdAt: Date,
@@ -39,6 +39,8 @@ export type IPage = {
   latestRevision?: Ref<IRevision>,
   latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
+  wip?: boolean,
+  ttlTimestamp?: Date
 }
 
 export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
@@ -50,7 +52,7 @@ export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'cr
   creator: IUserHasId | null,
   deleteUser: IUserHasId,
   grantedGroups: { type: GroupType, item: IUserGroupHasId }[],
-  revision: IRevisionHasId,
+  revision?: IRevisionHasId,
   author: IUserHasId,
 }
 

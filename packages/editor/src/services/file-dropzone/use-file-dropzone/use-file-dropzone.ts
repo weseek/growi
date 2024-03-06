@@ -35,11 +35,10 @@ export const useFileDropzone = (props: Props): FileDropzoneState => {
 
   }, [onUpload, setIsUploading, acceptedUploadFileType]);
 
-  const accept: Accept | undefined = acceptedUploadFileType === AcceptedUploadFileType.IMAGE
-    ? {
-      'image/*': [],
-    }
-    : undefined;
+  let accept: Accept | undefined;
+  if (acceptedUploadFileType === AcceptedUploadFileType.IMAGE) {
+    accept = { 'image/*': [] };
+  }
 
   const dzState = useDropzone({
     onDrop: dropHandler,

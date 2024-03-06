@@ -1,4 +1,5 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
@@ -7,7 +8,7 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'reactstrap';
 
-import { IActivityHasId } from '~/interfaces/activity';
+import type { IActivityHasId } from '~/interfaces/activity';
 
 type Props = {
   activityList: IActivityHasId[]
@@ -64,7 +65,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                   {activity.endpoint}
                   <CopyToClipboard text={activity.endpoint} onCopy={showToolTip}>
                     <button type="button" className="btn btn-outline-secondary border-0 pull-right" id="tooltipTarget">
-                      <i className="fa fa-clipboard" aria-hidden="true"></i>
+                      <span className="material-symbols-outlined" aria-hidden="true">content_paste</span>
                     </button>
                   </CopyToClipboard>
                   <Tooltip placement="top" isOpen={tooltopOpen} fade={false} target="tooltipTarget">

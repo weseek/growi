@@ -3,7 +3,7 @@ import React, { memo, useCallback } from 'react';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import LinkedPagePath from '../../../models/linked-page-path';
+import type LinkedPagePath from '../../../models/linked-page-path';
 
 import styles from './PagePathHierarchicalLink.module.scss';
 
@@ -41,7 +41,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/trash" prefetch={false}>
-              <span className="material-symbols-outlined">delete</span>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>delete</span>
             </Link>
           </span>
           <span className={`separator ${styles.separator}`}><a href="/">/</a></span>
@@ -51,7 +51,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/" prefetch={false}>
-              <i className="icon-home"></i>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>home</span>
               <span className={`separator ${styles.separator}`}>/</span>
             </Link>
           </span>

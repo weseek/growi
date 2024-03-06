@@ -11,7 +11,7 @@ import {
 } from 'reactstrap';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { IPageOperationProcessData } from '~/interfaces/page-operation';
+import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -170,7 +170,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             className="grw-page-control-dropdown-item"
             data-testid="add-remove-bookmark-btn"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         ) }
@@ -182,7 +182,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-move-rename-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
@@ -194,7 +194,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-duplicate-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">file_copy</span>
             {t('Duplicate')}
           </DropdownItem>
         ) }
@@ -205,7 +205,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={revertItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-undo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">undo</span>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
@@ -223,7 +223,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-wrench grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">build</span>
             {t('PathRecovery')}
           </DropdownItem>
         ) }
@@ -239,7 +239,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
             >
-              <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+              <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
               {t('Delete')}
             </DropdownItem>
           </>

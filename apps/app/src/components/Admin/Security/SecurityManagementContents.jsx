@@ -30,19 +30,19 @@ const SecurityManagementContents = () => {
   const navTabMapping = useMemo(() => {
     return {
       passport_local: {
-        Icon: () => <i className="fa fa-users" />,
+        Icon: () => <span className="material-symbols-outlined">groups</span>,
         i18n: 'ID/Pass',
       },
       passport_ldap: {
-        Icon: () => <i className="fa fa-sitemap" />,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       passport_saml: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'SAML',
       },
       passport_oidc: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'OIDC',
       },
       passport_google: {
@@ -81,7 +81,7 @@ const SecurityManagementContents = () => {
             href="/admin/markdown/#preventXSS"
             style={{ fontSize: 'large' }}
           >
-            <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
+            <span className="material-symbols-outlined me-1">login</span> {t('security_settings.xss_prevent_setting_link')}
           </Link>
         </div>
       </div>

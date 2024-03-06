@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { Origin } from '@growi/core';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
@@ -34,7 +35,7 @@ export const useDrawioModalLauncherForView = (opts?: {
   const { open: openDrawioModal } = useDrawioModal();
 
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
-    if (currentPage == null || shareLinkId != null) {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
     }
 
@@ -47,6 +48,7 @@ export const useDrawioModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
+        origin: Origin.View,
       });
 
       opts?.onSaveSuccess?.();

@@ -2,6 +2,8 @@ import { useCallback, useEffect } from 'react';
 
 import type EventEmitter from 'events';
 
+import { Origin } from '@growi/core';
+
 import type MarkdownTable from '~/client/models/MarkdownTable';
 import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/Page/markdown-table-util-for-view';
 import { useShareLinkId } from '~/stores/context';
@@ -33,7 +35,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { open: openHandsontableModal } = useHandsontableModal();
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || shareLinkId != null) {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
     }
 
@@ -46,6 +48,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
         pageId: currentPage._id,
         revisionId: currentRevisionId,
         body: newMarkdown,
+        origin: Origin.View,
       });
 
       opts?.onSaveSuccess?.();
@@ -64,6 +67,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
     }
 
     const handler = (bol: number, eol: number) => {
+      if (currentPage.revision == null) return;
+
       const markdown = currentPage.revision.body;
       const currentMarkdownTable = getMarkdownTableFromLine(markdown, bol, eol);
       openHandsontableModal(currentMarkdownTable, false, table => saveByHandsontableModal(table, bol, eol));

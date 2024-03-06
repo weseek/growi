@@ -260,7 +260,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     if (currentPageId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
+        mutateEditingMarkdown(pageData?.revision?.body);
       };
 
       // If skipSSR is true, use the API to retrieve page data.

@@ -7,6 +7,10 @@ import {
 } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'react-i18next';
+import {
+  DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown,
+} from 'reactstrap';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
@@ -98,7 +102,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span><i className="icon-lock ms-2" /></span>;
+    locked = <span className="material-symbols-outlined ms-2">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -116,8 +120,11 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
               { !dPagePath.isRoot && <FormerLink /> }
             </div>
 
-            <h6 className={`col-12 ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
+            <h6 className={`col-12 d-flex align-items-center ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+              { page.wip && (
+                <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
+              ) }
               {locked}
             </h6>
 
@@ -143,12 +150,17 @@ PageItem.displayName = 'PageItem';
 type HeaderProps = {
   isSmall: boolean,
   onSizeChange: (isSmall: boolean) => void,
+  isWipPageShown: boolean,
+  onWipPageShownChange: () => void,
 }
 
 const PER_PAGE = 20;
-export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX.Element => {
+export const RecentChangesHeader = ({
+  isSmall, onSizeChange, isWipPageShown, onWipPageShownChange,
+}: HeaderProps): JSX.Element => {
+  const { t } = useTranslation();
 
-  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
+  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -169,28 +181,53 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
   return (
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
-      <div className="d-flex align-items-center">
-        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ms-1`}>
-          <input
-            id="recentChangesResize"
-            className="form-check-input"
-            type="checkbox"
-            checked={isSmall}
-            onChange={changeSizeHandler}
-          />
-          <label className="form-label form-check-label" htmlFor="recentChangesResize" />
-        </div>
-      </div>
+
+      <UncontrolledButtonDropdown className="me-1">
+        <DropdownToggle color="transparent" className="p-0 border-0">
+          <span className="material-symbols-outlined">more_horiz</span>
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
+          <DropdownItem onClick={changeSizeHandler}>
+            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch`}>
+              <input
+                id="recentChangesResize"
+                className="form-check-input"
+                type="checkbox"
+                checked={isSmall}
+                onChange={() => {}}
+              />
+              <label className="form-label form-check-label text-muted" htmlFor="recentChangesResize" />
+            </div>
+          </DropdownItem>
+
+          <DropdownItem onClick={onWipPageShownChange}>
+            <div className="form-check form-switch">
+              <input
+                id="wipPageVisibility"
+                className="form-check-input"
+                type="checkbox"
+                checked={isWipPageShown}
+                onChange={() => {}}
+              />
+              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+                {t('sidebar_header.show_wip_page')}
+              </label>
+            </div>
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
     </>
   );
 };
 
 type ContentProps = {
   isSmall: boolean,
+  isWipPageShown: boolean,
 }
 
-export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => {
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
+export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): JSX.Element => {
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
   const { pushState } = useKeywordManager();
@@ -199,7 +236,7 @@ export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => 
   const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
   return (
-    <div className="grw-recent-changes py-3">
+    <div className="grw-recent-changes">
       <ul className="list-group list-group-flush">
         <InfiniteScroll
           swrInifiniteResponse={swrInifinitexRecentlyUpdated}

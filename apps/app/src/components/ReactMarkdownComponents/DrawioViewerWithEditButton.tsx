@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import {
   DrawioViewer,
@@ -65,7 +65,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
           className="btn btn-outline-secondary btn-edit-drawio"
           onClick={editButtonClickHandler}
         >
-          <i className="icon-note me-1"></i>{t('Edit')}
+          <span className="material-symbols-outlined me-1">edit_square</span>{t('Edit')}
         </button>
       ) }
       <DrawioViewer {...props} onRenderingStart={renderingStartHandler} onRenderingUpdated={renderingUpdatedHandler} />

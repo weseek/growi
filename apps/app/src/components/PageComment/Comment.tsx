@@ -12,9 +12,8 @@ import urljoin from 'url-join';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 
-import { ICommentHasId } from '../../interfaces/comment';
+import type { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
-import HistoryIcon from '../Icons/HistoryIcon';
 import RevisionRenderer from '../Page/RevisionRenderer';
 import { Username } from '../User/Username';
 
@@ -177,7 +176,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   className="page-comment-revision"
                   prefetch={false}
                 >
-                  <HistoryIcon />
+                  <span className="material-symbols-outlined">history</span>
                 </Link>
                 <UncontrolledTooltip placement="bottom" fade={false} target={`page-comment-revision-${commentId}`}>
                   {t('page_comment.display_the_page_when_posting_this_comment')}
