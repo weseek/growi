@@ -1,5 +1,6 @@
+
 import React, {
-  useState, useEffect, useCallback,
+  useState, useEffect, useCallback, useMemo,
 } from 'react';
 
 import type { IRevisionOnConflict } from '@growi/core';
@@ -58,7 +59,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   // const { data: currentPagePath } = useCurrentPagePath();
   // const { data: currentPathname } = useCurrentPathname();
 
-
   const revisionSelectHandler = useCallback((selectedRevision: string) => {
     setResolvedRevision(selectedRevision);
 
@@ -75,6 +75,17 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     closeConflictDiffModal();
   }, [closeConflictDiffModal, onClose]);
 
+  const headerButtons = useMemo(() => (
+    <div className="d-flex align-items-center">
+      <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
+        <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
+      </button>
+      <button type="button" className="btn" onClick={closeModal} aria-label="Close">
+        <span className="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  ), [closeModal, isModalExpanded]);
+
   useEffect(() => {
     codeMirrorEditor?.initDoc(resolvedRevision);
   }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
@@ -88,17 +99,18 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       size="xl"
     >
 
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3">
+      <ModalHeader tag="h4" className="bg-primary text-light d-flex align-items-center" close={headerButtons}>
         <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
 
       <ModalBody className="mx-4 my-1">
         <div className="row">
           <div className="col-12 text-center mt-2 mb-4">
-            <h2 className="fw-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
+            <h3 className="fw-bold text-muted">{t('modal_resolve_conflict.resolve_conflict_message')}</h3>
           </div>
+
           <div className="col-6">
-            <h3 className="fw-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
+            <h4 className="fw-bold my-2 text-muted">{t('modal_resolve_conflict.requested_revision')}</h4>
             <div className="d-flex align-items-center my-3">
               <div>
                 <UserPicture user={request.user} size="lg" noLink noTooltip />
@@ -109,8 +121,9 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
             </div>
           </div>
+
           <div className="col-6">
-            <h3 className="fw-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
+            <h4 className="fw-bold my-2 text-muted">{t('modal_resolve_conflict.latest_revision')}</h4>
             <div className="d-flex align-items-center my-3">
               <div>
                 <UserPicture user={latest.user} size="lg" noLink noTooltip />
@@ -155,7 +168,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
           <div className="col-12">
             <div className="border border-dark">
-              <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
+              <h4 className="fw-bold my-2 mx-2 text-muted">{t('modal_resolve_conflict.selected_editable_revision')}</h4>
               <CodeMirrorEditorDiff />
             </div>
           </div>
@@ -214,7 +227,6 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   if (!isOpen || currentUser == null || currentPage == null) {
     return <></>;
   }
-
 
   const request: IRevisionOnConflictWithStringDate = {
     revisionId: '',
