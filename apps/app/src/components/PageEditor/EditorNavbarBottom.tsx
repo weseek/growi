@@ -77,7 +77,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
+      <div className={`flex-expand-horiz align-items-center px-2 py-1 py-md-2 px-md-3 ${moduleClass}`}>
         <form>
           <OptionsSelector collapsed={!isDeviceLargerThanMd} />
         </form>
