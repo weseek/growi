@@ -2,25 +2,28 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-import {
-  CodeMirrorEditor, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated
-} from '@growi/editor';
 
-import { MergeView } from '@codemirror/merge'
-
+import { MergeView } from '@codemirror/merge';
 import type { IRevisionOnConflict } from '@growi/core';
+import {
+  CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
+} from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
+
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCurrentPathname, useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 import {
   useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
+
+import styles from './ConflictDiffModal.module.scss';
+
 const DMP = require('diff_match_patch');
 
 Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
@@ -54,10 +57,10 @@ const DiffViewer = (props: { requestRevisionBody: string, latestRevisionBody: st
     if (mergeViewRef.current != null) {
       const view = new MergeView({
         a: {
-            doc: requestRevisionBody.replace(/col1/g, "aaa") // あとで直す
+          doc: requestRevisionBody.replace(/col1/g, 'aaa'), // あとで直す
         },
         b: {
-            doc: latestRevisionBody
+          doc: latestRevisionBody,
         },
         parent: mergeViewRef.current,
       });
@@ -75,10 +78,10 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   } = props;
 
   const { t } = useTranslation('');
+
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
   const [revisionSelectedToggler, setRevisionSelectedToggler] = useState<boolean>(false);
-
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
@@ -109,19 +112,21 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
   useEffect(() => {
     codeMirrorEditor?.initDoc(resolvedRevision);
-  }, [resolvedRevision, revisionSelectedToggler])
+  }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
 
   return (
     <Modal
       isOpen={isOpen}
       toggle={close}
       backdrop="static"
-      className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
+      className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`}
       size="xl"
     >
+
       <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3">
         <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
+
       <ModalBody className="mx-4 my-1">
         { isOpen
         && (
@@ -157,7 +162,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
             <DiffViewer
               requestRevisionBody={request.revisionBody}
               latestRevisionBody={latest.revisionBody}
-             />
+            />
 
             <div className="col-6">
               <div className="text-center my-4">
@@ -190,17 +195,23 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                 </button>
               </div>
             </div>
+
             <div className="col-12">
               <div className="border border-dark">
                 <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <CodeMirrorEditor
+                {/* <CodeMirrorEditor
                   editorKey={GlobalCodeMirrorEditorKey.DIFF}
-                />
+                /> */}
+
+                <div className="editor">
+                  <CodeMirrorEditorDiff />
+                </div>
               </div>
             </div>
           </div>
         )}
       </ModalBody>
+
       <ModalFooter>
         <button
           type="button"
