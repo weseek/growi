@@ -2,12 +2,12 @@ import { useCallback } from 'react';
 
 import { type Nullable } from '@growi/core';
 import { withUtils, type SWRResponseWithUtils } from '@growi/core/dist/swr';
+import type { EditorSettings } from '@growi/editor';
 import useSWR, { type SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import type { IEditorSettings } from '~/interfaces/editor-settings';
 import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
@@ -29,13 +29,13 @@ export const useEditingMarkdown = (initialData?: string): SWRResponse<string, Er
 
 
 type EditorSettingsOperation = {
-  update: (updateData: Partial<IEditorSettings>) => Promise<void>,
+  update: (updateData: Partial<EditorSettings>) => Promise<void>,
 }
 
 // TODO: Enable localStorageMiddleware
 //   - Unabling localStorageMiddleware occurrs a flickering problem when loading theme.
 //   - see: https://github.com/weseek/growi/pull/6781#discussion_r1000285786
-export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, IEditorSettings, Error> => {
+export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperation, EditorSettings, Error> => {
   const { data: currentUser } = useCurrentUser();
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -51,7 +51,7 @@ export const useEditorSettings = (): SWRResponseWithUtils<EditorSettingsOperatio
     },
   );
 
-  return withUtils<EditorSettingsOperation, IEditorSettings, Error>(swrResult, {
+  return withUtils<EditorSettingsOperation, EditorSettings, Error>(swrResult, {
     update: async(updateData) => {
       const { data, mutate } = swrResult;
 

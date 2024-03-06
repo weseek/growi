@@ -298,15 +298,20 @@
       "stale": "自上次更新以来，已超过{{count}年。",
       "stale_plural": "自上次更新以来已过去{{count}年以上。",
       "no_deadline": "This page has no expiration date"
-    }
-  },
-  "page_edit": {
-    "Show active line": "显示活动行",
-    "auto_format_table": "自动格式化表格",
-    "overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
-    "notice": {
-      "conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
-    },
+		}
+	},
+	"page_edit": {
+    "input_channels": "频道名",
+    "theme": "主题",
+    "keymap": "键表",
+    "indent": "缩进",
+    "editor_config": "编辑器配置",
+		"Show active line": "显示活动行",
+		"auto_format_table": "自动格式化表格",
+		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
+		"notice": {
+			"conflict": "无法保存您所做的更改，因为其他人正在编辑此页。请在重新加载页面后重新编辑受影响的部分。"
+		},
     "changes_not_saved": "您所做的更改可能不会保存。你真的想继续前进吗？"
   },
   "page_comment": {
@@ -831,10 +836,10 @@
     "select_page_location": "选择页面位置"
   },
   "wip_page": {
-    "save_as_wip": "保存为 WIP（书面）",
+    "save_as_wip": "保存为 WIP（仍在撰写中）",
     "success_save_as_wip": "成功保存为 WIP 页面",
     "fail_save_as_wip": "保存为 WIP 页失败",
-    "alert": "本页面正在制作中",
+    "alert": "本页仍在编写中",
     "publish_page": "发布 WIP",
     "success_publish_page": "WIP 已停用",
     "fail_publish_page": "无法停用 WIP"
