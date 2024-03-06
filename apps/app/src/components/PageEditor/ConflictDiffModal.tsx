@@ -2,6 +2,10 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
+import {
+  CodeMirrorEditor, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated
+} from '@growi/editor';
+
 import { MergeView } from '@codemirror/merge'
 
 import type { IRevisionOnConflict } from '@growi/core';
@@ -73,7 +77,12 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const { t } = useTranslation('');
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  const [revisionSelectedToggler, setRevisionSelectedToggler] = useState<boolean>(false);
+
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
+
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
+
   // const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
   // const { data: remoteRevisionId } = useRemoteRevisionId();
@@ -82,6 +91,14 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   // const { data: currentPagePath } = useCurrentPagePath();
   // const { data: currentPathname } = useCurrentPathname();
 
+
+  const revisionSelectHandler = useCallback((selectedRevision: string) => {
+    setResolvedRevision(selectedRevision);
+
+    // Enable selecting the same revision after editing by including revisionSelectedToggler in the dependency array of useEffect
+    setRevisionSelectedToggler(prev => !prev);
+  }, []);
+
   const close = useCallback(() => {
     if (onClose != null) {
       onClose();
@@ -89,6 +106,10 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   }, [onClose]);
 
   const isOpen = props.isOpen ?? false;
+
+  useEffect(() => {
+    codeMirrorEditor?.initDoc(resolvedRevision);
+  }, [resolvedRevision, revisionSelectedToggler])
 
   return (
     <Modal
@@ -145,7 +166,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                   className="btn btn-outline-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
-                    setResolvedRevision(request.revisionBody);
+                    revisionSelectHandler(request.revisionBody);
                   }}
                 >
                   <span className="material-symbols-outlined">arrow_circle_down</span>
@@ -161,7 +182,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
                   className="btn btn-outline-primary"
                   onClick={() => {
                     setIsRevisionSelected(true);
-                    setResolvedRevision(latest.revisionBody);
+                    revisionSelectHandler(latest.revisionBody);
                   }}
                 >
                   <span className="material-symbols-outlined">arrow_circle_down</span>
@@ -172,13 +193,9 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
             <div className="col-12">
               <div className="border border-dark">
                 <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                {/* <UncontrolledCodeMirror
-                  ref={uncontrolledRef}
-                  value={resolvedRevision}
-                  options={{
-                    placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                  }}
-                /> */}
+                <CodeMirrorEditor
+                  editorKey={GlobalCodeMirrorEditorKey.DIFF}
+                />
               </div>
             </div>
           </div>
