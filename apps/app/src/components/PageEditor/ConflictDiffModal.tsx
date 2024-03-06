@@ -2,11 +2,9 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
-
-import { MergeView } from '@codemirror/merge';
 import type { IRevisionOnConflict } from '@growi/core';
 import {
-  CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
+  MergeViewer, CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
 } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
@@ -49,28 +47,35 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
   createdAt: string
 }
 
-const DiffViewer = (props: { requestRevisionBody: string, latestRevisionBody: string }) => {
-  const { requestRevisionBody, latestRevisionBody } = props;
-  const mergeViewRef = useRef<HTMLDivElement>(null);
+// const DiffViewerExtensions = [
+//   basicSetup,
+//   EditorView.editable.of(false),
+//   EditorState.readOnly.of(true),
+// ];
+// const DiffViewer = (props: { requestRevisionBody: string, latestRevisionBody: string }) => {
+//   const { requestRevisionBody, latestRevisionBody } = props;
+//   const mergeViewRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (mergeViewRef.current != null) {
-      const view = new MergeView({
-        a: {
-          doc: requestRevisionBody.replace(/col1/g, 'aaa'), // あとで直す
-        },
-        b: {
-          doc: latestRevisionBody,
-        },
-        parent: mergeViewRef.current,
-      });
+//   useEffect(() => {
+//     if (mergeViewRef.current != null) {
+//       const view = new MergeView({
+//         a: {
+//           doc: requestRevisionBody.replace(/GROWI/g, 'グローウィ'), // あとで直す
+//           extensions: DiffViewerExtensions,
+//         },
+//         b: {
+//           doc: latestRevisionBody,
+//           extensions: DiffViewerExtensions,
+//         },
+//         parent: mergeViewRef.current,
+//       });
 
-      return () => view.destroy();
-    }
-  }, []);
+//       return () => view.destroy();
+//     }
+//   });
 
-  return <div ref={mergeViewRef} />;
-};
+//   return <div ref={mergeViewRef} />;
+// };
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const {
@@ -159,9 +164,9 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
             </div>
 
-            <DiffViewer
-              requestRevisionBody={request.revisionBody}
-              latestRevisionBody={latest.revisionBody}
+            <MergeViewer
+              leftBody={request.revisionBody}
+              rightBody={latest.revisionBody}
             />
 
             <div className="col-6">
@@ -199,13 +204,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
             <div className="col-12">
               <div className="border border-dark">
                 <h3 className="fw-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                {/* <CodeMirrorEditor
-                  editorKey={GlobalCodeMirrorEditorKey.DIFF}
-                /> */}
-
-                <div className="editor">
-                  <CodeMirrorEditorDiff />
-                </div>
+                <CodeMirrorEditorDiff />
               </div>
             </div>
           </div>
