@@ -37,7 +37,7 @@ export const ColorModeSettings = (): JSX.Element => {
 
   return (
     <div>
-      <h2 className="border-bottom mb-4">{t('color_mode_settings.settings')}</h2>
+      <h2 className="border-bottom pb-2 mb-4 fs-4">{t('color_mode_settings.settings')}</h2>
 
       <div className="offset-md-3">
 
@@ -60,7 +60,7 @@ export const ColorModeSettings = (): JSX.Element => {
 
         </div>
 
-        <div className="mt-3 text-muted">
+        <div className="mt-3 text-muted small">
           {/* eslint-disable-next-line react/no-danger */}
           <span dangerouslySetInnerHTML={{ __html: t('color_mode_settings.description') }} />
         </div>
