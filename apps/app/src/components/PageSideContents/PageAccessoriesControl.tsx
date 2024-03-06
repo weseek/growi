@@ -27,7 +27,7 @@ export const PageAccessoriesControl = memo((props: Props): JSX.Element => {
   return (
     <button
       type="button"
-      className={`btn btn-sm btn-outline-neutral-secondary ${moduleClass} ${className} rounded-pill`}
+      className={`btn btn-outline-neutral-secondary ${moduleClass} ${className} rounded-pill`}
       onClick={onClick}
     >
       <span className="grw-icon d-flex">{icon}</span>
