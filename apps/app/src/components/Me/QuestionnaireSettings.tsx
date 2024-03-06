@@ -50,8 +50,8 @@ export const QuestionnaireSettings = (): JSX.Element => {
       )}
 
       <div className="container">
-        <div className="offset-md-3 col-md-6 text-start row">
-          {!isLoadingCurrentUser && (
+        {!isLoadingCurrentUser && (
+          <div className="offset-md-3 col-md-6 text-start row">
             <div className="form-check form-switch">
               <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
@@ -71,12 +71,12 @@ export const QuestionnaireSettings = (): JSX.Element => {
                   {t('questionnaire.disabled_by_admin')}
                 </UncontrolledTooltip>
               ) }
-              <p className="form-text text-muted small">
-                {t('questionnaire.personal_settings_explanation')}
-              </p>
             </div>
-          )}
-        </div>
+            <p className="form-text text-muted small">
+              {t('questionnaire.personal_settings_explanation')}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="row my-3">
