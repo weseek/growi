@@ -1,5 +1,9 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+.list-group-item.active {
+  --bs-list-group-active-color: var(--bs-list-group-color);
+}
+
 @include bs.color-mode(light) {
   .list-group-item-action {
     --bs-list-group-action-hover-bg: var(--grw-primary-100);
