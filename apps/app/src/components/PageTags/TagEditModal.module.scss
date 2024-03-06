@@ -1,8 +1,5 @@
 .tag-edit-modal :global {
   .rbt-token {
-    // override to .badge color
-    color: var(--bs-badge-color);
-
     .rbt-token-label {
       // override to text-truncate
       overflow: hidden;
@@ -11,9 +8,16 @@
       white-space: nowrap;
     }
   }
+}
+
+// == Colors
+.tag-edit-modal :global {
+  .rbt-token {
+    // override to .badge color
+    color: var(--bs-badge-color);
+  }
 
   .rbt-token-active {
-    border-color: #80bdff !important;
-    box-shadow: 0 0 0 0.05rem #007bff40;
+    border-color: var(--grw-primary-400) !important;
   }
 }

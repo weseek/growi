@@ -53,7 +53,7 @@ const TagEditModalSubstance: React.FC<TagEditModalSubstanceProps> = (props: TagE
   }, [closeTagEditModal, tags, pageId, revisionId, updateStateAfterSave]);
 
   return (
-    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false} className={`tag-edit-modal ${styles['tag-edit-modal']}`}>
+    <Modal isOpen={isOpen} toggle={closeTagEditModal} id="edit-tag-modal" autoFocus={false} className={`${styles['tag-edit-modal']}`}>
       <ModalHeader tag="h4" toggle={closeTagEditModal}>
         {t('tag_edit_modal.edit_tags')}
       </ModalHeader>
