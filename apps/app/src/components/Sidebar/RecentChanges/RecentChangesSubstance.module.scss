@@ -3,21 +3,13 @@
 .grw-recent-changes-resize-button :global {
   line-height: normal;
   transform: translateY(-2px);
-
-  .form-check-label::before {
-    content: 'size : L';
-  }
-
-  .form-check-input:checked + .form-check-label::before {
-    content: 'size : S';
-  }
 }
 
 .list-group-item :global {
   font-size: 12px;
 
   .grw-recent-changes-skeleton-small {
-    @include grw-skeleton-text($font-size:14px, $line-height:16px);
+    @include grw-skeleton-text($font-size: 14px, $line-height: 16px);
     max-width: 120px;
   }
 
@@ -27,7 +19,7 @@
   }
 
   .grw-recent-changes-skeleton-date {
-    @include grw-skeleton-text($font-size:10px, $line-height:12px);
+    @include grw-skeleton-text($font-size: 10px, $line-height: 12px);
     width: 80px;
   }
 
@@ -40,7 +32,6 @@
     max-width: fit-content;
   }
 }
-
 
 .grw-recent-changes-item-lower :global {
   font-size: 12px;
@@ -55,7 +46,7 @@
 
 // == Colors
 .grw-former-link a {
-  --bs-link-opacity: .5;
+  --bs-link-opacity: 0.5;
 
   &:global {
     &:hover {

@@ -197,7 +197,9 @@ export const RecentChangesHeader = ({
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize" />
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+                {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
+              </label>
             </div>
           </DropdownItem>
 
