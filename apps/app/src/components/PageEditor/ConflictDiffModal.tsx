@@ -2,6 +2,8 @@ import React, {
   useState, useEffect, useRef, useMemo, useCallback,
 } from 'react';
 
+import { MergeView } from '@codemirror/merge'
+
 import type { IRevisionOnConflict } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format, parseISO } from 'date-fns';
@@ -9,7 +11,6 @@ import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
-
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useCurrentPathname, useCurrentUser } from '~/stores/context';
 import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
@@ -40,6 +41,29 @@ type ConflictDiffModalCoreProps = {
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
   createdAt: string
 }
+
+const DiffViewer = (props: { requestRevisionBody: string, latestRevisionBody: string }) => {
+  const { requestRevisionBody, latestRevisionBody } = props;
+  const mergeViewRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (mergeViewRef.current != null) {
+      const view = new MergeView({
+        a: {
+            doc: requestRevisionBody.replace(/col1/g, "aaa") // あとで直す
+        },
+        b: {
+            doc: latestRevisionBody
+        },
+        parent: mergeViewRef.current,
+      });
+
+      return () => view.destroy();
+    }
+  }, []);
+
+  return <div ref={mergeViewRef} />;
+};
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const {
@@ -109,9 +133,10 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
             </div>
 
-
-            {/* <div className="col-12" ref={(el) => { setCodeMirrorRef(el) }}></div> */}
-
+            <DiffViewer
+              requestRevisionBody={request.revisionBody}
+              latestRevisionBody={latest.revisionBody}
+             />
 
             <div className="col-6">
               <div className="text-center my-4">
