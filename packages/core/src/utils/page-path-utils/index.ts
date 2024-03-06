@@ -306,4 +306,3 @@ export const getUsernameByPath = (path: string): string | null => {
 
 
 export * from './is-top-page';
-export * from './collect-ancestor-paths';

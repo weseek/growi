@@ -52,7 +52,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
         onClick={onClickEditTagsButton}
       >
-        <i className="icon-tag me-2" />
+        <span className="material-symbols-outlined me-2">local_offer</span>
         Tags
       </button>
     </div>

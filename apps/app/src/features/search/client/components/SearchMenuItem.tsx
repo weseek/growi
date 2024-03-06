@@ -21,7 +21,7 @@ export const SearchMenuItem = (props: Props): JSX.Element => {
     getItemProps({
       index,
       item: { url },
-      className: `d-flex p-1 text-muted ${isActive ? 'active' : ''}`,
+      className: `d-flex align-items-center px-2 py-1 text-muted ${isActive ? 'active' : ''}`,
     })
   );
 

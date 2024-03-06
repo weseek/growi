@@ -1,4 +1,4 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { GroupType, Origin } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
@@ -141,7 +141,14 @@ export const getPageSchema = (crowi) => {
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function(previousRevision) {
+  pageSchema.methods.isUpdatable = async function(previousRevision, origin) {
+    const populatedPageDataWithRevisionOrigin = await this.populate('revision', 'origin');
+    const latestRevisionOrigin = populatedPageDataWithRevisionOrigin.revision.origin;
+    const ignoreLatestRevision = origin === Origin.Editor && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.View);
+    if (ignoreLatestRevision) {
+      return true;
+    }
+
     const revision = this.latestRevision || this.revision;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
@@ -644,21 +651,6 @@ export const getPageSchema = (crowi) => {
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
-  };
-
-  pageSchema.statics.publicizePages = async function(pages) {
-    const operationsToPublicize = pages.map((page) => {
-      return {
-        updateOne: {
-          filter: { _id: page._id },
-          update: {
-            grantedGroups: [],
-            grant: this.GRANT_PUBLIC,
-          },
-        },
-      };
-    });
-    await this.bulkWrite(operationsToPublicize);
   };
 
   /**

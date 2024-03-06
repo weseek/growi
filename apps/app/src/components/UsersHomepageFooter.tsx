@@ -26,7 +26,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
     <div className={`container-lg user-page-footer py-5 ${styles['user-page-footer']}`}>
       <div className="grw-user-page-list-m d-edit-none">
         <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
-          <i style={{ fontSize: '1.3em' }} className="fa fa-fw fa-bookmark-o"></i>
+          <span style={{ fontSize: '1.3em' }} className="material-symbols-outlined">bookmark</span>
           {t('footer.bookmarks')}
           <span className="ms-auto ps-2 ">
             <button type="button" className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`} onClick={() => setIsExpanded(!isExpanded)}>

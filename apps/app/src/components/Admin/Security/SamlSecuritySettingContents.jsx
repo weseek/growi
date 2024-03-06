@@ -484,7 +484,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                               aria-expanded="true"
                               aria-controls="ablchelp"
                             >
-                              <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                              <span
+                                className="material-symbols-outlined me-1"
+                                small
+                              >{this.state.isHelpOpened ? 'expand_more' : 'chevron_right'}
+                              </span> Show more...
                             </button>
                           </h2>
                           <Collapse isOpen={this.state.isHelpOpened}>

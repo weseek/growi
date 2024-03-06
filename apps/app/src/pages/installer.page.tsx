@@ -42,7 +42,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   const navTabMapping = useMemo(() => {
     return {
       user_infomation: {
-        Icon: () => <i className="icon-fw icon-user"></i>,
+        Icon: () => <span className="material-symbols-outlined me-1">person</span>,
         Content: InstallerForm,
         i18n: t('installer.tab'),
       },

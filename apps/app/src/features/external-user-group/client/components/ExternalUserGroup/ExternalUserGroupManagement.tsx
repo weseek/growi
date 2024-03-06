@@ -1,6 +1,5 @@
-import {
-  FC, useCallback, useMemo, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
@@ -11,13 +10,14 @@ import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDele
 import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import { useIsAclEnabled } from '~/stores/context';
 
 import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';
 
 import { KeycloakGroupManagement } from './KeycloakGroupManagement';
 import { LdapGroupManagement } from './LdapGroupManagement';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 
 export const ExternalGroupManagement: FC = () => {
   const { data: externalUserGroupList, mutate: mutateExternalUserGroups } = useSWRxExternalUserGroupList();
@@ -93,7 +93,7 @@ export const ExternalGroupManagement: FC = () => {
     }
   }, [t, mutateExternalUserGroups, hideUpdateModal]);
 
-  const deleteExternalUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteExternalUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => {
     try {
       await apiv3Delete(`/external-user-groups/${deleteGroupId}`, {
         actionName,
@@ -120,11 +120,11 @@ export const ExternalGroupManagement: FC = () => {
   const navTabMapping = useMemo(() => {
     return {
       ldap: {
-        Icon: () => <i className="fa fa-sitemap" />,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       keycloak: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'Keycloak',
       },
     };

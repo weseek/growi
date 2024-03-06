@@ -20,6 +20,7 @@ const { isTrashPage } = pagePathUtils;
 type Props = {
   pagePath: string,
   pageId?: string | null,
+  isWipPage?: boolean,
   isSingleLineMode?: boolean,
   isCollapseParents?: boolean,
   formerLinkClassName?: string,
@@ -37,7 +38,7 @@ const Separator = (): JSX.Element => {
 
 export const PagePathNav: FC<Props> = (props: Props) => {
   const {
-    pageId, pagePath, isSingleLineMode, isCollapseParents,
+    pageId, pagePath, isWipPage, isSingleLineMode, isCollapseParents,
     formerLinkClassName, latterLinkClassName,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
@@ -71,10 +72,10 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = (
-      <>
+      <div className="fs-5">
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
         <Separator />
-      </>
+      </div>
     );
     latterLink = (
       <>
@@ -94,7 +95,10 @@ export const PagePathNav: FC<Props> = (props: Props) => {
           {latterLink}
         </h1>
         { pageId != null && !isNotFound && (
-          <div className="mx-2">
+          <div className="d-flex align-items-center ms-2">
+            { isWipPage && (
+              <span className="badge rounded-pill text-bg-secondary ms-1 me-1">WIP</span>
+            )}
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
               <i className="ti ti-clipboard"></i>
             </CopyDropdown>

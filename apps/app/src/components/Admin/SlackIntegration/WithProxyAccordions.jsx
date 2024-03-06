@@ -240,13 +240,13 @@ const TestProcess = ({
     <>
       <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
       <p className="text-center text-warning">
-        <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+        <span className="material-symbols-outlined me-1">info</span>{t('admin:slack_integration.accordion.test_connection_only_public_channel')}
       </p>
       <div className="d-flex justify-content-center">
         <form className="justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
             <div>
-              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              <span className="input-group-text" id="slack-channel-addon"><span className="material-symbols-outlined">tag</span></span>
             </div>
             <input
               className="form-control"
@@ -391,7 +391,7 @@ const WithProxyAccordions = (props) => {
               <>
                 <span className="me-3">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
-                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}
+                {value.title === 'test_connection' && isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}
               </>
             )}
             key={key}

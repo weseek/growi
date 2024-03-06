@@ -5,6 +5,7 @@ import React, {
   useEffect,
 } from 'react';
 
+import type { EditorSettings } from '@growi/editor';
 import Dropzone from 'react-dropzone';
 import { useTranslation } from 'react-i18next';
 import {
@@ -12,7 +13,6 @@ import {
 } from 'reactstrap';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import type { IEditorSettings } from '~/interfaces/editor-settings';
 import { useDefaultIndentSize } from '~/stores/context';
 import { useEditorSettings } from '~/stores/editor';
 import { useIsMobile } from '~/stores/ui';
@@ -36,7 +36,7 @@ export type EditorPropsType = {
   isUploadAllFileAllowed?: boolean,
   onChange?: (newValue: string, isClean?: boolean) => void,
   onUpload?: (file) => void,
-  editorSettings?: IEditorSettings,
+  editorSettings?: EditorSettings,
   indentSize?: number,
   onDragEnter?: (event: any) => void,
   onMarkdownHelpButtonClicked?: () => void,
@@ -343,7 +343,7 @@ const Editor: ForwardRefRenderFunction<IEditorMethods, EditorPropsType> = (props
               className="btn btn-outline-secondary btn-open-dropzone"
               onClick={addAttachmentHandler}
             >
-              <i className="icon-paper-clip" aria-hidden="true"></i>&nbsp;
+              <span className="material-symbols-outlined" aria-hidden="true">attachment</span>&nbsp;
               Attach files
               <span className="d-none d-sm-inline">
               &nbsp;by dragging &amp; dropping,&nbsp;

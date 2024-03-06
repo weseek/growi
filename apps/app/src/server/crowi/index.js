@@ -725,6 +725,7 @@ Crowi.prototype.setupPageService = async function() {
   // initialize after pageGrantService since pageService uses pageGrantService in constructor
   if (this.pageService == null) {
     this.pageService = new PageService(this);
+    await this.pageService.createTtlIndex();
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);

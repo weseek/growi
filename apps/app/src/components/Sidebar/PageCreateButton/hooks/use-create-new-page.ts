@@ -1,5 +1,7 @@
 import { useCallback } from 'react';
 
+import { Origin } from '@growi/core';
+
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { useCurrentPagePath } from '~/stores/page';
 
@@ -18,7 +20,12 @@ export const useCreateNewPage: UseCreateNewPage = () => {
     if (isLoadingPagePath) return;
 
     return createAndTransit(
-      { parentPath: currentPagePath, optionalParentPath: '/' },
+      {
+        parentPath: currentPagePath,
+        optionalParentPath: '/',
+        wip: true,
+        origin: Origin.View,
+      },
     );
   }, [createAndTransit, currentPagePath, isLoadingPagePath]);
 

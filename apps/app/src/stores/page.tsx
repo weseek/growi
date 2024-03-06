@@ -74,9 +74,12 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
-    if (initialData.revision?._id !== cachedData?.revision?._id) {
+    // mutate when the empty page has updated
+    if (cachedData?.revision == null && initialData.revision != null) {
       return true;
     }
+
+    return false;
   })();
 
   useEffect(() => {
@@ -176,12 +179,15 @@ export const useSWRxPageInfo = (
     initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
+  // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
+  const { data: isGuestUser } = useIsGuestUser();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const key = useMemo(() => {
-    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
-  }, [fixedShareLinkId, pageId]);
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId, isGuestUser] : null;
+  }, [fixedShareLinkId, isGuestUser, pageId]);
 
   const swrResult = useSWRImmutable(
     key,

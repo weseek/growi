@@ -20,7 +20,7 @@ import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
-  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning,
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
@@ -44,11 +44,11 @@ const SlackNotification = dynamic(() => import('../SlackNotification').then(mod 
 
 const navTabMapping = {
   comment_editor: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
     i18n: 'Write',
   },
   comment_preview: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
     i18n: 'Preview',
   },
 };
@@ -79,6 +79,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
@@ -263,7 +264,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <i className="icon-bubble"></i> Add Comment
+              <span className="material-symbols-outlined">comment</span> Add Comment
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
@@ -336,6 +337,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onChange={onChangeHandler}
                 onSave={postCommentHandler}
                 onUpload={uploadHandler}
+                editorSettings={editorSettings}
               />
               {/* <Editor
                 ref={editorRef}

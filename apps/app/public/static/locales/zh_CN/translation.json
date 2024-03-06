@@ -301,6 +301,11 @@
 		}
 	},
 	"page_edit": {
+    "input_channels": "频道名",
+    "theme": "主题",
+    "keymap": "键表",
+    "indent": "缩进",
+    "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
@@ -829,5 +834,17 @@
   },
   "page_select_modal": {
     "select_page_location": "选择页面位置"
+  },
+  "wip_page": {
+    "save_as_wip": "保存为 WIP（仍在撰写中）",
+    "success_save_as_wip": "成功保存为 WIP 页面",
+    "fail_save_as_wip": "保存为 WIP 页失败",
+    "alert": "本页仍在编写中",
+    "publish_page": "发布 WIP",
+    "success_publish_page": "WIP 已停用",
+    "fail_publish_page": "无法停用 WIP"
+  },
+  "sidebar_header": {
+    "show_wip_page": "显示 WIP"
   }
 }
