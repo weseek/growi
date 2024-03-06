@@ -1,5 +1,5 @@
 import React, {
-  useState, useEffect, useRef, useMemo, useCallback,
+  useState, useEffect, useCallback,
 } from 'react';
 
 import type { IRevisionOnConflict } from '@growi/core';
@@ -46,36 +46,6 @@ type ConflictDiffModalCoreProps = {
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
   createdAt: string
 }
-
-// const DiffViewerExtensions = [
-//   basicSetup,
-//   EditorView.editable.of(false),
-//   EditorState.readOnly.of(true),
-// ];
-// const DiffViewer = (props: { requestRevisionBody: string, latestRevisionBody: string }) => {
-//   const { requestRevisionBody, latestRevisionBody } = props;
-//   const mergeViewRef = useRef<HTMLDivElement>(null);
-
-//   useEffect(() => {
-//     if (mergeViewRef.current != null) {
-//       const view = new MergeView({
-//         a: {
-//           doc: requestRevisionBody.replace(/GROWI/g, 'グローウィ'), // あとで直す
-//           extensions: DiffViewerExtensions,
-//         },
-//         b: {
-//           doc: latestRevisionBody,
-//           extensions: DiffViewerExtensions,
-//         },
-//         parent: mergeViewRef.current,
-//       });
-
-//       return () => view.destroy();
-//     }
-//   });
-
-//   return <div ref={mergeViewRef} />;
-// };
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const {
