@@ -41,48 +41,16 @@ declare global {
 const logger = loggerFactory('growi:SavePageControls');
 
 
-export const SavePageControls = (): JSX.Element | null => {
+const SavePageButton = (props: {slackChannels: string}) => {
+
   const { t } = useTranslation();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: isEditable } = useIsEditable();
-  const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  const { data: editorMode } = useEditorMode();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
-  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
-
-
-  const [slackChannels, setSlackChannels] = useState<string>('');
-
-  // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
-  const slackChannelsDataString = slackChannelsData?.toString();
-  useEffect(() => {
-    if (editorMode === 'editor') {
-      setSlackChannels(slackChannelsDataString ?? '');
-      mutateIsSlackEnabled(false);
-    }
-  }, [editorMode, mutateIsSlackEnabled, slackChannelsDataString]);
+  const { slackChannels } = props;
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
-
-
-  const isSlackEnabledToggleHandler = (bool: boolean) => {
-    mutateIsSlackEnabled(bool, false);
-  };
-
-  const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
-    setSlackChannels(slackChannels);
-  }, []);
-
-
-  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
-    mutateGrant(grantData);
-  }, [mutateGrant]);
 
   const save = useCallback(async(): Promise<void> => {
     // save
@@ -113,6 +81,74 @@ export const SavePageControls = (): JSX.Element | null => {
     }
   }, [currentPage?._id, mutateCurrentPage, t]);
 
+  const labelSubmitButton = t('Update');
+  const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
+  const labelUnpublishPage = t('wip_page.save_as_wip');
+
+  return (
+    <UncontrolledButtonDropdown direction="up" size="sm">
+      <Button
+        id="caret"
+        data-testid="save-page-btn"
+        color="primary"
+        className="btn-submit"
+        onClick={save}
+        disabled={isWaitingSaveProcessing}
+      >
+        {isWaitingSaveProcessing && (
+          <i className="fa fa-spinner fa-pulse me-1"></i>
+        )}
+        {labelSubmitButton}
+      </Button>
+      <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
+      <DropdownMenu container="body" end>
+        <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
+          {labelOverwriteScopes}
+        </DropdownItem>
+        <DropdownItem onClick={clickUnpublishButtonHandler}>
+          {labelUnpublishPage}
+        </DropdownItem>
+      </DropdownMenu>
+    </UncontrolledButtonDropdown>
+  );
+};
+
+
+export const SavePageControls = (): JSX.Element | null => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: isEditable } = useIsEditable();
+  const { data: isAclEnabled } = useIsAclEnabled();
+  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+
+  const { data: editorMode } = useEditorMode();
+  const { data: currentPagePath } = useCurrentPagePath();
+  const { data: isSlackConfigured } = useIsSlackConfigured();
+  const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+
+  const [slackChannels, setSlackChannels] = useState<string>('');
+
+  // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
+  const slackChannelsDataString = slackChannelsData?.toString();
+  useEffect(() => {
+    if (editorMode === 'editor') {
+      setSlackChannels(slackChannelsDataString ?? '');
+      mutateIsSlackEnabled(false);
+    }
+  }, [editorMode, mutateIsSlackEnabled, slackChannelsDataString]);
+
+
+  const isSlackEnabledToggleHandler = (bool: boolean) => {
+    mutateIsSlackEnabled(bool, false);
+  };
+
+  const slackChannelsChangedHandler = useCallback((slackChannels: string) => {
+    setSlackChannels(slackChannels);
+  }, []);
+
+  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
+    mutateGrant(grantData);
+  }, [mutateGrant]);
 
   if (isEditable == null || isAclEnabled == null || grantData == null) {
     return null;
@@ -125,13 +161,9 @@ export const SavePageControls = (): JSX.Element | null => {
   const { grant, userRelatedGrantedGroups } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
-  const labelSubmitButton = t('Update');
-  const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
-  const labelUnpublishPage = t('wip_page.save_as_wip');
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
-
       {isSlackConfigured && (
         <div className="me-2">
           {isSlackEnabled != null
@@ -161,31 +193,7 @@ export const SavePageControls = (): JSX.Element | null => {
         )
       }
 
-      <UncontrolledButtonDropdown direction="up" size="sm">
-        <Button
-          id="caret"
-          data-testid="save-page-btn"
-          color="primary"
-          className="btn-submit"
-          onClick={save}
-          disabled={isWaitingSaveProcessing}
-        >
-          {isWaitingSaveProcessing && (
-            <i className="fa fa-spinner fa-pulse me-1"></i>
-          )}
-          {labelSubmitButton}
-        </Button>
-        <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-        <DropdownMenu container="body" end>
-          <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-            {labelOverwriteScopes}
-          </DropdownItem>
-          <DropdownItem onClick={clickUnpublishButtonHandler}>
-            {labelUnpublishPage}
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledButtonDropdown>
-
+      <SavePageButton slackChannels={slackChannels} />
     </div>
   );
 };
