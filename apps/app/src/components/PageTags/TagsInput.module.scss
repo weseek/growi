@@ -1,4 +1,4 @@
-.tag-edit-modal :global {
+.tags-input :global {
   .rbt-token {
     .rbt-token-label {
       // override to text-truncate
@@ -11,7 +11,7 @@
 }
 
 // == Colors
-.tag-edit-modal :global {
+.tags-input :global {
   .rbt-token {
     // override to .badge color
     color: var(--bs-badge-color);

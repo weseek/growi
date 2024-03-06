@@ -7,6 +7,8 @@ import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 
 import { useSWRxTagsSearch } from '~/stores/tag';
 
+import styles from './TagsInput.module.scss';
+
 type Props = {
   tags: string[],
   autoFocus: boolean,
@@ -50,7 +52,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <div className="tag-typeahead">
+    <div className={`${styles['tags-input']}`}>
       <AsyncTypeahead
         id="tag-typeahead-asynctypeahead"
         ref={tagsInputRef}
