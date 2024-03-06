@@ -136,7 +136,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
-      if (currentPage != null && !currentPage.isUpdatable(revisionId, origin)) {
+      const isUpdatable = await currentPage.isUpdatable(revisionId, origin);
+
+      if (currentPage != null && !isUpdatable) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
