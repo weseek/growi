@@ -66,7 +66,7 @@ const AssociateModal = (props: Props): JSX.Element => {
               className={activeTab === 1 ? 'active' : ''}
               onClick={() => setActiveTab(1)}
             >
-              <span className="material-symbols-outlined">network_node</span> LDAP
+              <span className="material-symbols-outlined fs-5">network_node</span> LDAP
             </NavLink>
             <NavLink
               className={activeTab === 2 ? 'active' : ''}

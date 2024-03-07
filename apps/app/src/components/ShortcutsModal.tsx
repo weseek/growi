@@ -3,7 +3,6 @@ import React from 'react';
 import { useTranslation } from 'next-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
-import KeyboardReturnEnterIcon from '~/components/Icons/KeyboardReturnEnterIcon';
 import { useShortcutsModal } from '~/stores/modal';
 
 import styles from './ShortcutsModal.module.scss';
@@ -142,7 +141,7 @@ const ShortcutsModal = (): JSX.Element => {
                   <td className="text-nowrap">
                     <span className={`key cmd-key ${additionalClassByOs}`}></span> +
                     <span className="key key-longer">
-                      <KeyboardReturnEnterIcon />
+                      <span className="material-symbols-outlined">keyboard_return</span>
                     </span>
                   </td>
                 </tr>

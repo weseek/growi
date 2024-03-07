@@ -2,8 +2,8 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
-import type {
-  EditorTheme, KeyMapMode,
+import {
+  type EditorTheme, type KeyMapMode, DEFAULT_KEYMAP, DEFAULT_THEME,
 } from '@growi/editor';
 import { useTranslation } from 'next-i18next';
 import Image from 'next/image';
@@ -94,6 +94,7 @@ const EDITORTHEME_LABEL_MAP: EditorThemeToLabel = {
 
 const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
+  const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
   const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
 
@@ -109,7 +110,7 @@ const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX
   ), [update, selectedTheme]);
 
   return (
-    <Selector header="Theme" onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.theme')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 ThemeSelector.displayName = 'ThemeSelector';
@@ -128,6 +129,7 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
 
 const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
+  const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
   const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
@@ -147,7 +149,7 @@ const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JS
 
 
   return (
-    <Selector header="Keymap" onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.keymap')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 KeymapSelector.displayName = 'KeymapSelector';
@@ -157,6 +159,7 @@ const TYPICAL_INDENT_SIZE = [2, 4];
 
 const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
+  const { t } = useTranslation();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
   const listItems = useMemo(() => (
@@ -170,7 +173,7 @@ const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void})
   ), [currentIndentSize, mutateCurrentIndentSize]);
 
   return (
-    <Selector header="Indent" onClickBefore={onClickBefore} items={listItems} />
+    <Selector header={t('page_edit.indent')} onClickBefore={onClickBefore} items={listItems} />
   );
 });
 IndentSizeSelector.displayName = 'IndentSizeSelector';
@@ -262,6 +265,9 @@ const OptionsStatus = {
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
 export const OptionsSelector = (): JSX.Element => {
+export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Element => {
+
+  const { t } = useTranslation();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
@@ -286,7 +292,7 @@ export const OptionsSelector = (): JSX.Element => {
         <span className="material-symbols-outlined py-0 fs-5"> settings </span>
         {
           isDeviceLargerThanMd
-            ? <label className="ms-1 me-1">Editor Config</label>
+            ? <label className="ms-1 me-1">{t('page_edit.editor_config')}</label>
             : <></>
         }
       </DropdownToggle>
@@ -295,21 +301,25 @@ export const OptionsSelector = (): JSX.Element => {
           status === OptionsStatus.Home && (
             <div className="d-flex flex-column">
               <label className="text-muted ms-3">
-                Editor Config
+                {t('page_edit.editor_config')}
               </label>
               <hr className="my-1" />
-              <ChangeStateButton onClick={() => setStatus(OptionsStatus.Theme)} header="Theme" data={EDITORTHEME_LABEL_MAP[editorSettings.theme ?? ''] ?? ''} />
+              <ChangeStateButton
+                onClick={() => setStatus(OptionsStatus.Theme)}
+                header={t('page_edit.theme')}
+                data={EDITORTHEME_LABEL_MAP[editorSettings.theme ?? ''] ?? ''}
+              />
               <hr className="my-1" />
               <ChangeStateButton
                 onClick={() => setStatus(OptionsStatus.Keymap)}
-                header="Keymap"
+                header={t('page_edit.keymap')}
                 data={KEYMAP_LABEL_MAP[editorSettings.keymapMode ?? ''] ?? ''}
               />
               <hr className="my-1" />
               <ChangeStateButton
                 disabled={isIndentSizeForced}
                 onClick={() => setStatus(OptionsStatus.Indent)}
-                header="Indent"
+                header={t('page_edit.indent')}
                 data={currentIndentSize.toString() ?? ''}
               />
               <hr className="my-1" />
