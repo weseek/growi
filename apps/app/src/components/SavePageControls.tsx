@@ -122,7 +122,6 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
             <>
               <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} onClick={() => setIsSavePageModalShown(true)} />
               <Modal
-                className="save-page-controls-modal"
                 centered
                 isOpen={isSavePageModalShown}
                 toggle={() => setIsSavePageModalShown(false)}
@@ -246,7 +245,7 @@ export const SavePageControls = (): JSX.Element | null => {
               centered
               isOpen={isSavePageControlsModalShown}
             >
-              <div className="d-flex flex-column py-3 px-4 gap-3">
+              <div className="d-flex flex-column pt-5 pb-3 px-4 gap-3">
                 {
                   isAclEnabled && (
                     <GrantSelector

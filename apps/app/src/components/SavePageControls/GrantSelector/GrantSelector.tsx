@@ -161,7 +161,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     return (
       <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
         <UncontrolledDropdown direction={openInModal ? 'down' : 'up'} size="sm">
-          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
+          <DropdownToggle color={dropdownToggleBtnColor} caret className="w-100 d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu container={openInModal ? '' : 'body'}>

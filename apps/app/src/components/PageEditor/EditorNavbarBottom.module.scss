@@ -4,24 +4,6 @@
 
 @include mixins.editing() {
   .grw-editor-navbar-bottom :global {
-    .grw-grant-selector {
-      @include bs.media-breakpoint-down(sm) {
-        .btn .label {
-          display: none;
-        }
-      }
-      @include bs.media-breakpoint-up(md) {
-        .dropdown-toggle {
-          min-width: 100px;
-
-          // caret
-          &::after {
-            margin-left: 1em;
-          }
-        }
-      }
-    }
-
     .btn-submit {
       width: 100px;
     }
