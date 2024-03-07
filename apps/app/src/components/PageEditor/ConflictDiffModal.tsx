@@ -99,7 +99,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       size="xl"
     >
 
-      <ModalHeader tag="h4" className="bg-primary text-light d-flex align-items-center" close={headerButtons}>
+      <ModalHeader tag="h4" className="d-flex align-items-center" close={headerButtons}>
         <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
 
