@@ -149,6 +149,7 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
 
 
 export const SavePageControls = (): JSX.Element | null => {
+  const { t } = useTranslation('commons');
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
@@ -272,11 +273,8 @@ export const SavePageControls = (): JSX.Element | null => {
                   )
                 }
                 <div className="d-flex">
-                  <button type="button" className="ms-auto btn btn-outline-neutral-secondary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
-                    Cancel
-                  </button>
-                  <button type="button" className="ms-2 btn btn-primary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
-                    Done
+                  <button type="button" className="mx-auto btn btn-primary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
+                    {t('Done')}
                   </button>
                 </div>
               </div>
