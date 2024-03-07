@@ -46,6 +46,8 @@ reference](https://docs.growi.org/ja/admin-guide/upgrading/60x.html#%E6%9C%AA%E5
 - `v60x` or `v60x/index`: Migration for all notations in v6.0.x series
 - `v61x/mdcont`: Migration for mdcont notation only([reference](https://docs.growi.org/ja/admin-guide/upgrading/61x.html#%E4%BB%95%E6%A7%98%E5%A4%89%E6%9B%B4-%E3%82%A2%E3%83%B3%E3%82%AB%E3%83%BC%E3%83%AA%E3%83%B3%E3%82%AF%E3%81%AB%E8%87%AA%E5%8B%95%E4%BB%98%E4%B8%8E%E3%81%95%E3%82%8C%E3%82%8B-mdcont-%E3%83%95%E3%82%9A%E3%83%AC%E3%83%95%E3%82%A3%E3%82%AF%E3%82%B9%E3%81%AE%E5%BB%83%E6%AD%A2))
 - `v61x` or `v61x/index`: Migration for all notations in v6.1.x series
+- `v70x/bootstrap5`: Migration for Bootstrap4 to Bootstrap5 
+- `v70x` or `v70x/index`: Migration for all notations in v7.0.x series
 - `custom`: You can define your own processors and apply them to `revision` (see "Advanced" below for details)
 
 ### Optional

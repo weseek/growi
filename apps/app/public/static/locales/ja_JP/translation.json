@@ -111,7 +111,7 @@
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><span className='growi-custom-icons'>external_link</span>を参照ください。",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
   "Basic Settings": "基本設定",
@@ -344,6 +344,11 @@
     }
   },
   "page_edit": {
+    "input_channels": "チャンネル名",
+    "theme": "テーマ",
+    "keymap": "キーマップ",
+    "indent": "インデント",
+    "editor_config": "エディタ設定",
     "Show active line": "アクティブ行をハイライト",
     "auto_format_table": "表の自動整形",
     "overwrite_scopes": "{{operation}}と同時に全ての配下ページのスコープを上書き",
@@ -587,7 +592,7 @@
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
     "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
-    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード  <i class='icon-share-alt'></i></a> を参照ください。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード <span className='growi-custom-icons'>external_link</span></a> を参照ください。",
     "modal": {
       "title": "新しい v5 互換形式への変換",
       "converting_pages": "以下のページを変換します",
@@ -861,10 +866,10 @@
     "select_page_location": "ページの場所を選択"
   },
   "wip_page": {
-    "save_as_wip": "WIP (執筆中) として保存",
+    "save_as_wip": "WIP (執筆途中) として保存",
     "success_save_as_wip": "WIP ページとして保存しました",
     "fail_save_as_wip": "WIP ページとして保存できませんでした",
-    "alert": "このページは作業途中です",
+    "alert": "このページは執筆途中です",
     "publish_page": "WIP を解除",
     "success_publish_page": "WIP を解除しました",
     "fail_publish_page": "WIP を解除できませんでした"

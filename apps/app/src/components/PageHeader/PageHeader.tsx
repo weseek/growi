@@ -21,10 +21,12 @@ export const PageHeader: FC = () => {
       <PagePathHeader
         currentPage={currentPage}
       />
-      <PageTitleHeader
-        className="mt-2"
-        currentPage={currentPage}
-      />
+      <div className="row mt-1">
+        <PageTitleHeader
+          className="col"
+          currentPage={currentPage}
+        />
+      </div>
     </div>
   );
 };

@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
 
+import { Origin } from '@growi/core';
 import { isCreatablePage } from '@growi/core/dist/utils/page-path-utils';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 
 import type { LabelType } from '~/interfaces/template';
 import { useCurrentPagePath } from '~/stores/page';
+
 
 import { useCreatePageAndTransit } from './use-create-page-and-transit';
 
@@ -25,7 +27,7 @@ export const useCreateTemplatePage: UseCreateTemplatePage = () => {
     if (isLoadingPagePath || !isCreatable) return;
 
     return createAndTransit(
-      { path: normalizePath(`${currentPagePath}/${label}`), wip: false },
+      { path: normalizePath(`${currentPagePath}/${label}`), wip: false, origin: Origin.View },
       { shouldCheckPageExists: true },
     );
   }, [currentPagePath, isCreatable, isLoadingPagePath, createAndTransit]);
