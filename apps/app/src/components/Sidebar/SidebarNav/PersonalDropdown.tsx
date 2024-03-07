@@ -73,29 +73,29 @@ export const PersonalDropdown = (): JSX.Element => {
 
           <DropdownItem className="my-3" divider />
 
-          <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
-            <Link
-              href={pagePathUtils.userHomepagePath(currentUser)}
-              data-testid="grw-personal-dropdown-menu-user-home"
-            >
+          <Link
+            href={pagePathUtils.userHomepagePath(currentUser)}
+            data-testid="grw-personal-dropdown-menu-user-home"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
               <span className="d-flex align-items-center">
                 <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">home</span>
                 <span className="item-text">{t('personal_dropdown.home')}</span>
               </span>
-            </Link>
-          </DropdownItem>
+            </DropdownItem>
+          </Link>
 
-          <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
-            <Link
-              href="/me"
-              data-testid="grw-personal-dropdown-menu-user-settings"
-            >
+          <Link
+            href="/me"
+            data-testid="grw-personal-dropdown-menu-user-settings"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
               <span className="d-flex align-items-center">
                 <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">discover_tune</span>
                 <span className="item-text">{t('personal_dropdown.settings')}</span>
               </span>
-            </Link>
-          </DropdownItem>
+            </DropdownItem>
+          </Link>
 
           <DropdownItem
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
