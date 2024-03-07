@@ -9,6 +9,7 @@ import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
 import { PageAttachmentList } from '../PageAttachment/PageAttachmentList';
 import PaginationWrapper from '../PaginationWrapper';
 
@@ -63,7 +64,7 @@ const PageAttachment = (): JSX.Element => {
     if (dataAttachments == null || inUseAttachmentsMap == null) {
       return (
         <div className="text-muted text-center">
-          <span className="me-1"><LoadingSpinnerPulse /></span>
+          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
         </div>
       );
     }

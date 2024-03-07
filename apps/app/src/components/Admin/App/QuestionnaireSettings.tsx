@@ -66,7 +66,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoading && (
         <div className="text-muted text-center mb-5">
-          <span className="me-1"><LoadingSpinnerPulse /></span>
+          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
         </div>
       )}
 

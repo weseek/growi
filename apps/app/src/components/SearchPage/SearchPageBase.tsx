@@ -20,6 +20,8 @@ import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 
 // Do not import with next/dynamic
 // see: https://github.com/weseek/growi/pull/7923
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+
 import { SearchResultList } from './SearchResultList';
 
 import styles from './SearchPageBase.module.scss';
@@ -181,7 +183,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           {/* Loading */}
           { pages == null && (
             <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-              <span className="me-1"><LoadingSpinnerPulse /></span>
+              <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
             </div>
           ) }
 

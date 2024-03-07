@@ -45,7 +45,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
 
   if (isContainerFluid == null) {
     return (
-      <div className="text-muted text-center">
+      <div className="text-muted text-center fs-3">
         <LoadingSpinnerPulse />
       </div>
     );

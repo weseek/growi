@@ -8,8 +8,8 @@ import type {
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { IPagingResult } from '~/interfaces/paging-result';
-import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+import type { IPagingResult } from '~/interfaces/paging-result';
+import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores/context';
 import {
   mutatePageTree,
@@ -86,7 +86,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <span className="me-1"><LoadingSpinnerPulse /></span>
+          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
         </div>
       </div>
     );

@@ -7,6 +7,8 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+
 import RevisionRenderer from './RevisionRenderer';
 
 export const ROOT_ELEM_ID = 'revision-loader' as const;
@@ -64,7 +66,7 @@ export const RevisionLoader = (props: RevisionLoaderProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <span className="me-1"><LoadingSpinnerPulse /></span>
+          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
         </div>
       </div>
     );

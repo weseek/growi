@@ -8,6 +8,7 @@ import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { LoadingSpinnerPulse } from '~/components/LoadingSpinnerPulse';
 
 import BotTypeCard from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
@@ -187,7 +188,7 @@ const SlackIntegration = () => {
   if (isLoading) {
     return (
       <div className="text-muted text-center">
-        <span className="me-1"><LoadingSpinnerPulse /></span>
+        <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
       </div>
     );
   }

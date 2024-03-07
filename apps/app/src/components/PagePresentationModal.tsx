@@ -23,7 +23,7 @@ import styles from './PagePresentationModal.module.scss';
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <span className="text-muted"><LoadingSpinnerPulse /></span>
+    <span className="text-muted fs-1"><LoadingSpinnerPulse /></span>
   ),
 });
 
