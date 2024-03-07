@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { useRouter } from 'next/router';
-import { Element } from 'react-markdown/lib/rehype-filter';
+import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -51,6 +51,7 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
 
 type HeaderProps = {
   children: React.ReactNode,
+  className: string,
   node: Element,
   level: number,
   id?: string,
@@ -112,8 +113,10 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
+  const className = props.className;
+
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
+    <CustomTag id={id} className={`${className} revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>
