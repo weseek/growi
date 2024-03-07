@@ -8,17 +8,17 @@ import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
-import { V5MigrationStatus } from '~/interfaces/page-listing-results';
-import { IFormattedSearchResult } from '~/interfaces/search';
-import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
+import type { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import type { IFormattedSearchResult } from '~/interfaces/search';
+import type { PageMigrationErrorData } from '~/interfaces/websocket';
+import { SocketEventName } from '~/interfaces/websocket';
 import { useIsAdmin } from '~/stores/context';
-import {
-  ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
-} from '~/stores/modal';
+import type { ILegacyPrivatePage } from '~/stores/modal';
+import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
@@ -30,7 +30,8 @@ import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
+import type { IReturnSelectedPageIds } from './SearchPage/SearchPageBase';
+import { SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
