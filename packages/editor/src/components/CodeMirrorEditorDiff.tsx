@@ -6,7 +6,7 @@ import { placeholder } from '@codemirror/view';
 import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor } from '.';
 
 
 const additionalExtensions: Extension[] = [
@@ -16,13 +16,7 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-type Props = CodeMirrorEditorProps & object
-
-export const CodeMirrorEditorDiff = (props: Props): JSX.Element => {
-  const {
-    onChange,
-  } = props;
-
+export const CodeMirrorEditorDiff = (): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
   // setup additional extensions
@@ -33,7 +27,6 @@ export const CodeMirrorEditorDiff = (props: Props): JSX.Element => {
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.DIFF}
-      onChange={onChange}
       hideToolbar
     />
   );
