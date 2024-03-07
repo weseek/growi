@@ -121,7 +121,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
       const labelElm = (
         <span>
-          <span className="material-symbols-outlined fs-5 me-2">{opt.iconName}</span>
+          <span className="material-symbols-outlined me-2">{opt.iconName}</span>
           <span className="label">{t(label)}</span>
         </span>
       );

@@ -4,6 +4,12 @@
 
 @include mixins.editing() {
   .grw-editor-navbar-bottom :global {
+    .grw-grant-selector {
+      .material-symbols-outlined  {
+        padding-bottom: 2px;
+        font-size: 19px;
+      }
+    }
     .btn-submit {
       width: 100px;
     }
