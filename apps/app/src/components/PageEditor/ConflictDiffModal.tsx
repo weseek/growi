@@ -25,12 +25,11 @@ import {
 import styles from './ConflictDiffModal.module.scss';
 
 type ConflictDiffModalCoreProps = {
-  isOpen?: boolean;
-  onClose?: (() => void);
   // optionsToSave: OptionsToSave | undefined;
   request: IRevisionOnConflictWithStringDate,
   latest: IRevisionOnConflictWithStringDate,
-  // afterResolvedHandler: () => void,
+  onClose?: () => void,
+  onResolved?: () => void,
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
@@ -39,7 +38,7 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const {
-    onClose, request, latest,
+    request, latest, onClose, onResolved,
   } = props;
 
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
@@ -51,18 +50,14 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
-  // const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
-
   // const { data: remoteRevisionId } = useRemoteRevisionId();
   // const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   // const { data: pageId } = useCurrentPageId();
   // const { data: currentPagePath } = useCurrentPagePath();
   // const { data: currentPathname } = useCurrentPathname();
 
-  const revisionSelectHandler = useCallback((selectedRevision: string) => {
+  const selectRevisionHandler = useCallback((selectedRevision: string) => {
     setResolvedRevision(selectedRevision);
-
-    // Enable selecting the same revision after editing by including revisionSelectedToggler in the dependency array of useEffect
     setRevisionSelectedToggler(prev => !prev);
 
     if (!isRevisionselected) {
@@ -70,34 +65,36 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     }
   }, [isRevisionselected]);
 
-  const closeModal = useCallback(() => {
-    onClose?.();
+  const closeModalHandler = useCallback(() => {
     closeConflictDiffModal();
+    onClose?.();
   }, [closeConflictDiffModal, onClose]);
+
+  const resolveConflictHandler = useCallback(async() => {
+    const newBody = codeMirrorEditor?.getDoc();
+
+    // TODO: impl
+    onResolved?.();
+  }, [codeMirrorEditor, onResolved]);
+
+  useEffect(() => {
+    codeMirrorEditor?.initDoc(resolvedRevision);
+    // Enable selecting the same revision after editing by including revisionSelectedToggler in the dependency array of useEffect
+  }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
 
   const headerButtons = useMemo(() => (
     <div className="d-flex align-items-center">
       <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
         <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
       </button>
-      <button type="button" className="btn" onClick={closeModal} aria-label="Close">
+      <button type="button" className="btn" onClick={closeModalHandler} aria-label="Close">
         <span className="material-symbols-outlined">close</span>
       </button>
     </div>
-  ), [closeModal, isModalExpanded]);
-
-  useEffect(() => {
-    codeMirrorEditor?.initDoc(resolvedRevision);
-  }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
+  ), [closeModalHandler, isModalExpanded]);
 
   return (
-    <Modal
-      isOpen // use conflictDiffModalStatus?.isOpened
-      toggle={closeModal}
-      backdrop="static"
-      className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`}
-      size="xl"
-    >
+    <Modal isOpen={conflictDiffModalStatus?.isOpened} className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`} size="xl">
 
       <ModalHeader tag="h4" className="d-flex align-items-center" close={headerButtons}>
         <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
@@ -145,7 +142,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => { revisionSelectHandler(request.revisionBody) }}
+                onClick={() => { selectRevisionHandler(request.revisionBody) }}
               >
                 <span className="material-symbols-outlined me-1">arrow_circle_down</span>
                 {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
@@ -158,7 +155,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               <button
                 type="button"
                 className="btn btn-outline-primary"
-                onClick={() => { revisionSelectHandler(latest.revisionBody) }}
+                onClick={() => { selectRevisionHandler(latest.revisionBody) }}
               >
                 <span className="material-symbols-outlined me-1">arrow_circle_down</span>
                 {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
@@ -179,14 +176,14 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={closeModal}
+          onClick={closeModalHandler}
         >
           {t('Cancel')}
         </button>
         <button
           type="button"
           className="btn btn-primary ms-3"
-          // onClick={onResolveConflict}
+          onClick={resolveConflictHandler}
           disabled={!isRevisionselected}
         >
           {t('modal_resolve_conflict.resolve_and_save')}
@@ -194,15 +191,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       </ModalFooter>
     </Modal>
   );
-};
-
-
-type ConflictDiffModalProps = {
-  isOpen?: boolean;
-  onClose?: (() => void);
-  markdownOnEdit: string;
-  // optionsToSave: OptionsToSave | undefined;
-  // afterResolvedHandler: () => void,
 };
 
 
@@ -270,9 +258,17 @@ GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
 </div>
 `;
 
+type ConflictDiffModalProps = {
+  onClose?: () => void,
+  onResolved?: () => void,
+  // optionsToSave: OptionsToSave | undefined;
+  // afterResolvedHandler: () => void,
+};
+
+
 export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
   const {
-    isOpen, onClose, markdownOnEdit,
+    onClose, onResolved,
   } = props;
   const { data: currentUser } = useCurrentUser();
 
@@ -285,11 +281,13 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
+  const { data: conflictDiffModalStatus } = useConflictDiffModal();
+
   const currentTime: Date = new Date();
 
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
-  if (!isOpen || currentUser == null || currentPage == null) {
+  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null) {
     return <></>;
   }
 
@@ -315,7 +313,7 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   // };
 
   const propsForCore = {
-    isOpen,
+    onResolved,
     onClose,
     request,
     latest,
