@@ -135,7 +135,7 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
                     {labelUnpublishPage}
                   </button>
                   <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => setIsSavePageModalShown(false)}>
-                    Cancel
+                    {t('Cancel')}
                   </button>
                 </div>
               </Modal>
