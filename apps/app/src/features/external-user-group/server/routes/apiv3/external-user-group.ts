@@ -1,6 +1,7 @@
 import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { Router, Request } from 'express';
+import type { Request } from 'express';
+import { Router } from 'express';
 import {
   body, param, query, validationResult,
 } from 'express-validator';
@@ -8,13 +9,14 @@ import {
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
-import Crowi from '~/server/crowi';
+import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
+import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import { configManager } from '~/server/service/config-manager';
-import UserGroupService from '~/server/service/user-group';
+import type UserGroupService from '~/server/service/user-group';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:routes:apiv3:external-user-group');
@@ -148,16 +150,19 @@ module.exports = (crowi: Crowi): Router => {
   router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const { id: deleteGroupId } = req.params;
-      const { actionName, transferToUserGroupId } = req.query;
+      const { transferToUserGroupId, transferToUserGroupType } = req.query;
+      const actionName = req.query.actionName as PageActionOnGroupDelete;
 
-      const transferGroupInfo = transferToUserGroupId != null ? {
-        item: transferToUserGroupId as string,
-        type: GroupType.externalUserGroup,
-      } : undefined;
+      const transferToUserGroup = typeof transferToUserGroupId === 'string'
+        && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
+        ? {
+          item: transferToUserGroupId,
+          type: transferToUserGroupType,
+        } : undefined;
 
       try {
         const userGroups = await (crowi.userGroupService as UserGroupService)
-          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferGroupInfo, ExternalUserGroup, ExternalUserGroupRelation);
+          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferToUserGroup, ExternalUserGroup, ExternalUserGroupRelation);
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);

@@ -66,7 +66,7 @@ const AssociateModal = (props: Props): JSX.Element => {
               className={activeTab === 1 ? 'active' : ''}
               onClick={() => setActiveTab(1)}
             >
-              <i className="fa fa-sitemap"></i> LDAP
+              <span className="material-symbols-outlined fs-5">network_node</span> LDAP
             </NavLink>
             <NavLink
               className={activeTab === 2 ? 'active' : ''}
@@ -113,7 +113,7 @@ const AssociateModal = (props: Props): JSX.Element => {
       </ModalBody>
       <ModalFooter className="border-top-0">
         <button type="button" className="btn btn-primary mt-3" onClick={clickAddLdapAccountHandler}>
-          <i className="fa fa-plus-circle" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
           {t('add')}
         </button>
       </ModalFooter>

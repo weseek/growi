@@ -10,10 +10,8 @@ import { useUserUISettings } from '~/client/services/user-ui-settings';
 import { usePreferDrawerModeByUser, usePreferDrawerModeOnEditByUser } from '~/stores/ui';
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
-import MoonIcon from '../Icons/MoonIcon';
 import SidebarDockIcon from '../Icons/SidebarDockIcon';
 import SidebarDrawerIcon from '../Icons/SidebarDrawerIcon';
-import SunIcon from '../Icons/SunIcon';
 
 type AppearanceModeDropdownProps = {
   isAuthenticated: boolean,
@@ -132,7 +130,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
               <div className="justify-content-center">
                 <div className="col-auto d-flex align-items-center">
                   <IconWithTooltip id="iwt-light" label="Light" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-                    <SunIcon />
+                  <span className="material-symbols-outlined">light_mode</span>
                   </IconWithTooltip>
                   <div className="form-check form-switch form-check-secondary ms-2">
                     <input
@@ -146,7 +144,7 @@ export const AppearanceModeDropdown:FC<AppearanceModeDropdownProps> = (props: Ap
                     <label className="form-label form-check-label" htmlFor="swUserPreference"></label>
                   </div>
                   <IconWithTooltip id="iwt-dark" label="Dark" additionalClasses={useOsSettings ? 'grw-color-mode-icon-muted' : 'grw-color-mode-icon'}>
-                    <MoonIcon />
+                  <span className="material-symbols-outlined">dark_mode</span>
                   </IconWithTooltip>
                 </div>
               </div>

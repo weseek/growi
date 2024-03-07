@@ -1,21 +1,31 @@
 import type { IUser, IGrantedGroup } from '@growi/core';
-import { DeleteResult } from 'mongodb';
-import { Model } from 'mongoose';
+import type { DeleteResult } from 'mongodb';
+import type { Model } from 'mongoose';
 
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
-import UserGroup, { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { UserGroupDocument, UserGroupModel } from '~/server/models/user-group';
+import UserGroup from '~/server/models/user-group';
 import { excludeTestIdsFromTargetIds, includesObjectIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
-import UserGroupRelation, { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
+import type { UserGroupRelationDocument, UserGroupRelationModel } from '../models/user-group-relation';
+import UserGroupRelation from '../models/user-group-relation';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 
 
 const logger = loggerFactory('growi:service:UserGroupService'); // eslint-disable-line no-unused-vars
 
+export interface IUserGroupService {
+  init(): Promise<void>;
+  updateGroup(id: ObjectIdLike, name?: string, description?: string, parentId?: ObjectIdLike | null, forceUpdateParents?: boolean): Promise<UserGroupDocument>;
+  removeCompletelyByRootGroupId(deleteRootGroupId: ObjectIdLike, action: string, user: IUser, transferToUserGroup?: IGrantedGroup): Promise<DeleteResult>;
+  removeUserByUsername(userGroupId: ObjectIdLike, username: string): Promise<{user: IUser, deletedGroupsCount: number}>;
+}
+
 /**
  * the service class of UserGroupService
  */
-class UserGroupService {
+class UserGroupService implements IUserGroupService {
 
   crowi: any;
 
@@ -23,13 +33,13 @@ class UserGroupService {
     this.crowi = crowi;
   }
 
-  async init() {
+  async init(): Promise<void> {
     logger.debug('removing all invalid relations');
     return UserGroupRelation.removeAllInvalidRelations();
   }
 
   // ref: https://dev.growi.org/61b2cdabaa330ce7d8152844
-  async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false) {
+  async updateGroup(id, name?: string, description?: string, parentId?: string | null, forceUpdateParents = false): Promise<UserGroupDocument> {
     const userGroup = await UserGroup.findById(id);
     if (userGroup == null) {
       throw new Error('The group does not exist');
@@ -115,7 +125,7 @@ class UserGroupService {
   }
 
   async removeCompletelyByRootGroupId(
-      deleteRootGroupId, action, user, transferToUserGroup?: IGrantedGroup,
+      deleteRootGroupId, action: PageActionOnGroupDelete, user, transferToUserGroup?: IGrantedGroup,
       userGroupModel: Model<UserGroupDocument> & UserGroupModel = UserGroup,
       userGroupRelationModel: Model<UserGroupRelationDocument> & UserGroupRelationModel = UserGroupRelation,
   ): Promise<DeleteResult> {
@@ -144,7 +154,7 @@ class UserGroupService {
       User.findUserByUsername(username),
     ]);
 
-    const groupsOfRelationsToDelete = await UserGroup.findGroupsWithDescendantsRecursively([userGroup]);
+    const groupsOfRelationsToDelete = userGroup != null ? await UserGroup.findGroupsWithDescendantsRecursively([userGroup]) : [];
     const relatedGroupIdsToDelete = groupsOfRelationsToDelete.map(g => g._id);
 
     const deleteManyRes = await UserGroupRelation.deleteMany({ relatedUser: user._id, relatedGroup: { $in: relatedGroupIdsToDelete } });

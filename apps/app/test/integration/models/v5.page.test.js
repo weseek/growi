@@ -1531,6 +1531,7 @@ describe('Page', () => {
             // userB group remains, although options does not include it
             { item: userGroupIdPModelB, type: GroupType.userGroup },
           ]));
+          expect(normalizeGrantedGroups(page.grantedGroups).length).toBe(3);
         });
       });
     });
@@ -1671,6 +1672,7 @@ describe('Page', () => {
         { item: upodUserGroupIdB, type: GroupType.userGroup },
         { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
       ]));
+      expect(normalizeGrantedGroups(upodPagegAgBUpdated.grantedGroups).length).toBe(4);
 
       // Not changed
       expect(upodPagegBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);
