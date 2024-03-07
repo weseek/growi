@@ -212,8 +212,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
               onClick={() => groupListItemClickHandler(group)}
             >
               <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
-              <h5 className="d-inline-block ml-3">{group.item.name}</h5>
-              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
+              <h5 className="d-inline-block ms-3">{group.item.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
@@ -234,7 +234,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
         >
-          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
+          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-muted">
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>
