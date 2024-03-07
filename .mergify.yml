@@ -6,8 +6,8 @@ pull_request_rules:
       - check-success = "lint (20.x)"
       - check-success = "test (20.x)"
       - check-success = "launch-dev (20.x)"
-      - check-success = "test-prod-node16 / launch-prod"
       - check-success = "test-prod-node18 / launch-prod"
+      - check-success = "test-prod-node20 / launch-prod"
     actions:
       merge:
         method: merge

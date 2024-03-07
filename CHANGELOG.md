@@ -1,8 +1,35 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.1](https://github.com/weseek/growi/compare/v6.3.0...v6.3.1) - 2024-02-01
+
+### 💎 Features
+
+* feat: Normalize duplicated root pages to valid paths when server startup (#8414) @miya
+
+### 🚀 Improvement
+
+* imprv: Use unzip stream instead of unzipper (#8378) @ryu-sato
+* imprv: Allow plugin that contain slashes in the branch name to be installed (#8359) @ryu-sato
+
+### 🐛 Bug Fixes
+
+* fix: Page being able to delete completely when not allowed (#8374) @arafubeatbox
+* fix: Logs are not saved when viewing the page (#8406) @miya
+* fix: Preventing duplication of `/user/username` pages (#8413) @WNomunomu
+* fix: Non-admin user cannot rename pages v63x (#8410) @jam411
+* fix: Duplicate root pages are created unintentionally (#8404) @miya
+* fix: Configured auditlog environment variables are not reflected in the administration screen (#8383) @miya
+* fix: plugin is broken after unzipping (#8358) @ryu-sato
+* fix: Keycloak group sync config not loaded on sync execution (#8339) @arafubeatbox
+
+### 🧰 Maintenance
+
+* support: React Testing Library (#8393) @miya
+* ci(deps-dev): bump vite from 4.5.1 to 4.5.2 (#8392) @dependabot
 
 ## [v6.3.0](https://github.com/weseek/growi/compare/v6.2.5...v6.3.0) - 2023-12-14
 
@@ -50,6 +77,7 @@
 * imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
 
 ### 🐛 Bug Fixes
+
 * fix: Certify shared page attachment middleware (6.2.x) (#8256) @yuki-takei
 
 ### 🧰 Maintenance

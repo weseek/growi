@@ -150,17 +150,19 @@ module.exports = (crowi: Crowi): Router => {
   router.delete('/:id', loginRequiredStrictly, adminRequired, validators.delete, apiV3FormValidator, addActivity,
     async(req: AuthorizedRequest, res: ApiV3Response) => {
       const { id: deleteGroupId } = req.params;
-      const { transferToUserGroupId } = req.query;
+      const { transferToUserGroupId, transferToUserGroupType } = req.query;
       const actionName = req.query.actionName as PageActionOnGroupDelete;
 
-      const transferGroupInfo = transferToUserGroupId != null ? {
-        item: transferToUserGroupId as string,
-        type: GroupType.externalUserGroup,
-      } : undefined;
+      const transferToUserGroup = typeof transferToUserGroupId === 'string'
+        && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
+        ? {
+          item: transferToUserGroupId,
+          type: transferToUserGroupType,
+        } : undefined;
 
       try {
         const userGroups = await (crowi.userGroupService as UserGroupService)
-          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferGroupInfo, ExternalUserGroup, ExternalUserGroupRelation);
+          .removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferToUserGroup, ExternalUserGroup, ExternalUserGroupRelation);
 
         const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
         activityEvent.emit('update', res.locals.activity._id, parameters);
