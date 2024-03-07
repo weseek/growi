@@ -51,7 +51,6 @@ const EditLink = (props: EditLinkProps): JSX.Element => {
 
 type HeaderProps = {
   children: React.ReactNode,
-  className: string,
   node: Element,
   level: number,
   id?: string,
@@ -72,6 +71,12 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const [isActive, setActive] = useState(false);
 
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
+
+  const classNames = node.properties?.className;
+  let className = '';
+  if (Array.isArray(classNames)) {
+    className = classNames.join(' ');
+  }
 
   const activateByHash = useCallback((url: string) => {
     try {
@@ -112,8 +117,6 @@ export const Header = (props: HeaderProps): JSX.Element => {
   }, [activateByHash, router.events]);
 
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
-
-  const className = props.className;
 
   return (
     <CustomTag id={id} className={`${className} revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
