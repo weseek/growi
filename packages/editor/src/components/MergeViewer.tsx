@@ -1,7 +1,7 @@
 import { memo, useEffect, useRef } from 'react';
 
 import { MergeView } from '@codemirror/merge';
-import { EditorState } from '@codemirror/state';
+import { type Extension, EditorState } from '@codemirror/state';
 import { EditorView, basicSetup } from 'codemirror';
 
 type Props = {
@@ -9,7 +9,7 @@ type Props = {
   rightBody: string
 }
 
-const MergeViewerExtensions = [
+const MergeViewerExtensions: Extension = [
   basicSetup,
   EditorView.editable.of(false),
   EditorState.readOnly.of(true),
