@@ -126,14 +126,14 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
                 isOpen={isSavePageModalShown}
                 toggle={() => setIsSavePageModalShown(false)}
               >
-                <div className="d-flex flex-column py-5 px-3 gap-3">
+                <div className="d-flex flex-column pt-4 pb-3 px-4 gap-4">
                   <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndOverwriteScopesOfDescendants() }}>
                     {labelOverwriteScopes}
                   </button>
                   <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); clickUnpublishButtonHandler() }}>
                     {labelUnpublishPage}
                   </button>
-                  <button type="button" className="btn btn-outline-neutral-secondary mx-auto" onClick={() => setIsSavePageModalShown(false)}>
+                  <button type="button" className="btn btn-outline-neutral-secondary mx-auto mt-1" onClick={() => setIsSavePageModalShown(false)}>
                     <label className="mx-2">
                       {t('Cancel')}
                     </label>
