@@ -1,7 +1,9 @@
 import type { FC } from 'react';
 import React, { useCallback, useState, useMemo } from 'react';
 
-import type { IUserGroupHasId } from '@growi/core';
+import {
+  getIdForRef, isPopulated, type IGrantedGroup, type IUserGroupHasId,
+} from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -18,9 +20,9 @@ import { PageActionOnGroupDelete } from '~/interfaces/user-group';
  * @extends {React.Component}
  */
 type Props = {
-  userGroups: IUserGroupHasId[],
+  userGroups: IGrantedGroup[],
   deleteUserGroup?: IUserGroupHasId,
-  onDelete?: (deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroupId: string) => Promise<void> | void,
+  onDelete?: (deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => Promise<void> | void,
   isShow: boolean,
   onHide?: () => Promise<void> | void,
 };
@@ -71,14 +73,14 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
    * State
    */
   const [actionName, setActionName] = useState<PageActionOnGroupDelete | null>(null);
-  const [transferToUserGroupId, setTransferToUserGroupId] = useState<string>('');
+  const [transferToUserGroup, setTransferToUserGroup] = useState<IGrantedGroup | null>(null);
 
   /*
    * Function
    */
   const resetStates = useCallback(() => {
     setActionName(null);
-    setTransferToUserGroupId('');
+    setTransferToUserGroup(null);
   }, []);
 
   const toggleHandler = useCallback(() => {
@@ -97,8 +99,9 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
 
   const handleGroupChange = useCallback((e) => {
     const transferToUserGroupId = e.target.value;
-    setTransferToUserGroupId(transferToUserGroupId);
-  }, []);
+    const selectedGroup = userGroups.find(group => getIdForRef(group.item) === transferToUserGroupId) ?? null;
+    setTransferToUserGroup(selectedGroup);
+  }, [userGroups]);
 
   const handleSubmit = useCallback((e) => {
     if (onDelete == null || deleteUserGroup == null || actionName == null) {
@@ -110,9 +113,9 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     onDelete(
       deleteUserGroup._id,
       actionName,
-      transferToUserGroupId,
+      transferToUserGroup,
     );
-  }, [onDelete, deleteUserGroup, actionName, transferToUserGroupId]);
+  }, [onDelete, deleteUserGroup, actionName, transferToUserGroup]);
 
   const renderPageActionSelector = useCallback(() => {
     const options = availableOptions.map((opt) => {
@@ -139,28 +142,31 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     }
 
     const groups = userGroups.filter((group) => {
-      return group._id !== deleteUserGroup._id;
+      return getIdForRef(group.item) !== deleteUserGroup._id;
     });
 
     const options = groups.map((group) => {
-      return <option key={group._id} value={group._id}>{group.name}</option>;
-    });
+      const groupId = getIdForRef(group.item);
+      const groupName = isPopulated(group.item) ? group.item.name : null;
+      return { id: groupId, name: groupName };
+    }).filter(obj => obj.name != null)
+      .map(obj => <option key={obj.id} value={obj.id}>{obj.name}</option>);
 
     const defaultOptionText = groups.length === 0 ? t('admin:user_group_management.delete_modal.no_groups')
       : t('admin:user_group_management.delete_modal.select_group');
 
     return (
       <select
-        name="transferToUserGroupId"
+        name="transferToUserGroup"
         className={`form-control ${actionName === PageActionOnGroupDelete.transfer ? '' : 'd-none'}`}
-        value={transferToUserGroupId}
+        value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : ''}
         onChange={handleGroupChange}
       >
         <option value="" disabled>{defaultOptionText}</option>
         {options}
       </select>
     );
-  }, [deleteUserGroup, userGroups, t, actionName, transferToUserGroupId, handleGroupChange]);
+  }, [deleteUserGroup, userGroups, t, actionName, transferToUserGroup, handleGroupChange]);
 
   const validateForm = useCallback(() => {
     let isValid = true;
@@ -169,11 +175,11 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       isValid = false;
     }
     else if (actionName === PageActionOnGroupDelete.transfer) {
-      isValid = transferToUserGroupId !== '';
+      isValid = transferToUserGroup != null;
     }
 
     return isValid;
-  }, [actionName, transferToUserGroupId]);
+  }, [actionName, transferToUserGroup]);
 
   return (
     <Modal className="modal-md" isOpen={props.isShow} toggle={toggleHandler}>

@@ -117,7 +117,7 @@
 	"Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "更多详情请见<a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'> {{title}}</a> <span className='growi-custom-icons'>external_link</span> ",
 	"Markdown Settings": "Markdown设置",
 	"external_account_management": "外部账户管理",
   "UserGroup": "用户组",
@@ -301,6 +301,11 @@
 		}
 	},
 	"page_edit": {
+    "input_channels": "频道名",
+    "theme": "主题",
+    "keymap": "键表",
+    "indent": "缩进",
+    "editor_config": "编辑器配置",
 		"Show active line": "显示活动行",
 		"auto_format_table": "自动格式化表格",
 		"overwrite_scopes": "{{operation}和覆盖所有子体的作用域",
@@ -557,7 +562,7 @@
     "alert_desc1": "在这一页，你可以用复选框选择页面，并通过屏幕上方的批量操作按钮批量转换为新的v5兼容格式。",
     "nopages_title": "恭喜你。准备使用GROWI v5!",
     "nopages_desc1": "现在你能管理的所有页面似乎都是v5兼容的格式。",
-    "detail_info": "请参见 <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>升级GROWI到v5.0.x <i class='icon-share-alt'></i></a>.的详细内容。",
+    "detail_info": "请参见 <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>升级GROWI到v5.0.x <span className='growi-custom-icons'>external_link</span></a>.的详细内容。",
     "modal": {
       "title": "转换为新的v5兼容格式",
       "converting_pages": "转换页面",

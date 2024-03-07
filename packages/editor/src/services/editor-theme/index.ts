@@ -1,6 +1,6 @@
 import { Extension } from '@codemirror/state';
 
-export const getEditorTheme = async(themeName: EditorTheme): Promise<Extension> => {
+export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {
     case 'eclipse':
       return (await import('@uiw/codemirror-theme-eclipse')).eclipse;
@@ -37,5 +37,6 @@ const EditorTheme = {
   kimbie: 'kimbie',
 } as const;
 
+export const DEFAULT_THEME = 'defaultlight';
 export const AllEditorTheme = Object.values(EditorTheme);
 export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]

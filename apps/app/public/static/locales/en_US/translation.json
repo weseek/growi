@@ -112,7 +112,7 @@
   "Create under": "Create page under below:",
   "V5 Page Migration": "Convert To V5 Compatibility",
   "GROWI.5.0_new_schema": "GROWI.5.0 new schema",
-  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <i class='icon-share-alt'></i> ",
+  "See_more_detail_on_new_schema": "See more detail on <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html#about-the-new-v5-compatible-format' target='_blank'>{{title}}</a> <span className='growi-custom-icons'>external_link</span> ",
   "external_account_management": "External Account Management",
   "UserGroup": "UserGroup",
   "Basic Settings": "Basic Settings",
@@ -311,6 +311,11 @@
     }
   },
   "page_edit": {
+    "input_channels": "Input channels",
+    "theme": "Theme",
+    "keymap": "Keymap",
+    "indent": "Indent",
+    "editor_config": "Editor Config",
     "Show active line": "Show active line",
     "auto_format_table": "Auto format table",
     "overwrite_scopes": "{{operation}} and Overwrite scopes of all descendants",
@@ -554,7 +559,7 @@
     "alert_desc1": "On this page, you can select pages with the checkbox and batch convert to the new v5 compatible format from the \"Bulk operation\" button at the top of the screen.",
     "nopages_title": "Congratulations. Ready to use GROWI v5!",
     "nopages_desc1": "Now all the pages you can manage seem to be in v5 compatible format.",
-    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <i class='icon-share-alt'></i></a>.",
+    "detail_info": "See the detail information from <a href='https://docs.growi.org/en/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>Upgrading GROWI to v5.0.x <span className='growi-custom-icons'>external_link</span></a>.",
     "modal": {
       "title": "Convert to new v5 compatible format",
       "converting_pages": "Converting pages",
