@@ -22,7 +22,7 @@ export const MergeViewer = memo(({ leftBody, rightBody }: Props) => {
     if (mergeViewRef.current != null) {
       const view = new MergeView({
         a: {
-          doc: leftBody.replace(/GROWI/g, 'グローウィ'), // あとで直す
+          doc: leftBody,
           extensions: MergeViewerExtensions,
         },
         b: {
