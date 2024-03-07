@@ -6,7 +6,7 @@ import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-pa
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
-  DropdownToggle, DropdownMenu, DropdownItem,
+  DropdownToggle, DropdownMenu, DropdownItem, Modal,
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
@@ -21,6 +21,7 @@ import { mutatePageTree } from '~/stores/page-listing';
 import {
   useSelectedGrant,
   useEditorMode, useIsDeviceLargerThanMd,
+  EditorMode,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -41,14 +42,16 @@ declare global {
 const logger = loggerFactory('growi:SavePageControls');
 
 
-const SavePageButton = (props: {slackChannels: string}) => {
+const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: boolean}) => {
 
   const { t } = useTranslation();
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { mutate: mutateEditorMode } = useEditorMode();
+  const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
 
-  const { slackChannels } = props;
+  const { slackChannels, isDeviceLargerThanMd } = props;
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
 
@@ -73,43 +76,74 @@ const SavePageButton = (props: {slackChannels: string}) => {
       await unpublish(pageId);
       await mutateCurrentPage();
       await mutatePageTree();
+      await mutateEditorMode(EditorMode.View);
       toastSuccess(t('wip_page.success_save_as_wip'));
     }
     catch (err) {
       logger.error(err);
       toastError(t('wip_page.fail_save_as_wip'));
     }
-  }, [currentPage?._id, mutateCurrentPage, t]);
+  }, [currentPage?._id, mutateCurrentPage, mutateEditorMode, t]);
 
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
   const labelUnpublishPage = t('wip_page.save_as_wip');
 
   return (
-    <UncontrolledButtonDropdown direction="up" size="sm">
-      <Button
-        id="caret"
-        data-testid="save-page-btn"
-        color="primary"
-        className="btn-submit"
-        onClick={save}
-        disabled={isWaitingSaveProcessing}
-      >
-        {isWaitingSaveProcessing && (
-          <i className="fa fa-spinner fa-pulse me-1"></i>
-        )}
-        {labelSubmitButton}
-      </Button>
-      <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
-      <DropdownMenu container="body" end>
-        <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
-          {labelOverwriteScopes}
-        </DropdownItem>
-        <DropdownItem onClick={clickUnpublishButtonHandler}>
-          {labelUnpublishPage}
-        </DropdownItem>
-      </DropdownMenu>
-    </UncontrolledButtonDropdown>
+    <>
+      <UncontrolledButtonDropdown direction="up" size="sm">
+        <Button
+          id="caret"
+          data-testid="save-page-btn"
+          color="primary"
+          className="btn-submit"
+          onClick={save}
+          disabled={isWaitingSaveProcessing}
+        >
+          {isWaitingSaveProcessing && (
+            <i className="fa fa-spinner fa-pulse me-1"></i>
+          )}
+          {labelSubmitButton}
+        </Button>
+        {
+          isDeviceLargerThanMd ? (
+            <>
+              <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} />
+              <DropdownMenu container="body" end>
+                <DropdownItem onClick={saveAndOverwriteScopesOfDescendants}>
+                  {labelOverwriteScopes}
+                </DropdownItem>
+                <DropdownItem onClick={clickUnpublishButtonHandler}>
+                  {labelUnpublishPage}
+                </DropdownItem>
+              </DropdownMenu>
+            </>
+          ) : (
+            <>
+              <DropdownToggle caret color="primary" disabled={isWaitingSaveProcessing} onClick={() => setIsSavePageModalShown(true)} />
+              <Modal
+                className="save-page-controls-modal"
+                centered
+                isOpen={isSavePageModalShown}
+                toggle={() => setIsSavePageModalShown(false)}
+              >
+                <div className="d-flex flex-column py-5 px-3 gap-3">
+                  <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); saveAndOverwriteScopesOfDescendants() }}>
+                    {labelOverwriteScopes}
+                  </button>
+                  <button type="button" className="btn btn-primary" onClick={() => { setIsSavePageModalShown(false); clickUnpublishButtonHandler() }}>
+                    {labelUnpublishPage}
+                  </button>
+                  <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => setIsSavePageModalShown(false)}>
+                    Cancel
+                  </button>
+                </div>
+              </Modal>
+            </>
+          )
+        }
+      </UncontrolledButtonDropdown>
+    </>
   );
 };
 
@@ -125,8 +159,10 @@ export const SavePageControls = (): JSX.Element | null => {
   const { data: isSlackConfigured } = useIsSlackConfigured();
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   const [slackChannels, setSlackChannels] = useState<string>('');
+  const [isSavePageControlsModalShown, setIsSavePageControlsModalShown] = useState<boolean>(false);
 
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
   const slackChannelsDataString = slackChannelsData?.toString();
@@ -164,36 +200,90 @@ export const SavePageControls = (): JSX.Element | null => {
 
   return (
     <div className="d-flex align-items-center flex-nowrap">
-      {isSlackConfigured && (
-        <div className="me-2">
-          {isSlackEnabled != null
-              && (
-                <SlackNotification
-                  isSlackEnabled={isSlackEnabled}
-                  slackChannels={slackChannels}
-                  onEnabledFlagChange={isSlackEnabledToggleHandler}
-                  onChannelChange={slackChannelsChangedHandler}
-                  id="idForEditorNavbarBottom"
-                />
-              )}
-        </div>
-      )
-      }
+      {
+        isDeviceLargerThanMd ? (
+          <>
+            {
+              isSlackConfigured && (
+                <div className="me-2">
+                  {isSlackEnabled != null && (
+                    <SlackNotification
+                      isSlackEnabled={isSlackEnabled}
+                      slackChannels={slackChannels}
+                      onEnabledFlagChange={isSlackEnabledToggleHandler}
+                      onChannelChange={slackChannelsChangedHandler}
+                      id="idForEditorNavbarBottom"
+                    />
+                  )}
+                </div>
+              )
+            }
 
-      {isAclEnabled
-        && (
-          <div className="me-2">
-            <GrantSelector
-              grant={grant}
-              disabled={isGrantSelectorDisabledPage}
-              userRelatedGrantedGroups={userRelatedGrantedGroups}
-              onUpdateGrant={updateGrantHandler}
-            />
-          </div>
+            {
+              isAclEnabled && (
+                <div className="me-2">
+                  <GrantSelector
+                    grant={grant}
+                    disabled={isGrantSelectorDisabledPage}
+                    userRelatedGrantedGroups={userRelatedGrantedGroups}
+                    onUpdateGrant={updateGrantHandler}
+                  />
+                </div>
+              )
+            }
+
+            <SavePageButton slackChannels={slackChannels} isDeviceLargerThanMd />
+          </>
+        ) : (
+          <>
+            <SavePageButton slackChannels={slackChannels} />
+            <button type="button" className="btn btn-outline-neutral-secondary border-0 text-muted" onClick={() => setIsSavePageControlsModalShown(true)}>
+              <span className="material-symbols-outlined">more_vert</span>
+            </button>
+            <Modal
+              className="save-page-controls-modal"
+              centered
+              isOpen={isSavePageControlsModalShown}
+            >
+              <div className="d-flex flex-column py-3 px-4 gap-3">
+                {
+                  isAclEnabled && (
+                    <GrantSelector
+                      grant={grant}
+                      disabled={isGrantSelectorDisabledPage}
+                      openInModal
+                      userRelatedGrantedGroups={userRelatedGrantedGroups}
+                      onUpdateGrant={updateGrantHandler}
+                    />
+                  )
+                }
+
+                {
+                  isSlackConfigured && isSlackEnabled != null && (
+                    <>
+                      <SlackNotification
+                        isSlackEnabled={isSlackEnabled}
+                        slackChannels={slackChannels}
+                        onEnabledFlagChange={isSlackEnabledToggleHandler}
+                        onChannelChange={slackChannelsChangedHandler}
+                        id="idForEditorNavbarBottom"
+                      />
+                    </>
+                  )
+                }
+                <div className="d-flex">
+                  <button type="button" className="ms-auto btn btn-outline-neutral-secondary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
+                    Cancel
+                  </button>
+                  <button type="button" className="ms-2 btn btn-primary rounded-1" onClick={() => setIsSavePageControlsModalShown(false)}>
+                    Done
+                  </button>
+                </div>
+              </div>
+            </Modal>
+          </>
         )
       }
-
-      <SavePageButton slackChannels={slackChannels} />
     </div>
   );
 };
