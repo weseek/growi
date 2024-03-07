@@ -69,6 +69,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('#', true)}>
+            {/* TODO: https://github.com/weseek/growi/pull/8558 */}
             {/* <span className="growi-custom-icons">header</span> */}
             <span className="material-symbols-outlined fs-5">block</span>
           </button>
