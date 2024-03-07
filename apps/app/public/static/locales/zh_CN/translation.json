@@ -433,7 +433,6 @@
     "resolve_and_save" : "解决冲突并保存",
     "select_revision" : "选择{{revision}}",
     "requested_revision": "发送的页面正文",
-    "origin_revision": "发送前的页面正文",
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },

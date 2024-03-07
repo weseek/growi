@@ -444,7 +444,6 @@
     "resolve_and_save" : "Resolve and save",
     "select_revision" : "Select {{revision}}",
     "requested_revision": "mine",
-    "origin_revision": "origin",
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
