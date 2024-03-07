@@ -17,11 +17,6 @@ import {
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
-import {
-  DEFAULT_THEME, DEFAULT_KEYMAP,
-} from '../../interfaces/editor-settings';
-
-
 type RadioListItemProps = {
   onClick: () => void,
   icon?: React.ReactNode,
@@ -265,7 +260,6 @@ const OptionsStatus = {
 type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
 export const OptionsSelector = (): JSX.Element => {
-export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Element => {
 
   const { t } = useTranslation();
 
