@@ -16,6 +16,7 @@ import {
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
+import type { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
 import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
