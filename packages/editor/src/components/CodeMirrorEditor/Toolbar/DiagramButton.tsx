@@ -3,8 +3,8 @@ import { useCallback } from 'react';
 import { useDrawioModalForEditor } from '../../../stores/use-drawio';
 
 type Props = {
-  editorKey: string;
-};
+  editorKey: string,
+}
 
 export const DiagramButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
