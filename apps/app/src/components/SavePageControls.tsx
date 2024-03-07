@@ -48,7 +48,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  const isWaitingSaveProcessing = true;// _isWaitingSaveProcessing === true; // ignore undefined
+  const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
 
   const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
     mutateGrant(grantData);

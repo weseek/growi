@@ -1,8 +1,11 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
+
+import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
 
 import InAppNotificationElm from './InAppNotificationElm';
 

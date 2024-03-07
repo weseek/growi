@@ -1,13 +1,12 @@
-import React, {
-  FC, useState, useCallback, useRef,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { IClearable } from '~/client/interfaces/clearable';
+import type { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/toastr';
-import { SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
