@@ -8,8 +8,6 @@ import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
-import { CompressIcon } from './Icons/CompressIcon';
-import { ExpandIcon } from './Icons/ExpandIcon';
 
 export type UsersHomepageFooterProps = {
   creatorId: string;
@@ -30,7 +28,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
           {t('footer.bookmarks')}
           <span className="ms-auto ps-2 ">
             <button type="button" className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`} onClick={() => setIsExpanded(!isExpanded)}>
-              {isExpanded ? <ExpandIcon /> : <CompressIcon />}
+              {isExpanded ? <span className="material-symbols-outlined">expand</span> : <span className="material-symbols-outlined">compress</span>}
             </button>
           </span>
         </h2>
