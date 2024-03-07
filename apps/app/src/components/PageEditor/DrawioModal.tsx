@@ -135,7 +135,7 @@ export const DrawioModal = (): JSX.Element => {
         {/* Loading spinner */}
         <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
-            <span className="mx-auto text-muted"><LoadingSpinnerPulse /></span>
+            <span className="mx-auto text-muted fs-2"><LoadingSpinnerPulse /></span>
           </div>
         </div>
         {/* iframe */}

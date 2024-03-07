@@ -183,7 +183,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
-          <span className="mx-auto text-muted"><LoadingSpinnerPulse /></span>
+          <span className="mx-auto text-muted fs-4"><LoadingSpinnerPulse /></span>
         </div>
       );
     }

@@ -25,6 +25,7 @@ import {
 } from '~/stores/search';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
+import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
@@ -61,7 +62,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   if (migrationStatus == null) {
     return (
       <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-        <span className="me-1"><LoadingSpinnerPulse /></span>
+        <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
       </div>
     );
   }
