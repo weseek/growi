@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import EventEmitter from 'events';
+import type EventEmitter from 'events';
 
 import { useRouter } from 'next/router';
-import { Element } from 'react-markdown/lib/rehype-filter';
+import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -72,6 +72,12 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   const CustomTag = `h${level}` as keyof JSX.IntrinsicElements;
 
+  const classNames = node.properties?.className;
+  let className = '';
+  if (Array.isArray(classNames)) {
+    className = classNames.join(' ');
+  }
+
   const activateByHash = useCallback((url: string) => {
     try {
       const hash = (new URL(url, 'https://example.com')).hash.slice(1);
@@ -113,7 +119,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
+    <CustomTag id={id} className={`${className} revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="icon-link"></span>
