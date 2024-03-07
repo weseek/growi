@@ -160,7 +160,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
-        <UncontrolledDropdown direction="up" size="sm">
+        <UncontrolledDropdown direction={openInModal ? 'down' : 'up'} size="sm">
           <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
@@ -235,6 +235,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <Modal
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
+          centered
         >
           <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-muted">
             {t('user_group.select_group')}
