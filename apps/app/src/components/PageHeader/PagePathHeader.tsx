@@ -39,6 +39,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isHover, setHover] = useState(false);
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
+  const [subNavElemWidth, setSubNavElemWidth] = useState(0);
+
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
@@ -97,9 +99,12 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const styles: CSSProperties | undefined = linkElemWidth > areaElemWidth ? { direction: 'rtl' } : undefined;
 
-  const subNavElem = document.getElementById('grw-contextual-sub-nav');
-
-  const subNavElemWidth = subNavElem?.offsetWidth ?? 0;
+  useEffect(() => {
+    const subNavElem = document.getElementById('grw-contextual-sub-nav');
+    if (subNavElem) {
+      setSubNavElemWidth(subNavElem.offsetWidth);
+    }
+  }, []);
 
   const pagePathHeaderWidth = `calc(100% - ${subNavElemWidth}px)`;
 
@@ -117,13 +122,12 @@ export const PagePathHeader: FC<Props> = (props) => {
     >
       <div
         id="grw-page-path-header-container"
-        className="me-2"
+        className="me-2 position-relative"
         style={{ minWidth: 0 }}
       >
         { isRenameInputShown && (
-          <div className="position-absolute">
+          <div className="position-absolute w-100">
             <ClosableTextInput
-              useAutosizeInput
               value={editingParentPagePath}
               placeholder={t('Input page name')}
               inputClassName="form-control-sm"
