@@ -2,6 +2,8 @@ import React, { type ComponentPropsWithoutRef } from 'react';
 
 import { G2G_PROGRESS_STATUS, type G2GProgressStatus } from '~/interfaces/g2g-transfer';
 
+import { LoadingSpinner } from '../LoadingSpinner';
+
 /**
  * Props for {@link G2GDataTransferStatusIcon}
  */
@@ -15,8 +17,8 @@ interface Props extends ComponentPropsWithoutRef<'i'>{
 const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.Element => {
   if (status === G2G_PROGRESS_STATUS.IN_PROGRESS) {
     return (
-      // TODO: break away from fontawesome
-      <i className={`fa fa-spinner fa-pulse fa-fw ${className}`} aria-label="in progress" {...props} />
+      // TODO: Replace Loading Spinner "Pulse" icon
+      <span className={`${className}`} aria-label="in progress" {...props}><LoadingSpinner /></span>
     );
   }
 
