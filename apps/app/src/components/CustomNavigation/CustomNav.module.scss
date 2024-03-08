@@ -1,3 +1,5 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 .grw-custom-nav-tab :global {
   .nav-title {
     flex-wrap: nowrap;
@@ -13,8 +15,4 @@
     transition: 0.3s ease-in-out;
   }
 
-  .material-symbols-outlined {
-    margin-right: 6px;
-    font-size: 18px;
-  }
 }

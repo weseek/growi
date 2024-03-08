@@ -21,21 +21,18 @@ type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  onOpenEditor?: (markdown: string) => void,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    acceptedUploadFileType,
-    indentSize, user, pageId, initialValue,
-    editorTheme, editorKeymap,
-    onSave, onChange, onUpload, onScroll, onOpenEditor, onEditorsUpdated,
+    user, pageId, initialValue,
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(user, pageId, initialValue, onOpenEditor, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
@@ -67,18 +64,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
       onSave={onSave}
-      onUpload={onUpload}
-      onScroll={onScroll}
-      acceptedUploadFileType={acceptedUploadFileType}
-      indentSize={indentSize}
-      editorTheme={editorTheme}
-      editorKeymap={editorKeymap}
+      {...otherProps}
     />
   );
 };
