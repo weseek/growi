@@ -200,12 +200,19 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
 
-  const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-
   useEffect(() => {
+    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
     const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
+
+    // const elem = document.getElementById('grw-sidebar-contents-wrapper');
+
+    // const wrapperWidth = elem?.offsetWidth ?? 0;
+
+    console.log(maxHeight);
     setSimplebarMaxHeight(maxHeight);
-  }, [elem, sidebarMode]);
+  }, [sidebarMode]);
+
+  // const elem = document.querySelector('#grw-sidebar-contents-wrapper');
 
   // const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
 
