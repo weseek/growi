@@ -454,7 +454,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <div
           ref={previewRef}
           onScroll={scrollPreviewHandlerThrottle}
-          className="page-editor-preview-container flex-expand-vert d-none d-lg-flex"
+          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
         >
           <Preview
             rendererOptions={rendererOptions}
