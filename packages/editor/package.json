@@ -22,7 +22,8 @@
     "react-dom": "^18.2.0"
   },
   "// comments for devDependencies": {
-    "string-width": "5.0.0 or above exports only ESM."
+    "string-width": "5.0.0 or above exports only ESM.",
+    "@codemirror/merge": "Fixed version at 6.0.0 due to errors caused by dependent packages"
   },
   "devDependencies": {
     "@codemirror/lang-markdown": "^6.2.0",
