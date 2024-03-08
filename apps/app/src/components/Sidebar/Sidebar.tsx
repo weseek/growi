@@ -177,9 +177,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
-const determineScrollbarMaxHeight = (sidebarMode: SidebarMode): number => {
-
-  const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: Element | null): number => {
 
   let maxHeight: number;
 
@@ -200,7 +198,9 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   const { sidebarMode } = props;
 
-  const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode);
+  const elem = document.querySelector('#grw-sidebar-contents-wrapper');
+
+  const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
 
   return (
     <div id="grw-sidebar-contents-wrapper">
