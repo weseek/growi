@@ -1,3 +1,4 @@
+import { allOrigin } from '@growi/core';
 import type {
   IPage, IUser, IUserHasId,
 } from '@growi/core';
@@ -118,6 +119,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('wip').optional().isBoolean().withMessage('wip must be boolean'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -228,10 +230,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let createdPage;
       try {
         const {
-          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip,
+          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip, origin,
         } = req.body;
 
-        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip };
+        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip, origin };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;

@@ -1,5 +1,6 @@
 /* eslint-disable react/prop-types */
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
@@ -56,7 +57,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
           id={idForSlackPopover}
           type="text"
           value={slackChannels}
-          placeholder="Input channels"
+          placeholder={t('page_edit.input_channels', 'Input channels')}
           onChange={updateSlackChannelsHandler}
         />
         <UncontrolledPopover trigger="focus" placement="top" target={idForSlackPopover}>

@@ -48,7 +48,7 @@ concurrency:
 
 jobs:
 
-  test-prod-node16:
+  test-prod-node18:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@dev/7.0.x
     with:
       node-version: 18.x
