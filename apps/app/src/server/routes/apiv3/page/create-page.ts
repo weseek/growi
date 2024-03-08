@@ -8,7 +8,10 @@ import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-ut
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
+import i18next from 'i18next';
 import mongoose from 'mongoose';
+
+// import { i18n } from '^/config/next-i18next.config';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
@@ -45,6 +48,10 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
   // TODO: i18n
   const basePathname = 'Untitled';
+
+  // const test = i18next.t('page_register.form_help.email');
+
+  // console.log(test);
 
   if (_path != null) {
     const path = normalizePath(_path);
@@ -90,6 +97,7 @@ type ReqBody = IApiv3PageCreateParams
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
   user: IUserHasId,
+  t,
 }
 
 type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
@@ -207,6 +215,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       const {
         body: bodyByParam, pageTags: tagsByParam,
       } = req.body;
+
+      const basePathname = req.t('message.user_id_is_not_available');
+
+      console.log(basePathname);
 
       let pathToCreate: string;
       try {
