@@ -44,9 +44,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
   // https://regex101.com/r/Wg2Hh6/1
   // const untitledPageRegex = /^Untitled-\d+$/;
 
-  const untitledPageRegex = new RegExp(`/^${basePathname}-\d+$/`);
+  const untitledPageRegex = new RegExp(`/^${basePathname}-d+$/`);
 
-  const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
+  const isNewlyCreatedPage = (currentPage.wip && currentPage.ttlTimestamp != null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
