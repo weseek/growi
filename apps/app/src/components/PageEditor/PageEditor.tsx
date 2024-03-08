@@ -436,7 +436,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <EditorNavbar />
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert">
+        <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
