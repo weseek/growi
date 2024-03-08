@@ -198,9 +198,16 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   const { sidebarMode } = props;
 
+  const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
+
   const elem = document.querySelector('#grw-sidebar-contents-wrapper');
 
-  const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
+  useEffect(() => {
+    const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
+    setSimplebarMaxHeight(maxHeight);
+  }, [elem, sidebarMode]);
+
+  // const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
 
   return (
     <div id="grw-sidebar-contents-wrapper">
