@@ -13,9 +13,13 @@
 .flex-expand-vh-100 {
   height: 100vh;
 
-  .flex-expand-horiz,
-  .flex-expand-vert {
+  .flex-expand-horiz {
     height: 100%;
     overflow-y: auto;
+  }
+
+  .flex-expand-vert {
+    height: 100%;
+    overflow-y: hidden;
   }
 }

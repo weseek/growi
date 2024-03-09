@@ -10,12 +10,12 @@
   "Duplicate": "Duplicate",
   "PathRecovery": "Path recovery",
   "Copy": "Copy",
-  "preview":"Preview",
-  "desktop":"Desktop",
-  "phone":"Smartphone",
-  "tablet":"Tablet",
+  "preview": "Preview",
+  "desktop": "Desktop",
+  "phone": "Smartphone",
+  "tablet": "Tablet",
   "Click to copy": "Click to copy",
-  "Rename" : "Rename",
+  "Rename": "Rename",
   "Move/Rename": "Move/Rename",
   "Redirected": "Redirected",
   "Unlinked": "Unlinked",
@@ -145,9 +145,9 @@
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
   "In-App Notification": "Notifications",
-  "original_path":"Original path",
-  "new_path":"New path",
-  "duplicated_path":"Duplicated path",
+  "original_path": "Original path",
+  "new_path": "New path",
+  "duplicated_path": "Duplicated path",
   "Link sharing is disabled": "Link sharing is disabled",
   "successfully_saved_the_page": "Successfully saved the page",
   "you_can_not_create_page_with_this_name": "You can not create page with this name",
@@ -213,10 +213,10 @@
   "Password": "Password",
   "Password Settings": "Password settings",
   "personal_settings": {
-  "disassociate_external_account": "Disassociate External Account",
-  "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
-  "set_new_password": "Set new Password",
-  "update_password": "Update password",
+    "disassociate_external_account": "Disassociate External Account",
+    "disassociate_external_account_desc": "Are you sure to disassociate the <strong>{{providerType}}</strong> account <strong>{{accountId}}</strong>?",
+    "set_new_password": "Set new Password",
+    "update_password": "Update password",
     "current_password": "Current password",
     "new_password": "New password",
     "new_password_confirm": "Re-enter new password",
@@ -226,7 +226,7 @@
     "Shere this page link to public": "Shere this page link to public",
     "share_link_list": "Share link list",
     "share_link_management": "Share Link Management",
-    "delete_all_share_links":"Delete all share links",
+    "delete_all_share_links": "Delete all share links",
     "expire": "Expiration",
     "Days": "Days",
     "Custom": "Custom",
@@ -234,8 +234,8 @@
     "enter_desc": "Enter description",
     "Unlimited": "unlimited",
     "Issue": "Issue",
-    "share_settings" :"Share settings",
-    "Invalid_Number_of_Date" : "You entered invalid value",
+    "share_settings": "Share settings",
+    "Invalid_Number_of_Date": "You entered invalid value",
     "link_sharing_is_disabled": "Link sharing is disabled"
   },
   "API Settings": "API settings",
@@ -307,7 +307,7 @@
       "stale": "More than {{count}} year has passed since last update.",
       "stale_plural": "More than {{count}} years has passed since last update.",
       "expiration": "This share link will expire at <strong>{{expiredAt}}</strong>.",
-      "no_deadline":"This page has no expiration date"
+      "no_deadline": "This page has no expiration date"
     }
   },
   "page_edit": {
@@ -342,8 +342,8 @@
     "comparing_source": "Source",
     "comparing_target": "Target",
     "comparing_revisions": "Comparing the difference",
-    "compare_latest":"Compare latest revision",
-    "compare_previous":"Compare previous revision"
+    "compare_latest": "Compare latest revision",
+    "compare_previous": "Compare previous revision"
   },
   "modal_rename": {
     "label": {
@@ -381,7 +381,7 @@
   "deleted_pages_completely": "{{path}} has been deleted completely",
   "renamed_pages": "{{path}} has been renamed",
   "empty_trash": "The trash has been emptied",
-  "modal_empty":{
+  "modal_empty": {
     "empty_the_trash": "Empty The Trash",
     "empty_the_trash_button": "Empty The Trash",
     "not_deletable_notice": "Some pages cannot be removed due to lack of permission.",
@@ -441,10 +441,9 @@
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",
     "resolve_conflict_message": "Please select page body",
     "resolve_conflict": "Resolve Conflict",
-    "resolve_and_save" : "Resolve and save",
-    "select_revision" : "Select {{revision}}",
+    "resolve_and_save": "Resolve and save",
+    "select_revision": "Select {{revision}}",
     "requested_revision": "mine",
-    "origin_revision": "origin",
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },
@@ -471,7 +470,7 @@
     "issue_share_link": "Succeeded to issue new share link",
     "remove_share_link": "Succeeded to remove {{count}} share links",
     "switch_disable_link_sharing_success": "Succeeded to update share link setting",
-    "failed_to_reset_password":"Failed to reset password",
+    "failed_to_reset_password": "Failed to reset password",
     "save_succeeded": "Saved successfully"
   },
   "template": {
@@ -537,13 +536,13 @@
     "check_all": "Check all",
     "deletion_modal_header": "Delete page",
     "delete_completely": "Delete completely",
-    "include_certain_path" : "Include {{pathToInclude}} path ",
-    "delete_all_selected_page" : "Delete All",
-    "currently_not_implemented":"This is not currently implemented",
-    "search_again" : "Search again",
-    "number_of_list_to_display" : "Display",
-    "page_number_unit" : "pages",
-    "hit_number_unit" : "hit",
+    "include_certain_path": "Include {{pathToInclude}} path ",
+    "delete_all_selected_page": "Delete All",
+    "currently_not_implemented": "This is not currently implemented",
+    "search_again": "Search again",
+    "number_of_list_to_display": "Display",
+    "page_number_unit": "pages",
+    "hit_number_unit": "hit",
     "sort_axis": {
       "relationScore": "Sort by relevance",
       "createdAt": "Creation date",
@@ -590,7 +589,7 @@
     "sign_in_error": "Login error",
     "registration_successful": "Registration successful. Please wait for administrator approval.",
     "Setup": "Setup",
-    "enabled_ldap_has_configuration_problem":"LDAP is enabled but the configuration has something wrong.",
+    "enabled_ldap_has_configuration_problem": "LDAP is enabled but the configuration has something wrong.",
     "set_env_var_for_logs": "(Please set the environment variables <code>DEBUG=crowi:service:PassportService</code> to get the logs)"
   },
   "invited": {
@@ -622,21 +621,21 @@
     "aws_sttings_required": "AWS settings required to use this function. Please ask the administrator.",
     "application_already_installed": "Application already installed.",
     "email_address_could_not_be_used": "This email address could not be used. (Make sure the allowed email address)",
-    "user_id_is_not_available":"This User ID is not available.",
-    "username_should_not_be_null":"Username should not be null. Please check Authentication Mechanism Settings on admin page",
-    "email_address_is_already_registered":"This email address is already registered.",
-    "can_not_register_maximum_number_of_users":"Can not register more than the maximum number of users.",
-    "email_settings_is_not_setup":"E-mail settings is not set up. Please ask the administrator.",
+    "user_id_is_not_available": "This User ID is not available.",
+    "username_should_not_be_null": "Username should not be null. Please check Authentication Mechanism Settings on admin page",
+    "email_address_is_already_registered": "This email address is already registered.",
+    "can_not_register_maximum_number_of_users": "Can not register more than the maximum number of users.",
+    "email_settings_is_not_setup": "E-mail settings is not set up. Please ask the administrator.",
     "email_authentication_is_not_enabled": "Email authentication is not enabled. Please ask the administrator.",
-    "failed_to_register":"Failed to register.",
-    "successfully_created":"The user {{username}} is successfully created.",
-    "can_not_activate_maximum_number_of_users":"Can not activate more than the maximum number of users.",
-    "failed_to_activate":"Failed to activate.",
-    "unable_to_use_this_user":"Unable to use this user.",
-    "complete_to_install1":"Complete to Install GROWI ! Please login as admin account.",
-    "complete_to_install2":"Complete to Install GROWI ! Please check each settings on this page first.",
-    "failed_to_create_admin_user":"Failed to create admin user. {{errMessage}}",
-    "successfully_send_email_auth":"We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
+    "failed_to_register": "Failed to register.",
+    "successfully_created": "The user {{username}} is successfully created.",
+    "can_not_activate_maximum_number_of_users": "Can not activate more than the maximum number of users.",
+    "failed_to_activate": "Failed to activate.",
+    "unable_to_use_this_user": "Unable to use this user.",
+    "complete_to_install1": "Complete to Install GROWI ! Please login as admin account.",
+    "complete_to_install2": "Complete to Install GROWI ! Please check each settings on this page first.",
+    "failed_to_create_admin_user": "Failed to create admin user. {{errMessage}}",
+    "successfully_send_email_auth": "We sent an email to {{email}}. Please click the URL in the email and complete the registration.",
     "incorrect_token_or_expired_url": "The token is incorrect or the URL has expired.",
     "user_already_logged_in": "You cannot create a new account when you are logged in.",
     "registration_closed": "You are not authorized to create a new account.",
@@ -653,20 +652,20 @@
     "user_not_found": "User not found.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
-  "grid_edit":{
-    "create_bootstrap_4_grid":"Create Bootstrap 4 Grid",
+  "grid_edit": {
+    "create_bootstrap_4_grid": "Create Bootstrap 4 Grid",
     "grid_settings": "Grid Settings",
-    "grid_pattern":"Grid Pattern",
-    "division":"Divisions",
-    "smart_no":"Smartphone / No Break",
-    "break_point":"Break point by display size"
+    "grid_pattern": "Grid Pattern",
+    "division": "Divisions",
+    "smart_no": "Smartphone / No Break",
+    "break_point": "Break point by display size"
   },
-  "validation":{
+  "validation": {
     "aws_region": "For the region, enter the AWS region name. ex):us-east-1",
-    "aws_custom_endpoint":"For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
-    "failed_to_send_a_test_email":"Failed to send a test email using SMTP. Please check your settings."
+    "aws_custom_endpoint": "For the custom endpoint, specify the URL that starts with http(s)://. Also, the trailing slash is not required.",
+    "failed_to_send_a_test_email": "Failed to send a test email using SMTP. Please check your settings."
   },
-  "forgot_password":{
+  "forgot_password": {
     "forgot_password": "Forgot Password?",
     "send": "Send",
     "return_to_login": "Return to login",
@@ -683,7 +682,7 @@
     "password_and_confirm_password_does_not_match": "Password and confirm password does not match",
     "please_enable_mailer_alert": "The password reset feature is disabled because email setup has not been completed. Please ask administrator to complete the email setup."
   },
-  "emoji" :{
+  "emoji": {
     "title": "Pick an Emoji",
     "search": "Search",
     "clear": "Clear",
@@ -713,7 +712,7 @@
       "6": "Dark Skin Tone"
     }
   },
-  "maintenance_mode":{
+  "maintenance_mode": {
     "maintenance_mode": "Maintenance Mode",
     "growi_is_under_maintenance": "GROWI is under maintenance. Please wait until it ends.",
     "admin_page": "Admin Page",
@@ -725,10 +724,10 @@
     "you_cannot_move_this_page_now": "You cannot move this page now",
     "something_went_wrong_with_moving_page": "Something went wrong with moving page"
   },
-  "duplicated_page_alert" : {
+  "duplicated_page_alert": {
     "same_page_name_exists": "Same page name exits as「{{pageName}}」",
-    "same_page_name_exists_at_path" : "Same page name as {{pageName}} exists at {{path}} ",
-    "select_page_to_see" : "Select a page to see"
+    "same_page_name_exists_at_path": "Same page name as {{pageName}} exists at {{path}} ",
+    "select_page_to_see": "Select a page to see"
   },
   "user_group": {
     "select_group": "Select group",
@@ -775,15 +774,15 @@
       }
     }
   },
-  "page_operation":{
+  "page_operation": {
     "paths_recovered": "Paths recovered successfully",
-    "path_recovery_failed":"Path recovery failed"
+    "path_recovery_failed": "Path recovery failed"
   },
   "footer": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
   },
-  "bookmark_folder":{
+  "bookmark_folder": {
     "bookmark_folder": "bookmark folder",
     "bookmark": "bookmark",
     "delete_modal": {
@@ -801,7 +800,7 @@
     "root": "root (default)"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page tree feature is not available yet.",
+    "page_tree_not_avaliable": "Page tree feature is not available yet.",
     "go_to_settings": "Go to settings to enable the feature"
   },
   "questionnaire": {
@@ -847,6 +846,8 @@
     "fail_publish_page": "Failed to publish the Page"
   },
   "sidebar_header": {
-    "show_wip_page": "Show WIP"
+    "show_wip_page": "Show WIP",
+    "size_s": "Size: S",
+    "size_l": "Size: L"
   }
 }
