@@ -15,8 +15,6 @@ const logger = loggerFactory('growi:services:PageBulkExportService');
 
 const streamToPromise = require('stream-to-promise');
 
-const sleep = (msec: number): Promise<void> => new Promise(resolve => setTimeout(resolve, msec));
-
 class PageBulkExportService {
 
   crowi: any;
@@ -44,9 +42,7 @@ class PageBulkExportService {
       zipArchiver.pipe(multipartUploadWritable);
       pageReadableStream.pipe(pagesWritable);
 
-      console.time('pageBulkExport');
       await streamToPromise(multipartUploadWritable);
-      console.timeEnd('pageBulkExport');
     }
     catch (err) {
       logger.error(err);
@@ -74,14 +70,9 @@ class PageBulkExportService {
    * Get a Writable that writes the page body to a zip file
    */
   private getPageWritable(zipArchiver: Archiver) {
-    let totalTime = 0;
-    let documentsProcessed = 0;
-
     return new Writable({
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
-        const startTime = performance.now();
-
         try {
           const revision = page.revision;
 
@@ -91,12 +82,6 @@ class PageBulkExportService {
             const pathNormalized = normalizePath(page.path);
             zipArchiver.append(markdownBody, { name: `${pathNormalized}.md` });
           }
-
-          documentsProcessed++;
-          if (documentsProcessed % 100 === 0) { // Assuming batchSize is 100
-            console.log(`Batch retrieved. Documents processed: ${documentsProcessed}`);
-            // await sleep(10000);
-          }
         }
         catch (err) {
           logger.error(err);
@@ -104,17 +89,10 @@ class PageBulkExportService {
         }
 
         callback();
-
-        const endTime = performance.now();
-
-        const elapsedTime = endTime - startTime;
-        totalTime += elapsedTime;
       },
       final: (callback) => {
         zipArchiver.finalize();
         callback();
-
-        console.log('Total time of zip write stream: ', totalTime);
       },
     });
   }
@@ -150,19 +128,8 @@ class PageBulkExportService {
     await multipartUploader.initUpload();
     logger.info(`Multipart upload initialized. Upload key: ${uploadKey}`);
 
-    let totalTime = 0;
-
-    let chunkCount = 0;
-
     return new Writable({
       write: async(chunk: Buffer, encoding, callback) => {
-        chunkCount++;
-        if (chunkCount % 100 === 0) {
-          console.log('chunk is being read. size:', chunk.length);
-          chunkCount = 0;
-        }
-        const startTime = performance.now();
-
         let offset = 0;
         while (offset < chunk.length) {
           // The data size to add to buffer.
@@ -191,11 +158,6 @@ class PageBulkExportService {
         }
 
         callback();
-
-        const endTime = performance.now();
-
-        const elapsedTime = endTime - startTime;
-        totalTime += elapsedTime;
       },
       async final(callback) {
         if (filledPartSize > 0) {
@@ -206,8 +168,6 @@ class PageBulkExportService {
         await multipartUploader.completeUpload();
         logger.info(`Multipart upload completed. Upload key: ${uploadKey}`);
         callback();
-
-        console.log('Total time of mutipart upload stream: ', totalTime);
       },
     });
   }
