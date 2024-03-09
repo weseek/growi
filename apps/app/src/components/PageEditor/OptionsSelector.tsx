@@ -274,7 +274,7 @@ export const OptionsSelector = ({ collapsed }: {collapsed?: boolean}): JSX.Eleme
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
       <DropdownToggle
-        className={`btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center p-1 m-1
+        className={`btn btn-sm btn-outline-neutral-secondary d-flex align-items-center justify-content-center
               ${collapsed ? 'border-0' : 'border border-secondary'}
               ${dropdownOpen ? 'active' : ''}
               `}

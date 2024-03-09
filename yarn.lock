@@ -1506,6 +1506,14 @@
     "@codemirror/view" "^6.0.0"
     crelt "^1.0.5"
 
+"@codemirror/merge@6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@codemirror/merge/-/merge-6.0.0.tgz#69c4877437bc0a75ff9984da1f5dabb5d88301a6"
+  integrity sha512-dxdUIQRxgC+xqzBtfY5zjgDIR38Xp6iycb8Lp1Q2gzEkX9y/UrqOAOlpqU3kfDBa0wGHrjlSYzpcQ/lXWG/59w==
+  dependencies:
+    "@codemirror/state" "^6.0.0"
+    "@codemirror/view" "^6.0.0"
+
 "@codemirror/search@^6.0.0":
   version "6.5.0"
   resolved "https://registry.yarnpkg.com/@codemirror/search/-/search-6.5.0.tgz#308f9968434e0e6ed59c9ec36a0239eb1dfc5d92"
@@ -1840,7 +1848,7 @@
   version "7.0.0-RC.0"
 
 "@growi/editor@link:packages/editor":
-  version "6.2.0-RC.0"
+  version "7.0.0-RC.0"
   dependencies:
     markdown-table "^3.0.3"
     react "^18.2.0"

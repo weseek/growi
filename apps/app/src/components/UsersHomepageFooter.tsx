@@ -2,19 +2,16 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-
 import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
-import { CompressIcon } from './Icons/CompressIcon';
-import { ExpandIcon } from './Icons/ExpandIcon';
 
 export type UsersHomepageFooterProps = {
-  creatorId: string,
-}
+  creatorId: string;
+};
 
 export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Element => {
   const { t } = useTranslation();
@@ -30,15 +27,8 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
           <span style={{ fontSize: '1.3em' }} className="material-symbols-outlined">bookmark</span>
           {t('footer.bookmarks')}
           <span className="ms-auto ps-2 ">
-            <button
-              type="button"
-              className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`}
-              onClick={() => setIsExpanded(!isExpanded)}
-            >
-              { isExpanded
-                ? <ExpandIcon />
-                : <CompressIcon />
-              }
+            <button type="button" className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`} onClick={() => setIsExpanded(!isExpanded)}>
+              {isExpanded ? <span className="material-symbols-outlined">expand</span> : <span className="material-symbols-outlined">compress</span>}
             </button>
           </span>
         </h2>
@@ -49,7 +39,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
-          <i id="recent-created-icon" className="me-1"><RecentlyCreatedIcon /></i>
+          <span className="growi-custom-icons me-1">recently_created</span>
           {t('footer.recently_created')}
         </h2>
         <div id="user-created-list" className={`page-list ${styles['page-list']}`}>

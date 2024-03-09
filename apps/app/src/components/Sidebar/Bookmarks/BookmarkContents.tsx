@@ -6,7 +6,6 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
-import { FolderPlusIcon } from '~/components/Icons/FolderPlusIcon';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useCurrentUser } from '~/stores/context';
 
@@ -47,7 +46,7 @@ export const BookmarkContents = (): JSX.Element => {
         >
 
           <div className="d-flex align-items-center">
-            <FolderPlusIcon />
+            <span className="material-symbols-outlined">create_new_folder</span>
             <span className="ms-2">{t('bookmark_folder.new_folder')}</span>
           </div>
         </button>

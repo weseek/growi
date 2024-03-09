@@ -27,7 +27,6 @@
    * Expand Editor
    *****************/
   .dynamic-layout-root {
-    width: calc(100vw - var.$grw-sidebar-nav-width);
     @extend .flex-expand-vh-100;
   }
 
