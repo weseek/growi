@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
@@ -24,6 +25,7 @@ const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), 
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('../PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 
 
 type Props = {
@@ -59,6 +61,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <DeleteBookmarkFolderModal />
         <PutbackPageModal />
         <SearchModal />
+        <ConflictDiffModal />
       </DndProvider>
 
       <PagePresentationModal />

@@ -145,9 +145,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };
-        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', 'conflict'), 409, {
-          returnLatestRevision,
-        });
+        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', 'conflict', undefined, { returnLatestRevision }), 409);
       }
 
       let updatedPage;

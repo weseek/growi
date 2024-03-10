@@ -568,10 +568,11 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
  */
 type ConflictDiffModalStatus = {
   isOpened: boolean,
+  requestRevisionBody?: string,
 }
 
 type ConflictDiffModalUtils = {
-  open(): void,
+  open(requestRevisionBody: string): void,
   close(): void,
 }
 
@@ -581,8 +582,8 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
+    open: (requestRevisionBody: string) => {
+      swrResponse.mutate({ isOpened: true, requestRevisionBody });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });

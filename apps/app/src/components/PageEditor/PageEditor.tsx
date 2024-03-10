@@ -64,9 +64,6 @@ import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
 
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
-
 const logger = loggerFactory('growi:PageEditor');
 
 
@@ -464,15 +461,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             style={pastEndStyle}
           />
         </div>
-        {/*
-        <ConflictDiffModal
-          isOpen={conflictDiffModalStatus?.isOpened}
-          onClose={() => closeConflictDiffModal()}
-          markdownOnEdit={markdownToPreview}
-          optionsToSave={optionsToSave}
-          afterResolvedHandler={afterResolvedHandler}
-        />
-        */}
       </div>
 
       <EditorNavbarBottom />

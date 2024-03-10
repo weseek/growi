@@ -1,4 +1,3 @@
-
 import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
@@ -283,34 +282,27 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
 
   const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
-  const currentTime: Date = new Date();
-
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
-  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null) {
+  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
   }
 
+  const currentTime: Date = new Date();
+
   const request: IRevisionOnConflictWithStringDate = {
     revisionId: '',
-    revisionBody: dummyTest1,
+    revisionBody: conflictDiffModalStatus.requestRevisionBody ?? '',
     createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
     user: currentUser,
   };
 
   const latest: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
-    revisionBody: dummyTest2,
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
-    user: currentUser,
+    revisionId: remoteRevisionId,
+    revisionBody: remoteRevisionBody,
+    createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    user: remoteRevisionLastUpdateUser,
   };
-
-  // const latest: IRevisionOnConflictWithStringDate = {
-  //   revisionId: remoteRevisionId,
-  //   revisionBody: remoteRevisionBody,
-  //   createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-  //   user: remoteRevisionLastUpdateUser,
-  // };
 
   const propsForCore = {
     onResolved,
