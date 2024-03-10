@@ -24,11 +24,8 @@ import {
 import styles from './ConflictDiffModal.module.scss';
 
 type ConflictDiffModalCoreProps = {
-  // optionsToSave: OptionsToSave | undefined;
   request: IRevisionOnConflictWithStringDate,
   latest: IRevisionOnConflictWithStringDate,
-  onClose?: () => void,
-  onResolved?: () => void,
 };
 
 type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
@@ -36,9 +33,7 @@ type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> 
 }
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
-  const {
-    request, latest, onClose, onResolved,
-  } = props;
+  const { request, latest } = props;
 
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
@@ -66,15 +61,13 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
   const closeModalHandler = useCallback(() => {
     closeConflictDiffModal();
-    onClose?.();
-  }, [closeConflictDiffModal, onClose]);
+  }, [closeConflictDiffModal]);
 
   const resolveConflictHandler = useCallback(async() => {
     const newBody = codeMirrorEditor?.getDoc();
 
     // TODO: impl
-    onResolved?.();
-  }, [codeMirrorEditor, onResolved]);
+  }, [codeMirrorEditor]);
 
   useEffect(() => {
     codeMirrorEditor?.initDoc(resolvedRevision);
@@ -193,82 +186,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 };
 
 
-const dummyTest1 = `# :tada: グローウィ へようこそ
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
-
-グローウィ は個人・法人向けの Wiki | ナレッジベースツールです。
-会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。
-
-知っている情報をカジュアルに書き出しみんなで編集することで、**チーム内での暗黙知を減らす**ことができます。
-当たり前に共有される情報を日々増やしていきましょう。
-
-### :beginner: 簡単なページの作り方
-
-- 右上の "**作成**"ボタンまたは右下の**鉛筆アイコン**のボタンからページを書き始めることができます
-    - ページタイトルは後から変更できますので、適当に入力しても大丈夫です
-        - タイトル入力欄では、半角の / (スラッシュ) でページ階層を作れます
-        - （例）/カテゴリ1/カテゴリ2/作りたいページタイトル のように入力してみてください
-- \`\`- \` を行頭につけると、この文章のような箇条書きを書くことができます\`\`
-- 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
-- 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - \`Ctrl(⌘) + S\` でも保存できます
-
-さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
-  </ul></div>
-</div>
-`;
-
-const dummyTest2 = `# :tada: GROWI へようこそ
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
-
-GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
-会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。
-
-知っている情報をカジュアルに書き出しみんなで編集することで、**チーム内での暗黙知を減らす**ことができます。
-当たり前に共有される情報を日々増やしていきましょう。
-
-### :beginner: 簡単なページの作り方
-
-- 右上の "**作成**"ボタンまたは右下の**鉛筆アイコン**のボタンからページを書き始めることができます
-    - ページタイトルは後から変更できますので、適当に入力しても大丈夫です
-        - タイトル入力欄では、半角の / (スラッシュ) でページ階層を作れます
-        - （例）/カテゴリ1/カテゴリ2/作りたいページタイトル のように入力してみてください
-- \`\`- \` を行頭につけると、この文章のような箇条書きを書くことができます\`\`
-- 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
-- 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - \`Ctrl(⌘) + S\` でも保存できます
-
-さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
-  </ul></div>
-</div>
-`;
-
-type ConflictDiffModalProps = {
-  onClose?: () => void,
-  onResolved?: () => void,
-  // optionsToSave: OptionsToSave | undefined;
-  // afterResolvedHandler: () => void,
-};
-
-
-export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
-  const {
-    onClose, onResolved,
-  } = props;
+export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   // state for current page
@@ -304,12 +222,5 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
     user: remoteRevisionLastUpdateUser,
   };
 
-  const propsForCore = {
-    onResolved,
-    onClose,
-    request,
-    latest,
-  };
-
-  return <ConflictDiffModalCore {...propsForCore} />;
+  return <ConflictDiffModalCore request={request} latest={latest} />;
 };
