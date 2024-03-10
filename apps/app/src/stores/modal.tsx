@@ -566,7 +566,7 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
 /*
  * ConflictDiffModal
  */
-type ResolveConflictHandler = (newMarkdown: string) => Promise<void>
+type ResolveConflictHandler = (newMarkdown: string) => Promise<void> | void;
 
 type ConflictDiffModalStatus = {
   isOpened: boolean,

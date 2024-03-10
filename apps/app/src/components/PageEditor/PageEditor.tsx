@@ -18,9 +18,9 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
+import { extractConflictDataFromErrorObj, useOnConflictHandlerForEditor } from '~/client/services/use-conflict';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -37,17 +37,10 @@ import {
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
-import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-import {
-  useRemoteRevisionId,
-  useRemoteRevisionBody,
-  useRemoteRevisionLastUpdatedAt,
-  useRemoteRevisionLastUpdateUser,
-} from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -65,7 +58,6 @@ import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 import '@growi/editor/dist/style.css';
 
 const logger = loggerFactory('growi:PageEditor');
-
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -106,13 +98,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
-  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
 
@@ -126,6 +112,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
+
+  const onConflictHandler = useOnConflictHandlerForEditor(); // useOnConflictHandlerForEditor
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
@@ -204,6 +192,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
+        revisionId: currentRevisionId,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
@@ -215,23 +204,22 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       return page;
     }
-    catch (error) {
-      logger.error('failed to save', error);
-      toastError(error);
-      if (error.code === 'conflict') {
-        mutateRemotePageId(error.data.revisionId);
-        mutateRemoteRevisionId(error.data.revisionBody);
-        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
-        mutateRemoteRevisionLastUpdateUser(error.data.user);
+    catch (errors) {
+      const conflictData = extractConflictDataFromErrorObj(errors);
+      if (conflictData != null) {
+        onConflictHandler(conflictData);
+        return null;
       }
+
+      logger.error('failed to save', errors);
+      toastError(errors);
       return null;
     }
     finally {
       mutateWaitingSaveProcessing(false);
     }
 
-  // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
+  }, [pageId, currentRevisionId, grantData, mutateWaitingSaveProcessing, codeMirrorEditor, onConflictHandler]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const page = await save(opts);
@@ -323,23 +311,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor]);
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
-
-  const afterResolvedHandler = useCallback(async() => {
-    // get page data from db
-    const pageData = await mutateCurrentPage();
-
-    // update tag
-    await mutateTagsInfo(); // get from DB
-    syncTagsInfoForEditor(); // sync global state for client
-
-    // clear isConflict
-    mutateIsConflict(false);
-
-    // set resolved markdown in editing markdown
-    const markdown = pageData?.revision?.body ?? '';
-    mutateEditingMarkdown(markdown);
-
-  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
   // initial caret line
   useEffect(() => {
