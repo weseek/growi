@@ -39,7 +39,10 @@ export const PageContentsUtilities = (): null => {
     }
   }, []);
 
-  const generateResolveConflictHandler = useCallback((latestRevisionId: string) => {
+  const generateResolveConflictHandler = useCallback((
+      latestRevisionId: string,
+      onConflict?: (conflictInfo: RemoteRevisionData, newMarkdown: string) => void, // Called if conflicts occur after resolving conflicts.
+  ) => {
     if (pageId == null) {
       return;
     }
@@ -62,16 +65,14 @@ export const PageContentsUtilities = (): null => {
         const conflictInfo = getConflictInfo(errors);
 
         if (conflictInfo != null) {
-          // eslint-disable-next-line @typescript-eslint/no-use-before-define
-          onConflictHandler(conflictInfo, newMarkdown);
+          onConflict?.(conflictInfo, newMarkdown);
           return;
         }
 
         toastError(errors);
       }
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [closeConflictDiffModal, pageId, t, updateStateAfterSave]);
+  }, [closeConflictDiffModal, getConflictInfo, pageId, t, updateStateAfterSave]);
 
   const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
     // TODO: i18n
@@ -79,7 +80,7 @@ export const PageContentsUtilities = (): null => {
 
     setRemoteLatestPageData(remoteRevidsionData);
 
-    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId);
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, onConflictHandler);
     if (resolveConflictHandler == null) {
       return;
     }
