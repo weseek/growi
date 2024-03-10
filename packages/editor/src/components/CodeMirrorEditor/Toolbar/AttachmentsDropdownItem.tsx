@@ -36,7 +36,7 @@ export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
   return (
     <div {...getRootProps()} className="dropzone">
       <input {...getInputProps()} />
-      <DropdownItem className="d-flex gap-2 align-items-center" onClick={open}>
+      <DropdownItem toggle={false} className="d-flex gap-2 align-items-center" onClick={open}>
         {children}
       </DropdownItem>
     </div>
