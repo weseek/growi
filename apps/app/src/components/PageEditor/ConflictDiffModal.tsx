@@ -65,9 +65,12 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
   const resolveConflictHandler = useCallback(async() => {
     const newBody = codeMirrorEditor?.getDoc();
+    if (newBody == null) {
+      return;
+    }
 
-    // TODO: impl
-  }, [codeMirrorEditor]);
+    conflictDiffModalStatus?.onResolveConflict?.(newBody);
+  }, [codeMirrorEditor, conflictDiffModalStatus]);
 
   useEffect(() => {
     codeMirrorEditor?.initDoc(resolvedRevision);
