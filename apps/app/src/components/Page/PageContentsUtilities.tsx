@@ -8,6 +8,7 @@ import { updatePage, useUpdateStateAfterSave } from '~/client/services/page-oper
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
+import { PageUpdateErrorCode } from '~/interfaces/apiv3';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -23,7 +24,7 @@ export const PageContentsUtilities = (): null => {
 
   const getConflictData = useCallback((errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
     for (const error of errors) {
-      if (error.code === 'conflict') {
+      if (error.code === PageUpdateErrorCode.CONFLICT) {
 
         const latestRevision = error.args.returnLatestRevision;
 
