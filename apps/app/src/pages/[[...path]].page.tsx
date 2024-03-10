@@ -80,7 +80,7 @@ const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditMod
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
-const ConflictDiffModal = dynamic(() => import('../components/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
