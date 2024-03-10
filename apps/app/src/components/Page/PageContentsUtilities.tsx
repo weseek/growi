@@ -60,6 +60,9 @@ export const PageContentsUtilities = (): null => {
         toastSuccess(t('toaster.save_succeeded'));
         updateStateAfterSave?.();
         closeConflictDiffModal();
+
+        // TODO: If no user is editing in the Editor, update ydoc as well
+        // https://redmine.weseek.co.jp/issues/142109
       }
 
       catch (errors) {
