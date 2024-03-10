@@ -12,7 +12,6 @@ import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 
-
 export const PageContentsUtilities = (): null => {
   const { t } = useTranslation();
 
@@ -41,13 +40,26 @@ export const PageContentsUtilities = (): null => {
         closeConflictDiffModal();
 
       }
-      catch (error) {
-        //
+
+      catch (errors) {
+        for (const error of errors) {
+          if (error.code === 'conflict') {
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            onConflictHandler(error, newMarkdown);
+            return;
+          }
+        }
+
+        toastError(errors);
       }
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeConflictDiffModal, pageId, t, updateStateAfterSave]);
 
   const onConflictHandler = useCallback((error: ErrorV3, newMarkdown: string) => {
+    // TODO: i18n
+    toastWarning('コンフリクトが発生しました。差分を確認してください。');
+
     const latestRevision = error.args.returnLatestRevision;
 
     const remoteLatestPageData = {
@@ -65,8 +77,6 @@ export const PageContentsUtilities = (): null => {
     }
     openConflictDiffModal(newMarkdown, resolveConflictHandler);
 
-    // TODO: i18n
-    toastWarning('コンフリクトが発生しました。差分を確認してください。');
   }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
 
   useHandsontableModalLauncherForView({
