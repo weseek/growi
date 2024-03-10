@@ -10,7 +10,7 @@ import { useHandsontableModalLauncherForView } from '~/client/services/side-effe
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId } from '~/stores/page';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
+import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 
 export const PageContentsUtilities = (): null => {
   const { t } = useTranslation();
@@ -20,6 +20,24 @@ export const PageContentsUtilities = (): null => {
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
+
+  const getConflictInfo = useCallback((errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
+    for (const error of errors) {
+      if (error.code === 'conflict') {
+
+        const latestRevision = error.args.returnLatestRevision;
+
+        const remoteRevidsionData = {
+          remoteRevisionId: latestRevision.revisionId,
+          remoteRevisionBody: latestRevision.revisionBody,
+          remoteRevisionLastUpdateUser: latestRevision.user,
+          remoteRevisionLastUpdatedAt: latestRevision.createdAt,
+        };
+
+        return remoteRevidsionData;
+      }
+    }
+  }, []);
 
   const generateResolveConflictHandler = useCallback((latestRevisionId: string) => {
     if (pageId == null) {
@@ -38,16 +56,15 @@ export const PageContentsUtilities = (): null => {
         toastSuccess(t('toaster.save_succeeded'));
         updateStateAfterSave?.();
         closeConflictDiffModal();
-
       }
 
       catch (errors) {
-        for (const error of errors) {
-          if (error.code === 'conflict') {
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            onConflictHandler(error, newMarkdown);
-            return;
-          }
+        const conflictInfo = getConflictInfo(errors);
+
+        if (conflictInfo != null) {
+          // eslint-disable-next-line @typescript-eslint/no-use-before-define
+          onConflictHandler(conflictInfo, newMarkdown);
+          return;
         }
 
         toastError(errors);
@@ -56,25 +73,17 @@ export const PageContentsUtilities = (): null => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [closeConflictDiffModal, pageId, t, updateStateAfterSave]);
 
-  const onConflictHandler = useCallback((error: ErrorV3, newMarkdown: string) => {
+  const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
     // TODO: i18n
     toastWarning('コンフリクトが発生しました。差分を確認してください。');
 
-    const latestRevision = error.args.returnLatestRevision;
+    setRemoteLatestPageData(remoteRevidsionData);
 
-    const remoteLatestPageData = {
-      remoteRevisionId: latestRevision.revisionId,
-      remoteRevisionBody: latestRevision.revisionBody,
-      remoteRevisionLastUpdateUser: latestRevision.user,
-      remoteRevisionLastUpdatedAt: latestRevision.createdAt,
-    };
-
-    setRemoteLatestPageData(remoteLatestPageData);
-
-    const resolveConflictHandler = generateResolveConflictHandler(latestRevision.revisionId);
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId);
     if (resolveConflictHandler == null) {
       return;
     }
+
     openConflictDiffModal(newMarkdown, resolveConflictHandler);
 
   }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
@@ -86,11 +95,11 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      for (const error of errors) {
-        if (error.code === 'conflict') {
-          onConflictHandler(error, newMarkdown);
-          return;
-        }
+      const conflictInfo = getConflictInfo(errors);
+
+      if (conflictInfo != null) {
+        onConflictHandler(conflictInfo, newMarkdown);
+        return;
       }
 
       toastError(errors);
@@ -104,11 +113,11 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      for (const error of errors) {
-        if (error.code === 'conflict') {
-          onConflictHandler(error, newMarkdown);
-          return;
-        }
+      const conflictInfo = getConflictInfo(errors);
+
+      if (conflictInfo != null) {
+        onConflictHandler(conflictInfo, newMarkdown);
+        return;
       }
 
       toastError(errors);
