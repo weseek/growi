@@ -21,7 +21,7 @@ export const PageContentsUtilities = (): null => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  const getConflictInfo = useCallback((errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
+  const getConflictData = useCallback((errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
     for (const error of errors) {
       if (error.code === 'conflict') {
 
@@ -41,7 +41,7 @@ export const PageContentsUtilities = (): null => {
 
   const generateResolveConflictHandler = useCallback((
       latestRevisionId: string,
-      onConflict?: (conflictInfo: RemoteRevisionData, newMarkdown: string) => void, // Called if conflicts occur after resolving conflicts.
+      onConflict?: (conflictInfo: RemoteRevisionData, newMarkdown: string) => void,
   ) => {
     if (pageId == null) {
       return;
@@ -62,9 +62,10 @@ export const PageContentsUtilities = (): null => {
       }
 
       catch (errors) {
-        const conflictInfo = getConflictInfo(errors);
+        const conflictInfo = getConflictData(errors);
 
         if (conflictInfo != null) {
+          // Called if conflicts occur after resolving conflicts
           onConflict?.(conflictInfo, newMarkdown);
           return;
         }
@@ -72,11 +73,10 @@ export const PageContentsUtilities = (): null => {
         toastError(errors);
       }
     };
-  }, [closeConflictDiffModal, getConflictInfo, pageId, t, updateStateAfterSave]);
+  }, [closeConflictDiffModal, getConflictData, pageId, t, updateStateAfterSave]);
 
   const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
-    // TODO: i18n
-    toastWarning('コンフリクトが発生しました。差分を確認してください。');
+    toastWarning(t('modal_resolve_conflict.file_conflicting_with_newer_remote_and_resolve_conflict'));
 
     setRemoteLatestPageData(remoteRevidsionData);
 
@@ -87,7 +87,7 @@ export const PageContentsUtilities = (): null => {
 
     openConflictDiffModal(newMarkdown, resolveConflictHandler);
 
-  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
+  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData, t]);
 
   useHandsontableModalLauncherForView({
     onSaveSuccess: () => {
@@ -96,7 +96,7 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      const conflictInfo = getConflictInfo(errors);
+      const conflictInfo = getConflictData(errors);
 
       if (conflictInfo != null) {
         onConflictHandler(conflictInfo, newMarkdown);
@@ -114,7 +114,7 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      const conflictInfo = getConflictInfo(errors);
+      const conflictInfo = getConflictData(errors);
 
       if (conflictInfo != null) {
         onConflictHandler(conflictInfo, newMarkdown);

@@ -427,6 +427,7 @@
     }
   },
   "modal_resolve_conflict": {
+    "file_conflicting_with_newer_remote_and_resolve_conflict": "与服务器端的新文件冲突。 选择页面正文以解决冲突",
     "file_conflicting_with_newer_remote": "此文件与较新的远程文件冲突",
     "resolve_conflict_message": "选择页面正文",
     "resolve_conflict": "解决冲突",
