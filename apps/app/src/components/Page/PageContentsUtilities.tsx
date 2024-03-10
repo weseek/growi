@@ -103,8 +103,15 @@ export const PageContentsUtilities = (): null => {
 
       updateStateAfterSave?.();
     },
-    onSaveError: (error) => {
-      toastError(error);
+    onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
+      for (const error of errors) {
+        if (error.code === 'conflict') {
+          onConflictHandler(error, newMarkdown);
+          return;
+        }
+      }
+
+      toastError(errors);
     },
   });
 

@@ -3,6 +3,7 @@ import { useCallback, useEffect } from 'react';
 import type EventEmitter from 'events';
 
 import { Origin } from '@growi/core';
+import type { ErrorV3 } from '@growi/core/dist/models';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
@@ -25,7 +26,7 @@ declare global {
 
 export const useDrawioModalLauncherForView = (opts?: {
   onSaveSuccess?: () => void,
-  onSaveError?: (error: any) => void,
+  onSaveError?: (errors: Array<ErrorV3>, newMarkdown: string) => void,
 }): void => {
 
   const { data: shareLinkId } = useShareLinkId();
@@ -55,7 +56,7 @@ export const useDrawioModalLauncherForView = (opts?: {
     }
     catch (error) {
       logger.error('failed to save', error);
-      opts?.onSaveError?.(error);
+      opts?.onSaveError?.(error, newMarkdown);
     }
   }, [currentPage, opts, shareLinkId]);
 
