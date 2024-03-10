@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next';
 import { updatePage, useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { useDrawioModalLauncherForView } from '~/client/services/side-effects/drawio-modal-launcher-for-view';
 import { useHandsontableModalLauncherForView } from '~/client/services/side-effects/handsontable-modal-launcher-for-view';
+import { extractConflictDataFromErrorObj } from '~/client/util/conflict-utils';
 import { toastSuccess, toastError, toastWarning } from '~/client/util/toastr';
-import { PageUpdateErrorCode } from '~/interfaces/apiv3';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -22,28 +22,8 @@ export const PageContentsUtilities = (): null => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId);
 
-  const getConflictData = useCallback((errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
-    for (const error of errors) {
-      if (error.code === PageUpdateErrorCode.CONFLICT) {
-
-        const latestRevision = error.args.returnLatestRevision;
-
-        const remoteRevidsionData = {
-          remoteRevisionId: latestRevision.revisionId,
-          remoteRevisionBody: latestRevision.revisionBody,
-          remoteRevisionLastUpdateUser: latestRevision.user,
-          remoteRevisionLastUpdatedAt: latestRevision.createdAt,
-        };
-
-        return remoteRevidsionData;
-      }
-    }
-  }, []);
-
-  const generateResolveConflictHandler = useCallback((
-      latestRevisionId: string,
-      onConflict?: (conflictInfo: RemoteRevisionData, newMarkdown: string) => void,
-  ) => {
+  // eslint-disable-next-line max-len
+  const generateResolveConflictHandler = useCallback((latestRevisionId: string, onConflict?: (conflictInfo: RemoteRevisionData, newMarkdown: string) => void) => {
     if (pageId == null) {
       return;
     }
@@ -66,18 +46,18 @@ export const PageContentsUtilities = (): null => {
       }
 
       catch (errors) {
-        const conflictInfo = getConflictData(errors);
+        const conflictData = extractConflictDataFromErrorObj(errors);
 
-        if (conflictInfo != null) {
+        if (conflictData != null) {
           // Called if conflicts occur after resolving conflicts
-          onConflict?.(conflictInfo, newMarkdown);
+          onConflict?.(conflictData, newMarkdown);
           return;
         }
 
         toastError(errors);
       }
     };
-  }, [closeConflictDiffModal, getConflictData, pageId, t, updateStateAfterSave]);
+  }, [closeConflictDiffModal, pageId, t, updateStateAfterSave]);
 
   const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
     toastWarning(t('modal_resolve_conflict.file_conflicting_with_newer_remote_and_resolve_conflict'));
@@ -100,10 +80,10 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      const conflictInfo = getConflictData(errors);
+      const conflictData = extractConflictDataFromErrorObj(errors);
 
-      if (conflictInfo != null) {
-        onConflictHandler(conflictInfo, newMarkdown);
+      if (conflictData != null) {
+        onConflictHandler(conflictData, newMarkdown);
         return;
       }
 
@@ -118,10 +98,10 @@ export const PageContentsUtilities = (): null => {
       updateStateAfterSave?.();
     },
     onSaveError: (errors: Array<ErrorV3>, newMarkdown: string) => {
-      const conflictInfo = getConflictData(errors);
+      const conflictData = extractConflictDataFromErrorObj(errors);
 
-      if (conflictInfo != null) {
-        onConflictHandler(conflictInfo, newMarkdown);
+      if (conflictData != null) {
+        onConflictHandler(conflictData, newMarkdown);
         return;
       }
 
