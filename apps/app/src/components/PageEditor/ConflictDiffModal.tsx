@@ -22,14 +22,16 @@ import {
 
 import styles from './ConflictDiffModal.module.scss';
 
+type OmiitedRevisionOnConflict = Omit<IRevisionOnConflict, 'revisionId'>;
+
 type ConflictDiffModalCoreProps = {
-  request: IRevisionOnConflictWithStringDate,
-  latest: IRevisionOnConflictWithStringDate,
+  request: OmiitedRevisionOnConflict
+  latest: OmiitedRevisionOnConflict
 };
 
-type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
-  createdAt: string
-}
+const formatedDate = (date: Date): string => {
+  return format(date, 'yyyy/MM/dd HH:mm:ss');
+};
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
   const { request, latest } = props;
@@ -52,10 +54,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     }
   }, [isRevisionselected]);
 
-  const closeModalHandler = useCallback(() => {
-    closeConflictDiffModal();
-  }, [closeConflictDiffModal]);
-
   const resolveConflictHandler = useCallback(async() => {
     const newBody = codeMirrorEditor?.getDoc();
     if (newBody == null) {
@@ -75,11 +73,11 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
         <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
       </button>
-      <button type="button" className="btn" onClick={closeModalHandler} aria-label="Close">
+      <button type="button" className="btn" onClick={closeConflictDiffModal} aria-label="Close">
         <span className="material-symbols-outlined">close</span>
       </button>
     </div>
-  ), [closeModalHandler, isModalExpanded]);
+  ), [closeConflictDiffModal, isModalExpanded]);
 
   return (
     <Modal isOpen={conflictDiffModalStatus?.isOpened} className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`} size="xl">
@@ -102,7 +100,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {request.user.username}</p>
-                <p className="my-0">{request.createdAt}</p>
+                <p className="my-0">{ formatedDate(request.createdAt) }</p>
               </div>
             </div>
           </div>
@@ -115,7 +113,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {latest.user.username}</p>
-                <p className="my-0">{latest.createdAt}</p>
+                <p className="my-0">{ formatedDate(latest.createdAt) }</p>
               </div>
             </div>
           </div>
@@ -164,7 +162,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={closeModalHandler}
+          onClick={closeConflictDiffModal}
         >
           {t('Cancel')}
         </button>
@@ -204,17 +202,15 @@ export const ConflictDiffModal = (): JSX.Element => {
 
   const currentTime: Date = new Date();
 
-  const request: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
+  const request: OmiitedRevisionOnConflict = {
     revisionBody: conflictDiffModalStatus.requestRevisionBody ?? '',
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
+    createdAt: currentTime,
     user: currentUser,
   };
 
-  const latest: IRevisionOnConflictWithStringDate = {
-    revisionId: remoteRevisionId,
+  const latest: OmiitedRevisionOnConflict = {
     revisionBody: remoteRevisionBody,
-    createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    createdAt: new Date(remoteRevisionLastUpdatedAt ?? currentTime.toString()),
     user: remoteRevisionLastUpdateUser,
   };
 
