@@ -13,12 +13,11 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useCurrentPathname, useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
 } from '~/stores/remote-latest-page';
 
 import styles from './ConflictDiffModal.module.scss';
@@ -44,12 +43,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
-  // const { data: remoteRevisionId } = useRemoteRevisionId();
-  // const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
-  // const { data: pageId } = useCurrentPageId();
-  // const { data: currentPagePath } = useCurrentPagePath();
-  // const { data: currentPathname } = useCurrentPathname();
-
   const selectRevisionHandler = useCallback((selectedRevision: string) => {
     setResolvedRevision(selectedRevision);
     setRevisionSelectedToggler(prev => !prev);
@@ -69,7 +62,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       return;
     }
 
-    conflictDiffModalStatus?.onResolveConflict?.(newBody);
+    await conflictDiffModalStatus?.onResolveConflict?.(newBody);
   }, [codeMirrorEditor, conflictDiffModalStatus]);
 
   useEffect(() => {
