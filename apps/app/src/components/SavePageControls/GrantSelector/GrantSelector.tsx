@@ -108,6 +108,20 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
   }, [updateGrantHandler, userRelatedGrantedGroups]);
 
+  // Sort to put disabled selects on the bottom
+  const getSortedMyUserGroups = useCallback(() => {
+    return myUserGroups?.sort((a, b) => {
+      if (a.canGrantPage && !b.canGrantPage) {
+        return -1;
+      }
+      if (!a.canGrantPage && b.canGrantPage) {
+        return 1;
+      }
+      return 0;
+
+    });
+  }, [myUserGroups]);
+
   /**
    * Render grant selector DOM.
    */
@@ -204,7 +218,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <>
-        { myUserGroups.map((group) => {
+        { getSortedMyUserGroups()?.map((group) => {
           const groupIsGranted = userRelatedGrantedGroups?.find(g => g.id === group.item._id) != null;
           const activeClass = groupIsGranted ? 'active' : '';
 
