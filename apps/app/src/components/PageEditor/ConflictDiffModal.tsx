@@ -1,4 +1,3 @@
-
 import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
@@ -14,32 +13,28 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { useCurrentPathname, useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores/context';
 import { useConflictDiffModal } from '~/stores/modal';
-import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
 } from '~/stores/remote-latest-page';
 
 import styles from './ConflictDiffModal.module.scss';
 
+type OmiitedRevisionOnConflict = Omit<IRevisionOnConflict, 'revisionId'>;
+
 type ConflictDiffModalCoreProps = {
-  // optionsToSave: OptionsToSave | undefined;
-  request: IRevisionOnConflictWithStringDate,
-  latest: IRevisionOnConflictWithStringDate,
-  onClose?: () => void,
-  onResolved?: () => void,
+  request: OmiitedRevisionOnConflict
+  latest: OmiitedRevisionOnConflict
 };
 
-type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
-  createdAt: string
-}
+const formatedDate = (date: Date): string => {
+  return format(date, 'yyyy/MM/dd HH:mm:ss');
+};
 
 const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
-  const {
-    request, latest, onClose, onResolved,
-  } = props;
+  const { request, latest } = props;
 
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
@@ -50,12 +45,6 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
-  // const { data: remoteRevisionId } = useRemoteRevisionId();
-  // const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
-  // const { data: pageId } = useCurrentPageId();
-  // const { data: currentPagePath } = useCurrentPagePath();
-  // const { data: currentPathname } = useCurrentPathname();
-
   const selectRevisionHandler = useCallback((selectedRevision: string) => {
     setResolvedRevision(selectedRevision);
     setRevisionSelectedToggler(prev => !prev);
@@ -65,17 +54,14 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
     }
   }, [isRevisionselected]);
 
-  const closeModalHandler = useCallback(() => {
-    closeConflictDiffModal();
-    onClose?.();
-  }, [closeConflictDiffModal, onClose]);
-
   const resolveConflictHandler = useCallback(async() => {
     const newBody = codeMirrorEditor?.getDoc();
+    if (newBody == null) {
+      return;
+    }
 
-    // TODO: impl
-    onResolved?.();
-  }, [codeMirrorEditor, onResolved]);
+    await conflictDiffModalStatus?.onResolve?.(newBody);
+  }, [codeMirrorEditor, conflictDiffModalStatus]);
 
   useEffect(() => {
     codeMirrorEditor?.initDoc(resolvedRevision);
@@ -87,11 +73,11 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
       <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
         <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
       </button>
-      <button type="button" className="btn" onClick={closeModalHandler} aria-label="Close">
+      <button type="button" className="btn" onClick={closeConflictDiffModal} aria-label="Close">
         <span className="material-symbols-outlined">close</span>
       </button>
     </div>
-  ), [closeModalHandler, isModalExpanded]);
+  ), [closeConflictDiffModal, isModalExpanded]);
 
   return (
     <Modal isOpen={conflictDiffModalStatus?.isOpened} className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`} size="xl">
@@ -114,7 +100,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {request.user.username}</p>
-                <p className="my-0">{request.createdAt}</p>
+                <p className="my-0">{ formatedDate(request.createdAt) }</p>
               </div>
             </div>
           </div>
@@ -127,7 +113,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
               </div>
               <div className="ms-3 text-muted">
                 <p className="my-0">updated by {latest.user.username}</p>
-                <p className="my-0">{latest.createdAt}</p>
+                <p className="my-0">{ formatedDate(latest.createdAt) }</p>
               </div>
             </div>
           </div>
@@ -176,7 +162,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={closeModalHandler}
+          onClick={closeConflictDiffModal}
         >
           {t('Cancel')}
         </button>
@@ -194,82 +180,7 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 };
 
 
-const dummyTest1 = `# :tada: グローウィ へようこそ
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
-
-グローウィ は個人・法人向けの Wiki | ナレッジベースツールです。
-会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。
-
-知っている情報をカジュアルに書き出しみんなで編集することで、**チーム内での暗黙知を減らす**ことができます。
-当たり前に共有される情報を日々増やしていきましょう。
-
-### :beginner: 簡単なページの作り方
-
-- 右上の "**作成**"ボタンまたは右下の**鉛筆アイコン**のボタンからページを書き始めることができます
-    - ページタイトルは後から変更できますので、適当に入力しても大丈夫です
-        - タイトル入力欄では、半角の / (スラッシュ) でページ階層を作れます
-        - （例）/カテゴリ1/カテゴリ2/作りたいページタイトル のように入力してみてください
-- \`\`- \` を行頭につけると、この文章のような箇条書きを書くことができます\`\`
-- 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
-- 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - \`Ctrl(⌘) + S\` でも保存できます
-
-さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
-  </ul></div>
-</div>
-`;
-
-const dummyTest2 = `# :tada: GROWI へようこそ
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
-
-GROWI は個人・法人向けの Wiki | ナレッジベースツールです。
-会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。
-
-知っている情報をカジュアルに書き出しみんなで編集することで、**チーム内での暗黙知を減らす**ことができます。
-当たり前に共有される情報を日々増やしていきましょう。
-
-### :beginner: 簡単なページの作り方
-
-- 右上の "**作成**"ボタンまたは右下の**鉛筆アイコン**のボタンからページを書き始めることができます
-    - ページタイトルは後から変更できますので、適当に入力しても大丈夫です
-        - タイトル入力欄では、半角の / (スラッシュ) でページ階層を作れます
-        - （例）/カテゴリ1/カテゴリ2/作りたいページタイトル のように入力してみてください
-- \`\`- \` を行頭につけると、この文章のような箇条書きを書くことができます\`\`
-- 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
-- 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - \`Ctrl(⌘) + S\` でも保存できます
-
-さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
-  </ul></div>
-</div>
-`;
-
-type ConflictDiffModalProps = {
-  onClose?: () => void,
-  onResolved?: () => void,
-  // optionsToSave: OptionsToSave | undefined;
-  // afterResolvedHandler: () => void,
-};
-
-
-export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
-  const {
-    onClose, onResolved,
-  } = props;
+export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   // state for current page
@@ -283,41 +194,25 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
 
   const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
-  const currentTime: Date = new Date();
-
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
-  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null) {
+  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
   }
 
-  const request: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
-    revisionBody: dummyTest1,
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
+  const currentTime: Date = new Date();
+
+  const request: OmiitedRevisionOnConflict = {
+    revisionBody: conflictDiffModalStatus.requestRevisionBody ?? '',
+    createdAt: currentTime,
     user: currentUser,
   };
 
-  const latest: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
-    revisionBody: dummyTest2,
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
-    user: currentUser,
+  const latest: OmiitedRevisionOnConflict = {
+    revisionBody: remoteRevisionBody,
+    createdAt: new Date(remoteRevisionLastUpdatedAt ?? currentTime.toString()),
+    user: remoteRevisionLastUpdateUser,
   };
 
-  // const latest: IRevisionOnConflictWithStringDate = {
-  //   revisionId: remoteRevisionId,
-  //   revisionBody: remoteRevisionBody,
-  //   createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
-  //   user: remoteRevisionLastUpdateUser,
-  // };
-
-  const propsForCore = {
-    onResolved,
-    onClose,
-    request,
-    latest,
-  };
-
-  return <ConflictDiffModalCore {...propsForCore} />;
+  return <ConflictDiffModalCore request={request} latest={latest} />;
 };
