@@ -116,7 +116,7 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
-    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none d-flex" innerActiveClass="active">
+    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
       {({ status }: { status: boolean }) => {
         const isCollapseParents = status === Sticky.STATUS_FIXED;
         return (
