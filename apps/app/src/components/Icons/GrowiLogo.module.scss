@@ -1,0 +1,20 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core/scss/growi-official-colors';
+@use '~/styles/variables' as var;
+
+.grw-logo :global {
+  fill: var(--grw-app-title-color, var(--bs-tertiary-color));
+  // set transition for fill
+  transition: fill 0.8s ease-out;
+
+  &:hover {
+    .group1 {
+      fill: growi-official-colors.$growi-green;
+    }
+
+    .group2 {
+      fill: growi-official-colors.$growi-blue;
+    }
+  }
+}
+

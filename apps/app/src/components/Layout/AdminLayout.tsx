@@ -33,7 +33,7 @@ const AdminLayout = ({
 
         <header className="py-0 container-fluid">
           <h1 className="p-3 fs-2 d-flex align-items-center">
-            <Link href="/" className="grw-logo d-block mb-1 me-2">
+            <Link href="/" className="d-block mb-1 me-2">
               <GrowiLogo />
             </Link>
             {componentTitle}
