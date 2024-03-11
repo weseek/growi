@@ -28,12 +28,16 @@ export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
     getInputProps,
     open,
   } = useFileDropzone({
+    // close after uploading
+    // https://github.com/weseek/growi/pull/8564
     onUpload: (files: File[]) => { onUpload?.(files); onClose?.() },
     acceptedUploadFileType,
     dropzoneOpts: {
       noClick: true,
       noDrag: true,
       noKeyboard: true,
+      // close after cancelling
+      // https://github.com/weseek/growi/pull/8564
       onFileDialogCancel: onClose,
     },
   });
