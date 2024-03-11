@@ -88,7 +88,11 @@ const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: T
 };
 
 
-export const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
+export const scrollEditor = (editorRootElement?: HTMLElement, previewRootElement?: HTMLElement): void => {
+
+  if (editorRootElement == null || previewRootElement == null) {
+    return;
+  }
 
   setDefaultTop(editorRootElement.getBoundingClientRect().top);
 
@@ -121,6 +125,10 @@ export const scrollEditor = (editorRootElement: HTMLElement, previewRootElement:
 };
 
 export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
+
+  if (editorRootElement == null || previewRootElement == null) {
+    return;
+  }
 
   setDefaultTop(previewRootElement.getBoundingClientRect().y);
 
