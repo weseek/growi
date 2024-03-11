@@ -239,7 +239,11 @@ export const SavePageControls = (): JSX.Element | null => {
         ) : (
           <>
             <SavePageButton slackChannels={slackChannels} />
-            <button type="button" className="btn btn-outline-neutral-secondary border-0 text-muted" onClick={() => setIsSavePageControlsModalShown(true)}>
+            <button
+              type="button"
+              className="btn btn-outline-neutral-secondary border-0 fs-5 p-0 ms-1 text-muted"
+              onClick={() => setIsSavePageControlsModalShown(true)}
+            >
               <span className="material-symbols-outlined">more_vert</span>
             </button>
             <Modal
@@ -250,13 +254,15 @@ export const SavePageControls = (): JSX.Element | null => {
               <div className="d-flex flex-column pt-5 pb-3 px-4 gap-3">
                 {
                   isAclEnabled && (
-                    <GrantSelector
-                      grant={grant}
-                      disabled={isGrantSelectorDisabledPage}
-                      openInModal
-                      userRelatedGrantedGroups={userRelatedGrantedGroups}
-                      onUpdateGrant={updateGrantHandler}
-                    />
+                    <div className="py-2">
+                      <GrantSelector
+                        grant={grant}
+                        disabled={isGrantSelectorDisabledPage}
+                        openInModal
+                        userRelatedGrantedGroups={userRelatedGrantedGroups}
+                        onUpdateGrant={updateGrantHandler}
+                      />
+                    </div>
                   )
                 }
 

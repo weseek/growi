@@ -15,12 +15,15 @@
     box-shadow: none;
     transition: all 0.4s ease-out;
   }
+  .form-control::placeholder {
+    color: bs.$gray-500
+  }
 }
 
 :root[data-bs-theme='light'] {
   .grw-slack-switch :global {
     .form-check-input:not(:checked) {
-      background-color: bs.$gray-500;
+      background-color: bs.$gray-200;
       background-image:
         url('/images/icons/slack/slack-logo-off.svg'),
         url('/images/icons/slack/slack-logo-background.svg');
@@ -40,7 +43,7 @@
 :root[data-bs-theme='dark'] {
   .grw-slack-switch :global {
     .form-check-input:not(:checked) {
-      background-color: bs.$gray-500;
+      background-color: bs.$gray-200;
       background-image:
         url('/images/icons/slack/slack-logo-dark-off.svg'),
         url('/images/icons/slack/slack-logo-dark-background.svg');
