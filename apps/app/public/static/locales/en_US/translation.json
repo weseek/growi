@@ -311,7 +311,7 @@
     }
   },
   "page_edit": {
-    "input_channels": "Input channels",
+    "input_channels": "Slack channel name...",
     "theme": "Theme",
     "keymap": "Keymap",
     "indent": "Indent",
