@@ -5,10 +5,12 @@ import type EventEmitter from 'events';
 import { Origin } from '@growi/core';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
+import { extractRemoteRevisionDataFromErrorObj } from '~/client/util/conflict';
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
 import { useShareLinkId } from '~/stores/context';
-import { useDrawioModal } from '~/stores/modal';
+import { useConflictDiffModal, useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
+import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 import { updatePage } from '../page-operation';
@@ -34,6 +36,57 @@ export const useDrawioModalLauncherForView = (opts?: {
 
   const { open: openDrawioModal } = useDrawioModal();
 
+  const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
+
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
+
+  // eslint-disable-next-line max-len
+  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict?: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
+      return;
+    }
+
+    return async(newMarkdown: string) => {
+      try {
+        await updatePage({
+          pageId: currentPage._id,
+          revisionId,
+          body: newMarkdown,
+          origin: Origin.View,
+        });
+
+        opts?.onSaveSuccess?.();
+        closeConflictDiffModal();
+
+        // TODO: If no user is editing in the Editor, update ydoc as well
+        // https://redmine.weseek.co.jp/issues/142109
+      }
+
+      catch (error) {
+        const conflictData = extractRemoteRevisionDataFromErrorObj(error);
+        if (conflictData != null) {
+          // Called if conflicts occur after resolving conflicts
+          onConflict?.(conflictData, newMarkdown);
+          return;
+        }
+
+        logger.error('failed to save', error);
+        opts?.onSaveError?.(error);
+      }
+    };
+  }, [closeConflictDiffModal, currentPage, opts, shareLinkId]);
+
+  const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
+    setRemoteLatestPageData(remoteRevidsionData);
+
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, onConflictHandler);
+    if (resolveConflictHandler == null) {
+      return;
+    }
+
+    openConflictDiffModal(newMarkdown, resolveConflictHandler);
+  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
+
   const saveByDrawioModal = useCallback(async(drawioMxFile: string, bol: number, eol: number) => {
     if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
@@ -54,10 +107,15 @@ export const useDrawioModalLauncherForView = (opts?: {
       opts?.onSaveSuccess?.();
     }
     catch (error) {
+      const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
+      if (remoteRevidsionData != null) {
+        onConflictHandler(remoteRevidsionData, newMarkdown);
+      }
+
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  }, [currentPage, opts, shareLinkId]);
+  }, [currentPage, onConflictHandler, opts, shareLinkId]);
 
 
   // set handler to open DrawioModal
