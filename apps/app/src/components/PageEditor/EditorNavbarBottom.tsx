@@ -57,7 +57,7 @@ const EditorNavbarBottom = (): JSX.Element => {
   }, []);
 
   return (
-    <div data-testid="grw-editor-navbar-bottom">
+    <div className="border-top" data-testid="grw-editor-navbar-bottom">
       {/* Collapsed SlackNotification */}
       {isSlackConfigured && (
         <Collapse isOpen={isSlackExpanded && !isDeviceLargerThanLg}>
@@ -77,7 +77,7 @@ const EditorNavbarBottom = (): JSX.Element => {
         </Collapse>
       )
       }
-      <div className={`flex-expand-horiz align-items-center px-2 px-md-3 ${moduleClass}`}>
+      <div className={`flex-expand-horiz align-items-center px-2 py-1 py-md-2 px-md-3 ${moduleClass}`}>
         <form>
           <OptionsSelector collapsed={!isDeviceLargerThanMd} />
         </form>
