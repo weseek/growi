@@ -91,7 +91,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           { isLoading
             ? (
               <div className="text-muted text-center">
-                <span className="mt-3 fs-3"><LoadingSpinnerPulse /></span>
+                <LoadingSpinnerPulse className="mt-3 fs-3" />
               </div>
             )
             : (

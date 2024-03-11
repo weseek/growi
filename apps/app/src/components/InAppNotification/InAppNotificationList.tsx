@@ -22,7 +22,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+          <LoadingSpinnerPulse className="me-1 fs-3" />
         </div>
       </div>
     );

@@ -213,7 +213,7 @@ export const AuditLogManagement: FC = () => {
           { isLoading
             ? (
               <div className="text-muted text-center mb-5">
-                <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+                <LoadingSpinnerPulse className="me-1 fs-3" />
               </div>
             )
             : (

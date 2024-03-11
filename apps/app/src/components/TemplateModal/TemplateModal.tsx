@@ -187,7 +187,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
             { isLoading && (
               <div className="h-100 d-flex justify-content-center align-items-center">
-                <span className="mx-auto text-muted fs-3"><LoadingSpinnerPulse /></span>
+                <LoadingSpinnerPulse className="mx-auto text-muted fs-3" />
               </div>
             ) }
 

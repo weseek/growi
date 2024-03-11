@@ -66,7 +66,7 @@ export const InAppNotificationPage: FC = () => {
       return (
         <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
-            <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+            <LoadingSpinnerPulse className="me-1 fs-3" />
           </div>
         </div>
       );

@@ -249,7 +249,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               <ItemClassFixed {...itemProps} />
               {isProcessingSubmission && (currentChildren.length - 1 === index) && (
                 <div className="text-muted text-center">
-                  <span className="mr-1"><LoadingSpinnerPulse /></span>
+                  <LoadingSpinnerPulse className="mr-1" />
                 </div>
               )}
             </div>

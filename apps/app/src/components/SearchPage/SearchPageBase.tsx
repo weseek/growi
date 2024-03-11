@@ -183,7 +183,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           {/* Loading */}
           { pages == null && (
             <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-              <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+              <LoadingSpinnerPulse className="me-1 fs-3" />
             </div>
           ) }
 

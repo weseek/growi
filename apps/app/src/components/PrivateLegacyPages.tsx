@@ -63,7 +63,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   if (migrationStatus == null) {
     return (
       <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-        <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+        <LoadingSpinnerPulse className="me-1 fs-3" />
       </div>
     );
   }

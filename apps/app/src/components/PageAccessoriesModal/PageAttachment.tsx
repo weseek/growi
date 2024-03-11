@@ -64,7 +64,7 @@ const PageAttachment = (): JSX.Element => {
     if (dataAttachments == null || inUseAttachmentsMap == null) {
       return (
         <div className="text-muted text-center">
-          <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+          <LoadingSpinnerPulse className="me-1 fs-3" />
         </div>
       );
     }

@@ -33,7 +33,7 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
 const LoadingIndicator = (): React.ReactElement => {
   return (
     <div className="text-muted text-center">
-      <span className="me-1 fs-3"><LoadingSpinnerPulse /></span>
+      <LoadingSpinnerPulse className="me-1 fs-3" />
     </div>
   );
 };
