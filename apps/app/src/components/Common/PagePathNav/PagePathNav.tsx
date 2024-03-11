@@ -116,14 +116,14 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
-    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
+    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none d-flex" innerActiveClass="active">
       {({ status }: { status: boolean }) => {
         const isCollapseParents = status === Sticky.STATUS_FIXED;
         return (
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className="d-inline-block pe-auto">
+          <div className={`d-inline-block pe-auto ${isCollapseParents ? 'in-collapse-with-top' : ''}`}>
             <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'} />
           </div>
         );
