@@ -13,7 +13,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
-import { updatePage } from '../page-operation';
+import { updatePage as _updatePage } from '../page-operation';
 
 
 const logger = loggerFactory('growi:cli:side-effects:useHandsontableModalLauncherForView');
@@ -41,40 +41,42 @@ export const useHandsontableModalLauncherForView = (opts?: {
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   // eslint-disable-next-line max-len
-  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict?: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
+  const updatePage = useCallback(async(revisionId:string, newMarkdown: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
     if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
       return;
     }
 
-    return async(newMarkdown: string) => {
-      try {
-        await updatePage({
-          pageId: currentPage._id,
-          revisionId,
-          body: newMarkdown,
-          origin: Origin.View,
-        });
+    try {
+      await _updatePage({
+        pageId: currentPage._id,
+        revisionId,
+        body: newMarkdown,
+        origin: Origin.View,
+      });
 
-        opts?.onSaveSuccess?.();
-        closeConflictDiffModal();
-
-        // TODO: If no user is editing in the Editor, update ydoc as well
-        // https://redmine.weseek.co.jp/issues/142109
+      opts?.onSaveSuccess?.();
+      closeConflictDiffModal();
+    }
+    catch (error) {
+      const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
+      if (remoteRevidsionData != null) {
+        onConflict?.(remoteRevidsionData, newMarkdown);
       }
 
-      catch (error) {
-        const conflictData = extractRemoteRevisionDataFromErrorObj(error);
-
-        if (conflictData != null) {
-          // Called if conflicts occur after resolving conflicts
-          onConflict?.(conflictData, newMarkdown);
-        }
-
-        logger.error('failed to save', error);
-        opts?.onSaveError?.(error);
-      }
-    };
+      logger.error('failed to save', error);
+      opts?.onSaveError?.(error);
+    }
   }, [closeConflictDiffModal, currentPage, opts, shareLinkId]);
+
+  // eslint-disable-next-line max-len
+  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
+    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
+      return;
+    }
+    return async(newMarkdown: string) => {
+      await updatePage(revisionId, newMarkdown, onConflict);
+    };
+  }, [currentPage, shareLinkId, updatePage]);
 
   const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
     setRemoteLatestPageData(remoteRevidsionData);
@@ -88,35 +90,16 @@ export const useHandsontableModalLauncherForView = (opts?: {
   }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
 
   const saveByHandsontableModal = useCallback(async(table: MarkdownTable, bol: number, eol: number) => {
-    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
+    if (currentPage == null || currentPage.revision == null) {
       return;
     }
 
+    const currentRevisionId = currentPage.revision._id;
     const currentMarkdown = currentPage.revision.body;
     const newMarkdown = replaceMarkdownTableInMarkdown(table, currentMarkdown, bol, eol);
 
-    try {
-      const currentRevisionId = currentPage.revision._id;
-      await updatePage({
-        pageId: currentPage._id,
-        revisionId: currentRevisionId,
-        body: newMarkdown,
-        origin: Origin.View,
-      });
-
-      opts?.onSaveSuccess?.();
-    }
-    catch (error) {
-      const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
-      if (remoteRevidsionData != null) {
-        onConflictHandler(remoteRevidsionData, newMarkdown);
-      }
-
-      logger.error('failed to save', error);
-      opts?.onSaveError?.(error);
-    }
-  }, [currentPage, onConflictHandler, opts, shareLinkId]);
-
+    await updatePage(currentRevisionId, newMarkdown, onConflictHandler);
+  }, [currentPage, onConflictHandler, updatePage]);
 
   // set handler to open HandsonTableModal
   useEffect(() => {
