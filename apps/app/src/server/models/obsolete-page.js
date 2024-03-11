@@ -149,7 +149,7 @@ export const getPageSchema = (crowi) => {
       return true;
     }
 
-    const revision = this.latestRevision || this.revision;
+    const revision = this.latestRevision || this.revision._id;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
     if (revision != previousRevision) {

@@ -278,7 +278,7 @@ export const OptionsSelector = (): JSX.Element => {
   return (
     <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
       <DropdownToggle
-        className={`btn btn-outline-neutral-secondary d-flex align-items-center justify-content-center
+        className={`btn btn-sm btn-outline-neutral-secondary d-flex align-items-center justify-content-center
               ${isDeviceLargerThanMd ? 'border border-secondary' : 'border-0'}
               ${dropdownOpen ? 'active' : ''}
               `}

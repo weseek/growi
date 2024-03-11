@@ -189,7 +189,7 @@ export const RecentChangesHeader = ({
 
         <DropdownMenu container="body">
           <DropdownItem onClick={changeSizeHandler}>
-            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch`}>
+            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
               <input
                 id="recentChangesResize"
                 className="form-check-input"
@@ -197,12 +197,14 @@ export const RecentChangesHeader = ({
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="recentChangesResize" />
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+                {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
+              </label>
             </div>
           </DropdownItem>
 
           <DropdownItem onClick={onWipPageShownChange}>
-            <div className="form-check form-switch">
+            <div className="form-check form-switch mb-0">
               <input
                 id="wipPageVisibility"
                 className="form-check-input"
@@ -210,7 +212,7 @@ export const RecentChangesHeader = ({
                 checked={isWipPageShown}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
