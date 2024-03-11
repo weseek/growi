@@ -5,15 +5,13 @@ import type EventEmitter from 'events';
 import { Origin } from '@growi/core';
 import type { DrawioEditByViewerProps } from '@growi/remark-drawio';
 
-import { extractRemoteRevisionDataFromErrorObj } from '~/client/util/conflict';
+import { extractRemoteRevisionDataFromErrorObj, updatePage as _updatePage } from '~/client/services/update-page';
 import { replaceDrawioInMarkdown } from '~/components/Page/markdown-drawio-util-for-view';
 import { useShareLinkId } from '~/stores/context';
 import { useConflictDiffModal, useDrawioModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
-
-import { updatePage as _updatePage } from '../page-operation';
 
 
 const logger = loggerFactory('growi:cli:side-effects:useDrawioModalLauncherForView');

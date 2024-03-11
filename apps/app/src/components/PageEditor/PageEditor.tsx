@@ -18,9 +18,9 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { updatePage } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
