@@ -55,7 +55,7 @@ export const AuditLogSettings: FC = () => {
       </p>
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>
-          <span className={`material-symbols-outlined me-1 ${isExpandActionList ? 'fa-rotate-90' : ''}`}>navigate_next</span>
+          <span className={`material-symbols-outlined me-1 ${isExpandActionList ? 'grw-rotate-90' : ''}`}>navigate_next</span>
           { t('admin:audit_log_management.action_list') }
         </button>
       </p>
