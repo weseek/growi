@@ -2,7 +2,7 @@ import React, {
   useState, useEffect, useCallback, useMemo,
 } from 'react';
 
-import type { IRevisionOnConflict } from '@growi/core';
+import type { IUser } from '@growi/core';
 import {
   MergeViewer, CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
 } from '@growi/editor';
@@ -22,11 +22,15 @@ import {
 
 import styles from './ConflictDiffModal.module.scss';
 
-type OmiitedRevisionOnConflict = Omit<IRevisionOnConflict, 'revisionId'>;
+type IRevisionOnConflict = {
+  revisionBody: string
+  createdAt: Date
+  user: IUser
+}
 
 type ConflictDiffModalCoreProps = {
-  request: OmiitedRevisionOnConflict
-  latest: OmiitedRevisionOnConflict
+  request: IRevisionOnConflict
+  latest: IRevisionOnConflict
 };
 
 const formatedDate = (date: Date): string => {
@@ -182,17 +186,14 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 
 export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
-
-  // state for current page
   const { data: currentPage } = useSWRxCurrentPage();
+  const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
   // state for latest page
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionBody } = useRemoteRevisionBody();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-
-  const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
@@ -202,13 +203,13 @@ export const ConflictDiffModal = (): JSX.Element => {
 
   const currentTime: Date = new Date();
 
-  const request: OmiitedRevisionOnConflict = {
+  const request: IRevisionOnConflict = {
     revisionBody: conflictDiffModalStatus.requestRevisionBody ?? '',
     createdAt: currentTime,
     user: currentUser,
   };
 
-  const latest: OmiitedRevisionOnConflict = {
+  const latest: IRevisionOnConflict = {
     revisionBody: remoteRevisionBody,
     createdAt: new Date(remoteRevisionLastUpdatedAt ?? currentTime.toString()),
     user: remoteRevisionLastUpdateUser,
