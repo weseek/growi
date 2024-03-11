@@ -254,7 +254,7 @@ export const SavePageControls = (): JSX.Element | null => {
               <div className="d-flex flex-column pt-5 pb-3 px-4 gap-3">
                 {
                   isAclEnabled && (
-                    <div className="py-2">
+                    <>
                       <GrantSelector
                         grant={grant}
                         disabled={isGrantSelectorDisabledPage}
@@ -262,7 +262,7 @@ export const SavePageControls = (): JSX.Element | null => {
                         userRelatedGrantedGroups={userRelatedGrantedGroups}
                         onUpdateGrant={updateGrantHandler}
                       />
-                    </div>
+                    </>
                   )
                 }
 

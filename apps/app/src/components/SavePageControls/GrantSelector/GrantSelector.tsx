@@ -120,7 +120,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         : opt.label;
 
       const labelElm = (
-        <span>
+        <span className={openInModal ? 'py-2' : ''}>
           <span className="material-symbols-outlined me-2">{opt.iconName}</span>
           <span className="label">{t(label)}</span>
         </span>

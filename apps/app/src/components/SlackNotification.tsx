@@ -43,7 +43,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
   return (
     <InputGroup className={`d-flex align-items-center ${styles['grw-slack-switch']}`}>
       <InputGroupText className="rounded-pill rounded-end border-end-0 p-0 pe-1 grw-slack-switch">
-        <FormGroup switch className="position-relative pe-4 py-3 m-0">
+        <FormGroup switch className="position-relative pe-4 py-3 m-0 me-2">
           <Input
             className="position-absolute bottom-0 start-0 p-0 m-0 w-100 h-100 border-0"
             type="switch"
