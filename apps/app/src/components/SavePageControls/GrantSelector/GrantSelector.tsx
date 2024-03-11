@@ -201,7 +201,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <>
+      <div className="d-flex flex-column">
         { myUserGroups.map((group) => {
           const groupIsGranted = userRelatedGrantedGroups?.find(g => g.id === group.item._id) != null;
           const activeClass = groupIsGranted ? 'active' : '';
@@ -220,8 +220,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
             </button>
           );
         }) }
-        <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
-      </>
+        <button type="button" className="btn btn-primary mt-2 mx-auto" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
+      </div>
     );
 
   }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, userRelatedGrantedGroups]);
