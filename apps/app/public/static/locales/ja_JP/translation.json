@@ -10,10 +10,10 @@
   "Duplicate": "複製",
   "PathRecovery": "パスを修復",
   "Copy": "コピー",
-  "preview":"プレビュー",
-  "desktop":"パソコン",
-  "phone":"スマホ",
-  "tablet":"タブレット",
+  "preview": "プレビュー",
+  "desktop": "パソコン",
+  "phone": "スマホ",
+  "tablet": "タブレット",
   "Click to copy": "クリックでコピー",
   "Rename": "名前変更",
   "Move/Rename": "移動/名前変更",
@@ -111,7 +111,7 @@
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
   "GROWI.5.0_new_schema": "GROWI.5.0における新スキーマについて",
-  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><i class='icon-share-alt'></i>を参照ください。",
+  "See_more_detail_on_new_schema": "詳しくは<a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html#新しい-v5-互換形式について' target='_blank'>{{title}}</a><span className='growi-custom-icons'>external_link</span>を参照ください。",
   "external_account_management": "外部アカウント管理",
   "UserGroup": "グループ",
   "Basic Settings": "基本設定",
@@ -146,9 +146,9 @@
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
   "In-App Notification": "通知",
-  "original_path":"元のパス",
-  "new_path":"新しいパス",
-  "duplicated_path":"重複したパス",
+  "original_path": "元のパス",
+  "new_path": "新しいパス",
+  "duplicated_path": "重複したパス",
   "Link sharing is disabled": "リンクのシェアは無効化されています",
   "successfully_saved_the_page": "ページが正常に保存されました",
   "you_can_not_create_page_with_this_name": "この名前でページを作成することはできません",
@@ -213,7 +213,7 @@
   },
   "Password": "パスワード",
   "Password Settings": "パスワード設定",
-  "personal_settings":{
+  "personal_settings": {
     "disassociate_external_account": "External Account の連携解除",
     "disassociate_external_account_desc": "<strong>{{providerType}}</strong> プロバイダーの <strong>{{accountId}}</strong> アカウントを連携解除します",
     "set_new_password": "パスワードを新規に設定",
@@ -227,7 +227,7 @@
     "Shere this page link to public": "外部に共有するリンクを発行する",
     "share_link_list": "共有リンクリスト",
     "share_link_management": "共有リンク管理",
-    "delete_all_share_links":"全ての共有リンクを削除します",
+    "delete_all_share_links": "全ての共有リンクを削除します",
     "expire": "有効期限",
     "Days": "日間",
     "Custom": "カスタム",
@@ -235,8 +235,8 @@
     "enter_desc": "概要を入力",
     "Unlimited": "無期限",
     "Issue": "発行",
-    "share_settings" :"共有設定",
-    "Invalid_Number_of_Date" : "有効期限の日数には整数を入力してください",
+    "share_settings": "共有設定",
+    "Invalid_Number_of_Date": "有効期限の日数には整数を入力してください",
     "link_sharing_is_disabled": "リンクのシェアは無効化されています"
   },
   "API Settings": "API設定",
@@ -281,7 +281,7 @@
       "no_zero_width_spaces": "ゼロ幅スペースを許可しません。",
       "period_in_list_item": "リストアイテムのピリオドの有無をチェックします。",
       "use_si_units": "SI単位系以外の使用を禁止します。"
-      },
+    },
     "japanese_settings": {
       "japanese_settings": "日本語設定",
       "ja_hiragana_keishikimeishi": "漢字よりひらがなで書かれた読みやすい形式名詞をチェックします。",
@@ -335,7 +335,7 @@
     "notice": {
       "version": "これは最新のバージョンではありません。",
       "redirected": "リダイレクト元 >>",
-      "redirected_period":"",
+      "redirected_period": "",
       "unlinked": "このページへのリダイレクトは削除されました。",
       "restricted": "このページの閲覧は制限されています",
       "stale": "このページは最終更新日から{{count}}年以上が経過しています。",
@@ -375,8 +375,8 @@
     "comparing_source": "ソース",
     "comparing_target": "ターゲット",
     "comparing_revisions": "差分を比較する",
-    "compare_latest":"最新と比較",
-    "compare_previous":"1つ前のバージョンと比較"
+    "compare_latest": "最新と比較",
+    "compare_previous": "1つ前のバージョンと比較"
   },
   "modal_rename": {
     "label": {
@@ -414,7 +414,7 @@
   "deleted_pages_completely": "{{path}} を完全に削除しました",
   "renamed_pages": "{{path}} を移動/名前変更しました",
   "empty_trash": "ゴミ箱を空にしました",
-  "modal_empty":{
+  "modal_empty": {
     "empty_the_trash": "ゴミ箱を空にする",
     "empty_the_trash_button": "空にする",
     "not_deletable_notice": "権限がないため、いくつかのページは削除できません",
@@ -474,10 +474,9 @@
     "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
     "resolve_conflict_message": "ページ本文を選んでください",
     "resolve_conflict": "衝突を解消",
-    "resolve_and_save" : "解消し保存する",
-    "select_revision" : "{{revision}}にする",
+    "resolve_and_save": "解消し保存する",
+    "select_revision": "{{revision}}にする",
     "requested_revision": "送信された本文",
-    "origin_revision": "送信する前の本文",
     "latest_revision": "最新の本文",
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
@@ -504,7 +503,7 @@
     "issue_share_link": "共有リンクを作成しました",
     "remove_share_link": "共有リンクを{{count}}件削除しました",
     "switch_disable_link_sharing_success": "共有リンクの設定を変更しました",
-    "failed_to_reset_password":"パスワードのリセットに失敗しました",
+    "failed_to_reset_password": "パスワードのリセットに失敗しました",
     "save_succeeded": "保存に成功しました"
   },
   "template": {
@@ -571,12 +570,12 @@
     "deletion_modal_header": "以下のページを削除",
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
-    "delete_all_selected_page" : "一括削除",
-    "currently_not_implemented":"現在未実装の機能です",
-    "search_again" : "再検索",
-    "number_of_list_to_display" : "表示件数",
-    "page_number_unit" : "件",
-    "hit_number_unit" : "件",
+    "delete_all_selected_page": "一括削除",
+    "currently_not_implemented": "現在未実装の機能です",
+    "search_again": "再検索",
+    "number_of_list_to_display": "表示件数",
+    "page_number_unit": "件",
+    "hit_number_unit": "件",
     "sort_axis": {
       "relationScore": "関連度順",
       "createdAt": "作成日時",
@@ -592,7 +591,7 @@
     "alert_desc1": "このページでは、チェックボックスでページを選択し、画面上部の「一括操作」ボタンから新しい v5 互換形式に一括変換できます。",
     "nopages_title": "おめでとうございます。GROWI v5 を使う準備が完了しました！",
     "nopages_desc1": "今あなたが管理可能なページはすべて v5 互換形式になっているようです。",
-    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード  <i class='icon-share-alt'></i></a> を参照ください。",
+    "detail_info": "詳しくは <a href='https://docs.growi.org/ja/admin-guide/upgrading/50x.html' target='_blank' class='alert-link'>GROWI v5.0.x へのアップグレード <span className='growi-custom-icons'>external_link</span></a> を参照ください。",
     "modal": {
       "title": "新しい v5 互換形式への変換",
       "converting_pages": "以下のページを変換します",
@@ -623,7 +622,7 @@
     "sign_in_error": "ログインエラー",
     "registration_successful": "登録が完了しました。管理者の承認をお待ちください。",
     "Setup": "セットアップ",
-    "enabled_ldap_has_configuration_problem":"LDAPは有効ですが、設定に問題があります。",
+    "enabled_ldap_has_configuration_problem": "LDAPは有効ですが、設定に問題があります。",
     "set_env_var_for_logs": "(ログを取得するためには、環境変数 <code>DEBUG=crowi:service:PassportService</code> を設定してください。)"
   },
   "invited": {
@@ -649,23 +648,23 @@
     "sign_in_failure": "ログインに失敗しました。",
     "aws_sttings_required": "この機能にはAWS設定が必要です。管理者に訪ねて下さい。",
     "application_already_installed": "アプリケーションのインストールが完了しました。",
-    "email_address_could_not_be_used":"このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
-    "user_id_is_not_available":"このユーザーIDは使用できません。",
-    "username_should_not_be_null":"Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
-    "email_address_is_already_registered":"このメールアドレスは既に登録されています。",
-    "can_not_register_maximum_number_of_users":"ユーザー数が上限を超えたため登録できません。",
-    "email_settings_is_not_setup":"E-mail 設定が完了していません。管理者に問い合わせてください。",
+    "email_address_could_not_be_used": "このメールアドレスは使用できません。(許可されたメールアドレスを確認してください。)",
+    "user_id_is_not_available": "このユーザーIDは使用できません。",
+    "username_should_not_be_null": "Username が null になっています 管理画面の認証機構設定にて設定の確認をしてください",
+    "email_address_is_already_registered": "このメールアドレスは既に登録されています。",
+    "can_not_register_maximum_number_of_users": "ユーザー数が上限を超えたため登録できません。",
+    "email_settings_is_not_setup": "E-mail 設定が完了していません。管理者に問い合わせてください。",
     "email_authentication_is_not_enabled": "メール認証が有効になっていません。管理者に問い合わせてください。",
-    "failed_to_register":"登録に失敗しました。",
-    "successfully_created":"{{username}} が作成されました。",
-    "can_not_activate_maximum_number_of_users":"ユーザーが上限に達したためアクティベートできません。",
-    "failed_to_activate":"アクティベートに失敗しました。",
-    "unable_to_use_this_user":"利用できないユーザーIDです。",
-    "complete_to_install1":"GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
-    "complete_to_install2":"GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
-    "failed_to_create_admin_user":"管理ユーザーの作成に失敗しました。{{errMessage}}",
-    "successfully_send_email_auth":"{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。",
+    "failed_to_register": "登録に失敗しました。",
+    "successfully_created": "{{username}} が作成されました。",
+    "can_not_activate_maximum_number_of_users": "ユーザーが上限に達したためアクティベートできません。",
+    "failed_to_activate": "アクティベートに失敗しました。",
+    "unable_to_use_this_user": "利用できないユーザーIDです。",
+    "complete_to_install1": "GROWI のインストールが完了しました！管理者アカウントでログインしてください。",
+    "complete_to_install2": "GROWI のインストールが完了しました！はじめに、このページで各種設定を確認してください。",
+    "failed_to_create_admin_user": "管理ユーザーの作成に失敗しました。{{errMessage}}",
+    "successfully_send_email_auth": "{{email}} にメールを送信しました。添付されたURLをクリックし、本登録を完了させてください",
+    "incorrect_token_or_expired_url": "トークンが正しくないか、URLの有効期限が切れています。",
     "user_already_logged_in": "ログイン中のため、新規アカウントを作成できませんでした。",
     "registration_closed": "新しいアカウントを作成する権限がありません。",
     "Username has invalid characters": "ユーザー名に不正な文字が含まれています.",
@@ -681,20 +680,20 @@
     "user_not_found": "ユーザーが見つかりません",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },
-  "grid_edit":{
-    "create_bootstrap_4_grid":"Bootstrap 4 グリッドを作成",
+  "grid_edit": {
+    "create_bootstrap_4_grid": "Bootstrap 4 グリッドを作成",
     "grid_settings": "グリッド設定",
-    "grid_pattern":"グリッド　パターン",
-    "division":"分割",
-    "smart_no":"スマホ / 分割なし",
-    "break_point":"画面サイズより分割"
+    "grid_pattern": "グリッド　パターン",
+    "division": "分割",
+    "smart_no": "スマホ / 分割なし",
+    "break_point": "画面サイズより分割"
   },
-  "validation":{
+  "validation": {
     "aws_region": "リージョンには、AWSリージョン名を入力してください。例: ap-northeast-1",
     "aws_custom_endpoint": "カスタムエンドポイントは、http(s)://で始まるURLを指定してください。また、末尾の/は不要です。",
-    "failed_to_send_a_test_email":"SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
+    "failed_to_send_a_test_email": "SMTPを利用したテストメール送信に失敗しました。設定をみなおしてください。"
   },
-  "forgot_password":{
+  "forgot_password": {
     "forgot_password": "パスワードをお忘れですか?",
     "send": "送信",
     "return_to_login": "ログイン画面に戻る",
@@ -707,11 +706,11 @@
     "email_is_required": "メールを入力してください",
     "success_to_send_email": "メールを送信しました",
     "feature_is_unavailable": "この機能を利用することはできません。",
-    "incorrect_token_or_expired_url":"トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
+    "incorrect_token_or_expired_url": "トークンが正しくないか、URLの有効期限が切れています。 以下のリンクからパスワードリセットリクエストを再送信してください。",
     "password_and_confirm_password_does_not_match": "パスワードと確認パスワードが一致しません",
     "please_enable_mailer_alert": "メール設定が完了していないため、パスワード再設定機能が無効になっています。メール設定を完了させるよう管理者に依頼してください。"
   },
-  "emoji" :{
+  "emoji": {
     "title": "絵文字を選択",
     "search": "探す",
     "clear": "リセット",
@@ -741,7 +740,7 @@
       "6": "肌の色が濃い"
     }
   },
-  "maintenance_mode":{
+  "maintenance_mode": {
     "maintenance_mode": "メンテナンスモード",
     "growi_is_under_maintenance": "GROWI はメンテナンス中です。終了するまでお待ちください",
     "admin_page": "管理画面へ",
@@ -753,10 +752,10 @@
     "you_cannot_move_this_page_now": "現在、このページを移動することはできません",
     "something_went_wrong_with_moving_page": "ページの移動に問題が発生しました"
   },
-  "duplicated_page_alert" : {
+  "duplicated_page_alert": {
     "same_page_name_exists": "ページ名 「{{pageName}}」が重複しています",
-    "same_page_name_exists_at_path" : "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
-    "select_page_to_see" : "以下から遷移するページを選択してください。"
+    "same_page_name_exists_at_path": "”{{path}}” において ”{{pageName}}”というページは複数存在しています。",
+    "select_page_to_see": "以下から遷移するページを選択してください。"
   },
   "user_group": {
     "select_group": "グループを選ぶ",
@@ -803,15 +802,15 @@
       }
     }
   },
-  "page_operation":{
+  "page_operation": {
     "paths_recovered": "パスを修復しました",
-    "path_recovery_failed":"パスを修復できませんでした"
+    "path_recovery_failed": "パスを修復できませんでした"
   },
   "footer": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
   },
-  "bookmark_folder":{
+  "bookmark_folder": {
     "bookmark_folder": "ブックマークフォルダ",
     "bookmark": "ブックマーク",
     "delete_modal": {
@@ -829,7 +828,7 @@
     "root": "root (default)"
   },
   "v5_page_migration": {
-    "page_tree_not_avaliable" : "Page Tree 機能は現在使用できません。",
+    "page_tree_not_avaliable": "Page Tree 機能は現在使用できません。",
     "go_to_settings": "設定する"
   },
   "questionnaire": {
@@ -875,6 +874,8 @@
     "fail_publish_page": "WIP を解除できませんでした"
   },
   "sidebar_header": {
-    "show_wip_page": "WIP を表示"
+    "show_wip_page": "WIP を表示",
+    "size_s": "サイズ: S",
+    "size_l": "サイズ: L"
   }
 }

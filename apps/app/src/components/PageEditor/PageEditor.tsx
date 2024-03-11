@@ -201,9 +201,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     try {
       mutateWaitingSaveProcessing(true);
+      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
+        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
@@ -436,7 +438,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <EditorNavbar />
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert">
+        <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
@@ -454,7 +456,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         <div
           ref={previewRef}
           onScroll={scrollPreviewHandlerThrottle}
-          className="page-editor-preview-container flex-expand-vert d-none d-lg-flex"
+          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
         >
           <Preview
             rendererOptions={rendererOptions}
