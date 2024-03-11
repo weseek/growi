@@ -68,7 +68,6 @@ export const useHandsontableModalLauncherForView = (opts?: {
         if (conflictData != null) {
           // Called if conflicts occur after resolving conflicts
           onConflict?.(conflictData, newMarkdown);
-          return;
         }
 
         logger.error('failed to save', error);
