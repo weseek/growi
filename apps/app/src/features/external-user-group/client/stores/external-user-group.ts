@@ -1,13 +1,14 @@
 import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import {
+import type {
   IExternalUserGroupHasId, IExternalUserGroupRelationHasId, KeycloakGroupSyncSettings, LdapGroupSyncSettings,
 } from '~/features/external-user-group/interfaces/external-user-group';
-import {
-  ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupListResult, UserGroupRelationListResult,
+import type {
+  ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, MyUserGroupsResult, UserGroupRelationListResult,
 } from '~/interfaces/user-group-response';
 
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {
@@ -28,10 +29,11 @@ export const useSWRxKeycloakGroupSyncSettings = (): SWRResponse<KeycloakGroupSyn
   );
 };
 
-export const useSWRxMyExternalUserGroups = (shouldFetch: boolean): SWRResponse<IExternalUserGroupHasId[], Error> => {
+export const useSWRxMyExternalUserGroups = (shouldFetch: boolean, path: string):
+  SWRResponse<{ userGroup: IExternalUserGroupHasId, canGrantPage: boolean }[], Error> => {
   return useSWR(
     shouldFetch ? '/me/external-user-groups' : null,
-    endpoint => apiv3Get<UserGroupListResult<IExternalUserGroupHasId>>(endpoint).then(result => result.data.userGroups),
+    endpoint => apiv3Get<MyUserGroupsResult<IExternalUserGroupHasId>>(endpoint, { path }).then(result => result.data.userGroups),
   );
 };
 

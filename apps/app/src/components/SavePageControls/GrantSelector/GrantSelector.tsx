@@ -13,6 +13,8 @@ import {
 
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
+import { useCurrentPagePath } from '~/stores/page';
+import { useSelectedGrant } from '~/stores/ui';
 
 import { useMyUserGroups } from './use-my-user-groups';
 
@@ -45,8 +47,6 @@ type Props = {
     name: string,
     type: GroupType,
   }[]
-
-  onUpdateGrant?: (grantData: IPageGrantData) => void,
 }
 
 /**
@@ -58,7 +58,6 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const {
     disabled,
     userRelatedGrantedGroups,
-    onUpdateGrant,
     grant: currentGrant,
   } = props;
 
@@ -67,13 +66,20 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const { data: currentUser } = useCurrentUser();
 
-  const shouldFetch = isSelectGroupModalShown;
-  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch);
+  const { data: currentPagePath } = useCurrentPagePath();
+
+  const shouldFetch = isSelectGroupModalShown && currentPagePath != null;
+  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch, currentPagePath ?? '');
+  const { mutate: mutateGrant } = useSelectedGrant();
 
   const showSelectGroupModal = useCallback(() => {
     updateMyUserGroups();
     setIsSelectGroupModalShown(true);
   }, [updateMyUserGroups]);
+
+  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
+    mutateGrant(grantData);
+  }, [mutateGrant]);
 
   /**
    * change event handler for grant selector
@@ -85,13 +91,11 @@ export const GrantSelector = (props: Props): JSX.Element => {
       return;
     }
 
-    if (onUpdateGrant != null) {
-      onUpdateGrant({ grant, userRelatedGrantedGroups: undefined });
-    }
-  }, [onUpdateGrant, showSelectGroupModal]);
+    updateGrantHandler({ grant, userRelatedGrantedGroups: undefined });
+  }, [updateGrantHandler, showSelectGroupModal]);
 
   const groupListItemClickHandler = useCallback((grantGroup: IGrantedGroup) => {
-    if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
+    if (isPopulated(grantGroup.item)) {
       let userRelatedGrantedGroupsCopy = userRelatedGrantedGroups != null ? [...userRelatedGrantedGroups] : [];
       const grantGroupInfo = { id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type };
       if (userRelatedGrantedGroupsCopy.find(group => group.id === grantGroupInfo.id) == null) {
@@ -100,9 +104,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
       else {
         userRelatedGrantedGroupsCopy = userRelatedGrantedGroupsCopy.filter(group => group.id !== grantGroupInfo.id);
       }
-      onUpdateGrant({ grant: 5, userRelatedGrantedGroups: userRelatedGrantedGroupsCopy });
+      updateGrantHandler({ grant: 5, userRelatedGrantedGroups: userRelatedGrantedGroupsCopy });
     }
-  }, [onUpdateGrant, userRelatedGrantedGroups]);
+  }, [updateGrantHandler, userRelatedGrantedGroups]);
 
   /**
    * Render grant selector DOM.
@@ -210,8 +214,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
               type="button"
               key={group.item._id}
               onClick={() => groupListItemClickHandler(group)}
+              disabled={!group.canGrantPage}
             >
-              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
+              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} disabled={!group.canGrantPage} /></span>
               <h5 className="d-inline-block ml-3">{group.item.name}</h5>
               {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}

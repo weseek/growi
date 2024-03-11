@@ -2,21 +2,24 @@ import type {
   IPageHasId, IUserGroupHasId, IUserGroupRelationHasId,
 } from '@growi/core';
 import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import {
+import type {
   IUserGroupRelationHasIdPopulatedUser,
   UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupRelationsResult,
-  UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
+  UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult, MyUserGroupsResult,
 } from '~/interfaces/user-group-response';
 
 
-export const useSWRxMyUserGroups = (shouldFetch: boolean): SWRResponse<IUserGroupHasId[], Error> => {
+export const useSWRxMyUserGroups = (
+    shouldFetch: boolean, path: string,
+): SWRResponse<{ userGroup: IUserGroupHasId, canGrantPage: boolean }[], Error> => {
   return useSWR(
     shouldFetch ? '/me/user-groups' : null,
-    endpoint => apiv3Get<UserGroupListResult>(endpoint).then(result => result.data.userGroups),
+    endpoint => apiv3Get<MyUserGroupsResult>(endpoint, { path }).then(result => result.data.userGroups),
   );
 };
 
