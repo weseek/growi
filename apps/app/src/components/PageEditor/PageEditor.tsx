@@ -121,7 +121,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { data: conflictDiffModalStatus, open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
@@ -142,6 +142,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   mutateResolvedTheme({ themeData: resolvedTheme });
 
   const currentRevisionId = currentPage?.revision?._id;
+  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -202,18 +203,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
-        pageId, currentRevisionId, grantData,
+        pageId, grantData,
       });
       throw new Error('Some materials to save are invalid');
     }
 
     try {
       mutateWaitingSaveProcessing(true);
-      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
-        revisionId: isRevisionIdRequiredForPageUpdate ? revisionId : undefined,
+        revisionId,
         body: markdown ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
@@ -225,6 +225,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+
+      closeConflictDiffModal();
 
       return page;
     }
@@ -244,43 +246,53 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, grantData, currentRevisionId, mutateWaitingSaveProcessing, currentPage?.revision?.origin, t]);
+  }, [pageId, grantData, mutateWaitingSaveProcessing, closeConflictDiffModal, t]);
 
-  const generateResolveConflictHandler = useCallback((revisionId: string, markdown: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
-    return async() => {
-      // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      await save(revisionId, markdown, saveOptions, onConflict);
+  const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
+    return async(newMarkdown: string) => {
+      const page = await save(revisionId, newMarkdown, saveOptions, onConflict);
+
+      if (page == null) {
+        return;
+      }
+
+      toastSuccess(t('toaster.save_succeeded'));
+      updateStateAfterSave?.();
     };
-  }, [save]);
+  }, [save, t, updateStateAfterSave]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
 
-    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, newMarkdown, saveOptions, onConflictHandler);
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
 
-  }, [generateResolveConflictHandler, setRemoteLatestPageData]);
+    openConflictDiffModal(newMarkdown, resolveConflictHandler);
+
+  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const markdown = codeMirrorEditor?.getDoc();
-    const page = await save(currentRevisionId, markdown, opts, onConflictHandler);
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, opts, onConflictHandler);
     if (page == null) {
       return;
     }
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     const markdown = codeMirrorEditor?.getDoc();
-    const page = await save(currentRevisionId, markdown, undefined, onConflictHandler);
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, undefined, onConflictHandler);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, onConflictHandler, save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflictHandler, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
