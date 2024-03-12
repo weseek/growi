@@ -86,6 +86,7 @@ type ConflictHandler = (
 
 type Save = (
   revisionId?: string,
+  markdown?: string,
   opts?: SaveOptions,
   onConflict?: ConflictHandler,
 ) => Promise<IPageHasId | null>
@@ -198,15 +199,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  const save: Save = useCallback(async(revisionId, opts, onConflict) => {
+  const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
         pageId, currentRevisionId, grantData,
       });
       throw new Error('Some materials to save are invalid');
     }
-
-    const newMarkdown = codeMirrorEditor?.getDoc() ?? '';
 
     try {
       mutateWaitingSaveProcessing(true);
@@ -215,7 +214,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       const { page } = await updatePage({
         pageId,
         revisionId: isRevisionIdRequiredForPageUpdate ? revisionId : undefined,
-        body: codeMirrorEditor?.getDoc() ?? '',
+        body: markdown ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
@@ -234,7 +233,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
       if (remoteRevisionData != null) {
-        onConflict?.(remoteRevisionData, newMarkdown, opts);
+        onConflict?.(remoteRevisionData, markdown ?? '', opts);
         toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
         return null;
       }
@@ -245,42 +244,43 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, grantData, codeMirrorEditor, currentRevisionId, mutateWaitingSaveProcessing, currentPage?.revision?.origin, t]);
+  }, [pageId, grantData, currentRevisionId, mutateWaitingSaveProcessing, currentPage?.revision?.origin, t]);
 
-  const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
+  const generateResolveConflictHandler = useCallback((revisionId: string, markdown: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
     return async() => {
       // eslint-disable-next-line @typescript-eslint/no-use-before-define
-      await save(revisionId, saveOptions, onConflict);
+      await save(revisionId, markdown, saveOptions, onConflict);
     };
   }, [save]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
 
-    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
-    resolveConflictHandler();
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, newMarkdown, saveOptions, onConflictHandler);
 
   }, [generateResolveConflictHandler, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    const page = await save(currentRevisionId, opts, onConflictHandler);
+    const markdown = codeMirrorEditor?.getDoc();
+    const page = await save(currentRevisionId, markdown, opts, onConflictHandler);
     if (page == null) {
       return;
     }
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [currentRevisionId, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    const page = await save(currentRevisionId, undefined, onConflictHandler);
+    const markdown = codeMirrorEditor?.getDoc();
+    const page = await save(currentRevisionId, markdown, undefined, onConflictHandler);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [currentRevisionId, onConflictHandler, save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, onConflictHandler, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
