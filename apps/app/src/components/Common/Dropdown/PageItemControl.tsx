@@ -10,7 +10,7 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import { LoadingSpinnerPulse } from '~/components/LoadingSpinnerPulse';
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -134,7 +134,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   if (isLoading) {
     contents = (
       <div className="text-muted text-center my-2">
-        <LoadingSpinnerPulse />
+        <LoadingSpinner />
       </div>
     );
   }

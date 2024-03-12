@@ -11,7 +11,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { LoadingSpinnerPulse } from '~/components/LoadingSpinnerPulse';
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
 
@@ -183,7 +183,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
-          <LoadingSpinnerPulse className="mx-auto text-muted fs-4" />
+          <LoadingSpinner className="mx-auto text-muted fs-4" />
         </div>
       );
     }

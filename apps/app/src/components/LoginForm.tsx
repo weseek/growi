@@ -182,7 +182,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
         {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
         <div className="visually-hidden">
-          <LoadingSpinnerPulse />
+          <LoadingSpinner />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (

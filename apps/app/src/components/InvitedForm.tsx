@@ -7,7 +7,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 
 import { useCurrentUser } from '../stores/context';
 
-import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
+import { LoadingSpinner } from './LoadingSpinner';
 
 
 export type InvitedFormProps = {
@@ -145,7 +145,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
             <div className="eff"></div>
             <span className="btn-label">
               {isLoading ? (
-                <LoadingSpinnerPulse />
+                <LoadingSpinner />
               ) : (
                 <i className="icon-user-follow" />
               )}

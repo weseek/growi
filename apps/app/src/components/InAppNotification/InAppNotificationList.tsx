@@ -5,7 +5,7 @@ import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import InAppNotificationElm from './InAppNotificationElm';
 
@@ -22,7 +22,7 @@ const InAppNotificationList: FC<Props> = (props: Props) => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <LoadingSpinnerPulse className="me-1 fs-3" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       </div>
     );

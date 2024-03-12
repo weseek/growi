@@ -18,7 +18,7 @@ import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
@@ -135,7 +135,7 @@ export const DrawioModal = (): JSX.Element => {
         {/* Loading spinner */}
         <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
-            <LoadingSpinnerPulse className="mx-auto text-muted fs-2" />
+            <LoadingSpinner className="mx-auto text-muted fs-2" />
           </div>
         </div>
         {/* iframe */}

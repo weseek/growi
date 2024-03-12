@@ -12,7 +12,7 @@ import { useIsGuestUser } from '~/stores/context';
 
 import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
 import UserPictureList from '../Common/UserPictureList';
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import styles from './BookmarkButtons.module.scss';
 import popoverStyles from './user-list-popover.module.scss';
@@ -95,7 +95,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
       </button>
       <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
         <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
-          { isLoadingBookmarkedUsers && <LoadingSpinnerPulse /> }
+          { isLoadingBookmarkedUsers && <LoadingSpinner /> }
           { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
             <>
               { bookmarkedUsers.length > 0

@@ -26,7 +26,7 @@ import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 import Preview from '../PageEditor/Preview';
 
 import { useFormatter } from './use-formatter';
@@ -187,7 +187,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
             { isLoading && (
               <div className="h-100 d-flex justify-content-center align-items-center">
-                <LoadingSpinnerPulse className="mx-auto text-muted fs-3" />
+                <LoadingSpinner className="mx-auto text-muted fs-3" />
               </div>
             ) }
 

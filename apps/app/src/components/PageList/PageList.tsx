@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { PageListItemL } from './PageListItemL';
 
@@ -31,7 +31,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <LoadingSpinnerPulse className="me-1 fs-3" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       </div>
     );

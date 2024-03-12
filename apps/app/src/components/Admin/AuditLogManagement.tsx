@@ -10,7 +10,7 @@ import type { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
@@ -213,7 +213,7 @@ export const AuditLogManagement: FC = () => {
           { isLoading
             ? (
               <div className="text-muted text-center mb-5">
-                <LoadingSpinnerPulse className="me-1 fs-3" />
+                <LoadingSpinner className="me-1 fs-3" />
               </div>
             )
             : (

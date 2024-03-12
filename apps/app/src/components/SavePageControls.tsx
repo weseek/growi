@@ -22,7 +22,7 @@ import loggerFactory from '~/utils/logger';
 
 import { unpublish } from '../client/services/page-operation';
 
-import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
+import { LoadingSpinner } from './LoadingSpinner';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 
 
@@ -125,7 +125,7 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
           disabled={isWaitingSaveProcessing}
         >
           {isWaitingSaveProcessing && (
-            <LoadingSpinnerPulse />
+            <LoadingSpinner />
           )}
           {labelSubmitButton}
         </Button>

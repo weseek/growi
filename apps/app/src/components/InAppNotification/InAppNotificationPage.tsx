@@ -10,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../stores/in-app-notification';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
-import { LoadingSpinnerPulse } from '../LoadingSpinnerPulse';
+import { LoadingSpinner } from '../LoadingSpinner';
 import PaginationWrapper from '../PaginationWrapper';
 
 import InAppNotificationList from './InAppNotificationList';
@@ -66,7 +66,7 @@ export const InAppNotificationPage: FC = () => {
       return (
         <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
-            <LoadingSpinnerPulse className="me-1 fs-3" />
+            <LoadingSpinner className="me-1 fs-3" />
           </div>
         </div>
       );

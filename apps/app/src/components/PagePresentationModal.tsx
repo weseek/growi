@@ -14,8 +14,7 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
 import { useNextThemes } from '~/stores/use-next-themes';
 
-
-import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
+import { LoadingSpinner } from './LoadingSpinner';
 
 import styles from './PagePresentationModal.module.scss';
 
@@ -23,7 +22,7 @@ import styles from './PagePresentationModal.module.scss';
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <LoadingSpinnerPulse className="text-muted fs-1" />
+    <LoadingSpinner className="text-muted fs-1" />
   ),
 });
 
