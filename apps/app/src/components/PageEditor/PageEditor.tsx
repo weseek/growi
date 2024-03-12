@@ -20,7 +20,7 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
+import { updatePage, extractRemoteRevisionDataFromErrorObj, usePageStatusAlert } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -121,7 +121,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-  const { data: conflictDiffModalStatus, open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { storeMethods: storeConflictHandler, clearMethods: clearConflictHandler } = usePageStatusAlert();
   const { data: editorSettings } = useEditorSettings();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
@@ -226,8 +227,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
 
-      closeConflictDiffModal();
-
       return page;
     }
     catch (error) {
@@ -246,7 +245,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, grantData, mutateWaitingSaveProcessing, closeConflictDiffModal, t]);
+  }, [pageId, grantData, mutateWaitingSaveProcessing, t]);
 
   const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
     return async(newMarkdown: string) => {
@@ -258,19 +257,24 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // Reflect conflict resolution results in CodeMirrorEditor
       codeMirrorEditor?.initDoc(newMarkdown);
 
+      clearConflictHandler();
+      closeConflictDiffModal();
       toastSuccess(t('toaster.save_succeeded'));
       updateStateAfterSave?.();
     };
-  }, [codeMirrorEditor, save, t, updateStateAfterSave]);
+  }, [clearConflictHandler, closeConflictDiffModal, codeMirrorEditor, save, t, updateStateAfterSave]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
 
     const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
 
-    openConflictDiffModal(newMarkdown, resolveConflictHandler);
+    const conflicthandler = () => {
+      openConflictDiffModal(newMarkdown, resolveConflictHandler);
+    };
 
-  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData]);
+    storeConflictHandler(conflicthandler);
+  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData, storeConflictHandler]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const markdown = codeMirrorEditor?.getDoc();
