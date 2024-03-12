@@ -43,13 +43,7 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import type { RemoteRevisionData } from '~/stores/remote-latest-page';
-import {
-  useRemoteRevisionId,
-  useRemoteRevisionBody,
-  useRemoteRevisionLastUpdatedAt,
-  useRemoteRevisionLastUpdateUser,
-  useSetRemoteLatestPageData,
-} from '~/stores/remote-latest-page';
+import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -79,15 +73,21 @@ declare global {
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
+type SaveOptions = {
+  slackChannels: string,
+  overwriteScopesOfDescendants?: boolean
+}
+
 type ConflictHandler = (
   conflictData: RemoteRevisionData,
-  newMarkdown: string
+  newMarkdown: string,
+  saveOptions?: SaveOptions
 ) => void;
 
 type Save = (
   revisionId?: string,
-  opts?: { slackChannels?: string, overwriteScopesOfDescendants?: boolean },
-  onConflict?: ConflictHandler
+  opts?: SaveOptions,
+  onConflict?: ConflictHandler,
 ) => Promise<IPageHasId | null>
 
 type Props = {
@@ -122,11 +122,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
-  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
@@ -203,15 +198,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: ConflictHandler) => {
-    //
-  }, []);
-
-  const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown) => {
-    setRemoteLatestPageData(remoteRevidsionData);
-
-  }, [setRemoteLatestPageData]);
-
   const save: Save = useCallback(async(revisionId, opts, onConflict) => {
     if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
@@ -248,7 +234,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
       if (remoteRevisionData != null) {
-        onConflict?.(remoteRevisionData, newMarkdown);
+        onConflict?.(remoteRevisionData, newMarkdown, opts);
         toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
         return null;
       }
@@ -260,6 +246,21 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(false);
     }
   }, [pageId, grantData, codeMirrorEditor, currentRevisionId, mutateWaitingSaveProcessing, currentPage?.revision?.origin, t]);
+
+  const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
+    return async() => {
+      // eslint-disable-next-line @typescript-eslint/no-use-before-define
+      await save(revisionId, saveOptions, onConflict);
+    };
+  }, [save]);
+
+  const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
+    setRemoteLatestPageData(remoteRevidsionData);
+
+    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
+    resolveConflictHandler();
+
+  }, [generateResolveConflictHandler, setRemoteLatestPageData]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const page = await save(currentRevisionId, opts, onConflictHandler);
