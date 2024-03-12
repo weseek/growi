@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui/dist/components';
@@ -26,7 +27,7 @@ export const ModelNotification: FC<Props> = (props) => {
         {actionMsg}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      <i className={`${actionIcon} me-2`} />
+      <span className="material-symbols-outlined me-2">{actionIcon}</span>
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}
