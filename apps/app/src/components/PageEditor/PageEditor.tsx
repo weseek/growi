@@ -269,11 +269,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
 
-    const conflicthandler = () => {
+    const conflictHandler = () => {
       openConflictDiffModal(newMarkdown, resolveConflictHandler);
     };
 
-    storeConflictHandler(conflicthandler);
+    storeConflictHandler(conflictHandler);
   }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData, storeConflictHandler]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
