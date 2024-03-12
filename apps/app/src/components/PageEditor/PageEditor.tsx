@@ -18,9 +18,9 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { updatePage } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -64,8 +64,6 @@ import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
 
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
 
 const logger = loggerFactory('growi:PageEditor');
 
@@ -466,15 +464,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             style={pastEndStyle}
           />
         </div>
-        {/*
-        <ConflictDiffModal
-          isOpen={conflictDiffModalStatus?.isOpened}
-          onClose={() => closeConflictDiffModal()}
-          markdownOnEdit={markdownToPreview}
-          optionsToSave={optionsToSave}
-          afterResolvedHandler={afterResolvedHandler}
-        />
-        */}
       </div>
 
       <EditorNavbarBottom />

@@ -566,13 +566,17 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
 /*
  * ConflictDiffModal
  */
+type ResolveConflictHandler = (newMarkdown: string) => Promise<void> | void;
+
 type ConflictDiffModalStatus = {
-  isOpened: boolean,
+ isOpened: boolean,
+ requestRevisionBody?: string,
+ onResolve?: ResolveConflictHandler
 }
 
 type ConflictDiffModalUtils = {
-  open(): void,
-  close(): void,
+ open(requestRevisionBody: string, onResolveConflict: ResolveConflictHandler): void,
+ close(): void,
 }
 
 export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
@@ -581,8 +585,8 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
+    open: (requestRevisionBody: string, onResolve: ResolveConflictHandler) => {
+      swrResponse.mutate({ isOpened: true, requestRevisionBody, onResolve });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });
