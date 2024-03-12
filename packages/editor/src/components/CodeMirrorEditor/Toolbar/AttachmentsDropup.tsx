@@ -43,14 +43,14 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
           <DropdownItem divider />
 
           { acceptedUploadFileType === AcceptedUploadFileType.ALL && (
-            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload}>
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload} onClose={() => setOpen(false)}>
               <span className="material-symbols-outlined fs-5">attach_file</span>
               Files
             </AttachmentsDropdownItem>
           ) }
 
           { acceptedUploadFileType !== AcceptedUploadFileType.NONE && (
-            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload}>
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload} onClose={() => setOpen(false)}>
               <span className="material-symbols-outlined fs-5">image</span>
               Images
             </AttachmentsDropdownItem>

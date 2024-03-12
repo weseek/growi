@@ -199,9 +199,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     try {
       mutateWaitingSaveProcessing(true);
+      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
+        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
