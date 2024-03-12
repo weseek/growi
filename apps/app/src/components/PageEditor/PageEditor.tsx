@@ -20,9 +20,9 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage } from '~/client/services/update-page';
+import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
+import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
 import {
   useDefaultIndentSize, useCurrentUser,
@@ -42,11 +42,13 @@ import {
   useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
+import type { RemoteRevisionData } from '~/stores/remote-latest-page';
 import {
   useRemoteRevisionId,
   useRemoteRevisionBody,
   useRemoteRevisionLastUpdatedAt,
   useRemoteRevisionLastUpdateUser,
+  useSetRemoteLatestPageData,
 } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
@@ -76,6 +78,17 @@ declare global {
 // for scrolling
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
+
+type ConflictHandler = (
+  conflictData: RemoteRevisionData,
+  newMarkdown: string
+) => void;
+
+type Save = (
+  revisionId?: string,
+  opts?: { slackChannels?: string, overwriteScopesOfDescendants?: boolean },
+  onConflict?: ConflictHandler
+) => Promise<IPageHasId | null>
 
 type Props = {
   visibility?: boolean,
@@ -114,6 +127,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
+  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
 
@@ -189,13 +203,24 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [socket, checkIsConflict]);
 
-  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (pageId == null || currentRevisionId == null || grantData == null) {
+  const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: ConflictHandler) => {
+    //
+  }, []);
+
+  const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown) => {
+    setRemoteLatestPageData(remoteRevidsionData);
+
+  }, [setRemoteLatestPageData]);
+
+  const save: Save = useCallback(async(revisionId, opts, onConflict) => {
+    if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
         pageId, currentRevisionId, grantData,
       });
       throw new Error('Some materials to save are invalid');
     }
+
+    const newMarkdown = codeMirrorEditor?.getDoc() ?? '';
 
     try {
       mutateWaitingSaveProcessing(true);
@@ -203,7 +228,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const { page } = await updatePage({
         pageId,
-        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
+        revisionId: isRevisionIdRequiredForPageUpdate ? revisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
@@ -220,41 +245,41 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to save', error);
-      toastError(error);
-      if (error.code === 'conflict') {
-        mutateRemotePageId(error.data.revisionId);
-        mutateRemoteRevisionId(error.data.revisionBody);
-        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
-        mutateRemoteRevisionLastUpdateUser(error.data.user);
+
+      const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
+      if (remoteRevisionData != null) {
+        onConflict?.(remoteRevisionData, newMarkdown);
+        toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
+        return null;
       }
+
+      toastError(error);
       return null;
     }
     finally {
       mutateWaitingSaveProcessing(false);
     }
-
-  // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
+  }, [pageId, grantData, codeMirrorEditor, currentRevisionId, mutateWaitingSaveProcessing, currentPage?.revision?.origin, t]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    const page = await save(opts);
+    const page = await save(currentRevisionId, opts, onConflictHandler);
     if (page == null) {
       return;
     }
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [mutateEditorMode, save, updateStateAfterSave]);
+  }, [currentRevisionId, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    const page = await save();
+    const page = await save(currentRevisionId, undefined, onConflictHandler);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [save, t, updateStateAfterSave]);
+  }, [currentRevisionId, onConflictHandler, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
