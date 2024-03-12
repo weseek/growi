@@ -52,8 +52,8 @@ export const useHandsontableModalLauncherForView = (opts?: {
         origin: Origin.View,
       });
 
-      opts?.onSaveSuccess?.();
       closeConflictDiffModal();
+      opts?.onSaveSuccess?.();
     }
     catch (error) {
       const remoteRevidsionData = extractRemoteRevisionDataFromErrorObj(error);
@@ -68,13 +68,10 @@ export const useHandsontableModalLauncherForView = (opts?: {
 
   // eslint-disable-next-line max-len
   const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
-    if (currentPage == null || currentPage.revision == null || shareLinkId != null) {
-      return;
-    }
     return async(newMarkdown: string) => {
       await updatePage(revisionId, newMarkdown, onConflict);
     };
-  }, [currentPage, shareLinkId, updatePage]);
+  }, [updatePage]);
 
   const onConflictHandler = useCallback((remoteRevidsionData: RemoteRevisionData, newMarkdown: string) => {
     setRemoteLatestPageData(remoteRevidsionData);
