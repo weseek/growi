@@ -251,15 +251,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
     return async(newMarkdown: string) => {
       const page = await save(revisionId, newMarkdown, saveOptions, onConflict);
-
       if (page == null) {
         return;
       }
 
+      // Reflect conflict resolution results in CodeMirrorEditor
+      codeMirrorEditor?.initDoc(newMarkdown);
+
       toastSuccess(t('toaster.save_succeeded'));
       updateStateAfterSave?.();
     };
-  }, [save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, save, t, updateStateAfterSave]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
