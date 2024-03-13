@@ -4,21 +4,21 @@ import type { SWRResponse } from 'swr';
 /*
 * PageStatusAlert
 */
-type PageStatusAlertStatus = {
-  onConflict?: () => void,
+type PageStatusAlertMethods = {
+  onResolveConflict?: () => void,
 }
 
 type PageStatusAlertUtils = {
-  storeMethods: (conflictHandler: () => void) => void,
+  storeMethods: (methods: PageStatusAlertMethods) => void,
   clearMethods: () => void,
 }
-export const usePageStatusAlert = (): SWRResponse<PageStatusAlertStatus, Error> & PageStatusAlertUtils => {
-  const swrResponse = useSWRStatic<PageStatusAlertStatus, Error>('pageStatusAlert', undefined);
+export const usePageStatusAlert = (): SWRResponse<PageStatusAlertMethods, Error> & PageStatusAlertUtils => {
+  const swrResponse = useSWRStatic<PageStatusAlertMethods, Error>('pageStatusAlert', undefined);
 
   return {
     ...swrResponse,
-    storeMethods(onConflict) {
-      swrResponse.mutate({ onConflict });
+    storeMethods(methods) {
+      swrResponse.mutate(methods);
     },
     clearMethods() {
       swrResponse.mutate({});

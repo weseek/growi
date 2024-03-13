@@ -36,7 +36,7 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [mutateEditingMarkdown, mutatePageData]);
 
   const onClickResolveConflict = useCallback(() => {
-    pageStatusAlertData?.onConflict?.();
+    pageStatusAlertData?.onResolveConflict?.();
   }, [pageStatusAlertData]);
 
   const alertContentsForView = useMemo(() => {
@@ -86,7 +86,7 @@ export const PageStatusAlert = (): JSX.Element => {
     return <></>;
   }
 
-  const hasConflictHandler = pageStatusAlertData?.onConflict != null;
+  const hasConflictHandler = pageStatusAlertData?.onResolveConflict != null;
   if (!hasConflictHandler && editorMode === EditorMode.Editor) {
     return <></>;
   }

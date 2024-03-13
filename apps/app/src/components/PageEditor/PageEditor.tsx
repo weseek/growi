@@ -123,7 +123,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { storeMethods: storeConflictHandler, clearMethods: clearConflictHandler } = usePageStatusAlert();
+  const { storeMethods: storeMethodsForPageStatusAlert, clearMethods: clearMethodsForPageStatusAlert } = usePageStatusAlert();
   const { data: editorSettings } = useEditorSettings();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
@@ -258,12 +258,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // Reflect conflict resolution results in CodeMirrorEditor
       codeMirrorEditor?.initDoc(newMarkdown);
 
-      clearConflictHandler();
+      clearMethodsForPageStatusAlert();
       closeConflictDiffModal();
       toastSuccess(t('toaster.save_succeeded'));
       updateStateAfterSave?.();
     };
-  }, [clearConflictHandler, closeConflictDiffModal, codeMirrorEditor, save, t, updateStateAfterSave]);
+  }, [save, codeMirrorEditor, clearMethodsForPageStatusAlert, closeConflictDiffModal, t, updateStateAfterSave]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
@@ -274,8 +274,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       openConflictDiffModal(newMarkdown, resolveConflictHandler);
     };
 
-    storeConflictHandler(conflictHandler);
-  }, [generateResolveConflictHandler, openConflictDiffModal, setRemoteLatestPageData, storeConflictHandler]);
+    storeMethodsForPageStatusAlert({ onResolveConflict: conflictHandler });
+  }, [setRemoteLatestPageData, generateResolveConflictHandler, storeMethodsForPageStatusAlert, openConflictDiffModal]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const markdown = codeMirrorEditor?.getDoc();
