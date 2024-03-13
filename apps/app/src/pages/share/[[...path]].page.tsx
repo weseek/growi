@@ -6,6 +6,7 @@ import type {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import Sticky from 'react-stickynode';
 import superjson from 'superjson';
 
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
@@ -72,13 +73,14 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
 type GrowiContextualSubNavigationForSharedPageProps = {
   page?: IPagePopulatedToShowRevision,
   isLinkSharingDisabled: boolean,
+  isCollapse?: boolean,
 }
 
 const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
-  const { page, isLinkSharingDisabled } = props;
+  const { page, isLinkSharingDisabled, isCollapse } = props;
 
   return (
-    <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} />
+    <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} isCollapse={isCollapse} />
   );
 };
 
@@ -120,7 +122,19 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
 
       <div className="dynamic-layout-root justify-content-between">
-        <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
+
+        <Sticky>
+          {({ status }: { status: boolean }) => {
+            const isCollapse = status === Sticky.STATUS_FIXED;
+            return (
+              <GrowiContextualSubNavigationForSharedPage
+                page={currentPage ?? props.shareLinkRelatedPage}
+                isLinkSharingDisabled={props.disableLinkSharing}
+                isCollapse={isCollapse}
+              />
+            );
+          }}
+        </Sticky>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 

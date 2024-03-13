@@ -162,11 +162,12 @@ const CreateTemplateMenuItems = (props: CreateTemplateMenuItemsProps): JSX.Eleme
 type GrowiContextualSubNavigationProps = {
   currentPage?: IPagePopulatedToShowRevision | null,
   isLinkSharingDisabled?: boolean,
+  isCollapse?: boolean,
 };
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
 
-  const { currentPage } = props;
+  const { currentPage, isCollapse } = props;
 
   const { t } = useTranslation();
 
@@ -308,6 +309,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             onClickRenameMenuItem={renameItemClickedHandler}
             onClickDeleteMenuItem={deleteItemClickedHandler}
             onClickSwitchContentWidth={switchContentWidthHandler}
+            isCollapse={isCollapse}
           />
         )}
 

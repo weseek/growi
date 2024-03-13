@@ -19,6 +19,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import Sticky from 'react-stickynode';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
@@ -118,13 +119,14 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
 // GrowiContextualSubNavigation for NOT shared page
 type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled: boolean,
+  isCollapse: boolean,
 }
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
-  const { isLinkSharingDisabled } = props;
+  const { isLinkSharingDisabled, isCollapse } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
-    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
+    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} isCollapse={isCollapse} />
   );
 };
 
@@ -328,8 +330,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-
+        <Sticky>
+          {({ status }: { status: boolean }) => {
+            const isCollapse = status === Sticky.STATUS_FIXED;
+            return (
+              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} isCollapse={isCollapse} />
+            );
+          }}
+        </Sticky>
         <DisplaySwitcher
           pageView={(
             <PageView
