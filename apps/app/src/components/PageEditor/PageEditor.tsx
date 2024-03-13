@@ -253,7 +253,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     storeMethodsForPageStatusAlert({ onResolveConflict: conflictHandler });
   }, [setRemoteLatestPageData, generateResolveConflictHandler, storeMethodsForPageStatusAlert, openConflictDiffModal]);
 
-  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
+  const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
     const page = await save(revisionId, markdown, opts, onConflictHandler);
