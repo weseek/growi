@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import * as ReactDOMServer from 'react-dom/server';
 
 import { usePageStatusAlert } from '~/stores/alert';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
@@ -21,16 +20,12 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: pageStatusAlertData } = usePageStatusAlert();
   const { data: editorMode } = useEditorMode();
-
-  // store remote latest page data
   const { data: remoteRevisionId } = useRemoteRevisionId();
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
-
   const { data: pageData } = useSWRxCurrentPage();
   const { trigger: mutatePageData } = useSWRMUTxCurrentPage();
-  const revision = pageData?.revision;
 
-  const refreshPage = useCallback(async() => {
+  const onClickRefreshPage = useCallback(async() => {
     const updatedPageData = await mutatePageData();
     mutateEditingMarkdown(updatedPageData?.revision?.body);
   }, [mutateEditingMarkdown, mutatePageData]);
@@ -40,17 +35,15 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [pageStatusAlertData]);
 
   const alertContentsForView = useMemo(() => {
-    const usernameComponentToString = ReactDOMServer.renderToString(<Username user={remoteRevisionLastUpdateUser} />);
     return (
       <>
         <p className="card-text grw-card-label-container">
-          {/* eslint-disable-next-line react/no-danger */}
-          <span dangerouslySetInnerHTML={{ __html: `${usernameComponentToString} ${t('edited this page')}` }} />
+          <Username user={remoteRevisionLastUpdateUser} /> {t('edited this page')}
         </p>
         <p className="card-text grw-card-btn-container">
           <button
             type="button"
-            onClick={() => refreshPage()}
+            onClick={() => onClickRefreshPage()}
             className="btn btn-outline-white me-4"
           >
             <span className="material-symbols-outlined">refresh</span>
@@ -59,7 +52,7 @@ export const PageStatusAlert = (): JSX.Element => {
         </p>
       </>
     );
-  }, [refreshPage, remoteRevisionLastUpdateUser, t]);
+  }, [onClickRefreshPage, remoteRevisionLastUpdateUser, t]);
 
   const alertContentsForEditor = useMemo(() => {
     return (
@@ -81,7 +74,8 @@ export const PageStatusAlert = (): JSX.Element => {
     );
   }, [onClickResolveConflict, t]);
 
-  const isRevisionOutdated = (revision?._id != null || remoteRevisionId != null) && revision?._id !== remoteRevisionId;
+  const currentRevisionId = pageData?.revision?._id;
+  const isRevisionOutdated = (currentRevisionId != null || remoteRevisionId != null) && currentRevisionId !== remoteRevisionId;
   if (!!isGuestUser || !!isReadOnlyUser || !isRevisionOutdated) {
     return <></>;
   }
