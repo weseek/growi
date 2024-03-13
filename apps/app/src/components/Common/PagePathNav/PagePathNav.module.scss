@@ -30,7 +30,7 @@
       max-width: calc(80% - (500px - (100vw - 100%) / 2));
     }
     @include bs.media-breakpoint-down(md) {
-      max-width: calc(100% - 350px);
+      max-width: calc(100% - 135px);
     }
   }
 }
