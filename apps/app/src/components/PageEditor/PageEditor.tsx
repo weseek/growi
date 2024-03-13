@@ -34,7 +34,6 @@ import {
 import {
   useEditorSettings,
   useCurrentIndentSize, usePageTagsForEditors,
-  useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
@@ -129,10 +128,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
 
-  const { data: socket } = useGlobalSocket();
-
   const { data: rendererOptions } = usePreviewOptions();
-  const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
@@ -181,26 +177,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-
-  const checkIsConflict = useCallback((data) => {
-    const { s2cMessagePageUpdated } = data;
-
-    const isConflict = markdownToPreview !== s2cMessagePageUpdated.revisionBody;
-
-    mutateIsConflict(isConflict);
-
-  }, [markdownToPreview, mutateIsConflict]);
-
-  useEffect(() => {
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, checkIsConflict);
-
-    return () => {
-      socket.off(SocketEventName.PageUpdated, checkIsConflict);
-    };
-
-  }, [socket, checkIsConflict]);
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || grantData == null) {
@@ -371,23 +347,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor]);
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
-
-  const afterResolvedHandler = useCallback(async() => {
-    // get page data from db
-    const pageData = await mutateCurrentPage();
-
-    // update tag
-    await mutateTagsInfo(); // get from DB
-    syncTagsInfoForEditor(); // sync global state for client
-
-    // clear isConflict
-    mutateIsConflict(false);
-
-    // set resolved markdown in editing markdown
-    const markdown = pageData?.revision?.body ?? '';
-    mutateEditingMarkdown(markdown);
-
-  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
   // initial caret line
   useEffect(() => {
