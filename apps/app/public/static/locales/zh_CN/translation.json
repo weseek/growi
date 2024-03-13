@@ -113,6 +113,7 @@
 	"Error occurred": "Error occurred",
 	"Input page name": "Input page name",
 	"Input page name (optional)": "Input page name (optional)",
+  "Input parent page path": "Input parent page path",
 	"New Page": "新页面",
 	"Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",

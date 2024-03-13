@@ -125,20 +125,19 @@ export const PagePathHeader: FC<Props> = (props) => {
     >
       <div
         id="grw-page-path-header-container"
-        className="me-2 position-relative"
+        className="me-2"
         style={{ minWidth: 0 }}
       >
         { isRenameInputShown && (
           <div className="position-absolute">
             <ClosableTextInput
               value={editingParentPagePath}
-              placeholder={t('Input page name')}
+              placeholder={t('Input parent page path')}
               inputClassName="form-control-sm"
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
-              useAutosizeInput
             />
           </div>
         ) }
