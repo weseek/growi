@@ -40,6 +40,7 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
   const [subNavElemWidth, setSubNavElemWidth] = useState(0);
+  const [isIconHidden, setIsIconHidden] = useState(false);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
@@ -91,20 +92,22 @@ export const PagePathHeader: FC<Props> = (props) => {
     };
   }, [clickOutSideHandler]);
 
-  const linkElem = document.getElementById('grw-page-path-hierarchical-link');
-  const areaElem = document.getElementById('grw-page-path-header-container');
-
-  const linkElemWidth = linkElem?.offsetWidth ?? 0;
-  const areaElemWidth = areaElem?.offsetWidth ?? 0;
-
-  const styles: CSSProperties | undefined = linkElemWidth > areaElemWidth ? { direction: 'rtl' } : undefined;
-
   useEffect(() => {
+    const linkElem = document.getElementById('grw-page-path-hierarchical-link');
+    const areaElem = document.getElementById('grw-page-path-header-container');
+
+    const linkElemWidth = linkElem?.offsetWidth ?? 0;
+    const areaElemWidth = areaElem?.offsetWidth ?? 0;
+
+    setIsIconHidden(linkElemWidth > areaElemWidth);
+
     const subNavElem = document.getElementById('grw-contextual-sub-nav');
     if (subNavElem) {
       setSubNavElemWidth(subNavElem.offsetWidth);
     }
   }, []);
+
+  const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
 
   const pagePathHeaderWidth = `calc(100% - ${subNavElemWidth}px)`;
 
@@ -126,7 +129,7 @@ export const PagePathHeader: FC<Props> = (props) => {
         style={{ minWidth: 0 }}
       >
         { isRenameInputShown && (
-          <div className="position-absolute w-100">
+          <div className="position-absolute">
             <ClosableTextInput
               value={editingParentPagePath}
               placeholder={t('Input page name')}
@@ -135,6 +138,7 @@ export const PagePathHeader: FC<Props> = (props) => {
               onPressEscape={onPressEscape}
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
+              useAutosizeInput
             />
           </div>
         ) }
@@ -144,7 +148,7 @@ export const PagePathHeader: FC<Props> = (props) => {
         >
           <PagePathHierarchicalLink
             linkedPagePath={linkedPagePath}
-            isIconHidden={linkElemWidth > areaElemWidth}
+            isIconHidden={isIconHidden}
           />
         </div>
       </div>
