@@ -1,4 +1,5 @@
 @import '@growi/core/scss/flex-expand';
+@import '@growi/core/scss/rotate';
 
 @import 'mixins';
 
@@ -113,9 +114,4 @@
     width: 25px;
   }
 
-}
-
-.grw-rotate-90 {
-  -webkit-transform: rotate(90deg);
-  transform: rotate(90deg);
 }
