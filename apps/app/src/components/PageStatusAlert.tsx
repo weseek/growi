@@ -50,7 +50,7 @@ export const PageStatusAlert = (): JSX.Element => {
       <div className="card-body">
         <p className="card-text grw-card-label-container">
           { hasResolveConflictHandler
-            ? <> {t('modal_resolve_conflict.file_conflicting_with_newer_remote')}</>
+            ? <>{t('modal_resolve_conflict.file_conflicting_with_newer_remote')}</>
             : <><Username user={remoteRevisionLastUpdateUser} /> {t('edited this page')}</>
           }
         </p>

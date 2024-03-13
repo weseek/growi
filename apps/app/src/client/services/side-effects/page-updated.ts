@@ -33,7 +33,7 @@ export const usePageUpdatedEffect = (): void => {
     if (currentPage?._id != null && currentPage._id === s2cMessagePageUpdated.pageId) {
       setRemoteLatestPageData(remoteData);
 
-      // Open page status alert if revision is outdated
+      // Open PageStatusAlert
       const currentRevisionId = currentPage?.revision?._id;
       const remoteRevisionId = s2cMessagePageUpdated.revisionId;
       const isRevisionOutdated = (currentRevisionId != null || remoteRevisionId != null) && currentRevisionId !== remoteRevisionId;
