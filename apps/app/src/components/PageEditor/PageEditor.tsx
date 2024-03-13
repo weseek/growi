@@ -15,7 +15,6 @@ import {
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
-import { ConsoleFormattedStream } from 'browser-bunyan';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
@@ -35,13 +34,13 @@ import {
 } from '~/stores/context';
 import {
   useEditorSettings,
-  useCurrentIndentSize, usePageTagsForEditors,
+  useCurrentIndentSize,
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import type { RemoteRevisionData } from '~/stores/remote-latest-page';
@@ -109,11 +108,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
-  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();

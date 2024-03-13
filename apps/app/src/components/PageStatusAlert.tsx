@@ -23,7 +23,7 @@ export const PageStatusAlert = (): JSX.Element => {
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: pageData } = useSWRxCurrentPage();
 
-  const onClickRefreshPage = useCallback(async() => {
+  const onClickRefreshPage = useCallback(() => {
     pageStatusAlertData?.onRefleshPage?.();
   }, [pageStatusAlertData]);
 
