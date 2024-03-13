@@ -4,6 +4,10 @@
 
 @import './organisms/wiki-custom-sidebar';
 
+:root {
+  --grw-codemirror-editor-content-font-family: var(--font-family-monospace);
+}
+
 // global imported
 .layout-root.editing {
   overflow: hidden !important;
@@ -69,10 +73,6 @@
         }
       }
 
-      .textarea-editor {
-        font-family: var(--font-family-monospace);
-        border: none;
-      }
     }
 
     .page-editor-preview-container {

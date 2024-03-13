@@ -7,6 +7,10 @@
     width: 100%;
     height: 100%;
 
+    .cm-content {
+      font-family: var(--grw-codemirror-editor-content-font-family, monospace);
+    }
+
     // Header highlight style
     .cm-header {
       text-decoration: none;
