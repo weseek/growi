@@ -6,6 +6,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useSWRxAppSettings } from '~/stores/admin/app-settings';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
@@ -65,7 +66,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoading && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       )}
 

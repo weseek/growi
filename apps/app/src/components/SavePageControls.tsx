@@ -28,7 +28,7 @@ import loggerFactory from '~/utils/logger';
 
 import { unpublish } from '../client/services/page-operation';
 
-
+import { LoadingSpinner } from './LoadingSpinner';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 import { SlackNotification } from './SlackNotification';
 
@@ -101,7 +101,7 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
           disabled={isWaitingSaveProcessing}
         >
           {isWaitingSaveProcessing && (
-            <i className="fa fa-spinner fa-pulse me-1"></i>
+            <LoadingSpinner />
           )}
           {labelSubmitButton}
         </Button>
