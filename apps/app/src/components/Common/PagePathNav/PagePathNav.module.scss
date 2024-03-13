@@ -27,7 +27,7 @@
   // avoid sticky-top nav to turnate page path
   .is-collapse-with-top {
     @include bs.media-breakpoint-up(md) {
-      max-width: calc(100% - (500px - (100vw - 100%) / 2));
+      max-width: calc(80% - (500px - (100vw - 100%) / 2));
     }
     @include bs.media-breakpoint-down(md) {
       max-width: calc(100% - 350px);
