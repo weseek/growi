@@ -120,9 +120,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
 
       <div className="dynamic-layout-root justify-content-between">
-        <nav className="sticky-top">
-          <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
-        </nav>
+        <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
