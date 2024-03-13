@@ -1,6 +1,4 @@
 import type { ErrorV3 } from '@growi/core/dist/models';
-import { useSWRStatic } from '@growi/core/dist/swr';
-import type { SWRResponse } from 'swr';
 
 import { PageUpdateErrorCode } from '~/interfaces/apiv3';
 import { type RemoteRevisionData } from '~/stores/remote-latest-page';
@@ -21,29 +19,4 @@ export const extractRemoteRevisionDataFromErrorObj = (errors: Array<ErrorV3>): R
       return remoteRevidsionData;
     }
   }
-};
-
-/*
-* PageStatusAlert
-*/
-type PageStatusAlertStatus = {
-  onConflict?: () => void,
-}
-
-type PageStatusAlertUtils = {
-  storeMethods: (conflictHandler: () => void) => void,
-  clearMethods: () => void,
-}
-export const usePageStatusAlert = (): SWRResponse<PageStatusAlertStatus, Error> & PageStatusAlertUtils => {
-  const swrResponse = useSWRStatic<PageStatusAlertStatus, Error>('pageStatusAlert', undefined);
-
-  return {
-    ...swrResponse,
-    storeMethods(onConflict) {
-      swrResponse.mutate({ onConflict });
-    },
-    clearMethods() {
-      swrResponse.mutate({});
-    },
-  };
 };

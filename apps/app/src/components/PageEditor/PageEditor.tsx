@@ -20,10 +20,11 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage, extractRemoteRevisionDataFromErrorObj, usePageStatusAlert } from '~/client/services/update-page';
+import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
+import { usePageStatusAlert } from '~/stores/alert';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,

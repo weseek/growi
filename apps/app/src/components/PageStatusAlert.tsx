@@ -3,7 +3,7 @@ import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 import * as ReactDOMServer from 'react-dom/server';
 
-import { usePageStatusAlert } from '~/client/services/update-page/conflict';
+import { usePageStatusAlert } from '~/stores/alert';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
