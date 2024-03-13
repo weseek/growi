@@ -139,7 +139,11 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-x-hidden ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div
+        className={`sidebar-contents-container flex-grow-1 overflow-x-hidden ${openClass}`}
+        style={{ width: collapsibleContentsWidth }}
+        id="grw-sidebar-contents-container"
+      >
         {children}
       </div>
     </div>
@@ -177,17 +181,17 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
-const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: Element | null): number => {
+const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: HTMLElement | null): number => {
 
   let maxHeight: number;
 
   switch (sidebarMode) {
     case SidebarMode.DOCK:
     case SidebarMode.DRAWER:
-      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
+      maxHeight = elem != null ? elem?.offsetHeight : window.innerHeight;
       break;
     case SidebarMode.COLLAPSED:
-      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top - elem?.getBoundingClientRect().bottom : window.innerHeight;
+      maxHeight = elem != null ? elem?.offsetHeight - elem?.getBoundingClientRect().top : window.innerHeight;
       break;
   }
 
@@ -201,20 +205,11 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
 
   useEffect(() => {
-    const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-    const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
+    const containerElem = document.getElementById('grw-sidebar-contents-container');
+    const maxHeight = determineScrollbarMaxHeight(sidebarMode, containerElem);
 
-    // const elem = document.getElementById('grw-sidebar-contents-wrapper');
-
-    // const wrapperWidth = elem?.offsetWidth ?? 0;
-
-    console.log(maxHeight);
     setSimplebarMaxHeight(maxHeight);
   }, [sidebarMode]);
-
-  // const elem = document.querySelector('#grw-sidebar-contents-wrapper');
-
-  // const simplebarMaxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
 
   return (
     <div id="grw-sidebar-contents-wrapper">
