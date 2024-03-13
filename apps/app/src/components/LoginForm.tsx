@@ -15,7 +15,6 @@ import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 import { LoadingSpinner } from './LoadingSpinner';
-import { LoadingSpinnerPulse } from './LoadingSpinnerPulse';
 
 import styles from './LoginForm.module.scss';
 
