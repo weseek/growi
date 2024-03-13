@@ -280,7 +280,6 @@
     "socket.io-client": "^4.2.0",
     "source-map-loader": "^4.0.1",
     "swagger2openapi": "^7.0.8",
-    "tsc-alias": "^1.2.9",
-    "y-codemirror.next": "^0.3.2"
+    "tsc-alias": "^1.2.9"
   }
 }
