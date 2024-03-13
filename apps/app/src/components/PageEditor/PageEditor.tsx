@@ -3,6 +3,7 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
+
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
@@ -14,6 +15,7 @@ import {
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
+import { ConsoleFormattedStream } from 'browser-bunyan';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
@@ -127,6 +129,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
+  const { data: socket } = useGlobalSocket();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -176,6 +179,39 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
+  const onConflictHandlerEffect = useCallback(() => {
+    const resolveConflictHandler = (newMarkdown: string) => {
+      codeMirrorEditor?.initDoc(newMarkdown);
+      clearMethodsForPageStatusAlert();
+      closeConflictDiffModal();
+    };
+
+    const markdown = codeMirrorEditor?.getDoc();
+    openConflictDiffModal(markdown ?? '', resolveConflictHandler);
+  }, [clearMethodsForPageStatusAlert, closeConflictDiffModal, codeMirrorEditor, openConflictDiffModal]);
+
+  useEffect(() => {
+    const updateRemotePageDataHandler = (data) => {
+      const { s2cMessagePageUpdated } = data;
+      const remoteRevisionId = s2cMessagePageUpdated.revisionId;
+      const remoteRevisionOrigin = s2cMessagePageUpdated.revisionOrigin;
+      const isRevisionOutdated = currentRevisionId !== remoteRevisionId;
+
+      if (isRevisionOutdated && (remoteRevisionOrigin === Origin.View || remoteRevisionOrigin === undefined)) {
+        storeMethodsForPageStatusAlert({ onResolveConflict: onConflictHandlerEffect });
+      }
+    };
+
+    if (socket == null) { return }
+
+    socket.on(SocketEventName.PageUpdated, updateRemotePageDataHandler);
+
+    return () => {
+      socket.off(SocketEventName.PageUpdated, updateRemotePageDataHandler);
+    };
+
+  }, [currentRevisionId, onConflictHandlerEffect, socket, storeMethodsForPageStatusAlert]);
 
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
