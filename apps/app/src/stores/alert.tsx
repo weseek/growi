@@ -1,27 +1,39 @@
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
+import type { EditorMode } from './ui';
+
 /*
 * PageStatusAlert
 */
-type PageStatusAlertMethods = {
-  onResolveConflict?: () => void,
+type OpenPageStatusAlertOptions = {
+  hideEditorMode?: EditorMode
+  onRefleshPage?: () => void
+  onResolveConflict?: () => void
+}
+
+type PageStatusAlertStatus = {
+  isOpen: boolean
+  hideEditorMode?: EditorMode,
+  onRefleshPage?: () => void
+  onResolveConflict?: () => void
 }
 
 type PageStatusAlertUtils = {
-  storeMethods: (methods: PageStatusAlertMethods) => void,
-  clearMethods: () => void,
+  open: (openPageStatusAlert: OpenPageStatusAlertOptions) => void,
+  close: () => void,
 }
-export const usePageStatusAlert = (): SWRResponse<PageStatusAlertMethods, Error> & PageStatusAlertUtils => {
-  const swrResponse = useSWRStatic<PageStatusAlertMethods, Error>('pageStatusAlert', undefined);
+export const usePageStatusAlert = (): SWRResponse<PageStatusAlertStatus, Error> & PageStatusAlertUtils => {
+  const initialData: PageStatusAlertStatus = { isOpen: false };
+  const swrResponse = useSWRStatic<PageStatusAlertStatus, Error>('pageStatusAlert', undefined, { fallbackData: initialData });
 
   return {
     ...swrResponse,
-    storeMethods(methods) {
-      swrResponse.mutate(methods);
+    open({ ...options }) {
+      swrResponse.mutate({ isOpen: true, ...options });
     },
-    clearMethods() {
-      swrResponse.mutate({});
+    close() {
+      swrResponse.mutate({ isOpen: false });
     },
   };
 };

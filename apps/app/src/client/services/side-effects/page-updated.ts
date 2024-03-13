@@ -3,17 +3,24 @@ import { useCallback, useEffect } from 'react';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageId } from '~/stores/page';
+import { usePageStatusAlert } from '~/stores/alert';
+import { useSWRxCurrentPage, useSWRMUTxCurrentPage } from '~/stores/page';
 import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
+import { useEditorMode, EditorMode } from '~/stores/ui';
+
 
 export const usePageUpdatedEffect = (): void => {
 
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const { data: socket } = useGlobalSocket();
-  const { data: currentPageId } = useCurrentPageId();
+  const { data: editorMode } = useEditorMode();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { open: openPageStatusAlert, close: closePageStatusAlert } = usePageStatusAlert();
 
-  const setLatestRemotePageData = useCallback((data) => {
+  const remotePageDataUpdateHandler = useCallback((data) => {
+    // Set remote page data
     const { s2cMessagePageUpdated } = data;
 
     const remoteData: RemoteRevisionData = {
@@ -23,22 +30,36 @@ export const usePageUpdatedEffect = (): void => {
       remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
     };
 
-    if (currentPageId != null && currentPageId === s2cMessagePageUpdated.pageId) {
+    if (currentPage?._id != null && currentPage._id === s2cMessagePageUpdated.pageId) {
       setRemoteLatestPageData(remoteData);
-    }
 
-  }, [currentPageId, setRemoteLatestPageData]);
+      // Open page status alert if revision is outdated
+      const currentRevisionId = currentPage?.revision?._id;
+      const remoteRevisionId = s2cMessagePageUpdated.revisionId;
+      const isRevisionOutdated = (currentRevisionId != null || remoteRevisionId != null) && currentRevisionId !== remoteRevisionId;
+
+      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with components/PageEditor.tsx
+      if (isRevisionOutdated && editorMode === EditorMode.View) {
+        openPageStatusAlert({ hideEditorMode: EditorMode.Editor, onRefleshPage: mutateCurrentPage });
+      }
+
+      // Clear cache
+      if (!isRevisionOutdated) {
+        closePageStatusAlert();
+      }
+    }
+  }, [currentPage?._id, currentPage?.revision?._id, editorMode, mutateCurrentPage, openPageStatusAlert, closePageStatusAlert, setRemoteLatestPageData]);
 
   // listen socket for someone updating this page
   useEffect(() => {
 
     if (socket == null) { return }
 
-    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
+    socket.on(SocketEventName.PageUpdated, remotePageDataUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+      socket.off(SocketEventName.PageUpdated, remotePageDataUpdateHandler);
     };
 
-  }, [setLatestRemotePageData, socket]);
+  }, [remotePageDataUpdateHandler, socket]);
 };

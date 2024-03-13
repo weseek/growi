@@ -124,7 +124,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { storeMethods: storeMethodsForPageStatusAlert, clearMethods: clearMethodsForPageStatusAlert } = usePageStatusAlert();
+  const { open: openPageStatusAlert, close: closePageStatusAlert } = usePageStatusAlert();
   const { data: editorSettings } = useEditorSettings();
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
@@ -183,13 +183,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const onConflictHandlerEffect = useCallback(() => {
     const resolveConflictHandler = (newMarkdown: string) => {
       codeMirrorEditor?.initDoc(newMarkdown);
-      clearMethodsForPageStatusAlert();
       closeConflictDiffModal();
+      closePageStatusAlert();
     };
 
     const markdown = codeMirrorEditor?.getDoc();
     openConflictDiffModal(markdown ?? '', resolveConflictHandler);
-  }, [clearMethodsForPageStatusAlert, closeConflictDiffModal, codeMirrorEditor, openConflictDiffModal]);
+  }, [closePageStatusAlert, closeConflictDiffModal, codeMirrorEditor, openConflictDiffModal]);
 
   useEffect(() => {
     const updateRemotePageDataHandler = (data) => {
@@ -198,8 +198,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       const remoteRevisionOrigin = s2cMessagePageUpdated.revisionOrigin;
       const isRevisionOutdated = currentRevisionId !== remoteRevisionId;
 
-      if (isRevisionOutdated && (remoteRevisionOrigin === Origin.View || remoteRevisionOrigin === undefined)) {
-        storeMethodsForPageStatusAlert({ onResolveConflict: onConflictHandlerEffect });
+      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with client/services/side-effects/page-updated.ts
+      if (isRevisionOutdated && editorMode === EditorMode.Editor && (remoteRevisionOrigin === Origin.View || remoteRevisionOrigin === undefined)) {
+        openPageStatusAlert({ onResolveConflict: onConflictHandlerEffect });
+      }
+
+      // Clear cache
+      if (!isRevisionOutdated) {
+        closePageStatusAlert();
       }
     };
 
@@ -211,7 +217,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       socket.off(SocketEventName.PageUpdated, updateRemotePageDataHandler);
     };
 
-  }, [currentRevisionId, onConflictHandlerEffect, socket, storeMethodsForPageStatusAlert]);
+  }, [closePageStatusAlert, currentRevisionId, editorMode, onConflictHandlerEffect, openPageStatusAlert, socket]);
 
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
@@ -270,12 +276,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       // Reflect conflict resolution results in CodeMirrorEditor
       codeMirrorEditor?.initDoc(newMarkdown);
 
-      clearMethodsForPageStatusAlert();
+      closePageStatusAlert();
       closeConflictDiffModal();
+
       toastSuccess(t('toaster.save_succeeded'));
       updateStateAfterSave?.();
     };
-  }, [save, codeMirrorEditor, clearMethodsForPageStatusAlert, closeConflictDiffModal, t, updateStateAfterSave]);
+  }, [save, codeMirrorEditor, closePageStatusAlert, closeConflictDiffModal, t, updateStateAfterSave]);
 
   const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
     setRemoteLatestPageData(remoteRevidsionData);
@@ -286,8 +293,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       openConflictDiffModal(newMarkdown, resolveConflictHandler);
     };
 
-    storeMethodsForPageStatusAlert({ onResolveConflict: conflictHandler });
-  }, [setRemoteLatestPageData, generateResolveConflictHandler, storeMethodsForPageStatusAlert, openConflictDiffModal]);
+    openPageStatusAlert({ onResolveConflict: conflictHandler });
+  }, [setRemoteLatestPageData, generateResolveConflictHandler, openPageStatusAlert, openConflictDiffModal]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
