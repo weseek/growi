@@ -42,7 +42,7 @@ export const PageStatusAlert = (): JSX.Element => {
   }, [mutateEditingMarkdown, mutatePageData]);
 
   const onClickResolveConflict = useCallback(() => {
-    openConflictDiffModal();
+    // openConflictDiffModal();
   }, [openConflictDiffModal]);
 
   // TODO: re-impl for builtin editor
