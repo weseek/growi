@@ -142,7 +142,6 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
       <div
         className={`sidebar-contents-container flex-grow-1 overflow-x-hidden ${openClass}`}
         style={{ width: collapsibleContentsWidth }}
-        id="grw-sidebar-contents-container"
       >
         {children}
       </div>
@@ -188,10 +187,10 @@ const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: HTMLElement
   switch (sidebarMode) {
     case SidebarMode.DOCK:
     case SidebarMode.DRAWER:
-      maxHeight = elem != null ? elem?.offsetHeight : window.innerHeight;
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
       break;
     case SidebarMode.COLLAPSED:
-      maxHeight = elem != null ? elem?.offsetHeight - elem?.getBoundingClientRect().top : window.innerHeight;
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top * 2 : window.innerHeight;
       break;
   }
 
@@ -205,8 +204,8 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
   const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
 
   useEffect(() => {
-    const containerElem = document.getElementById('grw-sidebar-contents-container');
-    const maxHeight = determineScrollbarMaxHeight(sidebarMode, containerElem);
+    const elem = document.getElementById('grw-sidebar-contents-wrapper');
+    const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
 
     setSimplebarMaxHeight(maxHeight);
   }, [sidebarMode]);
