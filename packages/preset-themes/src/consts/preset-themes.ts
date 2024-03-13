@@ -4,7 +4,7 @@ const { BOTH, LIGHT, DARK } = GrowiThemeSchemeType;
 
 export const PresetThemes = {
   DEFAULT: 'default',
-  // ANTARCTIC: 'antarctic',
+  ANTARCTIC: 'antarctic',
   BLACKBOARD: 'blackboard',
   // CHRISTMAS: 'christmas',
   FIRE_RED: 'fire-red',
@@ -137,17 +137,17 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
   //   darkIcon: '#E7A59F',
   //   createBtn: '#B90606',
   // },
-  //  {
-  //   name: PresetThemes.ANTARCTIC,
-  //   schemeType: LIGHT,
-  //   lightBg: '#FAFEFF',
-  //   darkBg: '#E5FAFF',
-  //   lightSidebar: '#EDF4FC',
-  //   darkSidebar: '#DBE9F9',
-  //   lightIcon: '#2631AF',
-  //   darkIcon: '#131857',
-  //   createBtn: '#303DDB',
-  // },
+  {
+    name: PresetThemes.ANTARCTIC,
+    schemeType: LIGHT,
+    lightBg: '#FAFEFF',
+    darkBg: '#E5FAFF',
+    lightSidebar: '#EDF4FC',
+    darkSidebar: '#DBE9F9',
+    lightIcon: '#2631AF',
+    darkIcon: '#131857',
+    createBtn: '#303DDB',
+  },
   {
     name: PresetThemes.SPRING,
     schemeType: LIGHT,
