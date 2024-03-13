@@ -1,3 +1,4 @@
+import type { IPage, IUserGroupHasId } from '@growi/core';
 import {
   type IGrantedGroup,
   PageGrant, GroupType, getIdForRef, isPopulated,
@@ -8,10 +9,12 @@ import {
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { PageDocument, PageModel } from '~/server/models/page';
+import type { UserGroupDocument } from '~/server/models/user-group';
 import UserGroup from '~/server/models/user-group';
 import { includesObjectIds, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
@@ -100,7 +103,10 @@ export interface IPageGrantService {
   getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
-  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
+  getCanGrantPageForUserGroups: (
+    userGroups: UserGroupDocument[], groupType: GroupType, targetPath: string
+  ) => Promise<{ userGroup: UserGroupDocument, canGrantPage: boolean}[]>
 }
 
 class PageGrantService implements IPageGrantService {
@@ -112,7 +118,7 @@ class PageGrantService implements IPageGrantService {
   }
 
   private validateComparableTarget(comparable: ComparableTarget) {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     const { grant, grantedUserIds, grantedGroupIds } = comparable;
 
@@ -134,7 +140,7 @@ class PageGrantService implements IPageGrantService {
      */
     this.validateComparableTarget(target);
 
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     /*
      * ancestor side
@@ -284,53 +290,45 @@ class PageGrantService implements IPageGrantService {
    * Prepare ComparableTarget
    * @returns Promise<ComparableAncestor>
    */
-  private async generateComparableTarget(
-      grant: PageGrant | undefined, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined, includeApplicable: boolean,
+  private async generateComparableTargetWithApplicableData(
+      grant: PageGrant | undefined, grantedUserIds: ObjectIdLike[] | undefined, grantedGroupIds: IGrantedGroup[] | undefined,
   ): Promise<ComparableTarget> {
-    if (includeApplicable) {
-      const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
-      let applicableUserIds: ObjectIdLike[] | undefined;
-      let applicableGroupIds: ObjectIdLike[] | undefined;
+    let applicableUserIds: ObjectIdLike[] | undefined;
+    let applicableGroupIds: ObjectIdLike[] | undefined;
 
-      if (grant === Page.GRANT_USER_GROUP) {
-        if (grantedGroupIds == null || grantedGroupIds.length === 0) {
-          throw Error('Target user group is not given');
-        }
-
-        const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroupIds);
-        const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
-        const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
-        if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
-          throw Error('Target user group does not exist');
-        }
-
-        const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
-        const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
-        applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser as ObjectIdLike)));
-
-        const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
-          return UserGroup.findGroupsWithDescendantsById(group._id);
-        }))).flat();
-        const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
-          return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
-        }))).flat();
-        applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
+    if (grant === Page.GRANT_USER_GROUP) {
+      if (grantedGroupIds == null || grantedGroupIds.length === 0) {
+        throw Error('Target user group is not given');
       }
 
-      return {
-        grant,
-        grantedUserIds,
-        grantedGroupIds,
-        applicableUserIds,
-        applicableGroupIds,
-      };
+      const { grantedUserGroups: grantedUserGroupIds, grantedExternalUserGroups: grantedExternalUserGroupIds } = divideByType(grantedGroupIds);
+      const targetUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroupIds } });
+      const targetExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroupIds } });
+      if (targetUserGroups.length === 0 && targetExternalUserGroups.length === 0) {
+        throw Error('Target user group does not exist');
+      }
+
+      const userGroupRelations = await UserGroupRelation.find({ relatedGroup: { $in: targetUserGroups.map(g => g._id) } });
+      const externalUserGroupRelations = await ExternalUserGroupRelation.find({ relatedGroup: { $in: targetExternalUserGroups.map(g => g._id) } });
+      applicableUserIds = Array.from(new Set([...userGroupRelations, ...externalUserGroupRelations].map(u => u.relatedUser as ObjectIdLike)));
+
+      const applicableUserGroups = (await Promise.all(targetUserGroups.map((group) => {
+        return UserGroup.findGroupsWithDescendantsById(group._id);
+      }))).flat();
+      const applicableExternalUserGroups = (await Promise.all(targetExternalUserGroups.map((group) => {
+        return ExternalUserGroup.findGroupsWithDescendantsById(group._id);
+      }))).flat();
+      applicableGroupIds = [...applicableUserGroups, ...applicableExternalUserGroups].map(g => g._id);
     }
 
     return {
       grant,
       grantedUserIds,
       grantedGroupIds,
+      applicableUserIds,
+      applicableGroupIds,
     };
   }
 
@@ -340,7 +338,7 @@ class PageGrantService implements IPageGrantService {
    * @returns Promise<ComparableAncestor>
    */
   private async generateComparableAncestor(targetPath: string, includeNotMigratedPages: boolean): Promise<ComparableAncestor> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     let applicableUserIds: ObjectIdLike[] | undefined;
@@ -395,7 +393,7 @@ class PageGrantService implements IPageGrantService {
    * @returns ComparableDescendants
    */
   private async generateComparableDescendants(targetPath: string, user, includeNotMigratedPages = false): Promise<ComparableDescendants> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     // Build conditions
     const $match: {$or: any} = {
@@ -515,14 +513,52 @@ class PageGrantService implements IPageGrantService {
     const comparableAncestor = await this.generateComparableAncestor(targetPath, includeNotMigratedPages);
 
     if (!shouldCheckDescendants) { // checking the parent is enough
-      const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, false);
+      const comparableTarget: ComparableTarget = { grant, grantedUserIds, grantedGroupIds };
       return this.validateGrant(comparableTarget, comparableAncestor);
     }
 
-    const comparableTarget = await this.generateComparableTarget(grant, grantedUserIds, grantedGroupIds, true);
+    const comparableTarget = await this.generateComparableTargetWithApplicableData(grant, grantedUserIds, grantedGroupIds);
     const comparableDescendants = await this.generateComparableDescendants(targetPath, user, includeNotMigratedPages);
 
     return this.validateGrant(comparableTarget, comparableAncestor, comparableDescendants);
+  }
+
+  /**
+   * Get 'canGrantPage' for each user group given, which shows if a page can be granted to a user group.
+   * To calculate 'canGrantPage', the same logic as isGrantNormalized will be executed, except only the ancestor info will be used.
+   *
+   * @param userGroups
+   * @param groupType
+   * @param targetPath
+   * @returns
+   */
+  async getCanGrantPageForUserGroups(
+      userGroups: UserGroupDocument[], groupType: GroupType, targetPath: string,
+  ): Promise<{ userGroup: UserGroupDocument, canGrantPage: boolean}[]> {
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    if (isTopPage(targetPath)) {
+      return userGroups.map((group) => {
+        return { userGroup: group, canGrantPage: true };
+      });
+    }
+
+    const page = await Page.findByPath(targetPath);
+    const grantedUserIds = page?.grantedUsers?.map(user => getIdForRef(user)) ?? [];
+
+    const comparableAncestor = await this.generateComparableAncestor(targetPath, false);
+
+    const withCanGrantPage = userGroups.map((group) => {
+      const groupsToGrant = [...(page?.grantedGroups ?? []), { item: group._id, type: groupType }];
+      const comparableTarget: ComparableTarget = {
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUserIds,
+        grantedGroupIds: groupsToGrant,
+      };
+
+      return { userGroup: group, canGrantPage: this.validateGrant(comparableTarget, comparableAncestor) };
+    });
+
+    return withCanGrantPage;
   }
 
   /**
@@ -564,7 +600,7 @@ class PageGrantService implements IPageGrantService {
   }
 
   async calcApplicableGrantData(page, user): Promise<IRecordApplicableGrant> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     // -- Public only if top page
     const isOnlyPublicApplicable = isTopPage(page.path);

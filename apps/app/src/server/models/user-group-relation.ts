@@ -1,10 +1,11 @@
 import { isPopulated, type IUserGroupHasId, type IUserGroupRelation } from '@growi/core';
-import mongoose, { Model, Schema, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import { UserGroupDocument } from './user-group';
+import type { UserGroupDocument } from './user-group';
 
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoosePaginate = require('mongoose-paginate-v2');

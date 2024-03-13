@@ -4,9 +4,9 @@ import { useSWRxMyExternalUserGroups } from '~/features/external-user-group/clie
 import { useSWRxMyUserGroups } from '~/stores/user-group';
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const useMyUserGroups = (shouldFetch: boolean) => {
-  const { data: myUserGroups, mutate: mutateMyUserGroups } = useSWRxMyUserGroups(shouldFetch);
-  const { data: myExternalUserGroups, mutate: mutateMyExternalUserGroups } = useSWRxMyExternalUserGroups(shouldFetch);
+export const useMyUserGroups = (shouldFetch: boolean, path: string) => {
+  const { data: myUserGroups, mutate: mutateMyUserGroups } = useSWRxMyUserGroups(shouldFetch, path);
+  const { data: myExternalUserGroups, mutate: mutateMyExternalUserGroups } = useSWRxMyExternalUserGroups(shouldFetch, path);
 
   const update = () => {
     mutateMyUserGroups();
@@ -18,17 +18,19 @@ export const useMyUserGroups = (shouldFetch: boolean) => {
   }
 
   const myUserGroupsData = myUserGroups
-    .map((group) => {
+    .map((groupData) => {
       return {
-        item: group,
+        item: groupData.userGroup,
         type: GroupType.userGroup,
+        canGrantPage: groupData.canGrantPage,
       };
     });
   const myExternalUserGroupsData = myExternalUserGroups
-    .map((group) => {
+    .map((groupData) => {
       return {
-        item: group,
+        item: groupData.userGroup,
         type: GroupType.externalUserGroup,
+        canGrantPage: groupData.canGrantPage,
       };
     });
 

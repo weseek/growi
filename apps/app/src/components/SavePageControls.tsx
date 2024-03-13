@@ -43,15 +43,11 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantData } = useSelectedGrant();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
-
-  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
-    mutateGrant(grantData);
-  }, [mutateGrant]);
 
   const save = useCallback(async(): Promise<void> => {
     // save
@@ -108,7 +104,6 @@ export const SavePageControls = (props: SavePageControlsProps): JSX.Element | nu
               grant={grant}
               disabled={isGrantSelectorDisabledPage}
               userRelatedGrantedGroups={userRelatedGrantedGroups}
-              onUpdateGrant={updateGrantHandler}
             />
           </div>
         )
