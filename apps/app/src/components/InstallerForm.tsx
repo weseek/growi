@@ -1,6 +1,5 @@
-import {
-  FormEventHandler, memo, useCallback, useState,
-} from 'react';
+import type { FormEventHandler } from 'react';
+import { memo, useCallback, useState } from 'react';
 
 import { Lang, AllLang } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -10,6 +9,8 @@ import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+
+import { LoadingSpinner } from './LoadingSpinner';
 
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();
@@ -203,7 +204,13 @@ const InstallerForm = memo((): JSX.Element => {
               disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
+              <span className="btn-label">
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <i className="icon-user-follow" />
+                )}
+              </span>
               <span className="btn-label-text">{ t('Create') }</span>
             </button>
           </div>

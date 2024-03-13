@@ -5,6 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 
@@ -44,8 +45,8 @@ const CustomizeLayoutSetting = (): JSX.Element => {
 
   if (isContainerFluid == null) {
     return (
-      <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse"></i>
+      <div className="text-muted text-center fs-3">
+        <LoadingSpinner />
       </div>
     );
   }
