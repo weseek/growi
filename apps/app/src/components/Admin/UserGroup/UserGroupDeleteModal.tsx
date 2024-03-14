@@ -114,6 +114,8 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       return <option key={opt.id} value={opt.actionForPages}>{opt.label}</option>;
     });
 
+    // TODO: Use GROWI original dropdown.
+    // refs: https://redmine.weseek.co.jp/issues/142614
     return (
       <select
         name="actionName"
