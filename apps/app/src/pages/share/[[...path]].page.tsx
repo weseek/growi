@@ -6,7 +6,6 @@ import type {
 } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import Sticky from 'react-stickynode';
 import superjson from 'superjson';
 
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
@@ -121,13 +120,9 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
 
       <div className="dynamic-layout-root justify-content-between">
-
-        <div className="sticky-top">
-          <GrowiContextualSubNavigationForSharedPage
-            page={currentPage ?? props.shareLinkRelatedPage}
-            isLinkSharingDisabled={props.disableLinkSharing}
-          />
-        </div>
+        <nav className="sticky-top">
+          <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
+        </nav>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 

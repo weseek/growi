@@ -112,7 +112,6 @@ type PageControlsSubstanceProps = CommonProps & {
   pageInfo: IPageInfoForOperation,
   expandContentWidth?: boolean,
   onClickEditTagsButton: () => void,
-  isCollapse?: boolean,
 }
 
 const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element => {
@@ -121,7 +120,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
-    isCollapse,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -252,7 +250,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   ];
 
   const isViewMode = editorMode === EditorMode.View;
-  const isDeviceIsSp = isDeviceLargerThanMd || !isCollapse;
 
   return (
     <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
@@ -264,13 +261,13 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      { isDeviceIsSp && revisionId != null && (
+      { revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      {isDeviceIsSp && revisionId != null && (
+      { revisionId != null && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -278,14 +275,14 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      {isDeviceIsSp && revisionId != null && (
+      { revisionId != null && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
           bookmarkCount={pageInfo.bookmarkCount}
         />
       )}
-      {isDeviceIsSp && revisionId != null && (
+      { revisionId != null && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}

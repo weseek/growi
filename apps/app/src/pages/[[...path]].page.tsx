@@ -19,7 +19,6 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import Sticky from 'react-stickynode';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
@@ -329,9 +328,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <div className="sticky-top">
+        <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </div>
+        </nav>
+
         <DisplaySwitcher
           pageView={(
             <PageView
