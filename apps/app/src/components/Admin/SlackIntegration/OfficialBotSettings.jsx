@@ -77,11 +77,12 @@ const OfficialBotSettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
         <a href={t('admin:slack_integration.docs_url.official_bot')} target="_blank" rel="noopener noreferrer">
-          <i
-            className="fa fa-external-link btn-link ms-2"
-            aria-hidden="true"
+          <span
+            className="growi-custom-icons btn-link ms-2 fs-3"
             onClick={() => window.open(`${t('admin:slack_integration.docs_url.official_bot')}`, '_blank')}
-          />
+          >
+            external_link
+          </span>
         </a>
       </h2>
 
