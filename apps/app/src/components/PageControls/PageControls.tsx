@@ -256,18 +256,18 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
-      { revisionId != null && !isViewMode && (
+      {revisionId != null && !isViewMode && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      { revisionId != null && (
+      {revisionId != null && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      { revisionId != null && (
+      {revisionId != null && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -275,14 +275,14 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      { revisionId != null && (
+      {revisionId != null && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
           bookmarkCount={pageInfo.bookmarkCount}
         />
       )}
-      { revisionId != null && (
+      {revisionId != null && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
