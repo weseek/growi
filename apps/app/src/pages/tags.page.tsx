@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';
@@ -90,7 +91,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
           { isLoading
             ? (
               <div className="text-muted text-center">
-                <i className="fa fa-2x fa-spinner fa-pulse mt-3"></i>
+                <LoadingSpinner className="mt-3 fs-3" />
               </div>
             )
             : (

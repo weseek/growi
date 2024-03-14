@@ -15,6 +15,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import CountBadge from '../Common/CountBadge';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { ItemNode } from './ItemNode';
 import { useNewPageInput } from './NewPageInput';
@@ -248,7 +249,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               <ItemClassFixed {...itemProps} />
               {isProcessingSubmission && (currentChildren.length - 1 === index) && (
                 <div className="text-muted text-center">
-                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                  <LoadingSpinner className="mr-1" />
                 </div>
               )}
             </div>

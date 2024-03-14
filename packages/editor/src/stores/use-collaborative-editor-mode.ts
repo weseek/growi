@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { keymap } from '@codemirror/view';
 import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
-// see: https://github.com/yjs/y-codemirror.next#example
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { yCollab } from 'y-codemirror.next';
+import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
@@ -118,11 +116,17 @@ export const useCollaborativeEditorMode = (
 
     codeMirrorEditor.initDoc(ytext.toString());
 
-    const cleanup = codeMirrorEditor.appendExtensions([
+    const cleanupYUndoManagerKeymap = codeMirrorEditor.appendExtensions([
+      keymap.of(yUndoManagerKeymap),
+    ]);
+    const cleanupYCollab = codeMirrorEditor.appendExtensions([
       yCollab(ytext, provider.awareness, { undoManager }),
     ]);
 
-    return cleanup;
+    return () => {
+      cleanupYUndoManagerKeymap?.();
+      cleanupYCollab?.();
+    };
   };
 
   useEffect(cleanupYDoc, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);

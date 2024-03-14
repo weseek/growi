@@ -8,15 +8,16 @@ import type {
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { IPagingResult } from '~/interfaces/paging-result';
-import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+import type { IPagingResult } from '~/interfaces/paging-result';
+import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSharedUser } from '~/stores/context';
 import {
   mutatePageTree,
   useSWRxPageInfoForList, useSWRxPageList,
 } from '~/stores/page-listing';
 
-import { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
+import type { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
+import { LoadingSpinner } from './LoadingSpinner';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 
@@ -86,7 +87,7 @@ const DescendantsPageListSubstance = (props: SubstanceProps): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       </div>
     );
