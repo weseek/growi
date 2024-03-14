@@ -30,8 +30,6 @@ type Props = {
 type AvailableOption = {
   id: number,
   actionForPages: PageActionOnGroupDelete,
-  iconClass: string,
-  styleClass: string,
   label: string,
 };
 
@@ -48,22 +46,16 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       {
         id: 1,
         actionForPages: PageActionOnGroupDelete.publicize,
-        iconClass: 'icon-people',
-        styleClass: '',
         label: t('admin:user_group_management.delete_modal.publish_pages'),
       },
       {
         id: 2,
         actionForPages: PageActionOnGroupDelete.delete,
-        iconClass: 'icon-trash',
-        styleClass: 'text-danger',
         label: t('admin:user_group_management.delete_modal.delete_pages'),
       },
       {
         id: 3,
         actionForPages: PageActionOnGroupDelete.transfer,
-        iconClass: 'icon-options',
-        styleClass: '',
         label: t('admin:user_group_management.delete_modal.transfer_pages'),
       },
     ];
