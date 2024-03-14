@@ -151,7 +151,7 @@ ___
 
 
 # :ledger: More Applications
-- [Bootstrap](/Sandbox/Bootstrap5)
+- [Bootstrap5](/Sandbox/Bootstrap5)
 
 - [Diagrams](/Sandbox/Diagrams)
 

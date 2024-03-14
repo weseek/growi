@@ -295,8 +295,8 @@ ___
 
 
 # :memo:さらに応用的な表現
-- [ページの装飾方法（Bootstrap）](/Sandbox/Bootstrap5)
+- [ページの装飾方法（Bootstrap5）](/Sandbox/Bootstrap5)
 
-- [図形の表現方法（Daigrams）](/Sandbox/Daigrams）)
+- [図形の表現方法（Daigrams）](/Sandbox/Daigrams)
 
 - [数式の表現方法（Math）](/Sandbox/Math)
