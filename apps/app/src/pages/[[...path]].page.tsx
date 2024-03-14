@@ -119,14 +119,13 @@ superjson.registerCustom<IPageToShowRevisionWithMeta, IPageToShowRevisionWithMet
 // GrowiContextualSubNavigation for NOT shared page
 type GrowiContextualSubNavigationProps = {
   isLinkSharingDisabled: boolean,
-  isCollapse: boolean,
 }
 
 const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps): JSX.Element => {
-  const { isLinkSharingDisabled, isCollapse } = props;
+  const { isLinkSharingDisabled } = props;
   const { data: currentPage } = useSWRxCurrentPage();
   return (
-    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} isCollapse={isCollapse} />
+    <GrowiContextualSubNavigationSubstance currentPage={currentPage} isLinkSharingDisabled={isLinkSharingDisabled} />
   );
 };
 
@@ -330,14 +329,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <Sticky>
-          {({ status }: { status: boolean }) => {
-            const isCollapse = status === Sticky.STATUS_FIXED;
-            return (
-              <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} isCollapse={isCollapse} />
-            );
-          }}
-        </Sticky>
+        <div className="sticky-top">
+          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
+        </div>
         <DisplaySwitcher
           pageView={(
             <PageView

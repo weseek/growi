@@ -73,14 +73,13 @@ superjson.registerCustom<IShareLinkRelatedPage, string>(
 type GrowiContextualSubNavigationForSharedPageProps = {
   page?: IPagePopulatedToShowRevision,
   isLinkSharingDisabled: boolean,
-  isCollapse?: boolean,
 }
 
 const GrowiContextualSubNavigationForSharedPage = (props: GrowiContextualSubNavigationForSharedPageProps): JSX.Element => {
-  const { page, isLinkSharingDisabled, isCollapse } = props;
+  const { page, isLinkSharingDisabled } = props;
 
   return (
-    <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} isCollapse={isCollapse} />
+    <GrowiContextualSubNavigationSubstance currentPage={page} isLinkSharingDisabled={isLinkSharingDisabled} />
   );
 };
 
@@ -123,18 +122,12 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 
       <div className="dynamic-layout-root justify-content-between">
 
-        <Sticky>
-          {({ status }: { status: boolean }) => {
-            const isCollapse = status === Sticky.STATUS_FIXED;
-            return (
-              <GrowiContextualSubNavigationForSharedPage
-                page={currentPage ?? props.shareLinkRelatedPage}
-                isLinkSharingDisabled={props.disableLinkSharing}
-                isCollapse={isCollapse}
-              />
-            );
-          }}
-        </Sticky>
+        <div className="sticky-top">
+          <GrowiContextualSubNavigationForSharedPage
+            page={currentPage ?? props.shareLinkRelatedPage}
+            isLinkSharingDisabled={props.disableLinkSharing}
+          />
+        </div>
 
         <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
