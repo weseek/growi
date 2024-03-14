@@ -1,64 +1,51 @@
-# :tada: Welcome to GROWI
+# :tada: Welcome to GROWI 
 
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
+GROWI is an internal wiki & knowledge base tool for corporations and individuals.  
+With GROWI, members can easily share and edit information in a company, university seminar, or circle.
 
-GROWI is a Wiki for Individuals and Corporations | A knowledge base tool.
-Knowledge in companies, university laboratories, and clubs can be easily shared and anyone can edit the page.
+Casually writing down the information you know and editing it together can **reduce tacit knowledge within the team**.  
+Let's increase the amount of information shared on a daily base!
 
-We can easily write what we know and edit it together, we can **simplify the tacit knowledge (knowledge which is hard to explain with words) in our team**.  
-Let's increase the information exchange everyday.
-
-### :beginner: How to create a page easily 
-
-- Start from "**Create**" button on the upper right, or the **Pencil Icon** on the lower right.
-    - The page title can be edited again later, don't worry about the title.
-        - On title input field, it's possible to create the page's hierarchy with half-width `/` (slash).
-        - （Example）Try entering `/category1/category2/page-title-we-want-to-create`.
-- We can create a bullet point by adding `-`  at the beginning of the line.
-- We can also copy and paste, drag and drop attachments such as images, PDF, Word/Excel/PowerPoint, etc.
-- Once we finished, press the "**Update**" button to publish the page.
-    - We can also save it by `Ctrl(⌘) + S`.
-
-For more information: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">
-    Tips
-  </div>
-  <div class="card-body">
-    <ul>
-      <li>Ctrl(⌘) + "/" to show quick help.</li>
-      <li>We can write HTML with <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a>.</li>
-    </ul>
-  </div>
+<div class="alert alert-primary" role="alert">
+※Feel free to edit and use this page as the top page of the wiki.
 </div>
 
-# :anchor: For administrator <small>〜After you construct the site〜</small>
+# :beginner: What can you do with GROWI?
+## 1. Knowledge Management: Create pages to store information and knowledge
+- How to create and edit pages?
+    - You can create a new page from the "Pencil Icon" in the upper left corner of the screen
+    - You can edit a page you have already created by clicking "Edit" in the upper right corner of the screen
+- How to manage pages?
+    - GROWI manages pages in a **hierarchical** structure
+        - Example: ` /page A/page B/page C ` 
+    - Apart from Hierarchy, pages can also be managed with Tags
 
-### :arrow_right: Do you will use a Wiki with more than one person?
-- :heavy_check_mark: Let's invite some members.
-    - [Add/invite new members to the Wiki](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
-### :arrow_right: Work with Slack to receive page and comment notifications.
-- :heavy_check_mark:  [Slack integration](https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#overview)
-### :arrow_right: Are you switching from another system?
-- :heavy_check_mark: It's possible to import data from other GROWI, esa.io, Qiita:Team.
-    -  [Import Data](https://docs.growi.org/en/admin-guide/management-cookbook/import.html)
+## 2. Information Retrieval: Search information in various ways
+- Keyword search
+- Search using various sidebars
+    - Search by Page Tree
+    - Search by Latest Changes
+    - Search by Tag, and more...
 
-For more information: [Admin Guide](https://docs.growi.org/en/admin-guide/)
+## 3. Information Sharing: Easy to share both internally and externally
+- You can send the URL and permalink of the page to your company members
+    - User Groups can be used to manage viewing privileges among members of the company
+- GROWI also allows pages to be viewed by users outside the company who do not have an account
+    - Let's share information with users outside your company using shared links!
+
+#### :bulb: Check [GROWI Tips](/GROWI Tips) to learn more on how to edit pages！
 
 
-# Content List Example
+# :wrench: For Administrators - Once GROWI is created
 
-We can display the content list using a table and `$lsx`.
+### :arrow_right: Wanna use GROWI with multiple people?
+- :heavy_check_mark: Invite your members!
+    - [Add or invite new members to GROWI](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
 
-| All page list (First 15 pages)      | [/Sandbox] List of subordinate pages |
-| ----------------------------------- | ------------------------------------ |
-| $lsx(/,num=15)                      | $lsx(/Sandbox)                       |
+### :arrow_right: Not satisfied with the current look of GROWI?
+- :heavy_check_mark: No worry! Let's customize the theme of GROWI!
+    - [Customizing GROWI Themes](/admin/customize)
 
-# Slack
-
-<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
-
-We welcome newcomers joining our slack channel to help improve GROWI.
-In addition to discussing development, we are also happy to answer your questions when you join.
+### :arrow_right: GROWI security settings are not completed?
+- :heavy_check_mark: Come to update your GROWI security settings!
+    - [Update GROWI security settings](/admin/security)

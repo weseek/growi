@@ -1,64 +1,51 @@
-# :tada: 欢迎来到GROWI
+# :tada: Welcome to GROWI 
 
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
+GROWI is an internal wiki & knowledge base tool for corporations and individuals.  
+With GROWI, members can easily share and edit information in a company, university seminar, or circle.
 
-GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
-公司、大学实验室和俱乐部的知识可以轻松共享，任何人都可以编辑页面。
+Casually writing down the information you know and editing it together can **reduce tacit knowledge within the team**.  
+Let's increase the amount of information shared on a daily base!
 
-我们可以很容易地写下我们知道的东西，并一起编辑，我们可以**简化我们团队中的隐性知识（难以用语言解释的知识）**。 
-让我们每天增加信息交流。
-
-### :beginner: 如何轻松制作一个页面 
-
-- 从右上方的 "**创建**"按钮，或右下方的**铅笔图标开始。
-    - 页面标题以后可以再编辑，不用担心标题的问题。
-        - 在标题输入栏，可以用半宽的`/`（斜线）创建页面的层次。
-        - 例子）尝试输入`/category1/category2/page-title-we-want-to-create`。
-- 我们可以通过在行首添加`-`来创建一个要点。
-- 我们还可以复制和粘贴，拖放附件，如图片、PDF、Word/Excel/PowerPoint等。
-- 一旦我们完成了，按 "**更新**"按钮来发布页面。
-    - 我们也可以通过`Ctrl(⌘) + S`来保存。
-
-了解更多信息: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">
-    Tips
-  </div>
-  <div class="card-body">
-    <ul>
-      <li>Ctrl(⌘) + "/" 显示快速帮助。</li>
-      <li>你可以用 <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4编写HTML</a>.</li>
-    </ul>
-  </div>
+<div class="alert alert-primary" role="alert">
+※Feel free to edit and use this page as the top page of the wiki.
 </div>
 
-# :anchor: 对于管理员来说 <small>〜如果你创建了一个Wiki〜</small>
+# :beginner: What can you do with GROWI?
+## 1. Knowledge Management: Create pages to store information and knowledge
+- How to create and edit pages?
+    - You can create a new page from the "Pencil Icon" in the upper left corner of the screen
+    - You can edit a page you have already created by clicking "Edit" in the upper right corner of the screen
+- How to manage pages?
+    - GROWI manages pages in a **hierarchical** structure
+        - Example: ` /page A/page B/page C ` 
+    - Apart from Hierarchy, pages can also be managed with Tags
 
-### :arrow_right: 你会和多个人一起使用Wiki吗？
-- :heavy_check_mark: 让我们邀请一些成员。
-    - [Add/invite new members to the Wiki](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
-### :arrow_right: 与Slack合作，接收页面和评论通知。
-- :heavy_check_mark:  [Slack integration](https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#overview)
-### :arrow_right: 你是否从另一个系统转换？
-- :heavy_check_mark: 可以从其他GROWI, esa.io, Qiita:Team导入数据。
-    -  [Import Data](https://docs.growi.org/en/admin-guide/management-cookbook/import.html)
+## 2. Information Retrieval: Search information in various ways
+- Keyword search
+- Search using various sidebars
+    - Search by Page Tree
+    - Search by Latest Changes
+    - Search by Tag, and more...
 
-了解更多信息: [Admin Guide](https://docs.growi.org/en/admin-guide/)
+## 3. Information Sharing: Easy to share both internally and externally
+- You can send the URL and permalink of the page to your company members
+    - User Groups can be used to manage viewing privileges among members of the company
+- GROWI also allows pages to be viewed by users outside the company who do not have an account
+    - Let's share information with users outside your company using shared links!
+
+#### :bulb: Check [GROWI Tips](/GROWI Tips) to learn more on how to edit pages！
 
 
-# 内容列表示例
+# :wrench: For Administrators - Once GROWI is created
 
-你可以用一个表格和`$lsx`来显示内容列表。
+### :arrow_right: Wanna use GROWI with multiple people?
+- :heavy_check_mark: Invite your members!
+    - [Add or invite new members to GROWI](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
 
-| 所有页面列表（前15页)      | [/Sandbox] 下级页面列表 |
-| ---------------------------| ------------------------|
-| $lsx(/,num=15)             | $lsx(/Sandbox)          |
+### :arrow_right: Not satisfied with the current look of GROWI?
+- :heavy_check_mark: No worry! Let's customize the theme of GROWI!
+    - [Customizing GROWI Themes](/admin/customize)
 
-# Slack
-
-<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
-
-我们欢迎新人加入我们的slack频道，帮助改善Growi。
-除了讨论发展问题，我们也很乐意在你加入时回答你的问题。
+### :arrow_right: GROWI security settings are not completed?
+- :heavy_check_mark: Come to update your GROWI security settings!
+    - [Update GROWI security settings](/admin/security)

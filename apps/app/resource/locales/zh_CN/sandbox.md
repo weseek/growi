@@ -1,439 +1,158 @@
-# :memo: Table of Contents
+# What is Sandbox?
+- In this page, you will find tips that help you to master GROWI 
+- Feel free to enrich the content of your pages with the references under this hierarchy
 
-Add `ToC` after some `#` signs.
-`Table of Contents` or `Table-of-Contents` is also OK.
 
-```
-# ToC
-```
-
-## ToC
-
-# :memo: Block Elements
+# :closed_book:Headings & Paragraphs
+- By inserting headings and paragraphs, you can make the text on the page easier to read
 
 ## Headers
-
-Add one `#` per level at the start of the line
-
-```
-# Header 1
-## Header 2
-### Header 3
-#### Header 4
-##### Header 5
-###### Header 6
-```
-
-### Header 3
-
-#### Header 4
-
-##### Header 5
-
-###### Header 6
-
-## Block paragraph
-
-Pararaphs are created by inserting a newline character
-A paragraph can be created by pressing Enter at the end of the previous paragraph.
+- Add `#` before the heading text to create a heading 
+    - Depending on the number of `#`, the typeface size of headings would be different shown in the View screen 
+    - Check the View screen on the right side to understand the effect of headings
+- The number of `#` will decide the hierarchy level and help you to organize the contents
 
 ```
-paragraph1
-(Blank line)
-paragraph2
+# First-level heading
+## Second-level heading
+### Third-level heading
+#### Forth-level heading
+##### Fifth-level heading
+###### Sixth-level heading
 ```
 
-paragraph1
+## Break
+- Insert two half-width spaces at the end of the sentence you want to break
+    - You can also change this in the Setting to break the line without half-width spaces
+        - Change the line break setting in the `Markdown Settings` sector of the admin page
 
-paragraph2
+#### Without line break
+Paragraph 1
+Paragraph 2
 
-## Br new line
+#### With line break
+Paragraph 1  
+Paragraph 2
 
-Add two spaces before break.
-***This behaviour can be modified in the options menu.***
+## Block
+- Paragraphs can be created by inserting a blank table in the text
+- Passage can be broken into sentences and make them easier to read
 
-```
-hoge
-fuga(two spaces)
-piyo
-```
+#### Without paragraph
+Paragraph 1  
+Paragraph 2
 
-hoge
-fuga
-piyo
+#### With paragraph
+Paragraph 1  
 
+Paragraph 2
+
+
+# :green_book: Styling Text
+- Various styles can be applied to enrich the textual expression of a sentence
+    - These styles also can be easily applied by selecting the toolbar icon at the bottom of the Edit screen
+
+## Italic
+- Enclose the text with an asterisk `*` or an underscore `_`.
+
+#### Examples
+- This sentence indicates emphasis with *Italic*
+- This sentence indicates emphasis with _Italic_ 
+
+## Bold
+- Enclose the text with two asterisks `*` or two underscores `_`
+
+#### Example
+- This sentence indicates emphasis with **Bold** 
+- This sentence indicates emphasis with __Bold__
+
+## Italic & Bold
+- Enclose the text with three asterisks `*` or three underscores `_`
+
+#### Example
+- This sentence indicates emphasis with ***Italic & Bold***
+- This sentence indicates emphasis witH ___Italic & Bold___
+
+
+# :orange_book: Insert Lists
+## Bulleted List
+- Insert a bulleted list by starting a line with a hyphen `-`, a plus `+`, or an asterisk `*`
+
+#### Example
+- This sentence is present in the bulleted list
+    - This sentence is present in the bulleted list
+        - This sentence is present in the bulleted list
+        - This sentence is present in the bulleted list
+- This sentence is present in the bulleted list
+    - This sentence is present in the bulleted list
+
+## Numbered List
+- `Number.` at the beginning of a line to insert a numbered list
+- Numbered list and bulleted list can also be combined for use
+
+#### Example
+1. This sentence is present in the numbered list
+    1. This sentence is present in the numbered list
+    1. This sentence is present in the numbered list
+    1. This sentence is present in the numbered list
+        - This sentence is present in the bulleted list 
+1. This sentence is present in the bulleted list
+    - This sentence is present in the bulleted list
+
+## Task List
+- Insert an unchecked checkbox list by writing `[] `
+    - Check the checkbox by writing `[x]`
+
+#### Example
+- [ ] Task 1
+    - [x] Task 1-1
+    - [ ] Task 1-2
+- [x] Task 2
+
+
+# :blue_book: Others
 ## Blockquotes
+- Use quoted expressions by putting `>` at the beginning of the paragraph
+    - Multiple quotations can be expressed by using a sequence of `>` characters
+- Lists and other elements can be used together within the blockquotes
 
-Add one `>` per level at the start of the line
-
-```
-> quote
-> quote
->> nested quotes
-```
-
-> quote
-> quote
->> nested quotes
+#### Example
+> - Quotation
+> - Quotation
+>> Multiple quotations need to insert more `>`
 
 ## Code
+- It is possible to express the code by adding it in three `` ` ``
 
-Wrap code with three back quotes or tildes.
-
+#### Example
 ```
-print 'hoge'
-```
+Add codes here  
+Line breaks and paragraphs can be reflected in the code
 
-### Syntax highlight and file name
-
-- corresponding [highlight.js Demo](https://highlightjs.org/static/demo/) of common category
-
-
-~~~
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
-```
-~~~
-
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
+- List also can be used in code
+    - List also can be used in code
 ```
 
-### Inline code
+## Inline Code
+- Enclose words in `` ` `` to make inline code
 
-Words wrapped by `` `back quotes` `` will be formatted as inline code.
+#### Example
+Here is the `inline code` 
 
-```
-This is `Inline Code`.
-```
+## Horizontal lines
+- Insert the horizontal line with three or more consecutive asterisks `*` or underscores `_`
 
-This is  `Inline Code`.
-
-## Pre-arranged text
-
-Code blocks should be preceded by four spaces or one tab.
-
-```
-    class Hoge
-        def hoge
-            print 'hoge'
-        end
-    end
-```
-
-    class Hoge
-        def hoge
-            print 'hoge'
-        end
-    end
-
-## Horizontal Line
-
-Write three underscores `_`, or asterisks`*`.
-
-```
+#### Example
+Below is a horizontal line
 ***
+
+Below is a horizontal line
 ___
----
-```
 
-***
-___
----
 
+# :ledger: More Applications
+- [Bootstrap](/Sandbox/Bootstrap5)
 
+- [Diagrams](/Sandbox/Diagrams)
 
-# :memo: Typography
-
-## Strong Text
-
-### Italic
-
-To italicize text, add One asterisk or underscores before and after a word or phrase.
-
-```
-This is *Italic* .
-This is _Italic_ .
-```
-
-This is *Italic* .
-This is _Italic_ .
-
-### Bold
-
-To bold text, add two asterisks or underscores before and after a word or phrase.
-
-```
-This is **bold**.
-This is __bold__.
-```
-
-This is **bold**.
-This is __bold__.
-
-### Bold + Italic
-
-To bold and italicize text, add three asterisks or underscores before and after a word or phrase.
-
-```
-This is ***Italic & Bold***.
-This is ___Italic & Bold___.
-```
-
-This is ***Italic & Bold***.
-This is ___Italic & Bold___.
-
-# :memo: Images
-
-You can insert `<img>` tag using `![description](URL)`.
-
-```markdown
-![Minion](https://octodex.github.com/images/minion.png)
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
-```
-
-![Minion](https://octodex.github.com/images/minion.png)
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
-
-The size of the image can be set by using an HTML image tag
-
-```html
-<img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
-```
-
-<img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
-
-
-# :memo: Link
-
-## Markdown standard
-
-You can create links using `[Display text](URL)`.
-
-```
-[Google](https://www.google.co.jp/)
-```
-
-[Google](https://www.google.co.jp/)
-
-## Pukiwiki like linker
-
-This is the most flexible linker.
-Both the page description and link address can be displayed on the page.
-
-```
-[[./Bootstrap4]]
-Example of Bootstrap4 is [[here>./Bootstrap4]]
-```
-
-[[./Bootstrap4]]  
-Example of Bootstrap4 is [[here>./Bootstrap4]]
-
-# :memo: Lists
-
-## Ul Bulleted list
-
-To create an unordered list, add dashes (-), asterisks (*), or plus signs (+) in front of line items. 
-Items can be nested using indentation.
-
-```
-- List1
-    - List1_1
-        - List1_1_1
-        - List1_1_2
-    - List1_2
-- List2
-- List3
-```
-
-- List1
-    - List1_1
-        - List1_1_1
-        - List1_1_2
-    - List1_2
-- List2
-- List3
-
-## Ol Numbered List
-
-To create an ordered list, add line items with numbers followed by periods. 
-The numbers don’t have to be in numerical order, but the list should start with the number one.
-
-```
-1. Number list 1
-    1. Number list 1-1
-    1. Number list 1-2
-1. Number list 2
-1. Number list 3
-```
-
-1. Number list 1
-    1. Number list 1-1
-    1. Number list 1-2
-1. Number list 2
-1. Number list 3
-
-
-## Check list
-
-```
-- [ ] Task 1
-    - [x] Task 1.1
-    - [ ] Task 1.2
-- [x] Task2
-```
-
-- [ ] Task 1
-    - [x] Task 1.1
-    - [ ] Task 1.2
-- [x] Task2
-
-
-# :memo: Table
-
-## Markdown Standard
-
-```markdown
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-
-OR
-
-Left align | Right align | Center align
-:--|--:|:-:
-This       | This        | This
-column     | column      | column
-will       | will        | will
-be         | be          | be
-left       | right       | center
-aligned    | aligned     | aligned
-```
-
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-
-## TSV
-
-~~~
-``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-~~~
-
-``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-
-## TSV with header
-
-~~~
-``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-~~~
-
-``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-
-## CSV
-
-~~~
-``` csv
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-~~~
-
-``` csv
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-
-## CSV with header
-
-~~~
-``` csv-h
-First Header,Second Header
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-~~~
-
-``` csv-h
-First Header,Second Header
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-
-
-# :memo: Footnote
-
-You can write a reference [^1] to a footnote.
-
-Long footnotes can be written as [^longnote].
-
-[^1]: A_reference_to_the_first_footnote.
-
-[^longnote]: An_example_of_writing_a_footnote_in_multiple_blocks.
-
-    Subsequent paragraphs are indented and belong to the previous footnote.
-
-
-# :memo: Emoji
-
-:smiley: :smile: :laughing: :innocent: :drooling_face:
-
-:family: :man-boy: :man-girl: :man-girl-girl: :woman-girl-girl:
-
-:+1: :-1: :open_hands: :raised_hands: :point_right:
-
-:apple: :green_apple: :strawberry: :cake: :hamburger:
-
-:basketball: :football: :baseball: :volleyball: :8ball:
-
-:hearts: :broken_heart: :heartbeat: :heartpulse: :heart_decoration:
-
-:watch: :gear: :gem: :wrench: :email:
-
-
-# :heavy_plus_sign: More..
-
-- Try to attach Bootstrap4 Tags?
-    - :arrow_right: [/Sandbox/Bootstrap4]
-- Try to draw Diagrams?
-    - :arrow_right: [/Sandbox/Diagrams]
-- Try to write Math Formulas?
-    - :arrow_right: [/Sandbox/Math]
+- [Math](/Sandbox/Math)

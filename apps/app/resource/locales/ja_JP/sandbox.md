@@ -1,19 +1,16 @@
-# :memo: 目次
+# Sandbox（サンドボックス）とは
+- この階層下では、GROWI をより便利に活用するための活用術や活用ヒントを掲載しています
+- この階層下のページ内容を組織内で自由に書き換えて GROWI の理解度を深めるために活用しましょう！
 
-いくつかの `#` 記号に続けて `ToC` という文字列を記述します。  
-`Table of Contents` または `Table-of-Contents` でも構いません。
 
-```
-# ToC
-```
+# :memo:見出しや段落
+- 見出しや段落を挿入することで、ページ内の文章にメリハリがつき読みやすい文章を作成することが可能です
 
-## ToC
-
-# :memo: Block Elements
-
-## Headers 見出し
-
-先頭に`#`をレベルの数だけ記述します。
+## 見出し（Headers）
+- 行頭に `#` をレベルの数だけ記述することで見出しを作成することが可能です
+    - 各見出しに応じて View 画面に表示される際のデザインも異なります
+    - 各見出しに応じて View 画面右側に表示される目次が生成されます
+- このページ内にもたくさんの見出しが活用されており、`#` の数に応じて内容をグルーピングすることで可能です
 
 ```
 # 見出し1
@@ -24,382 +21,253 @@
 ###### 見出し6
 ```
 
-### 見出し3
-
-#### 見出し4
-
-##### 見出し5
-
-###### 見出し6
-
-## Block 段落
-
-空白行を挟むことで段落となります。
-
-```
-段落1
-(空行)
-段落2
-```
-
-段落1
-
-段落2
-
-## Br 改行
-
-改行の前に半角スペース``を2つ記述します。
-***この挙動は、オプションで変更可能です***
-
-```
-hoge
-fuga(スペース2つ)
-piyo
-```
-
-hoge
-fuga
-piyo
-
-## Blockquotes 引用
-
-先頭に`>`を記述します。ネストは`>`を多重に記述します。
-
-```
-> 引用
-> 引用
->> 多重引用
-```
-
-> 引用
-> 引用
->> 多重引用
-
-## Code コード
-
-`` `バッククオート` `` 3つ、あるいはチルダ`~`３つで囲みます。
-
-```
-print 'hoge'
-```
-
-### シンタックスハイライトとファイル名
-
-- [highlight.js Demo](https://highlightjs.org/static/demo/) の common カテゴリ内の言語に対応しています
-
-
-~~~
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
-```
-~~~
-
-```javascript:mersenne-twister.js
-function MersenneTwister(seed) {
-  if (arguments.length == 0) {
-    seed = new Date().getTime();
-  }
-
-  this._mt = new Array(624);
-  this.setSeed(seed);
-}
-```
-
-### インラインコード
-
-`` `バッククオート` `` で単語を囲むとインラインコードになります。
-
-```
-これは `インラインコード`です。
-```
-
-これは `インラインコード`です。
-
-## pre 整形済みテキスト
-
-半角スペース4個もしくはタブで、コードブロックをpre表示できます
-
-```
-    class Hoge
-        def hoge
-            print 'hoge'
-        end
-    end
-```
-
-    class Hoge
-        def hoge
-            print 'hoge'
-        end
-    end
-
-## Hr 水平線
-
-アンダースコア`_` 、アスタリスク`*`を3つ以上連続して記述します。
-
-```
-***
-___
----
-```
-
-***
-___
----
-
-
-
-# :memo: Typography
-
-## 強調
-
-### em
-
-アスタリスク`*`もしくはアンダースコア`_`1個で文字列を囲みます。
-
-```
-これは *イタリック* です
-これは _イタリック_ です
-```
-
-これは *イタリック* です
-これは _イタリック_ です
-
-### strong
-
-アスタリスク`*`もしくはアンダースコア`_`2個で文字列を囲みます。
-
-```
-これは **ボールド** です
-これは __ボールド__ です
-```
-
-これは **ボールド** です
-これは __ボールド__ です
-
-### em + strong
-
-アスタリスク`*`もしくはアンダースコア`_`3個で文字列を囲みます。
-
-```
-これは ***イタリック＆ボールド*** です
-これは ___イタリック＆ボールド___ です
-```
-
-これは ***イタリック＆ボールド*** です
-これは ___イタリック＆ボールド___ です
-
-# :memo: Images
-
-`![Alt文字列](URL)` で`<img>`タグを挿入できます。
-
-```markdown
-![Minion](https://octodex.github.com/images/minion.png)
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
-```
-
-![Minion](https://octodex.github.com/images/minion.png)
-![Stormtroopocat](https://octodex.github.com/images/stormtroopocat.jpg "The Stormtroopocat")
-
-画像の大きさなどの指定をする場合はimgタグを使用します。
-
-```html
-<img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
-```
-
-<img src="https://octodex.github.com/images/dojocat.jpg" width="200px">
-
-
-# :memo: Link
-
-## Markdown 標準
-
-`[表示テキスト](URL)`でリンクに変換されます。
-
-```
-[Google](https://www.google.co.jp/)
-```
-
-[Google](https://www.google.co.jp/)
-
-## Pukiwiki like linker
-
-最も柔軟な Linker です。
-記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます。
-
-```
-[[./Bootstrap4]]
-Bootstrap4のExampleは[[こちら>./Bootstrap4]]
-```
-
-[[./Bootstrap4]]  
-Bootstrap4のExampleは[[こちら>./Bootstrap4]]
-
-# :memo: Lists
-
-## Ul 箇条書きリスト
-
-ハイフン`-`、プラス`+`、アスタリスク`*`のいずれかを先頭に記述します。
-ネストはタブで表現します。
-
-```
-- リスト1
-    - リスト1_1
-        - リスト1_1_1
-        - リスト1_1_2
-    - リスト1_2
-- リスト2
-- リスト3
-```
-
-- リスト1
-    - リスト1_1
-        - リスト1_1_1
-        - リスト1_1_2
-    - リスト1_2
-- リスト2
-- リスト3
-
-## Ol 番号付きリスト
-
-`番号.`を先頭に記述します。ネストはタブで表現します。
-番号は自動的に採番されるため、すべての行を1.と記述するのがお勧めです。
-
-```
-1. 番号付きリスト1
-    1. 番号付きリスト1-1
-    1. 番号付きリスト1-2
-1. 番号付きリスト2
-1. 番号付きリスト3
-```
-
-1. 番号付きリスト1
-    1. 番号付きリスト1-1
-    1. 番号付きリスト1-2
-1. 番号付きリスト2
-1. 番号付きリスト3
-
+## 改行（Br）
+- 改行したい文章の行末に半角スペースを2つ挿入することで改行をすることができます
+    - こちらの挙動は、設定画面から半角スペースなしで改行が反映されるように設定を変更することが可能です
+        - 「マークダウン設定_Line Break設定（/admin/markdown）」から変更が可能です
+
+#### 改行がない場合
+文章 1 の内容が入ります
+文章 2 の内容が入ります
+
+#### 改行がある場合
+文章 1 の内容が入ります  
+文章 2 の内容が入ります
+
+## 段落（Block）
+- 文章内で空白表を挿入することで段落を作成することが可能です
+- 段落を作成することで文章の節目を作成し読みやすい文章を作成することができます
+
+#### 段落がない場合
+文章 1 の内容が入ります  
+文章 2 の内容が入ります
+
+#### 段落がある場合
+文章 1 の内容が入ります  
+
+文章 2 の内容が入ります
+
+
+# :memo:文字の強調
+- 各種記述方法を適用させることで文内の文字の表現を豊かにすることが可能です
+    - これらの表現は Edit 画面下部のツールバーから該当のアイコンを選択することで簡単に適用させることも可能です
+
+## 斜体（Italic）
+- アスタリスク `*` もしくはアンダースコア `_` 1つで該当の文字列を囲みます
+
+#### 活用例
+- この文章は *斜体が適用* されます  
+- この文章は _斜体が適用_ されます
+
+## 太字（Bold）
+- アスタリスク `*` もしくはアンダースコア `_` 2つで該当の文字列を囲みます
+
+#### 活用例
+- この文章は **強調が適用** されます  
+- この文章は __強調が適用__ されます
+
+## 斜体 & 太字（Italic & Bold）
+- アスタリスク `*` もしくはアンダースコア `_` 3つで該当の文字列を囲みます
+
+#### 活用例
+- この文章は ***斜体 & 太字が適用*** されます  
+- この文章は ___斜体 & 太字が適用___ されます
+
+
+# :memo:リストの挿入
+## 箇条書きリスト
+- ハイフン `-`、プラス `+`、アスタリスク `*` を行頭に記述することで、箇条書きのリストを挿入することでができます
+    - タブを活用することで前の行のリストに紐づくリストを挿入することも可能です
+
+#### 活用例
+- この文章は箇条書きリストで表現しています
+    - この文章は箇条書きリストで表現しています
+        - この文章は箇条書きリストで表現しています
+        - この文章は箇条書きリストで表現しています
+- この文章は箇条書きリストで表現しています
+    - この文章は箇条書きリストで表現しています
+
+## 番号付きリスト
+- `番号.` を行頭に記述することで、番号付きのリストを挿入することができます
+    - タブを活用することで前の行のリストに紐づくリストを挿入することも可能です
+- 番号付きリストと箇条書きリストを組み合わせて活用することも可能です
+
+#### 活用例
+1. この文章は番号付きリストで表現しています
+    1. この文章は番号付きリストで表現しています
+    1. この文章は番号付きリストで表現しています
+    1. この文章は番号付きリストで表現しています
+        - この文章は箇条書きリストで表現しています 
+1. この文章は箇条書きリストで表現しています
+    - この文章は箇条書きリストで表現しています  
 
 ## タスクリスト
+- `[] ` を記述することでリストに対して未チェックのチェックボックスを挿入することができます
+    - `[x] ` を記述することでチェック済みのチェックボックスを挿入することができます
 
-```
+#### 活用例
 - [ ] タスク 1
-    - [x] タスク 1.1
-    - [ ] タスク 1.2
-- [x] タスク2
-```
-
-- [ ] タスク 1
-    - [x] タスク 1.1
-    - [ ] タスク 1.2
+    - [x] タスク 1-1
+    - [ ] タスク 1-2
 - [x] タスク2
 
 
-# :memo: Table
-
+# :memo:表の挿入
 ## Markdown 標準
+- Markdown で記載できる標準的な形式の表です
 
-```markdown
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
-
-OR
-
-Left align | Right align | Center align
-:--|--:|:-:
-This       | This        | This
-column     | column      | column
-will       | will        | will
-be         | be          | be
-left       | right       | center
-aligned    | aligned     | aligned
-```
-
-| Left align | Right align | Center align |
-|:-----------|------------:|:------------:|
-| This       | This        | This         |
-| column     | column      | column       |
-| will       | will        | will         |
-| be         | be          | be           |
-| left       | right       | center       |
-| aligned    | aligned     | aligned      |
+#### 活用例
+| 左揃え               |               右揃え |        中央揃え        |
+| :------------------- | -------------------: | :--------------------: |
+| この列は             |             この列は |        この列は        |
+| 左揃えで表示されます | 右揃えで表示されます | 中央揃えで表示されます |
 
 ## TSV
-
-~~~
+#### 活用例
 ``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-~~~
-
-``` tsv
-Content Cell	Content Cell
-Content Cell	Content Cell
+10:00	集合
+10:20	移動
 ```
 
-## TSV (ヘッダー付き)
-
-~~~
+## TSV（ヘッダー付き）
+#### 活用例
 ``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
-```
-~~~
-
-``` tsv-h
-First Header	Second Header
-Content Cell	Content Cell
-Content Cell	Content Cell
+時間	行動
+10:00	集合
+10:20	移動
 ```
 
 ## CSV
-
-~~~
+#### 活用例
 ``` csv
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-~~~
-
-``` csv
-Content Cell,Content Cell
-Content Cell,Content Cell
+11:00,MTG
+12:00,昼食
 ```
 
-## CSV (ヘッダー付き)
-
-~~~
+## CSV（ヘッダー付き）
+#### 活用例
 ``` csv-h
-First Header,Second Header
-Content Cell,Content Cell
-Content Cell,Content Cell
-```
-~~~
-
-``` csv-h
-First Header,Second Header
-Content Cell,Content Cell
-Content Cell,Content Cell
+時間,行動
+11:00,MTG
+12:00,昼食
 ```
 
 
-# :memo: Footnote
+# :memo:リンクの挿入
+## Markdown 標準
+- Markdown で記載できる標準的な形式のリンクです
+- `[表示されるテキスト](リンク先のURL)`でリンクに変換されます
 
+#### 活用例
+[Google](https://www.google.co.jp/)
+
+## Pukiwiki like linker
+- もっとも柔軟なリンクの形式です
+- 記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます
+
+#### 活用例
+Bootstrap によるページの装飾方法の記述方法は [[こちらをご確認ください>./1. ページの装飾方法（Bootstrap）]]
+
+
+# :memo:画像の挿入
+## 画像（Images）の挿入
+- `![Alt文字列](URL)` で`<img>`タグを挿入できます
+
+#### 活用例
+![Minion](https://octodex.github.com/images/minion.png)
+
+## 画像のサイズ指定
+- 画像の大きさなどを指定する場合はimgタグを使用します
+
+#### 活用例
+<img src="https://octodex.github.com/images/dojocat.jpg" width="500px">
+
+
+# :memo:コンテンツやページの表示
+## 目次（ToC）
+- いくつかの `#` 記号に続けて `ToC` を記述することでページ内に目次を生成することができます
+    - `ToC` は `Table of Contents` または `Table-of-Contents` でも適用されます
+- 生成される目次は、ページ内で `ToC` を記述した以降の部分の目次となります
+
+#### 活用例
+##### ToC
+
+## 配下ページの表示（lsx）
+- ページ内に `$lsx()` を記述することで配下に作成されているページを表示することができます
+- 各種オプションを指定することで表示される配下ページを操作することができます
+    - lsx の詳細は [GROWI 公式ドキュメント](https://docs.growi.org/ja/guide/features/lsx.html) をご確認ください
+
+#### 活用例
+$lsx()
+
+# :memo:その他の基本的な表現
+## 引用（Blockquotes）
+- 行頭に `>` を記述することで引用表現をすることが可能です
+    - 多重引用の際は `>` を複数個連続で記述することで表現が可能です
+- 引用内でリストなどの要素を併用することも可能です
+
+#### 活用例
+> - 引用する文章が入ります
+> - 引用する文章が入ります
+>> 多重引用したい文章の場合は複数個の挿入が必要です
+
+## コード（Code）
+- `` ` `` 3つで囲むことでコードの表現をすることが可能です
+
+#### 活用例
+```
+コードが入ります  
+改行や段落をコード内で反映させることが可能です
+
+- リストもコード内での表現が可能です
+    - リストもコード内での表現が可能です
+```
+
+## インラインコード
+- `` ` `` で単語を囲むとインラインコードになります
+
+#### 活用例
+こちらは `インラインコード` です
+
+## シンタックスハイライトとファイル名
+- [highlight.js Demo](https://highlightjs.org/static/demo/) の common カテゴリ内の言語に対応しています
+
+#### 活用例 
+```javascript:mersenne-twister.js
+function MersenneTwister(seed) {
+  if (arguments.length == 0) {
+    seed = new Date().getTime();
+  }
+
+  this._mt = new Array(624);
+  this.setSeed(seed);
+}
+```
+
+## pre 整形済みテキスト
+- 半角スペース4個もしくはタブで、コードブロックを pre 表示できます
+
+#### 活用例
+    class Hoge
+        def hoge
+            print 'hoge'
+        end
+    end
+
+## 水平線（Hr）
+- アスタリスク `*` もしくはアンダースコア `_` を3つ以上連続して記述することで水平線を挿入できます
+
+#### 活用例
+以下に水平線が挿入されます
+***
+
+以下に水平線が挿入されます
+___
+
+## 脚注（Footnote）
+- 脚注 `[^1]` と脚注への参照 `[^1]:` を作成することができます
+
+#### 活用例
 脚注への参照[^1]を書くことができます。
 
 長い脚注は[^longnote]のように書くことができます。
@@ -410,9 +278,7 @@ Content Cell,Content Cell
 
     後続の段落はインデントされて、前の脚注に属します。
 
-
-# :memo: Emoji
-
+## 絵文字（Emoji）
 :smiley: :smile: :laughing: :innocent: :drooling_face:
 
 :family: :man-boy: :man-girl: :man-girl-girl: :woman-girl-girl:
@@ -428,12 +294,9 @@ Content Cell,Content Cell
 :watch: :gear: :gem: :wrench: :email:
 
 
+# :memo:さらに応用的な表現
+- [ページの装飾方法（Bootstrap）](/Sandbox/Bootstrap5)
 
-# :heavy_plus_sign: 更に…
+- [図形の表現方法（Daigrams）](/Sandbox/Daigrams）)
 
-- Bootstrap4 のタグを使う
-    - :arrow_right: [/Sandbox/Bootstrap4]
-- 図表を書く
-    - :arrow_right: [/Sandbox/Diagrams]
-- 数式を書く
-    - :arrow_right: [/Sandbox/Math]
+- [数式の表現方法（Math）](/Sandbox/Math)
