@@ -10,6 +10,5 @@ export * as pagePathUtils from './page-path-utils';
 export * as pathUtils from './path-utils';
 export * as pageUtils from './page-utils';
 
-export * from './basic-interceptor';
 export * from './browser-utils';
 export * from './growi-theme-metadata';
