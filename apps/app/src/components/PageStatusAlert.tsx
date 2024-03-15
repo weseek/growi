@@ -46,7 +46,7 @@ export const PageStatusAlert = (): JSX.Element => {
   }
 
   return (
-    <div className={`${styles['grw-page-status-alert']} card text-white fixed-bottom animated fadeInUp faster bg-warning text-dark`}>
+    <div className={`${styles['grw-page-status-alert']} card fixed-bottom animated fadeInUp faster text-bg-warning`}>
       <div className="card-body">
         <p className="card-text grw-card-label-container">
           { hasResolveConflictHandler
