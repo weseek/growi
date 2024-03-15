@@ -10,6 +10,7 @@ import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -133,7 +134,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   if (isLoading) {
     contents = (
       <div className="text-muted text-center my-2">
-        <i className="fa fa-spinner fa-pulse"></i>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -170,7 +171,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             className="grw-page-control-dropdown-item"
             data-testid="add-remove-bookmark-btn"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         ) }

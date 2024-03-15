@@ -17,6 +17,7 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 // Do not import with next/dynamic
 // see: https://github.com/weseek/growi/pull/7923
@@ -181,7 +182,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           {/* Loading */}
           { pages == null && (
             <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-              <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+              <LoadingSpinner className="me-1 fs-3" />
             </div>
           ) }
 

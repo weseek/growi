@@ -2,36 +2,42 @@ import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 
+import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import {
   Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { toastError } from '~/client/util/toastr';
+import { useCreateTemplatePage } from '~/client/services/create-page';
+import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
+import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+
 
 import PagePathAutoComplete from './PagePathAutoComplete';
 
 import styles from './PageCreateModal.module.scss';
 
 const {
-  isCreatablePage, generateEditorPath, isUsersHomepage,
+  isCreatablePage, isUsersHomepage,
 } = pagePathUtils;
 
-const PageCreateModal = () => {
+const PageCreateModal: React.FC = () => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   const { data: currentUser } = useCurrentUser();
 
   const { data: pageCreateModalData, close: closeCreateModal } = usePageCreateModal();
-  const { isOpened, path } = pageCreateModalData;
+
+  const path = pageCreateModalData?.path;
+  const isOpened = pageCreateModalData?.isOpened ?? false;
+
+  const { createAndTransit } = useCreatePageAndTransit();
+  const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
   const pathname = path || '';
@@ -39,25 +45,12 @@ const PageCreateModal = () => {
   const isCreatable = isCreatablePage(pathname) || isUsersHomepage(pathname);
   const pageNameInputInitialValue = isCreatable ? pathUtils.addTrailingSlash(pathname) : '/';
   const now = format(new Date(), 'yyyy/MM/dd');
+  const todaysParentPath = [userHomepagePath, t('create_page_dropdown.todays.memo', { ns: 'commons' }), now].join('/');
 
-  const { mutate: mutateEditorMode } = useEditorMode();
-
-  const [todayInput1, setTodayInput1] = useState(t('Memo'));
-  const [todayInput2, setTodayInput2] = useState('');
+  const [todayInput, setTodayInput] = useState('');
   const [pageNameInput, setPageNameInput] = useState(pageNameInputInitialValue);
   const [template, setTemplate] = useState(null);
   const [isMatchedWithUserHomepagePath, setIsMatchedWithUserHomepagePath] = useState(false);
-
-  // ensure pageNameInput is synced with selectedPagePath || currentPagePath
-  useEffect(() => {
-    if (isOpened) {
-      setPageNameInput(isCreatable ? pathUtils.addTrailingSlash(pathname) : '/');
-    }
-  }, [isOpened, pathname, isCreatable]);
-
-  useEffect(() => {
-    setTodayInput1(t('Memo'));
-  }, [t]);
 
   const checkIsUsersHomepageDebounce = useMemo(() => {
     const checkIsUsersHomepage = () => {
@@ -69,9 +62,10 @@ const PageCreateModal = () => {
 
   useEffect(() => {
     if (isOpened) {
-      checkIsUsersHomepageDebounce(pageNameInput);
+      checkIsUsersHomepageDebounce();
     }
   }, [isOpened, checkIsUsersHomepageDebounce, pageNameInput]);
+
 
   function transitBySubmitEvent(e, transitHandler) {
     // prevent page transition by submit
@@ -80,19 +74,11 @@ const PageCreateModal = () => {
   }
 
   /**
-   * change todayInput1
+   * change todayInput
    * @param {string} value
    */
-  function onChangeTodayInput1Handler(value) {
-    setTodayInput1(value);
-  }
-
-  /**
-   * change todayInput2
-   * @param {string} value
-   */
-  function onChangeTodayInput2Handler(value) {
-    setTodayInput2(value);
+  function onChangeTodayInputHandler(value) {
+    setTodayInput(value);
   }
 
   /**
@@ -104,52 +90,44 @@ const PageCreateModal = () => {
   }
 
   /**
-   * join path, check if creatable, then redirect
-   * @param {string} paths
-   */
-  const redirectToEditor = useCallback(async(...paths) => {
-    try {
-      const editorPath = generateEditorPath(...paths);
-      await router.push(editorPath);
-      mutateEditorMode(EditorMode.Editor);
-
-      // close modal
-      closeCreateModal();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  }, [closeCreateModal, mutateEditorMode, router]);
-
-  /**
    * access today page
    */
-  function createTodayPage() {
-    let tmpTodayInput1 = todayInput1;
-    if (tmpTodayInput1 === '') {
-      tmpTodayInput1 = t('Memo');
-    }
-    redirectToEditor(userHomepagePath, tmpTodayInput1, now, todayInput2);
-  }
+  const createTodayPage = useCallback(async() => {
+    const joinedPath = [todaysParentPath, todayInput].join('/');
+    return createAndTransit(
+      { path: joinedPath, wip: true, origin: Origin.View },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+    );
+  }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
 
   /**
    * access input page
    */
-  function createInputPage() {
-    redirectToEditor(pageNameInput);
-  }
-
-  const ppacSubmitHandler = useCallback((input) => {
-    redirectToEditor(input);
-  }, [redirectToEditor]);
+  const createInputPage = useCallback(async() => {
+    return createAndTransit(
+      {
+        path: pageNameInput,
+        wip: true,
+        origin: Origin.View,
+      },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+    );
+  }, [closeCreateModal, createAndTransit, pageNameInput]);
 
   /**
    * access template page
    */
-  function createTemplatePage(e) {
-    const pageName = (template === 'children') ? '_template' : '__template';
-    redirectToEditor(pathname, pageName);
-  }
+  const createTemplatePage = useCallback(async() => {
+
+    const label = (template === 'children') ? '_template' : '__template';
+
+    await createTemplate?.(label);
+    closeCreateModal();
+  }, [closeCreateModal, createTemplate, template]);
+
+  const createTodaysMemoWithToastr = useToastrOnError(createTodayPage);
+  const createInputPageWithToastr = useToastrOnError(createInputPage);
+  const createTemplateWithToastr = useToastrOnError(createTemplatePage);
 
   function renderCreateTodayForm() {
     if (!isOpened) {
@@ -158,31 +136,22 @@ const PageCreateModal = () => {
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
-          <h3 className="grw-modal-head pb-2">{t("Create today's")}</h3>
+          <h3 className="grw-modal-head pb-2">{t('create_page_dropdown.todays.desc', { ns: 'commons' })}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
             <div className="d-flex align-items-center flex-fill flex-wrap flex-lg-nowrap">
-              <div className="d-flex align-items-center">
-                <span>{userHomepagePath}/</span>
-                <form onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
-                  <input
-                    type="text"
-                    className="page-today-input1 form-control text-center mx-2"
-                    value={todayInput1}
-                    onChange={e => onChangeTodayInput1Handler(e.target.value)}
-                  />
-                </form>
-                <span className="page-today-suffix">/{now}/</span>
+              <div className="d-flex align-items-center text-nowrap">
+                <span>{todaysParentPath}/</span>
               </div>
-              <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={e => transitBySubmitEvent(e, createTodayPage)}>
+              <form className="mt-1 mt-lg-0 ms-lg-2 w-100" onSubmit={(e) => { transitBySubmitEvent(e, createTodaysMemoWithToastr) }}>
                 <input
                   type="text"
                   className="page-today-input2 form-control w-100"
                   id="page-today-input2"
                   placeholder={t('Input page name (optional)')}
-                  value={todayInput2}
-                  onChange={e => onChangeTodayInput2Handler(e.target.value)}
+                  value={todayInput}
+                  onChange={e => onChangeTodayInputHandler(e.target.value)}
                 />
               </form>
             </div>
@@ -192,7 +161,7 @@ const PageCreateModal = () => {
                 type="button"
                 data-testid="btn-create-memo"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
-                onClick={createTodayPage}
+                onClick={createTodaysMemoWithToastr}
               >
                 <span className="material-symbols-outlined">description</span>{t('Create')}
               </button>
@@ -221,13 +190,13 @@ const PageCreateModal = () => {
                   <PagePathAutoComplete
                     initializedPath={pageNameInputInitialValue}
                     addTrailingSlash
-                    onSubmit={ppacSubmitHandler}
+                    onSubmit={createInputPageWithToastr}
                     onInputChange={value => setPageNameInput(value)}
                     autoFocus
                   />
                 )
                 : (
-                  <form onSubmit={e => transitBySubmitEvent(e, createInputPage)}>
+                  <form onSubmit={(e) => { transitBySubmitEvent(e, createInputPageWithToastr) }}>
                     <input
                       type="text"
                       value={pageNameInput}
@@ -245,7 +214,7 @@ const PageCreateModal = () => {
                 type="button"
                 data-testid="btn-create-page-under-below"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
-                onClick={createInputPage}
+                onClick={createInputPageWithToastr}
                 disabled={isMatchedWithUserHomepagePath}
               >
                 <span className="material-symbols-outlined">description</span>{t('Create')}
@@ -300,7 +269,7 @@ const PageCreateModal = () => {
                 data-testid="grw-btn-edit-page"
                 type="button"
                 className="grw-btn-create-page btn btn-outline-primary rounded-pill text-nowrap ms-3"
-                onClick={createTemplatePage}
+                onClick={createTemplateWithToastr}
                 disabled={template == null}
               >
                 <span className="material-symbols-outlined">description</span>{t('Edit')}

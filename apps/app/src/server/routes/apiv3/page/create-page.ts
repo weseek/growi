@@ -1,8 +1,9 @@
+import { allOrigin } from '@growi/core';
 import type {
   IPage, IUser, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -63,6 +64,11 @@ async function determinePath(_parentPath?: string, _path?: string, optionalParen
   if (_parentPath != null) {
     const parentPath = normalizePath(_parentPath);
 
+    // when parentPath is user's homepage
+    if (isUsersHomepage(parentPath)) {
+      return generateUntitledPath(parentPath, basePathname);
+    }
+
     // when parentPath is valid
     if (isCreatablePage(parentPath)) {
       return generateUntitledPath(parentPath, basePathname);
@@ -112,6 +118,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('wip').optional().isBoolean().withMessage('wip must be boolean'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -222,10 +229,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let createdPage;
       try {
         const {
-          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip,
+          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip, origin,
         } = req.body;
 
-        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip };
+        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip, origin };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;

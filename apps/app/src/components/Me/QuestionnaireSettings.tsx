@@ -8,6 +8,8 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
 import { useCurrentUser } from '~/stores/context';
 
+import { LoadingSpinner } from '../LoadingSpinner';
+
 
 export const QuestionnaireSettings = (): JSX.Element => {
   const { t } = useTranslation();
@@ -41,17 +43,17 @@ export const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <>
-      <h2 className="border-bottom mb-4">{t('questionnaire.settings')}</h2>
+      <h2 className="border-bottom pb-2 mb-4 fs-4">{t('questionnaire.settings')}</h2>
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       )}
 
-      <div className="row">
-        <div className="offset-md-3 col-md-6 text-start">
-          {!isLoadingCurrentUser && (
+      <div className="container">
+        {!isLoadingCurrentUser && (
+          <div className="offset-md-3 col-md-6 text-start row">
             <div className="form-check form-switch">
               <span id="grw-questionnaire-settings-toggle-wrapper">
                 <input
@@ -66,17 +68,17 @@ export const QuestionnaireSettings = (): JSX.Element => {
                   {t('questionnaire.enable_questionnaire')}
                 </label>
               </span>
-              <p className="form-text text-muted small">
-                {t('questionnaire.personal_settings_explanation')}
-              </p>
               {!growiIsQuestionnaireEnabled && (
                 <UncontrolledTooltip placement="bottom" target="grw-questionnaire-settings-toggle-wrapper">
                   {t('questionnaire.disabled_by_admin')}
                 </UncontrolledTooltip>
               ) }
             </div>
-          )}
-        </div>
+            <p className="form-text text-muted small">
+              {t('questionnaire.personal_settings_explanation')}
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="row my-3">

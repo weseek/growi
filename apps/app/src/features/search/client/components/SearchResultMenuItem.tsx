@@ -46,7 +46,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
   }
 
   return (
-    <>
+    <div>
       {searchResult?.data
         .map((item, index) => (
           <SearchMenuItem
@@ -62,14 +62,13 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
               <PagePathLabel path={item.data.path} />
             </span>
 
-            <span className="ms-2 d-flex justify-content-center align-items-center">
-              <span className="material-symbols-outlined fs-5">footprint</span>
-              <span>{item.data.seenUsers.length}</span>
+            <span className="text-body-tertiary ms-2 d-flex justify-content-center align-items-center">
+              <span className="material-symbols-outlined fs-6 p-0">footprint</span>
+              <span className="fs-6">{item.data.seenUsers.length}</span>
             </span>
           </SearchMenuItem>
         ))
       }
-      <div className="border-top mt-2 mb-2" />
-    </>
+    </div>
   );
 };

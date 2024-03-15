@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
@@ -5,21 +6,21 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
+import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { updatePage } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -31,7 +32,7 @@ import {
 } from '~/stores/context';
 import {
   useEditorSettings,
-  useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
+  useCurrentIndentSize, usePageTagsForEditors,
   useIsConflict,
   useEditingMarkdown,
   useWaitingSaveProcessing,
@@ -52,14 +53,11 @@ import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { PageHeader } from '../PageHeader/PageHeader';
-
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
-// import Editor from './Editor';
+import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
@@ -86,9 +84,9 @@ type Props = {
 export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
-  const router = useRouter();
 
   const previewRef = useRef<HTMLDivElement>(null);
+  const [previewRect] = useRect(previewRef);
 
   const { data: isNotFound } = useIsNotFound();
   const { data: pageId } = useCurrentPageId();
@@ -105,7 +103,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
@@ -118,6 +115,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
+  const { onEditorsUpdated } = useEditingUsers();
 
   const { data: socket } = useGlobalSocket();
 
@@ -158,21 +156,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
-
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  // const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-  //   // Displays an unsaved warning alert
-  //   mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  // })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    // mutateIsEnabledUnsavedWarningWithDebounce(value);
-  // }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
   }, [setMarkdownPreviewWithDebounce]);
 
 
@@ -209,12 +199,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     try {
       mutateWaitingSaveProcessing(true);
+      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
-        revisionId: currentRevisionId,
+        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
+        origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
@@ -315,7 +307,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncEditor = true;
     scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
 
@@ -331,7 +323,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     isOriginOfScrollSyncPreview = true;
     scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor, previewRef]);
+  }, [codeMirrorEditor]);
 
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
@@ -419,6 +411,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   //   };
   // }, [onRouterChangeComplete, router.events]);
 
+  const pastEndStyle: CSSProperties | undefined = useMemo(() => {
+    if (previewRect == null) {
+      return undefined;
+    }
+
+    const previewRectHeight = previewRect.height;
+
+    // containerHeight - 1.5 line height
+    return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
+  }, [previewRect]);
+
   if (!isEditable) {
     return <></>;
   }
@@ -429,23 +432,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="px-4 py-2">
-        <PageHeader />
-      </div>
+
+      <EditorNavbar />
+
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert">
-          {/* <Editor
-            ref={editorRef}
-            value={initialValue}
-            isUploadable={isUploadable}
-            isUploadAllFileAllowed={isUploadAllFileAllowed}
-            indentSize={currentIndentSize}
-            onScroll={editorScrolledHandler}
-            onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
-            onChange={markdownChangedHandler}
-            onUpload={uploadHandler}
-            onSave={saveWithShortcut}
-          /> */}
+        <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
@@ -453,35 +444,30 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             acceptedUploadFileType={acceptedUploadFileType}
             onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            userName={user?.name}
+            user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
-            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
-            editorTheme={editorSettings?.theme}
-            editorKeymap={editorSettings?.keymapMode}
+            editorSettings={editorSettings}
+            onEditorsUpdated={onEditorsUpdated}
           />
         </div>
-        <div ref={previewRef} onScroll={scrollPreviewHandlerThrottle} className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div
+          ref={previewRef}
+          onScroll={scrollPreviewHandlerThrottle}
+          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
+        >
           <Preview
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
             expandContentWidth={shouldExpandContent}
-            // TODO: Dynamic changes by height or resizing the last element
-            pastEnd={500}
+            style={pastEndStyle}
           />
         </div>
-        {/*
-        <ConflictDiffModal
-          isOpen={conflictDiffModalStatus?.isOpened}
-          onClose={() => closeConflictDiffModal()}
-          markdownOnEdit={markdownToPreview}
-          optionsToSave={optionsToSave}
-          afterResolvedHandler={afterResolvedHandler}
-        />
-        */}
       </div>
+
       <EditorNavbarBottom />
+
     </div>
   );
 });

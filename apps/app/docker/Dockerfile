@@ -4,7 +4,7 @@
 ##
 ## base
 ##
-FROM node:18-slim AS base
+FROM node:20-slim AS base
 
 ENV optDir /opt
 
@@ -18,7 +18,7 @@ RUN turbo prune --scope=@growi/app --docker
 ##
 ## deps-resolver
 ##
-FROM node:18-slim AS deps-resolver
+FROM node:20-slim AS deps-resolver
 
 ENV optDir /opt
 
@@ -62,7 +62,7 @@ RUN tar -cf node_modules.tar \
 ##
 ## builder
 ##
-FROM node:18-slim AS builder
+FROM node:20-slim AS builder
 
 ENV optDir /opt
 
@@ -107,7 +107,7 @@ RUN tar -cf packages.tar \
 ##
 ## release
 ##
-FROM node:18-slim
+FROM node:20-slim
 LABEL maintainer Yuki Takei <yuki@weseek.co.jp>
 
 ENV NODE_ENV production

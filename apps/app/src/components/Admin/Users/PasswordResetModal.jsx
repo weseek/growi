@@ -10,6 +10,7 @@ import {
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
+import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
@@ -53,7 +54,7 @@ class PasswordResetModal extends React.Component {
           onClick={this.onClickSendNewPasswordButton}
           disabled={!isMailerSetup || isEmailSending || isEmailSent}
         >
-          {isEmailSending && <i className="fa fa-spinner fa-pulse mx-2" />}
+          {isEmailSending && <LoadingSpinner className="mx-2" />}
           {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { DevidedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
 import { useCurrentPagePath } from '~/stores/page';
@@ -23,10 +24,15 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
 
   const { data: currentPagePath } = useCurrentPagePath();
 
+  const dPagePath = (new DevidedPagePath(currentPagePath ?? '', true, true));
+  const currentPageName = `
+  ${(!(dPagePath.isRoot || dPagePath.isFormerRoot) ? '...' : '')}/${(dPagePath.isRoot ? '' : `${dPagePath.latter}/`)}
+  `;
+
   const shouldShowMenuItem = searchKeyword.trim().length > 0;
 
   return (
-    <>
+    <div>
       { shouldShowMenuItem && (
         <div data-testid="search-all-menu-item">
           <SearchMenuItem
@@ -35,15 +41,14 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
             getItemProps={getItemProps}
             url={`/_search?q=${searchKeyword}`}
           >
-            <span className="material-symbols-outlined fs-4 me-3">search</span>
-            <span>{searchKeyword}</span>
-            <div className="ms-auto">
-              <span>{t('search_method_menu_item.search_in_all')}</span>
+            <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
+            <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
+              <span className="text-break me-auto">{searchKeyword}</span>
+              <span className="small text-body-tertiary">{t('search_method_menu_item.search_in_all')}</span>
             </div>
           </SearchMenuItem>
         </div>
       )}
-
       <div data-testid="search-prefix-menu-item">
         <SearchMenuItem
           index={shouldShowMenuItem ? 1 : 0}
@@ -51,11 +56,11 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           getItemProps={getItemProps}
           url={`/_search?q=prefix:${currentPagePath} ${searchKeyword}`}
         >
-          <span className="material-symbols-outlined fs-4 me-3">search</span>
-          <code>prefix: {currentPagePath}</code>
-          <span className="ms-2">{searchKeyword}</span>
-          <div className="ms-auto">
-            <span>{t('search_method_menu_item.only_children_of_this_tree')}</span>
+          <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
+          <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
+            <code className="text-break">{currentPageName}</code>
+            <span className="ms-md-2 text-break me-auto">{searchKeyword}</span>
+            <span className="small text-body-tertiary">{t('search_method_menu_item.only_children_of_this_tree')}</span>
           </div>
         </SearchMenuItem>
       </div>
@@ -67,13 +72,14 @@ export const SearchMethodMenuItem = (props: Props): JSX.Element => {
           getItemProps={getItemProps}
           url={`/_search?q="${searchKeyword}"`}
         >
-          <span className="material-symbols-outlined fs-4 me-3">search</span>
-          <span>{`"${searchKeyword}"`}</span>
-          <div className="ms-auto">
-            <span>{t('search_method_menu_item.exact_mutch')}</span>
+          <span className="material-symbols-outlined fs-4 me-3 p-0">search</span>
+          <div className="w-100 d-flex align-items-md-center flex-md-row align-items-start flex-column">
+            <span className="text-break me-auto">{`"${searchKeyword}"`}</span>
+            <span className="small text-body-tertiary">{t('search_method_menu_item.exact_mutch')}</span>
           </div>
         </SearchMenuItem>
       ) }
-    </>
+    </div>
+
   );
 };

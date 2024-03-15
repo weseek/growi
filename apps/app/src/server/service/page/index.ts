@@ -18,6 +18,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -30,6 +31,7 @@ import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CreateMethod } from '~/server/models/page';
 import {
@@ -37,6 +39,7 @@ import {
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import type { UserGroupDocument } from '~/server/models/user-group';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
@@ -2504,23 +2507,19 @@ class PageService implements IPageService {
   }
 
 
-  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: IGrantedGroup, user) {
-    const Page = this.crowi.model('Page');
-    const pages = await Page.find({
-      grantedGroups: {
-        $elemMatch: {
-          item: { $in: groupsToDelete },
-        },
-      },
-    });
+  async handlePrivatePagesForGroupsToDelete(
+      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup, user,
+  ): Promise<void> {
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    const pages = await Page.find({ grantedGroups: { $elemMatch: { item: { $in: groupsToDelete } } } });
 
     switch (action) {
-      case 'public':
-        await Page.publicizePages(pages);
+      case PageActionOnGroupDelete.publicize:
+        await Page.removeGroupsToDeleteFromPages(pages, groupsToDelete);
         break;
-      case 'delete':
+      case PageActionOnGroupDelete.delete:
         return this.deleteMultipleCompletely(pages, user);
-      case 'transfer':
+      case PageActionOnGroupDelete.transfer:
         await Page.transferPagesToGroup(pages, transferToUserGroup);
         break;
       default:
@@ -3826,7 +3825,7 @@ class PageService implements IPageService {
 
     // Create revision
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user);
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, options.origin);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -3920,7 +3919,7 @@ class PageService implements IPageService {
     page.applyScope(user, grant, grantUserGroupIds);
 
     let savedPage = await page.save();
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, undefined, { format });
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -4215,14 +4214,14 @@ class PageService implements IPageService {
     let savedPage = await newPageData.save();
 
     // Update body
-    const isBodyPresent = body != null && previousBody != null;
+    const isBodyPresent = body != null;
     const shouldUpdateBody = isBodyPresent;
     if (shouldUpdateBody) {
-      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+      const origin = options.origin;
+      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user, origin);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
     }
-
 
     this.pageEvent.emit('update', savedPage, user);
 

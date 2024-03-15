@@ -1,16 +1,16 @@
-import React, {
-  FC, useState, useCallback, useRef,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { IClearable } from '~/client/interfaces/clearable';
+import type { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/toastr';
-import { SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
+import { LoadingSpinner } from '../LoadingSpinner';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
@@ -213,7 +213,7 @@ export const AuditLogManagement: FC = () => {
           { isLoading
             ? (
               <div className="text-muted text-center mb-5">
-                <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+                <LoadingSpinner className="me-1 fs-3" />
               </div>
             )
             : (

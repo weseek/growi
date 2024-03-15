@@ -35,7 +35,7 @@ export const BookmarkFolderItemControl: React.FC<{
             onClick={onClickMoveToRoot}
             className="grw-page-control-dropdown-item"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             {t('bookmark_folder.move_to_root')}
           </DropdownItem>
         )}

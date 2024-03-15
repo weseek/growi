@@ -29,9 +29,6 @@ type Props = {
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
-const RootSlash = (): JSX.Element => {
-  return <span className={styles['grw-mr-02em']}>/</span>;
-};
 const Separator = (): JSX.Element => {
   return <span className={styles['grw-mx-02em']}>/</span>;
 };
@@ -72,16 +69,13 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = (
-      <>
+      <div className="fs-5">
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
         <Separator />
-      </>
+      </div>
     );
     latterLink = (
-      <>
-        <RootSlash />
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
-      </>
+      <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
     );
   }
 

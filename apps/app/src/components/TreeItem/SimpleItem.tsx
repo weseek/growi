@@ -15,6 +15,7 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import CountBadge from '../Common/CountBadge';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { ItemNode } from './ItemNode';
 import { useNewPageInput } from './NewPageInput';
@@ -47,10 +48,13 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none">
+    <div
+      className="flex-grow-1 d-flex align-items-center pe-none"
+      style={{ minWidth: 0 }}
+    >
       {shouldShowAttentionIcon && (
         <>
-          <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+          <span id="path-recovery" className="material-symbols-outlined mr-2 text-warning">warning</span>
           <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
             {t('tooltip.operation.attention.rename')}
           </UncontrolledTooltip>
@@ -59,9 +63,9 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
           <div className="d-flex align-items-center">
-            <span className={`text-truncate ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            <span className={`text-truncate me-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
             { page.wip && (
-              <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
+              <span className="wip-page-badge badge rounded-pill me-1 text-bg-secondary">WIP</span>
             )}
           </div>
         </div>
@@ -206,7 +210,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn p-0 ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
@@ -245,7 +249,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               <ItemClassFixed {...itemProps} />
               {isProcessingSubmission && (currentChildren.length - 1 === index) && (
                 <div className="text-muted text-center">
-                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                  <LoadingSpinner className="mr-1" />
                 </div>
               )}
             </div>
