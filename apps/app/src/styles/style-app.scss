@@ -5,7 +5,6 @@
 
 // atoms
 @import 'atoms/buttons';
-@import 'atoms/spinners';
 @import 'atoms/custom_control';
 @import 'atoms/code';
 @import 'atoms/tag';
@@ -13,7 +12,6 @@
 // molecules
 @import 'molecules/toastr';
 @import 'molecules/list-group-item';
-// @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 
 // organisms
@@ -22,11 +20,11 @@
 // // growi component
 @import 'editor';
 @import 'fonts';
+@import 'installer';
 @import 'layout';
 @import 'mirror_mode';
 @import 'modal';
 @import 'share-link';
-@import 'installer';
 
 
 /*
@@ -82,13 +80,6 @@
     width: 14px;
     height: 14px;
   }
-}
-
-// transplant from FontAwesome
-.icon-fw {
-  display: inline-block;
-  width: 1.4em;
-  text-align: left;
 }
 
 .cmd-key.mac {
