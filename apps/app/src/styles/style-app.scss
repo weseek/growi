@@ -13,7 +13,6 @@
 // molecules
 @import 'molecules/toastr';
 @import 'molecules/list-group-item';
-// @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 
 // organisms
@@ -22,11 +21,11 @@
 // // growi component
 @import 'editor';
 @import 'fonts';
+@import 'installer';
 @import 'layout';
 @import 'mirror_mode';
 @import 'modal';
 @import 'share-link';
-@import 'installer';
 
 
 /*
