@@ -13,6 +13,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
+import { LoadingSpinner } from '../LoadingSpinner';
 import { Username } from '../User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
@@ -85,7 +86,7 @@ export const DeleteAttachmentModal: React.FC = () => {
 
   const deletingIndicator = useMemo(() => {
     if (deleting) {
-      return <div className="speeding-wheel-sm"></div>;
+      return <LoadingSpinner />;
     }
     if (deleteError) {
       return <span>{deleteError}</span>;
