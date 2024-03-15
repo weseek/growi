@@ -8,7 +8,6 @@ import type EventEmitter from 'events';
 import nodePath from 'path';
 
 import { type IPageHasId, Origin } from '@growi/core';
-import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
@@ -21,11 +20,9 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
+import { updatePage, extractRemoteRevisionDataFromErrorObj, useConflictResolver, useConflictEffect, type ConflictHandler } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
-import { SocketEventName } from '~/interfaces/websocket';
-import { usePageStatusAlert } from '~/stores/alert';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
@@ -38,13 +35,11 @@ import {
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
-import { useConflictDiffModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import type { RemoteRevisionData } from '~/stores/remote-latest-page';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -74,22 +69,15 @@ declare global {
 let isOriginOfScrollSyncEditor = false;
 let isOriginOfScrollSyncPreview = false;
 
-type SaveOptions = {
+export type SaveOptions = {
   slackChannels: string,
   overwriteScopesOfDescendants?: boolean
 }
-
-type ConflictHandler = (
-  conflictData: RemoteRevisionData,
-  newMarkdown: string,
-  saveOptions?: SaveOptions
-) => void;
-
-type Save = (
+export type Save = (
   revisionId?: string,
-  markdown?: string,
+  requestMarkdown?: string,
   opts?: SaveOptions,
-  onConflict?: ConflictHandler,
+  onConflict?: ConflictHandler
 ) => Promise<IPageHasId | null>
 
 type Props = {
@@ -119,13 +107,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-  const { open: openConflictDiffModal, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { open: openPageStatusAlert, close: closePageStatusAlert } = usePageStatusAlert();
   const { data: editorSettings } = useEditorSettings();
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
-  const { data: socket } = useGlobalSocket();
+  const onConflict = useConflictResolver();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -134,6 +119,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
+
+  useConflictEffect();
 
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
@@ -176,46 +163,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  const onConflictHandlerEffect = useCallback(() => {
-    const resolveConflictHandler = (newMarkdown: string) => {
-      codeMirrorEditor?.initDoc(newMarkdown);
-      closeConflictDiffModal();
-      closePageStatusAlert();
-    };
-
-    const markdown = codeMirrorEditor?.getDoc();
-    openConflictDiffModal(markdown ?? '', resolveConflictHandler);
-  }, [closePageStatusAlert, closeConflictDiffModal, codeMirrorEditor, openConflictDiffModal]);
-
-  useEffect(() => {
-    const updateRemotePageDataHandler = (data) => {
-      const { s2cMessagePageUpdated } = data;
-      const remoteRevisionId = s2cMessagePageUpdated.revisionId;
-      const remoteRevisionOrigin = s2cMessagePageUpdated.revisionOrigin;
-      const isRevisionOutdated = currentRevisionId !== remoteRevisionId;
-
-      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with client/services/side-effects/page-updated.ts
-      if (isRevisionOutdated && editorMode === EditorMode.Editor && (remoteRevisionOrigin === Origin.View || remoteRevisionOrigin === undefined)) {
-        openPageStatusAlert({ onResolveConflict: onConflictHandlerEffect });
-      }
-
-      // Clear cache
-      if (!isRevisionOutdated) {
-        closePageStatusAlert();
-      }
-    };
-
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, updateRemotePageDataHandler);
-
-    return () => {
-      socket.off(SocketEventName.PageUpdated, updateRemotePageDataHandler);
-    };
-
-  }, [closePageStatusAlert, currentRevisionId, editorMode, onConflictHandlerEffect, openPageStatusAlert, socket]);
-
-
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
@@ -249,7 +196,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
       if (remoteRevisionData != null) {
-        onConflict?.(remoteRevisionData, markdown ?? '', opts);
+        onConflict?.(remoteRevisionData, markdown ?? '', save, opts);
         toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
         return null;
       }
@@ -262,59 +209,29 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [pageId, grantData, mutateWaitingSaveProcessing, t]);
 
-  const generateResolveConflictHandler = useCallback((revisionId: string, saveOptions?: SaveOptions, onConflict?: ConflictHandler) => {
-    return async(newMarkdown: string) => {
-      const page = await save(revisionId, newMarkdown, saveOptions, onConflict);
-      if (page == null) {
-        return;
-      }
-
-      // Reflect conflict resolution results in CodeMirrorEditor
-      codeMirrorEditor?.initDoc(newMarkdown);
-
-      closePageStatusAlert();
-      closeConflictDiffModal();
-
-      toastSuccess(t('toaster.save_succeeded'));
-      updateStateAfterSave?.();
-    };
-  }, [save, codeMirrorEditor, closePageStatusAlert, closeConflictDiffModal, t, updateStateAfterSave]);
-
-  const onConflictHandler: ConflictHandler = useCallback((remoteRevidsionData, newMarkdown, saveOptions) => {
-    setRemoteLatestPageData(remoteRevidsionData);
-
-    const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, saveOptions, onConflictHandler);
-
-    const conflictHandler = () => {
-      openConflictDiffModal(newMarkdown, resolveConflictHandler);
-    };
-
-    openPageStatusAlert({ onResolveConflict: conflictHandler });
-  }, [setRemoteLatestPageData, generateResolveConflictHandler, openPageStatusAlert, openConflictDiffModal]);
-
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
-    const page = await save(revisionId, markdown, opts, onConflictHandler);
+    const page = await save(revisionId, markdown, opts, onConflict);
     if (page == null) {
       return;
     }
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflictHandler, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     const markdown = codeMirrorEditor?.getDoc();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
-    const page = await save(revisionId, markdown, undefined, onConflictHandler);
+    const page = await save(revisionId, markdown, undefined, onConflict);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflictHandler, save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
