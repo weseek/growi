@@ -1,3 +1,4 @@
+import type { IPage } from '@growi/core';
 import {
   type IGrantedGroup,
   PageGrant, GroupType, getIdForRef, isPopulated,
@@ -100,7 +101,8 @@ export interface IPageGrantService {
   getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
-  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean
+  isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
+  getPageGrantedGroupsData: (page: PageDocument, user) => Promise<{ id: string, name: string, type: GroupType }[]>
 }
 
 class PageGrantService implements IPageGrantService {
@@ -564,7 +566,7 @@ class PageGrantService implements IPageGrantService {
   }
 
   async calcApplicableGrantData(page, user): Promise<IRecordApplicableGrant> {
-    const Page = mongoose.model('Page') as unknown as PageModel;
+    const Page = mongoose.model<IPage, PageModel>('Page');
 
     // -- Public only if top page
     const isOnlyPublicApplicable = isTopPage(page.path);
@@ -653,6 +655,21 @@ class PageGrantService implements IPageGrantService {
     }
 
     return data;
+  }
+
+  async getPageGrantedGroupsData(page: PageDocument, user): Promise<{ id: string, name: string, type: GroupType }[]> {
+    const userRelatedGrantedGroups = await this.getUserRelatedGrantedGroups(page, user);
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
+    const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
+    const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
+    const grantedUserGroupData = currentPageUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: GroupType.userGroup };
+    });
+    const grantedExternalUserGroupData = currentPageExternalUserGroups.map((group) => {
+      return { id: group._id, name: group.name, type: GroupType.externalUserGroup };
+    });
+
+    return [...grantedUserGroupData, ...grantedExternalUserGroupData];
   }
 
   /*
