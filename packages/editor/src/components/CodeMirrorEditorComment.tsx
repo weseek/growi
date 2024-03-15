@@ -18,8 +18,7 @@ type Props = CodeMirrorEditorProps & object
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    acceptedUploadFileType,
-    onSave, onChange, onUpload,
+    onSave, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
@@ -57,9 +56,8 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.COMMENT}
-      acceptedUploadFileType={acceptedUploadFileType}
-      onChange={onChange}
-      onUpload={onUpload}
+      onSave={onSave}
+      {...otherProps}
     />
   );
 };

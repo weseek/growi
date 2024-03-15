@@ -1,5 +1,7 @@
 import React, { useState, type FC, useCallback } from 'react';
 
+import { Origin } from '@growi/core';
+
 import { createPage } from '~/client/services/page-operation';
 import { useSWRxPageChildren, mutatePageTree } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -75,6 +77,7 @@ export const useNewPageInput = (): UseNewPageInput => {
         // keep grant info undefined to inherit from parent
         grant: undefined,
         grantUserGroupIds: undefined,
+        origin: Origin.View,
         wip: shouldCreateWipPage(newPagePath),
       });
 
@@ -83,7 +86,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       if (!hasDescendants) {
         stateHandlers?.setIsOpen(true);
       }
-    }, [hasDescendants, mutateChildren, stateHandlers]);
+    }, [hasDescendants, stateHandlers]);
 
     const submittionFailedHandler = useCallback(() => {
       setProcessingSubmission(false);

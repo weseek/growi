@@ -6,7 +6,7 @@ import React, {
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId, IUserHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
@@ -18,9 +18,9 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useUpdateStateAfterSave, updatePage } from '~/client/services/page-operation';
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { updatePage } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { SocketEventName } from '~/interfaces/websocket';
@@ -57,10 +57,7 @@ import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { PageHeader } from '../PageHeader/PageHeader';
-
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
+import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
@@ -202,12 +199,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     try {
       mutateWaitingSaveProcessing(true);
+      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
-        revisionId: currentRevisionId,
+        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
+        origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
@@ -433,11 +432,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="px-4 py-2">
-        <PageHeader />
-      </div>
+
+      <EditorNavbar />
+
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert">
+        <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
@@ -448,16 +447,14 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             user={user ?? undefined}
             pageId={pageId ?? undefined}
             initialValue={initialValue}
-            onOpenEditor={markdown => setMarkdownToPreview(markdown)}
+            editorSettings={editorSettings}
             onEditorsUpdated={onEditorsUpdated}
-            editorTheme={editorSettings?.theme}
-            editorKeymap={editorSettings?.keymapMode}
           />
         </div>
         <div
           ref={previewRef}
           onScroll={scrollPreviewHandlerThrottle}
-          className="page-editor-preview-container flex-expand-vert d-none d-lg-flex"
+          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
         >
           <Preview
             rendererOptions={rendererOptions}
@@ -467,17 +464,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
             style={pastEndStyle}
           />
         </div>
-        {/*
-        <ConflictDiffModal
-          isOpen={conflictDiffModalStatus?.isOpened}
-          onClose={() => closeConflictDiffModal()}
-          markdownOnEdit={markdownToPreview}
-          optionsToSave={optionsToSave}
-          afterResolvedHandler={afterResolvedHandler}
-        />
-        */}
       </div>
+
       <EditorNavbarBottom />
+
     </div>
   );
 });
