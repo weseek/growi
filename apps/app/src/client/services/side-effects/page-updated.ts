@@ -38,7 +38,7 @@ export const usePageUpdatedEffect = (): void => {
       const remoteRevisionId = s2cMessagePageUpdated.revisionId;
       const isRevisionOutdated = (currentRevisionId != null || remoteRevisionId != null) && currentRevisionId !== remoteRevisionId;
 
-      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with components/PageEditor.tsx
+      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with client/services/update-page/conflict.tsx
       if (isRevisionOutdated && editorMode === EditorMode.View) {
         openPageStatusAlert({ hideEditorMode: EditorMode.Editor, onRefleshPage: mutateCurrentPage });
       }
