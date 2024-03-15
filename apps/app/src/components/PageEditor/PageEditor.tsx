@@ -25,7 +25,7 @@ import {
   extractRemoteRevisionDataFromErrorObj,
   useConflictResolver,
   useConflictEffect,
-  type ConflictHandler
+  type ConflictHandler,
 } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
