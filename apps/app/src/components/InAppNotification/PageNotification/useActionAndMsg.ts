@@ -16,59 +16,59 @@ export const useActionMsgAndIconForModelNotification = (notification: IInAppNoti
   switch (actionType) {
     case SupportedAction.ACTION_PAGE_LIKE:
       actionMsg = 'liked';
-      actionIcon = 'icon-like';
+      actionIcon = 'favorite';
       break;
     case SupportedAction.ACTION_PAGE_BOOKMARK:
       actionMsg = 'bookmarked on';
-      actionIcon = 'icon-star';
+      actionIcon = 'bookmark_add';
       break;
     case SupportedAction.ACTION_PAGE_UPDATE:
       actionMsg = 'updated on';
-      actionIcon = 'ti ti-agenda';
+      actionIcon = 'update';
       break;
     case SupportedAction.ACTION_PAGE_RENAME:
       actionMsg = 'renamed';
-      actionIcon = 'icon-action-redo';
+      actionIcon = 'redo';
       break;
     case SupportedAction.ACTION_PAGE_DUPLICATE:
       actionMsg = 'duplicated';
-      actionIcon = 'icon-docs';
+      actionIcon = 'file_copy';
       break;
     case SupportedAction.ACTION_PAGE_DELETE:
       actionMsg = 'deleted';
-      actionIcon = 'icon-trash';
+      actionIcon = 'delete';
       break;
     case SupportedAction.ACTION_PAGE_DELETE_COMPLETELY:
       actionMsg = 'completely deleted';
-      actionIcon = 'icon-fire';
+      actionIcon = 'delete_forever';
       break;
     case SupportedAction.ACTION_PAGE_REVERT:
       actionMsg = 'reverted';
-      actionIcon = 'icon-action-undo';
+      actionIcon = 'undo';
       break;
     case SupportedAction.ACTION_PAGE_RECURSIVELY_RENAME:
       actionMsg = 'renamed under';
-      actionIcon = 'icon-action-redo';
+      actionIcon = 'redo';
       break;
     case SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE:
       actionMsg = 'deleted under';
-      actionIcon = 'icon-trash';
+      actionIcon = 'delete_forever';
       break;
     case SupportedAction.ACTION_PAGE_RECURSIVELY_DELETE_COMPLETELY:
       actionMsg = 'deleted completely under';
-      actionIcon = 'icon-fire';
+      actionIcon = 'delete_forever';
       break;
     case SupportedAction.ACTION_PAGE_RECURSIVELY_REVERT:
       actionMsg = 'reverted under';
-      actionIcon = 'icon-action-undo';
+      actionIcon = 'undo';
       break;
     case SupportedAction.ACTION_COMMENT_CREATE:
       actionMsg = 'commented on';
-      actionIcon = 'icon-bubble';
+      actionIcon = 'comment';
       break;
     case SupportedAction.ACTION_USER_REGISTRATION_APPROVAL_REQUEST:
       actionMsg = 'requested registration approval';
-      actionIcon = 'icon-bubble';
+      actionIcon = 'add_comment';
       break;
     default:
       actionMsg = '';

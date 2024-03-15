@@ -94,7 +94,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
               <span className="badge rounded-pill text-bg-secondary ms-1 me-1">WIP</span>
             )}
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
-              <i className="ti ti-clipboard"></i>
+              <span className="material-symbols-outlined">content_paste</span>
             </CopyDropdown>
           </div>
         ) }
