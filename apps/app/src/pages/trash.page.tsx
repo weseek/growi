@@ -13,6 +13,7 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
+import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -70,7 +71,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       </Head>
       <div className="dynamic-layout-root">
         <nav className="sticky-top">
-          TODO: implement navigation for /trash
+          <GrowiContextualSubNavigationSubstance />
         </nav>
 
         <div className="content-main container-lg mb-5 pb-5">
