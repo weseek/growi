@@ -8,7 +8,6 @@ import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-ut
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
-import i18next from 'i18next';
 import mongoose from 'mongoose';
 
 // import { i18n } from '^/config/next-i18next.config';
@@ -46,7 +45,7 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
+  // TODO: https://redmine.weseek.co.jp/issues/142729
   const basePathname = 'Untitled';
 
   // const test = i18next.t('page_register.form_help.email');

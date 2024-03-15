@@ -40,6 +40,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
+  // TODO: https://redmine.weseek.co.jp/issues/142729
   // https://regex101.com/r/Wg2Hh6/1
   const untitledPageRegex = /^Untitled-\d+$/;
 
