@@ -3,9 +3,8 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity, isPopulated } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  GroupType,
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {

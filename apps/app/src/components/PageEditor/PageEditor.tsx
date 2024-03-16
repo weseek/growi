@@ -63,6 +63,7 @@ import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
+import { UserGroupPageGrantStatus } from '~/interfaces/page';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -201,13 +202,15 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(true);
       const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
+      const userRelatedGrantGroups = grantData?.groupGrantData?.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted);
+
       const { page } = await updatePage({
         pageId,
         revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
-        userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
+        userRelatedGrantUserGroupIds: userRelatedGrantGroups?.map((group) => {
           return { item: group.id, type: group.type };
         }),
         ...(opts ?? {}),

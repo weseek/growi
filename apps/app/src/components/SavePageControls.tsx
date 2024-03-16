@@ -10,7 +10,6 @@ import {
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
   useIsSlackConfigured,
@@ -154,7 +153,7 @@ export const SavePageControls = (): JSX.Element | null => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: grantData } = useSelectedGrant();
 
   const { data: editorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -184,10 +183,6 @@ export const SavePageControls = (): JSX.Element | null => {
     setSlackChannels(slackChannels);
   }, []);
 
-  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
-    mutateGrant(grantData);
-  }, [mutateGrant]);
-
   if (isEditable == null || isAclEnabled == null || grantData == null) {
     return null;
   }
@@ -196,7 +191,7 @@ export const SavePageControls = (): JSX.Element | null => {
     return null;
   }
 
-  const { grant, userRelatedGrantedGroups } = grantData;
+  const { grant, groupGrantData } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
 
@@ -227,8 +222,7 @@ export const SavePageControls = (): JSX.Element | null => {
                   <GrantSelector
                     grant={grant}
                     disabled={isGrantSelectorDisabledPage}
-                    userRelatedGrantedGroups={userRelatedGrantedGroups}
-                    onUpdateGrant={updateGrantHandler}
+                    groupGrantData={groupGrantData}
                   />
                 </div>
               )
@@ -259,8 +253,7 @@ export const SavePageControls = (): JSX.Element | null => {
                         grant={grant}
                         disabled={isGrantSelectorDisabledPage}
                         openInModal
-                        userRelatedGrantedGroups={userRelatedGrantedGroups}
-                        onUpdateGrant={updateGrantHandler}
+                        groupGrantData={groupGrantData}
                       />
                     </>
                   )

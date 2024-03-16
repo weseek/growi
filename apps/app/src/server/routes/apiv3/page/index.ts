@@ -595,10 +595,10 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const userRelatedGrantedGroupsData = await pageGrantService.getPageGrantedGroupsData(page, req.user);
+    const currentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(page, req.user);
     const currentPageGrant: IPageGrantData = {
       grant,
-      userRelatedGrantedGroups: userRelatedGrantedGroupsData,
+      groupGrantData: currentPageGroupGrantData,
     };
 
     // page doesn't have parent page
@@ -623,10 +623,10 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const userRelatedParentGrantedGroupsData = await pageGrantService.getPageGrantedGroupsData(parentPage, req.user);
+    const parentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(parentPage, req.user);
     const parentPageGrant: IPageGrantData = {
       grant: parentPage.grant,
-      userRelatedGrantedGroups: userRelatedParentGrantedGroupsData,
+      groupGrantData: parentPageGroupGrantData,
     };
 
     const grantData = {

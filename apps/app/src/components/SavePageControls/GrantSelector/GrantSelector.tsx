@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 
 import {
-  PageGrant, isPopulated, GroupType, type IGrantedGroup,
+  PageGrant, GroupType,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
@@ -12,10 +12,9 @@ import {
 } from 'reactstrap';
 
 import { LoadingSpinner } from '~/components/LoadingSpinner';
-import type { IPageGrantData } from '~/interfaces/page';
+import { UserGroupPageGrantStatus, type GroupGrantData, type IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
-
-import { useMyUserGroups } from './use-my-user-groups';
+import { useSelectedGrant } from '~/stores/ui';
 
 const AVAILABLE_GRANTS = [
   {
@@ -42,13 +41,7 @@ type Props = {
   disabled?: boolean,
   openInModal?: boolean,
   grant: PageGrant,
-  userRelatedGrantedGroups?: {
-    id: string,
-    name: string,
-    type: GroupType,
-  }[]
-
-  onUpdateGrant?: (grantData: IPageGrantData) => void,
+  groupGrantData?: GroupGrantData,
 }
 
 /**
@@ -60,8 +53,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const {
     disabled,
     openInModal,
-    userRelatedGrantedGroups,
-    onUpdateGrant,
+    groupGrantData,
     grant: currentGrant,
   } = props;
 
@@ -71,12 +63,15 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
-  const { data: myUserGroups, update: updateMyUserGroups } = useMyUserGroups(shouldFetch);
+  const { mutate: mutateGrant } = useSelectedGrant();
 
   const showSelectGroupModal = useCallback(() => {
-    updateMyUserGroups();
     setIsSelectGroupModalShown(true);
-  }, [updateMyUserGroups]);
+  }, []);
+
+  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
+    mutateGrant(grantData);
+  }, [mutateGrant]);
 
   /**
    * change event handler for grant selector
@@ -88,35 +83,35 @@ export const GrantSelector = (props: Props): JSX.Element => {
       return;
     }
 
-    if (onUpdateGrant != null) {
-      onUpdateGrant({ grant, userRelatedGrantedGroups: undefined });
-    }
-  }, [onUpdateGrant, showSelectGroupModal]);
+    updateGrantHandler({ grant, groupGrantData: undefined });
+  }, [updateGrantHandler, showSelectGroupModal]);
 
-  const groupListItemClickHandler = useCallback((grantGroup: IGrantedGroup) => {
-    if (onUpdateGrant != null && isPopulated(grantGroup.item)) {
-      let userRelatedGrantedGroupsCopy = userRelatedGrantedGroups != null ? [...userRelatedGrantedGroups] : [];
-      const grantGroupInfo = { id: grantGroup.item._id, name: grantGroup.item.name, type: grantGroup.type };
-      if (userRelatedGrantedGroupsCopy.find(group => group.id === grantGroupInfo.id) == null) {
-        userRelatedGrantedGroupsCopy.push(grantGroupInfo);
+  const groupListItemClickHandler = useCallback((userRelatedGroupId: string) => {
+    const userRelatedGroup = groupGrantData?.userRelatedGroups.find(group => group.id === userRelatedGroupId);
+    if (userRelatedGroup != null) {
+      if (userRelatedGroup.status === UserGroupPageGrantStatus.isGranted) {
+        userRelatedGroup.status = UserGroupPageGrantStatus.notGranted;
+        updateGrantHandler({ grant: 5, groupGrantData });
       }
-      else {
-        userRelatedGrantedGroupsCopy = userRelatedGrantedGroupsCopy.filter(group => group.id !== grantGroupInfo.id);
+      else if (userRelatedGroup.status === UserGroupPageGrantStatus.notGranted) {
+        userRelatedGroup.status = UserGroupPageGrantStatus.isGranted;
+        updateGrantHandler({ grant: 5, groupGrantData });
       }
-      onUpdateGrant({ grant: 5, userRelatedGrantedGroups: userRelatedGrantedGroupsCopy });
     }
-  }, [onUpdateGrant, userRelatedGrantedGroups]);
+  }, [updateGrantHandler, groupGrantData]);
 
   /**
    * Render grant selector DOM.
    */
   const renderGrantSelector = useCallback(() => {
-
     let dropdownToggleBtnColor;
     let dropdownToggleLabelElm;
 
+    const isGroupGrantDataNonEmpty = groupGrantData != null
+      && (groupGrantData.userRelatedGroups.length > 0 || groupGrantData.nonUserRelatedGrantedGroups.length > 0);
+
     const dropdownMenuElems = AVAILABLE_GRANTS.map((opt) => {
-      const label = ((opt.grant === 5 && opt.reselectLabel != null) && userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 0)
+      const label = ((opt.grant === 5 && opt.reselectLabel != null) && isGroupGrantDataNonEmpty)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -137,18 +132,22 @@ export const GrantSelector = (props: Props): JSX.Element => {
     });
 
     // add specified group option
-    if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 0) {
+    if (isGroupGrantDataNonEmpty) {
+      const { userRelatedGroups, nonUserRelatedGrantedGroups } = groupGrantData;
+      const userRelatedGrantedGroups = userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted);
+      const grantedGroupNames = [...userRelatedGrantedGroups.map(group => group.name), ...nonUserRelatedGrantedGroups.map(group => group.name)];
+
       const labelElm = (
         <span>
           <span className="material-symbols-outlined me-1">account_tree</span>
           <span className="label">
-            {userRelatedGrantedGroups.length > 1
+            {grantedGroupNames.length > 1
               ? (
                 <span>
-                  {`${userRelatedGrantedGroups[0].name}... `}
-                  <span className="badge badge-purple">+{userRelatedGrantedGroups.length - 1}</span>
+                  {`${grantedGroupNames[0]}... `}
+                  <span className="badge badge-purple">+{grantedGroupNames.length - 1}</span>
                 </span>
-              ) : userRelatedGrantedGroups[0].name}
+              ) : grantedGroupNames[0]}
           </span>
         </span>
       );
@@ -171,7 +170,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, userRelatedGrantedGroups, t, openInModal]);
+  }, [changeGrantHandler, currentGrant, disabled, groupGrantData, t, openInModal]);
 
   /**
    * Render select grantgroup modal.
@@ -182,7 +181,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
 
     // show spinner
-    if (myUserGroups == null) {
+    if (groupGrantData == null) {
       return (
         <div className="my-3 text-center">
           <LoadingSpinner className="mx-auto text-muted fs-4" />
@@ -190,7 +189,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
       );
     }
 
-    if (myUserGroups.length === 0) {
+    const { userRelatedGroups, nonUserRelatedGrantedGroups } = groupGrantData;
+
+    if (userRelatedGroups.length === 0) {
       return (
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
@@ -203,20 +204,37 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <div className="d-flex flex-column">
-        { myUserGroups.map((group) => {
-          const groupIsGranted = userRelatedGrantedGroups?.find(g => g.id === group.item._id) != null;
-          const activeClass = groupIsGranted ? 'active' : '';
+        { userRelatedGroups.map((group) => {
+          const isGroupGranted = group.status === UserGroupPageGrantStatus.isGranted;
+          const cannotGrantGroup = group.status !== UserGroupPageGrantStatus.cannotGrant;
+          const activeClass = isGroupGranted ? 'active' : '';
 
           return (
             <button
               className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
               type="button"
-              key={group.item._id}
-              onClick={() => groupListItemClickHandler(group)}
+              key={group.id}
+              onClick={() => groupListItemClickHandler(group.id)}
+              disabled={cannotGrantGroup}
             >
-              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
-              <h5 className="d-inline-block ms-3">{group.item.name}</h5>
-              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
+              <span className="align-middle"><input type="checkbox" checked={isGroupGranted} disabled={cannotGrantGroup} /></span>
+              <h5 className="d-inline-block ms-3">{group.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
+              {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
+            </button>
+          );
+        }) }
+        { nonUserRelatedGrantedGroups.map((group) => {
+          return (
+            <button
+              className="btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 active"
+              type="button"
+              key={group.id}
+              disabled
+            >
+              <span className="align-middle"><input type="checkbox" checked disabled /></span>
+              <h5 className="d-inline-block ms-3">{group.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
@@ -225,7 +243,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
       </div>
     );
 
-  }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, userRelatedGrantedGroups]);
+  }, [currentUser?.admin, groupListItemClickHandler, shouldFetch, t, groupGrantData]);
 
   return (
     <>

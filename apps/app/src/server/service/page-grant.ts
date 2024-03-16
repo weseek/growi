@@ -9,8 +9,10 @@ import {
 import escapeStringRegexp from 'escape-string-regexp';
 import mongoose from 'mongoose';
 
+import type { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import { UserGroupPageGrantStatus, type GroupGrantData } from '~/interfaces/page';
 import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import UserGroup from '~/server/models/user-group';
@@ -99,10 +101,11 @@ export interface IPageGrantService {
     userRelatedGroups: PopulatedGrantedGroup[], previousGrantedGroups: IGrantedGroup[], grant?: PageGrant, grantedGroups?: IGrantedGroup[],
   ) => boolean,
   getUserRelatedGroups: (user) => Promise<PopulatedGrantedGroup[]>,
+  getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
   isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
-  getPageGrantedGroupsData: (page: PageDocument, user) => Promise<{ id: string, name: string, type: GroupType }[]>
+  getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>
 }
 
 class PageGrantService implements IPageGrantService {
@@ -657,19 +660,41 @@ class PageGrantService implements IPageGrantService {
     return data;
   }
 
-  async getPageGrantedGroupsData(page: PageDocument, user): Promise<{ id: string, name: string, type: GroupType }[]> {
-    const userRelatedGrantedGroups = await this.getUserRelatedGrantedGroups(page, user);
-    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
-    const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
-    const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
-    const grantedUserGroupData = currentPageUserGroups.map((group) => {
-      return { id: group._id, name: group.name, type: GroupType.userGroup };
-    });
-    const grantedExternalUserGroupData = currentPageExternalUserGroups.map((group) => {
-      return { id: group._id, name: group.name, type: GroupType.externalUserGroup };
+  async getPageGroupGrantData(page: PageDocument, user): Promise<GroupGrantData> {
+    const userRelatedGroups = await this.getUserRelatedGroups(user);
+    const userRelatedGroupsData = userRelatedGroups.map((group) => {
+      const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
+      return {
+        // TODO: change un-grantable groups to UserGroupPageGrantStatus.cannotGrant
+        id: group.item._id.toString(), name: group.item.name, type: group.type, provider, status: UserGroupPageGrantStatus.notGranted,
+      };
     });
 
-    return [...grantedUserGroupData, ...grantedExternalUserGroupData];
+    const nonUserRelatedGrantedGroups: {
+      id: string,
+      name: string,
+      type: GroupType,
+      provider?: ExternalGroupProviderType,
+    }[] = [];
+
+    const populatedGrantedGroups = await this.getPopulatedGrantedGroups(page.grantedGroups);
+
+    populatedGrantedGroups.forEach((group) => {
+      const userRelatedGrantedGroup = userRelatedGroupsData.find((userRelatedGroup) => {
+        return userRelatedGroup.id === group.item.toString();
+      });
+      if (userRelatedGrantedGroup != null) {
+        userRelatedGrantedGroup.status = UserGroupPageGrantStatus.isGranted;
+      }
+      else {
+        const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
+        nonUserRelatedGrantedGroups.push({
+          id: group.item._id.toString(), name: group.item.name, type: group.type, provider,
+        });
+      }
+    });
+
+    return { userRelatedGroups: userRelatedGroupsData, nonUserRelatedGrantedGroups };
   }
 
   /*
@@ -685,6 +710,20 @@ class PageGrantService implements IPageGrantService {
       ...userRelatedExternalUserGroups.map((group) => {
         return { type: GroupType.externalUserGroup, item: group };
       }),
+    ];
+  }
+
+  async getPopulatedGrantedGroups(grantedGroups: IGrantedGroup[]): Promise<PopulatedGrantedGroup[]> {
+    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(grantedGroups);
+    const userGroupDocuments = await UserGroup.find({ _id: { $in: grantedUserGroups } });
+    const externalUserGroupDocuments = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
+    return [
+      ...(userGroupDocuments.map((group) => {
+        return { type: GroupType.userGroup, item: group };
+      })),
+      ...(externalUserGroupDocuments.map((group) => {
+        return { type: GroupType.externalUserGroup, item: group };
+      })),
     ];
   }
 
