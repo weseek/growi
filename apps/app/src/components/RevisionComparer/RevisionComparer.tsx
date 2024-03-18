@@ -75,7 +75,7 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
             caret
             className="d-block text-muted bg-transparent btn-copy border-0 py-0"
           >
-            <i className="ti ti-clipboard"></i>
+            <span className="material-symbols-outlined">content_paste</span>
           </DropdownToggle>
           <DropdownMenu strategy="fixed" end>
             {/* Page path URL */}

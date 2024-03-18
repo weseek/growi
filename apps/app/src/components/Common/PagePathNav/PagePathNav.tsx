@@ -85,7 +85,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     <div>
       <span className={formerLinkClassName}>{formerLink}</span>
       <div className="d-flex align-items-center">
-        <h1 className={`m-0 text-truncate ${latterLinkClassName}`}>
+        <h1 className={`m-0 ${latterLinkClassName}`}>
           {latterLink}
         </h1>
         { pageId != null && !isNotFound && (
@@ -94,7 +94,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
               <span className="badge rounded-pill text-bg-secondary ms-1 me-1">WIP</span>
             )}
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
-              <i className="ti ti-clipboard"></i>
+              <span className="material-symbols-outlined">content_paste</span>
             </CopyDropdown>
           </div>
         ) }
@@ -117,8 +117,8 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className="d-inline-block pe-auto">
-            <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3' : 'fs-2'} />
+          <div className={`d-inline-block pe-auto ${isCollapseParents ? 'is-collapse-with-top' : ''}`}>
+            <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'} />
           </div>
         );
       }}

@@ -1,9 +1,0 @@
-@mixin count-badge($color, $bg-color, $min-width: initial) {
-  min-width: $min-width;
-  padding: 0.1rem 0.5rem;
-  font-family: var(--font-family-monospace);
-  font-size: 12px;
-  font-weight: 500;
-  color: $color;
-  background-color: $bg-color;
-}
