@@ -84,7 +84,7 @@ const BotTypeCard = (props: BotTypeCardProps): JSX.Element => {
               width={60}
               height={60}
             />
-            <div className="d-flex justify-content-between mb-3">
+            <div className="d-flex justify-content-between mb-3 align-items-center">
               <span>{t('admin:slack_integration.selecting_bot_types.multiple_workspaces_integration')}</span>
               <Image
                 className="bot-type-disc"
@@ -94,7 +94,7 @@ const BotTypeCard = (props: BotTypeCardProps): JSX.Element => {
                 height={20}
               />
             </div>
-            <div className="d-flex justify-content-between">
+            <div className="d-flex justify-content-between align-items-center">
               <span>{t('admin:slack_integration.selecting_bot_types.security_control')}</span>
               <Image
                 className="bot-type-disc"
