@@ -14,8 +14,7 @@ import {
 } from '~/stores/context';
 
 import '@growi/remark-drawio/dist/style.css';
-import { useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useIsRevisionOutdated } from '~/stores/page';
 
 import styles from './DrawioViewerWithEditButton.module.scss';
 
@@ -35,8 +34,7 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: isRevisionOutdated } = useIsRevisionOutdated();
 
   const [isRendered, setRendered] = useState(false);
   const [mxfile, setMxfile] = useState('');
@@ -60,8 +58,6 @@ export const DrawioViewerWithEditButton = React.memo((props: DrawioViewerProps):
     }
   }, []);
 
-  const currentRevisionId = currentPage?.revision?._id;
-  const isRevisionOutdated = (currentRevisionId != null && remoteRevisionId != null) && (currentRevisionId !== remoteRevisionId);
   const showEditButton = !isRevisionOutdated && isRendered && !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
