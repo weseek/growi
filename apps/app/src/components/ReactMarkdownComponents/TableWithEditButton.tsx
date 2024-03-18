@@ -7,8 +7,7 @@ import type { Element } from 'react-markdown/lib/rehype-filter';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
-import { useRemoteRevisionId } from '~/stores/remote-latest-page';
+import { useIsRevisionOutdated } from '~/stores/page';
 
 import styles from './TableWithEditButton.module.scss';
 
@@ -31,8 +30,7 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
-  const { data: currentPage } = useSWRxCurrentPage();
-  const { data: remoteRevisionId } = useRemoteRevisionId();
+  const { data: isRevisionOutdated } = useIsRevisionOutdated();
 
   const bol = node.position?.start.line;
   const eol = node.position?.end.line;
@@ -41,8 +39,6 @@ export const TableWithEditButton = React.memo((props: TableWithEditButtonProps):
     globalEmitter.emit('launchHandsonTableModal', bol, eol);
   }, [bol, eol]);
 
-  const currentRevisionId = currentPage?.revision?._id;
-  const isRevisionOutdated = (currentRevisionId != null && remoteRevisionId != null) && (currentRevisionId !== remoteRevisionId);
   const showEditButton = !isRevisionOutdated && !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
