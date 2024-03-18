@@ -24,7 +24,7 @@ const SlackIntegration = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
-  const [selectedBotType, setSelectedBotType] = useState(null);
+  const [selectedBotType, setSelectedBotType] = useState<SlackbotType | undefined>();
   const [slackSigningSecret, setSlackSigningSecret] = useState(null);
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
@@ -106,12 +106,12 @@ const SlackIntegration = (): JSX.Element => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async(botType) => {
+  const changeCurrentBotSettings = async(botType?: SlackbotType) => {
     try {
       await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
-      setSelectedBotType(null);
+      setSelectedBotType(undefined);
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -119,7 +119,7 @@ const SlackIntegration = (): JSX.Element => {
     }
   };
 
-  const botTypeSelectHandler = async(botType) => {
+  const botTypeSelectHandler = async(botType: SlackbotType) => {
     if (botType === currentBotType) {
       return;
     }
@@ -135,7 +135,7 @@ const SlackIntegration = (): JSX.Element => {
   };
 
   const cancelBotChangeHandler = () => {
-    setSelectedBotType(null);
+    setSelectedBotType(undefined);
   };
 
   let settingsComponent = <></>;
