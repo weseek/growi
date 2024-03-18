@@ -1,7 +1,5 @@
-import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ProxyCircle = () => (
@@ -13,7 +11,14 @@ const ProxyCircle = () => (
   </div>
 );
 
-const BridgeCore = (props) => {
+type BridgeCoreProps = {
+  description: string,
+  iconClass: string,
+  iconName: string,
+  hrClass: string,
+  withProxy?: boolean,
+}
+const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
   const {
     description, iconClass, iconName, hrClass, withProxy,
   } = props;
@@ -44,16 +49,13 @@ const BridgeCore = (props) => {
   );
 };
 
-BridgeCore.propTypes = {
-  description: PropTypes.string.isRequired,
-  iconClass: PropTypes.string.isRequired,
-  iconName: PropTypes.string.isRequired,
-  hrClass: PropTypes.string.isRequired,
-  withProxy: PropTypes.bool,
-};
 
-
-const Bridge = (props) => {
+type BridgeProps = {
+  errorCount: number,
+  totalCount: number,
+  withProxy?: boolean,
+}
+const Bridge = (props: BridgeProps): JSX.Element => {
   const { t } = useTranslation();
   const { errorCount, totalCount, withProxy } = props;
 
@@ -93,12 +95,6 @@ const Bridge = (props) => {
       withProxy={withProxy}
     />
   );
-};
-
-Bridge.propTypes = {
-  errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  withProxy: PropTypes.bool,
 };
 
 export default Bridge;
