@@ -10,7 +10,7 @@ import { type IPageHasId, Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
+  CodeMirrorEditorMain, CodeMirrorEditorMainReadOnly, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
@@ -109,7 +109,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
+  const { data: isLatestRevision } = useIsLatestRevision();
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
@@ -160,6 +160,11 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
+
+  useEffect(() => {
+    console.log('発火')
+    setMarkdownToPreview(initialValue);
+  }, [initialValue]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
@@ -437,19 +442,28 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorMain
-            onChange={markdownChangedHandler}
-            onSave={saveWithShortcut}
-            onUpload={uploadHandler}
-            acceptedUploadFileType={acceptedUploadFileType}
-            onScroll={scrollEditorHandlerThrottle}
-            indentSize={currentIndentSize ?? defaultIndentSize}
-            user={user ?? undefined}
-            pageId={pageId ?? undefined}
-            initialValue={initialValue}
-            editorSettings={editorSettings}
-            onEditorsUpdated={onEditorsUpdated}
-          />
+          { isLatestRevision
+            ? (
+              <CodeMirrorEditorMain
+              onChange={markdownChangedHandler}
+              onSave={saveWithShortcut}
+              onUpload={uploadHandler}
+              acceptedUploadFileType={acceptedUploadFileType}
+              onScroll={scrollEditorHandlerThrottle}
+              indentSize={currentIndentSize ?? defaultIndentSize}
+              user={user ?? undefined}
+              pageId={pageId ?? undefined}
+              initialValue={initialValue}
+              editorSettings={editorSettings}
+              onEditorsUpdated={onEditorsUpdated}
+            />
+            )
+            : (
+              <CodeMirrorEditorMainReadOnly
+                body={initialValue}
+               />
+            )
+          }
         </div>
         <div
           ref={previewRef}
