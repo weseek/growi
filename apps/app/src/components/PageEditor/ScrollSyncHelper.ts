@@ -1,13 +1,28 @@
+
 let defaultTop = 0;
 const padding = 5;
 
-const setDefaultTop = (top: number): void => {
-  defaultTop = top;
+function easeInSine(x: number): number {
+  return 1 - Math.cos((x * Math.PI) / 2);
+}
+
+const setDefaultTop = (rootElement: Element, elements: Array<Element>): void => {
+  const viewTop = rootElement.getBoundingClientRect().top;
+  const maxSyncTop = rootElement.getBoundingClientRect().height / 2;
+  const firstElementTop = -(elements[0].getBoundingClientRect().top);
+  const lastElementTop = elements[elements.length - 1].getBoundingClientRect().top;
+
+  const raito = easeInSine(firstElementTop / maxSyncTop);
+
+  // defaultTop = Math.min(maxSyncTop, lastElementTop, Math.max(viewTop, maxSyncTop * raito));
+  defaultTop = maxSyncTop;
+  console.log(defaultTop);
+
 };
+
 const getDefaultTop = (): number => {
   return defaultTop + padding;
 };
-
 
 const getDataLine = (element: Element | null): number => {
   return element ? +(element.getAttribute('data-line') ?? '0') - 1 : 0;
@@ -94,10 +109,10 @@ export const scrollEditor = (editorRootElement?: HTMLElement, previewRootElement
     return;
   }
 
-  setDefaultTop(editorRootElement.getBoundingClientRect().top);
-
   const editorElements = getEditorElements(editorRootElement);
   const previewElements = getPreviewElements(previewRootElement);
+
+  setDefaultTop(editorRootElement, editorElements);
 
   const topEditorElementIndex = findTopElementIndex(editorElements);
   const topPreviewElementIndex = findElementIndexFromDataLine(previewElements, getDataLine(editorElements[topEditorElementIndex]));
@@ -130,10 +145,10 @@ export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement
     return;
   }
 
-  setDefaultTop(previewRootElement.getBoundingClientRect().y);
-
   const previewElements = getPreviewElements(previewRootElement);
   const editorElements = getEditorElements(editorRootElement);
+
+  setDefaultTop(previewRootElement, previewElements);
 
   const topPreviewElementIndex = findTopElementIndex(previewElements);
 
@@ -156,5 +171,4 @@ export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement
   );
 
   editorRootElement.scrollTop = newScrollTop;
-
 };
