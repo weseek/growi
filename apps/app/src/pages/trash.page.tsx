@@ -7,13 +7,13 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
+import { TrashPageViewLayout } from '../components/TrashPageViewLayout';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
@@ -75,7 +75,9 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         </nav>
 
         <div className="content-main container-lg mb-5 pb-5">
-          <PagePathNavSticky pagePath="/trash" />
+          <TrashPageViewLayout
+            pagePath="/trash"
+          />
           <TrashPageList />
         </div>
 
