@@ -25,20 +25,6 @@ export type ConflictHandler = (
   saveOptions?: SaveOptions,
 ) => void;
 
-type GenerateResolveConflicthandler = () => (
-  revisionId: string,
-  save: Save,
-  saveOptions?: SaveOptions,
-  onConflict?: () => void
-) => (newMarkdown: string) => Promise<void>
-
-type ConflictResolver = () => (
-  remoteRevisionData: RemoteRevisionData,
-  requestMarkdown: string,
-  save: Save,
-  saveOptions?: SaveOptions,
-) => void;
-
 export const extractRemoteRevisionDataFromErrorObj = (errors: Array<ErrorV3>): RemoteRevisionData | undefined => {
   for (const error of errors) {
     if (error.code === PageUpdateErrorCode.CONFLICT) {
@@ -56,6 +42,13 @@ export const extractRemoteRevisionDataFromErrorObj = (errors: Array<ErrorV3>): R
     }
   }
 };
+
+type GenerateResolveConflicthandler = () => (
+  revisionId: string,
+  save: Save,
+  saveOptions?: SaveOptions,
+  onConflict?: () => void
+) => (newMarkdown: string) => Promise<void>
 
 export const useGenerateResolveConflictHandler: GenerateResolveConflicthandler = () => {
   const { t } = useTranslation();
@@ -85,6 +78,9 @@ export const useGenerateResolveConflictHandler: GenerateResolveConflicthandler =
   }, [closeConflictDiffModal, closePageStatusAlert, codeMirrorEditor, t, updateStateAfterSave]);
 };
 
+
+type ConflictResolver = () => ConflictHandler;
+
 export const useConflictResolver: ConflictResolver = () => {
   const { open: openPageStatusAlert } = usePageStatusAlert();
   const { open: openConflictDiffModal } = useConflictDiffModal();
@@ -92,13 +88,13 @@ export const useConflictResolver: ConflictResolver = () => {
   const generateResolveConflictHandler = useGenerateResolveConflictHandler();
 
   return useCallback((remoteRevidsionData, requestMarkdown, save, saveOptions) => {
-    const onConflict = () => {
-      const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, save, saveOptions, onConflict);
+    const conflictHandler = () => {
+      const resolveConflictHandler = generateResolveConflictHandler(remoteRevidsionData.remoteRevisionId, save, saveOptions, conflictHandler);
       openPageStatusAlert({ onResolveConflict: () => openConflictDiffModal(requestMarkdown, resolveConflictHandler) });
       setRemoteLatestPageData(remoteRevidsionData);
     };
 
-    onConflict();
+    conflictHandler();
   }, [generateResolveConflictHandler, openConflictDiffModal, openPageStatusAlert, setRemoteLatestPageData]);
 };
 
@@ -112,7 +108,7 @@ export const useConflictEffect = (): void => {
   const { data: socket } = useGlobalSocket();
   const { data: editorMode } = useEditorMode();
 
-  const onConflictHandler = useCallback(() => {
+  const conflictHandler = useCallback(() => {
     const onResolveConflict = () => {
       const resolveConflictHandler = (newMarkdown: string) => {
         codeMirrorEditor?.initDoc(newMarkdown);
@@ -137,14 +133,14 @@ export const useConflictEffect = (): void => {
 
     // !!CAUTION!! Timing of calling openPageStatusAlert may clash with client/services/side-effects/page-updated.ts
     if (isRevisionOutdated && editorMode === EditorMode.Editor && (remoteRevisionOrigin === Origin.View || remoteRevisionOrigin === undefined)) {
-      onConflictHandler();
+      conflictHandler();
     }
 
     // Clear cache
     if (!isRevisionOutdated) {
       closePageStatusAlert();
     }
-  }, [closePageStatusAlert, currentPage?.revision?._id, editorMode, onConflictHandler]);
+  }, [closePageStatusAlert, currentPage?.revision?._id, editorMode, conflictHandler]);
 
   useEffect(() => {
     if (socket == null) { return }

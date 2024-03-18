@@ -45,7 +45,6 @@ import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-import type { RemoteRevisionData } from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
