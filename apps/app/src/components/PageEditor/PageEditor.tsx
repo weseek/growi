@@ -225,7 +225,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
     const markdown = codeMirrorEditor?.getDoc();
@@ -237,7 +237,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
