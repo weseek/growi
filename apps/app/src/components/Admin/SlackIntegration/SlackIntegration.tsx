@@ -231,7 +231,7 @@ const SlackIntegration = (): JSX.Element => {
           </button>
         </div>
 
-        <div className="row my-5 flex-wrap-reverse justify-content-center">
+        <div className="my-5 d-flex flex-wrap-reverse justify-content-center">
           {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">

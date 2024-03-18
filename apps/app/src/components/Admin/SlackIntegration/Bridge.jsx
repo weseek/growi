@@ -6,9 +6,9 @@ import { UncontrolledTooltip } from 'reactstrap';
 
 const ProxyCircle = () => (
   <div className="grw-bridge-proxy-circle">
-    <div className="circle position-absolute bg-primary border-light rounded-circle">
+    <div className="circle bg-primary border-light rounded-circle">
       <p className="circle-inner text-light fw-bold d-none d-lg-inline">Proxy Server</p>
-      <p className="circle-inner grw-proxy-server-name d-block d-lg-none">Proxy Server</p>
+      <p className="circle-inner grw-proxy-server-name d-inline d-lg-none">Proxy Server</p>
     </div>
   </div>
 );
