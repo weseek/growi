@@ -20,10 +20,10 @@ import OfficialBotSettings from './OfficialBotSettings';
 
 const botTypes = Object.values(SlackbotType);
 
-const SlackIntegration = () => {
+const SlackIntegration = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const [currentBotType, setCurrentBotType] = useState(null);
+  const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
   const [selectedBotType, setSelectedBotType] = useState(null);
   const [slackSigningSecret, setSlackSigningSecret] = useState(null);
   const [slackBotToken, setSlackBotToken] = useState(null);
@@ -138,7 +138,7 @@ const SlackIntegration = () => {
     setSelectedBotType(null);
   };
 
-  let settingsComponent = null;
+  let settingsComponent = <></>;
 
   switch (currentBotType) {
     case SlackbotType.OFFICIAL:
