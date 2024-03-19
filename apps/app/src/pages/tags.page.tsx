@@ -81,8 +81,6 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   const title = generateCustomTitle(props, t('Tags'));
 
-  console.log('tags');
-
   return (
     <>
       <Head>

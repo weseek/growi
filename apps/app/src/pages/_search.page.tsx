@@ -80,8 +80,6 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 
   const title = generateCustomTitle(props, t('search_result.title'));
 
-  console.log('_search');
-
   return (
     <>
       <Head>
