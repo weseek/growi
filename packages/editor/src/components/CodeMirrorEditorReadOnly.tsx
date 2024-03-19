@@ -21,7 +21,7 @@ type Props = CodeMirrorEditorProps & {
   body?: string,
 }
 
-export const CodeMirrorEditorMainReadOnly = (props: Props): JSX.Element => {
+export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
   const { body, ...otherProps } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);

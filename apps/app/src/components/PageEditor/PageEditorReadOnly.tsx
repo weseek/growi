@@ -2,7 +2,7 @@ import react, {
   useCallback, useMemo, useRef, type CSSProperties,
 } from 'react';
 
-import { CodeMirrorEditorMainReadOnly, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
+import { CodeMirrorEditorReadOnly, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
 import { throttle } from 'throttle-debounce';
 
@@ -84,7 +84,7 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
 
       <div className="flex-expand-horiz">
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          <CodeMirrorEditorMainReadOnly
+          <CodeMirrorEditorReadOnly
             body={editingMarkdown}
             onScroll={scrollEditorHandlerThrottle}
           />
