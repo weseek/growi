@@ -6,6 +6,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -44,7 +45,9 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  useIsomorphicLayoutEffect(() => {
+    mutate(undefined, { revalidate: false });
+  }, []);
 
   useGrowiCloudUri(props.growiCloudUri);
 

@@ -8,6 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -100,7 +101,10 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
 
   // clear the cache for the current page
   const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  useIsomorphicLayoutEffect(() => {
+    mutate(undefined, { revalidate: false });
+  }, []);
+
   useCurrentPageId(null);
   useCurrentPathname('/me');
 
