@@ -231,12 +231,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               type="submit"
               id="login"
-              className="btn btn-fill login mx-auto"
+              className="btn btn-fill col-6 login mx-auto"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label">
+              <span className="btn-label pe-0">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
@@ -414,7 +414,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )
         }
 
-        <form role="form" onSubmit={e => handleRegisterFormSubmit(e, registerAction)} id="register-form">
+        <form role="form" onSubmit={e => handleRegisterFormSubmit(e, registerAction)} id="register-form" className="pe-2">
 
           {!isEmailAuthenticationEnabled && (
             <div>
@@ -514,7 +514,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <div className="eff"></div>
-              <span className="btn-label">
+              <span className="btn-label pe-0">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (

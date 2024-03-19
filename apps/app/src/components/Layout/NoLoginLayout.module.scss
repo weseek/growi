@@ -50,8 +50,8 @@
 
   $btn-fill-colors: (
     'login': (
-      rgba(bs.$danger, 0.4),
-      rgba(#7e4153, 0.7),
+      rgba(#204986, 0.8),
+      rgba(#204986, 0.5),
     ),
     'register': (
       rgba(bs.$success, 0.4),
@@ -81,9 +81,8 @@
 
   @each $label, $colors in $btn-fill-colors {
     .btn-fill##{$label} {
-      .btn-label {
-        background-color: nth($colors, 1);
-      }
+      background-color: nth($colors, 1);
+      border: 1px solid rgba(white, 0.1);
       .eff {
         background-color: nth($colors, 2);
       }
