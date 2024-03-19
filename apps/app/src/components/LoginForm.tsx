@@ -193,33 +193,33 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {loginErrorElementWithDangerouslySetInnerHTML}
         {loginErrorElement}
 
-        <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
+        <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form" className="pe-2">
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="p-2 text-white">
               <span className="material-symbols-outlined">person</span>
             </span>
             <input
               type="text"
-              className="form-control rounded-0"
+              className="form-control rounded"
               data-testid="tiUsernameForLogin"
               placeholder="Username or E-mail"
               onChange={(e) => { setUsernameForLogin(e.target.value) }}
               name="usernameForLogin"
             />
             {isLdapStrategySetup && (
-              <small className="input-group-text text-success">
+              <small className="text-success">
                 <span className="material-symbols-outlined">select_check_box</span>LDAP
               </small>
             )}
           </div>
 
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="p-2 text-white">
               <span className="material-symbols-outlined">lock</span>
             </span>
             <input
               type="password"
-              className="form-control rounded-0"
+              className="form-control rounded"
               data-testid="tiPasswordForLogin"
               placeholder="Password"
               onChange={(e) => { setPasswordForLogin(e.target.value) }}
@@ -231,7 +231,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               type="submit"
               id="login"
-              className="btn btn-fill rounded-0 login mx-auto"
+              className="btn btn-fill login mx-auto"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
@@ -273,7 +273,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <div key={auth} className="col-6 my-2">
-        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
+        <button type="button" className="btn btn-fill" id={auth} onClick={handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
@@ -307,7 +307,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <div className="text-center">
           <button
             type="button"
-            className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
+            className="btn btn-secondary btn-external-auth-tab btn-sm mb-3"
             data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
             data-bs-target="#external-auth"
             aria-expanded="false"
@@ -419,13 +419,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <span className="input-group-text">
+                <span className="p-2 text-white">
                   <span className="material-symbols-outlined">person</span>
                 </span>
                 {/* username */}
                 <input
                   type="text"
-                  className="form-control rounded-0"
+                  className="form-control rounded p-2"
                   onChange={(e) => { setUsernameForRegister(e.target.value) }}
                   placeholder={t('User ID')}
                   name="username"
@@ -437,13 +437,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <span className="input-group-text">
+                <span className="p-2 text-white">
                   <span className="material-symbols-outlined">sell</span>
                 </span>
                 {/* name */}
                 <input
                   type="text"
-                  className="form-control rounded-0"
+                  className="form-control rounded p-2"
                   onChange={(e) => { setNameForRegister(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
@@ -455,14 +455,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="p-2 text-white">
               <span className="material-symbols-outlined">mail</span>
             </span>
             {/* email */}
             <input
               type="email"
               disabled={!isMailerSetup && isEmailAuthenticationEnabled}
-              className="form-control rounded-0"
+              className="form-control rounded p-2"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
               name="email"
@@ -489,13 +489,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <span className="input-group-text">
+                <span className="p-2 text-white">
                   <span className="material-symbols-outlined">lock</span>
                 </span>
                 {/* Password */}
                 <input
                   type="password"
-                  className="form-control rounded-0"
+                  className="form-control rounded p-2"
                   onChange={(e) => { setPasswordForRegister(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
@@ -509,7 +509,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-fill rounded-0"
+              className="btn btn-fill p-2"
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
@@ -556,7 +556,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     <div className={`login-form ${styles['login-form']}`}>
       <div className="nologin-dialog mx-auto" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
-          <div className="col-12">
+          <div className="col-12 px-md-4">
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
