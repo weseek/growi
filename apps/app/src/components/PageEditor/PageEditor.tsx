@@ -402,7 +402,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          { isOldRevisionPage
+          { !isOldRevisionPage
             ? (
               <CodeMirrorEditorMain
                 onChange={markdownChangedHandler}
