@@ -72,9 +72,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
   }, []);
 
-  const tWithOpt = useCallback((key: string, opt?: any): string => {
+  const tWithOpt = useCallback((key: string, opt?: any) => {
     if (typeof opt === 'object') {
-      return t(key, opt as object);
+      return t(key, opt).toString();
     }
     return t(key);
   }, [t]);
@@ -187,6 +187,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><span className="material-symbols-outlined">info</span>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
+            {/* eslint-disable-next-line react/no-danger */}
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}
