@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
+import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -13,7 +13,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import { Username } from '../User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';

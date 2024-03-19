@@ -2,10 +2,10 @@ import React, {
   useCallback, useEffect, useState,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
 import { useNextThemes } from '~/stores/use-next-themes';
 

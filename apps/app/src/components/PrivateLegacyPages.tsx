@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useGlobalSocket } from '@growi/core/dist/swr';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -25,7 +26,6 @@ import {
 } from '~/stores/search';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from './LoadingSpinner';
 import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';

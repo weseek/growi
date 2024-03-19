@@ -2,13 +2,13 @@ import type { ReactNode } from 'react';
 import React, { useState, useCallback } from 'react';
 
 import type { IUser } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';

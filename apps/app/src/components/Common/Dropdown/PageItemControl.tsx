@@ -5,12 +5,12 @@ import React, {
 import {
   type IPageInfoAll, isIPageInfoForOperation,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
