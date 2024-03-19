@@ -10,7 +10,7 @@ import {
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { LoadingSpinner } from '~/components/LoadingSpinner';
 
-import BotTypeCard from './BotTypeCard';
+import { BotTypeCard } from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
