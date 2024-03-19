@@ -195,7 +195,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form" className="pe-2">
           <div className="input-group">
-            <span className="p-2 text-white">
+            <span className="p-2 text-white opacity-75">
               <span className="material-symbols-outlined">person</span>
             </span>
             <input
@@ -214,7 +214,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group">
-            <span className="p-2 text-white">
+            <span className="p-2 text-white opacity-75">
               <span className="material-symbols-outlined">lock</span>
             </span>
             <input
@@ -419,7 +419,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <span className="p-2 text-white">
+                <span className="p-2 text-white opacity-75">
                   <span className="material-symbols-outlined">person</span>
                 </span>
                 {/* username */}
@@ -437,7 +437,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <span className="p-2 text-white">
+                <span className="p-2 text-white opacity-75">
                   <span className="material-symbols-outlined">sell</span>
                 </span>
                 {/* name */}
@@ -455,7 +455,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <span className="p-2 text-white">
+            <span className="p-2 text-white opacity-75">
               <span className="material-symbols-outlined">mail</span>
             </span>
             {/* email */}
@@ -489,7 +489,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <span className="p-2 text-white">
+                <span className="p-2 text-white opacity-75">
                   <span className="material-symbols-outlined">lock</span>
                 </span>
                 {/* Password */}
