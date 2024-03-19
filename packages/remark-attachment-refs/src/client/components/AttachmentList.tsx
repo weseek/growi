@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
-import { Attachment } from '@growi/ui/dist/components';
+import { Attachment, LoadingSpinner } from '@growi/ui/dist/components';
 
 import { ExtractedAttachments } from './ExtractedAttachments';
 import { RefsContext } from './util/refs-context';
@@ -43,7 +43,7 @@ export const AttachmentList = ({
     if (isLoading) {
       return (
         <div className="text-muted">
-          <i className="fa fa-spinner fa-pulse me-1"></i>
+          <LoadingSpinner />
           <span className="attachment-refs-blink">{refsContext.toString()}</span>
         </div>
       );
