@@ -28,7 +28,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType,
+  useAcceptedUploadFileType, useIsOldRevisionPage
 } from '~/stores/context';
 import {
   useEditorSettings,
@@ -115,6 +115,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
   const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
+  const { data: isOldRevisionPage } = useIsOldRevisionPage();
   const { onEditorsUpdated } = useEditingUsers();
 
   const { data: socket } = useGlobalSocket();
@@ -442,7 +443,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          { isLatestRevision
+          { isOldRevisionPage
             ? (
               <CodeMirrorEditorMain
               onChange={markdownChangedHandler}
@@ -480,7 +481,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         </div>
       </div>
 
-      <EditorNavbarBottom />
+      { !isOldRevisionPage && (<EditorNavbarBottom />) }
 
     </div>
   );
