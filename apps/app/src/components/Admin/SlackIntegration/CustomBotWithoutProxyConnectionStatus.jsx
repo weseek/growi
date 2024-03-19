@@ -1,6 +1,8 @@
 import React from 'react';
+
 import PropTypes from 'prop-types';
-import Bridge from './Bridge';
+
+import { Bridge } from './Bridge';
 
 const CustomBotWithoutProxyConnectionStatus = (props) => {
   const { siteName, connectionStatuses } = props;

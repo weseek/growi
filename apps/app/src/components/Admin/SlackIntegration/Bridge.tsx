@@ -55,7 +55,7 @@ type BridgeProps = {
   totalCount: number,
   withProxy?: boolean,
 }
-const Bridge = (props: BridgeProps): JSX.Element => {
+export const Bridge = (props: BridgeProps): JSX.Element => {
   const { t } = useTranslation();
   const { errorCount, totalCount, withProxy } = props;
 
@@ -97,4 +97,4 @@ const Bridge = (props: BridgeProps): JSX.Element => {
   );
 };
 
-export default Bridge;
+Bridge.displayName = 'Bridge';
