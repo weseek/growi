@@ -156,10 +156,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownToPreview(value);
   })), []);
 
-  useEffect(() => {
-    setMarkdownToPreview(initialValue);
-  }, [initialValue]);
-
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
   }, [setMarkdownPreviewWithDebounce]);
