@@ -1,156 +1,158 @@
-# What is Sandbox?
-- In this page, you will find tips that help you to master GROWI 
-- Feel free to enrich the content of your pages with the references under this hierarchy
+# 什么是沙盒？
+- 在本页中，您可以找到帮助您掌握 GROWI 的技巧。
+- 您可以在此层级下的参考资料中丰富您的网页内容
 
 
-# :closed_book:Headings & Paragraphs
-- By inserting headings and paragraphs, you can make the text on the page easier to read
+# :closed_book:标题和段落
+- 通过插入标题和段落，可以使页面上的文字更易于阅读
 
-## Headers
-- Add `#` before the heading text to create a heading 
-    - Depending on the number of `#`, the typeface size of headings would be different shown in the View screen 
-    - Check the View screen on the right side to understand the effect of headings
-- The number of `#` will decide the hierarchy level and help you to organize the contents
+## 标题
+- 在标题文字前添加 `#` 以创建标题 
+    - 在 "视图 "屏幕中，标题的字体大小会因 "#"的数量而异 
+    - 查看右侧的 "视图 "屏幕，了解标题的效果
+- `#`的数量将决定层次结构的级别，并帮助您组织内容
 
 ```
-# First-level heading
-## Second-level heading
-### Third-level heading
-#### Forth-level heading
-##### Fifth-level heading
-###### Sixth-level heading
+# 一级标题
+## 二级标题
+### 三级标题
+#### 第四级标题
+##### 第五级标题
+###### 第六级标题
 ```
 
-## Break
-- Insert two half-width spaces at the end of the sentence you want to break
-    - You can also change this in the Setting to break the line without half-width spaces
-        - Change the line break setting in the `Markdown Settings` sector of the admin page
+### 断句
+- 在要换行的句子末尾插入两个半宽空格
+    - 您也可以在 "设置 "中进行更改，使换行不使用半宽空格
+        - 在管理页面的 "Markdown 设置 "部分更改换行设置
 
-#### Without line break
-Paragraph 1
-Paragraph 2
+#### 无换行
+段落 1
+第 2 段
 
-#### With line break
-Paragraph 1  
-Paragraph 2
+#### 有换行符
+段落 1  
+第 2 段
 
-## Block
-- Paragraphs can be created by inserting a blank table in the text
-- Passage can be broken into sentences and make them easier to read
+## 段落
+- 在文本中插入空白表格即可创建段落
+- 可将段落分成若干句子，使其更易于阅读
 
-#### Without paragraph
-Paragraph 1  
-Paragraph 2
+#### 无段落
+段落 1  
+第 2 段
 
-#### With paragraph
-Paragraph 1  
+#### 有段落
+第 1 段  
 
-Paragraph 2
-
-
-# :green_book: Styling Text
-- Various styles can be applied to enrich the textual expression of a sentence
-    - These styles also can be easily applied by selecting the toolbar icon at the bottom of the Edit screen
-
-## Italic
-- Enclose the text with an asterisk `*` or an underscore `_`.
-
-#### Examples
-- This sentence indicates emphasis with *Italic*
-- This sentence indicates emphasis with _Italic_ 
-
-## Bold
-- Enclose the text with two asterisks `*` or two underscores `_`
-
-#### Example
-- This sentence indicates emphasis with **Bold** 
-- This sentence indicates emphasis with __Bold__
-
-## Italic & Bold
-- Enclose the text with three asterisks `*` or three underscores `_`
-
-#### Example
-- This sentence indicates emphasis with ***Italic & Bold***
-- This sentence indicates emphasis witH ___Italic & Bold___
+第 2 段
 
 
-# :orange_book: Insert Lists
-## Bulleted List
-- Insert a bulleted list by starting a line with a hyphen `-`, a plus `+`, or an asterisk `*`
+# :green_book: 文本样式
+- 可以使用各种样式来丰富句子的文字表达方式
+    - 选择 "编辑 "屏幕底部的工具栏图标，也可以轻松应用这些样式
 
-#### Example
-- This sentence is present in the bulleted list
-    - This sentence is present in the bulleted list
-        - This sentence is present in the bulleted list
-        - This sentence is present in the bulleted list
-- This sentence is present in the bulleted list
-    - This sentence is present in the bulleted list
+##斜体
+- 用星号`*`或下划线`_`括住文本。
 
-## Numbered List
-- `Number.` at the beginning of a line to insert a numbered list
-- Numbered list and bulleted list can also be combined for use
+#### 示例
+- 这句话用*斜体*表示强调
+- 这句话用 _Italic_ 表示强调 
 
-#### Example
-1. This sentence is present in the numbered list
-    1. This sentence is present in the numbered list
-    1. This sentence is present in the numbered list
-    1. This sentence is present in the numbered list
-        - This sentence is present in the bulleted list 
-1. This sentence is present in the bulleted list
-    - This sentence is present in the bulleted list
+## 粗体
+- 用两个星号`*`或两个下划线`_`括住文本。
 
-## Task List
-- Insert an unchecked checkbox list by writing `[] `
-    - Check the checkbox by writing `[x]`
+#### 示例
+- 这句话用 ** 粗体** 表示强调 
+- 这句话用__粗体__表示强调
 
-#### Example
-- [ ] Task 1
-    - [x] Task 1-1
-    - [ ] Task 1-2
-- [x] Task 2
+## 斜体和粗体
+- 用三个星号`*`或三个下划线`_`括起来
+
+#### 示例
+- 本句用***斜体和粗体***表示强调
+- 本句用____斜体和粗体____表示强调
 
 
-# :blue_book: Others
-## Blockquotes
-- Use quoted expressions by putting `>` at the beginning of the paragraph
-    - Multiple quotations can be expressed by using a sequence of `>` characters
-- Lists and other elements can be used together within the blockquotes
+# :orange_book: 插入列表
+## 缩略图列表
+- 用连字符 `-`、加号 `+` 或星号 `*` 开头一行，插入一个项目符号列表
 
-#### Example
-> - Quotation
-> - Quotation
->> Multiple quotations need to insert more `>`
+#### 示例
+- 这句话出现在项目符号列表中
+    - 这句话出现在项目符号列表中
+        - 这句话出现在项目符号列表中
+        - 这句话出现在项目符号列表中
+- 此句出现在项目符号列表中
+    - 此句子出现在项目符号列表中
 
-## Code
-- It is possible to express the code by adding it in three `` ` ``
+## 编号列表
+- 在行首添加 `Number.` 以插入编号列表
+- 编号列表和项目符号列表也可合并使用
 
-#### Example
+#### 示例
+1. 编号列表中有这样一句话
+    1. 编号列表中包含这句话
+    1. 该句子出现在编号表中
+    1. 此句出现在编号列表中
+        - 此句出现在项目符号列表中 
+1. 此句出现在项目符号列表中
+    - 此句出现在项目符号列表中
+
+##任务列表
+- 通过书写 `[] ` 插入未选中复选框列表
+    - 通过书写 `[x]` 选中复选框
+
+#### 示例
+- [ ] 任务 1
+    - [x] 任务 1-1
+    - [ ] 任务 1-2
+- [x] 任务 2
+
+
+# :blue_book: 其他
+### 引号
+- 在段落开头加上`>`，使用引号表达式
+    - 使用`>`字符序列可表达多个引号
+- 列表和其他元素可在方括号内一起使用
+
+#### 示例
+> - 引号
+> - 引号
+>> 多个引号需要插入更多的 `>` 字符
+
+## 代码
+- 可以通过将代码添加到三个 `` `` `` 中来表达代码
+
+#### 示例
 ```
-Add codes here  
-Line breaks and paragraphs can be reflected in the code
+在此处添加代码  
+代码中可以体现换行和段落
 
-- List also can be used in code
-    - List also can be used in code
+- 代码中也可使用列表
+    - 也可在代码中使用列表
 ```
 
-## Inline Code
-- Enclose words in `` ` `` to make inline code
+## 内联代码
 
-#### Example
-Here is the `inline code` 
 
-## Horizontal lines
-- Insert the horizontal line with three or more consecutive asterisks `*` or underscores `_`
 
-#### Example
-Below is a horizontal line
+
+#### 示例
+以下是内联代码 
+
+## 水平线
+- 用三个或三个以上连续的星号`*`或下划线`_`插入水平线
+
+#### 示例
+以下是水平线
 ***
 
-Below is a horizontal line
+下面是水平线
 ___
 
 
-# :ledger: More Applications
+# :ledger: 更多应用
 - [Bootstrap5](/Sandbox/Bootstrap5)
 
 - [Diagrams](/Sandbox/Diagrams)
