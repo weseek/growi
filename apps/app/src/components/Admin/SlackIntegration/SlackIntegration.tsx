@@ -20,7 +20,7 @@ import OfficialBotSettings from './OfficialBotSettings';
 
 const botTypes = Object.values(SlackbotType);
 
-const SlackIntegration = (): JSX.Element => {
+export const SlackIntegration = (): JSX.Element => {
 
   const { t } = useTranslation();
   const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
@@ -251,4 +251,4 @@ const SlackIntegration = (): JSX.Element => {
   );
 };
 
-export default SlackIntegration;
+SlackIntegration.displayName = 'SlackIntegration';
