@@ -1,10 +1,14 @@
 {
   "$schema": "http://json.schemastore.org/tsconfig",
   "extends": "./tsconfig.json",
+  "include": [
+    ".next/types/**/*.ts"
+  ],
   "compilerOptions": {
     "module": "ESNext",
-
     "strict": false,
+    "strictNullChecks": true,
+
     "noFallthroughCasesInSwitch": true,
     "incremental": true,
 
@@ -12,8 +16,8 @@
     "paths": {
       "~/*": ["./src/*"],
       "^/*": ["./*"],
-
       "debug": ["./src/server/utils/logger/alias-for-debug"]
-    }
+    },
+    "plugins": [{"name": "next"}]
   }
 }
