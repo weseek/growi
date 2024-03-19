@@ -10,7 +10,7 @@ import nodePath from 'path';
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, CodeMirrorEditorMainReadOnly, GlobalCodeMirrorEditorKey,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
@@ -27,7 +27,7 @@ import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
-  useAcceptedUploadFileType, useIsOldRevisionPage,
+  useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
   useEditorSettings,
@@ -109,7 +109,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
   const { data: user } = useCurrentUser();
-  const { data: isOldRevisionPage } = useIsOldRevisionPage();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
 
@@ -402,28 +401,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
-          { !isOldRevisionPage
-            ? (
-              <CodeMirrorEditorMain
-                onChange={markdownChangedHandler}
-                onSave={saveWithShortcut}
-                onUpload={uploadHandler}
-                acceptedUploadFileType={acceptedUploadFileType}
-                onScroll={scrollEditorHandlerThrottle}
-                indentSize={currentIndentSize ?? defaultIndentSize}
-                user={user ?? undefined}
-                pageId={pageId ?? undefined}
-                initialValue={initialValue}
-                editorSettings={editorSettings}
-                onEditorsUpdated={onEditorsUpdated}
-              />
-            )
-            : (
-              <CodeMirrorEditorMainReadOnly
-                body={initialValue}
-              />
-            )
-          }
+          <CodeMirrorEditorMain
+            onChange={markdownChangedHandler}
+            onSave={saveWithShortcut}
+            onUpload={uploadHandler}
+            acceptedUploadFileType={acceptedUploadFileType}
+            onScroll={scrollEditorHandlerThrottle}
+            indentSize={currentIndentSize ?? defaultIndentSize}
+            user={user ?? undefined}
+            pageId={pageId ?? undefined}
+            initialValue={initialValue}
+            editorSettings={editorSettings}
+            onEditorsUpdated={onEditorsUpdated}
+          />
         </div>
         <div
           ref={previewRef}
@@ -440,7 +430,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
         </div>
       </div>
 
-      { !isOldRevisionPage && (<EditorNavbarBottom />) }
+      <EditorNavbarBottom />
 
     </div>
   );
