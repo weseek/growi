@@ -208,7 +208,7 @@ const InstallerForm = memo((): JSX.Element => {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <i className="icon-user-follow" />
+                  <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
               <span className="btn-label-text">{ t('Create') }</span>

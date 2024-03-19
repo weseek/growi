@@ -126,7 +126,7 @@ class PasswordResetModal extends React.Component {
           </code>
           <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
-              <i className="fa fa-clone" aria-hidden="true"></i>
+              <span className="material-symbols-outlined" aria-hidden="true">content_copy</span>
             </button>
           </CopyToClipboard>
           <Tooltip

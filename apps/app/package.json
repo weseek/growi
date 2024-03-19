@@ -246,7 +246,6 @@
     "diff2html": "^3.4.35",
     "downshift": "^8.2.3",
     "eazy-logger": "^3.1.0",
-    "emoji-mart": "npm:panta82-emoji-mart@^3.0.1",
     "eslint-plugin-cypress": "^2.12.1",
     "eslint-plugin-jest": "^26.5.3",
     "eslint-plugin-regex": "^1.8.0",

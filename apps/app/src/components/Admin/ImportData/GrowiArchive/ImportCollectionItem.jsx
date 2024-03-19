@@ -7,9 +7,9 @@ import GrowiArchiveImportOption from '~/models/admin/growi-archive-import-option
 
 
 const MODE_ATTR_MAP = {
-  insert: { color: 'info', icon: 'icon-plus', label: 'Insert' },
-  upsert: { color: 'success', icon: 'icon-plus', label: 'Upsert' },
-  flushAndInsert: { color: 'danger', icon: 'icon-refresh', label: 'Flush and Insert' },
+  insert: { color: 'info', icon: 'add_circle', label: 'Insert' },
+  upsert: { color: 'success', icon: 'add_circle', label: 'Upsert' },
+  flushAndInsert: { color: 'danger', icon: 'autorenew', label: 'Flush and Insert' },
 };
 
 export const DEFAULT_MODE = 'insert';
@@ -72,7 +72,7 @@ export default class ImportCollectionItem extends React.Component {
   renderModeLabel(mode, isColorized = false) {
     const attrMap = MODE_ATTR_MAP[mode];
     const className = isColorized ? `text-${attrMap.color}` : '';
-    return <span className={`text-nowrap ${className}`}><i className={attrMap.icon}></i> {attrMap.label}</span>;
+    return <span className={`text-nowrap ${className}`}><span className="material-symbols-outlined">{attrMap.icon}</span> {attrMap.label}</span>;
   }
 
   renderCheckbox() {
