@@ -10,7 +10,7 @@ import loggerFactory from '~/utils/logger';
 
 
 import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 import WithProxyAccordions from './WithProxyAccordions';
 

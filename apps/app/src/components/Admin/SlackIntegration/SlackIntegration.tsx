@@ -14,7 +14,7 @@ import { BotTypeCard } from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import OfficialBotSettings from './OfficialBotSettings';
 
 

@@ -12,7 +12,7 @@ type DeleteSlackBotSettingsModalProps = {
   onClickDeleteButton?: () => void,
 }
 
-const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSettingsModalProps) => {
+export const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSettingsModalProps) => {
 
   const { t } = useTranslation();
 
@@ -84,5 +84,3 @@ const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSettingsMod
 });
 
 DeleteSlackBotSettingsModal.displayName = 'DeleteSlackBotSettingsModal';
-
-export default DeleteSlackBotSettingsModal;
