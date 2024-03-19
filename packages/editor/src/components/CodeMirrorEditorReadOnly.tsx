@@ -15,7 +15,7 @@ const additionalExtensions: Extension[] = [
     setDataLine,
     EditorState.readOnly.of(true),
   ],
-] as const;
+];
 
 type Props = CodeMirrorEditorProps & {
   body?: string,
