@@ -18,7 +18,6 @@ import type { CommonProps } from './utils/commons';
 import { registerTransformerForObjectId } from './utils/objectid-transformer';
 
 import '~/styles/prebuilt/vendor.css';
-import '~/styles/font-icons.scss';
 import '~/styles/style-app.scss';
 
 

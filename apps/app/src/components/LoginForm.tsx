@@ -179,7 +179,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <>
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
-        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        {/* https://github.com/weseek/growi/pull/7873 */}
         <div className="visually-hidden">
           <LoadingSpinner />
         </div>
