@@ -1,8 +1,6 @@
-import react, {
-  useCallback, useMemo, useRef, type CSSProperties,
-} from 'react';
+import react, { useMemo, useRef, type CSSProperties } from 'react';
 
-import { CodeMirrorEditorReadOnly, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated } from '@growi/editor';
+import { CodeMirrorEditorReadOnly, GlobalCodeMirrorEditorKey } from '@growi/editor';
 import { useRect } from '@growi/ui/dist/utils';
 import { throttle } from 'throttle-debounce';
 
@@ -14,20 +12,20 @@ import { usePreviewOptions } from '~/stores/renderer';
 
 import { EditorNavbar } from './EditorNavbar';
 import Preview from './Preview';
-import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
-
-let isOriginOfScrollSyncEditor = false;
-let isOriginOfScrollSyncPreview = false;
+import { useScrollSync } from './ScrollSyncHelper';
 
 export const PageEditorReadOnly = react.memo((): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [previewRect] = useRect(previewRef);
 
+  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
+
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePreviewOptions();
   const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isOldRevisionPage } = useIsOldRevisionPage();
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
@@ -41,38 +39,6 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
     // containerHeight - 1.5 line height
     return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
   }, [previewRect]);
-
-  const scrollEditorHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
-
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false;
-      return;
-    }
-
-    isOriginOfScrollSyncEditor = true;
-    scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
-
-  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
-
-  const scrollPreviewHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
-
-    if (isOriginOfScrollSyncEditor) {
-      isOriginOfScrollSyncEditor = false;
-      return;
-    }
-
-    isOriginOfScrollSyncPreview = true;
-    scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
-
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   if (rendererOptions == null || !isOldRevisionPage) {
     return <></>;

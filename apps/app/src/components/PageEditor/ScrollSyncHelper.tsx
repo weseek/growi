@@ -1,3 +1,7 @@
+import { useCallback, type RefObject, useRef } from 'react';
+
+import { useCodeMirrorEditorIsolated, type GlobalCodeMirrorEditorKey } from '@growi/editor';
+
 let defaultTop = 0;
 const padding = 5;
 
@@ -88,7 +92,7 @@ const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: T
 };
 
 
-export const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
+const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
 
   setDefaultTop(editorRootElement.getBoundingClientRect().top);
 
@@ -120,7 +124,7 @@ export const scrollEditor = (editorRootElement: HTMLElement, previewRootElement:
 
 };
 
-export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
+const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLElement): void => {
 
   setDefaultTop(previewRootElement.getBoundingClientRect().y);
 
@@ -149,4 +153,43 @@ export const scrollPreview = (editorRootElement: HTMLElement, previewRootElement
 
   editorRootElement.scrollTop = newScrollTop;
 
+};
+
+// eslint-disable-next-line max-len
+export const useScrollSync = (codeMirrorKey: GlobalCodeMirrorEditorKey, previewRef: RefObject<HTMLDivElement>): { scrollEditorHandler: () => void; scrollPreviewHandler: () => void } => {
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(codeMirrorKey);
+
+  const isOriginOfScrollSyncEditor = useRef(false);
+  const isOriginOfScrollSyncPreview = useRef(false);
+
+  const scrollEditorHandler = useCallback(() => {
+    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
+      return;
+    }
+
+    if (isOriginOfScrollSyncPreview.current) {
+      isOriginOfScrollSyncPreview.current = false;
+      return;
+    }
+
+    isOriginOfScrollSyncEditor.current = true;
+    scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  }, [codeMirrorEditor, isOriginOfScrollSyncPreview, previewRef]);
+
+  const scrollPreviewHandler = useCallback(() => {
+    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
+      return;
+    }
+
+    if (isOriginOfScrollSyncEditor.current) {
+      // setIsOriginOfScrollSyncEditor(false);
+      isOriginOfScrollSyncEditor.current = false;
+      return;
+    }
+
+    isOriginOfScrollSyncPreview.current = true;
+    scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  }, [codeMirrorEditor, isOriginOfScrollSyncEditor, previewRef]);
+
+  return { scrollEditorHandler, scrollPreviewHandler };
 };

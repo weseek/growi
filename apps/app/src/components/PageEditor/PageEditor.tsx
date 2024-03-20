@@ -51,7 +51,7 @@ import loggerFactory from '~/utils/logger';
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
-import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
+import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
 import '@growi/editor/dist/style.css';
@@ -64,10 +64,6 @@ declare global {
   // eslint-disable-next-line vars-on-top, no-var
   var globalEmitter: EventEmitter;
 }
-
-// for scrolling
-let isOriginOfScrollSyncEditor = false;
-let isOriginOfScrollSyncPreview = false;
 
 export type SaveOptions = {
   slackChannels: string,
@@ -162,6 +158,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+
+  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
     if (pageId == null || grantData == null) {
@@ -272,37 +272,37 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, pageId]);
 
-  const scrollEditorHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
+  // const scrollEditorHandler = useCallback(() => {
+  //   if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
+  //     return;
+  //   }
 
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false;
-      return;
-    }
+  //   if (isOriginOfScrollSyncPreview) {
+  //     isOriginOfScrollSyncPreview = false;
+  //     return;
+  //   }
 
-    isOriginOfScrollSyncEditor = true;
-    scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
+  //   isOriginOfScrollSyncEditor = true;
+  //   scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  // }, [codeMirrorEditor]);
 
-  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  // const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
 
-  const scrollPreviewHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
+  // const scrollPreviewHandler = useCallback(() => {
+  //   if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
+  //     return;
+  //   }
 
-    if (isOriginOfScrollSyncEditor) {
-      isOriginOfScrollSyncEditor = false;
-      return;
-    }
+  //   if (isOriginOfScrollSyncEditor) {
+  //     isOriginOfScrollSyncEditor = false;
+  //     return;
+  //   }
 
-    isOriginOfScrollSyncPreview = true;
-    scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
+  //   isOriginOfScrollSyncPreview = true;
+  //   scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
+  // }, [codeMirrorEditor]);
 
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
+  // const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   // initial caret line
   useEffect(() => {
