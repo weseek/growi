@@ -4,7 +4,8 @@ import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
-import { useIsEditable, useIsOldRevisionPage } from '~/stores/context';
+import { useIsEditable } from '~/stores/context';
+import { useIsLatestRevision } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { LazyRenderer } from '../Common/LazyRenderer';
@@ -21,7 +22,7 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
 
   const { data: editorMode = EditorMode.View } = useEditorMode();
   const { data: isEditable } = useIsEditable();
-  const { data: isOldRevisionPage } = useIsOldRevisionPage();
+  const { data: isLatestRevision } = useIsLatestRevision();
 
   usePageUpdatedEffect();
   useHashChangedEffect();
@@ -33,9 +34,9 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
       { isViewMode && pageView }
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
-        { isOldRevisionPage
-          ? <PageEditorReadOnly />
-          : <PageEditor />
+        { isLatestRevision
+          ? <PageEditor />
+          : <PageEditorReadOnly />
         }
       </LazyRenderer>
     </>

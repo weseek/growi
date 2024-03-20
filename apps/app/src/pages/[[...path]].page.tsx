@@ -40,7 +40,7 @@ import {
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
-  useIsUploadAllFileAllowed, useIsUploadEnabled, useIsOldRevisionPage,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -175,8 +175,6 @@ type Props = CommonProps & {
   grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
-
-  isOldRevisionPage: boolean,
 };
 
 const Page: NextPageWithLayout<Props> = (props: Props) => {
@@ -225,8 +223,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
-
-  useIsOldRevisionPage(props.isOldRevisionPage);
 
   const { pageWithMeta } = props;
 
@@ -414,8 +410,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
   const req: CrowiRequest = context.req as CrowiRequest;
   const { crowi } = req;
   const { revisionId } = req.query;
-
-  props.isOldRevisionPage = revisionId != null;
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;

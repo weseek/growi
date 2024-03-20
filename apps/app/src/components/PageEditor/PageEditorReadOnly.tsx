@@ -5,9 +5,8 @@ import { useRect } from '@growi/ui/dist/utils';
 import { throttle } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
-import { useIsOldRevisionPage } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage, useIsLatestRevision } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -21,7 +20,7 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePreviewOptions();
   const { data: editingMarkdown } = useEditingMarkdown();
-  const { data: isOldRevisionPage } = useIsOldRevisionPage();
+  const { data: isLatestRevision } = useIsLatestRevision();
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.READONLY, previewRef);
@@ -39,7 +38,7 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
     return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
   }, [previewRect]);
 
-  if (rendererOptions == null || !isOldRevisionPage) {
+  if (rendererOptions == null || isLatestRevision) {
     return <></>;
   }
 
