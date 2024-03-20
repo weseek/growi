@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import {
-  PageGrant, GroupType,
+  PageGrant, GroupType, getIdForRef,
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
@@ -12,8 +12,10 @@ import {
 } from 'reactstrap';
 
 import { LoadingSpinner } from '~/components/LoadingSpinner';
+import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
+import { useCurrentPageId, useSWRxIsGrantNormalized } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 
 const AVAILABLE_GRANTS = [
@@ -58,10 +60,31 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
 
   const shouldFetch = isSelectGroupModalShown;
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
+  const { data: selectedGrant, mutate: mutateSelectedGrant } = useSelectedGrant();
+  const { data: currentPageId } = useCurrentPageId();
+  const { data: grantData } = useSWRxIsGrantNormalized(currentPageId);
 
-  const currentGrant = grantData?.grant;
-  const groupGrantData = grantData?.groupGrantData;
+  const currentPageGrantData = grantData?.grantData.currentPageGrant;
+  const groupGrantData = currentPageGrantData?.groupGrantData;
+
+  const applyCurrentPageGrantToSelectedGrant = useCallback(() => {
+    const currentPageGrant = grantData?.grantData.currentPageGrant;
+    if (currentPageGrant == null) return;
+
+    const userRelatedGrantedGroups = currentPageGrant.groupGrantData
+      ?.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted)?.map((group) => {
+        return { item: group.id, type: group.type };
+      }) ?? [];
+    mutateSelectedGrant({
+      grant: currentPageGrant.grant,
+      userRelatedGrantedGroups,
+    });
+  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
+
+  // sync grant data
+  useEffect(() => {
+    applyCurrentPageGrantToSelectedGrant();
+  }, [applyCurrentPageGrantToSelectedGrant]);
 
   const showSelectGroupModal = useCallback(() => {
     setIsSelectGroupModalShown(true);
@@ -73,43 +96,28 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const changeGrantHandler = useCallback((grant: PageGrant) => {
     // select group
     if (grant === 5) {
+      if (selectedGrant?.grant !== 5) applyCurrentPageGrantToSelectedGrant();
       showSelectGroupModal();
       return;
     }
 
-    mutateGrant({ grant, groupGrantData: undefined });
-  }, [mutateGrant, showSelectGroupModal]);
+    // keep the current groupGrantData for when the user reselects group grant
+    mutateSelectedGrant({ grant, userRelatedGrantedGroups: undefined });
+  }, [mutateSelectedGrant, showSelectGroupModal, applyCurrentPageGrantToSelectedGrant, selectedGrant?.grant]);
 
-  const groupListItemClickHandler = useCallback((clickedGroupId: string) => {
-    if (groupGrantData == null) return;
+  const groupListItemClickHandler = useCallback((clickedGroup: UserRelatedGroupsData) => {
+    const userRelatedGrantedGroups = selectedGrant?.userRelatedGrantedGroups ?? [];
 
-    const { userRelatedGroups } = groupGrantData;
-    const clickedGroupIdx = userRelatedGroups.findIndex(group => group.id === clickedGroupId);
-
-    if (clickedGroupIdx === -1) return;
-
-    const clickedGroup = userRelatedGroups[clickedGroupIdx];
-    // re-render will not trigger without assigning a new element to the userRelatedGroups array
-    const clickedGroupCopy = { ...clickedGroup };
-
-    if (clickedGroupCopy.status === UserGroupPageGrantStatus.isGranted) {
-      clickedGroupCopy.status = UserGroupPageGrantStatus.notGranted;
+    let userRelatedGrantedGroupsCopy = [...userRelatedGrantedGroups];
+    if (userRelatedGrantedGroupsCopy.find(group => getIdForRef(group.item) === clickedGroup.id) == null) {
+      const grantGroupInfo = { item: clickedGroup.id, type: clickedGroup.type };
+      userRelatedGrantedGroupsCopy.push(grantGroupInfo);
     }
-    else if (clickedGroupCopy.status === UserGroupPageGrantStatus.notGranted) {
-      clickedGroupCopy.status = UserGroupPageGrantStatus.isGranted;
+    else {
+      userRelatedGrantedGroupsCopy = userRelatedGrantedGroupsCopy.filter(group => getIdForRef(group.item) !== clickedGroup.id);
     }
-
-    const userRelatedGroupsCopy = [...userRelatedGroups];
-    userRelatedGroupsCopy[clickedGroupIdx] = clickedGroupCopy;
-
-    mutateGrant({
-      grant: 5,
-      groupGrantData: {
-        userRelatedGroups: userRelatedGroupsCopy,
-        nonUserRelatedGrantedGroups: groupGrantData.nonUserRelatedGrantedGroups,
-      },
-    });
-  }, [mutateGrant, groupGrantData]);
+    mutateSelectedGrant({ grant: 5, userRelatedGrantedGroups: userRelatedGrantedGroupsCopy });
+  }, [mutateSelectedGrant, selectedGrant?.userRelatedGrantedGroups]);
 
   /**
    * Render grant selector DOM.
@@ -118,12 +126,14 @@ export const GrantSelector = (props: Props): JSX.Element => {
     let dropdownToggleBtnColor;
     let dropdownToggleLabelElm;
 
-    const userRelatedGrantedGroups = groupGrantData?.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted) ?? [];
+
+    const userRelatedGrantedGroups = groupGrantData?.userRelatedGroups.filter((group) => {
+      return selectedGrant?.userRelatedGrantedGroups?.some(grantedGroup => getIdForRef(grantedGroup.item) === group.id);
+    }) ?? [];
     const nonUserRelatedGrantedGroups = groupGrantData?.nonUserRelatedGrantedGroups ?? [];
-    const isGrantedGroupsNonEmpty = userRelatedGrantedGroups.length > 0 || nonUserRelatedGrantedGroups.length > 0;
 
     const dropdownMenuElems = AVAILABLE_GRANTS.map((opt) => {
-      const label = ((opt.grant === 5 && opt.reselectLabel != null) && isGrantedGroupsNonEmpty)
+      const label = ((opt.grant === 5 && opt.reselectLabel != null) && userRelatedGrantedGroups.length > 0)
         ? opt.reselectLabel // when grantGroup is selected
         : opt.label;
 
@@ -135,7 +145,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
       );
 
       // set dropdownToggleBtnColor, dropdownToggleLabelElm
-      if (opt.grant === 1 || opt.grant === currentGrant) {
+      if (opt.grant === 1 || opt.grant === selectedGrant?.grant) {
         dropdownToggleBtnColor = opt.btnStyleClass;
         dropdownToggleLabelElm = labelElm;
       }
@@ -144,7 +154,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     });
 
     // add specified group option
-    if (isGrantedGroupsNonEmpty) {
+    if (selectedGrant?.grant === PageGrant.GRANT_USER_GROUP && (userRelatedGrantedGroups.length > 0 || nonUserRelatedGrantedGroups.length > 0)) {
       const grantedGroupNames = [...userRelatedGrantedGroups.map(group => group.name), ...nonUserRelatedGrantedGroups.map(group => group.name)];
 
       const labelElm = (
@@ -180,7 +190,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, groupGrantData, t, openInModal]);
+  }, [changeGrantHandler, disabled, groupGrantData, selectedGrant, t, openInModal]);
 
   /**
    * Render select grantgroup modal.
@@ -215,7 +225,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     return (
       <div className="d-flex flex-column">
         { userRelatedGroups.map((group) => {
-          const isGroupGranted = group.status === UserGroupPageGrantStatus.isGranted;
+          const isGroupGranted = selectedGrant?.userRelatedGrantedGroups?.some(grantedGroup => getIdForRef(grantedGroup.item) === group.id);
           const cannotGrantGroup = group.status === UserGroupPageGrantStatus.cannotGrant;
           const activeClass = isGroupGranted ? 'active' : '';
 
@@ -224,7 +234,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
               className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
               type="button"
               key={group.id}
-              onClick={() => groupListItemClickHandler(group.id)}
+              onClick={() => groupListItemClickHandler(group)}
               disabled={cannotGrantGroup}
             >
               <span className="align-middle"><input type="checkbox" checked={isGroupGranted} disabled={cannotGrantGroup} /></span>
@@ -252,7 +262,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <button type="button" className="btn btn-primary mt-2 mx-auto" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
       </div>
     );
-  }, [currentUser?.admin, groupListItemClickHandler, shouldFetch, t, groupGrantData]);
+  }, [currentUser?.admin, groupListItemClickHandler, shouldFetch, t, groupGrantData, selectedGrant?.userRelatedGrantedGroups]);
 
   return (
     <>

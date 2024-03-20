@@ -665,7 +665,7 @@ class PageGrantService implements IPageGrantService {
     const userRelatedGroupsData = userRelatedGroups.map((group) => {
       const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
       return {
-        // TODO: change un-grantable groups to UserGroupPageGrantStatus.cannotGrant
+        // TODO: change un-grantable groups to UserGroupPageGrantStatus.cannotGrant (https://redmine.weseek.co.jp/issues/142310)
         id: group.item._id.toString(), name: group.item.name, type: group.type, provider, status: UserGroupPageGrantStatus.notGranted,
       };
     });

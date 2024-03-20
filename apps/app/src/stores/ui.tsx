@@ -17,7 +17,7 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
 import { scheduleToPut } from '~/client/services/user-ui-settings';
-import type { IPageGrantData } from '~/interfaces/page';
+import type { IPageGrantData, IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
@@ -348,8 +348,8 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
   };
 };
 
-export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
-  return useSWRStatic<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
+export const useSelectedGrant = (initialData?: Nullable<IPageSelectedGrant>): SWRResponse<Nullable<IPageSelectedGrant>, Error> => {
+  return useSWRStatic<Nullable<IPageSelectedGrant>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 type PageTreeDescCountMapUtils = {

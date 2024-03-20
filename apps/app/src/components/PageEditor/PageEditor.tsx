@@ -39,7 +39,8 @@ import {
 } from '~/stores/editor';
 import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId,
+  useIsNotFound, useIsLatestRevision, useTemplateBodyData, useSWRxIsGrantNormalized,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
@@ -63,7 +64,6 @@ import Preview from './Preview';
 import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
 
 import '@growi/editor/dist/style.css';
-import { UserGroupPageGrantStatus } from '~/interfaces/page';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -95,7 +95,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const { data: grantData } = useSelectedGrant();
+  const { data: selectedGrant } = useSelectedGrant();
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -111,6 +111,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
+  const { mutate: mutateIsGrantNormalized } = useSWRxIsGrantNormalized(currentPage?._id);
   const { mutate: mutateRemotePageId } = useRemoteRevisionId();
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
   const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
@@ -191,9 +192,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [socket, checkIsConflict]);
 
   const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (pageId == null || currentRevisionId == null || grantData == null) {
+    if (pageId == null || currentRevisionId == null || selectedGrant == null) {
       logger.error('Some materials to save are invalid', {
-        pageId, currentRevisionId, grantData,
+        pageId, currentRevisionId, selectedGrant,
       });
       throw new Error('Some materials to save are invalid');
     }
@@ -202,22 +203,19 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       mutateWaitingSaveProcessing(true);
       const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
-      const userRelatedGrantGroups = grantData?.groupGrantData?.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted);
-
       const { page } = await updatePage({
         pageId,
         revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
         body: codeMirrorEditor?.getDoc() ?? '',
-        grant: grantData?.grant,
+        grant: selectedGrant?.grant,
         origin: Origin.Editor,
-        userRelatedGrantUserGroupIds: userRelatedGrantGroups?.map((group) => {
-          return { item: group.id, type: group.type };
-        }),
+        userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
         ...(opts ?? {}),
       });
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+      mutateIsGrantNormalized();
 
       return page;
     }
@@ -237,7 +235,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
 
   // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
+  }, [codeMirrorEditor, selectedGrant, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser, mutateIsGrantNormalized]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
     const page = await save(opts);

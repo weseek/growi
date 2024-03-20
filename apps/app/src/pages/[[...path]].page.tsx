@@ -25,6 +25,7 @@ import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { UserGroupPageGrantStatus } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
@@ -237,9 +238,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
-  const { data: grantData } = useSWRxIsGrantNormalized(pageId);
-  const { mutate: mutateSelectedGrant } = useSelectedGrant();
-
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
@@ -265,11 +263,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
-  // sync grant data
-  useEffect(() => {
-    mutateSelectedGrant(grantData?.grantData.currentPageGrant);
-  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {

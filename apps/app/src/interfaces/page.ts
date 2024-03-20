@@ -18,14 +18,15 @@ export const UserGroupPageGrantStatus = {
   cannotGrant: 'cannotGrant',
 };
 type UserGroupPageGrantStatus = typeof UserGroupPageGrantStatus[keyof typeof UserGroupPageGrantStatus];
+export type UserRelatedGroupsData = {
+  id: string,
+  name: string,
+  type: GroupType,
+  provider?: ExternalGroupProviderType,
+  status: UserGroupPageGrantStatus,
+}
 export type GroupGrantData = {
-  userRelatedGroups: {
-    id: string,
-    name: string,
-    type: GroupType,
-    provider?: ExternalGroupProviderType,
-    status: UserGroupPageGrantStatus,
-  }[],
+  userRelatedGroups: UserRelatedGroupsData[],
   nonUserRelatedGrantedGroups: {
     id: string,
     name: string,
@@ -33,9 +34,15 @@ export type GroupGrantData = {
     provider?: ExternalGroupProviderType,
   }[],
 }
+// current grant data of page
 export type IPageGrantData = {
   grant: PageGrant,
   groupGrantData?: GroupGrantData,
+}
+// grant selected by user which is not yet applied
+export type IPageSelectedGrant = {
+  grant: PageGrant,
+  userRelatedGrantedGroups?: IGrantedGroup[]
 }
 
 export type IDeleteSinglePageApiv1Result = {

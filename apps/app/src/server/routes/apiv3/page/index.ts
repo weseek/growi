@@ -9,7 +9,6 @@ import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-ut
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IPageGrantData } from '~/interfaces/page';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
@@ -18,11 +17,9 @@ import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user
 import { GlobalNotificationSettingEvent } from '~/server/models';
 import type { PageModel } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
-import UserGroup from '~/server/models/user-group';
 import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
