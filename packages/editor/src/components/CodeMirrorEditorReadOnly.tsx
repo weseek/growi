@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 
 import { type Extension, EditorState } from '@codemirror/state';
-import { scrollPastEnd } from '@codemirror/view';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
@@ -11,7 +10,6 @@ import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
-    scrollPastEnd(),
     setDataLine,
     EditorState.readOnly.of(true),
   ],
