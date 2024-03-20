@@ -182,7 +182,6 @@ export const useScrollSync = (codeMirrorKey: GlobalCodeMirrorEditorKey, previewR
     }
 
     if (isOriginOfScrollSyncEditor.current) {
-      // setIsOriginOfScrollSyncEditor(false);
       isOriginOfScrollSyncEditor.current = false;
       return;
     }
