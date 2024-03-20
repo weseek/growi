@@ -6,7 +6,7 @@ import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -15,16 +15,15 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-type Props = CodeMirrorEditorProps & {
-  body?: string,
+type Props = {
+  markdown?: string,
+  onScroll?: () => void,
 }
 
-export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
-  const { body, ...otherProps } = props;
-
+export const CodeMirrorEditorReadOnly = ({ markdown, onScroll }: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.READONLY);
 
-  codeMirrorEditor?.initDoc(body);
+  codeMirrorEditor?.initDoc(markdown);
 
   useEffect(() => {
     return codeMirrorEditor?.appendExtensions?.(additionalExtensions);
@@ -34,7 +33,7 @@ export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
     <CodeMirrorEditor
       hideToolbar
       editorKey={GlobalCodeMirrorEditorKey.READONLY}
-      {...otherProps}
+      onScroll={onScroll}
     />
   );
 };
