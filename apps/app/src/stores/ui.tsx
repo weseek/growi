@@ -349,7 +349,7 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
 };
 
 export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
-  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
+  return useSWRStatic<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 type PageTreeDescCountMapUtils = {

@@ -681,7 +681,7 @@ class PageGrantService implements IPageGrantService {
 
     populatedGrantedGroups.forEach((group) => {
       const userRelatedGrantedGroup = userRelatedGroupsData.find((userRelatedGroup) => {
-        return userRelatedGroup.id === group.item.toString();
+        return userRelatedGroup.id === group.item._id.toString();
       });
       if (userRelatedGrantedGroup != null) {
         userRelatedGrantedGroup.status = UserGroupPageGrantStatus.isGranted;
