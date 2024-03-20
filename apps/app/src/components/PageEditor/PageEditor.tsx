@@ -160,6 +160,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
+
   const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
@@ -271,38 +272,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
 
   }, [codeMirrorEditor, pageId]);
-
-  // const scrollEditorHandler = useCallback(() => {
-  //   if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-  //     return;
-  //   }
-
-  //   if (isOriginOfScrollSyncPreview) {
-  //     isOriginOfScrollSyncPreview = false;
-  //     return;
-  //   }
-
-  //   isOriginOfScrollSyncEditor = true;
-  //   scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  // }, [codeMirrorEditor]);
-
-  // const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
-
-  // const scrollPreviewHandler = useCallback(() => {
-  //   if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-  //     return;
-  //   }
-
-  //   if (isOriginOfScrollSyncEditor) {
-  //     isOriginOfScrollSyncEditor = false;
-  //     return;
-  //   }
-
-  //   isOriginOfScrollSyncPreview = true;
-  //   scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  // }, [codeMirrorEditor]);
-
-  // const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   // initial caret line
   useEffect(() => {

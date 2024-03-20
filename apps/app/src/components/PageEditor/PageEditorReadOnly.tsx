@@ -18,16 +18,15 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
   const [previewRect] = useRect(previewRef);
 
-  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.READONLY, previewRef);
-  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
-
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: rendererOptions } = usePreviewOptions();
   const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isOldRevisionPage } = useIsOldRevisionPage();
-
   const shouldExpandContent = useShouldExpandContent(currentPage);
+
+  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.READONLY, previewRef);
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const pastEndStyle: CSSProperties | undefined = useMemo(() => {
     if (previewRect == null) {
