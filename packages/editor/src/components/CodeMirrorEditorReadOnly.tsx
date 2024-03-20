@@ -24,7 +24,7 @@ type Props = CodeMirrorEditorProps & {
 export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
   const { body, ...otherProps } = props;
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.READONLY);
 
   codeMirrorEditor?.initDoc(body);
 
@@ -34,7 +34,7 @@ export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
 
   return (
     <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.MAIN}
+      editorKey={GlobalCodeMirrorEditorKey.READONLY}
       {...otherProps}
     />
   );
