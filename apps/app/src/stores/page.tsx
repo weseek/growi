@@ -80,6 +80,10 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
       return true;
     }
 
+    if (cachedData.revision?._id !== initialData.revision?._id) {
+      return true;
+    }
+
     return false;
   })();
 
