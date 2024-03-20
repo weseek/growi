@@ -3,9 +3,8 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity, isPopulated } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  GroupType,
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
@@ -26,7 +25,6 @@ import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
@@ -44,7 +42,7 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
@@ -172,8 +170,6 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  grantData?: IPageGrantData,
-
   rendererConfig: RendererConfig,
 };
 
@@ -241,9 +237,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
-  const { data: grantData } = useSWRxIsGrantNormalized(pageId);
-  const { mutate: mutateSelectedGrant } = useSelectedGrant();
-
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
@@ -269,12 +262,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       mutatePageData();
     }
   }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
-  // sync grant data
-  useEffect(() => {
-    const grantDataToApply = props.grantData ? props.grantData : grantData?.grantData.currentPageGrant;
-    mutateSelectedGrant(grantDataToApply);
-  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant, props.grantData]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -413,7 +400,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService, configManager, pageGrantService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -455,34 +442,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     const ssrMaxRevisionBodyLength = configManager.getConfig('crowi', 'app:ssrMaxRevisionBodyLength');
     props.skipSSR = await skipSSR(page, ssrMaxRevisionBodyLength);
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
-  }
-
-  if (page == null && user != null) {
-    const templateData = await Page.findTemplate(props.currentPathname);
-    if (templateData != null) {
-      props.templateTagData = templateData.templateTags as string[];
-      props.templateBodyData = templateData.templateBody as string;
-    }
-
-    // apply parent page grant, without groups that user isn't related to
-    const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
-    if (ancestor != null) {
-      ancestor.populate('grantedGroups.item');
-      const userRelatedGrantedGroups = (await pageGrantService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
-        if (isPopulated(group.item)) {
-          return {
-            id: group.item._id,
-            name: group.item.name,
-            type: group.type,
-          };
-        }
-        return null;
-      }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
-      props.grantData = {
-        grant: ancestor.grant,
-        userRelatedGrantedGroups,
-      };
-    }
   }
 
   props.pageWithMeta = pageWithMeta;
