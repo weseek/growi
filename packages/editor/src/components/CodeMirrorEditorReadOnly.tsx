@@ -34,6 +34,7 @@ export const CodeMirrorEditorReadOnly = (props: Props): JSX.Element => {
 
   return (
     <CodeMirrorEditor
+      hideToolbar
       editorKey={GlobalCodeMirrorEditorKey.READONLY}
       {...otherProps}
     />
