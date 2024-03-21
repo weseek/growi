@@ -235,7 +235,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
-              <div className="eff"></div>
               <span className="btn-label pe-0">
                 {isLoading ? (
                   <LoadingSpinner />
@@ -247,8 +246,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </button>
           </div>
         </form>
-        <div className="text-center">
-          <p className="text-white">{t('or')}</p>
+        <div className="text-center text-line mb-3">
+          <p className="text-white mb-0">{t('or')}</p>
         </div>
       </>
     );
@@ -284,7 +283,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <div key={auth} className="my-2">
         <button type="button" className="btn btn-fill col-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
-          <div className="eff"></div>
           <span className="btn-label pe-0">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
@@ -506,7 +504,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
-              <div className="eff"></div>
               <span className="btn-label pe-0">
                 {isLoading ? (
                   <LoadingSpinner />
