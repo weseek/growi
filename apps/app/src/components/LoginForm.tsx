@@ -282,7 +282,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <div key={auth} className="my-2">
-        <button type="button" className="btn btn-fill col-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
+        <button type="button" className="btn btn-fill col-10 col-sm-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
           <span className="btn-label pe-0">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
@@ -521,7 +521,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <button
               type="button"
               id="function"
-              className="d-block btn btn-fill col-9 mx-auto py-1"
+              className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={() => { switchForm(); window.location.href = '#login' }}
             >
@@ -554,7 +554,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                     <button
                       type="button"
                       id="function"
-                      className="d-block btn btn-fill col-9 mx-auto py-1"
+                      className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { window.location.href = '/forgot-password' }}
                     >
@@ -568,7 +568,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                     <button
                       type="button"
                       id="function"
-                      className="d-block btn btn-fill col-9 mx-auto py-1"
+                      className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { switchForm(); window.location.href = '#register' }}
                     >
