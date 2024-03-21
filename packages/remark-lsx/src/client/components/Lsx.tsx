@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
+
 import { useSWRxLsx } from '../stores/lsx';
 import { generatePageNodeTree } from '../utils/page-node';
 
@@ -71,7 +73,7 @@ const LsxSubstance = React.memo(({
     return (
       <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
         <small>
-          <i className="fa fa-spinner fa-pulse me-1"></i>
+          <LoadingSpinner className="me-1" />
           {lsxContext.toString()}
         </small>
       </div>

@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import {
   PageGrant, isPopulated, GroupType, type IGrantedGroup,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -11,7 +12,6 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import type { IPageGrantData } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
 
