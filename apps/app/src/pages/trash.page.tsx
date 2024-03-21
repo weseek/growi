@@ -1,12 +1,11 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
