@@ -69,16 +69,10 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <nav className="sticky-top">
-          TODO: implement navigation for /trash
-        </nav>
-
-        <div className="content-main container-lg mb-5 pb-5">
+        <div className="content-main container-lg mt-5 ms-md-5 ms-xl-0">
           <PagePathNavSticky pagePath="/trash" />
           <TrashPageList />
         </div>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </div>
     </>
   );
