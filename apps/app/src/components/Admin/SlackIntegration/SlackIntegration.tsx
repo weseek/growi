@@ -10,21 +10,21 @@ import {
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { LoadingSpinner } from '~/components/LoadingSpinner';
 
-import BotTypeCard from './BotTypeCard';
+import { BotTypeCard } from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import OfficialBotSettings from './OfficialBotSettings';
 
 
 const botTypes = Object.values(SlackbotType);
 
-const SlackIntegration = () => {
+export const SlackIntegration = (): JSX.Element => {
 
   const { t } = useTranslation();
-  const [currentBotType, setCurrentBotType] = useState(null);
-  const [selectedBotType, setSelectedBotType] = useState(null);
+  const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
+  const [selectedBotType, setSelectedBotType] = useState<SlackbotType | undefined>();
   const [slackSigningSecret, setSlackSigningSecret] = useState(null);
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
@@ -106,12 +106,12 @@ const SlackIntegration = () => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async(botType) => {
+  const changeCurrentBotSettings = async(botType?: SlackbotType) => {
     try {
       await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
-      setSelectedBotType(null);
+      setSelectedBotType(undefined);
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -119,7 +119,7 @@ const SlackIntegration = () => {
     }
   };
 
-  const botTypeSelectHandler = async(botType) => {
+  const botTypeSelectHandler = async(botType: SlackbotType) => {
     if (botType === currentBotType) {
       return;
     }
@@ -135,10 +135,10 @@ const SlackIntegration = () => {
   };
 
   const cancelBotChangeHandler = () => {
-    setSelectedBotType(null);
+    setSelectedBotType(undefined);
   };
 
-  let settingsComponent = null;
+  let settingsComponent = <></>;
 
   switch (currentBotType) {
     case SlackbotType.OFFICIAL:
@@ -231,7 +231,7 @@ const SlackIntegration = () => {
           </button>
         </div>
 
-        <div className="row my-5 flex-wrap-reverse justify-content-center">
+        <div className="my-5 d-flex flex-wrap-reverse justify-content-center">
           {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
@@ -251,4 +251,4 @@ const SlackIntegration = () => {
   );
 };
 
-export default SlackIntegration;
+SlackIntegration.displayName = 'SlackIntegration';
