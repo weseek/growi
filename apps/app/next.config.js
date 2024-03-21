@@ -120,7 +120,7 @@ module.exports = async(phase, { defaultConfig }) => {
 
       // setup i18next-hmr
       if (!options.isServer && options.dev) {
-        const { I18NextHMRPlugin } = require('i18next-hmr/plugin');
+        const { I18NextHMRPlugin } = require('i18next-hmr/webpack');
         config.plugins.push(new I18NextHMRPlugin({ localesDir: localePath }));
       }
 

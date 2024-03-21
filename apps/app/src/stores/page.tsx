@@ -26,6 +26,7 @@ import type { IPageTagsInfo } from '../interfaces/tag';
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
+import { useRemoteRevisionId } from './remote-latest-page';
 
 
 const { isPermalink: _isPermalink } = pagePathUtils;
@@ -324,5 +325,17 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
     ([, pagePath]) => pagePathUtils.isTrashPage(pagePath),
     // TODO: set fallbackData
     // { fallbackData:  }
+  );
+};
+
+export const useIsRevisionOutdated = (): SWRResponse<boolean, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+
+  const currentRevisionId = currentPage?.revision?._id;
+
+  return useSWRImmutable(
+    currentRevisionId != null && remoteRevisionId != null ? ['useIsRevisionOutdated', currentRevisionId, remoteRevisionId] : null,
+    ([, remoteRevisionId, currentRevisionId]) => { return remoteRevisionId !== currentRevisionId },
   );
 };
