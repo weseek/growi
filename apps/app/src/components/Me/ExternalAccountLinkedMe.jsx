@@ -57,18 +57,18 @@ class ExternalAccountLinkedMe extends React.Component {
 
     return (
       <Fragment>
-        <h2 className="border-bottom my-4">
-          <button
-            type="button"
-            data-testid="grw-external-account-add-button"
-            className="btn btn-outline-secondary btn-sm pull-right"
-            onClick={this.openAssociateModal}
-          >
-            <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
-            Add
-          </button>
+        <h2 className="border-bottom mt-4 pb-2 fs-4">
           { t('admin:user_management.external_accounts') }
         </h2>
+        <button
+          type="button"
+          data-testid="grw-external-account-add-button"
+          className="btn btn-outline-secondary btn-sm pull-right mb-2"
+          onClick={this.openAssociateModal}
+        >
+          <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
+          Add
+        </button>
 
         <table className="table table-bordered table-user-list">
           <thead>

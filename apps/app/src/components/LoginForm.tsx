@@ -14,7 +14,7 @@ import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
-
+import { LoadingSpinner } from './LoadingSpinner';
 
 import styles from './LoginForm.module.scss';
 
@@ -72,9 +72,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
   }, []);
 
-  const tWithOpt = useCallback((key: string, opt?: any): string => {
+  const tWithOpt = useCallback((key: string, opt?: any) => {
     if (typeof opt === 'object') {
-      return t(key, opt as object);
+      return t(key, opt).toString();
     }
     return t(key);
   }, [t]);
@@ -179,15 +179,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <>
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
-        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        {/* https://github.com/weseek/growi/pull/7873 */}
         <div className="visually-hidden">
-          {/* Unsettled 11.17 meiri-k */}
-          <i className="fa fa-spinner fa-pulse" />
+          <LoadingSpinner />
         </div>
         {/* !! - END OF HIDDEN ELEMENT - !! */}
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><span className="material-symbols-outlined">info</span>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
+            {/* eslint-disable-next-line react/no-danger */}
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}
@@ -238,8 +238,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                {/* spinner.Tentative decision meiri-k 11.17 */}
-                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <span className="material-symbols-outlined">login</span>
+                )}
               </span>
               <span className="btn-label-text">{t('Sign in')}</span>
             </button>
@@ -513,8 +516,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             >
               <div className="eff"></div>
               <span className="btn-label">
-                {/* spinner.Tentative decision meiri-k 11.17 */}
-                <span className="material-symbols-outlined">{isLoading ? 'hoge' : 'login'}</span>
+                {isLoading ? (
+                  <LoadingSpinner />
+                ) : (
+                  <span className="material-symbols-outlined">login</span>
+                )}
               </span>
               <span className="btn-label-text">{submitText}</span>
             </button>

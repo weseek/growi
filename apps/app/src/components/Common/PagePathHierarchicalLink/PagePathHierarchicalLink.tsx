@@ -44,7 +44,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/trash" prefetch={false}>
-              <span className="material-symbols-outlined">delete</span>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>delete</span>
             </Link>
           </span>
           <span className={`separator ${styles.separator}`}><a href="/">/</a></span>
@@ -54,8 +54,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/" prefetch={false}>
-              {/* TODO: Size adjust */}
-              <span className="material-symbols-outlined">home</span>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>home</span>
               <span className={`separator ${styles.separator}`}>/</span>
             </Link>
           </span>

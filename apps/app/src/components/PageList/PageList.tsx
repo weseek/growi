@@ -3,9 +3,10 @@ import React from 'react';
 import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
+import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 
-import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import { LoadingSpinner } from '../LoadingSpinner';
 
 import { PageListItemL } from './PageListItemL';
 
@@ -30,7 +31,7 @@ const PageList = (props: Props<IPageInfoForEntity>): JSX.Element => {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       </div>
     );

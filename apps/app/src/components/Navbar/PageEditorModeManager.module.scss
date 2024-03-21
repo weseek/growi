@@ -14,8 +14,6 @@
       width: 70px;
       height: 30px;
     }
-
-    @include mixins.border-vertical('before', 70%, 1, true);
   }
 }
 

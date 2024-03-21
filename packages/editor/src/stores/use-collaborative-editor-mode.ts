@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 
+import { keymap } from '@codemirror/view';
 import { GlobalSocketEventName, type IUserHasId } from '@growi/core/dist/interfaces';
 import { useGlobalSocket, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
-// see: https://github.com/yjs/y-codemirror.next#example
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { yCollab } from 'y-codemirror.next';
+import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
@@ -23,18 +21,16 @@ export const useCollaborativeEditorMode = (
     user?: IUserHasId,
     pageId?: string,
     initialValue?: string,
-    onOpenEditor?: (markdown: string) => void,
     onEditorsUpdated?: (userList: IUserHasId[]) => void,
     codeMirrorEditor?: UseCodeMirrorEditor,
 ): void => {
   const [ydoc, setYdoc] = useState<Y.Doc | null>(null);
   const [provider, setProvider] = useState<SocketIOProvider | null>(null);
-  const [isInit, setIsInit] = useState(false);
   const [cPageId, setCPageId] = useState(pageId);
 
   const { data: socket } = useGlobalSocket();
 
-  const cleanupYDocAndProvider = () => {
+  const cleanupYDoc = () => {
     if (cPageId === pageId) {
       return;
     }
@@ -49,7 +45,6 @@ export const useCollaborativeEditorMode = (
     // TODO: catch ydoc:sync:error GlobalSocketEventName.YDocSyncError
     socket?.off(GlobalSocketEventName.YDocSync);
 
-    setIsInit(false);
     setCPageId(pageId);
 
     // reset editors
@@ -112,35 +107,30 @@ export const useCollaborativeEditorMode = (
   };
 
   const setupYDocExtensions = () => {
-    if (ydoc == null || provider == null) {
+    if (ydoc == null || provider == null || codeMirrorEditor == null) {
       return;
     }
 
     const ytext = ydoc.getText('codemirror');
     const undoManager = new Y.UndoManager(ytext);
 
-    const cleanup = codeMirrorEditor?.appendExtensions?.([
+    codeMirrorEditor.initDoc(ytext.toString());
+
+    const cleanupYUndoManagerKeymap = codeMirrorEditor.appendExtensions([
+      keymap.of(yUndoManagerKeymap),
+    ]);
+    const cleanupYCollab = codeMirrorEditor.appendExtensions([
       yCollab(ytext, provider.awareness, { undoManager }),
     ]);
 
-    return cleanup;
+    return () => {
+      cleanupYUndoManagerKeymap?.();
+      cleanupYCollab?.();
+    };
   };
 
-  const initializeEditor = () => {
-    if (ydoc == null || onOpenEditor == null || isInit === true) {
-      return;
-    }
-
-    const ytext = ydoc.getText('codemirror');
-    codeMirrorEditor?.initDoc(ytext.toString());
-    onOpenEditor(ytext.toString());
-
-    setIsInit(true);
-  };
-
-  useEffect(cleanupYDocAndProvider, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);
+  useEffect(cleanupYDoc, [cPageId, onEditorsUpdated, pageId, provider, socket, ydoc]);
   useEffect(setupYDoc, [provider, ydoc]);
   useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
-  useEffect(initializeEditor, [codeMirrorEditor, isInit, onOpenEditor, ydoc]);
 };

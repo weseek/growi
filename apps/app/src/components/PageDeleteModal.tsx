@@ -1,5 +1,6 @@
+import type { FC } from 'react';
 import React, {
-  useState, FC, useMemo, useEffect,
+  useState, useMemo, useEffect,
 } from 'react';
 
 import type {
@@ -289,7 +290,7 @@ const PageDeleteModal: FC = () => {
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
         >
-          <i className={`me-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <span className="material-symbols-outlined me-1" aria-hidden="true">{deleteIconAndKey[deleteMode].icon}</span>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>

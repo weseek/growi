@@ -2,6 +2,7 @@ import React, {
   useEffect, useState, useMemo, useCallback,
 } from 'react';
 
+import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
@@ -94,7 +95,7 @@ const PageCreateModal: React.FC = () => {
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
     return createAndTransit(
-      { path: joinedPath, wip: true },
+      { path: joinedPath, wip: true, origin: Origin.View },
       { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
@@ -104,7 +105,11 @@ const PageCreateModal: React.FC = () => {
    */
   const createInputPage = useCallback(async() => {
     return createAndTransit(
-      { path: pageNameInput, optionalParentPath: '/', wip: true },
+      {
+        path: pageNameInput,
+        wip: true,
+        origin: Origin.View,
+      },
       { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, pageNameInput]);
