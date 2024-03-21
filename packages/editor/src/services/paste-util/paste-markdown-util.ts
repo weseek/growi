@@ -35,7 +35,15 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
       return indent + line;
     });
 
-    adjusted = replacedLines ? replacedLines.join('\n') : '';
+    if (replacedLines == null) {
+      adjusted = '';
+    }
+    else if (replacedLines.length === 1 && !matchResult) {
+      adjusted = `${replacedLines.join('')}\n`;
+    }
+    else {
+      adjusted = replacedLines.join('\n');
+    }
   }
 
   else if (strFromBol.match(indentAndMarkRE)) {
