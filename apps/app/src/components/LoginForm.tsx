@@ -247,6 +247,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </button>
           </div>
         </form>
+        <div className="text-center">
+          <p className="text-white">{t('or')}</p>
+        </div>
       </>
     );
   }, [
@@ -270,6 +273,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       oidc: 'openid',
       saml: 'key',
     };
+    const signup = {
+      google: 'Google',
+      github: 'Github',
+      facebook: 'Facebook',
+      oidc: 'OIDC',
+      saml: 'SAML',
+    };
 
     return (
       <div key={auth} className="my-2">
@@ -278,7 +288,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <span className="btn-label pe-0">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
-          <span className="btn-label-text">{t('Sign in')}</span>
+          <span className="btn-label-text">{t('Sign in')}{signup[auth]}</span>
         </button>
       </div>
     );
