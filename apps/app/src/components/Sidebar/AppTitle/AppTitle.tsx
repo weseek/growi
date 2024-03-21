@@ -1,8 +1,9 @@
 import React, { memo } from 'react';
 
 import Link from 'next/link';
+import { UncontrolledTooltip } from 'reactstrap';
 
-import { useAppTitle, useIsDefaultLogo } from '~/stores/context';
+import { useAppTitle, useConfidential, useIsDefaultLogo } from '~/stores/context';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 
@@ -19,6 +20,7 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
 
   const { data: isDefaultLogo } = useIsDefaultLogo();
   const { data: appTitle } = useAppTitle();
+  const { data: confidential } = useConfidential();
 
   return (
     <div className={`${styles['grw-app-title']} ${className} d-flex d-edit-none`}>
@@ -27,12 +29,15 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
         <SidebarBrandLogo isDefaultLogo={isDefaultLogo} />
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
-        <div className="grw-site-name text-truncate">
-          <Link href="/" className="fs-4">
+        <div id="grw-site-name" className="grw-site-name text-truncate">
+          <span className="fs-4">
             {appTitle}
-          </Link>
+          </span>
         </div>
       </div>
+      <UncontrolledTooltip className="d-none d-sm-block" data-testid="confidential-tooltip" placement="top" target="grw-site-name" fade={false}>
+        {confidential}
+      </UncontrolledTooltip>
     </div>
   );
 });
