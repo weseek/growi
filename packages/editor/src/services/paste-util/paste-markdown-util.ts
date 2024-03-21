@@ -20,28 +20,30 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
 
   let adjusted = text;
 
-  if (text.match(indentAndMarkRE) && strFromBol.match(indentAndMarkRE)) {
-    const matchResult = strFromBol.match(indentAndMarkRE);
-    const indent = matchResult ? matchResult[1] : '';
+  if (indentAndMarkOnlyRE.test(strFromBol)) {
+    if (text.match(indentAndMarkRE)) {
+      const matchResult = strFromBol.match(indentAndMarkRE);
+      const indent = matchResult ? matchResult[1] : '';
 
-    const lines = text.match(/[^\r\n]+/g);
+      const lines = text.match(/[^\r\n]+/g);
 
-    const replacedLines = lines?.map((line, index) => {
+      const replacedLines = lines?.map((line, index) => {
 
-      if (index === 0 && strFromBol.match(indentAndMarkOnlyRE)) {
-        return line.replace(indentAndMarkRE, '');
-      }
+        if (index === 0 && strFromBol.match(indentAndMarkOnlyRE)) {
+          return line.replace(indentAndMarkRE, '');
+        }
 
-      return indent + line;
-    });
+        return indent + line;
+      });
 
-    adjusted = replacedLines ? replacedLines.join('\n') : '';
-  }
+      adjusted = replacedLines ? replacedLines.join('\n') : '';
+    }
 
-  else if (strFromBol.match(indentAndMarkRE)) {
-    const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${strFromBol}`);
+    else {
+      const replacedText = text.replace(/(\r\n|\r|\n)/g, `$1${strFromBol}`);
 
-    adjusted = replacedText;
+      adjusted = replacedText;
+    }
   }
 
   return adjusted;
