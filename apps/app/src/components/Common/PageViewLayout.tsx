@@ -3,7 +3,6 @@ import type { ReactNode } from 'react';
 import styles from './PageViewLayout.module.scss';
 
 const pageViewLayoutClass = styles['page-view-layout'] ?? '';
-const footerLayoutClass = styles['footer-layout'] ?? '';
 const _fluidLayoutClass = styles['fluid-layout'] ?? '';
 
 type Props = {
@@ -24,8 +23,8 @@ export const PageViewLayout = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div id="main" className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert`}>
-        <div id="content-main" className="content-main container-lg grw-container-convertible flex-expand-vert">
+      <div className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert`}>
+        <div className="container-lg wide-gutter-x-lg grw-container-convertible flex-expand-vert">
           { headerContents != null && headerContents }
           { sideContents != null
             ? (
@@ -48,7 +47,7 @@ export const PageViewLayout = (props: Props): JSX.Element => {
       </div>
 
       { footerContents != null && (
-        <footer className={`footer d-edit-none ${footerLayoutClass} ${fluidLayoutClass}`}>
+        <footer className={`footer d-edit-none wide-gutter-x-lg ${fluidLayoutClass}`}>
           {footerContents}
         </footer>
       ) }

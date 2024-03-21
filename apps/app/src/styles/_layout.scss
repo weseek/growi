@@ -48,6 +48,19 @@
   }
 }
 
+.wide-gutter-x-lg {
+  @include bs.media-breakpoint-up(lg) {
+    &,
+    .container,
+    .container-fluid,
+    .container-xxl,
+    .container-xl,
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
+  }
+}
+
 // printable style
 @media print {
   body {
