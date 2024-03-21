@@ -43,7 +43,7 @@ export const AttachmentList = ({
     if (isLoading) {
       return (
         <div className="text-muted">
-          <LoadingSpinner />
+          <LoadingSpinner className="me-1" />
           <span className="attachment-refs-blink">{refsContext.toString()}</span>
         </div>
       );
