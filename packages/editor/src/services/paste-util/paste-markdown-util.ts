@@ -38,7 +38,7 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
     if (replacedLines == null) {
       adjusted = '';
     }
-    else if (replacedLines.length === 1 && !matchResult) {
+    else if (!matchResult) {
       adjusted = `${replacedLines.join('')}\n`;
     }
     else {
