@@ -272,49 +272,32 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     };
 
     return (
-      <div key={auth} className="col-6 my-2">
-        <button type="button" className="btn btn-fill" id={auth} onClick={handleLoginWithExternalAuth}>
+      <div key={auth} className="my-2">
+        <button type="button" className="btn btn-fill col-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
           <div className="eff"></div>
-          <span className="btn-label">
+          <span className="btn-label pe-0">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
           <span className="btn-label-text">{t('Sign in')}</span>
         </button>
-        <div className="small text-end">by {auth} Account</div>
       </div>
     );
   }, [handleLoginWithExternalAuth, t]);
 
   const renderExternalAuthLoginForm = useCallback(() => {
-    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
-    const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
-    const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
+    const { objOfIsExternalAuthEnableds } = props;
 
     return (
       <>
-        <div className="grw-external-auth-form border-top border-bottom">
-          <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
-            <div className="row mt-2">
-              {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
-                if (!objOfIsExternalAuthEnableds[auth]) {
-                  return;
-                }
-                return renderExternalAuthInput(auth);
-              })}
-            </div>
-          </div>
+        <div className="mt-2">
+          {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
+            if (!objOfIsExternalAuthEnableds[auth]) {
+              return;
+            }
+            return renderExternalAuthInput(auth);
+          })}
         </div>
         <div className="text-center">
-          <button
-            type="button"
-            className="btn btn-secondary btn-external-auth-tab btn-sm mb-3"
-            data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
-            data-bs-target="#external-auth"
-            aria-expanded="false"
-            aria-controls="external-auth"
-          >
-            External Auth
-          </button>
         </div>
       </>
     );
