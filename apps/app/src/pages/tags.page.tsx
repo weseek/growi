@@ -9,6 +9,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { LoadingSpinner } from '~/components/LoadingSpinner';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';
@@ -83,30 +84,37 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <div className="container-lg mb-5 pb-5" data-testid="tags-page">
-          <h2 className="my-3">{`${t('Tags')}(${totalCount})`}</h2>
-          <div className="px-3 mb-5 text-center">
-            <TagCloudBox tags={tagData} minSize={20} />
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
+
+        <div className="main ps-sidebar" data-testid="tags-page">
+          <div className="container-lg wide-gutter-x-lg">
+
+            <h2 className="sticky-top py-1">
+              {`${t('Tags')}(${totalCount})`}
+            </h2>
+
+            <div className="px-3 mb-5 text-center">
+              <TagCloudBox tags={tagData} minSize={20} />
+            </div>
+            { isLoading
+              ? (
+                <div className="text-muted text-center">
+                  <LoadingSpinner className="mt-3 fs-3" />
+                </div>
+              )
+              : (
+                <div data-testid="grw-tags-list">
+                  <TagList
+                    tagData={tagData}
+                    totalTags={totalCount}
+                    activePage={activePage}
+                    onChangePage={setOffsetByPageNumber}
+                    pagingLimit={PAGING_LIMIT}
+                  />
+                </div>
+              )
+            }
           </div>
-          { isLoading
-            ? (
-              <div className="text-muted text-center">
-                <LoadingSpinner className="mt-3 fs-3" />
-              </div>
-            )
-            : (
-              <div data-testid="grw-tags-list">
-                <TagList
-                  tagData={tagData}
-                  totalTags={totalCount}
-                  activePage={activePage}
-                  onChangePage={setOffsetByPageNumber}
-                  pagingLimit={PAGING_LIMIT}
-                />
-              </div>
-            )
-          }
-          <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
         </div>
       </div>
     </>

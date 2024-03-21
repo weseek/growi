@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
@@ -69,9 +70,13 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <div className="content-main container-lg mt-5 ms-md-5 ms-xl-0">
-          <PagePathNavSticky pagePath="/trash" />
-          <TrashPageList />
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
+
+        <div className="main ps-sidebar">
+          <div className="container-lg wide-gutter-x-lg">
+            <PagePathNavSticky pagePath="/trash" />
+            <TrashPageList />
+          </div>
         </div>
       </div>
     </>

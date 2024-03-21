@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
@@ -122,18 +123,16 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className="dynamic-layout-root mx-md-3">
-        <header className="py-3">
-          <div className="container">
-            <h1 className="title fs-3 mt-5">{ targetPage.title }</h1>
-          </div>
-        </header>
+      <div className="dynamic-layout-root">
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+        <div className="main ps-sidebar">
+          <div className="container-lg wide-gutter-x-lg">
 
-        <div id="main" className="main">
-          <div id="content-main" className="content-main container">
+            <h1 className="sticky-top py-2 fs-3">{ targetPage.title }</h1>
+
             {targetPage.component}
+
           </div>
         </div>
       </div>
