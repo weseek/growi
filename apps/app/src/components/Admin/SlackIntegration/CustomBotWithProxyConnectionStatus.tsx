@@ -23,7 +23,7 @@ export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConn
     <div className="row justify-content-center my-5 bot-integration">
 
       <div className="card rounded shadow col-4 border-0 admin-bot-card">
-        <h5 className="card-title fw-bold mt-3 ms-3 text-center">Slack</h5>
+        <h5 className="card-title fw-bold mt-3 text-center">Slack</h5>
         <div className="card-body px-5">
           {connectionStatusValues.map((connectionStatus, i) => {
             const workspaceName = connectionStatus.workspaceName || `Settings #${i}`;
@@ -45,7 +45,7 @@ export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConn
       </div>
 
       <div className="card rounded-3 shadow col-4 border-0 admin-bot-card">
-        <h5 className="card-title fw-bold mt-3 ms-3 text-center">GROWI App</h5>
+        <h5 className="card-title fw-bold mt-3 text-center">GROWI App</h5>
         <div className="card-body text-center">
           <div className="mx-md-3 my-4 my-lg-5 p-2 border bg-primary text-light">
             {siteName}
