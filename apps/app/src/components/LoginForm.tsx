@@ -525,7 +525,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={() => { switchForm(); window.location.href = '#login' }}
             >
-              <span className="material-symbols-outlined me-2">login</span>{t('Sign in is here')}
+              <span className="material-symbols-outlined me-2 fs-5">login</span>{t('Sign in is here')}
             </button>
           </div>
         </div>
@@ -558,7 +558,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { window.location.href = '/forgot-password' }}
                     >
-                      <span className="material-symbols-outlined pe-2">vpn_key</span>{t('forgot_password.forgot_password')}
+                      <span className="material-symbols-outlined me-2 fs-5">vpn_key</span>{t('forgot_password.forgot_password')}
                     </button>
                   </div>
                 )}
@@ -572,7 +572,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { switchForm(); window.location.href = '#register' }}
                     >
-                      <span className="material-symbols-outlined me-2">person_add</span> {t('Sign up is here')}
+                      <span className="material-symbols-outlined me-2 fs-5">person_add</span> {t('Sign up is here')}
                     </button>
                   </div>
                 )}
