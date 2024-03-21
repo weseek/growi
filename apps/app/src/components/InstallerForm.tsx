@@ -203,7 +203,6 @@ const InstallerForm = memo((): JSX.Element => {
               id="register"
               disabled={isLoading}
             >
-              <div className="eff"></div>
               <span className="btn-label">
                 {isLoading ? (
                   <LoadingSpinner />

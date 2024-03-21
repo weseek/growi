@@ -520,8 +520,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="text-end col-12 mb-5">
             <button
               type="button"
-              id="login"
-              className="d-block btn btn-dark col-9 mx-auto"
+              id="function"
+              className="d-block btn btn-fill col-9 mx-auto py-1"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={() => { switchForm(); window.location.href = '#login' }}
             >
@@ -553,7 +553,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="d-block btn btn-dark col-9 mx-auto"
+                      id="function"
+                      className="d-block btn btn-fill col-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { window.location.href = '/forgot-password' }}
                     >
@@ -566,8 +567,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-2 mb-5">
                     <button
                       type="button"
-                      id="register"
-                      className="d-block btn btn-dark col-9 mx-auto"
+                      id="function"
+                      className="d-block btn btn-fill col-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={() => { switchForm(); window.location.href = '#register' }}
                     >
