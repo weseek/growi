@@ -174,18 +174,18 @@
     }
 
     .link-growi-org {
-      color: rgba(black, 0.4);
+      color: rgba(white, 0.4);
 
       &:hover,
       &.focus {
-        color: black;
+        color: white;
 
         .growi {
-          color: darken(var.$growi-green, 20%);
+          color: darken(var.$growi-green, 10%);
         }
 
         .org {
-          color: darken(var.$growi-blue, 15%);
+          color: darken(var.$growi-blue, 10%);
         }
       }
     }

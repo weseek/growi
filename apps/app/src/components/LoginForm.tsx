@@ -502,7 +502,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-fill p-2"
+              className="btn btn-fill col-7"
               id="register"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
@@ -511,7 +511,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <span className="material-symbols-outlined">login</span>
+                  <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
               <span className="btn-label-text">{submitText}</span>
@@ -519,19 +519,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
         </form>
 
-        <div className="border-bottom"></div>
-
         <div className="row">
-          <div className="text-end col-12 mt-2 py-2">
-            <a
-              href="#login"
+          <div className="text-end col-12 mb-5">
+            <button
+              type="button"
               id="login"
-              className="link-switch"
+              className="d-block btn btn-dark col-9 mx-auto"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-              onClick={switchForm}
+              onClick={() => { switchForm(); window.location.href = '#login' }}
             >
-              <span className="material-symbols-outlined">login</span>{t('Sign in is here')}
-            </a>
+              <span className="material-symbols-outlined me-2">login</span>{t('Sign in is here')}
+            </button>
           </div>
         </div>
       </React.Fragment>
@@ -555,24 +553,29 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-end mb-2">
-                    <a href="/forgot-password" className="d-block link-switch">
-                      <span className="material-symbols-outlined">vpn_key</span>{t('forgot_password.forgot_password')}
-                    </a>
+                  <div className="mt-4">
+                    <button
+                      type="button"
+                      className="d-block btn btn-dark col-9 mx-auto"
+                      style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+                      onClick={() => { window.location.href = '/forgot-password' }}
+                    >
+                      <span className="material-symbols-outlined pe-2">vpn_key</span>{t('forgot_password.forgot_password')}
+                    </button>
                   </div>
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="text-end mb-2">
-                    <a
-                      href="#register"
+                  <div className="mt-2 mb-5">
+                    <button
+                      type="button"
                       id="register"
-                      className="link-switch"
+                      className="d-block btn btn-dark col-9 mx-auto"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                      onClick={switchForm}
+                      onClick={() => { switchForm(); window.location.href = '#register' }}
                     >
-                      <span className="material-symbols-outlined">check_box</span> {t('Sign up is here')}
-                    </a>
+                      <span className="material-symbols-outlined me-2">person_add</span> {t('Sign up is here')}
+                    </button>
                   </div>
                 )}
               </div>
