@@ -24,7 +24,7 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
         <a href={t('admin:slack_integration.docs_url.custom_bot_without_proxy')} target="_blank" rel="noopener noreferrer">
-          <span className="growi-custom-icons btn-link ms-2 fs-3">external_link</span>
+          <span className="growi-custom-icons btn-link ms-2">external_link</span>
         </a>
       </h2>
 
