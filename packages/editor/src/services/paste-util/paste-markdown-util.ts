@@ -20,7 +20,7 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
 
   let adjusted = text;
 
-  if (text.match(indentAndMarkRE)) {
+  if (text.match(indentAndMarkRE) && strFromBol.match(indentAndMarkRE)) {
     const matchResult = strFromBol.match(indentAndMarkRE);
     const indent = matchResult ? matchResult[1] : '';
 
@@ -35,15 +35,7 @@ export const adjustPasteData = (strFromBol: string, text: string): string => {
       return indent + line;
     });
 
-    if (replacedLines == null) {
-      adjusted = '';
-    }
-    else if (!matchResult) {
-      adjusted = `${replacedLines.join('')}\n`;
-    }
-    else {
-      adjusted = replacedLines.join('\n');
-    }
+    adjusted = replacedLines ? replacedLines.join('\n') : '';
   }
 
   else if (strFromBol.match(indentAndMarkRE)) {
