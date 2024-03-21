@@ -9,6 +9,7 @@ import Head from 'next/head';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
@@ -70,9 +71,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        {/* <nav className="sticky-top">
-
-        </nav> */}
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
         <div className="main">
           <div className="container-lg wide-gutter-x-lg">

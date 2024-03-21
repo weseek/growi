@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { LoadingSpinner } from '~/components/LoadingSpinner';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IDataTagCount } from '~/interfaces/tag';
@@ -84,9 +85,15 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
+
         <div className="main" data-testid="tags-page">
           <div className="container-lg wide-gutter-x-lg">
-            <h2>{`${t('Tags')}(${totalCount})`}</h2>
+
+            <h2 className="sticky-top py-1">
+              {`${t('Tags')}(${totalCount})`}
+            </h2>
+
             <div className="px-3 mb-5 text-center">
               <TagCloudBox tags={tagData} minSize={20} />
             </div>
