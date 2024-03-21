@@ -55,11 +55,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  useIsomorphicLayoutEffect(() => {
-    mutate(undefined, { revalidate: false });
-  }, []);
-
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
   useCurrentPageId(null);
   useCurrentPathname('/_search');
 
@@ -79,6 +76,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsContainerFluid(props.isContainerFluid);
 
   const title = generateCustomTitle(props, t('search_result.title'));
+
+  console.log('_search');
 
   return (
     <>

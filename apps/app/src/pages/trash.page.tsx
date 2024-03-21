@@ -44,10 +44,10 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  useIsomorphicLayoutEffect(() => {
-    mutate(undefined, { revalidate: false });
-  }, []);
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/trash');
 
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -56,8 +56,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSearchPage(false);
-  useCurrentPageId(null);
-  useCurrentPathname('/trash');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
