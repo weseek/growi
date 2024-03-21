@@ -9,7 +9,7 @@ import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
-import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
+import { CustomBotWithProxyConnectionStatus} from './CustomBotWithProxyConnectionStatus';
 import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 import WithProxyAccordions from './WithProxyAccordions';

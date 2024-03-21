@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { useAppTitle } from '~/stores/context';
 
-import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
+import { CustomBotWithoutProxyConnectionStatus } from './CustomBotWithoutProxyConnectionStatus';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {

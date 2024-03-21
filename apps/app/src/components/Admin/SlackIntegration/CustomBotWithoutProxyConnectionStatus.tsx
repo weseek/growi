@@ -7,13 +7,13 @@ import { Bridge } from './Bridge';
 
 type CustomBotWithoutProxyConnectionStatusProps = {
   siteName: string,
-  connectionStatuses: unknown,
+  connectionStatuses: any,
 }
 
 export const CustomBotWithoutProxyConnectionStatus = (props: CustomBotWithoutProxyConnectionStatusProps): JSX.Element => {
   const { siteName, connectionStatuses } = props;
 
-  const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses); // type: ConnectionStatus[]
+  const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses);
 
   const totalCount = connectionStatusValues.length;
   const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatus.error != null).length;

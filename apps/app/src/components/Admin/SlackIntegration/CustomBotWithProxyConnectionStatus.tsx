@@ -8,7 +8,7 @@ import { Bridge } from './Bridge';
 
 type CustomBotWithProxyConnectionStatusProps = {
   siteName: string,
-  connectionStatuses: unknown,
+  connectionStatuses: any,
 }
 
 export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConnectionStatusProps): JSX.Element => {
