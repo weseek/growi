@@ -68,8 +68,7 @@ export const useHandsontableModalLauncherForView = (opts?: {
       logger.error('failed to save', error);
       opts?.onSaveError?.(error);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [closeConflictDiffModal, currentPage, opts, shareLinkId]);
+  }, [closeConflictDiffModal, currentPage, opts, shareLinkId, socket]);
 
   // eslint-disable-next-line max-len
   const generateResolveConflictHandler = useCallback((revisionId: string, onConflict: (conflictData: RemoteRevisionData, newMarkdown: string) => void) => {
