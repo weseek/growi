@@ -235,7 +235,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
@@ -256,18 +256,18 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
-      {revisionId != null && !isViewMode && (
+      {revisionId != null && !isViewMode && isIPageInfoForOperation(pageInfo) && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && isIPageInfoForOperation(pageInfo) && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && isIPageInfoForOperation(pageInfo) && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -275,7 +275,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && isIPageInfoForOperation(pageInfo) && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
@@ -289,7 +289,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           disabled={disableSeenUserInfoPopover}
         />
       ) }
-      { showPageControlDropdown && (
+      { showPageControlDropdown && isIPageInfoForOperation(pageInfo) && (
         <PageItemControl
           alignEnd
           pageId={pageId}
@@ -337,7 +337,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
     return <></>;
   }
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
