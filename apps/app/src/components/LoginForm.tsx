@@ -275,7 +275,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     };
     const signin = {
       google: 'Google',
-      github: 'Github',
+      github: 'GitHub',
       facebook: 'Facebook',
       oidc: 'OIDC',
       saml: 'SAML',
