@@ -32,7 +32,7 @@ const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
   };
 
   return (
-    <div id="content-main" className="content-main container-lg">
+    <div className="container-lg">
       <div className="container">
         <div className="row justify-content-md-center">
           <div className="col-md-6 mt-5">

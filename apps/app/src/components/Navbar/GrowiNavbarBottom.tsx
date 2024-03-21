@@ -6,6 +6,8 @@ import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useDrawerOpened } from '~/stores/ui';
 
+import { GroundGlassBar } from './GroundGlassBar';
+
 import styles from './GrowiNavbarBottom.module.scss';
 
 
@@ -18,7 +20,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { open: openSearchModal } = useSearchModal();
 
   return (
-    <div className={`
+    <GroundGlassBar className={`
       ${styles['grw-navbar-bottom']}
       ${isDrawerOpened ? styles['grw-navbar-bottom-drawer-opened'] : ''}
       d-md-none d-edit-none d-print-none fixed-bottom`}
@@ -73,6 +75,6 @@ export const GrowiNavbarBottom = (): JSX.Element => {
         </ul>
       </div>
 
-    </div>
+    </GroundGlassBar>
   );
 };
