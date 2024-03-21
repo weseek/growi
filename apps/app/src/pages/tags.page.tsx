@@ -87,7 +87,7 @@ const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <div className="dynamic-layout-root">
         <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div className="main" data-testid="tags-page">
+        <div className="main ps-sidebar" data-testid="tags-page">
           <div className="container-lg wide-gutter-x-lg">
 
             <h2 className="sticky-top py-1">

@@ -73,7 +73,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
       <div className="dynamic-layout-root">
         <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div className="main">
+        <div className="main ps-sidebar">
           <div className="container-lg wide-gutter-x-lg">
             <PagePathNavSticky pagePath="/trash" />
             <TrashPageList />

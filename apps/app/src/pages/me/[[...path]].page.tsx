@@ -124,7 +124,7 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <div className="main">
+        <div className="main ps-sidebar">
           <div className="container-lg wide-gutter-x-lg">
             <h1 className="title fs-3 mt-5">{ targetPage.title }</h1>
             {targetPage.component}
