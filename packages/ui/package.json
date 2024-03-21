@@ -21,6 +21,9 @@
     "./dist/utils": {
       "import": "./dist/utils/index.js"
     },
+    "./dist/style": {
+      "import": "./dist/style.css"
+    },
     "./scss/*": "./scss/*.scss"
   },
   "scripts": {
