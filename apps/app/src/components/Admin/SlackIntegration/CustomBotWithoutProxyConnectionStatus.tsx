@@ -17,11 +17,7 @@ export const CustomBotWithoutProxyConnectionStatus = (props: CustomBotWithoutPro
 
   const totalCount = connectionStatusValues.length;
   const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatus.error != null).length;
-
-  let workspaceName;
-  if (totalCount > 0) {
-    workspaceName = connectionStatusValues[0].workspaceName;
-  }
+  const workspaceName = connectionStatusValues[0]?.workspaceName;
 
   return (
     <div className="row justify-content-center my-5 bot-integration">

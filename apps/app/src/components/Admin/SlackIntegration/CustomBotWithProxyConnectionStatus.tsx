@@ -14,7 +14,7 @@ type CustomBotWithProxyConnectionStatusProps = {
 export const CustomBotWithProxyConnectionStatus = (props: CustomBotWithProxyConnectionStatusProps): JSX.Element => {
   const { siteName, connectionStatuses } = props;
 
-  const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses); // type: ConnectionStatus[]
+  const connectionStatusValues: ConnectionStatus[] = Object.values(connectionStatuses);
 
   const totalCount = connectionStatusValues.length;
   const errorCount = connectionStatusValues.filter(connectionStatus => connectionStatus.error != null).length;
