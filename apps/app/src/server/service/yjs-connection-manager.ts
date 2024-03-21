@@ -61,6 +61,8 @@ class YjsConnectionManager {
   }
 
   public async handleYDocUpdate(pageId: string, newMarkdown: string): Promise<void> {
+    // TODO: https://redmine.weseek.co.jp/issues/132775
+    // It's necessary to confirm that the user is not editing the target page in the Editor
     const currentYdoc = this.getCurrentYdoc(pageId);
     const currentMarkdownLength = currentYdoc.getText('codemirror').length;
     currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
