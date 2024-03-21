@@ -55,6 +55,7 @@ class SocketIoService {
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
     await this.setupYjsConnection();
+    await this.setupYjsUpdateEvent();
   }
 
   getDefaultSocket() {
@@ -168,6 +169,19 @@ class SocketIoService {
         catch (error) {
           logger.warn(error.message);
           socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
+        }
+      });
+    });
+  }
+
+  setupYjsUpdateEvent() {
+    this.io.on('connection', (socket) => {
+      socket.on(GlobalSocketEventName.YDocUpdate, async({ pageId, newMarkdown }) => {
+        try {
+          await this.yjsConnectionManager.handleYDocUpdate(pageId, newMarkdown);
+        }
+        catch (error) {
+          logger.warn(error.message);
         }
       });
     });

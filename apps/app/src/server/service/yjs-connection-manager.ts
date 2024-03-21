@@ -60,6 +60,14 @@ class YjsConnectionManager {
     persistedYdoc.destroy();
   }
 
+  public async handleYDocUpdate(pageId: string, newMarkdown: string): Promise<void> {
+    const currentYdoc = this.getCurrentYdoc(pageId);
+    const currentMarkdownLength = currentYdoc.getText('codemirror').length;
+    currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
+    currentYdoc.getText('codemirror').insert(0, newMarkdown);
+    Y.encodeStateAsUpdate(currentYdoc);
+  }
+
   private getCurrentYdoc(pageId: string): Y.Doc {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     if (currentYdoc == null) {
