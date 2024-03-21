@@ -41,6 +41,7 @@
   "Error": "误差",
   "Warning": "警告",
   "Sign in": "登录",
+  "Sign in with External auth": "Sign in with {{signin}}",
   "Sign up is here": "注册",
   "Sign in is here": "登录",
   "Sign up": "注册",

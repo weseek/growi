@@ -44,6 +44,7 @@
   "Error": "Error",
   "Warning": "Warning",
   "Sign in": "Sign in",
+  "Sign in with External auth": "Sign in with {{signin}}",
   "Sign up is here": "Sign up",
   "Sign in is here": "Sign in",
   "Sign up": "Sign up",

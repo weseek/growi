@@ -41,6 +41,7 @@
   "Error": "エラー",
   "Warning": "注意",
   "Sign in": "ログイン",
+  "Sign in with External auth": "{{signin}} でログイン",
   "Sign up is here": "新規登録はこちら",
   "Sign in is here": "ログインはこちら",
   "Sign up": "新規登録",

@@ -273,7 +273,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       oidc: 'openid',
       saml: 'key',
     };
-    const signup = {
+    const signin = {
       google: 'Google',
       github: 'Github',
       facebook: 'Facebook',
@@ -288,7 +288,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <span className="btn-label pe-0">
             <i className={`fa fa-${authIconNames[auth]}`}></i>
           </span>
-          <span className="btn-label-text">{t('Sign in')}{signup[auth]}</span>
+          <span className="btn-label-text">{t('Sign in with External auth', { signin: signin[auth] })}</span>
         </button>
       </div>
     );
