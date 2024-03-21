@@ -95,12 +95,9 @@ $slack-work-space-name-card-border: #efc1f6;
       font-size: 0.6rem;
     }
     .admin-bot-card {
-      min-width: 300px;
+      min-width: 280px;
       max-width: 500px;
       border-radius: 8px !important;
-      .grw-botcard-title-active {
-        color: $gray-200;
-      }
     }
     .border-primary {
       border-width: 2px;
@@ -137,17 +134,13 @@ $slack-work-space-name-card-border: #efc1f6;
     }
 
     .grw-bridge-proxy-circle {
-      position: relative;
       .circle {
-        position: absolute;
-        inset:0;
-        z-index: 1;
+        left: 50%;
         width: 100px;
         height: 100px;
-        margin:auto;
         border: 13px solid;
-
-        @include media-breakpoint-down(lg) {
+        transform: translate(-50%, -50%);
+        @include media-breakpoint-down(md) {
           width: 50px;
           height: 50px;
           border: 8px solid;
@@ -156,11 +149,12 @@ $slack-work-space-name-card-border: #efc1f6;
 
       .circle-inner {
         position: absolute;
-        transform: translate(-50%, 25%);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
       }
       .circle-inner.grw-proxy-server-name {
         margin-top: 55px;
-        transform: translate(-50%, -25%);
       }
     }
 
