@@ -6,6 +6,7 @@ import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -43,8 +44,10 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/trash');
 
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -53,8 +56,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSearchPage(false);
-  useCurrentPageId(null);
-  useCurrentPathname('/trash');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -69,16 +70,10 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <nav className="sticky-top">
-          TODO: implement navigation for /trash
-        </nav>
-
-        <div className="content-main container-lg mb-5 pb-5">
+        <div className="content-main container-lg mt-5 ms-md-5 ms-xl-0">
           <PagePathNavSticky pagePath="/trash" />
           <TrashPageList />
         </div>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </div>
     </>
   );

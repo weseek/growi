@@ -2,8 +2,6 @@ import path from 'path';
 
 import express from 'express';
 
-import { i18n } from '^/config/next-i18next.config';
-
 import loggerFactory from '~/utils/logger';
 
 import nextFactory from '../routes/next';
@@ -24,25 +22,12 @@ class CrowiDev {
   }
 
   init() {
-    this.requireForAutoReloadServer();
-
     this.initPromiseRejectionWarningHandler();
   }
 
   initPromiseRejectionWarningHandler() {
     // https://qiita.com/syuilo/items/0800d7e44e93203c7285
     process.on('unhandledRejection', console.dir); // eslint-disable-line no-console
-  }
-
-  /**
-   * require files for node-dev auto reloading
-   */
-  requireForAutoReloadServer() {
-    // load all json files for live reloading
-    i18n.locales
-      .forEach((localeId) => {
-        require(path.join(this.crowi.publicDir, 'static/locales', localeId, 'translation.json'));
-      });
   }
 
   /**
@@ -92,19 +77,12 @@ class CrowiDev {
   }
 
   setupExpressAfterListening(app) {
-    // this.setupBrowserSync(app);
-    this.setupWebpackHmr(app);
     this.setupNextjsStackFrame(app);
   }
 
   setupNextBundleAnalyzer(app) {
     const next = nextFactory(this.crowi);
     app.use('/analyze', express.static(path.resolve(__dirname, '../../../.next/analyze')));
-  }
-
-  setupWebpackHmr(app) {
-    const next = nextFactory(this.crowi);
-    app.all('/_next/webpack-hmr', next.delegateToNext);
   }
 
   setupNextjsStackFrame(app) {

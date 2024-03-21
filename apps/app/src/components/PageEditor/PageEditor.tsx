@@ -3,11 +3,11 @@ import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
+
 import type EventEmitter from 'events';
 import nodePath from 'path';
 
 import { type IPageHasId, Origin } from '@growi/core';
-import { useGlobalSocket } from '@growi/core/dist/swr';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
   CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
@@ -20,10 +20,9 @@ import { throttle, debounce } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
-import { updatePage } from '~/client/services/update-page';
+import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { SocketEventName } from '~/interfaces/websocket';
+import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
@@ -32,22 +31,14 @@ import {
 } from '~/stores/context';
 import {
   useEditorSettings,
-  useCurrentIndentSize, usePageTagsForEditors,
-  useIsConflict,
+  useCurrentIndentSize,
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
-import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-import {
-  useRemoteRevisionId,
-  useRemoteRevisionBody,
-  useRemoteRevisionLastUpdatedAt,
-  useRemoteRevisionLastUpdateUser,
-} from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
@@ -60,7 +51,8 @@ import loggerFactory from '~/utils/logger';
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
-import { scrollEditor, scrollPreview } from './ScrollSyncHelper';
+import { useScrollSync } from './ScrollSyncHelper';
+import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
 import '@growi/editor/dist/style.css';
 
@@ -73,9 +65,16 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-// for scrolling
-let isOriginOfScrollSyncEditor = false;
-let isOriginOfScrollSyncPreview = false;
+export type SaveOptions = {
+  slackChannels: string,
+  overwriteScopesOfDescendants?: boolean
+}
+export type Save = (
+  revisionId?: string,
+  requestMarkdown?: string,
+  opts?: SaveOptions,
+  onConflict?: ConflictHandler
+) => Promise<IPageHasId | null>
 
 type Props = {
   visibility?: boolean,
@@ -93,11 +92,8 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
-  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
@@ -107,20 +103,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
-  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
-  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
-
-  const { data: socket } = useGlobalSocket();
+  const onConflict = useConflictResolver();
 
   const { data: rendererOptions } = usePreviewOptions();
-  const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
@@ -128,10 +116,13 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
+  useConflictEffect();
+
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
   const currentRevisionId = currentPage?.revision?._id;
+  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -168,43 +159,26 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
+  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
-  const checkIsConflict = useCallback((data) => {
-    const { s2cMessagePageUpdated } = data;
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-    const isConflict = markdownToPreview !== s2cMessagePageUpdated.revisionBody;
-
-    mutateIsConflict(isConflict);
-
-  }, [markdownToPreview, mutateIsConflict]);
-
-  useEffect(() => {
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, checkIsConflict);
-
-    return () => {
-      socket.off(SocketEventName.PageUpdated, checkIsConflict);
-    };
-
-  }, [socket, checkIsConflict]);
-
-  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (pageId == null || currentRevisionId == null || grantData == null) {
+  const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
+    if (pageId == null || grantData == null) {
       logger.error('Some materials to save are invalid', {
-        pageId, currentRevisionId, grantData,
+        pageId, grantData,
       });
       throw new Error('Some materials to save are invalid');
     }
 
     try {
       mutateWaitingSaveProcessing(true);
-      const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
       const { page } = await updatePage({
         pageId,
-        revisionId: isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined,
-        body: codeMirrorEditor?.getDoc() ?? '',
+        revisionId,
+        body: markdown ?? '',
         grant: grantData?.grant,
         origin: Origin.Editor,
         userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
@@ -220,41 +194,45 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to save', error);
-      toastError(error);
-      if (error.code === 'conflict') {
-        mutateRemotePageId(error.data.revisionId);
-        mutateRemoteRevisionId(error.data.revisionBody);
-        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
-        mutateRemoteRevisionLastUpdateUser(error.data.user);
+
+      const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
+      if (remoteRevisionData != null) {
+        onConflict?.(remoteRevisionData, markdown ?? '', save, opts);
+        toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
+        return null;
       }
+
+      toastError(error);
       return null;
     }
     finally {
       mutateWaitingSaveProcessing(false);
     }
+  }, [pageId, grantData, mutateWaitingSaveProcessing, t]);
 
-  // eslint-disable-next-line max-len
-  }, [codeMirrorEditor, grantData, pageId, currentRevisionId, mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser]);
-
-  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    const page = await save(opts);
+  const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
+    const markdown = codeMirrorEditor?.getDoc();
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, opts, onConflict);
     if (page == null) {
       return;
     }
 
     mutateEditorMode(EditorMode.View);
     updateStateAfterSave?.();
-  }, [mutateEditorMode, save, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    const page = await save();
+    const markdown = codeMirrorEditor?.getDoc();
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, undefined, onConflict);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
@@ -294,55 +272,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     });
 
   }, [codeMirrorEditor, pageId]);
-
-  const scrollEditorHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
-
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false;
-      return;
-    }
-
-    isOriginOfScrollSyncEditor = true;
-    scrollEditor(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
-
-  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
-
-  const scrollPreviewHandler = useCallback(() => {
-    if (codeMirrorEditor?.view?.scrollDOM == null || previewRef.current == null) {
-      return;
-    }
-
-    if (isOriginOfScrollSyncEditor) {
-      isOriginOfScrollSyncEditor = false;
-      return;
-    }
-
-    isOriginOfScrollSyncPreview = true;
-    scrollPreview(codeMirrorEditor.view.scrollDOM, previewRef.current);
-  }, [codeMirrorEditor]);
-
-  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
-
-  const afterResolvedHandler = useCallback(async() => {
-    // get page data from db
-    const pageData = await mutateCurrentPage();
-
-    // update tag
-    await mutateTagsInfo(); // get from DB
-    syncTagsInfoForEditor(); // sync global state for client
-
-    // clear isConflict
-    mutateIsConflict(false);
-
-    // set resolved markdown in editing markdown
-    const markdown = pageData?.revision?.body ?? '';
-    mutateEditingMarkdown(markdown);
-
-  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
 
   // initial caret line
   useEffect(() => {
