@@ -144,11 +144,12 @@ export const GrantSelector = (props: Props): JSX.Element => {
           <span className="label">
             {userRelatedGrantedGroups.length > 1
               ? (
+              // substring for group name truncate
                 <span>
-                  {`${userRelatedGrantedGroups[0].name}... `}
+                  {`${userRelatedGrantedGroups[0].name.substring(0, 30)}, ... `}
                   <span className="badge bg-primary">+{userRelatedGrantedGroups.length - 1}</span>
                 </span>
-              ) : userRelatedGrantedGroups[0].name}
+              ) : userRelatedGrantedGroups[0].name.substring(0, 30)}
           </span>
         </span>
       );
