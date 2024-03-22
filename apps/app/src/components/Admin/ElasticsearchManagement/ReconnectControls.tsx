@@ -1,8 +1,8 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 
 type Props = {
   isEnabled?: boolean,

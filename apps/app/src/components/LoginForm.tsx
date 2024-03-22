@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
@@ -14,7 +15,6 @@ import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
-import { LoadingSpinner } from './LoadingSpinner';
 
 import styles from './LoginForm.module.scss';
 
@@ -72,9 +72,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
   }, []);
 
-  const tWithOpt = useCallback((key: string, opt?: any): string => {
+  const tWithOpt = useCallback((key: string, opt?: any) => {
     if (typeof opt === 'object') {
-      return t(key, opt as object);
+      return t(key, opt).toString();
     }
     return t(key);
   }, [t]);
@@ -179,7 +179,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <>
         {/* !! - DO NOT DELETE HIDDEN ELEMENT - !! -- 7.12 ryoji-s */}
-        {/* Import font-awesome to prevent MongoStore.js "Unable to find the session to touch" error */}
+        {/* https://github.com/weseek/growi/pull/7873 */}
         <div className="visually-hidden">
           <LoadingSpinner />
         </div>
@@ -187,6 +187,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         {isLdapSetupFailed && (
           <div className="alert alert-warning small">
             <strong><span className="material-symbols-outlined">info</span>{t('login.enabled_ldap_has_configuration_problem')}</strong><br />
+            {/* eslint-disable-next-line react/no-danger */}
             <span dangerouslySetInnerHTML={{ __html: t('login.set_env_var_for_logs') }}></span>
           </div>
         )}
@@ -273,7 +274,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       github: 'github',
       facebook: 'facebook',
       oidc: 'openid',
-      saml: 'key',
+      saml: (
+        <span className="material-symbols-outlined">key</span>
+      ),
     };
     const signin = {
       google: 'Google',
@@ -287,7 +290,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       <div key={auth} className="my-2">
         <button type="button" className="btn btn-fill col-10 col-sm-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
           <span className="btn-label pe-0">
-            <i className={`fa fa-${authIconNames[auth]}`}></i>
+            <span className="growi-custom-icons align-bottom">{authIconNames[auth]}</span>
           </span>
           <span className="btn-label-text">{t('Sign in with External auth', { signin: signin[auth] })}</span>
         </button>

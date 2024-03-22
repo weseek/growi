@@ -39,7 +39,7 @@ const AdminLayout = ({
             {componentTitle}
           </h1>
         </header>
-        <div id="main" className="main">
+        <div className="main">
           <div className="container-fluid">
             <div className="row">
               <div className="col-lg-3">

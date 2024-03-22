@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 
 import { useCurrentUser } from '../stores/context';
-
-import { LoadingSpinner } from './LoadingSpinner';
 
 
 export type InvitedFormProps = {
