@@ -175,7 +175,7 @@
       background-color: rgba(white, 0.3);
 
       svg {
-        color: white;
+        fill: white;
       }
 
       .logo {
@@ -218,11 +218,11 @@
         color: white;
 
         .growi {
-          color: darken(var.$growi-green, 10%);
+          color: darken(var.$growi-blue, 10%);
         }
 
         .org {
-          color: darken(var.$growi-blue, 10%);
+          color: darken(var.$growi-green, 10%);
         }
       }
     }
@@ -242,7 +242,7 @@
       background-color: rgba(black, 0.3);
 
       svg {
-        color: white;
+        fill: white;
       }
 
       .logo {
@@ -285,11 +285,11 @@
         color: rgba(white, 0.7);
 
         .growi {
-          color: darken(var.$growi-green, 5%);
+          color: darken(var.$growi-blue, 5%);
         }
 
         .org {
-          color: darken(var.$growi-blue, 5%);
+          color: darken(var.$growi-green, 5%);
         }
       }
     }

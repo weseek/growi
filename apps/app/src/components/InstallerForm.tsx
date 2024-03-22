@@ -216,7 +216,7 @@ const InstallerForm = memo((): JSX.Element => {
 
           <div>
             <a href="https://growi.org" className="link-growi-org">
-              <span className="growi">GROWI</span>.<span className="org">org</span>
+              <span className="growi">GROWI</span><span className="org">.org</span>
             </a>
           </div>
 

@@ -155,7 +155,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       </form>
       <div className="input-group mt-4 d-flex justify-content-center">
         <a href="https://growi.org" className="link-growi-org">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span><span className="org">.ORG</span>
         </a>
       </div>
     </div>
