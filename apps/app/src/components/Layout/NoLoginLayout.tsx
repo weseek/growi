@@ -38,7 +38,9 @@ export const NoLoginLayout = ({
                   <GrowiLogo />
                   <h1 className="growi-logo-type fs-3 my-3 ms-3">GROWI</h1>
                 </div>
-                <h2 className="fs-4 text-center text-white">{ appTitle }</h2>
+                {appTitle !== 'GROWI' ? (
+                  <h2 className="fs-4 text-center text-white">{ appTitle }</h2>
+                ) : null}
                 <div className="noLogin-form-errors px-3"></div>
               </div>
               {children}
