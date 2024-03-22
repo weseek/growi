@@ -101,6 +101,9 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     if (areaElemWidth && linkElemWidth) {
       setIsIconHidden(linkElemWidth > areaElemWidth);
     }
+    else {
+      setIsIconHidden(false);
+    }
   }, [currentPage]);
 
   const subNavElem = document.getElementById('grw-contextual-sub-nav');
