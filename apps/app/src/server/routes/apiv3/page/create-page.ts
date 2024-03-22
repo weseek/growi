@@ -48,10 +48,6 @@ async function determinePath(_parentPath?: string, _path?: string, optionalParen
   // TODO: https://redmine.weseek.co.jp/issues/142729
   const basePathname = 'Untitled';
 
-  // const test = i18next.t('page_register.form_help.email');
-
-  // console.log(test);
-
   if (_path != null) {
     const path = normalizePath(_path);
 
@@ -214,10 +210,6 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       const {
         body: bodyByParam, pageTags: tagsByParam,
       } = req.body;
-
-      const basePathname = req.t('message.user_id_is_not_available');
-
-      console.log(basePathname);
 
       let pathToCreate: string;
       try {
