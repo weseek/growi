@@ -215,7 +215,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
           return (
             <button
-              className={`btn btn-outline-primary d-flex justify-content-start mb-3 mx-3 align-items-center p-3 ${activeClass}`}
+              className={`btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3 ${activeClass}`}
               type="button"
               key={group.item._id}
               onClick={() => groupListItemClickHandler(group)}
