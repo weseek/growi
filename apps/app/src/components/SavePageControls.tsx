@@ -3,6 +3,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import type EventEmitter from 'events';
 
 import { isTopPage, isUsersProtectedPages } from '@growi/core/dist/utils/page-path-utils';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, Button,
@@ -28,7 +29,6 @@ import loggerFactory from '~/utils/logger';
 
 import { unpublish } from '../client/services/page-operation';
 
-import { LoadingSpinner } from './LoadingSpinner';
 import { GrantSelector } from './SavePageControls/GrantSelector';
 import { SlackNotification } from './SlackNotification';
 

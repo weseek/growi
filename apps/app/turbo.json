@@ -4,6 +4,7 @@
   "pipeline": {
 
     "styles-prebuilt": {
+      "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
         "src/styles/**/*.scss",
@@ -24,6 +25,7 @@
       "outputMode": "new-only"
     },
     "dev:styles-prebuilt": {
+      "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
         "src/styles/**/*.scss",

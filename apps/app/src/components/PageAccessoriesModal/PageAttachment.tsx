@@ -3,13 +3,13 @@ import React, {
 } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import { PageAttachmentList } from '../PageAttachment/PageAttachmentList';
 import PaginationWrapper from '../PaginationWrapper';
 

@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { useState, useEffect, useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
@@ -10,7 +11,6 @@ import loggerFactory from '~/utils/logger';
 
 import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../stores/in-app-notification';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
-import { LoadingSpinner } from '../LoadingSpinner';
 import PaginationWrapper from '../PaginationWrapper';
 
 import InAppNotificationList from './InAppNotificationList';

@@ -1,12 +1,12 @@
 import React from 'react';
 
 import type { IPageInfoForEntity, IPageWithMeta } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import type { OnDeletedFunction, OnPutBackedFunction } from '~/interfaces/ui';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import { PageListItemL } from './PageListItemL';
 

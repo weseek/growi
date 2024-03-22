@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { useState, useCallback, useRef } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -10,7 +11,6 @@ import type { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import PaginationWrapper from '../PaginationWrapper';
 
 import { ActivityTable } from './AuditLog/ActivityTable';
