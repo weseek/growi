@@ -92,13 +92,15 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   }, [clickOutSideHandler]);
 
   useEffect(() => {
-    const linkElem = document.getElementById('grw-page-path-hierarchical-link');
     const areaElem = document.getElementById('grw-page-path-header-container');
+    const linkElem = document.getElementById('grw-page-path-hierarchical-link');
 
-    const linkElemWidth = linkElem?.offsetWidth ?? 0;
-    const areaElemWidth = areaElem?.offsetWidth ?? 0;
+    const areaElemWidth = areaElem?.offsetWidth;
+    const linkElemWidth = linkElem?.offsetWidth;
 
-    setIsIconHidden(linkElemWidth > areaElemWidth);
+    if (areaElemWidth && linkElemWidth) {
+      setIsIconHidden(linkElemWidth > areaElemWidth);
+    }
   }, [currentPage]);
 
   const subNavElem = document.getElementById('grw-contextual-sub-nav');
