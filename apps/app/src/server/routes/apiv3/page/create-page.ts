@@ -10,8 +10,6 @@ import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
-// import { i18n } from '^/config/next-i18next.config';
-
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { subscribeRuleNames } from '~/interfaces/in-app-notification';
@@ -92,7 +90,6 @@ type ReqBody = IApiv3PageCreateParams
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
   user: IUserHasId,
-  t,
 }
 
 type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
