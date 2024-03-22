@@ -39,9 +39,6 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   const [isHover, setHover] = useState(false);
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
-  // const [rerenderTest, setRerenderTest] = useState(0);
-
-  // const [subNavElemWidth, setSubNavElemWidth] = useState(0);
   const [isIconHidden, setIsIconHidden] = useState(false);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
@@ -102,37 +99,11 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     const areaElemWidth = areaElem?.offsetWidth ?? 0;
 
     setIsIconHidden(linkElemWidth > areaElemWidth);
-
-  // const subNavElem = document.getElementById('grw-contextual-sub-nav');
-  // if (subNavElem) {
-  //   setSubNavElemWidth(subNavElem.offsetWidth);
-  // }
   }, [currentPage]);
-
-  // useEffect(() => { setRerenderTest(rerenderTest + 1) }, [currentPage]);
-
-  const linkElem = document.getElementById('grw-page-path-hierarchical-link');
-  const areaElem = document.getElementById('grw-page-path-header-container');
-
-  const linkElemWidth = linkElem?.offsetWidth ?? 0;
-  const areaElemWidth = areaElem?.offsetWidth ?? 0;
-
-  // const linkElemWidth = useMemo(() => (linkElem?.offsetWidth ?? 0), [linkElem?.offsetWidth, currentPage]);
-  // const areaElemWidth = useMemo(() => (areaElem?.offsetWidth ?? 0), [areaElem?.offsetWidth, currentPage]);
-
-  console.log(linkElemWidth);
-  console.log(areaElemWidth);
-
-  // const isIconHidden = linkElemWidth > areaElemWidth;
-
-  console.log(isIconHidden);
-
 
   const subNavElem = document.getElementById('grw-contextual-sub-nav');
 
   const subNavElemWidth = useMemo(() => (subNavElem?.offsetWidth ?? 0), []);
-
-  console.log(subNavElemWidth);
 
   const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
 
