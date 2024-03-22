@@ -3,10 +3,10 @@ import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ProxyCircle = () => (
-  <div className="grw-bridge-proxy-circle">
-    <div className="circle bg-primary border-light rounded-circle">
-      <p className="circle-inner text-light fw-bold d-none d-lg-inline">Proxy Server</p>
-      <p className="circle-inner grw-proxy-server-name d-inline d-lg-none">Proxy Server</p>
+  <div className="grw-bridge-proxy-circle position-relative">
+    <div className="circle position-absolute z-1 m-auto bg-primary border-light rounded-circle">
+      <p className="circle-inner position-absolute text-light fw-bold d-none d-lg-inline">Proxy Server</p>
+      <p className="circle-inner position-absolute grw-proxy-server-name d-inline d-lg-none">Proxy Server</p>
     </div>
   </div>
 );
