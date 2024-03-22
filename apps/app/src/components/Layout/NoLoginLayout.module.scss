@@ -48,6 +48,24 @@
     }
   }
 
+  .input-container {
+    width: 89%;
+    @include bs.media-breakpoint-down(sm) {
+      width: 86%;
+    }
+  }
+
+  .ldap-space {
+    padding-right: 76px;
+  }
+
+  .input-ldap {
+    position: absolute;
+    top: 45%;
+    right: 2%;
+    transform: translateY(-50%);
+  }
+
   $btn-fill-colors: (
     'login': (
       rgba(#204986, 0.6),

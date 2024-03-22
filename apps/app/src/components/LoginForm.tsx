@@ -198,19 +198,22 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <span className="p-2 text-white opacity-75">
               <span className="material-symbols-outlined">person</span>
             </span>
-            <input
-              type="text"
-              className="form-control rounded"
-              data-testid="tiUsernameForLogin"
-              placeholder="Username or E-mail"
-              onChange={(e) => { setUsernameForLogin(e.target.value) }}
-              name="usernameForLogin"
-            />
-            {isLdapStrategySetup && (
-              <small className="text-success">
-                <span className="material-symbols-outlined">select_check_box</span>LDAP
-              </small>
-            )}
+            <div className="input-container">
+              <input
+                type="text"
+                className={`form-control rounded ${isLdapStrategySetup ? 'ldap-space' : ''}`}
+                data-testid="tiUsernameForLogin"
+                placeholder="Username or E-mail"
+                onChange={(e) => { setUsernameForLogin(e.target.value) }}
+                name="usernameForLogin"
+              />
+              {isLdapStrategySetup && (
+                <small className="badge text-bg-success input-ldap d-flex align-items-center">
+                  <span className="material-symbols-outlined">network_node</span>
+                  <span className="">LDAP</span>
+                </small>
+              )}
+            </div>
           </div>
 
           <div className="input-group">
