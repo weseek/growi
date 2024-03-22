@@ -38,3 +38,7 @@ export type IApiv3PageUpdateResponse = {
   page: IPageHasId,
   revision: IRevisionHasId,
 };
+
+export const PageUpdateErrorCode = {
+  CONFLICT: 'conflict',
+} as const;

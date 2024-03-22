@@ -1,5 +1,6 @@
 import {
-  FC, useState, useCallback, CSSProperties,
+  useState, useCallback,
+  type FC, type CSSProperties,
 } from 'react';
 
 import { Picker } from 'emoji-mart';
@@ -77,7 +78,7 @@ export const EmojiButton: FC<Props> = (props) => {
 
   const view = codeMirrorEditor?.view;
   const cursorIndex = view?.state.selection.main.head;
-  const toggle = () => setIsOpen(!isOpen);
+  const toggle = useCallback(() => setIsOpen(!isOpen), [isOpen]);
 
   const selectEmoji = useCallback((emoji: { colons: string }): void => {
 

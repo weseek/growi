@@ -427,13 +427,13 @@
     }
   },
   "modal_resolve_conflict": {
+    "conflicts_with_new_body_on_server_side": "与服务器端的新正文文本冲突。 请选择或编辑页面正文以解决冲突",
     "file_conflicting_with_newer_remote": "此文件与较新的远程文件冲突",
     "resolve_conflict_message": "选择页面正文",
     "resolve_conflict": "解决冲突",
     "resolve_and_save": "解决冲突并保存",
     "select_revision": "选择{{revision}}",
     "requested_revision": "发送的页面正文",
-    "origin_revision": "发送前的页面正文",
     "latest_revision": "最新页面正文",
     "selected_editable_revision": "选定的可编辑页面正文"
   },

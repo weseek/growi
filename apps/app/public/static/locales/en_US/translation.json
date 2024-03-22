@@ -311,7 +311,7 @@
     }
   },
   "page_edit": {
-    "input_channels": "Input channels",
+    "input_channels": "Slack channel name...",
     "theme": "Theme",
     "keymap": "Keymap",
     "indent": "Indent",
@@ -438,13 +438,13 @@
     }
   },
   "modal_resolve_conflict": {
+    "conflicts_with_new_body_on_server_side": "Conflict with new body on server side. Please select or edit the page body to resolve the conflict.",
     "file_conflicting_with_newer_remote": "This file is conflicting with newer remote file",
     "resolve_conflict_message": "Please select page body",
     "resolve_conflict": "Resolve Conflict",
     "resolve_and_save": "Resolve and save",
     "select_revision": "Select {{revision}}",
     "requested_revision": "mine",
-    "origin_revision": "origin",
     "latest_revision": "theirs",
     "selected_editable_revision": "Selected Page Body (Editable)"
   },

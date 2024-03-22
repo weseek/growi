@@ -41,11 +41,13 @@ export type CodeMirrorEditorProps = {
 
 type Props = CodeMirrorEditorProps & {
   editorKey: string | GlobalCodeMirrorEditorKey,
+  hideToolbar?: boolean,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
+    hideToolbar,
     acceptedUploadFileType = AcceptedUploadFileType.NONE,
     indentSize,
     editorSettings,
@@ -203,17 +205,19 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert`}>
+    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
       </div>
-      <Toolbar
-        editorKey={editorKey}
-        acceptedUploadFileType={acceptedUploadFileType}
-        onUpload={onUpload}
-      />
+      { !hideToolbar && (
+        <Toolbar
+          editorKey={editorKey}
+          acceptedUploadFileType={acceptedUploadFileType}
+          onUpload={onUpload}
+        />
+      ) }
     </div>
   );
 };

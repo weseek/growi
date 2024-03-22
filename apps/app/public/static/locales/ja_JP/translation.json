@@ -471,13 +471,13 @@
     }
   },
   "modal_resolve_conflict": {
+    "conflicts_with_new_body_on_server_side": "サーバー側の新しい本文と衝突します。ページ本文を選択または編集して衝突を解消してください。",
     "file_conflicting_with_newer_remote": "サーバー側の新しいファイルと衝突します。",
     "resolve_conflict_message": "ページ本文を選んでください",
     "resolve_conflict": "衝突を解消",
     "resolve_and_save": "解消し保存する",
     "select_revision": "{{revision}}にする",
     "requested_revision": "送信された本文",
-    "origin_revision": "送信する前の本文",
     "latest_revision": "最新の本文",
     "selected_editable_revision": "保存するページ本文(編集可能)"
   },
