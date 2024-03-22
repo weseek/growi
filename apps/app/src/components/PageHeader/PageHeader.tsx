@@ -1,4 +1,5 @@
 import type { FC } from 'react';
+import { useMemo } from 'react';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 
@@ -17,7 +18,8 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <div className={moduleClass}>
+    // <div className={moduleClass}>
+    <div className={`${moduleClass} w-100`}>
       <PagePathHeader
         currentPage={currentPage}
       />
