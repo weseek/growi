@@ -2,10 +2,10 @@ import type { FC } from 'react';
 import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import InAppNotificationElm from './InAppNotificationElm';
 

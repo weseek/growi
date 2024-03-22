@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 
@@ -8,23 +9,22 @@ import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 
-import { BotTypeCard } from './BotTypeCard';
+import BotTypeCard from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
 import CustomBotWithProxySettings from './CustomBotWithProxySettings';
 import CustomBotWithoutProxySettings from './CustomBotWithoutProxySettings';
-import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
+import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
 import OfficialBotSettings from './OfficialBotSettings';
 
 
 const botTypes = Object.values(SlackbotType);
 
-export const SlackIntegration = (): JSX.Element => {
+const SlackIntegration = () => {
 
   const { t } = useTranslation();
-  const [currentBotType, setCurrentBotType] = useState<SlackbotType | undefined>();
-  const [selectedBotType, setSelectedBotType] = useState<SlackbotType | undefined>();
+  const [currentBotType, setCurrentBotType] = useState(null);
+  const [selectedBotType, setSelectedBotType] = useState(null);
   const [slackSigningSecret, setSlackSigningSecret] = useState(null);
   const [slackBotToken, setSlackBotToken] = useState(null);
   const [slackSigningSecretEnv, setSlackSigningSecretEnv] = useState('');
@@ -106,12 +106,12 @@ export const SlackIntegration = (): JSX.Element => {
     fetchSlackIntegrationData();
   }, [fetchSlackIntegrationData]);
 
-  const changeCurrentBotSettings = async(botType?: SlackbotType) => {
+  const changeCurrentBotSettings = async(botType) => {
     try {
       await apiv3Put('/slack-integration-settings/bot-type', {
         currentBotType: botType,
       });
-      setSelectedBotType(undefined);
+      setSelectedBotType(null);
       fetchSlackIntegrationData();
     }
     catch (err) {
@@ -119,7 +119,7 @@ export const SlackIntegration = (): JSX.Element => {
     }
   };
 
-  const botTypeSelectHandler = async(botType: SlackbotType) => {
+  const botTypeSelectHandler = async(botType) => {
     if (botType === currentBotType) {
       return;
     }
@@ -135,10 +135,10 @@ export const SlackIntegration = (): JSX.Element => {
   };
 
   const cancelBotChangeHandler = () => {
-    setSelectedBotType(undefined);
+    setSelectedBotType(null);
   };
 
-  let settingsComponent = <></>;
+  let settingsComponent = null;
 
   switch (currentBotType) {
     case SlackbotType.OFFICIAL:
@@ -231,7 +231,7 @@ export const SlackIntegration = (): JSX.Element => {
           </button>
         </div>
 
-        <div className="my-5 d-flex flex-wrap-reverse justify-content-center">
+        <div className="row my-5 flex-wrap-reverse justify-content-center">
           {botTypes.map((botType) => {
             return (
               <div key={botType} className="m-3">
@@ -251,4 +251,4 @@ export const SlackIntegration = (): JSX.Element => {
   );
 };
 
-SlackIntegration.displayName = 'SlackIntegration';
+export default SlackIntegration;

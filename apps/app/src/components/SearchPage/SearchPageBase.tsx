@@ -3,6 +3,7 @@ import React, {
   forwardRef, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
@@ -17,7 +18,6 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 // Do not import with next/dynamic
 // see: https://github.com/weseek/growi/pull/7923

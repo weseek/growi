@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -10,7 +11,6 @@ import {
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
