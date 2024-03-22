@@ -63,28 +63,28 @@ const AssociateModal = (props: Props): JSX.Element => {
         <div>
           <Nav tabs className="mb-2">
             <NavLink
-              className={activeTab === 1 ? 'active' : ''}
+              className={`${activeTab === 1 ? 'active' : ''} d-flex gap-1 align-items-center`}
               onClick={() => setActiveTab(1)}
             >
               <span className="material-symbols-outlined fs-5">network_node</span> LDAP
             </NavLink>
             <NavLink
-              className={activeTab === 2 ? 'active' : ''}
+              className={`${activeTab === 2 ? 'active' : ''} d-flex gap-1 align-items-center`}
               onClick={() => setActiveTab(2)}
             >
-              <i className="fa fa-github"></i> (TBD) GitHub
+              <span className="growi-custom-icons">github</span> (TBD) GitHub
             </NavLink>
             <NavLink
-              className={activeTab === 3 ? 'active' : ''}
+              className={`${activeTab === 3 ? 'active' : ''} d-flex gap-1 align-items-center`}
               onClick={() => setActiveTab(3)}
             >
-              <i className="fa fa-google"></i> (TBD) Google OAuth
+              <span className="growi-custom-icons">google</span> (TBD) Google OAuth
             </NavLink>
             {/* <NavLink
-              className={activeTab === 4 ? 'active' : ''}
+              className={`${activeTab === 4 ? 'active' : ''} d-flex gap-1 align-items-center`}
               onClick={() => setActiveTab(4)}
             >
-              <i className="fa fa-facebook"></i> (TBD) Facebook
+              <span className="growi-custom-icons">facebook</span> (TBD) Facebook
             </NavLink> */}
           </Nav>
           <TabContent activeTab={activeTab}>
