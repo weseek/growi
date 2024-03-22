@@ -276,7 +276,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
-            <i className={`fa fa-${authIconNames[auth]}`}></i>
+            <span className="growi-custom-icons align-bottom">{authIconNames[auth]}</span>
           </span>
           <span className="btn-label-text">{t('Sign in')}</span>
         </button>
