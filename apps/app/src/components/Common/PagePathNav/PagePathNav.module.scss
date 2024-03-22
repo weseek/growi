@@ -27,9 +27,6 @@
     }
     @include bs.media-breakpoint-up(md) {
       max-width: calc(100% - (500px - (100vw - 100%) / 2));
-      &.is-dock-mode {
-        max-width: min(calc(100% - 450px), calc(100vw - 100%));
-      }
     }
   }
 }
