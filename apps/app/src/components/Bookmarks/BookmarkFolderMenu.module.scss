@@ -1,0 +1,14 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+.grw-bookmark-folder-dropdown :global {
+  .grw-bookmark-folder-menu {
+    max-width: 576px;
+
+    .grw-bookmark-folder-menu-item-folder-first {
+      padding-left: 40px;
+    }
+    .grw-bookmark-folder-menu-item-folder-second {
+      padding-left: 60px;
+    }
+  }
+}
