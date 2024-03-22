@@ -10,7 +10,7 @@ import Accordion from '../Common/Accordion';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 import ManageCommandsProcessWithoutProxy from './ManageCommandsProcessWithoutProxy';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
-import { addLogs } from './slak-integration-util';
+import { addLogs } from './slack-integration-util';
 
 
 export const botInstallationStep = {
