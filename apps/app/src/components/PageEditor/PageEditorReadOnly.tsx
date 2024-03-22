@@ -11,7 +11,11 @@ import { EditorNavbar } from './EditorNavbar';
 import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 
-export const PageEditorReadOnly = react.memo((): JSX.Element => {
+type Props = {
+  visibility?: boolean,
+}
+
+export const PageEditorReadOnly = react.memo(({ visibility }: Props): JSX.Element => {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const { data: currentPage } = useSWRxCurrentPage();
@@ -30,7 +34,7 @@ export const PageEditorReadOnly = react.memo((): JSX.Element => {
   }
 
   return (
-    <div id="page-editor" className="flex-expand-vert">
+    <div id="page-editor" className={`flex-expand-vert ${visibility ? '' : 'd-none'}`}>
       <EditorNavbar />
 
       <div className="flex-expand-horiz">
