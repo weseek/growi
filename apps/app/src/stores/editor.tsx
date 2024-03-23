@@ -120,7 +120,3 @@ export const usePageTagsForEditors = (pageId: Nullable<string>): SWRResponse<str
 export const useIsEnabledUnsavedWarning = (): SWRResponse<boolean, Error> => {
   return useStaticSWR<boolean, Error>('isEnabledUnsavedWarning');
 };
-
-export const useIsConflict = (): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isConflict', undefined, { fallbackData: false });
-};

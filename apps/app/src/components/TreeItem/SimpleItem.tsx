@@ -6,6 +6,7 @@ import React, {
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -248,7 +249,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               <ItemClassFixed {...itemProps} />
               {isProcessingSubmission && (currentChildren.length - 1 === index) && (
                 <div className="text-muted text-center">
-                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                  <LoadingSpinner className="mr-1" />
                 </div>
               )}
             </div>

@@ -65,8 +65,8 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   const iconElement: JSX.Element = useMemo(() => {
     const isExists = pageId != null;
     return (isExists)
-      ? <i className="ti ti-agenda" aria-hidden="true"></i>
-      : <i className="ti ti-file lsx-page-not-exist" aria-hidden="true"></i>;
+      ? <span className="material-symbols-outlined" aria-hidden="true">description</span>
+      : <span className="material-symbols-outlined" aria-hidden="true">draft</span>;
   }, [pageId]);
 
   const pagePathElement: JSX.Element = useMemo(() => {

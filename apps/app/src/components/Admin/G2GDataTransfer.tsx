@@ -247,10 +247,10 @@ const G2GDataTransfer = (): JSX.Element => {
 
       {isTransferring && (
         <div className="border rounded p-4">
-          <div>
-            <G2GDataTransferStatusIcon className="me-2 mb-2" status={g2gProgress.mongo} /> MongoDB
+          <div className="my-2">
+            <G2GDataTransferStatusIcon className="me-2" status={g2gProgress.mongo} /> MongoDB
           </div>
-          <div>
+          <div className="my-2">
             <G2GDataTransferStatusIcon className="me-2" status={g2gProgress.attachments} /> Attachments
           </div>
         </div>

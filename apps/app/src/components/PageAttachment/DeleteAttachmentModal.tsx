@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
+import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -85,7 +85,7 @@ export const DeleteAttachmentModal: React.FC = () => {
 
   const deletingIndicator = useMemo(() => {
     if (deleting) {
-      return <div className="speeding-wheel-sm"></div>;
+      return <LoadingSpinner />;
     }
     if (deleteError) {
       return <span>{deleteError}</span>;

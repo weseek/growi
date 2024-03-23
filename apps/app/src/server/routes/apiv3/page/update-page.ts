@@ -9,7 +9,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import { type IApiv3PageUpdateParams } from '~/interfaces/apiv3';
+import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
@@ -145,9 +145,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };
-        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', 'conflict'), 409, {
-          returnLatestRevision,
-        });
+        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
       let updatedPage;

@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import { useSWRxAttachments } from '~/stores/attachment';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
@@ -63,7 +64,7 @@ const PageAttachment = (): JSX.Element => {
     if (dataAttachments == null || inUseAttachmentsMap == null) {
       return (
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       );
     }
