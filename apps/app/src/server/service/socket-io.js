@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import { YjsConnectionManager } from './yjs-connection-manager';
+import { getYjsConnectionManager } from './yjs-connection-manager';
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -38,7 +38,7 @@ class SocketIoService {
     this.io.attach(server);
 
     // create the YjsConnectionManager instance
-    this.yjsConnectionManager = YjsConnectionManager(this.io);
+    this.yjsConnectionManager = getYjsConnectionManager(this.io);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');

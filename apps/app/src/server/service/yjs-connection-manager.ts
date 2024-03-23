@@ -5,8 +5,6 @@ import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
-let instance: YjsConnectionManagerImpl | undefined;
-
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
@@ -21,11 +19,7 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
 
   private mdb: MongodbPersistence;
 
-  constructor(io?: Server) {
-    if (io == null) {
-      throw new Error('io is required');
-    }
-
+  constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
@@ -35,9 +29,6 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
     });
 
     this.getCurrentYdoc = this.getCurrentYdoc.bind(this);
-
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    instance = this;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
@@ -94,9 +85,19 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
 
 }
 
-export const YjsConnectionManager = (io?: Server): YjsConnectionManagerImpl => {
+let instance: YjsConnectionManagerImpl | undefined;
+
+// export the singleton instance
+export const getYjsConnectionManager = (io?: Server): YjsConnectionManagerImpl => {
   if (instance != null) {
     return instance;
   }
-  return new YjsConnectionManagerImpl(io);
+
+  if (io == null) {
+    throw new Error("'io' is required if initialize YjsConnectionManager");
+  }
+
+  // Initialize if instance does not exist
+  instance = new YjsConnectionManagerImpl(io);
+  return instance;
 };
