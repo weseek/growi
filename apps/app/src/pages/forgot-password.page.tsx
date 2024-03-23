@@ -1,15 +1,14 @@
 import React from 'react';
 
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useIsMailerSetup } from '~/stores/context';
 
-import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps,
-} from './utils/commons';
+import type { CommonProps } from './utils/commons';
+import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons';
 
 const PasswordResetRequestForm = dynamic(() => import('~/components/PasswordResetRequestForm'), { ssr: false });
 
@@ -21,8 +20,8 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   useIsMailerSetup(props.isMailerSetup);
 
   return (
-    <div id="main" className="main">
-      <div id="content-main" className="content-main container-lg">
+    <div className="main">
+      <div className="container-lg">
         <div className="container">
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">

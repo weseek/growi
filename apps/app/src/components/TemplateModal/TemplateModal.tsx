@@ -9,6 +9,7 @@ import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/st
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -26,7 +27,6 @@ import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import Preview from '../PageEditor/Preview';
 
 import { useFormatter } from './use-formatter';

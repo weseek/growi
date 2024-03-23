@@ -6,6 +6,7 @@ import React, {
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -15,7 +16,6 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import CountBadge from '../Common/CountBadge';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import { ItemNode } from './ItemNode';
 import { useNewPageInput } from './NewPageInput';

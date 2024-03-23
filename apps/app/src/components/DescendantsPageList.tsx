@@ -5,6 +5,7 @@ import type {
   IPageHasId,
   IPageInfoForOperation,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess } from '~/client/util/toastr';
@@ -17,7 +18,6 @@ import {
 } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from './Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from './LoadingSpinner';
 import PageList from './PageList/PageList';
 import PaginationWrapper from './PaginationWrapper';
 

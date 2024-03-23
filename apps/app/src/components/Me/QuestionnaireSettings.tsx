@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -7,8 +8,6 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
 import { useCurrentUser } from '~/stores/context';
-
-import { LoadingSpinner } from '../LoadingSpinner';
 
 
 export const QuestionnaireSettings = (): JSX.Element => {
