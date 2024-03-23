@@ -7,8 +7,8 @@ import { getMongoUri } from '../util/mongoose-utils';
 
 let instance: YjsConnectionManagerImpl | undefined;
 
-export const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
-export const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
+const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
 interface YjsConnectionManager {
   handleYDocSync(pageId: string, initialValue: string): Promise<void>;
