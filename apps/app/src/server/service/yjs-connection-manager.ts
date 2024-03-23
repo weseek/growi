@@ -51,7 +51,6 @@ class YjsConnectionManager {
     const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
 
     if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
-      console.log('はいるよ', initialValue);
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
