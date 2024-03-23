@@ -19,8 +19,8 @@ const ForgotPasswordErrorsPage: NextPage<Props> = (props: Props) => {
   const { errorCode } = props;
 
   return (
-    <div id="main" className="main">
-      <div id="content-main" className="content-main container-lg">
+    <div className="main">
+      <div className="container-lg">
         <div className="container">
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">

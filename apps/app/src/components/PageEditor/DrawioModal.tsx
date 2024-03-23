@@ -6,6 +6,7 @@ import React, {
 
 import { useCodeMirrorEditorIsolated } from '@growi/editor';
 import { useDrawioModalForEditor } from '@growi/editor/src/stores/use-drawio';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,
   ModalBody,
@@ -18,7 +19,6 @@ import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 

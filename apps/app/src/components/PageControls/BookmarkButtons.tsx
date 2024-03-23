@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { useState, useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import DropdownToggle from 'reactstrap/esm/DropdownToggle';
 import Popover from 'reactstrap/esm/Popover';
@@ -12,7 +13,6 @@ import { useIsGuestUser } from '~/stores/context';
 
 import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
 import UserPictureList from '../Common/UserPictureList';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import styles from './BookmarkButtons.module.scss';
 import popoverStyles from './user-list-popover.module.scss';
