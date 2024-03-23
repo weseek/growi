@@ -579,10 +579,6 @@ module.exports = (crowi) => {
       return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
     }
 
-    const {
-      path, grant, grantedUsers, grantedGroups,
-    } = page;
-
     let isGrantNormalized = false;
     try {
       isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
@@ -594,7 +590,7 @@ module.exports = (crowi) => {
 
     const currentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(page, req.user);
     const currentPageGrant: IPageGrantData = {
-      grant,
+      grant: page.grant,
       groupGrantData: currentPageGroupGrantData,
     };
 

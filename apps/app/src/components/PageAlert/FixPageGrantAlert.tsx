@@ -8,7 +8,7 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import type { IPageGrantData } from '~/interfaces/page';
+import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
 import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
@@ -99,10 +99,19 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.userRelatedGrantedGroups == null || grantData.userRelatedGrantedGroups.length === 0) {
-        return t('fix_page_grant.modal.grant_label.isForbidden');
+      const groupGrantData = grantData.groupGrantData;
+      if (groupGrantData != null) {
+        const userRelatedGrantedGroups = groupGrantData.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted);
+        if (userRelatedGrantedGroups.length > 0) {
+          const grantedGroupNames = [
+            ...userRelatedGrantedGroups.map(group => group.name),
+            ...groupGrantData.nonUserRelatedGrantedGroups.map(group => group.name),
+          ];
+          return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantedGroupNames.join(', ')})`;
+        }
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.userRelatedGrantedGroups.map(g => g.name).join(', ')})`;
+
+      return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed
