@@ -5,16 +5,27 @@ import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
+let instance: YjsConnectionManagerImpl | undefined;
+
 export const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 export const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
-class YjsConnectionManager {
+interface YjsConnectionManager {
+  handleYDocSync(pageId: string, initialValue: string): Promise<void>;
+  handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
+}
+
+class YjsConnectionManagerImpl implements YjsConnectionManager {
 
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
-  constructor(io: Server) {
+  constructor(io?: Server) {
+    if (io == null) {
+      throw new Error('io is required');
+    }
+
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
@@ -24,6 +35,9 @@ class YjsConnectionManager {
     });
 
     this.getCurrentYdoc = this.getCurrentYdoc.bind(this);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    instance = this;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
@@ -60,13 +74,13 @@ class YjsConnectionManager {
     persistedYdoc.destroy();
   }
 
-  public async handleYDocUpdate(pageId: string, newMarkdown: string): Promise<void> {
+  public async handleYDocUpdate(pageId: string, newValue: string): Promise<void> {
     // TODO: https://redmine.weseek.co.jp/issues/132775
     // It's necessary to confirm that the user is not editing the target page in the Editor
     const currentYdoc = this.getCurrentYdoc(pageId);
     const currentMarkdownLength = currentYdoc.getText('codemirror').length;
     currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
-    currentYdoc.getText('codemirror').insert(0, newMarkdown);
+    currentYdoc.getText('codemirror').insert(0, newValue);
     Y.encodeStateAsUpdate(currentYdoc);
   }
 
@@ -80,4 +94,9 @@ class YjsConnectionManager {
 
 }
 
-export default YjsConnectionManager;
+export const YjsConnectionManager = (io?: Server): YjsConnectionManagerImpl => {
+  if (instance != null) {
+    return instance;
+  }
+  return new YjsConnectionManagerImpl(io);
+};

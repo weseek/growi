@@ -5,7 +5,7 @@ import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import YjsConnectionManager from './yjs-connection-manager';
+import { YjsConnectionManager } from './yjs-connection-manager';
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -38,7 +38,7 @@ class SocketIoService {
     this.io.attach(server);
 
     // create the YjsConnectionManager instance
-    this.yjsConnectionManager = new YjsConnectionManager(this.io);
+    this.yjsConnectionManager = YjsConnectionManager(this.io);
 
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
@@ -55,7 +55,6 @@ class SocketIoService {
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
     await this.setupYjsConnection();
-    await this.setupYjsUpdateEvent();
   }
 
   getDefaultSocket() {
@@ -169,19 +168,6 @@ class SocketIoService {
         catch (error) {
           logger.warn(error.message);
           socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
-        }
-      });
-    });
-  }
-
-  setupYjsUpdateEvent() {
-    this.io.on('connection', (socket) => {
-      socket.on(GlobalSocketEventName.YDocUpdate, async({ pageId, newMarkdown }) => {
-        try {
-          await this.yjsConnectionManager.handleYDocUpdate(pageId, newMarkdown);
-        }
-        catch (error) {
-          logger.warn(error.message);
         }
       });
     });
