@@ -8,18 +8,15 @@ import { getMongoUri } from '../util/mongoose-utils';
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
-interface YjsConnectionManager {
-  handleYDocSync(pageId: string, initialValue: string): Promise<void>;
-  handleYDocUpdate(pageId: string, newValue: string): Promise<void>;
-}
+class YjsConnectionManager {
 
-class YjsConnectionManagerImpl implements YjsConnectionManager {
+  private static instance: YjsConnectionManager | undefined;
 
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
-  constructor(io: Server) {
+  private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
@@ -27,8 +24,19 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
       collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
       flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
     });
+  }
 
-    this.getCurrentYdoc = this.getCurrentYdoc.bind(this);
+  public static getInstance(io?: Server) {
+    if (this.instance != null) {
+      return this.instance;
+    }
+
+    if (io == null) {
+      throw new Error("'io' is required if initialize YjsConnectionManager");
+    }
+
+    this.instance = new YjsConnectionManager(io);
+    return this.instance;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
@@ -43,6 +51,7 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
     const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
 
     if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
+      console.log('はいるよ', initialValue);
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
@@ -85,19 +94,7 @@ class YjsConnectionManagerImpl implements YjsConnectionManager {
 
 }
 
-let instance: YjsConnectionManagerImpl | undefined;
-
 // export the singleton instance
-export const getYjsConnectionManager = (io?: Server): YjsConnectionManagerImpl => {
-  if (instance != null) {
-    return instance;
-  }
-
-  if (io == null) {
-    throw new Error("'io' is required if initialize YjsConnectionManager");
-  }
-
-  // Initialize if instance does not exist
-  instance = new YjsConnectionManagerImpl(io);
-  return instance;
+export const getYjsConnectionManager = (io?: Server): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance(io);
 };
