@@ -38,7 +38,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
         </div>
       </div>
       <div className="grw-user-page-list-m mt-5 d-edit-none">
-        <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3">
+        <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <span className="growi-custom-icons me-1">recently_created</span>
           {t('footer.recently_created')}
         </h2>

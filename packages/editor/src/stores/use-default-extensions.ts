@@ -9,10 +9,6 @@ import {
 } from '@codemirror/state';
 import { keymap, EditorView, KeyBinding } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
-// see: https://github.com/yjs/y-codemirror.next#example
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-import { yUndoManagerKeymap } from 'y-codemirror.next';
 
 import type { UseCodeMirrorEditor } from '../services';
 import { emojiAutocompletionSettings } from '../services/extensions/emojiAutocompletionSettings';
@@ -39,7 +35,6 @@ const defaultExtensions: Extension[] = [
   keymap.of(markdownKeymap),
   keymap.of([indentWithTab]),
   Prec.lowest(keymap.of(defaultKeymap)),
-  keymap.of(yUndoManagerKeymap),
   syntaxHighlighting(markdownHighlighting),
   Prec.lowest(syntaxHighlighting(defaultHighlightStyle)),
   emojiAutocompletionSettings,

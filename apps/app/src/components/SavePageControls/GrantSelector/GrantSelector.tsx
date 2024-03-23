@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import {
   PageGrant, isPopulated, GroupType, type IGrantedGroup,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -21,7 +22,7 @@ const AVAILABLE_GRANTS = [
     grant: PageGrant.GRANT_PUBLIC, iconName: 'group', btnStyleClass: 'outline-info', label: 'Public',
   },
   {
-    grant: PageGrant.GRANT_RESTRICTED, iconName: 'link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
+    grant: PageGrant.GRANT_RESTRICTED, iconName: 'link', btnStyleClass: 'outline-success', label: 'Anyone with the link',
   },
   // { grant: 3, iconClass: '', label: 'Specified users only' },
   {
@@ -30,7 +31,7 @@ const AVAILABLE_GRANTS = [
   {
     grant: PageGrant.GRANT_USER_GROUP,
     iconName: 'more_horiz',
-    btnStyleClass: 'outline-purple',
+    btnStyleClass: 'outline-warning',
     label: 'Only inside the group',
     reselectLabel: 'Reselect the group',
   },
@@ -39,6 +40,7 @@ const AVAILABLE_GRANTS = [
 
 type Props = {
   disabled?: boolean,
+  openInModal?: boolean,
   grant: PageGrant,
   userRelatedGrantedGroups?: {
     id: string,
@@ -57,6 +59,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const {
     disabled,
+    openInModal,
     userRelatedGrantedGroups,
     onUpdateGrant,
     grant: currentGrant,
@@ -118,7 +121,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         : opt.label;
 
       const labelElm = (
-        <span>
+        <span className={openInModal ? 'py-2' : ''}>
           <span className="material-symbols-outlined me-2">{opt.iconName}</span>
           <span className="label">{t(label)}</span>
         </span>
@@ -158,17 +161,17 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
-        <UncontrolledDropdown direction="up" size="sm">
-          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
+        <UncontrolledDropdown direction={openInModal ? 'down' : 'up'} size="sm">
+          <DropdownToggle color={dropdownToggleBtnColor} caret className="w-100 d-flex justify-content-between align-items-center" disabled={disabled}>
             {dropdownToggleLabelElm}
           </DropdownToggle>
-          <DropdownMenu container="body">
+          <DropdownMenu container={openInModal ? '' : 'body'}>
             {dropdownMenuElems}
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, userRelatedGrantedGroups, t]);
+  }, [changeGrantHandler, currentGrant, disabled, userRelatedGrantedGroups, t, openInModal]);
 
   /**
    * Render select grantgroup modal.
@@ -182,7 +185,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
-          <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+          <LoadingSpinner className="mx-auto text-muted fs-4" />
         </div>
       );
     }
@@ -199,7 +202,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     }
 
     return (
-      <>
+      <div className="d-flex flex-column">
         { myUserGroups.map((group) => {
           const groupIsGranted = userRelatedGrantedGroups?.find(g => g.id === group.item._id) != null;
           const activeClass = groupIsGranted ? 'active' : '';
@@ -212,14 +215,14 @@ export const GrantSelector = (props: Props): JSX.Element => {
               onClick={() => groupListItemClickHandler(group)}
             >
               <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
-              <h5 className="d-inline-block ml-3">{group.item.name}</h5>
-              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
+              <h5 className="d-inline-block ms-3">{group.item.name}</h5>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
         }) }
-        <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
-      </>
+        <button type="button" className="btn btn-primary mt-2 mx-auto" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
+      </div>
     );
 
   }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, userRelatedGrantedGroups]);
@@ -233,8 +236,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <Modal
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
+          centered
         >
-          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
+          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-muted">
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>

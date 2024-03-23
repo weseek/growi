@@ -22,11 +22,3 @@
     align-items: center;
   }
 }
-
-// == Colors
-.grw-navbar-bottom :global {
-  .navbar {
-    background-color: rgba(var(--bs-body-bg-rgb), 0.7);
-    backdrop-filter: blur(35px);
-  }
-}

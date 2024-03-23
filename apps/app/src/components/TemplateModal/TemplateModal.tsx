@@ -9,6 +9,7 @@ import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/st
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -186,7 +187,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
             { isLoading && (
               <div className="h-100 d-flex justify-content-center align-items-center">
-                <i className="fa fa-2x fa-spinner fa-pulse text-muted mx-auto"></i>
+                <LoadingSpinner className="mx-auto text-muted fs-3" />
               </div>
             ) }
 

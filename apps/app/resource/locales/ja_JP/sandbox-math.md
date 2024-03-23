@@ -1,10 +1,10 @@
-# :pencil: Math
-
-See [KaTeX](https://katex.org/).
+# Math について
+- GROWI では  [MathJax](https://www.mathjax.org/) を活用して文章内に数式を挿入することが可能です
+- 以下にて紹介する代表的な MathJax の記法をそのまま引用し活用することが可能です
 
 ## Inline Formula
 
-When $a \ne 0$, there are two solutions to $ax^2 + bx + c = 0$ and they are
+When $a \ne 0$, there are two solutions to $ax^2 + bx + c = 0$ and they are  
   $$x = {-b \pm \sqrt{b^2-4ac} \over 2a}.$$
 
 ## The Lorenz Equations

@@ -96,11 +96,6 @@ export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3P
   return res.data;
 };
 
-export const updatePage = async(params: IApiv3PageUpdateParams): Promise<IApiv3PageUpdateResponse> => {
-  const res = await apiv3Put<IApiv3PageUpdateResponse>('/page', params);
-  return res.data;
-};
-
 export type UpdateStateAfterSaveOption = {
   supressEditingMarkdownMutation: boolean,
 }

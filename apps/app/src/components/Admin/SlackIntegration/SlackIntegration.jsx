@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 
@@ -187,7 +188,7 @@ const SlackIntegration = () => {
   if (isLoading) {
     return (
       <div className="text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+        <LoadingSpinner className="me-1 fs-3" />
       </div>
     );
   }

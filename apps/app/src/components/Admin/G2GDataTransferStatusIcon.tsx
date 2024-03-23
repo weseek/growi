@@ -1,11 +1,14 @@
 import React, { type ComponentPropsWithoutRef } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
+
 import { G2G_PROGRESS_STATUS, type G2GProgressStatus } from '~/interfaces/g2g-transfer';
+
 
 /**
  * Props for {@link G2GDataTransferStatusIcon}
  */
-interface Props extends ComponentPropsWithoutRef<'i'>{
+interface Props extends ComponentPropsWithoutRef<'span'>{
   status: G2GProgressStatus;
 }
 
@@ -15,7 +18,7 @@ interface Props extends ComponentPropsWithoutRef<'i'>{
 const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.Element => {
   if (status === G2G_PROGRESS_STATUS.IN_PROGRESS) {
     return (
-      <i className={`fa fa-spinner fa-pulse fa-fw ${className}`} aria-label="in progress" {...props} />
+      <LoadingSpinner className={`${className}`} aria-label="in progress" {...props} />
     );
   }
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -141,7 +142,13 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
             <div className="eff"></div>
-            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
+            <span className="btn-label">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <span className="material-symbols-outlined">person_add</span>
+              )}
+            </span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>
