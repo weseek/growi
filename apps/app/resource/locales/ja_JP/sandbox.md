@@ -166,7 +166,7 @@
 - 記述中のページを基点とした相対リンクと、表示テキストに対するリンクを同時に実現できます
 
 #### 活用例
-Bootstrap によるページの装飾方法の記述方法は [[こちらをご確認ください>./1. ページの装飾方法（Bootstrap）]]
+Bootstrap によるページの装飾方法の記述方法は [[こちらをご確認ください>./Bootstrap5]]
 
 
 # :memo:画像の挿入
@@ -297,6 +297,6 @@ ___
 # :memo:さらに応用的な表現
 - [ページの装飾方法（Bootstrap5）](/Sandbox/Bootstrap5)
 
-- [図形の表現方法（Daigrams）](/Sandbox/Daigrams)
+- [図形の表現方法（Diagrams）](/Sandbox/Diagrams)
 
 - [数式の表現方法（Math）](/Sandbox/Math)

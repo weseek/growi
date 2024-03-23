@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
@@ -6,7 +7,7 @@ export const AuditLogDisableMode: FC = () => {
   const { t } = useTranslation('admin');
 
   return (
-    <div id="content-main" className="content-main container-lg">
+    <div className="ccontainer-lg">
       <div className="container">
         <div className="row justify-content-md-center">
           <div className="col-md-6 mt-5">

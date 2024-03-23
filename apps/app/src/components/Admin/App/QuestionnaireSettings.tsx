@@ -2,11 +2,11 @@ import {
   useState, useCallback, useEffect,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useSWRxAppSettings } from '~/stores/admin/app-settings';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';

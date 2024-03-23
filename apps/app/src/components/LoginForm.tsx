@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
@@ -14,7 +15,6 @@ import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
-import { LoadingSpinner } from './LoadingSpinner';
 
 import styles from './LoginForm.module.scss';
 
@@ -277,7 +277,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
           <div className="eff"></div>
           <span className="btn-label">
-            <i className={`fa fa-${authIconNames[auth]}`}></i>
+            <span className="growi-custom-icons align-bottom">{authIconNames[auth]}</span>
           </span>
           <span className="btn-label-text">{t('Sign in')}</span>
         </button>

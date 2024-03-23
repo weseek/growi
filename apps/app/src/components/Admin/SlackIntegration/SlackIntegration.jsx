@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
 import { SlackbotType } from '@growi/slack';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 
@@ -8,7 +9,6 @@ import {
   apiv3Delete, apiv3Get, apiv3Post, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 
 import BotTypeCard from './BotTypeCard';
 import ConfirmBotChangeModal from './ConfirmBotChangeModal';
