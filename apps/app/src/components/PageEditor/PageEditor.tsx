@@ -187,6 +187,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+      // sync current grant data after update
       mutateIsGrantNormalized();
 
       return page;
