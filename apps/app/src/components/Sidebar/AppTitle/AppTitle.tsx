@@ -35,15 +35,19 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
           </span>
         </div>
       </div>
-      <UncontrolledTooltip
-        className="d-none d-sm-block confidential-tooltip"
-        data-testid="confidential-tooltip"
-        placement="top"
-        target="grw-site-name"
-        fade={false}
-      >
-        {confidential}
-      </UncontrolledTooltip>
+      {!(confidential == null || confidential === '')
+      && (
+        <UncontrolledTooltip
+          className="d-none d-sm-block confidential-tooltip"
+          innerClassName="text-start"
+          data-testid="confidential-tooltip"
+          placement="top"
+          target="grw-site-name"
+          fade={false}
+        >
+          {confidential}
+        </UncontrolledTooltip>
+      )}
     </div>
   );
 });
