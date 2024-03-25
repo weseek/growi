@@ -75,6 +75,9 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     setRenameInputShown(true);
   }, [parentPagePath]);
 
+  // TODO: https://redmine.weseek.co.jp/issues/141062
+  // Truncate left side
+  //
   // useEffect(() => {
   //   const areaElem = document.getElementById('grw-page-path-header-container');
   //   const linkElem = document.getElementById('grw-page-path-hierarchical-link');
@@ -89,6 +92,8 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   //     setIsIconHidden(false);
   //   }
   // }, [currentPage]);
+  //
+  // const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -121,6 +126,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
         ) }
         <div
           className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          // style={styles}
         >
           <PagePathHierarchicalLink
             linkedPagePath={linkedPagePath}
