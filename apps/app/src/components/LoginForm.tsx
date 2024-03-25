@@ -234,8 +234,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group my-4">
             <button
               type="submit"
-              id="login"
-              className="btn btn-fill col-6 login mx-auto"
+              className="btn btn-fill login-btn col-6 login mx-auto"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
@@ -276,6 +275,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       oidc: <span className="growi-custom-icons align-bottom">openid</span>,
       saml: <span className="material-symbols-outlined align-bottom">key</span>,
     };
+    const authBtn = `${auth}-btn`;
     const signin = {
       google: 'Google',
       github: 'GitHub',
@@ -286,7 +286,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <div key={auth} className="my-2">
-        <button type="button" className="btn btn-fill col-10 col-sm-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
+        <button type="button" className={`btn btn-fill ${authBtn} col-10 col-sm-6 mx-auto`} onClick={handleLoginWithExternalAuth}>
           <span className="btn-label pe-0">{authIcon[auth]}</span>
           <span className="btn-label-text">{t('Sign in with External auth', { signin: signin[auth] })}</span>
         </button>
@@ -502,8 +502,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-fill col-7"
-              id="register"
+              className="btn btn-fill register-btn col-7"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <span className="btn-label pe-0">
@@ -522,8 +521,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="text-end col-12 mb-5">
             <a
               href="#register"
-              id="function"
-              className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
+              className="d-block btn btn-fill function-btn col-10 col-sm-9 mx-auto py-1"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={switchForm}
             >
@@ -556,8 +554,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-4">
                     <a
                       href="/forgot-password"
-                      id="function"
-                      className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
+                      className="d-block btn btn-fill function-btn col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                     >
                       <span className="material-symbols-outlined me-2 fs-5">vpn_key</span>{t('forgot_password.forgot_password')}
@@ -569,8 +566,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-2 mb-5">
                     <a
                       href="#register"
-                      id="function"
-                      className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
+                      className="d-block btn btn-fill register-btn function-btn col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={switchForm}
                     >

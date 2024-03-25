@@ -65,50 +65,65 @@
     transform: translateY(-50%);
   }
 
-  $btn-fill-colors: (
-    'login': (
-      rgba(#204986, 0.6),
-      rgba(#204986, 0.8),
-    ),
-    'register': (
-      rgba(bs.$success, 0.4),
-      rgba(bs.$success, 0.7),
-    ),
-    'google': (
-      rgba(#4285F4, 0.4),
-      rgba(#4285F4, 0.8),
-    ),
-    'github': (
-      rgba(#403D3E, 0.4),
-      rgba(#403D3E, 0.7),
-    ),
-    'facebook': (
-      rgba(#29487d, 0.4),
-      rgba(#29487d, 0.9),
-    ),
-    'oidc': (
-      rgba(#835B1A, 0.4),
-      rgba(#835B1A, 0.8),
-    ),
-    'saml': (
-      rgba(#138957, 0.4),
-      rgba(#138957, 0.8),
-    ),
-    'function': (
-      rgba(bs.$gray-800, 0.8),
-      rgba(black, 0.5),
-    ),
-  );
+  .btn-fill {
+    border: 1px solid rgba(white, 0.1);
+    transition: 0.8s ease;
+  }
 
-  @each $label, $colors in $btn-fill-colors {
-    .btn-fill##{$label} {
-      background-color: nth($colors, 1);
-      border: 1px solid rgba(white, 0.1);
-      transition: 0.8s ease;
-      &:hover ,
-      &:focus {
-        background-color: nth($colors, 2);
-      }
+  .login-btn {
+    background-color: rgba(#204986, 0.6);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#204986, 0.8);
+    }
+  }
+  .register-btn {
+    background-color: rgba(bs.$success, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(bs.$success, 0.8);
+    }
+  }
+  .function-btn {
+    background-color: rgba(bs.$gray-800, 0.8);
+    &:hover ,
+    &:focus {
+      background-color: rgba(black, 0.5);
+    }
+  }
+  .google-btn {
+    background-color: rgba(#4285F4, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#4285F4, 0.8);
+    }
+  }
+  .github-btn {
+    background-color: rgba(#403D3E, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#403D3E, 0.7);
+    }
+  }
+  .facebook-btn {
+    background-color: rgba(#29487d, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#29487d, 0.9);
+    }
+  }
+  .oidc-btn {
+    background-color: rgba(#835B1A, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#835B1A, 0.8);
+    }
+  }
+  .saml-btn {
+    background-color: rgba(#138957, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#138957, 0.7);
     }
   }
 
@@ -134,6 +149,7 @@
       transition: color 0.8s;
     }
   }
+
   .nologin-header,
   .nologin-dialog {
     max-width: 480px;
