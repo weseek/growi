@@ -270,21 +270,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const renderExternalAuthInput = useCallback((auth) => {
     const authIcon = {
-      google: (
-        <span className="growi-custom-icons align-bottom">google</span>
-      ),
-      github: (
-        <span className="growi-custom-icons align-bottom">github</span>
-      ),
-      facebook: (
-        <span className="growi-custom-icons align-bottom">facebook</span>
-      ),
-      oidc: (
-        <span className="growi-custom-icons align-bottom">openid</span>
-      ),
-      saml: (
-        <span className="material-symbols-outlined align-bottom">key</span>
-      ),
+      google: <span className="growi-custom-icons align-bottom">google</span>,
+      github: <span className="growi-custom-icons align-bottom">github</span>,
+      facebook: <span className="growi-custom-icons align-bottom">facebook</span>,
+      oidc: <span className="growi-custom-icons align-bottom">openid</span>,
+      saml: <span className="material-symbols-outlined align-bottom">key</span>,
     };
     const signin = {
       google: 'Google',
