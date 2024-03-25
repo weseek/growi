@@ -15,7 +15,7 @@ import Accordion from '../Common/Accordion';
 
 import ManageCommandsProcess from './ManageCommandsProcess';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
-import { addLogs } from './slak-integration-util';
+import { addLogs } from './slack-integration-util';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
