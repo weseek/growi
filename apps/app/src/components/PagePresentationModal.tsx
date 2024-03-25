@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
@@ -14,7 +15,6 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
 import { useNextThemes } from '~/stores/use-next-themes';
 
-import { LoadingSpinner } from './LoadingSpinner';
 
 import styles from './PagePresentationModal.module.scss';
 

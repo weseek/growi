@@ -1,9 +1,9 @@
 import type { Ref } from 'react';
 import React, { useEffect, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { SWRInfiniteResponse } from 'swr/infinite';
 
-import { LoadingSpinner } from './LoadingSpinner';
 
 type Props<T> = {
   swrInifiniteResponse: SWRInfiniteResponse<T>

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 
 import type { Ref, IRevision, IRevisionHasId } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-
-import { LoadingSpinner } from '../LoadingSpinner';
 
 import RevisionRenderer from './RevisionRenderer';
 
