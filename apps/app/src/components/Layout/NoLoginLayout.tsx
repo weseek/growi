@@ -33,7 +33,7 @@ export const NoLoginLayout = ({
           <div className="row">
 
             <div className="col-md-12 position-relative">
-              <div className="nologin-header mx-auto">
+              <div className="nologin-header mx-auto rounded-4 rounded-bottom-0">
                 <div className="d-flex justify-content-center align-items-center">
                   <GrowiLogo />
                   <h1 className="growi-logo-type fs-3 my-3 ms-3">GROWI</h1>

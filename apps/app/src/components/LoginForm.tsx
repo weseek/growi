@@ -250,7 +250,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </button>
           </div>
         </form>
-        <div className="text-center text-line mb-3">
+        <div className="text-center text-line d-flex align-items-center mb-3">
           <p className="text-white mb-0">{t('or')}</p>
         </div>
       </>

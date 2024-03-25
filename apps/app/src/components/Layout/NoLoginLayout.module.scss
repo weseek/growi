@@ -18,7 +18,6 @@
       .nologin-header {
         padding-top: 30px;
         padding-bottom: 10px;
-        border-radius: 16px 16px 0 0;
       }
 
       .growi-logo-type {
@@ -114,8 +113,6 @@
   }
 
   .text-line {
-    display: flex;
-    align-items: center;
     &:before,
     &:after {
       flex-grow: 1;
