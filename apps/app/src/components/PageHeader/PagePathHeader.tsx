@@ -76,7 +76,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   }, [parentPagePath]);
 
   // TODO: https://redmine.weseek.co.jp/issues/141062
-  // Truncate left side
+  // Truncate left side and don't use getElementById
   //
   // useEffect(() => {
   //   const areaElem = document.getElementById('grw-page-path-header-container');
