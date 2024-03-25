@@ -39,8 +39,6 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   const [isHover, setHover] = useState(false);
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
-  const [isIconHidden, setIsIconHidden] = useState(false);
-
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
@@ -75,29 +73,6 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     setRenameInputShown(true);
   }, [parentPagePath]);
 
-  useEffect(() => {
-    const areaElem = document.getElementById('grw-page-path-header-container');
-    const linkElem = document.getElementById('grw-page-path-hierarchical-link');
-
-    const areaElemWidth = areaElem?.offsetWidth;
-    const linkElemWidth = linkElem?.offsetWidth;
-
-    if (areaElemWidth && linkElemWidth) {
-      setIsIconHidden(linkElemWidth > areaElemWidth);
-    }
-    else {
-      setIsIconHidden(false);
-    }
-  }, [currentPage]);
-
-  const subNavElem = document.getElementById('grw-contextual-sub-nav');
-
-  const subNavElemWidth = useMemo(() => (subNavElem?.offsetWidth ?? 0), []);
-
-  const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
-
-  const pagePathHeaderWidth = `calc(100% - ${subNavElemWidth}px)`;
-
   if (dPagePath.isRoot) {
     return <></>;
   }
@@ -108,12 +83,10 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
       className={`d-flex ${moduleClass} small position-relative`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
-      style={{ width: pagePathHeaderWidth }}
     >
       <div
         id="grw-page-path-header-container"
         className="me-2"
-        style={{ minWidth: 0 }}
       >
         { isRenameInputShown && (
           <div className="position-absolute w-100">
@@ -131,11 +104,9 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
         ) }
         <div
           className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
-          style={styles}
         >
           <PagePathHierarchicalLink
             linkedPagePath={linkedPagePath}
-            isIconHidden={isIconHidden}
           />
         </div>
       </div>
