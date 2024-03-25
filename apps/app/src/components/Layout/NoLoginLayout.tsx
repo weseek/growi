@@ -27,7 +27,7 @@ export const NoLoginLayout = ({
 
   return (
     <RawLayout className={`nologin ${commonStyles.nologin} ${classNames}`}>
-      <div className="page-wrapper flex-row">
+      <div className="d-flex align-items-center vh-100 mt-0 flex-row">
         <div className="main container-fluid">
 
           <div className="row">
@@ -36,7 +36,7 @@ export const NoLoginLayout = ({
               <div className="nologin-header mx-auto rounded-4 rounded-bottom-0">
                 <div className="d-flex justify-content-center align-items-center">
                   <GrowiLogo />
-                  <h1 className="growi-logo-type fs-3 my-3 ms-3">GROWI</h1>
+                  <h1 className="growi-logo-type text-white fs-3 my-3 ms-3">GROWI</h1>
                 </div>
                 {appTitle !== 'GROWI' ? (
                   <h2 className="fs-4 text-center text-white">{ appTitle }</h2>

@@ -1,3 +1,5 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 .login-form :global {
   // To adjust the behavior, this problem is not solved.
   // See https://github.com/AaronCCWong/react-card-flip/issues/56
@@ -15,4 +17,83 @@
     bottom: 9px;
     z-index: 3;
   }
+
+  .text-line {
+    &:before,
+    &:after {
+      flex-grow: 1;
+      height: 1px;
+      margin:0 1em;
+      content: '';
+      background: rgba(white,0.5);
+    }
+  }
+
+  .input-container {
+    width: 89%;
+    @include bs.media-breakpoint-down(sm) {
+      width: 86%;
+    }
+  }
+
+  .ldap-space {
+    padding-right: 76px;
+  }
+
+  .input-ldap {
+    position: absolute;
+    top: 45%;
+    right: 2%;
+    transform: translateY(-50%);
+  }
+  .login-btn {
+    background-color: rgba(#204986, 0.6);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#204986, 0.8);
+    }
+  }
+  .function-btn {
+    background-color: rgba(bs.$gray-800, 0.8);
+    &:hover ,
+    &:focus {
+      background-color: rgba(black, 0.5);
+    }
+  }
+  .google-btn {
+    background-color: rgba(#4285F4, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#4285F4, 0.8);
+    }
+  }
+  .github-btn {
+    background-color: rgba(#403D3E, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#403D3E, 0.7);
+    }
+  }
+  .facebook-btn {
+    background-color: rgba(#29487d, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#29487d, 0.9);
+    }
+  }
+  .oidc-btn {
+    background-color: rgba(#835B1A, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#835B1A, 0.8);
+    }
+  }
+  .saml-btn {
+    background-color: rgba(#138957, 0.4);
+    &:hover ,
+    &:focus {
+      background-color: rgba(#138957, 0.7);
+    }
+  }
+
 }

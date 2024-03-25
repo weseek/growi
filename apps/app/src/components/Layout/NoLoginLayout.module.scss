@@ -6,24 +6,19 @@
   height: 100vh;
 
   // layout
-  .page-wrapper {
-    display: flex;
-    align-items: center;
-    height: 100vh;
-    margin-top: 0px;
+  .main {
+    width: 100vw;
 
-    .main {
-      width: 100vw;
-
-      .nologin-header {
-        padding-top: 30px;
-        padding-bottom: 10px;
+    .nologin-header {
+      padding-top: 30px;
+      padding-bottom: 10px;
+      svg {
+        fill: white;
       }
+    }
 
-      .growi-logo-type {
-        letter-spacing: .5rem;
-      }
-
+    .growi-logo-type {
+      letter-spacing: .5rem;
     }
 
   }
@@ -47,94 +42,16 @@
     }
   }
 
-  .input-container {
-    width: 89%;
-    @include bs.media-breakpoint-down(sm) {
-      width: 86%;
-    }
-  }
-
-  .ldap-space {
-    padding-right: 76px;
-  }
-
-  .input-ldap {
-    position: absolute;
-    top: 45%;
-    right: 2%;
-    transform: translateY(-50%);
-  }
-
   .btn-fill {
     border: 1px solid rgba(white, 0.1);
     transition: 0.8s ease;
   }
 
-  .login-btn {
-    background-color: rgba(#204986, 0.6);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#204986, 0.8);
-    }
-  }
   .register-btn {
     background-color: rgba(bs.$success, 0.4);
     &:hover ,
     &:focus {
       background-color: rgba(bs.$success, 0.8);
-    }
-  }
-  .function-btn {
-    background-color: rgba(bs.$gray-800, 0.8);
-    &:hover ,
-    &:focus {
-      background-color: rgba(black, 0.5);
-    }
-  }
-  .google-btn {
-    background-color: rgba(#4285F4, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#4285F4, 0.8);
-    }
-  }
-  .github-btn {
-    background-color: rgba(#403D3E, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#403D3E, 0.7);
-    }
-  }
-  .facebook-btn {
-    background-color: rgba(#29487d, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#29487d, 0.9);
-    }
-  }
-  .oidc-btn {
-    background-color: rgba(#835B1A, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#835B1A, 0.8);
-    }
-  }
-  .saml-btn {
-    background-color: rgba(#138957, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#138957, 0.7);
-    }
-  }
-
-  .text-line {
-    &:before,
-    &:after {
-      flex-grow: 1;
-      height: 1px;
-      margin:0 1em;
-      content: '';
-      background: rgba(white,0.5);
     }
   }
 
@@ -181,19 +98,6 @@
 
     .nologin-header {
       background-color: rgba(white, 0.3);
-
-      svg {
-        fill: white;
-      }
-
-      .logo {
-        color: white;
-        background-color: rgba(black, 0);
-      }
-
-      h1 {
-        color: white;
-      }
     }
 
     .nologin-dialog {
@@ -248,19 +152,6 @@
 
     .nologin-header {
       background-color: rgba(black, 0.3);
-
-      svg {
-        fill: white;
-      }
-
-      .logo {
-        color: white;
-        background-color: rgba(white, 0);
-      }
-
-      h1 {
-        color: white;
-      }
     }
 
     .nologin-dialog {
