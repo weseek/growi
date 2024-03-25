@@ -57,7 +57,7 @@ export const UISettings = (): JSX.Element => {
               label="Collapsed"
               additionalClasses={styles['grw-sidebar-mode-icon']}
             >
-              <span className="growi-custom-icons">sidebar-collapsed</span>
+              <span className="growi-custom-icons fs-6">sidebar-collapsed</span>
             </IconWithTooltip>
             <div className="form-check form-switch ms-1">
 
@@ -71,7 +71,7 @@ export const UISettings = (): JSX.Element => {
               <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
             </div>
             <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-              <span className="growi-custom-icons">sidebar-dock</span>
+              <span className="growi-custom-icons fs-6">sidebar-dock</span>
             </IconWithTooltip>
           </div>
           <div className="ms-2">

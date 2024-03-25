@@ -78,7 +78,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div className="my-5 d-flex flex-column align-items-center">
           <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
             {t('admin:slack_integration.accordion.create_bot')}
-            <span className="growi-custom-icons ms-2"><small>external_link</small></span>
+            <span className="growi-custom-icons ms-2">external_link</span>
           </button>
           <a
             href={t('admin:slack_integration.docs_url.custom_bot_without_proxy_setting')}
@@ -88,7 +88,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <p className="text-center mt-1">
               <small>
                 {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                <span className="growi-custom-icons ms-2"><small><small>external_link</small></small></span>
+                <span className="growi-custom-icons ms-2">external_link</span>
               </small>
             </p>
           </a>
