@@ -1,13 +1,24 @@
 import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-const DeleteSlackBotSettingsModal = React.memo((props) => {
-  const { t, onClickDeleteButton, onClose } = useTranslation();
+type DeleteSlackBotSettingsModalProps = {
+  isResetAll: boolean,
+  isOpen: boolean,
+  onClose?: () => void,
+  onClickDeleteButton?: () => void,
+}
+
+export const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSettingsModalProps) => {
+
+  const { t } = useTranslation();
+
+  const {
+    isResetAll, isOpen, onClose, onClickDeleteButton,
+  } = props;
 
   const deleteSlackCredentialsHandler = useCallback(() => {
     onClickDeleteButton?.();
@@ -19,16 +30,16 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
   }, [onClose]);
 
   return (
-    <Modal isOpen={props.isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
+    <Modal isOpen={isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
       <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
         <span>
-          {props.isResetAll && (
+          {isResetAll && (
             <>
               <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset_all_settings')}
             </>
           )}
-          {!props.isResetAll && (
+          {!isResetAll && (
             <>
               <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete_slackbot_settings')}
@@ -37,13 +48,13 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
         </span>
       </ModalHeader>
       <ModalBody>
-        {props.isResetAll && (
+        {isResetAll && (
           <span
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.all_settings_of_the_bot_will_be_reset') }}
           />
         )}
-        {!props.isResetAll && (
+        {!isResetAll && (
           <span
             // eslint-disable-next-line react/no-danger
             dangerouslySetInnerHTML={{ __html: t('admin:slack_integration.slackbot_settings_notice') }}
@@ -53,13 +64,13 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
       <ModalFooter>
         <Button onClick={closeButtonHandler}>{t('Cancel')}</Button>
         <Button color="danger" onClick={deleteSlackCredentialsHandler}>
-          {props.isResetAll && (
+          {isResetAll && (
             <>
               <span className="material-symbols-outlined">delete_forever</span>
               {t('admin:slack_integration.reset')}
             </>
           )}
-          {!props.isResetAll && (
+          {!isResetAll && (
             <>
               <span className="material-symbols-outlined">delete</span>
               {t('admin:slack_integration.delete')}
@@ -72,13 +83,4 @@ const DeleteSlackBotSettingsModal = React.memo((props) => {
 
 });
 
-DeleteSlackBotSettingsModal.propTypes = {
-  isResetAll: PropTypes.bool.isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func,
-  onClickDeleteButton: PropTypes.func,
-};
-
 DeleteSlackBotSettingsModal.displayName = 'DeleteSlackBotSettingsModal';
-
-export default DeleteSlackBotSettingsModal;

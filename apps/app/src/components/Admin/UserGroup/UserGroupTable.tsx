@@ -162,7 +162,14 @@ export const UserGroupTable: FC<Props> = ({
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
-                    <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>
+                    <td>
+                      <Link
+                        className="link-opacity-75-hover"
+                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
+                      >
+                        {group.name}
+                      </Link>
+                    </td>
                   )
                   : (
                     <td>{group.name}</td>

@@ -235,7 +235,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
@@ -249,6 +249,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     MenuItemType.REVERT,
   ];
 
+  const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
 
   return (
@@ -256,18 +257,18 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
-      {revisionId != null && !isViewMode && (
+      {revisionId != null && !isViewMode && _isIPageInfoForOperation && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -275,7 +276,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
@@ -289,7 +290,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           disabled={disableSeenUserInfoPopover}
         />
       ) }
-      { showPageControlDropdown && (
+      { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
           alignEnd
           pageId={pageId}
@@ -337,7 +338,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
     return <></>;
   }
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 

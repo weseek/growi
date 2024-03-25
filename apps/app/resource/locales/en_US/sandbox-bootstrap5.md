@@ -120,19 +120,19 @@
 
 
 # 4. Colors
-## 背景颜色
+## Contextual colors
 <p class="text-primary">Look, I'm in a well!</p>
 <p class="text-warning">Look, I'm in a well!</p>
 <p class="text-danger">Look, I'm in a well!</p>
 
-## 背景情况
+## Contextual backgrounds
 <p class="text-danger bg-primary">Look, I'm in a well!</p>
 <p class="text-primary bg-warning">Look, I'm in a well!</p>
 <p class="text-warning bg-danger">Look, I'm in a well!</p>
 
 
 # 5. Collapse
-## 显示内容
+## Displaying content
 <a class="btn btn-primary text-white" data-bs-toggle="collapse" href="#collapse-1">
   Show content
 </a>
@@ -146,7 +146,7 @@
   </div>
 </div>
 
-## 隐藏内容
+## Hiding content
 <a class="btn btn-secondary text-white" data-bs-toggle="collapse" href="#collapse-2">
   Hide content
 </a>
@@ -161,9 +161,9 @@
 </div>
 
 
-# 官方文件
-- [点击此处了解徽章详情](https://getbootstrap.com/docs/5.3/components/badge/)
-- [单击此处了解警报详情](https://getbootstrap.com/docs/5.3/components/alerts/)
-- [点击此处了解贺卡详情](https://getbootstrap.com/docs/5.3/components/card/)
-- [点击此处了解颜色详情](https://getbootstrap.com/docs/5.3/utilities/colors/)
-- [点击此处查看折叠详情](https://getbootstrap.com/docs/5.3/components/collapse/)
+# Official docs
+- [Click here for Badges details](https://getbootstrap.jp/docs/5.3/components/badge/)
+- [Click here for Alerts details](https://getbootstrap.jp/docs/5.3/components/alerts/)
+- [Click here for Cards details](https://getbootstrap.jp/docs/5.3/components/card/)
+- [Click here for Colors details](https://getbootstrap.jp/docs/5.3/utilities/colors/)
+- [Click here for Collapse details](https://getbootstrap.jp/docs/5.3/components/collapse/)
