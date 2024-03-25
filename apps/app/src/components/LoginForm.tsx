@@ -530,15 +530,16 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <div className="row">
           <div className="text-end col-12 mb-5">
-            <button
-              type="button"
+            <a
+              href="#register"
               id="function"
               className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-              onClick={() => { switchForm(); window.location.href = '#login' }}
+              onClick={switchForm}
             >
-              <span className="material-symbols-outlined me-2 fs-5">login</span>{t('Sign in is here')}
-            </button>
+              <span className="material-symbols-outlined me-2 fs-5">login</span>
+              {t('Sign in is here')}
+            </a>
           </div>
         </div>
       </React.Fragment>
@@ -563,29 +564,28 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="mt-4">
-                    <button
-                      type="button"
+                    <a
+                      href="/forgot-password"
                       id="function"
                       className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                      onClick={() => { window.location.href = '/forgot-password' }}
                     >
                       <span className="material-symbols-outlined me-2 fs-5">vpn_key</span>{t('forgot_password.forgot_password')}
-                    </button>
+                    </a>
                   </div>
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
                   <div className="mt-2 mb-5">
-                    <button
-                      type="button"
+                    <a
+                      href="#register"
                       id="function"
                       className="d-block btn btn-fill col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
-                      onClick={() => { switchForm(); window.location.href = '#register' }}
+                      onClick={switchForm}
                     >
                       <span className="material-symbols-outlined me-2 fs-5">person_add</span> {t('Sign up is here')}
-                    </button>
+                    </a>
                   </div>
                 )}
               </div>
