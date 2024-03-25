@@ -93,7 +93,11 @@ class YjsConnectionManager {
 
 }
 
-// export the singleton instance
-export const getYjsConnectionManager = (io?: Server): YjsConnectionManager => {
+export const instantiateYjsConnectionManager = (io: Server): YjsConnectionManager => {
   return YjsConnectionManager.getInstance(io);
+};
+
+// export the singleton instance
+export const getYjsConnectionManager = (): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance();
 };

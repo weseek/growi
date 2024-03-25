@@ -37,9 +37,6 @@ class SocketIoService {
     });
     this.io.attach(server);
 
-    // create the YjsConnectionManager instance
-    this.yjsConnectionManager = getYjsConnectionManager(this.io);
-
     // create namespace for admin
     this.adminNamespace = this.io.of('/admin');
 
@@ -54,6 +51,9 @@ class SocketIoService {
 
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
+  }
+
+  async setupYjsConnectionManager() {
     await this.setupYjsConnection();
   }
 
@@ -160,10 +160,11 @@ class SocketIoService {
   }
 
   setupYjsConnection() {
+    const yjsConnectionManager = getYjsConnectionManager();
     this.io.on('connection', (socket) => {
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
-          await this.yjsConnectionManager.handleYDocSync(pageId, initialValue);
+          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }
         catch (error) {
           logger.warn(error.message);
