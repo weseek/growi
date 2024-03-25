@@ -210,7 +210,6 @@ const InstallerForm = memo((): JSX.Element => {
               data-testid="btnSubmit"
               type="submit"
               className="btn-fill btn btn-register"
-              id="register"
               disabled={isLoading}
             >
               <span className="btn-label pe-0">

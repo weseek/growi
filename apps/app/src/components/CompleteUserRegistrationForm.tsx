@@ -85,9 +85,9 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <div className="nologin-dialog mx-auto" id="nologin-dialog">
+      <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog">
         <div className="row mx-0">
-          <div className="col-12">
+          <div className="col-12 px-4">
 
             { (errorCode != null && errorCode === UserActivationErrorCode.TOKEN_NOT_FOUND) && (
               <p className="alert alert-danger">
@@ -111,15 +111,19 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               <input type="hidden" name="token" value={token} />
 
               <div className="input-group">
-                <span className="input-group-text"></span><span className="material-symbols-outlined">mail</span>
-                <input type="text" className="form-control" placeholder={t('Email')} disabled value={email} />
+                <span className="p-2 text-white opacity-75">
+                  <span className="material-symbols-outlined">mail</span>
+                </span>
+                <input type="text" className="form-control rounded" placeholder={t('Email')} disabled value={email} />
               </div>
 
               <div className="input-group" id="input-group-username">
-                <span className="input-group-text"></span><span className="material-symbols-outlined">person</span>
+                <span className="p-2 text-white opacity-75">
+                  <span className="material-symbols-outlined">person</span>
+                </span>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control rounded"
                   placeholder={t('User ID')}
                   name="username"
                   onChange={e => setUsername(e.target.value)}
@@ -129,15 +133,22 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </div>
               {!usernameAvailable && (
                 <p className="form-text text-red">
-                  <span id="help-block-username"><span className="material-symbols-outlined">block</span>{t('installer.unavaliable_user_id')}</span>
+                  <span id="help-block-username">
+                    <span className="p-2 text-white opacity-75">
+                      <span className="material-symbols-outlined">block</span>
+                    </span>
+                    {t('installer.unavaliable_user_id')}
+                  </span>
                 </p>
               )}
 
               <div className="input-group">
-                <span className="input-group-text"></span><span className="material-symbols-outlined">sell</span>
+                <span className="p-2 text-white opacity-75">
+                  <span className="material-symbols-outlined">sell</span>
+                </span>
                 <input
                   type="text"
-                  className="form-control"
+                  className="form-control rounded"
                   placeholder={t('Name')}
                   name="name"
                   value={name}
@@ -148,10 +159,12 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </div>
 
               <div className="input-group">
-                <span className="input-group-text"></span><span className="material-symbols-outlined">lock</span>
+                <span className="p-2 text-white opacity-75">
+                  <span className="material-symbols-outlined">lock</span>
+                </span>
                 <input
                   type="password"
-                  className="form-control"
+                  className="form-control rounded"
                   placeholder={t('Password')}
                   name="password"
                   value={password}
@@ -161,16 +174,16 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                 />
               </div>
 
-              <div className="input-group justify-content-center d-flex mt-5">
-                <button type="button" disabled={forceDisableForm || disableForm} className="btn btn-fill" id="register">
-                  <span className="btn-label"></span><span className="material-symbols-outlined">person_add</span>
+              <div className="input-group justify-content-center mt-4">
+                <button type="button" disabled={forceDisableForm || disableForm} className="btn btn-fill register-btn col-6 login mx-auto">
+                  <span className="btn-label pe-0"><span className="material-symbols-outlined">person_add</span></span>
                   <span className="btn-label-text">{t('Create')}</span>
                 </button>
               </div>
 
-              <div className="input-group mt-5 d-flex justify-content-center">
+              <div className="input-group mt-5 d-flex">
                 <a href="https://growi.org" className="link-growi-org">
-                  <span className="growi">GROWI</span><span className="org">.ORG</span>
+                  <span className="growi">GROWI</span><span className="org">.org</span>
                 </a>
               </div>
             </form>
