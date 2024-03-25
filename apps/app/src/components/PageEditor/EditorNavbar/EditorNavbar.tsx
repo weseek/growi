@@ -14,9 +14,6 @@ export const EditorNavbar = (): JSX.Element => {
   return (
     <div className={`${moduleClass} d-flex justify-content-between px-4 py-1`}>
       <PageHeader />
-      <EditingUserList
-        userList={editingUsers?.userList ?? []}
-      />
     </div>
   );
 };

@@ -80,7 +80,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small position-relative`}
+      className={`d-inline-block ${moduleClass} small`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
@@ -89,7 +89,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
         className="me-2"
       >
         { isRenameInputShown && (
-          <div className="position-absolute w-100">
+          <div className="">
             <ClosableTextInput
               value={editingParentPagePath}
               placeholder={t('Input parent page path')}

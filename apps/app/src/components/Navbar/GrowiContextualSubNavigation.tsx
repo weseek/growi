@@ -30,13 +30,16 @@ import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
+  EditorMode,
 } from '~/stores/ui';
 
 import { CreateTemplateModal } from '../CreateTemplateModal';
 import { NotAvailable } from '../NotAvailable';
+import { EditorNavbar } from '../PageEditor/EditorNavbar';
 import { Skeleton } from '../Skeleton';
 
 import { GroundGlassBar } from './GroundGlassBar';
+
 
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
@@ -292,11 +295,15 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     <>
       <GroundGlassBar
         className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
+          d-flex align-items-center px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
         id="grw-contextual-sub-nav"
       >
+        {editorMode === EditorMode.Editor && (
+          <EditorNavbar />
+        )}
+
         {pageId != null && (
           <PageControls
             pageId={pageId}
