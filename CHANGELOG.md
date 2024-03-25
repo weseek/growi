@@ -1,8 +1,18 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.2...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.2](https://github.com/weseek/growi/compare/v6.3.1...v6.3.2) - 2024-03-25
+
+### 🐛 Bug Fixes
+
+* fix: Show both UserGroups and ExternalUserGroups for group delete modal transfer select (#8519) @arafubeatbox
+
+### 🧰 Maintenance
+
+* ci(deps): bump ip from 2.0.0 to 2.0.1 (#8508) @dependabot
 
 ## [v6.3.1](https://github.com/weseek/growi/compare/v6.3.0...v6.3.1) - 2024-02-01
 
