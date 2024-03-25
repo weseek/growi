@@ -269,13 +269,21 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
 
   const renderExternalAuthInput = useCallback((auth) => {
-    const authIconNames = {
-      google: 'google',
-      github: 'github',
-      facebook: 'facebook',
-      oidc: 'openid',
+    const authIcon = {
+      google: (
+        <span className="growi-custom-icons align-bottom">google</span>
+      ),
+      github: (
+        <span className="growi-custom-icons align-bottom">github</span>
+      ),
+      facebook: (
+        <span className="growi-custom-icons align-bottom">facebook</span>
+      ),
+      oidc: (
+        <span className="growi-custom-icons align-bottom">openid</span>
+      ),
       saml: (
-        <span className="material-symbols-outlined">key</span>
+        <span className="material-symbols-outlined align-bottom">key</span>
       ),
     };
     const signin = {
@@ -289,9 +297,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     return (
       <div key={auth} className="my-2">
         <button type="button" className="btn btn-fill col-10 col-sm-6 mx-auto" id={auth} onClick={handleLoginWithExternalAuth}>
-          <span className="btn-label pe-0">
-            <span className="growi-custom-icons align-bottom">{authIconNames[auth]}</span>
-          </span>
+          <span className="btn-label pe-0">{authIcon[auth]}</span>
           <span className="btn-label-text">{t('Sign in with External auth', { signin: signin[auth] })}</span>
         </button>
       </div>
