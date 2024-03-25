@@ -10,7 +10,7 @@ const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
 class YjsConnectionManager {
 
-  private static instance: YjsConnectionManager | undefined;
+  private static instance: YjsConnectionManager;
 
   private ysocketio: YSocketIO;
 
