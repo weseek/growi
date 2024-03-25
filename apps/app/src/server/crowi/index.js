@@ -483,7 +483,7 @@ Crowi.prototype.start = async function() {
 
   // Initialization YjsConnectionManager
   instantiateYjsConnectionManager(this.socketIoService.io);
-  this.socketIoService.setupYjsConnectionManager();
+  this.socketIoService.setupYjsConnection();
 
   // listen
   const serverListening = httpServer.listen(this.port, () => {

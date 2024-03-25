@@ -53,10 +53,6 @@ class SocketIoService {
     await this.setupDefaultSocketJoinRoomsEventHandler();
   }
 
-  async setupYjsConnectionManager() {
-    await this.setupYjsConnection();
-  }
-
   getDefaultSocket() {
     if (this.io == null) {
       throw new Error('Http server has not attached yet.');
