@@ -23,10 +23,6 @@
     }
   }
 
-  .grw-site-name {
-    cursor: default;
-  }
-
   .confidential-tooltip {
     max-width: 180px;
   }
@@ -96,10 +92,5 @@
   .grw-site-name {
     --bs-link-color-rgb: var(--grw-app-title-color-rgb, var(--bs-tertiary-color-rgb));
     --bs-link-opacity: 0.5;
-
-    span {
-      color: rgba(var(--bs-link-color-rgb), var(--bs-link-opacity, 1));
-      text-decoration: none;
-    }
   }
 }

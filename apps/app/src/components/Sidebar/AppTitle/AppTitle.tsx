@@ -30,9 +30,9 @@ const AppTitleSubstance = memo((props: Props): JSX.Element => {
       </Link>
       <div className="flex-grow-1 d-flex align-items-center justify-content-between gap-3 overflow-hidden">
         <div id="grw-site-name" className="grw-site-name text-truncate">
-          <span className="fs-4">
+          <Link href="/" className="fs-4">
             {appTitle}
-          </span>
+          </Link>
         </div>
       </div>
       {!(confidential == null || confidential === '')
