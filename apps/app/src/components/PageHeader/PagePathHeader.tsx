@@ -75,22 +75,6 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     setRenameInputShown(true);
   }, [parentPagePath]);
 
-  const clickOutSideHandler = useCallback((e) => {
-    const container = document.getElementById('page-path-header');
-
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
-
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, [clickOutSideHandler]);
-
   useEffect(() => {
     const areaElem = document.getElementById('grw-page-path-header-container');
     const linkElem = document.getElementById('grw-page-path-hierarchical-link');
@@ -141,6 +125,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
               onPressEscape={onPressEscape}
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
+              onClickOutside={onPressEscape}
             />
           </div>
         ) }
