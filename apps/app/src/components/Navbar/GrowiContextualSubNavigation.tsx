@@ -30,8 +30,10 @@ import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
+  EditorMode,
 } from '~/stores/ui';
 
+import { PagePathNavSticky } from '../Common/PagePathNav';
 import { CreateTemplateModal } from '../CreateTemplateModal';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
@@ -296,6 +298,13 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
         `}
         data-testid="grw-contextual-sub-nav"
       >
+
+        {
+          editorMode === EditorMode.View && (
+            <PagePathNavSticky pageId={currentPage?._id} pagePath={currentPathname} isWipPage={currentPage?.wip} />
+          )
+        }
+
         {pageId != null && (
           <PageControls
             pageId={pageId}

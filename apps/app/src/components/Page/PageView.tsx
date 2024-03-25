@@ -18,7 +18,6 @@ import { useIsMobile } from '~/stores/ui';
 
 
 import type { CommentsProps } from '../Comments';
-import { PagePathNavSticky } from '../Common/PagePathNav';
 import { PageViewLayout } from '../Common/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
@@ -102,9 +101,6 @@ export const PageView = (props: Props): JSX.Element => {
     }
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
-  const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />
-  );
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
@@ -157,7 +153,6 @@ export const PageView = (props: Props): JSX.Element => {
 
   return (
     <PageViewLayout
-      headerContents={headerContents}
       sideContents={sideContents}
       footerContents={footerContents}
       expandContentWidth={shouldExpandContent}

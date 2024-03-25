@@ -7,7 +7,6 @@ const _fluidLayoutClass = styles['fluid-layout'] ?? '';
 
 type Props = {
   children?: ReactNode,
-  headerContents?: ReactNode,
   sideContents?: ReactNode,
   footerContents?: ReactNode,
   expandContentWidth?: boolean,
@@ -15,7 +14,7 @@ type Props = {
 
 export const PageViewLayout = (props: Props): JSX.Element => {
   const {
-    children, headerContents, sideContents, footerContents,
+    children, sideContents, footerContents,
     expandContentWidth,
   } = props;
 
@@ -25,7 +24,6 @@ export const PageViewLayout = (props: Props): JSX.Element => {
     <>
       <div className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert ps-sidebar`}>
         <div className="container-lg wide-gutter-x-lg grw-container-convertible flex-expand-vert">
-          { headerContents != null && headerContents }
           { sideContents != null
             ? (
               <div className="flex-expand-horiz gap-3">
