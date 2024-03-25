@@ -18,6 +18,9 @@ import { CompleteUserRegistration } from './CompleteUserRegistration';
 
 import styles from './LoginForm.module.scss';
 
+const moduleClass = styles['login-form'];
+
+
 type LoginFormProps = {
   username?: string,
   name?: string,
@@ -234,18 +237,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group my-4">
             <button
               type="submit"
-              className="btn btn-fill login-btn col-6 login mx-auto"
+              className="btn btn-secondary login-btn col-6 login mx-auto d-flex justify-content-between"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
-              <span className="btn-label pe-0">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="material-symbols-outlined">login</span>
                 )}
               </span>
-              <span className="btn-label-text">{t('Sign in')}</span>
+              <span className="flex-grow-1">{t('Sign in')}</span>
             </button>
           </div>
         </form>
@@ -542,7 +545,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <div className={`login-form ${styles['login-form']}`}>
+    <div className={moduleClass}>
       <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
           <div className="col-12 px-md-4">

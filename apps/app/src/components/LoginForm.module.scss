@@ -46,12 +46,16 @@
     right: 2%;
     transform: translateY(-50%);
   }
-  .login-btn {
-    background-color: rgba(#204986, 0.6);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#204986, 0.8);
-    }
+}
+
+
+// Buttons
+.login-form :global {
+
+  .btn.login-btn {
+    --bs-btn-bg: #{rgba(#204986, 0.6)};
+    --bs-btn-hover-bg: #{rgba(#204986, 0.8)};
+    --bs-btn-active-bg: #{rgba(#204986, 0.8)};
   }
   .function-btn {
     background-color: rgba(bs.$gray-800, 0.8);
@@ -95,5 +99,4 @@
       background-color: rgba(#138957, 0.7);
     }
   }
-
 }
