@@ -214,7 +214,7 @@ const InstallerForm = memo((): JSX.Element => {
             <button
               data-testid="btnSubmit"
               type="submit"
-              className="btn btn-secondary register-btn col-6 d-flex justify-content-between"
+              className="btn btn-secondary btn-register col-6 d-flex"
               disabled={isLoading}
             >
               <span>

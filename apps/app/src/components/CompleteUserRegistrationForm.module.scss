@@ -2,7 +2,7 @@
 
 :root {
   .complete-user-registration-form :global {
-    .register-btn {
+    .btn-register {
       @extend %btn-nologin;
       @extend %btn-register;
     }

@@ -59,47 +59,47 @@
       @extend %btn-nologin;
     }
 
-    .register-btn {
+    .btn-register {
       @extend %btn-register;
     }
 
-    .login-btn {
+    .btn-login {
       --bs-btn-bg: #{rgba(#204986, 0.6)};
       --bs-btn-hover-bg: #{rgba(#204986, 0.8)};
       --bs-btn-active-bg: #{rgba(#204986, 0.8)};
     }
 
-    .function-btn {
+    .btn-function {
       --bs-btn-bg: #{rgba(bs.$gray-800, 0.8)};
       --bs-btn-hover-bg: #{rgba(bs.$gray-800, 0.5)};
       --bs-btn-active-bg: #{rgba(bs.$gray-800, 0.5)};
     }
 
-    .google-btn {
+    .btn-auth-google {
       --bs-btn-bg: #{rgba(#4285F4, 0.4)};
       --bs-btn-hover-bg: #{rgba(#4285F4, 0.8)};
       --bs-btn-active-bg: #{rgba(#4285F4, 0.8)};
     }
 
-    .github-btn {
+    .btn-auth-github {
       --bs-btn-bg: #{rgba(#403D3E, 0.4)};
       --bs-btn-hover-bg: #{rgba(#403D3E, 0.7)};
       --bs-btn-active-bg: #{rgba(#403D3E, 0.7)};
     }
 
-    .facebook-btn {
+    .btn-auth-facebook {
       --bs-btn-bg: #{rgba(#29487d, 0.4)};
       --bs-btn-hover-bg: #{rgba(#29487d, 0.9)};
       --bs-btn-active-bg: #{rgba(#29487d, 0.9)};
     }
 
-    .oidc-btn {
+    .btn-auth-oidc {
       --bs-btn-bg: #{rgba(#835B1A, 0.4)};
       --bs-btn-hover-bg: #{rgba(#835B1A, 0.8)};
       --bs-btn-active-bg: #{rgba(#835B1A, 0.8)};
     }
 
-    .saml-btn {
+    .btn-auth-saml {
       --bs-btn-bg: #{rgba(#138957, 0.4)};
       --bs-btn-hover-bg: #{rgba(#138957, 0.7)};
       --bs-btn-active-bg: #{rgba(#138957, 0.7)};

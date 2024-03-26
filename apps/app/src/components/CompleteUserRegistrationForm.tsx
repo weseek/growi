@@ -184,7 +184,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                 <button
                   type="button"
                   disabled={forceDisableForm || disableForm}
-                  className="btn btn-secondary register-btn col-6 mx-auto d-flex justify-content-between"
+                  className="btn btn-secondary btn-register col-6 mx-auto d-flex"
                 >
                   <span>
                     <span className="material-symbols-outlined">person_add</span>
