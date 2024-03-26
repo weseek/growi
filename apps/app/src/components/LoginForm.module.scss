@@ -51,52 +51,58 @@
 }
 
 
-// Buttons
-.login-form :global {
+// Button colors
+:root {
+  .login-form :global {
 
-  .btn.register-btn {
-    @extend %btn-register;
-  }
+    .btn {
+      @extend %btn-nologin;
+    }
 
-  .btn.login-btn {
-    --bs-btn-bg: #{rgba(#204986, 0.6)};
-    --bs-btn-hover-bg: #{rgba(#204986, 0.8)};
-    --bs-btn-active-bg: #{rgba(#204986, 0.8)};
-  }
+    .register-btn {
+      @extend %btn-register;
+    }
 
-  .btn.function-btn {
-    --bs-btn-bg: #{rgba(bs.$gray-800, 0.8)};
-    --bs-btn-hover-bg: #{rgba(bs.$gray-800, 0.5)};
-    --bs-btn-active-bg: #{rgba(bs.$gray-800, 0.5)};
-  }
+    .login-btn {
+      --bs-btn-bg: #{rgba(#204986, 0.6)};
+      --bs-btn-hover-bg: #{rgba(#204986, 0.8)};
+      --bs-btn-active-bg: #{rgba(#204986, 0.8)};
+    }
 
-  .btn.google-btn {
-    --bs-btn-bg: #{rgba(#4285F4, 0.4)};
-    --bs-btn-hover-bg: #{rgba(#4285F4, 0.8)};
-    --bs-btn-active-bg: #{rgba(#4285F4, 0.8)};
-  }
+    .function-btn {
+      --bs-btn-bg: #{rgba(bs.$gray-800, 0.8)};
+      --bs-btn-hover-bg: #{rgba(bs.$gray-800, 0.5)};
+      --bs-btn-active-bg: #{rgba(bs.$gray-800, 0.5)};
+    }
 
-  .btn.github-btn {
-    --bs-btn-bg: #{rgba(#403D3E, 0.4)};
-    --bs-btn-hover-bg: #{rgba(#403D3E, 0.7)};
-    --bs-btn-active-bg: #{rgba(#403D3E, 0.7)};
-  }
+    .google-btn {
+      --bs-btn-bg: #{rgba(#4285F4, 0.4)};
+      --bs-btn-hover-bg: #{rgba(#4285F4, 0.8)};
+      --bs-btn-active-bg: #{rgba(#4285F4, 0.8)};
+    }
 
-  .btn.facebook-btn {
-    --bs-btn-bg: #{rgba(#29487d, 0.4)};
-    --bs-btn-hover-bg: #{rgba(#29487d, 0.9)};
-    --bs-btn-active-bg: #{rgba(#29487d, 0.9)};
-  }
+    .github-btn {
+      --bs-btn-bg: #{rgba(#403D3E, 0.4)};
+      --bs-btn-hover-bg: #{rgba(#403D3E, 0.7)};
+      --bs-btn-active-bg: #{rgba(#403D3E, 0.7)};
+    }
 
-  .btn.oidc-btn {
-    --bs-btn-bg: #{rgba(#835B1A, 0.4)};
-    --bs-btn-hover-bg: #{rgba(#835B1A, 0.8)};
-    --bs-btn-active-bg: #{rgba(#835B1A, 0.8)};
-  }
+    .facebook-btn {
+      --bs-btn-bg: #{rgba(#29487d, 0.4)};
+      --bs-btn-hover-bg: #{rgba(#29487d, 0.9)};
+      --bs-btn-active-bg: #{rgba(#29487d, 0.9)};
+    }
 
-  .btn.saml-btn {
-    --bs-btn-bg: #{rgba(#138957, 0.4)};
-    --bs-btn-hover-bg: #{rgba(#138957, 0.7)};
-    --bs-btn-active-bg: #{rgba(#138957, 0.7)};
+    .oidc-btn {
+      --bs-btn-bg: #{rgba(#835B1A, 0.4)};
+      --bs-btn-hover-bg: #{rgba(#835B1A, 0.8)};
+      --bs-btn-active-bg: #{rgba(#835B1A, 0.8)};
+    }
+
+    .saml-btn {
+      --bs-btn-bg: #{rgba(#138957, 0.4)};
+      --bs-btn-hover-bg: #{rgba(#138957, 0.7)};
+      --bs-btn-active-bg: #{rgba(#138957, 0.7)};
+    }
   }
 }

@@ -1,7 +1,10 @@
 @use '~/styles/atoms/buttons';
 
-.complete-user-registration-form :global {
-  .btn.register-btn {
-    @extend %btn-register;
+:root {
+  .complete-user-registration-form :global {
+    .register-btn {
+      @extend %btn-nologin;
+      @extend %btn-register;
+    }
   }
 }
