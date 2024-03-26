@@ -1,9 +1,13 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 @use './comment-inheritance';
 @use '../PageEditor/page-editor-inheritance';
 
 // display cheatsheet for comment form only
 .comment-editor-styles :global {
+  .cm-editor {
+    height: 300px !important;
+  }
+
   .comment-form {
     position: relative;
     margin-top: 1em;

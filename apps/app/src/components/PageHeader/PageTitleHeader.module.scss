@@ -1,0 +1,10 @@
+.page-title-header :global {
+  max-width: calc(100vw - 650px);
+  input {
+    min-width: 20px;
+    min-height: unset;
+    padding: 0 0.5rem;
+    line-height: 1em;
+    transform: translateX(-0.55rem) translateY(-0.05rem);
+  }
+}

@@ -41,12 +41,12 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
                   <th>{t('importer_management.category')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
                   <th>{t('importer_management.page_path')}</th>
                 </tr>
                 <tr>
@@ -57,18 +57,18 @@ class ImportDataPageContents extends React.Component {
               </tbody>
             </table>
 
-            <div className="card well mb-0 small">
+            <div className="card custom-card mb-0 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
 
-            <div className="form-group row">
-              <label htmlFor="settingForm[importer:esa:team_name]" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label htmlFor="settingForm[importer:esa:team_name]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.esa_settings.team_name')}
               </label>
               <div className="col-md-6">
@@ -83,8 +83,8 @@ class ImportDataPageContents extends React.Component {
 
             </div>
 
-            <div className="form-group row">
-              <label htmlFor="settingForm[importer:esa:access_token]" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label htmlFor="settingForm[importer:esa:access_token]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.esa_settings.access_token')}
               </label>
               <div className="col-md-6">
@@ -98,7 +98,7 @@ class ImportDataPageContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToEsa"
@@ -143,7 +143,7 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined">arrow_circle_right</span></th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
@@ -163,17 +163,17 @@ class ImportDataPageContents extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="card well mb-0 small">
+            <div className="card custom-card mb-0 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="form-group row">
+            <div className="row">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
-            <div className="form-group row">
-              <label htmlFor="settingForm[importer:qiita:team_name]" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label htmlFor="settingForm[importer:qiita:team_name]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.qiita_settings.team_name')}
               </label>
               <div className="col-md-6">
@@ -187,8 +187,8 @@ class ImportDataPageContents extends React.Component {
               </div>
             </div>
 
-            <div className="form-group row">
-              <label htmlFor="settingForm[importer:qiita:access_token]" className="text-left text-md-right col-md-3 col-form-label">
+            <div className="row">
+              <label htmlFor="settingForm[importer:qiita:access_token]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.qiita_settings.access_token')}
               </label>
               <div className="col-md-6">
@@ -203,7 +203,7 @@ class ImportDataPageContents extends React.Component {
             </div>
 
 
-            <div className="form-group row">
+            <div className="row">
               <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToQiita"

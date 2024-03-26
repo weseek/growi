@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import { pathUtils } from '@growi/core/dist/utils';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import Link from 'next/link';
 
 import type { PageNode } from '../../../interfaces/page-node';
@@ -65,8 +65,8 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   const iconElement: JSX.Element = useMemo(() => {
     const isExists = pageId != null;
     return (isExists)
-      ? <i className="ti ti-agenda" aria-hidden="true"></i>
-      : <i className="ti ti-file lsx-page-not-exist" aria-hidden="true"></i>;
+      ? <span className="material-symbols-outlined" aria-hidden="true">description</span>
+      : <span className="material-symbols-outlined" aria-hidden="true">draft</span>;
   }, [pageId]);
 
   const pagePathElement: JSX.Element = useMemo(() => {
@@ -112,7 +112,7 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   return (
     <li className={`page-list-li ${styles['page-list-li']}`}>
       <small>{iconElement}</small> {pagePathElement}
-      <span className="ml-2">{pageListMetaElement}</span>
+      <span className="ms-2">{pageListMetaElement}</span>
       {childrenElements}
     </li>
   );

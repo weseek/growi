@@ -16,7 +16,7 @@ import {
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
-import type { SearchType } from '~/interfaces/user-group';
+import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
@@ -303,7 +303,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     setDeleteModalShown(false);
   }, [setSelectedUserGroup, setDeleteModalShown]);
 
-  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroup: IGrantedGroup | null) => {
+  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => {
     const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
     const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
     const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;

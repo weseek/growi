@@ -133,12 +133,12 @@ const V5PageMigration: FC<Props> = (props: Props) => {
         onConfirm={onConfirm}
         onCancel={() => setIsV5PageMigrationModalShown(false)}
       />
-      <p className="card well">
+      <p className="card custom-card">
         {t('admin:v5_page_migration.migration_desc')}
         <br />
         <br />
         <span className="text-danger">
-          <i className="icon-exclamation icon-fw"></i>
+          <span className="material-symbols-outlined">error</span>
           {t('admin:v5_page_migration.migration_note')}
         </span>
       </p>

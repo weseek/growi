@@ -1,5 +1,6 @@
-@use './variables' as *;
-@use './bootstrap/variables' as *;
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
 @use './theme/hsl-functions' as hsl;
 
@@ -15,7 +16,7 @@
 
 //== Light Mode
 //
-:root[data-theme='light'] {
+:root[data-bs-theme='light'] {
   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
   --primary-hs: 53,56%;
   --primary-l: 61%;
@@ -27,8 +28,8 @@
   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
   --bgcolor-global-hs: 0,0%;
   --bgcolor-global-l: 100%;
-  --bgcolor-card: #{$gray-50};
-  --bgcolor-inline-code: #{$gray-100}; //optional
+  --bgcolor-card: #{bs.$gray-100};
+  --bgcolor-inline-code: #{bs.$gray-100}; //optional
   --bgcolor-blinked-section: #{hsl.alpha(var(--primary),50%)};
   //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
 
@@ -36,7 +37,7 @@
   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
   --color-global-hs: 214,60%;
   --color-global-l: 17%;
-  --color-reversal: #{$gray-100};
+  --color-reversal: #{bs.$gray-100};
   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
   --color-link-hs: 117,51%;
   --color-link-l: 35%;
@@ -50,7 +51,7 @@
   --color-modal-header: var(--bgcolor-global);
 
   // Table colors
-  --border-color-table: #{$gray-400}; // optional
+  --border-color-table: #{bs.$gray-400}; // optional
 
   // List Group colors
   // --color-list: var(--color-global);
@@ -111,7 +112,7 @@
   --color-editor-icons: var(--color-global);  --color-editor-icons: var(--color-global);
 
   // Border colors
-  --border-color-theme: #{$gray-300}; // former: `$navbar-border: $gray-300;`
+  --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
   --bordercolor-inline-code: #ccc8c8; // optional
 
   // Dropdown colors
@@ -146,11 +147,11 @@
   .nologin {
     .input-group {
       .input-group-text {
-        color: $gray-700;
+        color: bs.$gray-700;
         background-color: rgba(darken(white, 20%), 0.6);
       }
       .form-control {
-        color: $gray-700;
+        color: bs.$gray-700;
         background-color: rgba(white, 0.6);
       }
     }

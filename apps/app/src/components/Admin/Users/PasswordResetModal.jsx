@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -53,7 +54,7 @@ class PasswordResetModal extends React.Component {
           onClick={this.onClickSendNewPasswordButton}
           disabled={!isMailerSetup || isEmailSending || isEmailSent}
         >
-          {isEmailSending && <i className="fa fa-spinner fa-pulse mx-2" />}
+          {isEmailSending && <LoadingSpinner className="mx-2" />}
           {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
@@ -67,12 +68,12 @@ class PasswordResetModal extends React.Component {
     const { t, isMailerSetup, userForPasswordResetModal } = this.props;
 
     return (
-      <div className="d-flex col text-left ml-1 pl-0">
+      <div className="d-flex col text-start ms-1 ps-0">
         {!isMailerSetup ? (
-          <label className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
+          <label className="form-label form-text text-muted" dangerouslySetInnerHTML={{ __html: t('admin:mailer_setup_required') }} />
         ) : (
           <>
-            <p className="mr-2">To:</p>
+            <p className="me-2">To:</p>
             <div>
               <p className="mb-0">{userForPasswordResetModal.username}</p>
               <p className="mb-0">{userForPasswordResetModal.email}</p>
@@ -125,7 +126,7 @@ class PasswordResetModal extends React.Component {
           </code>
           <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
-              <i className="fa fa-clone" aria-hidden="true"></i>
+              <span className="material-symbols-outlined" aria-hidden="true">content_copy</span>
             </button>
           </CopyToClipboard>
           <Tooltip

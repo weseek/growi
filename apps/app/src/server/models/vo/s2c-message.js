@@ -10,15 +10,14 @@ class S2cMessagePageUpdated {
     const serializedPage = serializePageSecurely(page);
 
     const {
-      _id, revision, updatedAt, revisionHackmdSynced, hasDraftOnHackmd,
+      _id, revision, updatedAt,
     } = serializedPage;
 
     this.pageId = _id;
     this.revisionId = revision;
     this.revisionBody = page.revision.body;
     this.revisionUpdateAt = updatedAt;
-    this.revisionIdHackmdSynced = revisionHackmdSynced;
-    this.hasDraftOnHackmd = hasDraftOnHackmd;
+    this.revisionOrigin = page.revision.origin;
 
     if (user != null) {
       this.remoteLastUpdateUser = user;

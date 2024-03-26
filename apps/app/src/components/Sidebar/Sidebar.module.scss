@@ -1,0 +1,117 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '~/styles/variables' as var;
+@use '~/styles/mixins';
+
+.grw-sidebar :global {
+  top: 0;
+}
+
+
+// TODO: commonize reload button style
+.grw-sidebar :global {
+  .grw-sidebar-content-header {
+    .grw-btn-reload {
+      font-size: 18px;
+    }
+  }
+}
+
+// Dock Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-dock {
+      position: sticky;
+    }
+  }
+}
+
+// Collapsed Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-collapsed {
+      position: sticky;
+
+      .sidebar-contents-container {
+        border-color: var(--bs-border-color);
+        border-style: solid;
+        border-width : 1px 1px 1px 0;
+      }
+
+      // open
+      .sidebar-contents-container.open {
+        position: absolute;
+        left: var.$grw-sidebar-nav-width;
+        min-height: 50vh;
+        max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
+      }
+    }
+  }
+}
+
+// Drawer Mode
+.grw-sidebar {
+  &:global {
+    &.grw-sidebar-drawer {
+      position: fixed;
+      z-index: bs.$zindex-fixed + 2;
+      width: 348px;
+
+      // apply transition
+      transition-property: transform;
+      @include mixins.apply-navigation-transition();
+
+      &:not(.open) {
+        transform: translateX(-100%);
+      }
+      &.open {
+        z-index: bs.$zindex-modal;
+        transform: translateX(0);
+      }
+    }
+  }
+}
+
+
+@include bs.color-mode(light) {
+  .grw-sidebar :global {
+    --bs-border-color: var(--grw-highlight-200);
+
+    .sidebar-contents-container {
+      background-color: color-mix(in srgb, var(--grw-highlight-100), var(--bs-body-bg));
+    }
+  }
+  // frosted glass effect in collapsed mode
+  .grw-sidebar {
+    &:global {
+      &.grw-sidebar-collapsed {
+        .sidebar-contents-container {
+          background-color: rgba(var(--grw-highlight-100-rgb), .8);
+          backdrop-filter: blur(20px);
+        }
+      }
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .grw-sidebar :global {
+    --bs-color: var(--bs-gray-400);
+    --bs-border-color: var(--grw-highlight-800);
+
+    .sidebar-contents-container {
+      background-color: color-mix(in srgb, var(--grw-highlight-800), var(--bs-body-bg));
+    }
+  }
+  // frosted glass effect in collapsed mode
+  .grw-sidebar {
+    &:global {
+      &.grw-sidebar-collapsed {
+        .sidebar-contents-container {
+          background-color: rgba(var(--grw-highlight-800-rgb), .8);
+          backdrop-filter: blur(20px);
+        }
+      }
+    }
+  }
+}

@@ -1,277 +1,179 @@
 import React, {
-  useState, useEffect, useRef, useMemo, useCallback,
+  useState, useEffect, useCallback, useMemo,
 } from 'react';
 
-import type { IRevisionOnConflict } from '@growi/core';
+import type { IUser } from '@growi/core';
+import {
+  MergeViewer, CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
+} from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
-import CodeMirror from 'codemirror/lib/codemirror';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { useSaveOrUpdate } from '~/client/services/page-operation';
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { OptionsToSave } from '~/interfaces/page-operation';
-import { useCurrentPathname, useCurrentUser } from '~/stores/context';
-import { useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
+import { useCurrentUser } from '~/stores/context';
+import { useConflictDiffModal } from '~/stores/modal';
+import { useSWRxCurrentPage } from '~/stores/page';
 import {
-  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser, useSetRemoteLatestPageData,
+  useRemoteRevisionBody, useRemoteRevisionId, useRemoteRevisionLastUpdatedAt, useRemoteRevisionLastUpdateUser,
 } from '~/stores/remote-latest-page';
 
-import ExpandOrContractButton from '../ExpandOrContractButton';
-import { UncontrolledCodeMirror } from '../UncontrolledCodeMirror';
+import styles from './ConflictDiffModal.module.scss';
 
-require('codemirror/lib/codemirror.css');
-require('codemirror/addon/merge/merge');
-require('codemirror/addon/merge/merge.css');
-const DMP = require('diff_match_patch');
-
-Object.keys(DMP).forEach((key) => { window[key] = DMP[key] });
-
-type ConflictDiffModalProps = {
-  isOpen?: boolean;
-  onClose?: (() => void);
-  markdownOnEdit: string;
-  optionsToSave: OptionsToSave | undefined;
-  afterResolvedHandler: () => void,
-};
-
-type ConflictDiffModalCoreProps = {
-  isOpen?: boolean;
-  onClose?: (() => void);
-  optionsToSave: OptionsToSave | undefined;
-  request: IRevisionOnConflictWithStringDate,
-  origin: IRevisionOnConflictWithStringDate,
-  latest: IRevisionOnConflictWithStringDate,
-  afterResolvedHandler: () => void,
-};
-
-type IRevisionOnConflictWithStringDate = Omit<IRevisionOnConflict, 'createdAt'> & {
-  createdAt: string
+type IRevisionOnConflict = {
+  revisionBody: string
+  createdAt: Date
+  user: IUser
 }
 
-const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
-  const {
-    onClose, request, origin, latest, optionsToSave, afterResolvedHandler,
-  } = props;
+type ConflictDiffModalCoreProps = {
+  request: IRevisionOnConflict
+  latest: IRevisionOnConflict
+};
 
-  const { t } = useTranslation('');
+const formatedDate = (date: Date): string => {
+  return format(date, 'yyyy/MM/dd HH:mm:ss');
+};
+
+const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element => {
+  const { request, latest } = props;
+
   const [resolvedRevision, setResolvedRevision] = useState<string>('');
   const [isRevisionselected, setIsRevisionSelected] = useState<boolean>(false);
+  const [revisionSelectedToggler, setRevisionSelectedToggler] = useState<boolean>(false);
   const [isModalExpanded, setIsModalExpanded] = useState<boolean>(false);
-  const [codeMirrorRef, setCodeMirrorRef] = useState<HTMLDivElement | null>(null);
 
-  const { data: remoteRevisionId } = useRemoteRevisionId();
-  const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
-  const { data: pageId } = useCurrentPageId();
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPathname } = useCurrentPathname();
+  const { t } = useTranslation();
+  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.DIFF);
 
-  const saveOrUpdate = useSaveOrUpdate();
+  const selectRevisionHandler = useCallback((selectedRevision: string) => {
+    setResolvedRevision(selectedRevision);
+    setRevisionSelectedToggler(prev => !prev);
 
-  const uncontrolledRef = useRef<CodeMirror>(null);
+    if (!isRevisionselected) {
+      setIsRevisionSelected(true);
+    }
+  }, [isRevisionselected]);
+
+  const resolveConflictHandler = useCallback(async() => {
+    const newBody = codeMirrorEditor?.getDoc();
+    if (newBody == null) {
+      return;
+    }
+
+    await conflictDiffModalStatus?.onResolve?.(newBody);
+  }, [codeMirrorEditor, conflictDiffModalStatus]);
 
   useEffect(() => {
-    if (codeMirrorRef != null) {
-      CodeMirror.MergeView(codeMirrorRef, {
-        value: origin.revisionBody,
-        origLeft: request.revisionBody,
-        origRight: latest.revisionBody,
-        lineNumbers: true,
-        collapseIdentical: true,
-        showDifferences: true,
-        highlightDifferences: true,
-        connect: 'connect',
-        readOnly: true,
-        revertButtons: false,
-      });
-    }
-  }, [codeMirrorRef, origin.revisionBody, request.revisionBody, latest.revisionBody]);
+    codeMirrorEditor?.initDoc(resolvedRevision);
+    // Enable selecting the same revision after editing by including revisionSelectedToggler in the dependency array of useEffect
+  }, [codeMirrorEditor, resolvedRevision, revisionSelectedToggler]);
 
-  const close = useCallback(() => {
-    if (onClose != null) {
-      onClose();
-    }
-  }, [onClose]);
-
-  const onResolveConflict = useCallback(async() => {
-    if (currentPathname == null) { return }
-    // disable button after clicked
-    setIsRevisionSelected(false);
-
-    const codeMirrorVal = uncontrolledRef.current?.editor.doc.getValue();
-
-    try {
-      const { page } = await saveOrUpdate(
-        codeMirrorVal,
-        { pageId, path: currentPagePath || currentPathname, revisionId: remoteRevisionId },
-        optionsToSave,
-      );
-      const remotePageData = {
-        remoteRevisionId: page.revision._id,
-        remoteRevisionBody: page.revision.body,
-        remoteRevisionLastUpdateUser: page.lastUpdateUser,
-        remoteRevisionLastUpdatedAt: page.updatedAt,
-        revisionIdHackmdSynced: page.revisionIdHackmdSynced,
-        hasDraftOnHackmd: page.hasDraftOnHackmd,
-      };
-      setRemoteLatestPageData(remotePageData);
-      afterResolvedHandler();
-
-      close();
-
-      toastSuccess('Saved successfully');
-    }
-    catch (error) {
-      toastError(`Error occured: ${error.message}`);
-    }
-
-  }, [afterResolvedHandler, close, currentPagePath, currentPathname, optionsToSave, pageId, remoteRevisionId, saveOrUpdate, setRemoteLatestPageData]);
-
-  const resizeAndCloseButtons = useMemo(() => (
-    <div className="d-flex flex-nowrap">
-      <ExpandOrContractButton
-        isWindowExpanded={isModalExpanded}
-        expandWindow={() => setIsModalExpanded(true)}
-        contractWindow={() => setIsModalExpanded(false)}
-      />
-      <button type="button" className="close text-white" onClick={close} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
+  const headerButtons = useMemo(() => (
+    <div className="d-flex align-items-center">
+      <button type="button" className="btn" onClick={() => setIsModalExpanded(prev => !prev)}>
+        <span className="material-symbols-outlined">{isModalExpanded ? 'close_fullscreen' : 'open_in_full'}</span>
+      </button>
+      <button type="button" className="btn" onClick={closeConflictDiffModal} aria-label="Close">
+        <span className="material-symbols-outlined">close</span>
       </button>
     </div>
-  ), [isModalExpanded, close]);
-
-  const isOpen = props.isOpen ?? false;
+  ), [closeConflictDiffModal, isModalExpanded]);
 
   return (
-    <Modal
-      isOpen={isOpen}
-      toggle={close}
-      backdrop="static"
-      className={`${isModalExpanded ? ' grw-modal-expanded' : ''}`}
-      size="xl"
-    >
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light align-items-center py-3" close={resizeAndCloseButtons}>
-        <i className="icon-fw icon-exclamation" />{t('modal_resolve_conflict.resolve_conflict')}
+    <Modal isOpen={conflictDiffModalStatus?.isOpened} className={`${styles['conflict-diff-modal']} ${isModalExpanded ? ' grw-modal-expanded' : ''}`} size="xl">
+
+      <ModalHeader tag="h4" className="d-flex align-items-center" close={headerButtons}>
+        <span className="material-symbols-outlined me-1">error</span>{t('modal_resolve_conflict.resolve_conflict')}
       </ModalHeader>
+
       <ModalBody className="mx-4 my-1">
-        { isOpen
-        && (
-          <div className="row">
-            <div className="col-12 text-center mt-2 mb-4">
-              <h2 className="font-weight-bold">{t('modal_resolve_conflict.resolve_conflict_message')}</h2>
-            </div>
-            <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.requested_revision')}</h3>
-              <div className="d-flex align-items-center my-3">
-                <div>
-                  <UserPicture user={request.user} size="lg" noLink noTooltip />
-                </div>
-                <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {request.user.username}</p>
-                  <p className="my-0">{request.createdAt}</p>
-                </div>
+        <div className="row">
+          <div className="col-12 text-center mt-2 mb-4">
+            <h3 className="fw-bold text-muted">{t('modal_resolve_conflict.resolve_conflict_message')}</h3>
+          </div>
+
+          <div className="col-6">
+            <h4 className="fw-bold my-2 text-muted">{t('modal_resolve_conflict.requested_revision')}</h4>
+            <div className="d-flex align-items-center my-3">
+              <div>
+                <UserPicture user={request.user} size="lg" noLink noTooltip />
               </div>
-            </div>
-            <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.origin_revision')}</h3>
-              <div className="d-flex align-items-center my-3">
-                <div>
-                  <UserPicture user={origin.user} size="lg" noLink noTooltip />
-                </div>
-                <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {origin.user.username}</p>
-                  <p className="my-0">{origin.createdAt}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-4">
-              <h3 className="font-weight-bold my-2">{t('modal_resolve_conflict.latest_revision')}</h3>
-              <div className="d-flex align-items-center my-3">
-                <div>
-                  <UserPicture user={latest.user} size="lg" noLink noTooltip />
-                </div>
-                <div className="ml-3 text-muted">
-                  <p className="my-0">updated by {latest.user.username}</p>
-                  <p className="my-0">{latest.createdAt}</p>
-                </div>
-              </div>
-            </div>
-            <div className="col-12" ref={(el) => { setCodeMirrorRef(el) }}></div>
-            <div className="col-4">
-              <div className="text-center my-4">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => {
-                    setIsRevisionSelected(true);
-                    setResolvedRevision(request.revisionBody);
-                  }}
-                >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
-                  {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
-                </button>
-              </div>
-            </div>
-            <div className="col-4">
-              <div className="text-center my-4">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => {
-                    setIsRevisionSelected(true);
-                    setResolvedRevision(origin.revisionBody);
-                  }}
-                >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
-                  {t('modal_resolve_conflict.select_revision', { revision: 'origin' })}
-                </button>
-              </div>
-            </div>
-            <div className="col-4">
-              <div className="text-center my-4">
-                <button
-                  type="button"
-                  className="btn btn-outline-primary"
-                  onClick={() => {
-                    setIsRevisionSelected(true);
-                    setResolvedRevision(latest.revisionBody);
-                  }}
-                >
-                  <i className="icon-fw icon-arrow-down-circle"></i>
-                  {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
-                </button>
-              </div>
-            </div>
-            <div className="col-12">
-              <div className="border border-dark">
-                <h3 className="font-weight-bold my-2 mx-2">{t('modal_resolve_conflict.selected_editable_revision')}</h3>
-                <UncontrolledCodeMirror
-                  ref={uncontrolledRef}
-                  value={resolvedRevision}
-                  options={{
-                    placeholder: t('modal_resolve_conflict.resolve_conflict_message'),
-                  }}
-                />
+              <div className="ms-3 text-muted">
+                <p className="my-0">updated by {request.user.username}</p>
+                <p className="my-0">{ formatedDate(request.createdAt) }</p>
               </div>
             </div>
           </div>
-        )}
+
+          <div className="col-6">
+            <h4 className="fw-bold my-2 text-muted">{t('modal_resolve_conflict.latest_revision')}</h4>
+            <div className="d-flex align-items-center my-3">
+              <div>
+                <UserPicture user={latest.user} size="lg" noLink noTooltip />
+              </div>
+              <div className="ms-3 text-muted">
+                <p className="my-0">updated by {latest.user.username}</p>
+                <p className="my-0">{ formatedDate(latest.createdAt) }</p>
+              </div>
+            </div>
+          </div>
+
+          <MergeViewer
+            leftBody={request.revisionBody}
+            rightBody={latest.revisionBody}
+          />
+
+          <div className="col-6">
+            <div className="text-center my-4">
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={() => { selectRevisionHandler(request.revisionBody) }}
+              >
+                <span className="material-symbols-outlined me-1">arrow_circle_down</span>
+                {t('modal_resolve_conflict.select_revision', { revision: 'mine' })}
+              </button>
+            </div>
+          </div>
+
+          <div className="col-6">
+            <div className="text-center my-4">
+              <button
+                type="button"
+                className="btn btn-outline-primary"
+                onClick={() => { selectRevisionHandler(latest.revisionBody) }}
+              >
+                <span className="material-symbols-outlined me-1">arrow_circle_down</span>
+                {t('modal_resolve_conflict.select_revision', { revision: 'theirs' })}
+              </button>
+            </div>
+          </div>
+
+          <div className="col-12">
+            <div className="border border-dark">
+              <h4 className="fw-bold my-2 mx-2 text-muted">{t('modal_resolve_conflict.selected_editable_revision')}</h4>
+              <CodeMirrorEditorDiff />
+            </div>
+          </div>
+        </div>
       </ModalBody>
+
       <ModalFooter>
         <button
           type="button"
           className="btn btn-outline-secondary"
-          onClick={onClose}
+          onClick={closeConflictDiffModal}
         >
           {t('Cancel')}
         </button>
         <button
           type="button"
-          className="btn btn-primary ml-3"
-          onClick={onResolveConflict}
+          className="btn btn-primary ms-3"
+          onClick={resolveConflictHandler}
           disabled={!isRevisionselected}
         >
           {t('modal_resolve_conflict.resolve_and_save')}
@@ -282,14 +184,10 @@ const ConflictDiffModalCore = (props: ConflictDiffModalCoreProps): JSX.Element =
 };
 
 
-export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element => {
-  const {
-    isOpen, onClose, optionsToSave, afterResolvedHandler,
-  } = props;
+export const ConflictDiffModal = (): JSX.Element => {
   const { data: currentUser } = useCurrentUser();
-
-  // state for current page
   const { data: currentPage } = useSWRxCurrentPage();
+  const { data: conflictDiffModalStatus } = useConflictDiffModal();
 
   // state for latest page
   const { data: remoteRevisionId } = useRemoteRevisionId();
@@ -297,46 +195,25 @@ export const ConflictDiffModal = (props: ConflictDiffModalProps): JSX.Element =>
   const { data: remoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
   const { data: remoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
 
-  const currentTime: Date = new Date();
-
   const isRemotePageDataInappropriate = remoteRevisionId == null || remoteRevisionBody == null || remoteRevisionLastUpdateUser == null;
 
-  if (!isOpen || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
+  if (!conflictDiffModalStatus?.isOpened || currentUser == null || currentPage == null || isRemotePageDataInappropriate) {
     return <></>;
   }
 
-  const currentPageCreatedAtFixed = typeof currentPage.updatedAt === 'string'
-    ? parseISO(currentPage.updatedAt)
-    : currentPage.updatedAt;
+  const currentTime: Date = new Date();
 
-  const request: IRevisionOnConflictWithStringDate = {
-    revisionId: '',
-    revisionBody: props.markdownOnEdit,
-    createdAt: format(currentTime, 'yyyy/MM/dd HH:mm:ss'),
+  const request: IRevisionOnConflict = {
+    revisionBody: conflictDiffModalStatus.requestRevisionBody ?? '',
+    createdAt: currentTime,
     user: currentUser,
   };
-  const origin: IRevisionOnConflictWithStringDate = {
-    revisionId: currentPage?.revision._id,
-    revisionBody: currentPage?.revision.body,
-    createdAt: format(currentPageCreatedAtFixed, 'yyyy/MM/dd HH:mm:ss'),
-    user: currentPage?.lastUpdateUser,
-  };
-  const latest: IRevisionOnConflictWithStringDate = {
-    revisionId: remoteRevisionId,
+
+  const latest: IRevisionOnConflict = {
     revisionBody: remoteRevisionBody,
-    createdAt: format(new Date(remoteRevisionLastUpdatedAt || currentTime.toString()), 'yyyy/MM/dd HH:mm:ss'),
+    createdAt: new Date(remoteRevisionLastUpdatedAt ?? currentTime.toString()),
     user: remoteRevisionLastUpdateUser,
   };
 
-  const propsForCore = {
-    isOpen,
-    onClose,
-    optionsToSave,
-    request,
-    origin,
-    latest,
-    afterResolvedHandler,
-  };
-
-  return <ConflictDiffModalCore {...propsForCore} />;
+  return <ConflictDiffModalCore request={request} latest={latest} />;
 };

@@ -30,7 +30,7 @@ const GrantAdminButton = (props: GrantAdminButtonProps): JSX.Element => {
 
   return (
     <button className="dropdown-item" type="button" onClick={() => onClickGrantAdminBtnHandler()}>
-      <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.grant_admin_access')}
+      <span className="material-symbols-outlined me-1">person_add</span>{t('user_management.user_table.grant_admin_access')}
     </button>
   );
 

@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 type CountProps = {
   count?: number,
@@ -10,7 +11,7 @@ const CountBadge: FC<CountProps> = (props:CountProps) => {
 
 
   return (
-    <span className="grw-count-badge px-2 badge badge-pill badge-light">
+    <span className="grw-count-badge px-2 badge rounded-pill bg-light text-dark">
       { count == null && <span className="text-muted">―</span> }
       { count != null && count + offset }
     </span>

@@ -47,10 +47,12 @@
     "page_delete": "ゴミ箱に入れる",
     "page_delete_completely": "完全に削除する",
     "other_options": "その他のオプション",
-    "deletion_explain": "ページをゴミ箱に入れることができるユーザーを制限します。",
-    "complete_deletion_explain": "ページを完全削除することができるユーザーを制限します。",
-    "recursive_deletion_explain": "子孫を含めたページをゴミ箱に入れることができるユーザーを制限します。",
-    "recursive_complete_deletion_explain": "子孫を含めたページを完全削除することができるユーザーを制限します。",
+    "deletion_explanation": "ページをゴミ箱に入れることができるユーザーを制限します。",
+    "complete_deletion_explanation": "ページを完全削除することができるユーザーを制限します。",
+    "recursive_deletion_explanation": "子孫を含めたページをゴミ箱に入れることができるユーザーを制限します。",
+    "recursive_complete_deletion_explanation": "子孫を含めたページを完全削除することができるユーザーを制限します。",
+    "is_all_group_membership_required_for_page_complete_deletion": "管理者とページ作者以外はページに対する権限を持つ全てのグループに所属している必要がある",
+    "is_all_group_membership_required_for_page_complete_deletion_explanation": "ページの権限設定が「特定のグループのみ」の場合有効になります。",
     "inherit": "単体のみと同じ",
     "admin_only": "管理者のみ可能",
     "admin_and_author": "管理者とページ作者が可能",
@@ -506,8 +508,8 @@
       "enable_marp_desc": "プレゼンテーション表示に Marp を利用できるようになります。ただし、XSS に対して脆弱になる恐れがあります。",
       "marp_official_site": "参考：Marp 公式サイト",
       "marp_official_site_link": "https://marp.app",
-      "presentation_docs" : "参考：GROWI Docs - プレゼンテーション機能を使う",
-      "presentation_docs_link": "https://docs.growi.org/ja/guide/features/presentation.html"
+      "marp_in_growi" : "参考：GROWI Docs - Marp でスライドを作成する",
+      "marp_in_growi_link": "https://docs.growi.org/ja/guide/features/marp.html"
     },
     "custom_title": "カスタム Title",
     "custom_title_detail": "<code>&lt;title&gt;</code>タグのコンテンツをカスタマイズできます。以下のプレースホルダーは自動的に置換されます:",
@@ -575,10 +577,6 @@
           "initialize_meta_datas": {
             "label": "「いいね」「閲覧したユーザー」「コメント数」を初期化する",
             "desc": "users を同時に復元しない場合、このオプションは<span class=\"text-danger\">非推奨</span>です。"
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "HackMD 関連データを初期化する",
-            "desc": "HackMD に重要な下書きデータがない限りはこのオプションをチェックすることを推奨します。"
           }
         },
         "revisions": {
@@ -758,7 +756,7 @@
       "description1": "メールアドレスを使用して新規ユーザーを仮発行します。",
       "description2": "初回のログイン時に使用する仮パスワードが生成されます。",
       "invite_thru_email": "招待メールを送信する",
-      "mail_setting_link": "<i class='icon-settings mr-2'></i><a href='/admin/app'>メールの設定</a>",
+      "mail_setting_link": "<span className='material-symbols-outlined me-2'>settings</span><a href='/admin/app'>メールの設定</a>",
       "valid_email": "メールアドレスを入力してください。",
       "temporary_password": "作成したユーザーは仮パスワードが設定されています。",
       "send_new_password": "新規発行したパスワードを、対象ユーザーへ連絡してください。",
@@ -846,9 +844,10 @@
       "dropdown_desc": "削除するグループの限定公開ページの処理を選択してください",
       "select_group": "グループを選択してください",
       "no_groups": "グループがありません",
-      "publish_pages": "全て公開する",
+      "publish_pages": "公開可能なページを公開する",
       "delete_pages": "全て削除する",
-      "transfer_pages": "全て他のグループに移譲する"
+      "transfer_pages": "全て他のグループに移譲する",
+      "option_explanation": "「公開可能なページ」とは、削除するグループにのみ限定公開されているページを指します。他のグループも閲覧可能なページは公開対象となりません。"
     },
     "update_parent_confirm_modal": {
       "header": "グループの親が変更されます",
@@ -871,12 +870,12 @@
     "return": "戻る",
     "clear": "クリア",
     "activity_expiration_date": "監査ログの有効期限",
-    "activity_expiration_date_explain": "作成された監査ログは、作成時間から環境変数に設定した秒数後に自動的に削除されます",
+    "activity_expiration_date_explanation": "作成された監査ログは、作成時間から環境変数に設定した秒数後に自動的に削除されます",
     "fixed_by_env_var": "環境変数により固定されています <code>{{key}}={{value}}</code>.",
     "available_action_list": "検索 / 表示 可能なアクション一覧",
-    "available_action_list_explain": "現在の設定で検索 / 表示 可能なアクション一覧です",
+    "available_action_list_explanation": "現在の設定で検索 / 表示 可能なアクション一覧です",
     "action_list": "アクション一覧",
-    "disable_mode_explain": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。",
+    "disable_mode_explanation": "現在、監査ログは無効になっています。有効にする場合は環境変数 <code>AUDIT_LOG_ENABLED</code> を true に設定してください。",
     "docs_url": {
       "log_type": "https://docs.growi.org/ja/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }

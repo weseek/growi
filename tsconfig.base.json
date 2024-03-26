@@ -13,11 +13,7 @@
     "lib": ["dom", "dom.iterable", "esnext"],
 
     /* Strict Type-Checking Options */
-    // "strict": true,
-    "strictNullChecks": true,
-    "strictBindCallApply": true,
-    "noImplicitAny": false,
-    "noImplicitOverride": true,
+    "strict": true,
 
     /* Additional Checks */
     "noUnusedLocals": false,

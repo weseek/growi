@@ -1,8 +1,9 @@
-import React, {
-  Ref, useEffect, useState,
-} from 'react';
+import type { Ref } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import type { SWRInfiniteResponse } from 'swr/infinite';
+
 
 type Props<T> = {
   swrInifiniteResponse: SWRInfiniteResponse<T>
@@ -32,7 +33,7 @@ const useIntersection = <E extends HTMLElement>(): [boolean, Ref<E>] => {
 const LoadingIndicator = (): React.ReactElement => {
   return (
     <div className="text-muted text-center">
-      <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+      <LoadingSpinner className="me-1 fs-3" />
     </div>
   );
 };

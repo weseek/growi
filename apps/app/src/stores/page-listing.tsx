@@ -4,14 +4,17 @@ import type {
   Nullable, HasObjectId,
   IDataWithMeta, IPageHasId, IPageInfoForListing, IPageInfoForOperation,
 } from '@growi/core';
-import useSWR, { Arguments, mutate, SWRResponse } from 'swr';
+import useSWR, {
+  mutate, type SWRConfiguration, type SWRResponse, type Arguments,
+} from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import type { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite from 'swr/infinite';
 
-import { IPagingResult } from '~/interfaces/paging-result';
+import type { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import {
+import type {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
@@ -30,20 +33,21 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number) : SWRInfiniteResponse<RecentApiResult, Error> => {
+export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolean, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
 
       if (pageIndex === 0 || previousPageData == null) {
-        return ['/pages/recent', undefined, limit];
+        return ['/pages/recent', undefined, limit, includeWipPage];
       }
 
       const offset = previousPageData.offset + limit;
-      return ['/pages/recent', offset, limit];
+      return ['/pages/recent', offset, limit, includeWipPage];
     },
-    ([endpoint, offset, limit]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit }).then(response => response.data),
+    ([endpoint, offset, limit, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
     {
+      ...config,
       revalidateFirstPage: false,
       revalidateAll: false,
     },
@@ -131,8 +135,8 @@ export const useSWRxPageInfoForList = (
   };
 };
 
-export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
-  return useSWRImmutable(
+export const useSWRxRootPage = (config?: SWRConfiguration): SWRResponse<RootPageResult, Error> => {
+  return useSWR(
     '/page-listing/root',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
@@ -140,7 +144,10 @@ export const useSWRxRootPage = (): SWRResponse<RootPageResult, Error> => {
       };
     }),
     {
+      ...config,
       keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
     },
   );
 };
@@ -155,6 +162,7 @@ export const mutatePageTree = async(): Promise<undefined[]> => {
 
 export const useSWRxPageAncestorsChildren = (
     path: string | null,
+    config?: SWRConfiguration,
 ): SWRResponse<AncestorsChildrenResult, Error> => {
   const key = path ? [MUTATION_ID_FOR_PAGETREE, '/page-listing/ancestors-children', path] : null;
 
@@ -173,6 +181,7 @@ export const useSWRxPageAncestorsChildren = (
       };
     }),
     {
+      ...config,
       keepPreviousData: true,
     },
   );
@@ -196,13 +205,14 @@ export const useSWRxPageChildren = (
     }),
     {
       keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnRecconect: false,
     },
   );
 };
 
-export const useSWRxV5MigrationStatus = (
-): SWRResponse<V5MigrationStatus, Error> => {
-  return useSWR(
+export const useSWRxV5MigrationStatus = (config?: SWRConfiguration): SWRResponse<V5MigrationStatus, Error> => {
+  return useSWRImmutable(
     '/pages/v5-migration-status',
     endpoint => apiv3Get(endpoint).then((response) => {
       return {
@@ -210,5 +220,6 @@ export const useSWRxV5MigrationStatus = (
         migratablePagesCount: response.data.migratablePagesCount,
       };
     }),
+    config,
   );
 };

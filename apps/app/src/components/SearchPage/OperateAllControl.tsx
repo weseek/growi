@@ -1,14 +1,14 @@
-import React, {
-  ChangeEvent, forwardRef, ForwardRefRenderFunction, useImperativeHandle, useRef,
-} from 'react';
-import { CustomInput } from 'reactstrap';
-import { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
-import { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
+import type { ChangeEvent, ForwardRefRenderFunction } from 'react';
+import React, { forwardRef, useImperativeHandle, useRef } from 'react';
+
+import { Input } from 'reactstrap';
+
+import type { ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import type { IndeterminateInputElement } from '~/interfaces/indeterminate-input-elm';
 
 type Props = {
   isCheckboxDisabled?: boolean,
   onCheckboxChanged?: (isChecked: boolean) => void,
-
   children?: React.ReactNode,
 }
 
@@ -16,7 +16,6 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
   const {
     isCheckboxDisabled,
     onCheckboxChanged,
-
     children,
   } = props;
 
@@ -53,12 +52,12 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
   };
 
   return (
-
     <div className="d-flex align-items-center">
-      <CustomInput
+      <Input
         type="checkbox"
         id="cb-check-all"
         data-testid="cb-select-all"
+        className="ms-2"
         innerRef={selectAllCheckboxElm}
         disabled={isCheckboxDisabled}
         onChange={checkboxChangedHandler}
@@ -66,7 +65,6 @@ const OperateAllControlSubstance: ForwardRefRenderFunction<ISelectableAndIndeter
       {children}
     </div>
   );
-
 };
 
 export const OperateAllControl = React.memo(forwardRef(OperateAllControlSubstance));

@@ -1,0 +1,20 @@
+@use '~/styles/mixins';
+
+.page-editor-preview-body :global {
+  .wiki {
+    max-width: 980px;
+    padding: 0px 15px;
+    margin: 0 auto;
+  }
+}
+
+// modify width for fluid layout
+.page-editor-preview-body {
+  &:global {
+    &.fluid-layout {
+      .wiki {
+        @include mixins.fluid-layout();
+      }
+    }
+  }
+}

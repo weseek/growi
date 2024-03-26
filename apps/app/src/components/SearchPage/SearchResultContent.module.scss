@@ -1,8 +1,10 @@
-/*
-* shadow
-*/
+@use '~/styles/mixins';
+
 .search-result-content :global {
-  .grw-subnav {
-    box-shadow: 0px 0px 6px 3px rgba(black, 0.15);
+}
+
+.fluid-layout :global {
+  .grw-container-convertible {
+    @include mixins.fluid-layout();
   }
 }

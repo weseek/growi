@@ -7,8 +7,8 @@ type Props = {
 export const SidebarHeaderReloadButton = ({ onClick }: Props) => {
 
   return (
-    <button type="button" className="btn btn-sm ml-auto py-0 grw-btn-reload" onClick={onClick}>
-      <i className="icon icon-reload"></i>
+    <button type="button" className="btn btn-sm ms-auto py-0 grw-btn-reload" onClick={onClick}>
+      <span className="material-symbols-outlined">refresh</span>
     </button>
   );
 };

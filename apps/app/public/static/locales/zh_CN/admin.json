@@ -47,10 +47,12 @@
     "page_delete": "删除",
     "page_delete_completely": "彻底删除",
     "other_options": "其他选项",
-    "deletion_explain": "限制用户对选定的单一页面进行垃圾处理。",
-    "complete_deletion_explain": "限制可以完全删除所选单页的用户。",
-    "recursive_deletion_explain": "限制用户可以捣毁包括子孙在内的页面。",
-    "recursive_complete_deletion_explain": "限制可以完全删除页面的用户，包括子孙。",
+    "deletion_explanation": "限制用户对选定的单一页面进行垃圾处理。",
+    "complete_deletion_explanation": "限制可以完全删除所选单页的用户。",
+    "recursive_deletion_explanation": "限制用户可以捣毁包括子孙在内的页面。",
+    "recursive_complete_deletion_explanation": "限制可以完全删除页面的用户，包括子孙。",
+    "is_all_group_membership_required_for_page_complete_deletion": "除管理员和页面作者之外的用户必须属于被授予页面访问权限的所有组",
+    "is_all_group_membership_required_for_page_complete_deletion_explanation": "如果页面权限设置为\"仅限特定群体\"，则会启用此功能。",
     "inherit": "继承（使用与单页相同的设置）。",
 		"admin_only": "仅管理员",
 		"admin_and_author": "管理员|作者",
@@ -505,8 +507,8 @@
       "enable_marp_desc": "Marp 可在演示视图中使用。该选项可能会使您受到 XSS 的攻击。",
       "marp_official_site": "参考资料：Marp 官方网站",
       "marp_official_site_link": "https://marp.app",
-      "presentation_docs" : "参考资料：GROWI Docs - Create slides for a presentation",
-      "presentation_docs_link": "https://docs.growi.org/en/guide/features/presentation.html"
+      "marp_in_growi" : "参考资料：GROWI Docs - Create slide using Marp",
+      "marp_in_growi_link": "https://docs.growi.org/en/guide/features/marp.html"
     },
     "custom_title": "自定义标题",
     "custom_title_detail": "您可以自定义<code>&lt；title&gt；</code>标记。<br><code>&123；&123；sitename&&125；&125；</code>将自动替换为应用程序名称，并且<code>&123；&123；page&&125；&125；</code>将替换为页面名称/路径。",
@@ -574,10 +576,6 @@
           "initialize_meta_datas": {
             "label": "Initialize page's like, read users and comment count",
             "desc": "Recommended <span class=\"text-danger\">NOT</span> to check this when users will also be restored."
-          },
-          "initialize_hackmd_related_datas": {
-            "label": "Initialize HackMD related data",
-            "desc": "Recommended to check this unless there is important drafts on HackMD."
           }
         },
         "revisions": {
@@ -756,7 +754,7 @@
       "emails": "电子邮件",
       "description1": "通过电子邮件地址临时发布新用户。",
       "description2": "将为首次登录生成一个临时密码。",
-      "mail_setting_link": "<i class='icon-settings mr-2'></i><a href='/admin/app'>Email settings</a>",
+      "mail_setting_link": "<span className='material-symbols-outlined me-2'>settings</span><a href='/admin/app'>Email settings</a>",
       "valid_email": "需要有效的电子邮件地址",
       "invite_thru_email": "发送邀请电子邮件",
       "temporary_password": "创建的用户具有临时密码",
@@ -845,9 +843,10 @@
       "dropdown_desc": "为私人页选择操作",
       "select_group": "选择组",
       "no_groups": "没有可选择的组",
-      "publish_pages": "全部发布",
+      "publish_pages": "发布可以发布的页面",
       "delete_pages": "全部删除",
-      "transfer_pages": "转移到另一组"
+      "transfer_pages": "转移到另一组",
+      "option_explanation": "\"可发布页面\"是指仅对您要删除的群组可见的页面。其他群组可以查看的页面将不会被发布。"
     },
     "update_parent_confirm_modal": {
       "header": "该组的父组被改变",
@@ -870,12 +869,12 @@
     "return": "返回",
     "clear": "清除",
     "activity_expiration_date": "审计日志的到期日",
-    "activity_expiration_date_explain": "创建的审计日志会在环境变量中设置的从创建时间算起的秒数后自动删除",
+    "activity_expiration_date_explanation": "创建的审计日志会在环境变量中设置的从创建时间算起的秒数后自动删除",
     "fixed_by_env_var": "这是由env var 修复的 <code>{{key}}={{value}}</code>.",
     "available_action_list": "搜索/查看 所有可用的行动",
-    "available_action_list_explain": "在当前配置中可以搜索/查看的行动列表",
+    "available_action_list_explanation": "在当前配置中可以搜索/查看的行动列表",
     "action_list": "行动清单",
-    "disable_mode_explain": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。",
+    "disable_mode_explanation": "审计日志当前已禁用。 要启用它，请将环境变量 <code>AUDIT_LOG_ENABLED</code> 设置为 true。",
     "docs_url": {
       "log_type": "https://docs.growi.org/en/admin-guide/admin-cookbook/audit-log-setup.html#log-types"
     }

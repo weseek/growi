@@ -2,6 +2,9 @@ import React, {
   useCallback, useState, useRef, useEffect,
 } from 'react';
 
+import {
+  CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
+} from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
@@ -9,25 +12,31 @@ import {
   Button, TabContent, TabPane,
 } from 'reactstrap';
 
-import { apiPostForm } from '~/client/util/apiv1-client';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { IEditorMethods } from '~/interfaces/editor-methods';
+import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
 import {
-  useCurrentUser, useIsSlackConfigured,
-  useIsUploadableFile, useIsUploadableImage,
+  useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
-import { useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning } from '~/stores/editor';
+import {
+  useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
+} from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
+import { useNextThemes } from '~/stores/use-next-themes';
+import loggerFactory from '~/utils/logger';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
-import Editor from '../PageEditor/Editor';
 
 import { CommentPreview } from './CommentPreview';
 
+import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
+
+
+const logger = loggerFactory('growi:components:CommentEditor');
 
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
@@ -35,11 +44,11 @@ const SlackNotification = dynamic(() => import('../SlackNotification').then(mod 
 
 const navTabMapping = {
   comment_editor: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
     i18n: 'Write',
   },
   comment_preview: {
-    Icon: () => <i className="icon-settings" />,
+    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
     i18n: 'Preview',
   },
 };
@@ -67,15 +76,19 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { update: updateComment, post: postComment } = useSWRxPageComment(pageId);
   const { data: isSlackEnabled, mutate: mutateIsSlackEnabled } = useIsSlackEnabled();
+  const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: slackChannelsData } = useSWRxSlackChannels(currentPagePath);
   const { data: isSlackConfigured } = useIsSlackConfigured();
-  const { data: isUploadableFile } = useIsUploadableFile();
-  const { data: isUploadableImage } = useIsUploadableImage();
+  const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
     increment: incrementEditingCommentsNum,
     decrement: decrementEditingCommentsNum,
   } = useSWRxEditingCommentsNum();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme({ themeData: resolvedTheme });
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
@@ -137,6 +150,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     if (editingCommentsNum != null && editingCommentsNum === 0) {
       mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
     }
+
   }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
@@ -180,59 +194,56 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       if (onCommentButtonClicked != null) {
         onCommentButtonClicked();
       }
+
+      // Insert empty string as new comment editor is opened after comment
+      codeMirrorEditor?.initDoc('');
     }
     catch (err) {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
   }, [
-    comment, currentCommentId, initializeEditor,
-    isSlackEnabled, onCommentButtonClicked, replyTo, slackChannels,
-    postComment, revisionId, updateComment,
+    currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor,
+    updateComment, comment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment,
   ]);
 
-  const ctrlEnterHandler = useCallback((event) => {
-    if (event != null) {
-      event.preventDefault();
-    }
+  // the upload event handler
+  const uploadHandler = useCallback((files: File[]) => {
+    files.forEach(async(file) => {
+      try {
+        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
 
-    postCommentHandler();
-  }, [postCommentHandler]);
+        if (!resLimit.isUploadable) {
+          throw new Error(resLimit.errorMessage);
+        }
 
-  const apiErrorHandler = useCallback((error: Error) => {
-    toastError(error.message);
-  }, []);
+        const formData = new FormData();
+        formData.append('file', file);
+        if (pageId != null) {
+          formData.append('page_id', pageId);
+        }
 
-  const uploadHandler = useCallback(async(file) => {
-    if (editorRef.current == null) { return }
+        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
 
-    const pagePath = currentPagePath;
-    const endpoint = '/attachments.add';
-    const formData = new FormData();
-    formData.append('file', file);
-    formData.append('path', pagePath ?? '');
-    formData.append('page_id', pageId ?? '');
+        const attachment = resAdd.attachment;
+        const fileName = attachment.originalName;
 
-    try {
-      // TODO: typescriptize res
-      const res = await apiPostForm(endpoint, formData) as any;
-      const attachment = res.attachment;
-      const fileName = attachment.originalName;
-      let insertText = `[${fileName}](${attachment.filePathProxied})`;
-      // when image
-      if (attachment.fileFormat.startsWith('image/')) {
-        // modify to "![fileName](url)" syntax
-        insertText = `!${insertText}`;
+        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
+        // when image
+        if (attachment.fileFormat.startsWith('image/')) {
+          // modify to "![fileName](url)" syntax
+          insertText = `!${insertText}`;
+        }
+
+        codeMirrorEditor?.insertText(insertText);
       }
-      editorRef.current.insertText(insertText);
-    }
-    catch (err) {
-      apiErrorHandler(err);
-    }
-    finally {
-      editorRef.current.terminateUploadingState();
-    }
-  }, [apiErrorHandler, currentPagePath, pageId]);
+      catch (e) {
+        logger.error('failed to upload', e);
+        toastError(e);
+      }
+    });
+
+  }, [codeMirrorEditor, pageId]);
 
   const getCommentHtml = useCallback(() => {
     if (currentPagePath == null) {
@@ -253,7 +264,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <i className="icon-bubble"></i> Add Comment
+              <span className="material-symbols-outlined">comment</span> Add Comment
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
@@ -261,19 +272,37 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     );
   }, []);
 
-  const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
+  //   setComment(newValue);
+  //   if (!isClean && !incremented) {
+  //     incrementEditingCommentsNum();
+  //     setIncremented(true);
+  //   }
+  //   mutateIsEnabledUnsavedWarning(!isClean);
+  // }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+
+  const onChangeHandler = useCallback((newValue: string) => {
     setComment(newValue);
-    if (!isClean && !incremented) {
+
+    if (!incremented) {
       incrementEditingCommentsNum();
       setIncremented(true);
     }
-    mutateIsEnabledUnsavedWarning(!isClean);
-  }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
+  }, [incrementEditingCommentsNum, incremented]);
+
+  // initialize CodeMirrorEditor
+  useEffect(() => {
+    if (commentBody == null) {
+      return;
+    }
+    codeMirrorEditor?.initDoc(commentBody);
+  }, [codeMirrorEditor, commentBody]);
+
 
   const renderReady = () => {
     const commentPreview = getCommentHtml();
 
-    const errorMessage = <span className="text-danger text-right mr-2">{error}</span>;
+    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
         outline
@@ -297,24 +326,29 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       </Button>
     );
 
-    const isUploadable = isUploadableImage || isUploadableFile;
-
     return (
       <>
         <div className="comment-write">
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
-              <Editor
+              <CodeMirrorEditorComment
+                acceptedUploadFileType={acceptedUploadFileType}
+                onChange={onChangeHandler}
+                onSave={postCommentHandler}
+                onUpload={uploadHandler}
+                editorSettings={editorSettings}
+              />
+              {/* <Editor
                 ref={editorRef}
                 value={commentBody ?? ''} // DO NOT use state
                 isUploadable={isUploadable}
-                isUploadableFile={isUploadableFile}
+                isUploadAllFileAllowed={isUploadAllFileAllowed}
                 onChange={onChangeHandler}
                 onUpload={uploadHandler}
                 onCtrlEnter={ctrlEnterHandler}
                 isComment
-              />
+              /> */}
               {/*
                 Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
                 See a review comment in https://github.com/weseek/growi/pull/3473
@@ -335,7 +369,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="form-inline align-self-center mr-md-2">
+                <div className="align-self-center me-md-2">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}
@@ -347,13 +381,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               )
             }
             <div className="d-none d-sm-block">
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
           <div className="d-block d-sm-none mt-2">
             <div className="d-flex justify-content-end">
               {error && errorMessage}
-              <span className="mr-2">{cancelButton}</span><span>{submitButton}</span>
+              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
             </div>
           </div>
         </div>

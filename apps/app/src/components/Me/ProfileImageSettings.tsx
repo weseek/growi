@@ -91,61 +91,61 @@ const ProfileImageSettings = (): JSX.Element => {
 
   return (
     <>
-      <div className="row">
-        <div className="col-md-6 col-12 mb-3 mb-md-0">
-          <h4>
-            <div className="custom-control custom-radio radio-primary">
+      <div className="row justify-content-around mt-5 mt-md-4">
+        <div className="col-md-3">
+          <h5>
+            <div className="form-check radio-primary">
               <input
                 type="radio"
                 id="radioGravatar"
-                className="custom-control-input"
+                className="form-check-input"
                 form="formImageType"
                 name="imagetypeForm[isGravatarEnabled]"
                 checked={isGravatarEnabled}
                 onChange={() => setGravatarEnabled(true)}
               />
-              <label className="custom-control-label" htmlFor="radioGravatar">
-                <img src={GRAVATAR_DEFAULT} data-vrt-blackout-profile /> Gravatar
+              <label className="form-label form-check-label" htmlFor="radioGravatar">
+                <img src={GRAVATAR_DEFAULT} className="me-1" data-vrt-blackout-profile /> Gravatar
               </label>
-              <a href="https://gravatar.com/">
-                <small><i className="icon-arrow-right-circle" aria-hidden="true"></i></small>
+              <a href="https://gravatar.com/" target="_blank" rel="noopener noreferrer">
+                <small><span className="material-symbols-outlined ms-2 text-secondary" aria-hidden="true">info</span></small>
               </a>
             </div>
-          </h4>
-          <img src={generateGravatarSrc(currentUser.email)} width="64" data-vrt-blackout-profile />
+          </h5>
+          <img src={generateGravatarSrc(currentUser.email)} className="rounded-pill" width="64" data-vrt-blackout-profile />
         </div>
 
-        <div className="col-md-6 col-12">
-          <h4>
-            <div className="custom-control custom-radio radio-primary">
+        <div className="col-md-7 mt-5 mt-md-0">
+          <h5>
+            <div className="form-check radio-primary">
               <input
                 type="radio"
                 id="radioUploadPicture"
-                className="custom-control-input"
+                className="form-check-input"
                 form="formImageType"
                 name="imagetypeForm[isGravatarEnabled]"
                 checked={!isGravatarEnabled}
                 onChange={() => setGravatarEnabled(false)}
               />
-              <label className="custom-control-label" htmlFor="radioUploadPicture">
+              <label className="form-label form-check-label" htmlFor="radioUploadPicture">
                 { t('Upload Image') }
               </label>
             </div>
-          </h4>
-          <div className="row mb-3">
-            <label className="col-sm-4 col-12 col-form-label text-left">
+          </h5>
+          <div className="row mt-3">
+            <label className="col-md-6 col-lg-4 col-form-label text-start">
               { t('Current Image') }
             </label>
-            <div className="col-sm-8 col-12">
-              <p><img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>
-              {uploadedPictureSrc && <button type="button" className="btn btn-danger" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
+            <div className="col-md-6 col-lg-8">
+              <p className="mb-0"><img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>
+              {uploadedPictureSrc && <button type="button" className="btn btn-danger mt-2" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
             </div>
           </div>
-          <div className="row">
-            <label className="col-sm-4 col-12 col-form-label text-left">
+          <div className="row align-items-center mt-3 mt-md-5">
+            <label className="col-md-6 col-lg-4 col-form-label text-start mt-3 mt-md-0">
               {t('Upload new image')}
             </label>
-            <div className="col-sm-8 col-12">
+            <div className="col-md-6 col-lg-8">
               <input type="file" onChange={selectFileHandler} name="profileImage" accept="image/*" />
             </div>
           </div>
@@ -161,7 +161,7 @@ const ProfileImageSettings = (): JSX.Element => {
         showCropOption
       />
 
-      <div className="row my-3">
+      <div className="row mt-4">
         <div className="offset-4 col-5">
           <button type="button" className="btn btn-primary" onClick={submit}>
             {t('Update')}

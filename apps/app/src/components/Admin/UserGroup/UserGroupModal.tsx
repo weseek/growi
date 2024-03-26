@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -75,8 +74,8 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
         </ModalHeader>
 
         <ModalBody>
-          <div className="form-group">
-            <label htmlFor="name">
+          <div>
+            <label htmlFor="name" className="form-label">
               {t('user_group_management.group_name')}
             </label>
             <input
@@ -91,8 +90,8 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
             />
           </div>
 
-          <div className="form-group">
-            <label htmlFor="description">
+          <div>
+            <label htmlFor="description" className="form-label">
               {t('Description')}
             </label>
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
@@ -112,7 +111,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
         </ModalBody>
 
         <ModalFooter>
-          <div className="form-group">
+          <div>
             <button type="submit" className="btn btn-primary">
               {buttonLabel}
             </button>

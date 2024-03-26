@@ -11,6 +11,7 @@ import { apiv3Delete, apiv3Post, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { ExternalGroupManagement } from '~/features/external-user-group/client/components/ExternalUserGroup/ExternalUserGroupManagement';
 import { useSWRxExternalUserGroupList } from '~/features/external-user-group/client/stores/external-user-group';
+import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList, useSWRxChildUserGroupList, useSWRxUserGroupRelationList } from '~/stores/user-group';
 
@@ -137,7 +138,7 @@ export const UserGroupPage: FC = () => {
     }
   }, [t, mutateUserGroups, hideUpdateModal]);
 
-  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroup: IGrantedGroup | null) => {
+  const deleteUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => {
     const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
     const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
     try {

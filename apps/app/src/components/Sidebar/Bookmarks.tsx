@@ -12,17 +12,17 @@ export const Bookmarks = () : JSX.Element => {
   const { data: isGuestUser } = useIsGuestUser();
 
   return (
-    <>
-      <div className="grw-sidebar-content-header p-3">
-        <h3 className="mb-0">{t('Bookmarks')}</h3>
+    <div className="px-3">
+      <div className="grw-sidebar-content-header">
+        <h4 className="mb-0 py-4">{t('Bookmarks')}</h4>
       </div>
       {isGuestUser ? (
-        <h4 className="pl-3">
+        <h4 className="ps-3">
           { t('Not available for guest') }
         </h4>
       ) : (
         <BookmarkContents />
       )}
-    </>
+    </div>
   );
 };

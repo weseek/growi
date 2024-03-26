@@ -62,7 +62,7 @@ const AppSettingsPageContents = (props: Props) => {
             </p>
             <hr />
             <a className="btn-link" href="#maintenance-mode" rel="noopener noreferrer">
-              <i className="fa fa-fw fa-arrow-down ml-1" aria-hidden="true"></i>
+              <span className="material-symbols-outlined ms-1" aria-hidden="true">expand_more</span>
               <strong>{t('admin:maintenance_mode.end_maintenance_mode')}</strong>
             </a>
           </div>

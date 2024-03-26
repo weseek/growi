@@ -56,29 +56,29 @@ export const RichAttachment = React.memo((props: RichAttachmentProps) => {
     <div className={`${styles.attachment} d-inline-block`}>
       <div className="my-2 p-2 card">
         <div className="p-1 card-body d-flex align-items-center">
-          <div className="mr-2 px-0 d-flex align-items-center justify-content-center">
+          <div className="me-2 px-0 d-flex align-items-center justify-content-center">
             <img src="/images/icons/editor/attachment.svg" className="attachment-icon" alt="attachment icon" />
           </div>
-          <div className="pl-0">
+          <div className="ps-0">
             <div className="d-inline-block">
               {/* Since we need to include the "referer" to view the attachment on the shared page */}
               {/* eslint-disable-next-line react/jsx-no-target-blank */}
               <a target="_blank" rel="noopener" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
-              <a className="ml-2 attachment-download" href={downloadPathProxied}>
-                <i className="icon-cloud-download" />
+              <a className="ms-2 attachment-download" href={downloadPathProxied}>
+                <span className="material-symbols-outlined">cloud_download</span>
               </a>
               <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash" />
+                <span className="material-symbols-outlined">delete</span>
               </a>
             </div>
             <div className="d-flex align-items-center">
               <UserPicture user={creator} size="sm" />
-              <span className="ml-2 text-muted">
+              <span className="ms-2 text-muted">
                 {new Date(createdAt).toLocaleString('en-US')}
               </span>
-              <span className="ml-2 pl-2 border-left text-muted">{prettyBytes(fileSize)}</span>
+              <span className="ms-2 ps-2 border-start text-muted">{prettyBytes(fileSize)}</span>
             </div>
           </div>
         </div>

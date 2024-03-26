@@ -1,6 +1,6 @@
 {
   "name": "@growi/ui",
-  "version": "6.3.3-RC.0",
+  "version": "7.0.0-RC.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
   "keywords": [
@@ -8,8 +8,24 @@
   ],
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "scss"
   ],
+  "exports": {
+    "./dist/components": {
+      "import": "./dist/components/index.js"
+    },
+    "./dist/interfaces": {
+      "import": "./dist/interfaces/index.js"
+    },
+    "./dist/utils": {
+      "import": "./dist/utils/index.js"
+    },
+    "./dist/style": {
+      "import": "./dist/style.css"
+    },
+    "./scss/*": "./scss/*.scss"
+  },
   "scripts": {
     "build": "vite build",
     "clean": "shx rm -rf dist",
@@ -24,10 +40,10 @@
     "@growi/core": "link:../core"
   },
   "devDependencies": {
-    "reactstrap": "8.10.1"
+    "reactstrap": "^9.2.0"
   },
   "peerDependencies": {
-    "next": "^13",
+    "next": "^14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

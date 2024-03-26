@@ -13,6 +13,7 @@ import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
 import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
 import CustomNav from '~/components/CustomNavigation/CustomNav';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { useIsAclEnabled } from '~/stores/context';
 import { useSWRxUserGroupList } from '~/stores/user-group';
 
@@ -102,7 +103,9 @@ export const ExternalGroupManagement: FC = () => {
     }
   }, [t, mutateExternalUserGroups, hideUpdateModal]);
 
-  const deleteExternalUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroup: IGrantedGroup | null) => {
+  const deleteExternalUserGroupById = useCallback(async(
+      deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null,
+  ) => {
     const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
     const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
     try {
@@ -132,11 +135,11 @@ export const ExternalGroupManagement: FC = () => {
   const navTabMapping = useMemo(() => {
     return {
       ldap: {
-        Icon: () => <i className="fa fa-sitemap" />,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       keycloak: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'Keycloak',
       },
     };

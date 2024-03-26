@@ -30,9 +30,9 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
   };
 
   return (
-    <Modal isOpen={props.isModalOpen} toggle={onCancel} className="">
+    <Modal isOpen={props.isModalOpen} toggle={onCancel}>
       <ModalHeader tag="h4" toggle={onCancel} className="bg-danger">
-        <i className="icon-fw icon-question" />
+        <span className="material-symbols-outlined">help</span>
         {t('Warning')}
       </ModalHeader>
       <ModalBody>
@@ -44,7 +44,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
               <br />
               <span className="text-warning">
                 <>
-                  <i className="icon-exclamation icon-fw"></i>
+                  <span className="material-symbols-outlined">error</span>
                   {props.supplymentaryMessage}
                 </>
               </span>
@@ -62,7 +62,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
         </button>
         <button
           type="button"
-          className="btn btn-outline-primary ml-3"
+          className="btn btn-outline-primary ms-3"
           onClick={onConfirm}
         >
           {props.confirmButtonTitle ?? t('Confirm')}

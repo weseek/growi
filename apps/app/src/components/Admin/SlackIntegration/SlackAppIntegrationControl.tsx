@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
   onDeleteButtonClicked?: (slackAppIntegration: unknown) => void,
 }
 
-export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
+export const SlackAppIntegrationControl = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { slackAppIntegration, onIsPrimaryChanged, onDeleteButtonClicked } = props;
@@ -19,9 +19,9 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
 
   return (
     <div className="d-flex align-items-center">
-      <div className="my-1 custom-control custom-switch">
+      <div className="my-1 form-check form-switch">
         <input
-          className="custom-control-input"
+          className="form-check-input"
           id={inputId}
           type="checkbox"
           checked={isPrimary}
@@ -32,12 +32,12 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
             }
           }}
         />
-        <label className="custom-control-label" htmlFor={inputId}>
+        <label className="form-label form-check-label" htmlFor={inputId}>
           Primary
         </label>
       </div>
       <button
-        className="btn btn-outline-danger ml-3"
+        className="btn btn-outline-danger ms-3"
         type="button"
         onClick={() => {
           if (onDeleteButtonClicked != null) {
@@ -45,7 +45,7 @@ export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
           }
         }}
       >
-        <i className="icon-trash mr-1" />
+        <span className="material-symbols-outlined">delete</span>
         {t('admin:slack_integration.delete')}
       </button>
     </div>

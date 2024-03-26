@@ -1,6 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
+
 import { useSWRxLsx } from '../stores/lsx';
 import { generatePageNodeTree } from '../utils/page-node';
 
@@ -53,9 +55,9 @@ const LsxSubstance = React.memo(({
     return (
       <details>
         <summary className="text-warning">
-          <i className="fa fa-exclamation-triangle fa-fw"></i> {lsxContext.toString()}
+          <span className="material-symbols-outlined me-1">warning</span> {lsxContext.toString()}
         </summary>
-        <small className="ml-3 text-muted">{errorMessage}</small>
+        <small className="ms-3 text-muted">{errorMessage}</small>
       </details>
     );
   }, [errorMessage, hasError, lsxContext]);
@@ -71,7 +73,7 @@ const LsxSubstance = React.memo(({
     return (
       <div className={`text-muted ${isLoading ? 'lsx-blink' : ''}`}>
         <small>
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <LoadingSpinner className="me-1" />
           {lsxContext.toString()}
         </small>
       </div>
@@ -111,11 +113,11 @@ const LsxSubstance = React.memo(({
         <div className="col-12 col-sm-8 d-flex flex-column align-items-center lsx-load-more-container">
           <button
             type="button"
-            className="btn btn btn-block btn-outline-secondary btn-load-more"
+            className="btn btn btn-outline-secondary btn-load-more"
             onClick={() => setSize(size => size + 1)}
           >
             Load more<br />
-            <span className="text-muted small left-items-label">({leftItemsNum} pages left)</span>
+            <span className="text-muted small start-items-label">({leftItemsNum} pages left)</span>
           </button>
         </div>
       </div>
@@ -137,7 +139,7 @@ LsxSubstance.displayName = 'LsxSubstance';
 const LsxDisabled = React.memo((): JSX.Element => {
   return (
     <div className="text-muted">
-      <i className="fa fa-fw fa-info-circle"></i>
+      <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
       <small>lsx is not available on the share link page</small>
     </div>
   );

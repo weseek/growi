@@ -104,8 +104,8 @@ export const Cheatsheet = (): JSX.Element => {
         {renderCheetSheetElm(imageStr)}
 
         <hr />
-        <a href="/Sandbox" className="btn btn-info btn-block" target="_blank">
-          <i className="icon-share-alt" /> {t('sandbox.open_sandbox')}
+        <a href="/Sandbox" className="btn btn-info" target="_blank">
+          <span className="growi-custom-icons">external_link</span> {t('sandbox.open_sandbox')}
         </a>
       </div>
     </div>

@@ -103,28 +103,28 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
     const html = t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
-    return <div className="card well" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return <div className="card custom-card" dangerouslySetInnerHTML={{ __html: html }}></div>;
   }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {
-    const checkboxColor = color ? `custom-checkbox-${color}` : 'custom-checkbox-info';
+    const checkboxColor = color ? `form-check-${color}` : 'form-check-info';
 
     return (
-      <div className={`custom-control custom-checkbox ${checkboxColor}`}>
+      <div className={`form-check ${checkboxColor}`}>
         <div className="row">
           {collectionNames.map((collectionName) => {
             return (
               <div className="col-sm-6 my-1" key={collectionName}>
                 <input
                   type="checkbox"
-                  className="custom-control-input"
+                  className="form-check-input"
                   id={collectionName}
                   name={collectionName}
                   value={collectionName}
                   checked={selectedCollections.has(collectionName)}
                   onChange={toggleCheckbox}
                 />
-                <label className="text-capitalize custom-control-label ml-3" htmlFor={collectionName}>
+                <label className="form-label text-capitalize form-check-label ms-3" htmlFor={collectionName}>
                   {collectionName}
                 </label>
               </div>
@@ -165,11 +165,11 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
         <ModalBody>
           <div className="row">
             <div className="col-sm-12">
-              <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={checkAll}>
-                <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
+              <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
+                <span className="material-symbols-outlined">check_box</span> {t('admin:export_management.check_all')}
               </button>
-              <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={uncheckAll}>
-                <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
+              <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
+                <span className="material-symbols-outlined">check_box_outline_blank</span> {t('admin:export_management.uncheck_all')}
               </button>
             </div>
           </div>

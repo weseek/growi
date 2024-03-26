@@ -1,8 +1,7 @@
 import React from 'react';
 
 import type { IPageHasId } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
-import { PageListMeta, PagePathLabel } from '@growi/ui/dist/components/PagePath';
+import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';
 
@@ -43,7 +42,7 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       ) : (
         pagePathElement
       )}
-      <span className="ml-2">
+      <span className="ms-2">
         <PageListMeta page={page} shouldSpaceOutIcon />
       </span>
     </>

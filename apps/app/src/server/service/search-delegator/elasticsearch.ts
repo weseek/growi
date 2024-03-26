@@ -5,19 +5,20 @@ import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
+import { Comment } from '~/features/comment/server';
 import { SearchDelegatorName } from '~/interfaces/named-query';
-import {
-  ISearchResult, ISearchResultData, SORT_AXIS, SORT_ORDER,
-} from '~/interfaces/search';
+import type { ISearchResult, ISearchResultData } from '~/interfaces/search';
+import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import { SocketEventName } from '~/interfaces/websocket';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import loggerFactory from '~/utils/logger';
 
-import {
+import type {
   SearchDelegator, SearchableData, QueryTerms, UnavailableTermsKey, ESQueryTerms, ESTermsKey,
 } from '../../interfaces/search';
-import { PageModel } from '../../models/page';
+import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
-import { UpdateOrInsertPagesOpts } from '../interfaces/search';
+import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
 import ElasticsearchClient from './elasticsearch-client';
@@ -367,13 +368,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       });
     }
 
-    let grantedGroupIds = null;
-    if (page.grantedGroups != null) {
-      grantedGroupIds = page.grantedGroups.map((group) => {
-        const groupId = (group.item._id == null) ? group.item : group.item._id;
-        return groupId.toString();
-      });
-    }
+    let grantedGroupIds = [];
+    grantedGroupIds = page.grantedGroups.map((group) => {
+      const groupId = (group.item._id == null) ? group.item : group.item._id;
+      return groupId.toString();
+    });
 
     return {
       grant: page.grant,
@@ -461,8 +460,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const Page = mongoose.model('Page') as unknown as PageModel;
     const { PageQueryBuilder } = Page;
     const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
-    const Comment = mongoose.model('Comment') as any; // TODO: typescriptize model
-    const PageTagRelation = mongoose.model('PageTagRelation') as any; // TODO: typescriptize model
 
     const socket = shouldEmitProgress ? this.socketIoService.getAdminSocket() : null;
 
@@ -942,7 +939,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const { queryString, terms } = data;
 
     if (terms == null) {
-      throw Error('Cannnot process search since terms is undefined.');
+      throw Error('Cannot process search since terms is undefined.');
     }
 
     const from = option?.offset ?? null;

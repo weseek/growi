@@ -74,17 +74,21 @@ type Props = {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl',
   noLink?: boolean,
   noTooltip?: boolean,
+  additionalClassName?: string
 };
 
 export const UserPicture = memo((props: Props): JSX.Element => {
 
   const {
-    user, size, noLink, noTooltip,
+    user, size, noLink, noTooltip, additionalClassName,
   } = props;
 
   const classNames = ['rounded-circle', 'picture'];
   if (size != null) {
     classNames.push(`picture-${size}`);
+  }
+  if (additionalClassName != null) {
+    classNames.push(additionalClassName);
   }
   const className = classNames.join(' ');
 

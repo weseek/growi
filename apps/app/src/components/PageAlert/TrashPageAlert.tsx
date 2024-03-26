@@ -86,12 +86,11 @@ export const TrashPageAlert = (): JSX.Element => {
       <>
         <button
           type="button"
-          className="btn btn-info rounded-pill btn-sm ml-auto mr-2"
+          className="btn btn-info rounded-pill btn-sm ms-auto me-2"
           onClick={openPutbackPageModalHandler}
-          data-toggle="modal"
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> {t('Put Back')}
+          <span className="material-symbols-outlined" aria-hidden="true">undo</span> {t('Put Back')}
         </button>
         <button
           type="button"
@@ -99,7 +98,7 @@ export const TrashPageAlert = (): JSX.Element => {
           disabled={!(pageInfo?.isAbleToDeleteCompletely ?? false)}
           onClick={openPageDeleteModalHandler}
         >
-          <i className="icon-fire" aria-hidden="true"></i> {t('Delete Completely')}
+          <span className="material-symbols-outlined" aria-hidden="true">delete_forever</span> {t('Delete Completely')}
         </button>
       </>
     );
@@ -112,12 +111,12 @@ export const TrashPageAlert = (): JSX.Element => {
 
   return (
     <>
-      <div className="alert alert-warning py-3 pl-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
+      <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row" data-testid="trash-page-alert">
         <div className="flex-grow-1">
-          This page is in the trash <i className="icon-trash" aria-hidden="true"></i>.
+          This page is in the trash <span className="material-symbols-outlined" aria-hidden="true">delete</span>.
           <br />
           <UserPicture user={deleteUser} />
-          <span className="ml-2">
+          <span className="ms-2">
             Deleted by {deleteUser?.name} at <span data-vrt-blackout-datetime>{deletedAt ?? pageData?.updatedAt}</span>
           </span>
         </div>

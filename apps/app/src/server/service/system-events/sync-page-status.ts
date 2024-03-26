@@ -1,11 +1,10 @@
 import loggerFactory from '~/utils/logger';
 
-import S2sMessage from '../../models/vo/s2s-message';
 import { S2cMessagePageUpdated } from '../../models/vo/s2c-message';
-import { S2sMessageHandlable } from '../s2s-messaging/handlable';
-import { S2sMessagingService } from '../s2s-messaging/base';
-
+import S2sMessage from '../../models/vo/s2s-message';
 import { RoomPrefix, getRoomNameWithId } from '../../util/socket-io-helpers';
+import { S2sMessagingService } from '../s2s-messaging/base';
+import { S2sMessageHandlable } from '../s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:system-events:SyncPageStatusService');
 
@@ -124,17 +123,6 @@ class SyncPageStatusService implements S2sMessageHandlable {
         .emit('page:delete', { s2cMessagePageUpdated });
 
       this.publishToOtherServers('page:delete', { s2cMessagePageUpdated });
-    });
-    this.emitter.on('saveOnHackmd', (page, user) => {
-      const s2cMessagePageUpdated = new S2cMessagePageUpdated(page);
-
-      // emit to the room for each page
-      socketIoService.getDefaultSocket()
-        .in(getRoomNameWithId(RoomPrefix.PAGE, page._id))
-        .except(getRoomNameWithId(RoomPrefix.USER, user._id))
-        .emit('page:editingWithHackmd', { s2cMessagePageUpdated });
-
-      this.publishToOtherServers('page:editingWithHackmd', { s2cMessagePageUpdated });
     });
   }
 

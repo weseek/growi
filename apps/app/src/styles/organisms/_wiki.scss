@@ -1,5 +1,6 @@
+@use '@growi/core/scss/bootstrap/utilities' as bs;
+
 @use '../variables' as var;
-@use '../bootstrap/init' as bs;
 
 .wiki {
   @mixin add-left-border($width) {
@@ -7,11 +8,16 @@
       margin-right: 0.4em;
       content: '';
       border-left: $width solid;
-      opacity: 0.2;
+      border-left-color: var(--bs-border-color);
     }
   }
 
   font-size: 16px;
+
+  a {
+    @extend .link-offset-2;
+    text-decoration-line: underline;
+  }
 
   // @extend .text-break;
   // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
@@ -35,12 +41,13 @@
   }
 
   h1 {
-    padding: 0.5em 0;
+    padding: 0.3em 0;
     margin-top: 2em;
     font-size: 1.9em;
     line-height: 1.1em;
-    // style
-    border-bottom: solid 1px transparent;
+    border-bottom-color: var(--bs-border-color);
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
   }
 
   h2 {
@@ -48,8 +55,9 @@
     font-size: 1.6em;
     font-weight: bold;
     line-height: 1.225;
-    // style
-    border-bottom: solid 1px transparent;
+    border-bottom-color: var(--bs-border-color);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
   }
 
   h3 {
@@ -282,5 +290,37 @@
     img {
       max-width: 100%;
     }
+  }
+}
+
+
+// == Colors
+.wiki {
+  a:not(.alert-link) {
+    @extend .link-underline-opacity-25;
+    @extend .link-underline-opacity-100-hover;
+
+    $color-rgb: var(--grw-wiki-link-color-rgb, var(--bs-link-color-rgb));
+
+    color: rgba($color-rgb, var(--bs-link-opacity, 1));
+    text-decoration-color: rgba($color-rgb, var(--bs-link-underline-opacity, 1));
+
+    &:hover {
+      color: rgba(
+        var(--grw-wiki-link-hover-color-rgb, var(--bs-link-hover-color-rgb)),
+        var(--bs-link-opacity, 1)
+      );
+    }
+  }
+}
+
+@include bs.color-mode(light) {
+  .wiki {
+    --bs-border-color: var(--bs-gray-300);
+  }
+}
+@include bs.color-mode(dark) {
+  .wiki {
+    --bs-border-color: var(--bs-gray-700);
   }
 }

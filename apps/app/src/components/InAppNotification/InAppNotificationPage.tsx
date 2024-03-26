@@ -1,7 +1,7 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
@@ -66,7 +66,7 @@ export const InAppNotificationPage: FC = () => {
       return (
         <div className="wiki" data-testid="grw-in-app-notification-page-spinner">
           <div className="text-muted text-center">
-            <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+            <LoadingSpinner className="me-1 fs-3" />
           </div>
         </div>
       );
@@ -100,9 +100,7 @@ export const InAppNotificationPage: FC = () => {
           ? t('in_app_notification.mark_all_as_read')
           // render list-group
           : (
-            <div className="list-group">
-              <InAppNotificationList inAppNotificationData={notificationData} type="button" elemClassName="list-group-item list-group-item-action" />
-            </div>
+            <InAppNotificationList inAppNotificationData={notificationData} />
           )
         }
 

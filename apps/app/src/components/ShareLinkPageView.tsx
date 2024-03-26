@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -10,7 +11,8 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { MainPane } from './Layout/MainPane';
+import { PagePathNavSticky } from './Common/PagePathNav';
+import { PageViewLayout } from './Common/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
 import type { PageSideContentsProps } from './PageSideContents';
@@ -43,6 +45,8 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   const { data: viewOptions } = useViewOptions();
 
+  const shouldExpandContent = useShouldExpandContent(page);
+
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
   const specialContents = useMemo(() => {
@@ -50,6 +54,10 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />;
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
+
+  const headerContents = (
+    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
+  );
 
   const sideContents = !isNotFound
     ? (
@@ -59,7 +67,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
 
   const Contents = () => {
-    if (isNotFound) {
+    if (isNotFound || page.revision == null) {
       return <></>;
     }
 
@@ -67,7 +75,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return (
         <>
           <h2 className="text-muted mt-4">
-            <i className="icon-ban" aria-hidden="true" />
+            <span className="material-symbols-outlined" aria-hidden="true">block</span>
             <span> Page is expired</span>
           </h2>
         </>
@@ -85,15 +93,17 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   };
 
   return (
-    <MainPane
+    <PageViewLayout
+      headerContents={headerContents}
       sideContents={sideContents}
+      expandContentWidth={shouldExpandContent}
     >
       { specialContents }
       { specialContents == null && (
         <>
           { isNotFound && (
             <h2 className="text-muted mt-4">
-              <i className="icon-ban" aria-hidden="true" />
+              <span className="material-symbols-outlined" aria-hidden="true">block</span>
               <span> Page is not found</span>
             </h2>
           ) }
@@ -107,6 +117,6 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
           ) }
         </>
       ) }
-    </MainPane>
+    </PageViewLayout>
   );
 };

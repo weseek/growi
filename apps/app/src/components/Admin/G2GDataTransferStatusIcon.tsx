@@ -1,11 +1,14 @@
 import React, { type ComponentPropsWithoutRef } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
+
 import { G2G_PROGRESS_STATUS, type G2GProgressStatus } from '~/interfaces/g2g-transfer';
+
 
 /**
  * Props for {@link G2GDataTransferStatusIcon}
  */
-interface Props extends ComponentPropsWithoutRef<'i'>{
+interface Props extends ComponentPropsWithoutRef<'span'>{
   status: G2GProgressStatus;
 }
 
@@ -15,29 +18,29 @@ interface Props extends ComponentPropsWithoutRef<'i'>{
 const G2GDataTransferStatusIcon = ({ status, className, ...props }: Props): JSX.Element => {
   if (status === G2G_PROGRESS_STATUS.IN_PROGRESS) {
     return (
-      <i className={`fa fa-spinner fa-pulse fa-fw ${className}`} aria-label="in progress" {...props} />
+      <LoadingSpinner className={`${className}`} aria-label="in progress" {...props} />
     );
   }
 
   if (status === G2G_PROGRESS_STATUS.COMPLETED) {
     return (
-      <i className={`fa fa-check-circle-o fa-fw text-info ${className}`} aria-label="completed" {...props} />
+      <span className={`material-symbols-outlined text-info ${className}`} aria-label="completed" {...props}>check_circle</span>
     );
   }
 
   if (status === G2G_PROGRESS_STATUS.ERROR) {
     return (
-      <i className={`fa fa-exclamation-circle fa-fw text-danger ${className}`} aria-label="error" {...props} />
+      <span className={`material-symbols-outlined text-danger ${className}`} aria-label="error" {...props}>error</span>
     );
   }
 
   if (status === G2G_PROGRESS_STATUS.SKIPPED) {
     return (
-      <i className={`fa fa-ban fa-fw ${className}`} aria-label="skipped" {...props} />
+      <span className={`material-symbols-outlined ${className}`} aria-label="skipped" {...props}>block</span>
     );
   }
 
-  return <i className={`fa fa-circle-o fa-fw ${className}`} aria-label="pending" {...props} />;
+  return <span className={`material-symbols-outlined ${className}`} aria-label="pending" {...props}>circle</span>;
 };
 
 export default G2GDataTransferStatusIcon;

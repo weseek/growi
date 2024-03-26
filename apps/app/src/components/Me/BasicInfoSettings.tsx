@@ -49,8 +49,8 @@ export const BasicInfoSettings = (): JSX.Element => {
   return (
     <>
 
-      <div className="form-group row">
-        <label htmlFor="userForm[name]" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
+      <div className="row mt-3 mt-md-4">
+        <label htmlFor="userForm[name]" className="text-start text-md-end col-md-3 col-form-label">{t('Name')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -62,8 +62,8 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
-        <label htmlFor="userForm[email]" className="text-left text-md-right col-md-3 col-form-label">{t('Email')}</label>
+      <div className="row mt-3">
+        <label htmlFor="userForm[email]" className="text-start text-md-end col-md-3 col-form-label">{t('Email')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -83,61 +83,61 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">{t('Disclose E-mail')}</label>
-        <div className="col-md-6">
-          <div className="custom-control custom-radio custom-control-inline">
+      <div className="row mt-3">
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('Disclose E-mail')}</label>
+        <div className="col-md-6 my-auto">
+          <div className="form-check form-check-inline me-4">
             <input
               type="radio"
               id="radioEmailShow"
-              className="custom-control-input"
+              className="form-check-input"
               name="userForm[isEmailPublished]"
               checked={personalSettingsInfo?.isEmailPublished === true}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: true })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailShow">{t('Show')}</label>
+            <label className="form-label form-check-label mb-0" htmlFor="radioEmailShow">{t('Show')}</label>
           </div>
-          <div className="custom-control custom-radio custom-control-inline">
+          <div className="form-check form-check-inline">
             <input
               type="radio"
               id="radioEmailHide"
-              className="custom-control-input"
+              className="form-check-input"
               name="userForm[isEmailPublished]"
               checked={personalSettingsInfo?.isEmailPublished === false}
               onChange={() => changePersonalSettingsHandler({ isEmailPublished: false })}
             />
-            <label className="custom-control-label" htmlFor="radioEmailHide">{t('Hide')}</label>
+            <label className="form-label form-check-label mb-0" htmlFor="radioEmailHide">{t('Hide')}</label>
           </div>
         </div>
       </div>
 
-      <div className="form-group row">
-        <label className="text-left text-md-right col-md-3 col-form-label">{t('Language')}</label>
-        <div className="col-md-6">
+      <div className="row mt-3">
+        <label className="text-start text-md-end col-md-3 col-form-label">{t('Language')}</label>
+        <div className="col-md-6 my-auto">
           {
             i18nConfig.locales.map((locale) => {
               if (i18n == null) { return }
               const fixedT = i18n.getFixedT(locale);
 
               return (
-                <div key={locale} className="custom-control custom-radio custom-control-inline">
+                <div key={locale} className="form-check form-check-inline me-4">
                   <input
                     type="radio"
                     id={`radioLang${locale}`}
-                    className="custom-control-input"
+                    className="form-check-input"
                     name="userForm[lang]"
                     checked={personalSettingsInfo?.lang === locale}
                     onChange={() => changePersonalSettingsHandler({ lang: locale })}
                   />
-                  <label className="custom-control-label" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
+                  <label className="form-label form-check-label mb-0" htmlFor={`radioLang${locale}`}>{fixedT('meta.display_name') as string}</label>
                 </div>
               );
             })
           }
         </div>
       </div>
-      <div className="form-group row">
-        <label htmlFor="userForm[slackMemberId]" className="text-left text-md-right col-md-3 col-form-label">{t('Slack Member ID')}</label>
+      <div className="row mt-3">
+        <label htmlFor="userForm[slackMemberId]" className="text-start text-md-end col-md-3 col-form-label">{t('Slack Member ID')}</label>
         <div className="col-md-6">
           <input
             className="form-control"
@@ -150,7 +150,7 @@ export const BasicInfoSettings = (): JSX.Element => {
         </div>
       </div>
 
-      <div className="row my-3">
+      <div className="row mt-4">
         <div className="offset-4 col-5">
           <button
             data-testid="grw-besic-info-settings-update-button"

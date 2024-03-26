@@ -3,7 +3,7 @@ import React from 'react';
 import dateFnsFormat from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
-import CopyDropdown from '../../Page/CopyDropdown';
+import { CopyDropdown } from '../../Common/CopyDropdown';
 
 
 type ShareLinkTrProps = {
@@ -54,7 +54,7 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
       </td>
       <td style={{ maxWidth: '0', textAlign: 'center' }}>
         <button className="btn btn-outline-warning" type="button" onClick={onDelete}>
-          <i className="icon-trash"></i>{t('Delete')}
+          <span className="material-symbols-outlined">delete</span>{t('Delete')}
         </button>
       </td>
     </tr>

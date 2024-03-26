@@ -189,14 +189,14 @@ class SecuritySetting extends React.Component {
     return (
       <div className="dropdown">
         <button
-          className="btn btn-outline-secondary dropdown-toggle text-right"
+          className="btn btn-outline-secondary dropdown-toggle text-end"
           type="button"
           id="dropdownMenuButton"
-          data-toggle="dropdown"
+          data-bs-toggle="dropdown"
           aria-haspopup="true"
           aria-expanded="true"
         >
-          <span className="float-left">
+          <span className="float-start">
             {t(getDeleteConfigValueForT(currentState))}
           </span>
         </button>
@@ -238,21 +238,21 @@ class SecuritySetting extends React.Component {
           </button>
         </div>
         <p className="form-text text-muted small">
-          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explain`)}
+          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explanation`)}
         </p>
       </div>
     );
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     const expantDeleteOptionsState = this.expantDeleteOptionsState(deletionType);
 
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
-        <div className="col-md-3 text-md-right">
+        <div className="col-md-3 text-md-end">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>{t('security_settings.page_delete')}</strong>
           )}
@@ -265,7 +265,28 @@ class SecuritySetting extends React.Component {
           {
             !isRecursiveDeletion(deletionType)
               ? (
-                <>{this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}</>
+                <>
+                  {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
+                  {currentState === PageDeleteConfigValue.Anyone && deletionType === DeletionType.CompleteDeletion && (
+                    <>
+                      <input
+                        id="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox"
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={adminGeneralSecurityContainer.state.isAllGroupMembershipRequiredForPageCompleteDeletion}
+                        onChange={() => { adminGeneralSecurityContainer.switchIsAllGroupMembershipRequiredForPageCompleteDeletion() }}
+                      />
+                      <label className="form-check-label" htmlFor="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox">
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion')}
+                      </label>
+                      <p
+                        className="form-text text-muted small mt-2"
+                      >
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion_explanation')}
+                      </p>
+                    </>
+                  )}
+                </>
               )
               : (
                 <>
@@ -275,14 +296,14 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
+                    <span className={`material-symbols-outlined me-1 ${expantDeleteOptionsState ? 'rotate-90' : ''}`}>navigate_next</span>
                     { t('security_settings.other_options') }
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
-                      <p className="card well">
+                      <p className="card custom-card">
                         <span className="text-warning">
-                          <i className="icon-info"></i>
+                          <span className="material-symbols-outlined">info</span>
                           {/* eslint-disable-next-line react/no-danger */}
                           <span dangerouslySetInnerHTML={{ __html: t('security_settings.page_delete_rights_caution') }} />
                         </span>
@@ -347,24 +368,24 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><i className="icon-fw icon-check text-success"></i>{ t('security_settings.always_displayed') }</td>
+                <td><span className="material-symbols-outlined text-success me-1">check_circle</span>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><i className="icon-fw icon-ban text-danger"></i>{ t('security_settings.always_hidden') }</td>
+                <td><span className="material-symbols-outlined text-danger me-1">cancel</span>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByOwner"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByOwner}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByOwner() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByOwner">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByOwner">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -373,15 +394,15 @@ class SecuritySetting extends React.Component {
               <tr>
                 <th scope="row">{ t('only_inside_the_group') }</th>
                 <td>
-                  <div className="custom-control custom-switch custom-checkbox-success">
+                  <div className="form-check form-switch form-check-success">
                     <input
                       type="checkbox"
-                      className="custom-control-input"
+                      className="form-check-input"
                       id="isShowRestrictedByGroup"
                       checked={!adminGeneralSecurityContainer.state.isShowRestrictedByGroup}
                       onChange={() => { adminGeneralSecurityContainer.switchIsShowRestrictedByGroup() }}
                     />
-                    <label className="custom-control-label" htmlFor="isShowRestrictedByGroup">
+                    <label className="form-label form-check-label" htmlFor="isShowRestrictedByGroup">
                       {t('security_settings.displayed_or_hidden')}
                     </label>
                   </div>
@@ -393,21 +414,21 @@ class SecuritySetting extends React.Component {
 
         <h4>{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
-          <div className="col-md-3 text-md-right py-2">
+          <div className="col-md-3 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
           <div className="col-md-9">
             <div className="dropdown">
               <button
-                className={`btn btn-outline-secondary dropdown-toggle text-right col-12
+                className={`btn btn-outline-secondary dropdown-toggle text-end col-12
                             col-md-auto ${adminGeneralSecurityContainer.isWikiModeForced && 'disabled'}`}
                 type="button"
                 id="dropdownMenuButton"
-                data-toggle="dropdown"
+                data-bs-toggle="dropdown"
                 aria-haspopup="true"
                 aria-expanded="true"
               >
-                <span className="float-left">
+                <span className="float-start">
                   {currentRestrictGuestMode === 'Deny' && t('security_settings.guest_mode.deny')}
                   {currentRestrictGuestMode === 'Readonly' && t('security_settings.guest_mode.readonly')}
                 </span>
@@ -423,8 +444,8 @@ class SecuritySetting extends React.Component {
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
               <p className="alert alert-warning mt-2 col-6">
-                <i className="icon-exclamation icon-fw">
-                </i><b>FIXED</b><br />
+                <span className="material-symbols-outlined me-1">error</span>
+                <b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_settings.Fixed by env var',
@@ -456,15 +477,15 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
-            <div className="custom-control custom-switch custom-checkbox-success">
+            <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id="is-user-page-deletion-enabled"
                 checked={adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
                 onChange={() => { adminGeneralSecurityContainer.switchIsUsersHomepageDeletionEnabled() }}
               />
-              <label className="custom-control-label" htmlFor="is-user-page-deletion-enabled">
+              <label className="form-label form-check-label" htmlFor="is-user-page-deletion-enabled">
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>
@@ -489,8 +510,8 @@ class SecuritySetting extends React.Component {
         </div>
 
         <h4>{t('security_settings.session')}</h4>
-        <div className="form-group row">
-          <label className="text-left text-md-right col-md-3 col-form-label">{t('security_settings.max_age')}</label>
+        <div className="row">
+          <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.max_age')}</label>
           <div className="col-md-6">
             <input
               className="form-control col-md-3"
@@ -503,16 +524,16 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
-            <p className="card well">
+            <p className="card custom-card">
               <span className="text-warning">
-                <i className="icon-info"></i> {t('security_settings.max_age_caution')}
+                <span className="material-symbols-outlined">info</span> {t('security_settings.max_age_caution')}
               </span>
             </p>
           </div>
         </div>
 
         <div className="row my-3">
-          <div className="text-center text-md-left offset-md-3 col-md-5">
+          <div className="text-center text-md-start offset-md-3 col-md-5">
             <button type="button" className="btn btn-primary" disabled={adminGeneralSecurityContainer.retrieveError != null} onClick={this.putSecuritySetting}>
               {t('Update')}
             </button>

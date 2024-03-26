@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-
+import type { FC } from 'react';
+import React from 'react';
 
 type Props = {
   isWindowExpanded: boolean,
@@ -25,10 +25,10 @@ const ExpandOrContractButton: FC<Props> = (props: Props) => {
   return (
     <button
       type="button"
-      className="close"
+      className="btn material-symbols-outlined"
       onClick={isWindowExpanded ? clickContractButtonHandler : clickExpandButtonHandler}
     >
-      <i className={`${isWindowExpanded ? 'icon-size-actual' : 'icon-size-fullscreen'}`} style={{ fontSize: '0.8em' }} aria-hidden="true"></i>
+      {isWindowExpanded ? 'close_fullscreen' : 'open_in_full'}
     </button>
   );
 };

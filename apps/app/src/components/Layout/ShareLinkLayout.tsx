@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { GrowiNavbar } from '../Navbar/GrowiNavbar';
+import { useEditorModeClassName } from '../../client/services/layout';
 
 import { RawLayout } from './RawLayout';
 
@@ -11,28 +11,22 @@ const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').th
 const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
 const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
 
-// Fab
-const Fab = dynamic(() => import('../Fab').then(mod => mod.Fab), { ssr: false });
-
 
 type Props = {
   children?: ReactNode
 }
 
 export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
-  return (
-    <RawLayout className="share-link">
-      <GrowiNavbar isGlobalSearchHidden />
+  const className = useEditorModeClassName();
 
-      <div className="page-wrapper d-flex d-print-block">
-        <div className="flex-fill mw-0">
-          {children}
-        </div>
+  return (
+    <RawLayout className={className}>
+
+      <div className="page-wrapper">
+        {children}
       </div>
 
       <GrowiNavbarBottom />
-
-      <Fab />
 
       <ShortcutsModal />
       <PageCreateModal />

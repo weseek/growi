@@ -22,40 +22,40 @@ export const Attachment = (props: AttachmentProps): JSX.Element => {
     }
   };
 
-  const formatIcon = (attachment.fileFormat.match(/image\/.+/i)) ? 'icon-picture' : 'icon-doc';
+  const formatIcon = (attachment.fileFormat.match(/image\/.+/i)) ? 'image' : 'description';
   const btnDownload = (isUserLoggedIn)
     ? (
       <a className="attachment-download" href={attachment.downloadPathProxied}>
-        <i className="icon-cloud-download" />
+        <span className="material-symbols-outlined">cloud_download</span>
       </a>
     )
     : '';
   const btnTrash = (isUserLoggedIn)
     ? (
       <a className="text-danger attachment-delete" onClick={_onAttachmentDeleteClicked}>
-        <i className="icon-trash" />
+        <span className="material-symbols-outlined">delete</span>
       </a>
     )
     : '';
-  const fileType = <span className="attachment-filetype badge badge-pill badge-secondary">{attachment.fileFormat}</span>;
-  const fileInUse = (inUse) ? <span className="attachment-in-use badge badge-pill badge-info">In Use</span> : '';
+  const fileType = <span className="attachment-filetype badge bg-secondary rounded-pill">{attachment.fileFormat}</span>;
+  const fileInUse = (inUse) ? <span className="attachment-in-use badge bg-info rounded-pill">In Use</span> : '';
   // Should UserDate be used like PageRevisionTable ?
   const formatType = 'yyyy/MM/dd HH:mm:ss';
   const createdAt = format(new Date(attachment.createdAt), formatType);
 
   return (
     <div className="attachment mb-2">
-      <span className="mr-1 attachment-userpicture">
+      <span className="me-1 attachment-userpicture">
         <UserPicture user={attachment.creator} size="sm"></UserPicture>
       </span>
-      <a className="mr-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
-        <i className={formatIcon}></i> {attachment.originalName}
+      <a className="me-2" href={attachment.filePathProxied} target="_blank" rel="noopener noreferrer">
+        <span className="material-symbols-outlined ms-1">{formatIcon}</span> {attachment.originalName}
       </a>
-      <span className="mr-2">{fileType}</span>
-      <span className="mr-2">{createdAt}</span>
-      <span className="mr-2">{fileInUse}</span>
-      <span className="mr-2">{btnDownload}</span>
-      <span className="mr-2">{btnTrash}</span>
+      <span className="me-2">{fileType}</span>
+      <span className="me-2">{createdAt}</span>
+      <span className="me-2">{fileInUse}</span>
+      <span className="me-2">{btnDownload}</span>
+      <span className="me-2">{btnTrash}</span>
     </div>
   );
 };

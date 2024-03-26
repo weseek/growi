@@ -23,11 +23,10 @@ export const BookmarkFolderItemControl: React.FC<{
     <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)}>
       { children ?? (
         <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-          <i className="icon-options"></i>
+          <span className="material-symbols-outlined">more_horiz</span>
         </DropdownToggle>
       ) }
       <DropdownMenu
-        modifiers={{ preventOverflow: { boundariesElement: 'viewport' } }}
         container="body"
         style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
       >
@@ -36,7 +35,7 @@ export const BookmarkFolderItemControl: React.FC<{
             onClick={onClickMoveToRoot}
             className="grw-page-control-dropdown-item"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             {t('bookmark_folder.move_to_root')}
           </DropdownItem>
         )}
@@ -44,7 +43,7 @@ export const BookmarkFolderItemControl: React.FC<{
           onClick={onClickRename}
           className="grw-page-control-dropdown-item"
         >
-          <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>
           {t('Rename')}
         </DropdownItem>
 
@@ -54,7 +53,7 @@ export const BookmarkFolderItemControl: React.FC<{
           className="pt-2 grw-page-control-dropdown-item text-danger"
           onClick={onClickDelete}
         >
-          <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
           {t('Delete')}
         </DropdownItem>
       </DropdownMenu>

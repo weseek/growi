@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { useAppTitle } from '~/stores/context';
 
-import CustomBotWithoutProxyConnectionStatus from './CustomBotWithoutProxyConnectionStatus';
+import { CustomBotWithoutProxyConnectionStatus } from './CustomBotWithoutProxyConnectionStatus';
 import CustomBotWithoutProxySettingsAccordion, { botInstallationStep } from './CustomBotWithoutProxySettingsAccordion';
 
 const CustomBotWithoutProxySettings = (props) => {
@@ -24,10 +24,7 @@ const CustomBotWithoutProxySettings = (props) => {
     <>
       <h2 className="admin-setting-header">{t('admin:slack_integration.custom_bot_without_proxy_integration')}
         <a href={t('admin:slack_integration.docs_url.custom_bot_without_proxy')} target="_blank" rel="noopener noreferrer">
-          <i
-            className="fa fa-external-link btn-link ml-2"
-            aria-hidden="true"
-          />
+          <span className="growi-custom-icons btn-link ms-2">external_link</span>
         </a>
       </h2>
 

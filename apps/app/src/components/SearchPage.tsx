@@ -28,8 +28,6 @@ const INITIAL_PAGIONG_SIZE = 20;
 
 type SearchResultListHeadProps = {
   searchResult: IFormattedSearchResult,
-  searchingKeyword: string,
-  offset: number,
   pagingSize: number,
   onPagingSizeChanged: (size: number) => void,
 }
@@ -38,13 +36,10 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   const { t } = useTranslation();
 
   const {
-    searchResult, searchingKeyword, offset, pagingSize,
-    onPagingSizeChanged,
+    searchResult, // pagingSize, onPagingSizeChanged,
   } = props;
 
-  const { took, total, hitsCount } = searchResult.meta;
-  const leftNum = offset + 1;
-  const rightNum = offset + hitsCount;
+  const { took, total } = searchResult.meta;
 
   if (total === 0) {
     return (
@@ -55,23 +50,22 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   }
 
   return (
-    <div className="form-inline d-flex align-items-center justify-content-between">
+    <div className="d-flex align-items-center justify-content-between">
       <div className="text-nowrap">
-        {t('search_result.result_meta')}
-        <span className="search-result-keyword ml-2">{`${searchingKeyword}`}</span>
-        <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+        <span className="ms-3 fw-bold">{total} {t('search_result.hit_number_unit', 'hit')}</span>
         { took != null && (
           // blackout 70px rectangle in VRT
-          <span data-vrt-blackout className="ml-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
+          <span data-vrt-blackout className="ms-3 text-muted d-inline-block" style={{ minWidth: '70px' }}>({took}ms)</span>
         ) }
       </div>
-      <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
-        <div className="input-group-prepend">
-          <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+      {/* TODO: infinite scroll for search result */}
+      {/* <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
+        <div>
+          <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
         </div>
         <select
           defaultValue={pagingSize}
-          className="custom-select"
+          className="form-select"
           id="inputGroupSelect01"
           onChange={e => onPagingSizeChanged(Number(e.target.value))}
         >
@@ -79,7 +73,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
             return <option key={limit} value={limit}>{limit} {t('search_result.page_number_unit')}</option>;
           })}
         </select>
-      </div>
+      </div> */}
     </div>
   );
 });
@@ -185,11 +179,10 @@ export const SearchPage = (): JSX.Element => {
           >
             <button
               type="button"
-              className="btn btn-outline-danger text-nowrap border-0 px-2"
+              className="btn border-0 text-danger"
               disabled={isDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
-              <i className="icon-fw icon-trash"></i>
               {t('search_result.delete_all_selected_page')}
             </button>
           </OperateAllControl>
@@ -221,13 +214,11 @@ export const SearchPage = (): JSX.Element => {
     return (
       <SearchResultListHead
         searchResult={data}
-        searchingKeyword={keyword ?? ''}
-        offset={offset}
         pagingSize={limit}
         onPagingSizeChanged={pagingSizeChangedHandler}
       />
     );
-  }, [data, keyword, limit, offset, pagingSizeChangedHandler]);
+  }, [data, limit, pagingSizeChangedHandler]);
 
   const searchPager = useMemo(() => {
     // when pager is not needed

@@ -14,9 +14,6 @@ import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/
 import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import CustomTabContent from '../CustomNavigation/CustomTabContent';
 import ExpandOrContractButton from '../ExpandOrContractButton';
-import AttachmentIcon from '../Icons/AttachmentIcon';
-import HistoryIcon from '../Icons/HistoryIcon';
-import ShareLinkIcon from '../Icons/ShareLinkIcon';
 
 import { useAutoOpenModalByQueryParam } from './hooks';
 
@@ -46,7 +43,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
   const navTabMapping = useMemo(() => {
     return {
       [PageAccessoriesModalContents.PageHistory]: {
-        Icon: HistoryIcon,
+        Icon: () => <span className="material-symbols-outlined">history</span>,
         Content: () => {
           return <PageHistory onClose={close} />;
         },
@@ -54,14 +51,14 @@ export const PageAccessoriesModal = (): JSX.Element => {
         isLinkEnabled: () => !isGuestUser && !isSharedUser,
       },
       [PageAccessoriesModalContents.Attachment]: {
-        Icon: AttachmentIcon,
+        Icon: () => <span className="material-symbols-outlined">attachment</span>,
         Content: () => {
           return <PageAttachment />;
         },
         i18n: t('attachment_data'),
       },
       [PageAccessoriesModalContents.ShareLink]: {
-        Icon: ShareLinkIcon,
+        Icon: () => <span className="material-symbols-outlined">share</span>,
         Content: () => {
           return <ShareLink />;
         },
@@ -72,16 +69,14 @@ export const PageAccessoriesModal = (): JSX.Element => {
   }, [t, close, isGuestUser, isReadOnlyUser, isSharedUser, isLinkSharingDisabled]);
 
   const buttons = useMemo(() => (
-    <div className="d-flex flex-nowrap">
+    <span className="me-3">
       <ExpandOrContractButton
         isWindowExpanded={isWindowExpanded}
         expandWindow={() => setIsWindowExpanded(true)}
         contractWindow={() => setIsWindowExpanded(false)}
       />
-      <button type="button" className="close" onClick={close} aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
+      <button type="button" className="btn btn-close" onClick={close} aria-label="Close"></button>
+    </span>
   ), [close, isWindowExpanded]);
 
   if (status == null || status.activatedContents == null) {

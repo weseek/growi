@@ -2,61 +2,113 @@ import React, {
   memo, useCallback, useMemo, useState,
 } from 'react';
 
-import { useTranslation } from 'next-i18next';
 import {
-  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  type EditorTheme, type KeyMapMode, DEFAULT_KEYMAP, DEFAULT_THEME,
+} from '@growi/editor';
+import { useTranslation } from 'next-i18next';
+import Image from 'next/image';
+import {
+  Dropdown, DropdownToggle, DropdownMenu, Input, FormGroup,
 } from 'reactstrap';
 
 import { useIsIndentSizeForced } from '~/stores/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
+import {
+  useIsDeviceLargerThanMd,
+} from '~/stores/ui';
 
-import { DEFAULT_THEME, KeyMapMode } from '../../interfaces/editor-settings';
+type RadioListItemProps = {
+  onClick: () => void,
+  icon?: React.ReactNode,
+  text: string,
+  checked?: boolean
+}
 
-
-const AVAILABLE_THEMES = [
-  'eclipse', 'elegant', 'neo', 'mdn-like', 'material', 'dracula', 'monokai', 'twilight',
-];
-
-const TYPICAL_INDENT_SIZE = [2, 4];
-
-
-const ThemeSelector = (): JSX.Element => {
-
-  const { data: editorSettings, update } = useEditorSettings();
-
-  const menuItems = useMemo(() => (
-    <>
-      { AVAILABLE_THEMES.map((theme) => {
-        return <button key={theme} className="dropdown-item" type="button" onClick={() => update({ theme })}>{theme}</button>;
-      }) }
-    </>
-  ), [update]);
-
-  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
-
+const RadioListItem = (props: RadioListItemProps): JSX.Element => {
+  const {
+    onClick, icon, text, checked,
+  } = props;
   return (
-    <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
-        <span className="input-group-text" id="igt-theme">Theme</span>
-      </div>
-      <div className="input-group-append dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-theme"
-        >
-          {selectedTheme}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          {menuItems}
-        </div>
-      </div>
-    </div>
+    <li className="list-group-item border-0 d-flex align-items-center">
+      <input
+        onClick={onClick}
+        className="form-check-input me-3"
+        type="radio"
+        name="listGroupRadio"
+        id={`editor_config_radio_item_${text}`}
+        checked={checked}
+      />
+      {icon}
+      <label className="form-check-label stretched-link fs-6" htmlFor={`editor_config_radio_item_${text}`}>{text}</label>
+    </li>
   );
 };
+
+
+type SelectorProps = {
+  header: string,
+  onClickBefore: () => void,
+  items: JSX.Element,
+}
+
+const Selector = (props: SelectorProps): JSX.Element => {
+
+  const { header, onClickBefore, items } = props;
+  return (
+    <div className="d-flex flex-column w-100">
+      <button type="button" className="btn border-0 d-flex align-items-center text-muted ms-2" onClick={onClickBefore}>
+        <span className="material-symbols-outlined fs-5 py-0 me-1">navigate_before</span>
+        <label>{header}</label>
+      </button>
+      <hr className="my-1" />
+      <ul className="list-group d-flex ms-2">
+        { items }
+      </ul>
+    </div>
+  );
+
+};
+
+
+type EditorThemeToLabel = {
+  [key in EditorTheme]: string;
+}
+
+const EDITORTHEME_LABEL_MAP: EditorThemeToLabel = {
+  defaultlight: 'DefaultLight',
+  eclipse: 'Eclipse',
+  basic: 'Basic',
+  ayu: 'Ayu',
+  rosepine: 'Rosé Pine',
+  defaultdark: 'DefaultDark',
+  material: 'Material',
+  nord: 'Nord',
+  cobalt: 'Cobalt',
+  kimbie: 'Kimbie',
+};
+
+const ThemeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+
+  const { t } = useTranslation();
+  const { data: editorSettings, update } = useEditorSettings();
+  const selectedTheme = editorSettings?.theme ?? DEFAULT_THEME;
+
+  const listItems = useMemo(() => (
+    <>
+      { (Object.keys(EDITORTHEME_LABEL_MAP) as EditorTheme[]).map((theme) => {
+        const themeLabel = EDITORTHEME_LABEL_MAP[theme];
+        return (
+          <RadioListItem onClick={() => update({ theme })} text={themeLabel} checked={theme === selectedTheme} />
+        );
+      }) }
+    </>
+  ), [update, selectedTheme]);
+
+  return (
+    <Selector header={t('page_edit.theme')} onClickBefore={onClickBefore} items={listItems} />
+  );
+});
+ThemeSelector.displayName = 'ThemeSelector';
 
 
 type KeyMapModeToLabel = {
@@ -67,103 +119,79 @@ const KEYMAP_LABEL_MAP: KeyMapModeToLabel = {
   default: 'Default',
   vim: 'Vim',
   emacs: 'Emacs',
-  sublime: 'Sublime Text',
+  vscode: 'Visual Studio Code',
 };
 
-const KeymapSelector = memo((): JSX.Element => {
+const KeymapSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
 
+  const { t } = useTranslation();
   const { data: editorSettings, update } = useEditorSettings();
+  const selectedKeymapMode = editorSettings?.keymapMode ?? DEFAULT_KEYMAP;
 
-  Object.keys(KEYMAP_LABEL_MAP);
-  const menuItems = useMemo(() => (
+  const listItems = useMemo(() => (
     <>
       { (Object.keys(KEYMAP_LABEL_MAP) as KeyMapMode[]).map((keymapMode) => {
         const keymapLabel = KEYMAP_LABEL_MAP[keymapMode];
         const icon = (keymapMode !== 'default')
-          ? <img src={`/images/icons/${keymapMode}.png`} width="16px" className="mr-2"></img>
+          ? <Image src={`/images/icons/${keymapMode}.png`} width={16} height={16} className="me-2" alt={keymapMode} />
           : null;
-        return <button key={keymapMode} className="dropdown-item" type="button" onClick={() => update({ keymapMode })}>{icon}{keymapLabel}</button>;
+        return (
+          <RadioListItem onClick={() => update({ keymapMode })} icon={icon} text={keymapLabel} checked={keymapMode === selectedKeymapMode} />
+        );
       }) }
     </>
-  ), [update]);
+  ), [update, selectedKeymapMode]);
 
-  const selectedKeymapMode = editorSettings?.keymapMode ?? 'default';
 
   return (
-    <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
-        <span className="input-group-text" id="igt-keymap">Keymap</span>
-      </div>
-      <div className="input-group-append dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-keymap"
-        >
-          { editorSettings != null && selectedKeymapMode}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          {menuItems}
-        </div>
-      </div>
-    </div>
+    <Selector header={t('page_edit.keymap')} onClickBefore={onClickBefore} items={listItems} />
   );
-
 });
-
 KeymapSelector.displayName = 'KeymapSelector';
 
-type IndentSizeSelectorProps = {
-  isIndentSizeForced: boolean,
-  selectedIndentSize: number,
-  onChange: (indentSize: number) => void,
-}
 
-const IndentSizeSelector = memo(({ isIndentSizeForced, selectedIndentSize, onChange }: IndentSizeSelectorProps): JSX.Element => {
-  const menuItems = useMemo(() => (
+const TYPICAL_INDENT_SIZE = [2, 4];
+
+const IndentSizeSelector = memo(({ onClickBefore }: {onClickBefore: () => void}): JSX.Element => {
+
+  const { t } = useTranslation();
+  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
+
+  const listItems = useMemo(() => (
     <>
       { TYPICAL_INDENT_SIZE.map((indent) => {
-        return <button key={indent} className="dropdown-item" type="button" onClick={() => onChange(indent)}>{indent}</button>;
+        return (
+          <RadioListItem onClick={() => mutateCurrentIndentSize(indent)} text={indent.toString()} checked={indent === currentIndentSize} />
+        );
       }) }
     </>
-  ), [onChange]);
+  ), [currentIndentSize, mutateCurrentIndentSize]);
 
   return (
-    <div className="input-group flex-nowrap">
-      <div className="input-group-prepend">
-        <span className="input-group-text" id="igt-indent">Indent</span>
-      </div>
-      <div className="input-group-append dropup">
-        <button
-          type="button"
-          className="btn btn-outline-secondary dropdown-toggle"
-          data-toggle="dropdown"
-          aria-haspopup="true"
-          aria-expanded="false"
-          aria-describedby="igt-indent"
-          disabled={isIndentSizeForced}
-        >
-          {selectedIndentSize}
-        </button>
-        <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          {menuItems}
-        </div>
-      </div>
-    </div>
+    <Selector header={t('page_edit.indent')} onClickBefore={onClickBefore} items={listItems} />
   );
-
 });
-
 IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
-const ConfigurationDropdown = memo((): JSX.Element => {
-  const { t } = useTranslation();
+type SwitchItemProps = {
+  onClick: () => void,
+  checked: boolean,
+  text: string,
+};
+const SwitchItem = memo((props: SwitchItemProps): JSX.Element => {
+  const { onClick, checked, text } = props;
+  return (
+    <FormGroup switch>
+      <Input type="switch" checked={checked} onClick={onClick} />
+      <label>{text}</label>
+    </FormGroup>
 
-  const [isCddMenuOpened, setCddMenuOpened] = useState(false);
+  );
+});
+
+const ConfigurationSelector = memo((): JSX.Element => {
+  const { t } = useTranslation();
 
   const { data: editorSettings, update } = useEditorSettings();
 
@@ -174,20 +202,8 @@ const ConfigurationDropdown = memo((): JSX.Element => {
 
     const isActive = editorSettings.styleActiveLine;
 
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
     return (
-      <DropdownItem toggle={false} onClick={() => update({ styleActiveLine: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"></span>
-          <span className="menuitem-label">{ t('page_edit.Show active line') }</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
+      <SwitchItem onClick={() => update({ styleActiveLine: !isActive })} checked={isActive} text={t('page_edit.Show active line')} />
     );
   }, [editorSettings, update, t]);
 
@@ -198,81 +214,126 @@ const ConfigurationDropdown = memo((): JSX.Element => {
 
     const isActive = editorSettings.autoFormatMarkdownTable;
 
-    const iconClasses = ['text-info'];
-    if (isActive) {
-      iconClasses.push('ti ti-check');
-    }
-    const iconClassName = iconClasses.join(' ');
-
     return (
-      <DropdownItem toggle={false} onClick={() => update({ autoFormatMarkdownTable: !isActive })}>
-        <div className="d-flex justify-content-between">
-          <span className="icon-container"></span>
-          <span className="menuitem-label">{ t('page_edit.auto_format_table') }</span>
-          <span className="icon-container"><i className={iconClassName}></i></span>
-        </div>
-      </DropdownItem>
+      <SwitchItem onClick={() => update({ autoFormatMarkdownTable: !isActive })} checked={isActive} text={t('page_edit.auto_format_table')} />
     );
   }, [editorSettings, t, update]);
 
   return (
-    <div className="my-0 form-group">
-      <Dropdown
-        direction="up"
-        className="grw-editor-configuration-dropdown"
-        isOpen={isCddMenuOpened}
-        toggle={() => setCddMenuOpened(!isCddMenuOpened)}
-      >
-
-        <DropdownToggle color="outline-secondary" caret>
-          <i className="icon-settings"></i>
-        </DropdownToggle>
-
-        <DropdownMenu>
-          {renderActiveLineMenuItem()}
-          {renderMarkdownTableAutoFormattingMenuItem()}
-          {/* <DropdownItem divider /> */}
-        </DropdownMenu>
-
-      </Dropdown>
+    <div className="mx-3 mt-1">
+      {renderActiveLineMenuItem()}
+      {renderMarkdownTableAutoFormattingMenuItem()}
     </div>
   );
+});
+ConfigurationSelector.displayName = 'ConfigurationSelector';
 
+
+type ChangeStateButtonProps = {
+  onClick: () => void,
+  header: string,
+  data: string,
+  disabled?: boolean,
+}
+const ChangeStateButton = memo((props: ChangeStateButtonProps): JSX.Element => {
+  const {
+    onClick, header, data, disabled,
+  } = props;
+  return (
+    <button type="button" className="d-flex align-items-center btn btn-sm border-0 my-1" disabled={disabled} onClick={onClick}>
+      <label className="ms-2 me-auto">{header}</label>
+      <label className="text-muted d-flex align-items-center ms-2 me-1">
+        {data}
+        <span className="material-symbols-outlined fs-5 py-0">navigate_next</span>
+      </label>
+    </button>
+  );
 });
 
-ConfigurationDropdown.displayName = 'ConfigurationDropdown';
 
+const OptionsStatus = {
+  Home: 'Home',
+  Theme: 'Theme',
+  Keymap: 'Keymap',
+  Indent: 'Indent',
+} as const;
+type OptionStatus = typeof OptionsStatus[keyof typeof OptionsStatus];
 
 export const OptionsSelector = (): JSX.Element => {
-  const { data: editorSettings } = useEditorSettings();
-  const { data: isIndentSizeForced } = useIsIndentSizeForced();
-  const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
 
-  if (editorSettings == null || isIndentSizeForced == null || currentIndentSize == null) {
+  const { t } = useTranslation();
+
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const [status, setStatus] = useState<OptionStatus>(OptionsStatus.Home);
+  const { data: editorSettings } = useEditorSettings();
+  const { data: currentIndentSize } = useCurrentIndentSize();
+  const { data: isIndentSizeForced } = useIsIndentSizeForced();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+
+  if (editorSettings == null || currentIndentSize == null || isIndentSizeForced == null) {
     return <></>;
   }
 
   return (
-    <>
-      <div className="d-flex flex-row">
-        <span>
-          <ThemeSelector />
-        </span>
-        <span className="d-none d-sm-block ml-2 ml-sm-4">
-          <KeymapSelector />
-        </span>
-        <span className="ml-2 ml-sm-4">
-          <IndentSizeSelector
-            isIndentSizeForced={isIndentSizeForced}
-            selectedIndentSize={currentIndentSize}
-            onChange={newValue => mutateCurrentIndentSize(newValue)}
-          />
-        </span>
-        <span className="ml-2 ml-sm-4">
-          <ConfigurationDropdown />
-        </span>
-      </div>
-    </>
+    <Dropdown isOpen={dropdownOpen} toggle={() => { setStatus(OptionsStatus.Home); setDropdownOpen(!dropdownOpen) }} direction="up" className="">
+      <DropdownToggle
+        className={`btn btn-sm btn-outline-neutral-secondary d-flex align-items-center justify-content-center
+              ${isDeviceLargerThanMd ? '' : 'border-0'}
+              ${dropdownOpen ? 'active' : ''}
+              `}
+      >
+        <span className="material-symbols-outlined py-0 fs-5"> settings </span>
+        {
+          isDeviceLargerThanMd
+            ? <label className="ms-1 me-1">{t('page_edit.editor_config')}</label>
+            : <></>
+        }
+      </DropdownToggle>
+      <DropdownMenu container="body">
+        {
+          status === OptionsStatus.Home && (
+            <div className="d-flex flex-column">
+              <label className="text-muted ms-3">
+                {t('page_edit.editor_config')}
+              </label>
+              <hr className="my-1" />
+              <ChangeStateButton
+                onClick={() => setStatus(OptionsStatus.Theme)}
+                header={t('page_edit.theme')}
+                data={EDITORTHEME_LABEL_MAP[editorSettings.theme ?? ''] ?? ''}
+              />
+              <hr className="my-1" />
+              <ChangeStateButton
+                onClick={() => setStatus(OptionsStatus.Keymap)}
+                header={t('page_edit.keymap')}
+                data={KEYMAP_LABEL_MAP[editorSettings.keymapMode ?? ''] ?? ''}
+              />
+              <hr className="my-1" />
+              <ChangeStateButton
+                disabled={isIndentSizeForced}
+                onClick={() => setStatus(OptionsStatus.Indent)}
+                header={t('page_edit.indent')}
+                data={currentIndentSize.toString() ?? ''}
+              />
+              <hr className="my-1" />
+              <ConfigurationSelector />
+            </div>
+          )
+        }
+        { status === OptionsStatus.Theme && (
+          <ThemeSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
+        )
+        }
+        { status === OptionsStatus.Keymap && (
+          <KeymapSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
+        )
+        }
+        { status === OptionsStatus.Indent && (
+          <IndentSizeSelector onClickBefore={() => setStatus(OptionsStatus.Home)} />
+        )
+        }
+      </DropdownMenu>
+    </Dropdown>
   );
-
 };
