@@ -17,7 +17,7 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <div className={moduleClass}>
+    <div className={`${moduleClass} w-100`}>
       <PagePathHeader
         currentPage={currentPage}
       />

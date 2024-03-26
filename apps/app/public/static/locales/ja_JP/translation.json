@@ -109,6 +109,7 @@
   "Error occurred": "エラーが発生しました",
   "Input page name": "ページ名を入力",
   "Input page name (optional)": "ページ名を入力(空欄OK)",
+  "Input parent page path": "親ページのパスを入力",
   "New Page": "新規ページ",
   "Create under": "ページを以下に作成",
   "V5 Page Migration": "V5 互換形式 への変換",
