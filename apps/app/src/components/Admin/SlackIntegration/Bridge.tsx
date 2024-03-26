@@ -1,19 +1,24 @@
-import React from 'react';
 
 import { useTranslation } from 'next-i18next';
-import PropTypes from 'prop-types';
 import { UncontrolledTooltip } from 'reactstrap';
 
 const ProxyCircle = () => (
-  <div className="grw-bridge-proxy-circle">
-    <div className="circle position-absolute bg-primary border-light rounded-circle">
-      <p className="circle-inner text-light fw-bold d-none d-lg-inline">Proxy Server</p>
-      <p className="circle-inner grw-proxy-server-name d-block d-lg-none">Proxy Server</p>
+  <div className="grw-bridge-proxy-circle position-relative">
+    <div className="circle position-absolute m-auto z-1 bg-primary border-light rounded-circle">
+      <p className="circle-inner position-absolute text-light fw-bold d-none d-lg-inline">Proxy Server</p>
+      <p className="circle-inner position-absolute grw-proxy-server-name d-inline d-lg-none">Proxy Server</p>
     </div>
   </div>
 );
 
-const BridgeCore = (props) => {
+type BridgeCoreProps = {
+  description: string,
+  iconClass: string,
+  iconName: string,
+  hrClass: string,
+  withProxy?: boolean,
+}
+const BridgeCore = (props: BridgeCoreProps): JSX.Element => {
   const {
     description, iconClass, iconName, hrClass, withProxy,
   } = props;
@@ -44,16 +49,13 @@ const BridgeCore = (props) => {
   );
 };
 
-BridgeCore.propTypes = {
-  description: PropTypes.string.isRequired,
-  iconClass: PropTypes.string.isRequired,
-  iconName: PropTypes.string.isRequired,
-  hrClass: PropTypes.string.isRequired,
-  withProxy: PropTypes.bool,
-};
 
-
-const Bridge = (props) => {
+type BridgeProps = {
+  errorCount: number,
+  totalCount: number,
+  withProxy?: boolean,
+}
+export const Bridge = (props: BridgeProps): JSX.Element => {
   const { t } = useTranslation();
   const { errorCount, totalCount, withProxy } = props;
 
@@ -95,10 +97,4 @@ const Bridge = (props) => {
   );
 };
 
-Bridge.propTypes = {
-  errorCount: PropTypes.number.isRequired,
-  totalCount: PropTypes.number.isRequired,
-  withProxy: PropTypes.bool,
-};
-
-export default Bridge;
+Bridge.displayName = 'Bridge';

@@ -33,7 +33,7 @@ Let's increase the amount of information shared on a daily base!
 - GROWI also allows pages to be viewed by users outside the company who do not have an account
     - Let's share information with users outside your company using shared links!
 
-#### :bulb: Check [Sndbox](/Sandbox) to learn more on how to edit pages！
+#### :bulb: Check [Sandbox](/Sandbox) to learn more on how to edit pages！
 
 
 # :wrench: For Administrators - Once GROWI is created
