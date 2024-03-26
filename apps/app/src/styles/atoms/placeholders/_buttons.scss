@@ -1,16 +1,5 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '../mixins';
-
-// define disabled button w/o pointer-events, see _override-bootstrap.scss
-.btn.disabled,
-.btn[disabled],
-fieldset[disabled] .btn {
-  &.grw-pointer-events-none {
-    pointer-events: none;
-  }
-}
-
 %btn-nologin {
   transition: 0.8s ease;
   --bs-btn-border-color: #{rgba(white, 0.1)};

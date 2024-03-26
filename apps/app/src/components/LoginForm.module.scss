@@ -1,6 +1,6 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-@use '~/styles/atoms/buttons';
+@use '~/styles/atoms/placeholders/buttons';
 
 .login-form :global {
   // To adjust the behavior, this problem is not solved.
