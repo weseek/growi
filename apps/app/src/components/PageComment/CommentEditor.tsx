@@ -255,16 +255,19 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const renderBeforeReady = useCallback((): JSX.Element => {
     return (
-      <div className="text-center">
+      <div>
         <NotAvailableForGuest>
           <NotAvailableForReadOnlyUser>
             <button
               type="button"
-              className="btn btn-lg btn-link"
+              className="btn btn-secondary w-100 text-start py-3"
               onClick={() => setIsReadyToUse(true)}
               data-testid="open-comment-editor-button"
             >
-              <span className="material-symbols-outlined">comment</span> Add Comment
+              <span className="me-2">
+                <UserPicture user={currentUser} noLink noTooltip />
+              </span>
+              Add Comment in markdown...
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
@@ -398,9 +401,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   return (
     <div className={`${styles['comment-editor-styles']} form page-comment-form`}>
       <div className="comment-form">
-        <div className="comment-form-user">
-          <UserPicture user={currentUser} noLink noTooltip />
-        </div>
         <div className="comment-form-main">
           {isReadyToUse
             ? renderReady()

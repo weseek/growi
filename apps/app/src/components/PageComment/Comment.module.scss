@@ -31,14 +31,6 @@
     // comment section
     .page-comment-main {
       @extend %comment-section;
-      @include bs.media-breakpoint-up(sm) {
-        margin-left: 4.5em;
-      }
-      @include bs.media-breakpoint-down(xs) {
-        &:before {
-          content: none;
-        }
-      }
 
       pointer-events: auto;
 

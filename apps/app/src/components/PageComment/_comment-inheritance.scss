@@ -22,15 +22,8 @@
 }
 
 %picture {
-  float: left;
-  width: 3em;
-  height: 3em;
-  margin-top: 0.8em;
-
-  @include bs.media-breakpoint-down(xs) {
-    width: 2em;
-    height: 2em;
-  }
+  width: 1.2em;
+  height: 1.2em;
 }
 
 $codemirror-default-height: 300px;

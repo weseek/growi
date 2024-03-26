@@ -10,20 +10,10 @@
 
   .comment-form {
     position: relative;
-    margin-top: 1em;
 
     // user icon
     .picture {
       @extend %picture;
-    }
-
-    // seciton
-    .comment-form-main {
-      @extend %comment-section;
-      margin-left: 4.5em;
-      @include bs.media-breakpoint-down(xs) {
-        margin-left: 3.5em;
-      }
     }
 
     // textarea
