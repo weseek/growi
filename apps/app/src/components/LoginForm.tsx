@@ -20,7 +20,6 @@ import styles from './LoginForm.module.scss';
 
 const moduleClass = styles['login-form'];
 
-
 type LoginFormProps = {
   username?: string,
   name?: string,
