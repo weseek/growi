@@ -57,46 +57,40 @@
     --bs-btn-hover-bg: #{rgba(#204986, 0.8)};
     --bs-btn-active-bg: #{rgba(#204986, 0.8)};
   }
-  .function-btn {
-    background-color: rgba(bs.$gray-800, 0.8);
-    &:hover ,
-    &:focus {
-      background-color: rgba(black, 0.5);
-    }
+
+  .btn.function-btn {
+    --bs-btn-bg: #{rgba(bs.$gray-800, 0.8)};
+    --bs-btn-hover-bg: #{rgba(bs.$gray-800, 0.5)};
+    --bs-btn-active-bg: #{rgba(bs.$gray-800, 0.5)};
   }
-  .google-btn {
-    background-color: rgba(#4285F4, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#4285F4, 0.8);
-    }
+
+  .btn.google-btn {
+    --bs-btn-bg: #{rgba(#4285F4, 0.4)};
+    --bs-btn-hover-bg: #{rgba(#4285F4, 0.8)};
+    --bs-btn-active-bg: #{rgba(#4285F4, 0.8)};
   }
-  .github-btn {
-    background-color: rgba(#403D3E, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#403D3E, 0.7);
-    }
+
+  .btn.github-btn {
+    --bs-btn-bg: #{rgba(#403D3E, 0.4)};
+    --bs-btn-hover-bg: #{rgba(#403D3E, 0.7)};
+    --bs-btn-active-bg: #{rgba(#403D3E, 0.7)};
   }
-  .facebook-btn {
-    background-color: rgba(#29487d, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#29487d, 0.9);
-    }
+
+  .btn.facebook-btn {
+    --bs-btn-bg: #{rgba(#29487d, 0.4)};
+    --bs-btn-hover-bg: #{rgba(#29487d, 0.9)};
+    --bs-btn-active-bg: #{rgba(#29487d, 0.9)};
   }
-  .oidc-btn {
-    background-color: rgba(#835B1A, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#835B1A, 0.8);
-    }
+
+  .btn.oidc-btn {
+    --bs-btn-bg: #{rgba(#835B1A, 0.4)};
+    --bs-btn-hover-bg: #{rgba(#835B1A, 0.8)};
+    --bs-btn-active-bg: #{rgba(#835B1A, 0.8)};
   }
-  .saml-btn {
-    background-color: rgba(#138957, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(#138957, 0.7);
-    }
+
+  .btn.saml-btn {
+    --bs-btn-bg: #{rgba(#138957, 0.4)};
+    --bs-btn-hover-bg: #{rgba(#138957, 0.7)};
+    --bs-btn-active-bg: #{rgba(#138957, 0.7)};
   }
 }

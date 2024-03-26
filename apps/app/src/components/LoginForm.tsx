@@ -237,7 +237,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group my-4">
             <button
               type="submit"
-              className="btn btn-secondary login-btn col-6 login mx-auto d-flex justify-content-between"
+              className="btn btn-secondary login-btn col-6 mx-auto d-flex justify-content-between"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
@@ -252,9 +252,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             </button>
           </div>
         </form>
-        <div className="text-center text-line d-flex align-items-center mb-3">
-          <p className="text-white mb-0">{t('or')}</p>
-        </div>
       </>
     );
   }, [
@@ -288,10 +285,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     };
 
     return (
-      <div key={auth} className="my-2">
-        <button type="button" className={`btn btn-fill ${authBtn} col-10 col-sm-6 mx-auto`} onClick={handleLoginWithExternalAuth}>
-          <span className="btn-label pe-0">{authIcon[auth]}</span>
-          <span className="btn-label-text">{t('Sign in with External auth', { signin: signin[auth] })}</span>
+      <div key={auth} className="my-2 text-center">
+        <button
+          type="button"
+          className={`btn btn-secondary ${authBtn} col-10 col-sm-6 mx-auto d-flex justify-content-between`}
+          onClick={handleLoginWithExternalAuth}
+        >
+          <span>{authIcon[auth]}</span>
+          <span className="flex-grow-1">{t('Sign in with External auth', { signin: signin[auth] })}</span>
         </button>
       </div>
     );
@@ -302,6 +303,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
+        <div className="text-center text-line d-flex align-items-center mb-3">
+          <p className="text-white mb-0">{t('or')}</p>
+        </div>
         <div className="mt-2">
           {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
             if (!objOfIsExternalAuthEnableds[auth]) {
@@ -309,8 +313,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             }
             return renderExternalAuthInput(auth);
           })}
-        </div>
-        <div className="text-center">
         </div>
       </>
     );
@@ -505,17 +507,17 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-fill register-btn col-7"
+              className="btn btn-secondary d-flex register-btn col-7"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
-              <span className="btn-label pe-0">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <span className="btn-label-text">{submitText}</span>
+              <span className="flex-grow-1">{submitText}</span>
             </button>
           </div>
         </form>
@@ -524,7 +526,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="text-end col-12 mb-5">
             <a
               href="#register"
-              className="d-block btn btn-fill function-btn col-10 col-sm-9 mx-auto py-1"
+              className="d-block btn btn-secondary function-btn col-10 col-sm-9 mx-auto py-1"
               style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
               onClick={switchForm}
             >
@@ -557,7 +559,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-4">
                     <a
                       href="/forgot-password"
-                      className="d-block btn btn-fill function-btn col-10 col-sm-9 mx-auto py-1"
+                      className="d-block btn btn-secondary function-btn col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                     >
                       <span className="material-symbols-outlined me-2 fs-5">vpn_key</span>{t('forgot_password.forgot_password')}
@@ -569,7 +571,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   <div className="mt-2 mb-5">
                     <a
                       href="#register"
-                      className="d-block btn btn-fill register-btn function-btn col-10 col-sm-9 mx-auto py-1"
+                      className="d-block btn btn-secondary function-btn function-btn col-10 col-sm-9 mx-auto py-1"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={switchForm}
                     >
