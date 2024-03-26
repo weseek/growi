@@ -4444,7 +4444,7 @@ class PageService implements IPageService {
       const shoudDropIndex = foundTargetField != null && isNotSpec;
       const shoudCreateIndex = foundTargetField == null || shoudDropIndex;
 
-      logger.debug('pageService.createTtlIndex', {
+      logger.info('pageService.createTtlIndex', {
         indexes,
         foundTargetField,
         targetField,
