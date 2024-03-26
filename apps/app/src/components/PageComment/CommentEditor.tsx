@@ -6,6 +6,7 @@ import {
   CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
 import {
@@ -96,6 +97,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
   const [incremented, setIncremented] = useState(false);
+
+  const { t } = useTranslation('');
 
   const editorRef = useRef<IEditorMethods>(null);
 
@@ -308,30 +311,25 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
       <Button
-        outline
-        color="danger"
-        size="xs"
-        className="btn btn-outline-danger rounded-pill"
+        className="btn btn-outline-neutral-secondary"
         onClick={cancelButtonClickedHandler}
       >
-        Cancel
+        {t('Cancel')}
       </Button>
     );
     const submitButton = (
       <Button
         data-testid="comment-submit-button"
-        outline
-        color="primary"
-        className="btn btn-outline-primary rounded-pill"
+        className="btn btn-primary"
         onClick={postCommentHandler}
       >
-        Comment
+        {t('comment')}
       </Button>
     );
 
     return (
       <>
-        <div className="comment-write">
+        <div className="comment-write p-3">
           <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
           <TabContent activeTab={activeTab}>
             <TabPane tabId="comment_editor">
@@ -365,7 +363,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </TabContent>
         </div>
 
-        <div className="comment-submit">
+        <div className="comment-submit px-3 pb-3">
           <div className="d-flex">
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
@@ -401,7 +399,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   return (
     <div className={`${styles['comment-editor-styles']} form page-comment-form`}>
       <div className="comment-form">
-        <div className="comment-form-main">
+        <div className="comment-form-main bg-secondary rounded">
           {isReadyToUse
             ? renderReady()
             : renderBeforeReady()
