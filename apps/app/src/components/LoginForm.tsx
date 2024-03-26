@@ -524,7 +524,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <a
               href="#login"
               className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"
-              style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+              style={{ pointerEvents: isLoading ? 'none' : undefined }}
               onClick={switchForm}
             >
               <span className="material-symbols-outlined fs-5">login</span>
