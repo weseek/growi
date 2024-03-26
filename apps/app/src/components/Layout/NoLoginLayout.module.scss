@@ -42,19 +42,6 @@
     }
   }
 
-  .btn-fill {
-    border: 1px solid rgba(white, 0.1);
-    transition: 0.8s ease;
-  }
-
-  .register-btn {
-    background-color: rgba(bs.$success, 0.4);
-    &:hover ,
-    &:focus {
-      background-color: rgba(bs.$success, 0.8);
-    }
-  }
-
   // footer link text
   .link-growi-org {
     font-size: smaller;
