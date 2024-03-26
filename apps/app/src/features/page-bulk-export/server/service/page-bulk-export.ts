@@ -1,3 +1,5 @@
+import { createGzip } from 'node:zlib';
+import type { Readable } from 'stream';
 import { Writable } from 'stream';
 
 import { type IPage, isPopulated } from '@growi/core';
@@ -52,7 +54,7 @@ class PageBulkExportService {
   /**
    * Get a ReadableStream of all the pages under the specified path, including the root page.
    */
-  private getPageReadableStream(basePagePath: string) {
+  private getPageReadableStream(basePagePath: string): Readable {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
@@ -63,13 +65,13 @@ class PageBulkExportService {
       .query
       .populate('revision')
       .lean()
-      .cursor({ batchSize: 100 }); // convert to stream
+      .cursor({ batchSize: 100 });
   }
 
   /**
    * Get a Writable that writes the page body to a zip file
    */
-  private getPageWritable(zipArchiver: Archiver) {
+  private getPageWritable(zipArchiver: Archiver): Writable {
     return new Writable({
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
