@@ -4431,7 +4431,7 @@ class PageService implements IPageService {
   }
 
   async createTtlIndex(): Promise<void> {
-    const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
+    const wipPageExpirationSeconds = 172801;
     const collection = mongoose.connection.collection('pages');
 
     try {
@@ -4458,6 +4458,9 @@ class PageService implements IPageService {
       }
 
       if (shoudCreateIndex) {
+        logger.info('pageService.createTtlIndex', {
+          index: await collection.indexes(),
+        });
         await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: wipPageExpirationSeconds });
       }
     }
