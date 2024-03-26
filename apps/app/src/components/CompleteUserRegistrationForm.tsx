@@ -175,9 +175,15 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
               </div>
 
               <div className="input-group justify-content-center mt-4">
-                <button type="button" disabled={forceDisableForm || disableForm} className="btn btn-fill register-btn col-6 login mx-auto">
-                  <span className="btn-label pe-0"><span className="material-symbols-outlined">person_add</span></span>
-                  <span className="btn-label-text">{t('Create')}</span>
+                <button
+                  type="button"
+                  disabled={forceDisableForm || disableForm}
+                  className="btn btn-secoundary register-btn col-6 mx-auto d-flex justify-content-between"
+                >
+                  <span>
+                    <span className="material-symbols-outlined">person_add</span>
+                  </span>
+                  <span className="flex-grow-1">{t('Create')}</span>
                 </button>
               </div>
 

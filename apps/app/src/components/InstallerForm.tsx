@@ -205,21 +205,21 @@ const InstallerForm = memo((): JSX.Element => {
             />
           </div>
 
-          <div className="input-group mt-4 d-flex justify-content-center">
+          <div className="input-group mt-4 justify-content-center">
             <button
               data-testid="btnSubmit"
               type="submit"
-              className="btn-fill btn register-btn"
+              className="btn btn-secondary register-btn col-6 d-flex justify-content-between"
               disabled={isLoading}
             >
-              <span className="btn-label pe-0">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <span className="btn-label-text">{ t('Create') }</span>
+              <span className="flex-grow-1">{ t('Create') }</span>
             </button>
           </div>
 

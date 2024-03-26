@@ -316,7 +316,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </>
     );
-  }, [props, renderExternalAuthInput]);
+  }, [props, t, renderExternalAuthInput]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -507,7 +507,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-secondary d-flex register-btn col-7"
+              className="btn btn-secondary register-btn d-flex col-7"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
               <span>
