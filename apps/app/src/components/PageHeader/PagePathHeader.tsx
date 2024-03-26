@@ -1,5 +1,7 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FC } from 'react';
+import {
+  useState, useEffect, useCallback, memo, useMemo,
+} from 'react';
+import type { CSSProperties, FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -24,7 +26,7 @@ type Props = {
   currentPage: IPagePopulatedToShowRevision
 }
 
-export const PagePathHeader: FC<Props> = (props) => {
+export const PagePathHeader: FC<Props> = memo((props: Props) => {
   const { t } = useTranslation();
   const { currentPage } = props;
 
@@ -36,6 +38,8 @@ export const PagePathHeader: FC<Props> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
   const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
+
+  // const [isIconHidden, setIsIconHidden] = useState(false);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
@@ -71,22 +75,25 @@ export const PagePathHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [parentPagePath]);
 
-  const clickOutSideHandler = useCallback((e) => {
-    const container = document.getElementById('page-path-header');
+  // TODO: https://redmine.weseek.co.jp/issues/141062
+  // Truncate left side and don't use getElementById
+  //
+  // useEffect(() => {
+  //   const areaElem = document.getElementById('grw-page-path-header-container');
+  //   const linkElem = document.getElementById('grw-page-path-hierarchical-link');
 
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
-  }, []);
+  //   const areaElemWidth = areaElem?.offsetWidth;
+  //   const linkElemWidth = linkElem?.offsetWidth;
 
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
-
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, [clickOutSideHandler]);
-
+  //   if (areaElemWidth && linkElemWidth) {
+  //     setIsIconHidden(linkElemWidth > areaElemWidth);
+  //   }
+  //   else {
+  //     setIsIconHidden(false);
+  //   }
+  // }, [currentPage]);
+  //
+  // const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -95,27 +102,36 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small`}
+      className={`d-flex ${moduleClass} small position-relative`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="me-2">
+      <div
+        id="grw-page-path-header-container"
+        className="me-2 d-inline-block overflow-hidden"
+      >
         { isRenameInputShown && (
-          <div className="position-absolute">
+          <div className="position-absolute w-100">
             <ClosableTextInput
-              useAutosizeInput
               value={editingParentPagePath}
-              placeholder={t('Input page name')}
+              placeholder={t('Input parent page path')}
               inputClassName="form-control-sm"
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
               validationTarget={ValidationTarget.PAGE}
+              onClickOutside={onPressEscape}
             />
           </div>
         ) }
-        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
-          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+        <div
+          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          // style={styles}
+        >
+          <PagePathHierarchicalLink
+            linkedPagePath={linkedPagePath}
+            // isIconHidden={isIconHidden}
+          />
         </div>
       </div>
 
@@ -140,4 +156,4 @@ export const PagePathHeader: FC<Props> = (props) => {
       {isOpened && <PageSelectModal />}
     </div>
   );
-};
+});

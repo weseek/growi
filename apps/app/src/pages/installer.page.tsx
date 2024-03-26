@@ -47,6 +47,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
         i18n: t('installer.tab'),
       },
       external_accounts: {
+        // TODO: chack and fix font-size. see: https://redmine.weseek.co.jp/issues/143015
         Icon: () => <span className="growi-custom-icons">external_link</span>,
         Content: DataTransferForm,
         i18n: tCommons('g2g_data_transfer.tab'),
