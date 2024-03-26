@@ -11,6 +11,12 @@ import { toastError } from '../client/util/toastr';
 
 import { CompleteUserRegistration } from './CompleteUserRegistration';
 
+
+import styles from './CompleteUserRegistrationForm.module.scss';
+
+const moduleClass = styles['complete-user-registration-form'] ?? '';
+
+
 interface Props {
   email: string,
   token: string,
@@ -85,7 +91,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   return (
     <>
-      <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog">
+      <div className={`${moduleClass} nologin-dialog mx-auto rounded-4 rounded-top-0`} id="nologin-dialog">
         <div className="row mx-0">
           <div className="col-12 px-4">
 
@@ -178,7 +184,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
                 <button
                   type="button"
                   disabled={forceDisableForm || disableForm}
-                  className="btn btn-secoundary register-btn col-6 mx-auto d-flex justify-content-between"
+                  className="btn btn-secondary register-btn col-6 mx-auto d-flex justify-content-between"
                 >
                   <span>
                     <span className="material-symbols-outlined">person_add</span>

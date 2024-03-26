@@ -64,11 +64,6 @@
     --bs-btn-border-color: #{rgba(white, 0.1)};
   }
 
-  .btn.register-btn {
-    --bs-btn-bg: #{rgba(bs.$success, 0.4)};
-    --bs-btn-hover-bg: #{rgba(bs.$success, 0.8)};
-    --bs-btn-active-bg: #{rgba(bs.$success, 0.8)};
-  }
 }
 
 .link-switch {

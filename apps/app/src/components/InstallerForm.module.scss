@@ -1,0 +1,7 @@
+@use '~/styles/atoms/buttons';
+
+.installer-form :global {
+  .btn.register-btn {
+    @extend %btn-register;
+  }
+}

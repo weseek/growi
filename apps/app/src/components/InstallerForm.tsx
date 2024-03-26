@@ -12,6 +12,11 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 
 
+import styles from './InstallerForm.module.scss';
+
+const moduleClass = styles['installer-form'] ?? '';
+
+
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();
 
@@ -88,7 +93,7 @@ const InstallerForm = memo((): JSX.Element => {
     : <span><span className="material-symbols-outlined">block</span>{ t('installer.unavaliable_user_id') }</span>;
 
   return (
-    <div data-testid="installerForm" className={`nologin-dialog py-3 px-4 rounded-4 rounded-top-0 mx-auto${hasErrorClass}`}>
+    <div data-testid="installerForm" className={`${moduleClass} nologin-dialog py-3 px-4 rounded-4 rounded-top-0 mx-auto${hasErrorClass}`}>
       <div className="row mt-3">
         <div className="col-md-12">
           <p className="alert alert-success">
