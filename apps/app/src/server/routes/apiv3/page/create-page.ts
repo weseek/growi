@@ -1,7 +1,5 @@
-import { allOrigin } from '@growi/core';
-import type {
-  IPage, IUser, IUserHasId,
-} from '@growi/core';
+import type { IPage, IUser, IUserHasId } from '@growi/core';
+import { allOrigin, Lang } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -22,12 +20,12 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
+import { detectLocaleFromBrowserAcceptLanguage } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
-
 
 const logger = loggerFactory('growi:routes:apiv3:page:create-page');
 
@@ -42,9 +40,13 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
   return path;
 }
 
-async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
-  const basePathname = 'Untitled';
+async function determinePath(locale: Lang, _parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
+  const basePathnames = {
+    [Lang.en_US]: 'Untitled',
+    [Lang.ja_JP]: '無題のページ',
+    [Lang.zh_CN]: 'Untitled',
+  };
+  const basePathname = basePathnames[locale] || 'Untitled';
 
   if (_path != null) {
     const path = normalizePath(_path);
@@ -211,7 +213,12 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let pathToCreate: string;
       try {
         const { path, parentPath, optionalParentPath } = req.body;
-        pathToCreate = await determinePath(parentPath, path, optionalParentPath);
+
+        // determine language
+        const locale = req.user == null ? detectLocaleFromBrowserAcceptLanguage(req.headers)
+          : (req.user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+
+        pathToCreate = await determinePath(locale, parentPath, path, optionalParentPath);
       }
       catch (err) {
         return res.apiv3Err(new ErrorV3(err.toString(), 'could_not_create_page'));
