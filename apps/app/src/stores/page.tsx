@@ -7,8 +7,11 @@ import type {
   IPageInfo, IPageInfoForOperation,
   IRevision, IRevisionHasId,
 } from '@growi/core';
+import { useSWRStatic } from '@growi/core/dist/swr';
 import { isClient, pagePathUtils } from '@growi/core/dist/utils';
-import useSWR, { mutate, useSWRConfig, type SWRResponse } from 'swr';
+import useSWR, {
+  mutate, useSWRConfig, type SWRResponse, type SWRConfiguration,
+} from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRInfinite, { type SWRInfiniteResponse } from 'swr/infinite';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
@@ -16,35 +19,37 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
+import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
-import { useStaticSWR } from './use-static-swr';
+import { useRemoteRevisionId } from './remote-latest-page';
+
 
 const { isPermalink: _isPermalink } = pagePathUtils;
 
 
 export const useCurrentPageId = (initialData?: Nullable<string>): SWRResponse<Nullable<string>, Error> => {
-  return useStaticSWR<Nullable<string>, Error>('currentPageId', initialData);
+  return useSWRStatic<Nullable<string>, Error>('currentPageId', initialData);
 };
 
 export const useIsLatestRevision = (initialData?: boolean): SWRResponse<boolean, any> => {
-  return useStaticSWR('isLatestRevision', initialData);
+  return useSWRStatic('isLatestRevision', initialData);
 };
 
 export const useIsNotFound = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR<boolean, Error>('isNotFound', initialData, { fallbackData: false });
+  return useSWRStatic<boolean, Error>('isNotFound', initialData, { fallbackData: false });
 };
 
 export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[], Error> => {
-  return useStaticSWR<string[], Error>('templateTagData', initialData);
+  return useSWRStatic<string[], Error>('templateTagData', initialData);
 };
 
 export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR<string, Error>('templateBodyData', initialData);
+  return useSWRStatic<string, Error>('templateBodyData', initialData);
 };
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
@@ -52,7 +57,31 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
   const key = 'currentPage';
 
   const { cache } = useSWRConfig();
-  const shouldMutate = initialData?._id !== cache.get(key)?.data?._id && initialData !== undefined;
+
+  // Problem 1: https://github.com/weseek/growi/pull/7772/files#diff-4c1708c4f959974166c15435c6b35950ba01bbf35e7e4b8e99efeb125a8000a7
+  // Problem 2: https://redmine.weseek.co.jp/issues/141027
+  const shouldMutate = (() => {
+    if (initialData === undefined) {
+      return false;
+    }
+
+    // reset when null
+    if (initialData == null) {
+      return true;
+    }
+
+    const cachedData = cache.get(key)?.data as IPagePopulatedToShowRevision|null;
+    if (initialData._id !== cachedData?._id) {
+      return true;
+    }
+
+    // mutate when the empty page has updated
+    if (cachedData?.revision == null && initialData.revision != null) {
+      return true;
+    }
+
+    return false;
+  })();
 
   useEffect(() => {
     if (shouldMutate) {
@@ -67,6 +96,17 @@ export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|nu
   return useSWR(key, null, {
     keepPreviousData: true,
   });
+};
+
+const getPageApiErrorHandler = (errs: AxiosResponse[]) => {
+  if (!Array.isArray(errs)) { throw Error('error is not array') }
+
+  const statusCode = errs[0].status;
+  if (statusCode === 403 || statusCode === 404) {
+    // for NotFoundPage
+    return null;
+  }
+  throw Error('failed to get page');
 };
 
 export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToShowRevision|null> => {
@@ -85,19 +125,9 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
 
   return useSWRMutation(
     key,
-    async() => {
-      return apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
-        .then(result => result.data.page)
-        .catch((errs) => {
-          if (!Array.isArray(errs)) { throw Error('error is not array') }
-          const statusCode = errs[0].status;
-          if (statusCode === 403 || statusCode === 404) {
-            // for NotFoundPage
-            return null;
-          }
-          throw Error('failed to get page');
-        });
-    },
+    () => apiv3Get<{ page: IPagePopulatedToShowRevision }>('/page', { pageId: currentPageId, shareLinkId, revisionId })
+      .then(result => result.data.page)
+      .catch(getPageApiErrorHandler),
     {
       populateCache: true,
       revalidate: false,
@@ -105,21 +135,36 @@ export const useSWRMUTxCurrentPage = (): SWRMutationResponse<IPagePopulatedToSho
   );
 };
 
-export const useSWRxPageByPath = (path?: string): SWRResponse<IPagePopulatedToShowRevision, Error> => {
+export const useSWRxPageByPath = (path?: string, config?: SWRConfiguration): SWRResponse<IPagePopulatedToShowRevision|null, Error> => {
   return useSWR(
     path != null ? ['/page', path] : null,
-    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path }).then(result => result.data.page),
+    ([endpoint, path]) => apiv3Get<{ page: IPagePopulatedToShowRevision }>(endpoint, { path })
+      .then(result => result.data.page)
+      .catch(getPageApiErrorHandler),
+    {
+      ...config,
+      keepPreviousData: true,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
-export const useSWRxTagsInfo = (pageId: Nullable<string>): SWRResponse<IPageTagsInfo | undefined, Error> => {
+export const useSWRxTagsInfo = (pageId: Nullable<string>, config?: SWRConfiguration): SWRResponse<IPageTagsInfo | null, Error> => {
   const { data: shareLinkId } = useShareLinkId();
 
   const endpoint = `/pages.getPageTag?pageId=${pageId}`;
 
-  return useSWRImmutable(
+  return useSWR(
     shareLinkId == null && pageId != null ? [endpoint, pageId] : null,
-    ([endpoint, pageId]) => apiGet<IPageTagsInfo>(endpoint, { pageId }).then(result => result),
+    ([endpoint, pageId]) => apiGet<IPageTagsInfo>(endpoint, { pageId })
+      .then(result => result)
+      .catch(getPageApiErrorHandler),
+    {
+      ...config,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    },
   );
 };
 
@@ -135,12 +180,15 @@ export const useSWRxPageInfo = (
     initialData?: IPageInfoForEntity,
 ): SWRResponse<IPageInfo | IPageInfoForOperation> => {
 
+  // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
+  const { data: isGuestUser } = useIsGuestUser();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const key = useMemo(() => {
-    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
-  }, [fixedShareLinkId, pageId]);
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId, isGuestUser] : null;
+  }, [fixedShareLinkId, isGuestUser, pageId]);
 
   const swrResult = useSWRImmutable(
     key,
@@ -277,5 +325,17 @@ export const useIsTrashPage = (): SWRResponse<boolean, Error> => {
     ([, pagePath]) => pagePathUtils.isTrashPage(pagePath),
     // TODO: set fallbackData
     // { fallbackData:  }
+  );
+};
+
+export const useIsRevisionOutdated = (): SWRResponse<boolean, Error> => {
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: remoteRevisionId } = useRemoteRevisionId();
+
+  const currentRevisionId = currentPage?.revision?._id;
+
+  return useSWRImmutable(
+    currentRevisionId != null && remoteRevisionId != null ? ['useIsRevisionOutdated', currentRevisionId, remoteRevisionId] : null,
+    ([, remoteRevisionId, currentRevisionId]) => { return remoteRevisionId !== currentRevisionId },
   );
 };

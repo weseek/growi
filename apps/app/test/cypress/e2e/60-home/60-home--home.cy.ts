@@ -46,8 +46,6 @@ context('Access User settings', () => {
     });
     cy.visit('/me');
     cy.collapseSidebar(true, true);
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
   });
 
   it('Access User information', () => {
@@ -66,7 +64,7 @@ context('Access User settings', () => {
 
   it('Access External account', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(1) a').click();
-    cy.scrollTo('top');
+    cy.scrollTo('top', {ensureScrollable: false});
     cy.screenshot(`${ssPrefix}-external-account-1`);
     cy.getByTestid('grw-external-account-add-button').click();
     cy.getByTestid('grw-associate-modal').should('be.visible');
@@ -78,7 +76,7 @@ context('Access User settings', () => {
       cy.get('.Toastify__close-button').should('be.visible').click();
       cy.get('.Toastify__progress-bar').invoke('attr', 'style', 'display: none')
     });
-    cy.getByTestid('grw-associate-modal').find('.close').click();
+    cy.getByTestid('grw-associate-modal').find('[aria-label="Close"]').click();
     cy.screenshot(`${ssPrefix}-external-account-4`);
 
       cy.get('.Toastify__toast').should('not.be.visible');
@@ -86,7 +84,7 @@ context('Access User settings', () => {
 
   it('Access Password setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(2) a').click();
-    cy.scrollTo('top');
+    cy.scrollTo('top', {ensureScrollable: false});
     cy.screenshot(`${ssPrefix}-password-settings-1`);
     cy.getByTestid('grw-password-settings-update-button').click();
     cy.get('.Toastify__toast').should('be.visible');
@@ -102,7 +100,7 @@ context('Access User settings', () => {
 
   it('Access API setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(3) a').click();
-    cy.scrollTo('top');
+    cy.scrollTo('top', {ensureScrollable: false});
     cy.screenshot(`${ssPrefix}-api-setting-1`);
     cy.getByTestid('grw-api-settings-update-button').click();
     cy.getByTestid('grw-api-settings-input').should('be.visible');
@@ -117,7 +115,7 @@ context('Access User settings', () => {
 
   it('Access In-app notification setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(4) a').click();
-    cy.scrollTo('top');
+    cy.scrollTo('top', {ensureScrollable: false});
     cy.screenshot(`${ssPrefix}-in-app-notification-setting-1`);
     cy.getByTestid('grw-in-app-notification-settings-update-button').click();
     cy.get('.Toastify__toast').should('be.visible');
@@ -126,7 +124,7 @@ context('Access User settings', () => {
 
   it('Access Other setting', () => {
     cy.getByTestid('grw-personal-settings').find('.nav-title.nav li:eq(5) a').click();
-    cy.scrollTo('top');
+    cy.scrollTo('top', {ensureScrollable: false});
     cy.screenshot(`${ssPrefix}-other-setting-1`);
     cy.getByTestid('grw-questionnaire-settings-update-btn').click();
     cy.get('.Toastify__toast').should('be.visible').invoke('attr', 'style', 'display: none');

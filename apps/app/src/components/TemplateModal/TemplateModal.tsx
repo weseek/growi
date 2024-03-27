@@ -4,10 +4,12 @@ import React, {
 
 import assert from 'assert';
 
-import { Lang } from '@growi/core';
+import type { Lang } from '@growi/core';
+import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/stores/use-template-modal';
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -21,7 +23,6 @@ import {
 } from 'reactstrap';
 
 import { useSWRxTemplate, useSWRxTemplates } from '~/features/templates/stores';
-import { useTemplateModal, type TemplateModalStatus } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -70,11 +71,11 @@ const TemplateListGroupItem: React.FC<TemplateSummaryItemProps> = ({
     >
       <h4 className="mb-1 d-flex">
         <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
-        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+        {localizedTemplate.pluginId != null ? <span className="material-symbols-outlined me-1 ms-2 text-muted small">extension</span> : ''}
       </h4>
       <p className="mb-2">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+        <span key={locale} className="badge border rounded-pill text-muted me-1">{locale}</span>
       ))}
     </a>
   );
@@ -99,11 +100,11 @@ const TemplateDropdownItem: React.FC<TemplateSummaryItemProps> = ({
     >
       <h4 className="mb-1 d-flex">
         <span className="d-inline-block text-truncate">{localizedTemplate.title}</span>
-        {localizedTemplate.pluginId != null ? <i className="icon-fw icon-puzzle ml-2 text-muted small"></i> : ''}
+        {localizedTemplate.pluginId != null ? <span className="material-symbols-outlined me-1 ms-2 text-muted small">extension</span> : ''}
       </h4>
       <p className="mb-1 text-wrap">{localizedTemplate.desc}</p>
       { templateLocales != null && Array.from(templateLocales).map(locale => (
-        <span key={locale} className="badge border rounded-pill text-muted mr-1">{locale}</span>
+        <span key={locale} className="badge border rounded-pill text-muted me-1">{locale}</span>
       ))}
     </DropdownItem>
   );
@@ -186,7 +187,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
             { isLoading && (
               <div className="h-100 d-flex justify-content-center align-items-center">
-                <i className="fa fa-2x fa-spinner fa-pulse text-muted mx-auto"></i>
+                <LoadingSpinner className="mx-auto text-muted fs-3" />
               </div>
             ) }
 
@@ -210,8 +211,8 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
           {/* Dropdown */}
           <div className="d-lg-none col mb-3">
             <UncontrolledDropdown>
-              <DropdownToggle caret type="button" outline className="w-100 text-right" disabled={isLoading}>
-                <span className="float-left">
+              <DropdownToggle caret type="button" outline className="w-100 text-end" disabled={isLoading}>
+                <span className="float-start">
                   { (() => {
                     if (isLoading) {
                       return 'Loading..';
@@ -246,8 +247,8 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
               </div>
               <div className="col-6 d-flex justify-content-end">
                 <UncontrolledDropdown>
-                  <DropdownToggle caret type="button" outline className="float-right" disabled={selectedTemplateSummary == null}>
-                    <span className="float-left">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
+                  <DropdownToggle caret type="button" outline className="float-end" disabled={selectedTemplateSummary == null}>
+                    <span className="float-start">{selectedTemplateLocale != null ? selectedTemplateLocale : t('Language')}</span>
                   </DropdownToggle>
                   <DropdownMenu className="dropdown-menu" role="menu">
                     { selectedTemplateLocales != null && Array.from(selectedTemplateLocales).map((locale) => {

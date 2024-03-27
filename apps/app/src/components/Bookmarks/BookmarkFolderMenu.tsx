@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
 
-import { getCustomModifiers } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem, DropdownMenu, UncontrolledDropdown } from 'reactstrap';
 
@@ -119,7 +118,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
           onClick={onUnbookmarkHandler}
           className="grw-bookmark-folder-menu-item text-danger"
         >
-          <i className="fa fa-bookmark"></i>{' '}
+          <span className="material-symbols-outlined">bookmark</span>{' '}
           <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}
           </span>
@@ -191,11 +190,10 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     >
       {children}
       <DropdownMenu
-        right
+        end
         persist
-        positionFixed
+        strategy="fixed"
         className="grw-bookmark-folder-menu"
-        modifiers={getCustomModifiers(true)}
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>

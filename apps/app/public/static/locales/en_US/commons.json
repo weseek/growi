@@ -42,6 +42,12 @@
     }
   },
 
+  "search_method_menu_item": {
+    "search_in_all": "Search in all",
+    "only_children_of_this_tree": "Only children of this tree",
+    "exact_mutch": "Exact match"
+  },
+
   "share_links": {
     "Share Link": "Share Link",
     "Page Path": "Page Path",
@@ -66,6 +72,19 @@
     "sidebar_mode_editor": "Sidebar mode on editor",
     "use_os_settings": "Use OS settings",
     "feedback": "Feedback"
+  },
+
+  "create_page_dropdown": {
+    "new_page": "Create New Page",
+    "todays": {
+      "desc": "Create today's memo",
+      "memo": "memo"
+    },
+    "template": {
+      "desc": "Create/Edit template page",
+      "children": "Template for children",
+      "descendants": "Template for descendants"
+    }
   },
 
   "copy_to_clipboard": {

@@ -3,11 +3,11 @@ import React from 'react';
 import type { IPage, IUser } from '@growi/core';
 import dynamic from 'next/dynamic';
 
-import type { AuthorInfoProps } from './Navbar/AuthorInfo';
+import type { AuthorInfoProps } from './AuthorInfo';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./Navbar/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
+const AuthorInfo = dynamic<AuthorInfoProps>(() => import('./AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
 
 export type PageContentFooterProps = {
   page: IPage,
@@ -20,6 +20,10 @@ export const PageContentFooter = (props: PageContentFooterProps): JSX.Element =>
   const {
     creator, lastUpdateUser, createdAt, updatedAt,
   } = page;
+
+  if (page.isEmpty) {
+    return <></>;
+  }
 
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>

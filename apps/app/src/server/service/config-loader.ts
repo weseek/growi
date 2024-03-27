@@ -4,9 +4,8 @@ import { parseISO } from 'date-fns';
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
-import ConfigModel, {
-  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '../models/config';
+import type { Config } from '../models/config';
+import ConfigModel, { defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs } from '../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -60,18 +59,6 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'app:useOnlyEnvVarForFileUploadType',
     type:    ValueType.BOOLEAN,
     default: false,
-  },
-  HACKMD_URI: {
-    ns:      'crowi',
-    key:     'app:hackmdUri',
-    type:    ValueType.STRING,
-    default: null,
-  },
-  HACKMD_URI_FOR_SERVER: {
-    ns:      'crowi',
-    key:     'app:hackmdUriForServer',
-    type:    ValueType.STRING,
-    default: null,
   },
   // OAUTH_GOOGLE_CLIENT_ID: {
   //   ns:      'crowi',
@@ -723,6 +710,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key: 'app:ssrMaxRevisionBodyLength',
     type: ValueType.NUMBER,
     default: 30000,
+  },
+  WIP_PAGE_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:wipPageExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 172800, // 2 days
   },
 };
 

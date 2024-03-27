@@ -14,7 +14,7 @@ context('Access to sharelink by guest', () => {
     // open dropdown
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn', { timeout: 14000 }).find('button').click({force: true});
       });
       // wait until

@@ -1,7 +1,8 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { GroupType, Origin } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { Comment } from '~/features/comment/server/models/comment';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
@@ -140,8 +141,15 @@ export const getPageSchema = (crowi) => {
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function(previousRevision) {
-    const revision = this.latestRevision || this.revision;
+  pageSchema.methods.isUpdatable = async function(previousRevision, origin) {
+    const populatedPageDataWithRevisionOrigin = await this.populate('revision', 'origin');
+    const latestRevisionOrigin = populatedPageDataWithRevisionOrigin.revision.origin;
+    const ignoreLatestRevision = origin === Origin.Editor && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.View);
+    if (ignoreLatestRevision) {
+      return true;
+    }
+
+    const revision = this.latestRevision || this.revision._id;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
     if (revision != previousRevision) {
@@ -278,7 +286,6 @@ export const getPageSchema = (crowi) => {
     validateCrowi();
 
     const self = this;
-    const Comment = crowi.model('Comment');
     return Comment.countCommentByPageId(pageId)
       .then((count) => {
         self.update({ _id: pageId }, { commentCount: count }, {}, (err, data) => {
@@ -639,50 +646,11 @@ export const getPageSchema = (crowi) => {
     return { templateBody, templateTags };
   };
 
-  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
-    const builder = new this.PageQueryBuilder(this.find());
-    builder.addConditionToListOnlyDescendants(parentPage.path);
-
-    if (isV4) {
-      builder.addConditionAsRootOrNotOnTree();
-    }
-    else {
-      builder.addConditionAsOnTree();
-    }
-
-    // add grant conditions
-    await addConditionToFilteringByViewerToEdit(builder, user);
-
-    const grant = parentPage.grant;
-
-    await builder.query.updateMany({}, {
-      grant,
-      grantedGroups: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroups : null,
-      grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
-    });
-
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
-  };
-
-  pageSchema.statics.publicizePages = async function(pages) {
-    const operationsToPublicize = pages.map((page) => {
-      return {
-        updateOne: {
-          filter: { _id: page._id },
-          update: {
-            grantedGroups: null,
-            grant: this.GRANT_PUBLIC,
-          },
-        },
-      };
-    });
-    await this.bulkWrite(operationsToPublicize);
   };
 
   /**
@@ -700,51 +668,7 @@ export const getPageSchema = (crowi) => {
     await this.updateMany({ _id: { $in: pages.map(p => p._id) } }, { grantedGroups: [transferToUserGroup] });
   };
 
-  /**
-   * associate GROWI page and HackMD page
-   * @param {Page} pageData
-   * @param {string} pageIdOnHackmd
-   */
-  pageSchema.statics.registerHackmdPage = function(pageData, pageIdOnHackmd) {
-    pageData.pageIdOnHackmd = pageIdOnHackmd;
-    return this.syncRevisionToHackmd(pageData);
-  };
-
-  /**
-   * update revisionHackmdSynced
-   * @param {Page} pageData
-   * @param {bool} isSave whether save or not
-   */
-  pageSchema.statics.syncRevisionToHackmd = function(pageData, isSave = true) {
-    pageData.revisionHackmdSynced = pageData.revision;
-    pageData.hasDraftOnHackmd = false;
-
-    let returnData = pageData;
-    if (isSave) {
-      returnData = pageData.save();
-    }
-    return returnData;
-  };
-
-  /**
-   * update hasDraftOnHackmd
-   * !! This will be invoked many time from many people !!
-   *
-   * @param {Page} pageData
-   * @param {Boolean} newValue
-   */
-  pageSchema.statics.updateHasDraftOnHackmd = async function(pageData, newValue) {
-    if (pageData.hasDraftOnHackmd === newValue) {
-      // do nothing when hasDraftOnHackmd equals to newValue
-      return;
-    }
-
-    pageData.hasDraftOnHackmd = newValue;
-    return pageData.save();
-  };
-
   pageSchema.methods.getNotificationTargetUsers = async function() {
-    const Comment = mongoose.model('Comment');
     const Revision = mongoose.model('Revision');
 
     const [commentCreators, revisionAuthors] = await Promise.all([Comment.findCreatorsByPage(this), Revision.findAuthorsByPage(this)]);

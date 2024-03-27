@@ -52,7 +52,7 @@ export const scanTemplate = async(
         id: templateId,
         locale,
         isValid: false,
-        invalidReason: err.message,
+        invalidReason: (err as Error).message,
       });
     }
   }

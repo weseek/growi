@@ -4,8 +4,6 @@ import { useTranslation } from 'next-i18next';
 
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
 import { DescendantsPageList } from './DescendantsPageList';
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
 import { PageTimeline } from './PageTimeline';
 
 type NotFoundPageProps = {
@@ -20,12 +18,12 @@ const NotFoundPage = (props: NotFoundPageProps): JSX.Element => {
   const navTabMapping = useMemo(() => {
     return {
       pagelist: {
-        Icon: PageListIcon,
+        Icon: () => <span className="material-symbols-outlined">subject</span>,
         Content: () => <DescendantsPageList path={path} />,
         i18n: t('page_list'),
       },
       timeLine: {
-        Icon: TimeLineIcon,
+        Icon: () => <span className="material-symbols-outlined">timeline</span>,
         Content: PageTimeline,
         i18n: t('Timeline View'),
       },

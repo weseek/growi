@@ -4,7 +4,7 @@ import { useTranslation } from 'next-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IResTestLdap } from '~/interfaces/ldap';
+import type { IResTestLdap } from '~/interfaces/ldap';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:security:AdminLdapSecurityContainer');
@@ -89,8 +89,8 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
     <React.Fragment>
       {successMessage !== '' && <div className="alert alert-success">{successMessage}</div>}
       {errorMessage !== '' && <div className="alert alert-warning">{errorMessage}</div>}
-      <div className="form-group row">
-        <label htmlFor="username" className="col-3 col-form-label">{t('username')}</label>
+      <div className="row mt-3">
+        <label htmlFor="username" className="col-3 col-form-label text-end">{t('username')}</label>
         <div className="col-6">
           <input
             className="form-control"
@@ -101,8 +101,8 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
           />
         </div>
       </div>
-      <div className="form-group row">
-        <label htmlFor="password" className="col-3 col-form-label">{t('Password')}</label>
+      <div className="row mt-3">
+        <label htmlFor="password" className="col-3 col-form-label text-end">{t('Password')}</label>
         <div className="col-6">
           <input
             className="form-control"
@@ -115,12 +115,12 @@ export const LdapAuthTest = (props: LdapAuthTestProps): JSX.Element => {
         </div>
       </div>
 
-      <div className="form-group">
-        <label><h5>Logs</h5></label>
+      <div className="mt-4">
+        <label className="form-label"><h5>Logs</h5></label>
         <textarea id="taLogs" className="col form-control" rows={4} value={logs} readOnly />
       </div>
 
-      <div>
+      <div className="mt-4">
         <button type="button" className="btn btn-outline-secondary offset-5 col-2" onClick={testLdapCredentials}>Test</button>
       </div>
     </React.Fragment>

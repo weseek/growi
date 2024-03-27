@@ -1,45 +1,65 @@
 import { useCallback, useEffect } from 'react';
 
+import { useGlobalSocket } from '@growi/core/dist/swr';
+
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageId } from '~/stores/page';
-import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
-import { useGlobalSocket } from '~/stores/websocket';
+import { usePageStatusAlert } from '~/stores/alert';
+import { useSWRxCurrentPage, useSWRMUTxCurrentPage } from '~/stores/page';
+import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
+import { useEditorMode, EditorMode } from '~/stores/ui';
+
 
 export const usePageUpdatedEffect = (): void => {
 
   const { setRemoteLatestPageData } = useSetRemoteLatestPageData();
 
   const { data: socket } = useGlobalSocket();
-  const { data: currentPageId } = useCurrentPageId();
+  const { data: editorMode } = useEditorMode();
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { open: openPageStatusAlert, close: closePageStatusAlert } = usePageStatusAlert();
 
-  const setLatestRemotePageData = useCallback((data) => {
+  const remotePageDataUpdateHandler = useCallback((data) => {
+    // Set remote page data
     const { s2cMessagePageUpdated } = data;
 
-    const remoteData = {
+    const remoteData: RemoteRevisionData = {
       remoteRevisionId: s2cMessagePageUpdated.revisionId,
       remoteRevisionBody: s2cMessagePageUpdated.revisionBody,
       remoteRevisionLastUpdateUser: s2cMessagePageUpdated.remoteLastUpdateUser,
       remoteRevisionLastUpdatedAt: s2cMessagePageUpdated.revisionUpdateAt,
-      revisionIdHackmdSynced: s2cMessagePageUpdated.revisionIdHackmdSynced,
-      hasDraftOnHackmd: s2cMessagePageUpdated.hasDraftOnHackmd,
     };
 
-    if (currentPageId != null && currentPageId === s2cMessagePageUpdated.pageId) {
+    if (currentPage?._id != null && currentPage._id === s2cMessagePageUpdated.pageId) {
       setRemoteLatestPageData(remoteData);
-    }
 
-  }, [currentPageId, setRemoteLatestPageData]);
+      // Open PageStatusAlert
+      const currentRevisionId = currentPage?.revision?._id;
+      const remoteRevisionId = s2cMessagePageUpdated.revisionId;
+      const isRevisionOutdated = (currentRevisionId != null || remoteRevisionId != null) && currentRevisionId !== remoteRevisionId;
+
+      // !!CAUTION!! Timing of calling openPageStatusAlert may clash with components/PageEditor/conflict.tsx
+      if (isRevisionOutdated && editorMode === EditorMode.View) {
+        openPageStatusAlert({ hideEditorMode: EditorMode.Editor, onRefleshPage: mutateCurrentPage });
+      }
+
+      // Clear cache
+      if (!isRevisionOutdated) {
+        closePageStatusAlert();
+      }
+    }
+  }, [currentPage?._id, currentPage?.revision?._id, editorMode, mutateCurrentPage, openPageStatusAlert, closePageStatusAlert, setRemoteLatestPageData]);
 
   // listen socket for someone updating this page
   useEffect(() => {
 
     if (socket == null) { return }
 
-    socket.on(SocketEventName.PageUpdated, setLatestRemotePageData);
+    socket.on(SocketEventName.PageUpdated, remotePageDataUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.PageUpdated, setLatestRemotePageData);
+      socket.off(SocketEventName.PageUpdated, remotePageDataUpdateHandler);
     };
 
-  }, [setLatestRemotePageData, socket]);
+  }, [remotePageDataUpdateHandler, socket]);
 };

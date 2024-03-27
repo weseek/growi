@@ -5,14 +5,14 @@ import React, {
 import {
   type IPageInfoAll, isIPageInfoForOperation,
 } from '@growi/core';
-import { getCustomModifiers } from '@growi/ui/dist/utils';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { IPageOperationProcessData } from '~/interfaces/page-operation';
+import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
@@ -51,7 +51,7 @@ type CommonProps = {
   additionalMenuItemOnTopRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   isInstantRename?: boolean,
-  alignRight?: boolean,
+  alignEnd?: boolean,
 }
 
 
@@ -70,7 +70,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
     additionalMenuItemRenderer: AdditionalMenuItems,
-    isInstantRename, alignRight,
+    isInstantRename, alignEnd,
   } = props;
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -134,7 +134,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   if (isLoading) {
     contents = (
       <div className="text-muted text-center my-2">
-        <i className="fa fa-spinner fa-pulse"></i>
+        <LoadingSpinner />
       </div>
     );
   }
@@ -171,7 +171,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             className="grw-page-control-dropdown-item"
             data-testid="add-remove-bookmark-btn"
           >
-            <i className="fa fa-fw fa-bookmark-o grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
           </DropdownItem>
         ) }
@@ -183,7 +183,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-move-rename-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-redo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>
             {t(isInstantRename ? 'Rename' : 'Move/Rename')}
           </DropdownItem>
         ) }
@@ -195,7 +195,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             data-testid="open-page-duplicate-modal-btn"
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-docs grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">file_copy</span>
             {t('Duplicate')}
           </DropdownItem>
         ) }
@@ -206,7 +206,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={revertItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-action-undo grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">undo</span>
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
@@ -224,7 +224,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             onClick={pathRecoveryItemClickedHandler}
             className="grw-page-control-dropdown-item"
           >
-            <i className="icon-fw icon-wrench grw-page-control-dropdown-icon"></i>
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">build</span>
             {t('PathRecovery')}
           </DropdownItem>
         ) }
@@ -240,7 +240,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
               onClick={deleteItemClickedHandler}
               data-testid="open-page-delete-modal-btn"
             >
-              <i className="icon-fw icon-trash grw-page-control-dropdown-icon"></i>
+              <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">delete</span>
               {t('Delete')}
             </DropdownItem>
           </>
@@ -253,10 +253,9 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     <DropdownMenu
       className="d-print-none"
       data-testid="page-item-control-menu"
-      right={alignRight}
-      modifiers={getCustomModifiers(alignRight)}
+      end={alignEnd}
       container="body"
-      persist={!!alignRight}
+      persist={!!alignEnd}
       style={{ zIndex: 1055 }} /* make it larger than $zindex-modal of bootstrap */
     >
       {contents}
@@ -269,7 +268,6 @@ PageItemControlDropdownMenu.displayName = 'PageItemControl';
 
 type PageItemControlSubstanceProps = CommonProps & {
   pageId: string,
-  fetchOnInit?: boolean,
   children?: React.ReactNode,
   operationProcessData?: IPageOperationProcessData,
 }
@@ -277,12 +275,12 @@ type PageItemControlSubstanceProps = CommonProps & {
 export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): JSX.Element => {
 
   const {
-    pageId, pageInfo: presetPageInfo, fetchOnInit, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
+    pageId, pageInfo: presetPageInfo, children, onClickBookmarkMenuItem, onClickRenameMenuItem,
     onClickDuplicateMenuItem, onClickDeleteMenuItem, onClickPathRecoveryMenuItem,
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const [shouldFetch, setShouldFetch] = useState(fetchOnInit ?? false);
+  const [shouldFetch, setShouldFetch] = useState(false);
 
   const { data: fetchedPageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(shouldFetch ? pageId : null);
 
@@ -339,10 +337,10 @@ export const PageItemControlSubstance = (props: PageItemControlSubstanceProps): 
 
   return (
     <NotAvailableForGuest>
-      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} data-testid="open-page-item-control-btn">
+      <Dropdown isOpen={isOpen} toggle={() => setIsOpen(!isOpen)} className="grw-page-item-control" data-testid="open-page-item-control-btn">
         { children ?? (
           <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-flex align-items-center justify-content-center">
-            <i className="icon-options"></i>
+            <span className="material-symbols-outlined">more_vert</span>
           </DropdownToggle>
         ) }
 
@@ -379,20 +377,4 @@ export const PageItemControl = (props: PageItemControlProps): JSX.Element => {
   }
 
   return <PageItemControlSubstance pageId={pageId} {...props} />;
-};
-
-
-type AsyncPageItemControlProps = Omit<CommonProps, 'pageInfo'> & {
-  pageId?: string,
-  children?: React.ReactNode,
-}
-
-export const AsyncPageItemControl = (props: AsyncPageItemControlProps): JSX.Element => {
-  const { pageId } = props;
-
-  if (pageId == null) {
-    return <></>;
-  }
-
-  return <PageItemControlSubstance pageId={pageId} fetchOnInit {...props} />;
 };

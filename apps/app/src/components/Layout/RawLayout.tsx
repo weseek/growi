@@ -39,7 +39,7 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
       <NextThemesProvider>
-        <div className={classNames.join(' ')} data-color-scheme={colorScheme}>
+        <div className={classNames.join(' ')}>
           {children}
           <ToastContainer theme={colorScheme} />
         </div>

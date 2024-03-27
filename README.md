@@ -38,8 +38,7 @@
 
 - **Features**
   - Create hierarchical pages with markdown -> [Try GROWI on the demo site](https://docs.growi.org/en/guide/getting-started/try_growi.html)
-  - Simultaneously edit with multiple people by [HackMD(CodiMD)](https://hackmd.io/) integration
-    - [GROWI Docs: HackMD(CodiMD) Integration](https://docs.growi.org/en/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+  - Simultaneously edit with multiple people
   - Support Authentication with LDAP / Active Directory, OAuth
   - SSO(Single Sign On) with SAML
   - Slack/Mattermost, IFTTT Integration
@@ -80,7 +79,7 @@ See [GROWI Docs: Environment Variables](https://docs.growi.org/en/admin-guide/ad
 
 ## Dependencies
 
-- Node.js v16.x or v18.x
+- Node.js v18.x or v20.x
 - npm 6.x
 - yarn
 - [Turborepo](https://turbo.build/repo)

@@ -1,4 +1,4 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 .revision-toc :global {
   // to get on the Attachment row
@@ -38,5 +38,15 @@
     margin-bottom: 20px;
     font-size: 0.9em;
     border: solid 1px bs.$gray-400;
+  }
+}
+
+
+// == Colors
+.revision-toc :global {
+  .revision-toc-content {
+    ::marker {
+      color: var(--bs-tertiary-color);
+    }
   }
 }

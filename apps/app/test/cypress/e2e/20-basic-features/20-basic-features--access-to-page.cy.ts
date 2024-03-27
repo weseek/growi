@@ -42,9 +42,6 @@ context('Access to page', () => {
     // https://redmine.weseek.co.jp/issues/111384
     // cy.get('.toc-link').should('be.visible');
 
-    // hide fab
-    cy.getByTestid('grw-fab-container').invoke('attr', 'style', 'display: none');
-
     // assert the element is in viewport
     cy.get('#headers').should('be.inViewport');
 
@@ -212,7 +209,7 @@ context('Access to Template Editing Mode', () => {
 
     // Open sidebar
     cy.collapseSidebar(false);
-    cy.getByTestid('grw-contextual-navigation-sub').should('be.visible');
+    cy.getByTestid('grw-sidebar-contents').should('be.visible');
     cy.waitUntilSkeletonDisappear();
 
     // If PageTree is not active when the sidebar is opened, make it active
@@ -224,7 +221,7 @@ context('Access to Template Editing Mode', () => {
       });
 
     // Create page (/{parentPath}}/{newPagePath}) from PageTree
-    cy.getByTestid('grw-contextual-navigation-sub').within(() => {
+    cy.getByTestid('grw-sidebar-contents').within(() => {
       cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
         cy.get('#page-create-button-in-page-tree').first().click({force: true})
       });
@@ -240,7 +237,7 @@ context('Access to Template Editing Mode', () => {
     cy.waitUntilSkeletonDisappear();
 
     // Check if the template is applied
-    cy.get('.content-main').within(() => {
+    cy.getByTestid('search-result-base').within(() => {
       cy.get('.wiki').should('be.visible');
       cy.get('.wiki').children().first().should('have.text', expectedBody);
     })
@@ -261,7 +258,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until
@@ -296,7 +293,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       // do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // Wait until
@@ -306,7 +303,7 @@ context('Access to Template Editing Mode', () => {
     cy.getByTestid('open-page-template-modal-btn').filter(':visible').click({force: true});
     cy.getByTestid('page-template-modal').should('be.visible');
 
-    cy.getByTestid('template-button-decendants').click(({force: true}))
+    cy.getByTestid('template-button-descendants').click(({force: true}))
     cy.waitUntilSkeletonDisappear();
 
     cy.getByTestid('navbar-editor').should('be.visible').then(()=>{
@@ -330,7 +327,7 @@ context('Access to Template Editing Mode', () => {
 
     cy.waitUntil(() => {
       //do
-      cy.get('#grw-subnav-container').within(() => {
+      cy.getByTestid('grw-contextual-sub-nav').within(() => {
         cy.getByTestid('open-page-item-control-btn').find('button').click({force: true});
       });
       // wait until

@@ -2,34 +2,36 @@ import React, {
   useCallback, useMemo, useRef, useState, useEffect,
 } from 'react';
 
+import { useGlobalSocket } from '@growi/core/dist/swr';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
+import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
-import { V5MigrationStatus } from '~/interfaces/page-listing-results';
-import { IFormattedSearchResult } from '~/interfaces/search';
-import { PageMigrationErrorData, SocketEventName } from '~/interfaces/websocket';
+import type { V5MigrationStatus } from '~/interfaces/page-listing-results';
+import type { IFormattedSearchResult } from '~/interfaces/search';
+import type { PageMigrationErrorData } from '~/interfaces/websocket';
+import { SocketEventName } from '~/interfaces/websocket';
 import { useIsAdmin } from '~/stores/context';
-import {
-  ILegacyPrivatePage, usePrivateLegacyPagesMigrationModal,
-} from '~/stores/modal';
+import type { ILegacyPrivatePage } from '~/stores/modal';
+import { usePrivateLegacyPagesMigrationModal } from '~/stores/modal';
 import { mutatePageTree, useSWRxV5MigrationStatus } from '~/stores/page-listing';
 import {
   useSWRxSearch,
 } from '~/stores/search';
-import { useGlobalSocket } from '~/stores/websocket';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
-import { IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
+import type { IReturnSelectedPageIds } from './SearchPage/SearchPageBase';
+import { SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
 
 // TODO: replace with "customize:showPageLimitationS"
@@ -61,7 +63,7 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
   if (migrationStatus == null) {
     return (
       <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-        <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+        <LoadingSpinner className="me-1 fs-3" />
       </div>
     );
   }
@@ -89,21 +91,21 @@ const SearchResultListHead = React.memo((props: SearchResultListHeadProps): JSX.
 
   return (
     <>
-      <div className="form-inline d-flex align-items-center justify-content-between">
+      <div className="d-flex align-items-center justify-content-between">
         <div className="text-nowrap">
           {t('search_result.result_meta')}
-          <span className="ml-3">{`${leftNum}-${rightNum}`} / {total}</span>
+          <span className="ms-3">{`${leftNum}-${rightNum}`} / {total}</span>
           { took != null && (
-            <span className="ml-3 text-muted">({took}ms)</span>
+            <span className="ms-3 text-muted">({took}ms)</span>
           ) }
         </div>
-        <div className="input-group flex-nowrap search-result-select-group ml-auto d-md-flex d-none">
-          <div className="input-group-prepend">
-            <label className="input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
+        <div className="input-group flex-nowrap search-result-select-group ms-auto d-md-flex d-none">
+          <div>
+            <label className="form-label input-group-text text-muted" htmlFor="inputGroupSelect01">{t('search_result.number_of_list_to_display')}</label>
           </div>
           <select
             defaultValue={pagingSize}
-            className="custom-select"
+            className="form-select"
             id="inputGroupSelect01"
             onChange={e => onPagingSizeChanged(Number(e.target.value))}
           >
@@ -167,7 +169,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
             id="understoodCheckbox"
             onChange={e => setChecked(e.target.checked)}
           />
-          <label className="form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
+          <label className="form-label form-check-label" htmlFor="understoodCheckbox">{ t('private_legacy_pages.by_path_modal.checkbox_label') }</label>
         </div>
         <button
           type="button"
@@ -175,7 +177,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
           disabled={!checked}
           onClick={() => props.onSubmit?.(currentInput)}
         >
-          <i className="icon-fw icon-refresh" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">refresh</span>
           { t('private_legacy_pages.by_path_modal.button_label') }
         </button>
       </ModalFooter>
@@ -338,7 +340,7 @@ const PrivateLegacyPages = (): JSX.Element => {
 
   const renderOpenModalButton = useCallback(() => {
     return (
-      <div className="d-flex pl-md-2">
+      <div className="d-flex ps-md-2">
         <button type="button" className="btn btn-light" onClick={() => openConvertModalHandler()}>
           {t('private_legacy_pages.input_path_to_convert')}
         </button>
@@ -351,7 +353,7 @@ const PrivateLegacyPages = (): JSX.Element => {
 
     return (
       <div className="search-control d-flex align-items-center">
-        <div className="d-flex pl-md-2">
+        <div className="d-flex ps-md-2">
           <OperateAllControl
             ref={selectAllControlRef}
             isCheckboxDisabled={isCheckboxDisabled}
@@ -363,12 +365,12 @@ const PrivateLegacyPages = (): JSX.Element => {
               </DropdownToggle>
               <DropdownMenu>
                 <DropdownItem onClick={convertMenuItemClickedHandler}>
-                  <i className="icon-fw icon-refresh"></i>
+                  <span className="material-symbols-outlined">refresh</span>
                   {t('private_legacy_pages.convert_all_selected_pages')}
                 </DropdownItem>
                 <DropdownItem onClick={deleteAllButtonClickedHandler}>
                   <span className="text-danger">
-                    <i className="icon-fw icon-trash"></i>
+                    <span className="material-symbols-outlined">delete</span>
                     {t('search_result.delete_all_selected_page')}
                   </span>
                 </DropdownItem>

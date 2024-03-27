@@ -199,20 +199,20 @@ const G2GDataTransferExportForm = (props: Props): JSX.Element => {
 
   return (
     <>
-      <form className="form-inline mt-3">
-        <div className="form-group">
-          <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={checkAll}>
-            <i className="fa fa-check-square-o"></i> {t('admin:export_management.check_all')}
+      <form className="mt-3 row row-cols-lg-auto g-3 align-items-center">
+        <div className="col-12">
+          <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={checkAll}>
+            <span className="material-symbols-outlined">check_box</span>, {t('admin:export_management.check_all')}
           </button>
         </div>
-        <div className="form-group">
-          <button type="button" className="btn btn-sm btn-outline-secondary mr-2" onClick={uncheckAll}>
-            <i className="fa fa-square-o"></i> {t('admin:export_management.uncheck_all')}
+        <div className="col-12">
+          <button type="button" className="btn btn-sm btn-outline-secondary me-2" onClick={uncheckAll}>
+            <span className="material-symbols-outlined">check_box_outline_blank</span> {t('admin:export_management.uncheck_all')}
           </button>
         </div>
       </form>
 
-      <div className="card well small my-4">
+      <div className="card custom-card small my-4">
         <ul>
           <li>{t('admin:importer_management.growi_settings.description_of_import_mode.about')}</li>
           <ul>

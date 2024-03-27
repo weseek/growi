@@ -48,19 +48,19 @@ concurrency:
 
 jobs:
 
-  test-prod-node16:
+  test-prod-node18:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
-      node-version: 16.x
+      node-version: 18.x
       skip-cypress: true
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  test-prod-node18:
+  test-prod-node20:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
-      node-version: 18.x
+      node-version: 20.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
       cypress-report-artifact-name: Cypress report
       cypress-config-video: ${{ inputs.cypress-config-video || false }}
@@ -68,15 +68,15 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
-  run-reg-suit-node18:
-    needs: [test-prod-node18]
+  run-reg-suit-node20:
+    needs: [test-prod-node20]
 
     uses: weseek/growi/.github/workflows/reusable-app-reg-suit.yml@master
 
     if: always()
 
     with:
-      node-version: 18.x
+      node-version: 20.x
       skip-reg-suit: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
       cypress-report-artifact-name: Cypress report
     secrets:

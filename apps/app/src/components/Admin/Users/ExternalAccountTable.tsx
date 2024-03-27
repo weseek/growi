@@ -48,7 +48,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
             </th>
             <th style={{ width: '200px' }}>
               <div className="d-flex align-items-center">
-                {t('user_management.related_username')}<code className="ml-2">username</code>
+                {t('user_management.related_username')}<code className="ms-2">username</code>
               </div>
             </th>
             <th style={{ width: '100px' }}>
@@ -57,13 +57,13 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <span
                   role="button"
                   className="text-muted mx-2"
-                  data-toggle="popper"
+                  data-bs-toggle="popper"
                   data-placement="top"
                   data-trigger="hover"
                   data-html="true"
                   title={t('user_management.password_setting_help')}
                 >
-                  <small><i className="icon-question" aria-hidden="true"></i></small>
+                  <small><span className="material-symbols-outlined" aria-hidden="true">help</span></small>
                 </span>
               </div>
             </th>
@@ -84,15 +84,15 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <td><strong>{ea.user.username}</strong></td>
                 <td>
                   {ea.user.password
-                    ? (<span className="badge badge-info">{t('user_management.set')}</span>)
-                    : (<span className="badge badge-warning">{t('user_management.unset')}</span>)
+                    ? (<span className="badge bg-info">{t('user_management.set')}</span>)
+                    : (<span className="badge bg-warning text-dark">{t('user_management.unset')}</span>)
                   }
                 </td>
                 <td>{dateFnsFormat(new Date(ea.createdAt), 'yyyy-MM-dd')}</td>
                 <td>
                   <div className="btn-group admin-user-menu">
-                    <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
-                      <i className="icon-settings"></i> <span className="caret"></span>
+                    <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                      <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
                       <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
@@ -102,7 +102,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                         role="button"
                         onClick={() => removeExtenalAccount(ea._id)}
                       >
-                        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                       </button>
                     </ul>
                   </div>

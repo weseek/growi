@@ -1,6 +1,7 @@
-import React, { FC } from 'react';
-import { useTranslation } from 'next-i18next';
+import type { FC } from 'react';
+import React from 'react';
 
+import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
@@ -51,10 +52,10 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
       </ModalHeader>
       <ModalBody>
         <div className="d-flex p-2">
-          <div className="border border-gray mr-3">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center">
+          <div className="me-3">
+            <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
-                className="mr-2"
+                className="me-2"
                 type="checkbox"
                 onChange={e => includeUserPagesChangeHandler(e.target.checked)}
                 checked={includeUserPages}
@@ -62,10 +63,10 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
           </div>
-          <div className="border border-gray">
-            <label className="px-3 py-2 mb-0 d-flex align-items-center">
+          <div className="">
+            <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
-                className="mr-2"
+                className="me-2"
                 type="checkbox"
                 onChange={e => includeTrashPagesChangeHandler(e.target.checked)}
                 checked={includeTrashPages}

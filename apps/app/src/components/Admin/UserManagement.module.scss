@@ -1,4 +1,4 @@
-@use '~/styles/bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 // styles for admin user search
 .search-typeahead :global {
@@ -12,7 +12,7 @@
   }
   .search-clear {
     position: absolute;
-    top: 12px;
+    top: 15px;
     right: 1px;
     z-index: 3;
     width: 24px;

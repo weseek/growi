@@ -229,7 +229,7 @@ const G2GDataTransfer = (): JSX.Element => {
       )}
 
       <form onSubmit={startTransfer}>
-        <div className="form-group row mt-3">
+        <div className="row mt-3">
           <div className="col-9">
             <input
               className="form-control"
@@ -247,25 +247,25 @@ const G2GDataTransfer = (): JSX.Element => {
 
       {isTransferring && (
         <div className="border rounded p-4">
-          <div>
-            <G2GDataTransferStatusIcon className="mr-2 mb-2" status={g2gProgress.mongo} /> MongoDB
+          <div className="my-2">
+            <G2GDataTransferStatusIcon className="me-2" status={g2gProgress.mongo} /> MongoDB
           </div>
-          <div>
-            <G2GDataTransferStatusIcon className="mr-2" status={g2gProgress.attachments} /> Attachments
+          <div className="my-2">
+            <G2GDataTransferStatusIcon className="me-2" status={g2gProgress.attachments} /> Attachments
           </div>
         </div>
       )}
 
       <h2 className="border-bottom mt-5">{t('commons:g2g_data_transfer.transfer_data_to_this_growi')}</h2>
 
-      <div className="form-group row mt-4">
+      <div className="row mt-4">
         <div className="col-md-3">
           <button type="button" className="btn btn-primary w-100" onClick={onClickHandler}>
             {t('commons:g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
         <div className="col-md-9">
-          <div className="input-group-prepend mx-1">
+          <div className=" mx-1">
             <input className="form-control" type="text" value={transferKey} readOnly />
             <CustomCopyToClipBoard textToBeCopied={transferKey} message="admin:slack_integration.copied_to_clipboard" />
           </div>

@@ -1,19 +1,23 @@
 import { useCallback } from 'react';
 
-import { SubscriptionStatusType, type Nullable } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
+import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
-import { OptionsToSave } from '~/interfaces/page-operation';
-import { useEditingMarkdown, useIsEnabledUnsavedWarning, usePageTagsForEditors } from '~/stores/editor';
+import type {
+  IApiv3PageCreateParams, IApiv3PageCreateResponse, IApiv3PageUpdateParams, IApiv3PageUpdateResponse,
+} from '~/interfaces/apiv3';
+import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
 import { apiPost } from '../util/apiv1-client';
-import { apiv3Post, apiv3Put } from '../util/apiv3-client';
+import { apiv3Get, apiv3Post, apiv3Put } from '../util/apiv3-client';
 import { toastError } from '../util/toastr';
 
 const logger = loggerFactory('growi:services:page-operation');
+
 
 export const toggleSubscribe = async(pageId: string, currentStatus: SubscriptionStatusType | undefined): Promise<void> => {
   try {
@@ -87,91 +91,9 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
-// TODO: define return type
-const createPage = async(pagePath: string, markdown: string, tmpParams: OptionsToSave) => {
-  // clone
-  const params = Object.assign(tmpParams, {
-    path: pagePath,
-    body: markdown,
-  });
-
-  const res = await apiv3Post('/pages/', params);
-  const { page, tags, revision } = res.data;
-
-  return { page, tags, revision };
-};
-
-// TODO: define return type
-const updatePage = async(pageId: string, revisionId: string, markdown: string, tmpParams: OptionsToSave) => {
-  // clone
-  const params = Object.assign(tmpParams, {
-    page_id: pageId,
-    revision_id: revisionId,
-    body: markdown,
-  });
-
-  const res: any = await apiPost('/pages.update', params);
-  if (!res.ok) {
-    throw new Error(res.error);
-  }
-  return res;
-};
-
-type PageInfo= {
-  path: string,
-  pageId: Nullable<string>,
-  revisionId: Nullable<string>,
-}
-
-type SaveOrUpdateFunction = (markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => any;
-
-// TODO: define return type
-export const useSaveOrUpdate = (): SaveOrUpdateFunction => {
-  /* eslint-disable react-hooks/rules-of-hooks */
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  /* eslint-enable react-hooks/rules-of-hooks */
-
-  return useCallback(async(markdown: string, pageInfo: PageInfo, optionsToSave?: OptionsToSave) => {
-    const { path, pageId, revisionId } = pageInfo;
-
-    const options: OptionsToSave = Object.assign({}, optionsToSave);
-    /*
-    * Note: variable "markdown" will be received from params
-    * please delete the following code after implemating HackMD editor function
-    */
-    // let markdown;
-    // if (editorMode === EditorMode.HackMD) {
-    // const pageEditorByHackmd = this.appContainer.getComponentInstance('PageEditorByHackmd');
-    // markdown = await pageEditorByHackmd.getMarkdown();
-    // // set option to sync
-    // options.isSyncRevisionToHackmd = true;
-    // revisionId = this.state.revisionIdHackmdSynced;
-    // }
-    // else {
-    // const pageEditor = this.appContainer.getComponentInstance('PageEditor');
-    // const pageEditor = getComponentInstance('PageEditor');
-    // markdown = pageEditor.getMarkdown();
-    // }
-
-    let res;
-    if (pageId == null || revisionId == null) {
-      res = await createPage(path, markdown, options);
-    }
-    else {
-      if (revisionId == null) {
-        const msg = '\'revisionId\' is required to update page';
-        throw new Error(msg);
-      }
-      res = await updatePage(pageId, revisionId, markdown, options);
-    }
-
-    // The updateFn should be a promise or asynchronous function to handle the remote mutation
-    // it should return updated data. see: https://swr.vercel.app/docs/mutation#optimistic-updates
-    // Moreover, `async() => false` does not work since it's too fast to be calculated.
-    await mutateIsEnabledUnsavedWarning(new Promise(r => setTimeout(() => r(false), 10)), { optimisticData: () => false });
-
-    return res;
-  }, [mutateIsEnabledUnsavedWarning]);
+export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3PageCreateResponse> => {
+  const res = await apiv3Post<IApiv3PageCreateResponse>('/page', params);
+  return res.data;
 };
 
 export type UpdateStateAfterSaveOption = {
@@ -198,7 +120,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     await mutateCurrentPageId(pageId);
     const updatedPage = await mutateCurrentPage();
 
-    if (updatedPage == null) { return }
+    if (updatedPage == null || updatedPage.revision == null) { return }
 
     // supress to mutate only when updated from built-in editor
     // and see: https://github.com/weseek/growi/pull/7118
@@ -212,8 +134,6 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       remoteRevisionBody: updatedPage.revision.body,
       remoteRevisionLastUpdateUser: updatedPage.lastUpdateUser,
       remoteRevisionLastUpdatedAt: updatedPage.updatedAt,
-      revisionIdHackmdSynced: updatedPage.revisionHackmdSynced?.toString(),
-      hasDraftOnHackmd: updatedPage.hasDraftOnHackmd,
     };
 
     setRemoteLatestPageData(remoterevisionData);
@@ -224,4 +144,24 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
 
 export const unlink = async(path: string): Promise<void> => {
   await apiPost('/pages.unlink', { path });
+};
+
+
+interface PageExistResponse {
+  isExist: boolean,
+}
+
+export const exist = async(path: string): Promise<PageExistResponse> => {
+  const res = await apiv3Get<PageExistResponse>('/page/exist', { path });
+  return res.data;
+};
+
+export const publish = async(pageId: string): Promise<IPageHasId> => {
+  const res = await apiv3Put(`/page/${pageId}/publish`);
+  return res.data;
+};
+
+export const unpublish = async(pageId: string): Promise<IPageHasId> => {
+  const res = await apiv3Put(`/page/${pageId}/unpublish`);
+  return res.data;
 };

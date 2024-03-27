@@ -2,12 +2,12 @@ import React, {
   useEffect, useState, useRef, useMemo, useCallback,
 } from 'react';
 
-import { Breakpoint } from '@growi/ui/dist/interfaces';
+import type { Breakpoint } from '@growi/ui/dist/interfaces';
 import {
   Nav, NavItem, NavLink,
 } from 'reactstrap';
 
-import { ICustomNavTabMappings } from '~/interfaces/ui';
+import type { ICustomNavTabMappings } from '~/interfaces/ui';
 
 import styles from './CustomNav.module.scss';
 
@@ -49,15 +49,15 @@ export const CustomNavDropdown = (props: CustomNavDropdownProps): JSX.Element =>
   }, [onNavSelected]);
 
   return (
-    <div className="grw-custom-nav-dropdown btn-group btn-block">
+    <div className="btn-group">
       <button
-        className="btn btn-outline-primary btn-lg btn-block dropdown-toggle text-right"
+        className="btn btn-outline-primary btn-lg dropdown-toggle text-end"
         type="button"
-        data-toggle="dropdown"
+        data-bs-toggle="dropdown"
         aria-haspopup="true"
         aria-expanded="false"
       >
-        <span className="float-left">
+        <span className="float-start">
           { Icon != null && <Icon /> } {i18n}
         </span>
       </button>
@@ -183,7 +183,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
                 className={`p-0 ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  { Icon != null && <Icon /> } {i18n}
+                  { Icon != null && <span className="me-1"><Icon /></span> } {i18n}
                 </NavLink>
               </NavItem>
             );

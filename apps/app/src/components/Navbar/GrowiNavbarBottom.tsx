@@ -1,11 +1,12 @@
 import React from 'react';
 
+import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
-import { useIsDeviceSmallerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useDrawerOpened } from '~/stores/ui';
 
-import { GlobalSearch } from './GlobalSearch';
+import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiNavbarBottom.module.scss';
 
@@ -13,65 +14,67 @@ import styles from './GrowiNavbarBottom.module.scss';
 export const GrowiNavbarBottom = (): JSX.Element => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: isDeviceSmallerThanMd } = useIsDeviceSmallerThanMd();
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
-
-  const additionalClasses = ['grw-navbar-bottom', styles['grw-navbar-bottom']];
-  if (isDrawerOpened) {
-    additionalClasses.push('grw-navbar-bottom-drawer-opened');
-  }
+  const { open: openSearchModal } = useSearchModal();
 
   return (
-    <div className="d-md-none d-edit-none d-print-none fixed-bottom">
+    <GroundGlassBar className={`
+      ${styles['grw-navbar-bottom']}
+      ${isDrawerOpened ? styles['grw-navbar-bottom-drawer-opened'] : ''}
+      d-md-none d-edit-none d-print-none fixed-bottom`}
+    >
+      <div className="navbar navbar-expand px-4 px-sm-5">
 
-      { isDeviceSmallerThanMd && !isSearchPage && (
-        <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
-          <div className="p-3">
-            <GlobalSearch dropup />
-          </div>
-        </div>
-      ) }
-
-      <div className={`navbar navbar-expand navbar-dark bg-primary px-0 ${additionalClasses.join(' ')}`}>
-
-        <ul className="navbar-nav w-100">
-          <li className="nav-item mr-auto">
+        <ul className="navbar-nav flex-grow-1 d-flex align-items-center justify-content-between">
+          <li className="nav-item">
             <a
               role="button"
               className="nav-link btn-lg"
               onClick={() => mutateDrawerOpened(true)}
             >
-              <i className="icon-menu"></i>
+              <span className="material-symbols-outlined fs-2">reorder</span>
             </a>
           </li>
+
+          <li className="nav-item">
+            <a
+              role="button"
+              className="nav-link btn-lg"
+              onClick={() => openCreateModal(currentPagePath || '')}
+            >
+              <span className="material-symbols-outlined fs-2">edit</span>
+            </a>
+          </li>
+
           {
             !isSearchPage && (
               <li className="nav-item">
                 <a
                   role="button"
                   className="nav-link btn-lg"
-                  data-target="#grw-global-search-collapse"
-                  data-toggle="collapse"
+                  onClick={openSearchModal}
                 >
-                  <i className="icon-magnifier"></i>
+                  <span className="material-symbols-outlined fs-2">search</span>
                 </a>
               </li>
             )
           }
-          <li className="nav-item ml-auto">
+
+          <li className="nav-item">
             <a
               role="button"
               className="nav-link btn-lg"
-              onClick={() => openCreateModal(currentPagePath || '')}
+              onClick={() => {}}
             >
-              <i className="icon-pencil"></i>
+              <span className="material-symbols-outlined fs-2">notifications</span>
             </a>
           </li>
+
         </ul>
       </div>
 
-    </div>
+    </GroundGlassBar>
   );
 };

@@ -70,6 +70,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:pageCompleteDeletionAuthority' : undefined,
   'security:pageRecursiveDeletionAuthority' : undefined,
   'security:pageRecursiveCompleteDeletionAuthority' : undefined,
+  'security:isAllGroupMembershipRequiredForPageCompleteDeletion' : true,
   'security:disableLinkSharing' : false,
   'security:user-homepage-deletion:isEnabled': false,
   'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': false,
@@ -134,8 +135,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isAllReplyShown': false,
   'customize:isSearchScopeChildrenAsDefault': false,
   'customize:isEnabledMarp': false,
-  'customize:isSidebarDrawerMode': false,
-  'customize:isSidebarClosedAtDockMode': false,
+  'customize:isSidebarCollapsedMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,

@@ -1,22 +1,23 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { GrowiSubNavigation } from '~/components/Navbar/GrowiSubNavigation';
+import { PagePathNavSticky } from '~/components/Common/PagePathNav';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { useCurrentPageId } from '~/stores/page';
-import { useDrawerMode } from '~/stores/ui';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
-  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL, useIsGuestUser, useIsReadOnlyUser,
+  useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
 } from '../stores/context';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -27,6 +28,7 @@ import {
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+
 
 type Props = CommonProps & {
   currentUser: IUser,
@@ -41,6 +43,12 @@ type Props = CommonProps & {
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
+  // clear the cache for the current page
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/trash');
+
   useGrowiCloudUri(props.growiCloudUri);
 
   useIsSearchServiceConfigured(props.isSearchServiceConfigured);
@@ -48,17 +56,11 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSearchPage(false);
-  useCurrentPageId(null);
-  useCurrentPathname('/trash');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
 
   useShowPageLimitationXL(props.showPageLimitationXL);
-
-  const { data: isDrawerMode } = useDrawerMode();
-  const { data: isGuestUser } = useIsGuestUser();
-  const { data: isReadOnlyUser } = useIsReadOnlyUser();
 
   const title = generateCustomTitleForPage(props, '/trash');
 
@@ -68,21 +70,14 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <header className="py-0 position-relative">
-          <GrowiSubNavigation
-            pagePath="/trash"
-            showDrawerToggler={isDrawerMode}
-            isTagLabelsDisabled={!!isGuestUser || !!isReadOnlyUser}
-            isDrawerMode={isDrawerMode}
-            additionalClasses={['container-fluid']}
-          />
-        </header>
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div className="content-main container-lg grw-container-convertible mb-5 pb-5">
-          <TrashPageList />
+        <div className="main ps-sidebar">
+          <div className="container-lg wide-gutter-x-lg">
+            <PagePathNavSticky pagePath="/trash" />
+            <TrashPageList />
+          </div>
         </div>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </div>
     </>
   );
@@ -123,8 +118,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
 
   props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
   };
 
 }

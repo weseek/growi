@@ -1,6 +1,8 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
+
 
 type Props = {
   isEnabled?: boolean,
@@ -21,7 +23,7 @@ const ReconnectControls = (props: Props): JSX.Element => {
         onClick={() => { props.onReconnectingRequested() }}
         disabled={!isEnabled}
       >
-        { isProcessing && <i className="fa fa-spinner fa-pulse mr-2"></i> }
+        { isProcessing && <LoadingSpinner className="me-2" /> }
         { t('full_text_search_management.reconnect_button') }
       </button>
 

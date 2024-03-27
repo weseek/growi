@@ -37,8 +37,7 @@
 
 - **主な機能**
   - マークダウンを使用してページを階層構造で作成することが可能です。 -> [デモサイトで GROWI を体験する](https://docs.growi.org/ja/guide/getting-started/try_growi.html)。
-  - [HackMD(CodiMd)](https://hackmd.io/) と連携することで同時多人数編集が可能です。
-    - [GROWI Docs: HackMD(CodiMD) 連携](https://docs.growi.org/ja/admin-guide/admin-cookbook/integrate-with-hackmd.html)
+  - 同時多人数編集が可能です。
   - LDAP / Active Direcotry , OAuth 認証をサポートしています。
   - SAML を用いた Single Sign On が可能です。
   - Slack / Mattermost, IFTTT と連携することが可能です。
@@ -79,7 +78,7 @@ Crowi からの移行は **[こちら](https://docs.growi.org/en/admin-guide/mig
 
 ## 依存関係
 
-- Node.js v16.x or v18.x
+- Node.js v18.x or v20.x
 - npm 6.x
 - yarn
 - [Turborepo](https://turbo.build/repo)

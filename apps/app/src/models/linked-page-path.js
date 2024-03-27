@@ -8,9 +8,9 @@ const { isTrashPage } = pagePathUtils;
  */
 export default class LinkedPagePath {
 
-  constructor(path, skipNormalize = false) {
+  constructor(path) {
 
-    const pagePath = new DevidedPagePath(path, skipNormalize);
+    const pagePath = new DevidedPagePath(path);
 
     this.path = path;
     this.pathName = pagePath.latter;

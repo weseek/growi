@@ -3,7 +3,7 @@
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
 
-FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-18
+FROM mcr.microsoft.com/vscode/devcontainers/javascript-node:0-20
 
 # The node image includes a non-root user with sudo access. Use the
 # "remoteUser" property in devcontainer.json to use it. On Linux, update
@@ -37,7 +37,9 @@ RUN sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable 
 RUN wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
 
 RUN apt-get update \
-    && apt-get -y install --no-install-recommends git-lfs \
+    && apt-get -y install --no-install-recommends \
+      git-lfs \
+      iputils-ping net-tools dnsutils \
 
     # Uncomment below lines to install Chromium
     # --- works only on AMD64 ---

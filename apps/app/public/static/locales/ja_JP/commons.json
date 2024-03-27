@@ -44,6 +44,12 @@
     }
   },
 
+  "search_method_menu_item": {
+    "search_in_all": "全てのページ",
+    "only_children_of_this_tree": "この階層下の子ページのみ",
+    "exact_mutch": "キーワードに完全一致した文字を含むページのみ"
+  },
+
   "share_links": {
     "Share Link": "共有用リンク",
     "Page Path": "ページパス",
@@ -68,6 +74,19 @@
     "sidebar_mode_editor": "サイドバーモード(編集時)",
     "use_os_settings": "OS設定を利用する",
     "feedback": "ご意見・ご要望"
+  },
+
+  "create_page_dropdown": {
+    "new_page": "新規ページ作成",
+    "todays": {
+      "desc": "今日のメモを作成",
+      "memo": "メモ"
+    },
+    "template": {
+      "desc": "テンプレートページの作成/編集",
+      "children": "同一階層テンプレート",
+      "descendants": "下位層テンプレート"
+    }
   },
 
   "copy_to_clipboard": {

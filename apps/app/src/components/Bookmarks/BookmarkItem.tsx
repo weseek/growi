@@ -14,7 +14,8 @@ import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
+import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
@@ -147,7 +148,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 mr-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 me-auto d-flex align-items-center"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}
@@ -179,20 +180,19 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               ? () => <BookmarkMoveToRootBtn pageId={bookmarkedPage._id} onClickMoveToRootHandler={onClickMoveToRootHandler} />
               : undefined}
           >
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
+            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
+              <span className="material-symbols-outlined p-1">more_vert</span>
             </DropdownToggle>
           </PageItemControl>
         </div>
 
         <UncontrolledTooltip
-          modifiers={{ preventOverflow: { boundariesElement: 'window' } }}
           autohide={false}
           placement="right"
           target={bookmarkItemId}
           fade={false}
         >
-          {formerPagePath !== null ? `${formerPagePath}/` : '/'}
+          {dPagePath.isFormerRoot ? '/' : `${formerPagePath}/`}
         </UncontrolledTooltip>
       </li>
     </DragAndDropWrapper>

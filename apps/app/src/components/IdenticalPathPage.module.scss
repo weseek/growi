@@ -1,6 +1,1 @@
-@use '@growi/ui/src/styles/molecules/page_list';
-@use '~/styles/molecules/page-accessories-control';
-
-.grw-page-accessories-control :global {
-  @extend %grw-page-accessories-control;
-}
+@use '@growi/ui/scss/molecules/page_list';

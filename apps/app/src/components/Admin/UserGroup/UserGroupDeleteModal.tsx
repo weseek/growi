@@ -9,6 +9,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
+
 
 /**
  * Delete User Group Select component
@@ -20,24 +22,15 @@ import {
 type Props = {
   userGroups: IGrantedGroup[],
   deleteUserGroup?: IUserGroupHasId,
-  onDelete?: (deleteGroupId: string, actionName: string, transferToUserGroup: IGrantedGroup | null) => Promise<void> | void,
+  onDelete?: (deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => Promise<void> | void,
   isShow: boolean,
   onHide?: () => Promise<void> | void,
 };
 
 type AvailableOption = {
   id: number,
-  actionForPages: string,
-  iconClass: string,
-  styleClass: string,
+  actionForPages: PageActionOnGroupDelete,
   label: string,
-};
-
-// actionName master constants
-const actionForPages = {
-  public: 'public',
-  delete: 'delete',
-  transfer: 'transfer',
 };
 
 export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
@@ -52,23 +45,17 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     return [
       {
         id: 1,
-        actionForPages: actionForPages.public,
-        iconClass: 'icon-people',
-        styleClass: '',
+        actionForPages: PageActionOnGroupDelete.publicize,
         label: t('admin:user_group_management.delete_modal.publish_pages'),
       },
       {
         id: 2,
-        actionForPages: actionForPages.delete,
-        iconClass: 'icon-trash',
-        styleClass: 'text-danger',
+        actionForPages: PageActionOnGroupDelete.delete,
         label: t('admin:user_group_management.delete_modal.delete_pages'),
       },
       {
         id: 3,
-        actionForPages: actionForPages.transfer,
-        iconClass: 'icon-options',
-        styleClass: '',
+        actionForPages: PageActionOnGroupDelete.transfer,
         label: t('admin:user_group_management.delete_modal.transfer_pages'),
       },
     ];
@@ -77,14 +64,14 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   /*
    * State
    */
-  const [actionName, setActionName] = useState<string>('');
+  const [actionName, setActionName] = useState<PageActionOnGroupDelete | null>(null);
   const [transferToUserGroup, setTransferToUserGroup] = useState<IGrantedGroup | null>(null);
 
   /*
    * Function
    */
   const resetStates = useCallback(() => {
-    setActionName('');
+    setActionName(null);
     setTransferToUserGroup(null);
   }, []);
 
@@ -109,7 +96,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   }, [userGroups]);
 
   const handleSubmit = useCallback((e) => {
-    if (onDelete == null || deleteUserGroup == null) {
+    if (onDelete == null || deleteUserGroup == null || actionName == null) {
       return;
     }
 
@@ -127,12 +114,14 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       return <option key={opt.id} value={opt.actionForPages}>{opt.label}</option>;
     });
 
+    // TODO: Use GROWI original dropdown.
+    // refs: https://redmine.weseek.co.jp/issues/142614
     return (
       <select
         name="actionName"
         className="form-control"
         placeholder="select"
-        value={actionName}
+        value={actionName ?? ''}
         onChange={handleActionChange}
       >
         <option value="" disabled>{t('admin:user_group_management.delete_modal.dropdown_desc')}</option>
@@ -163,7 +152,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
     return (
       <select
         name="transferToUserGroup"
-        className={`form-control ${actionName === actionForPages.transfer ? '' : 'd-none'}`}
+        className={`form-control ${actionName === PageActionOnGroupDelete.transfer ? '' : 'd-none'}`}
         value={transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : ''}
         onChange={handleGroupChange}
       >
@@ -176,10 +165,10 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   const validateForm = useCallback(() => {
     let isValid = true;
 
-    if (actionName === '') {
+    if (actionName === null) {
       isValid = false;
     }
-    else if (actionName === actionForPages.transfer) {
+    else if (actionName === PageActionOnGroupDelete.transfer) {
       isValid = transferToUserGroup != null;
     }
 
@@ -189,11 +178,11 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
   return (
     <Modal className="modal-md" isOpen={props.isShow} toggle={toggleHandler}>
       <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
-        <i className="icon icon-fire"></i> {t('admin:user_group_management.delete_modal.header')}
+        <span className="material-symbols-outlined">delete_forever</span> {t('admin:user_group_management.delete_modal.header')}
       </ModalHeader>
       <ModalBody>
         <div>
-          <span className="font-weight-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
+          <span className="fw-bold">{t('admin:user_group_management.group_name')}</span> : &quot;{props?.deleteUserGroup?.name || ''}&quot;
         </div>
         <div className="text-danger mt-3">
           {t('admin:user_group_management.delete_modal.desc')}
@@ -201,14 +190,19 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
       </ModalBody>
       <ModalFooter>
         <form className="d-flex justify-content-between w-100" onSubmit={handleSubmit}>
-          <div className="d-flex form-group mb-0">
+          <div className="d-flex mb-0 me-3">
             {renderPageActionSelector()}
             {renderGroupSelector()}
           </div>
           <button type="submit" value="" className="btn btn-sm btn-danger text-nowrap" disabled={!validateForm()}>
-            <i className="icon icon-fire"></i> {t('Delete')}
+            <span className="material-symbols-outlined">delete_forever</span> {t('Delete')}
           </button>
         </form>
+        {actionName === PageActionOnGroupDelete.publicize && (
+          <div className="form-text text-muted">
+            <small>{t('admin:user_group_management.delete_modal.option_explanation')}</small>
+          </div>
+        )}
       </ModalFooter>
     </Modal>
   );

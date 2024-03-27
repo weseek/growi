@@ -53,7 +53,7 @@ export const PluginCard = (props: Props): JSX.Element => {
     return (
       <div className={`${styles.plugin_card}`}>
         <div className="switch">
-          <label className="switch__label">
+          <label className="form-label switch__label">
             <input
               type="checkbox"
               className="switch__input"
@@ -71,7 +71,7 @@ export const PluginCard = (props: Props): JSX.Element => {
   const PluginDeleteButton = (): JSX.Element => {
 
     return (
-      <div className="">
+      <div>
         <button
           type="submit"
           className="btn btn-primary"
@@ -103,7 +103,7 @@ export const PluginCard = (props: Props): JSX.Element => {
           </div>
         </div>
       </div>
-      <div className="card-footer px-5 border-top-0 mp-bg-light-blue">
+      <div className="card-footer px-5 border-top-0">
         <p className="d-flex justify-content-between align-self-center mb-0">
         </p>
       </div>

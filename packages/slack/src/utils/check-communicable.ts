@@ -86,7 +86,7 @@ export const getConnectionStatus = async(token:string): Promise<ConnectionStatus
     status.workspaceName = await retrieveWorkspaceName(client);
   }
   catch (err) {
-    status.error = err;
+    status.error = err as Error;
   }
 
   return status;

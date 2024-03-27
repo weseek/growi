@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import type { IAttachmentHasId } from '@growi/core';
-import { Attachment } from '@growi/ui/dist/components';
+import { Attachment, LoadingSpinner } from '@growi/ui/dist/components';
 
 import { ExtractedAttachments } from './ExtractedAttachments';
 import { RefsContext } from './util/refs-context';
@@ -28,7 +28,7 @@ export const AttachmentList = ({
     return (
       <div className="text-muted">
         <small>
-          <i className="fa fa-fw fa-info-circle" aria-hidden="true"></i>
+          <span className="material-symbols-outlined fs-5 me-1" aria-hidden="true">info</span>
           {
             refsContext.options?.prefix != null
               ? `${refsContext.options.prefix} and descendant pages have no attachments`
@@ -43,7 +43,7 @@ export const AttachmentList = ({
     if (isLoading) {
       return (
         <div className="text-muted">
-          <i className="fa fa-spinner fa-pulse mr-1"></i>
+          <LoadingSpinner className="me-1" />
           <span className="attachment-refs-blink">{refsContext.toString()}</span>
         </div>
       );
@@ -51,7 +51,7 @@ export const AttachmentList = ({
     if (error != null) {
       return (
         <div className="text-warning">
-          <i className="fa fa-exclamation-triangle fa-fw"></i>
+          <span className="material-symbols-outlined me-1">warning</span>
           {refsContext.toString()} (-&gt; <small>{error.message}</small>)
         </div>
       );

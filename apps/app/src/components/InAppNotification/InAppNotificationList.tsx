@@ -1,41 +1,47 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import type { IInAppNotification, PaginateResult } from '~/interfaces/in-app-notification';
+
 
 import InAppNotificationElm from './InAppNotificationElm';
 
 
 type Props = {
   inAppNotificationData?: PaginateResult<IInAppNotification>,
-  elemClassName?: string,
-  type?: 'button' | 'dropdown-item',
+  onUnopenedNotificationOpend?: () => void,
 };
 
 const InAppNotificationList: FC<Props> = (props: Props) => {
-  const { inAppNotificationData } = props;
+  const { inAppNotificationData, onUnopenedNotificationOpend } = props;
 
   if (inAppNotificationData == null) {
     return (
       <div className="wiki">
         <div className="text-muted text-center">
-          <i className="fa fa-2x fa-spinner fa-pulse mr-1"></i>
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       </div>
     );
   }
 
-  const notifications = inAppNotificationData.docs.filter((notification) => { return notification.parsedSnapshot != null });
+  const notifications = inAppNotificationData.docs;
 
   return (
-    <>
+    <div className="list-group">
       { notifications.map((notification: IInAppNotification & HasObjectId) => {
         return (
-          <InAppNotificationElm key={notification._id} notification={notification} type={props.type} elemClassName={props.elemClassName} />
+          <InAppNotificationElm
+            key={notification._id}
+            notification={notification}
+            onUnopenedNotificationOpend={onUnopenedNotificationOpend}
+          />
         );
       }) }
-    </>
+    </div>
   );
 };
 

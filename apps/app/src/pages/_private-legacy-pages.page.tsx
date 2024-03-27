@@ -1,5 +1,5 @@
-import type { IUser, IUserHasId } from '@growi/core';
-import {
+import type { IUser } from '@growi/core';
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -12,8 +12,9 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -45,6 +46,12 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
+
+  // clear the cache for the current page
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/_private-legacy-pages');
 
   // Search
   useIsSearchPage(true);
@@ -89,8 +96,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isEnabledMarp = configManager.getConfig('crowi', 'customize:isEnabledMarp');
 
   props.sidebarConfig = {
-    isSidebarDrawerMode: configManager.getConfig('crowi', 'customize:isSidebarDrawerMode'),
-    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
   };
 
   props.rendererConfig = {

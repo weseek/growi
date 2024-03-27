@@ -31,14 +31,13 @@ export type PageCommentProps = {
   revision: string | IRevisionHasId,
   currentUser: any,
   isReadOnly: boolean,
-  titleAlign?: 'center' | 'left' | 'right',
 }
 
 export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps): JSX.Element => {
 
   const {
     rendererOptions: rendererOptionsByProps,
-    pageId, pagePath, revision, currentUser, isReadOnly, titleAlign,
+    pageId, pagePath, revision, currentUser, isReadOnly,
   } = props;
 
   const { data: comments, mutate } = useSWRxPageComment(pageId);
@@ -112,9 +111,6 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
     return <></>;
   }
 
-  let commentTitleClasses = 'border-bottom py-3 mb-3';
-  commentTitleClasses = titleAlign != null ? `${commentTitleClasses} text-${titleAlign}` : `${commentTitleClasses} text-center`;
-
   const rendererOptions = rendererOptionsByProps ?? rendererOptionsForCurrentPage;
 
   if (commentsFromOldest == null || commentsExceptReply == null || rendererOptions == null) {
@@ -156,58 +152,56 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
   return (
     <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
-      <div className="container-lg">
-        <div className="page-comments">
-          <h2 className={commentTitleClasses}><i className="icon-fw icon-bubbles"></i>Comments</h2>
-          <div className="page-comments-list" id="page-comments-list">
-            {commentsExceptReply.map((comment) => {
+      <div className="page-comments">
+        <div className="page-comments-list" id="page-comments-list">
+          {commentsExceptReply.map((comment) => {
 
-              const defaultCommentThreadClasses = 'page-comment-thread pb-5';
-              const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
+            const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+            const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
-              let commentThreadClasses = '';
-              commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
+            let commentThreadClasses = '';
+            commentThreadClasses = hasReply ? `${defaultCommentThreadClasses} page-comment-thread-no-replies` : defaultCommentThreadClasses;
 
-              return (
-                <div key={comment._id} className={commentThreadClasses}>
-                  {commentElement(comment)}
-                  {hasReply && replyCommentsElement(allReplies[comment._id])}
-                  {(!isReadOnly && !showEditorIds.has(comment._id)) && (
-                    <div className="d-flex flex-row-reverse">
-                      <NotAvailableForGuest>
-                        <NotAvailableForReadOnlyUser>
-                          <Button
-                            data-testid="comment-reply-button"
-                            outline
-                            color="secondary"
-                            size="sm"
-                            className="btn-comment-reply"
-                            onClick={() => onReplyButtonClickHandler(comment._id)}
-                          >
-                            <i className="icon-fw icon-action-undo"></i> Reply
-                          </Button>
-                        </NotAvailableForReadOnlyUser>
-                      </NotAvailableForGuest>
-                    </div>
-                  )}
-                  {(!isReadOnly && showEditorIds.has(comment._id)) && (
-                    <CommentEditor
-                      pageId={pageId}
-                      replyTo={comment._id}
-                      onCancelButtonClicked={() => {
-                        removeShowEditorId(comment._id);
-                      }}
-                      onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
-                      revisionId={revisionId}
-                    />
-                  )}
-                </div>
-              );
+            return (
+              <div key={comment._id} className={commentThreadClasses}>
+                {commentElement(comment)}
+                {hasReply && replyCommentsElement(allReplies[comment._id])}
+                {(!isReadOnly && !showEditorIds.has(comment._id)) && (
+                  <div className="d-flex flex-row-reverse">
+                    <NotAvailableForGuest>
+                      <NotAvailableForReadOnlyUser>
+                        <Button
+                          data-testid="comment-reply-button"
+                          outline
+                          color="secondary"
+                          size="sm"
+                          className="btn-comment-reply"
+                          onClick={() => onReplyButtonClickHandler(comment._id)}
+                        >
+                          <span className="material-symbols-outlined">replay</span> Reply
+                        </Button>
+                      </NotAvailableForReadOnlyUser>
+                    </NotAvailableForGuest>
+                  </div>
+                )}
+                {(!isReadOnly && showEditorIds.has(comment._id)) && (
+                  <CommentEditor
+                    pageId={pageId}
+                    replyTo={comment._id}
+                    onCancelButtonClicked={() => {
+                      removeShowEditorId(comment._id);
+                    }}
+                    onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
+                    revisionId={revisionId}
+                  />
+                )}
+              </div>
+            );
 
-            })}
-          </div>
+          })}
         </div>
       </div>
+
       {!isReadOnly && (
         <DeleteCommentModal
           isShown={isDeleteConfirmModalShown}

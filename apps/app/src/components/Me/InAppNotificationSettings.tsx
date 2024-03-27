@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import pullAllBy from 'lodash/pullAllBy';
 import { useTranslation } from 'next-i18next';
@@ -67,23 +66,23 @@ const InAppNotificationSettings: FC = () => {
 
   return (
     <>
-      <h2 className="border-bottom my-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
+      <h2 className="border-bottom pb-2 my-4 fs-4">{t('in_app_notification_settings.subscribe_settings')}</h2>
 
-      <div className="form-group row">
-        <div className="offset-md-3 col-md-6 text-left">
+      <div className="row">
+        <div className="offset-md-3 col-md-6 text-start">
           {subscribeRulesMenuItems.map(rule => (
             <div
               key={rule.name}
-              className="custom-control custom-switch custom-checkbox-success"
+              className="form-check form-switch form-check-success"
             >
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="form-check-input"
                 id={rule.name}
                 checked={isCheckedRule(rule.name, subscribeRules)}
                 onChange={e => ruleCheckboxHandler(rule.name, e.target.checked)}
               />
-              <label className="custom-control-label" htmlFor={rule.name}>
+              <label className="form-label form-check-label" htmlFor={rule.name}>
                 <strong>{rule.name}</strong>
               </label>
               <p className="form-text text-muted small">

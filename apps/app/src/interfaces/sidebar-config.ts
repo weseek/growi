@@ -1,5 +1,4 @@
 
 export interface ISidebarConfig {
-  isSidebarDrawerMode: boolean,
-  isSidebarClosedAtDockMode: boolean
+  isSidebarCollapsedMode: boolean,
 }

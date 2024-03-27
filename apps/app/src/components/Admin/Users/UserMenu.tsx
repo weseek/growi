@@ -48,7 +48,7 @@ const UserMenu = (props: UserMenuProps) => {
         <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
         <li>
           <button className="dropdown-item" type="button" onClick={onClickPasswordResetHandler}>
-            <i className="icon-fw icon-key"></i>{ t('user_management.reset_password') }
+            <span className="material-symbols-outlined me-1">key</span>{ t('user_management.reset_password') }
           </button>
         </li>
       </>
@@ -80,7 +80,7 @@ const UserMenu = (props: UserMenuProps) => {
   const renderAdminMenu = useCallback(() => {
     return (
       <>
-        <li className="dropdown-divider pl-0"></li>
+        <li className="dropdown-divider ps-0"></li>
         <li className="dropdown-header">{t('user_management.user_table.administrator_menu')}</li>
         <li>
           {user.admin ? <RevokeAdminMenuItem user={user} /> : <GrantAdminButton user={user} />}
@@ -95,11 +95,15 @@ const UserMenu = (props: UserMenuProps) => {
   return (
     <UncontrolledDropdown id="userMenu" size="sm">
       <DropdownToggle caret color="secondary" outline>
-        <i className="icon-settings" />
+        <span className="material-symbols-outlined fs-5">settings</span>
         {(user.status === USER_STATUS.INVITED && !isInvitationEmailSended)
-        && <i className={`fa fa-circle text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`} />}
+        && (
+          <span className={`material-symbols-outlined fill fs-6 text-danger grw-usermenu-notification-icon ${styles['grw-usermenu-notification-icon']}`}>
+            circle
+          </span>
+        )}
       </DropdownToggle>
-      <DropdownMenu positionFixed>
+      <DropdownMenu strategy="fixed">
         {renderEditMenu()}
         {user.status !== USER_STATUS.DELETED && renderStatusMenu()}
         {user.status === USER_STATUS.ACTIVE && renderAdminMenu()}

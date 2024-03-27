@@ -36,7 +36,7 @@ export class OptionParser {
 
     // determine start
     let start;
-    let end;
+    let end = -1;
 
     // has operator
     if (match[3] != null) {

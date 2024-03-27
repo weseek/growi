@@ -6,7 +6,14 @@
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
-    }
+    },
+
+    /* TODO: remove below flags for strict checking */
+    "strict": false,
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "noImplicitAny": false,
+    "noImplicitOverride": true
   },
   "include": [
     "src"

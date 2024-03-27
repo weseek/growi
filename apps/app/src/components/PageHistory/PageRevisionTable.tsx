@@ -2,7 +2,7 @@ import React, {
   useEffect, useRef, useState,
 } from 'react';
 
-import type { IRevisionHasId, IRevisionHasPageId } from '@growi/core';
+import type { IRevisionHasPageId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 import { useSWRxInfinitePageRevisions } from '~/stores/page';
@@ -96,27 +96,19 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
   }, [isLoadingMore, isReachingEnd, setSize, size]);
 
 
-  const onChangeSourceInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
-    setSourceRevision(revision);
-  };
-  const onChangeTargetInvoked: React.Dispatch<React.SetStateAction<IRevisionHasId | undefined>> = (revision: IRevisionHasPageId) => {
-    setTargetRevision(revision);
-  };
-
-
   const renderRow = (revision: IRevisionHasPageId, previousRevision: IRevisionHasPageId, latestRevision: IRevisionHasPageId,
       isOldestRevision: boolean, hasDiff: boolean) => {
 
     const revisionId = revision._id;
 
     const handleCompareLatestRevisionButton = () => {
-      onChangeSourceInvoked(revision);
-      onChangeTargetInvoked(latestRevision);
+      setSourceRevision(revision);
+      setTargetRevision(latestRevision);
     };
 
     const handleComparePreviousRevisionButton = () => {
-      onChangeSourceInvoked(previousRevision);
-      onChangeTargetInvoked(revision);
+      setSourceRevision(previousRevision);
+      setTargetRevision(revision);
     };
 
     return (
@@ -133,7 +125,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
               onClose={onClose}
             />
             {hasDiff && (
-              <div className="ml-md-3 mt-auto">
+              <div className="ms-md-3 mt-auto">
                 <div className="btn-group">
                   <button
                     type="button"
@@ -157,33 +149,33 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         </td>
         <td className="col-1">
           {(hasDiff || revisionId === sourceRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="form-check form-check-inline me-0">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id={`compareSource-${revisionId}`}
                 name="compareSource"
                 value={revisionId}
                 checked={revisionId === sourceRevision?._id}
-                onChange={() => onChangeSourceInvoked(revision)}
+                onChange={() => setSourceRevision(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareSource-${revisionId}`} />
+              <label className="form-label form-check-label" htmlFor={`compareSource-${revisionId}`} />
             </div>
           )}
         </td>
         <td className="col-2">
           {(hasDiff || revisionId === targetRevision?._id) && (
-            <div className="custom-control custom-radio custom-control-inline mr-0">
+            <div className="form-check form-check-inline me-0">
               <input
                 type="radio"
-                className="custom-control-input"
+                className="form-check-input"
                 id={`compareTarget-${revisionId}`}
                 name="compareTarget"
                 value={revisionId}
                 checked={revisionId === targetRevision?._id}
-                onChange={() => onChangeTargetInvoked(revision)}
+                onChange={() => setTargetRevision(revision)}
               />
-              <label className="custom-control-label" htmlFor={`compareTarget-${revisionId}`} />
+              <label className="form-label form-check-label" htmlFor={`compareTarget-${revisionId}`} />
             </div>
           )}
         </td>

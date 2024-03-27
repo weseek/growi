@@ -1,20 +1,10 @@
-@use '~/styles/bootstrap/init' as *;
+@use '@growi/core/scss/bootstrap/init' as *;
 @use '~/styles/mixins';
 
 $slack-work-space-name-card-background: #fff5ff;
 $slack-work-space-name-card-border: #efc1f6;
 
 .admin-page :global {
-  .title {
-    padding-top: 1rem;
-    padding-bottom: 1rem;
-
-    line-height: 1em;
-
-    @include mixins.variable-font-size(28px);
-    line-height: 1.1em;
-  }
-
   .admin-user-menu {
     .dropdown-menu {
       right: 0;
@@ -101,13 +91,16 @@ $slack-work-space-name-card-border: #efc1f6;
     .supplementary-bot-name {
       font-size: 1rem;
     }
-    .badge-info {
+    .bg-info {
       font-size: 0.6rem;
     }
     .admin-bot-card {
-      min-width: 280px;
+      min-width: 300px;
       max-width: 500px;
       border-radius: 8px !important;
+      .grw-botcard-title-active {
+        color: $gray-200;
+      }
     }
     .border-primary {
       border-width: 2px;
@@ -145,12 +138,12 @@ $slack-work-space-name-card-border: #efc1f6;
 
     .grw-bridge-proxy-circle {
       .circle {
-        left: 50%;
+        inset: 0;
         width: 100px;
         height: 100px;
         border: 13px solid;
-        transform: translate(-50%, -50%);
-        @include media-breakpoint-down(md) {
+
+        @include media-breakpoint-down(lg) {
           width: 50px;
           height: 50px;
           border: 8px solid;
@@ -158,13 +151,11 @@ $slack-work-space-name-card-border: #efc1f6;
       }
 
       .circle-inner {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, 25%);
       }
       .circle-inner.grw-proxy-server-name {
         margin-top: 55px;
+        transform: translate(-50%, -25%);
       }
     }
 
@@ -264,7 +255,7 @@ $slack-work-space-name-card-border: #efc1f6;
 
     // style
     .theme-option-container a {
-      background-color: $gray-50;
+      background-color: $gray-100;
       border: 1px solid $border-color;
     }
     .theme-option-name, .theme-option-badge {

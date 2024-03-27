@@ -1,20 +1,20 @@
-@use '../../bootstrap/init' as bs;
+@use '@growi/core/scss/bootstrap/init' as bs;
 
 @mixin button-svg-icon-variant($background, $hover-background: darken($background, 7.5%), $active-background: darken($background, 10%)) {
   svg {
-    fill: color-yiq($background);
+    fill: color-contrast($background);
   }
 
-  @include bs.hover() {
+  &:hover {
     svg {
-      fill: color-yiq($hover-background);
+      fill: color-contrast($hover-background);
     }
   }
 
   &:focus,
   &.focus {
     svg {
-      fill: color-yiq($hover-background);
+      fill: color-contrast($hover-background);
     }
   }
 
@@ -22,7 +22,7 @@
   &.disabled,
   &:disabled {
     svg {
-      fill: color-yiq($background);
+      fill: color-contrast($background);
     }
   }
 
@@ -30,7 +30,7 @@
   &:not(:disabled):not(.disabled).active,
   .show > &.dropdown-toggle {
     svg {
-      fill: color-yiq($active-background);
+      fill: color-contrast($active-background);
     }
   }
 }
@@ -39,7 +39,7 @@
   svg {
     fill: $value;
   }
-  @include bs.hover() {
+  &:hover {
     svg {
       fill: $color-hover;
     }

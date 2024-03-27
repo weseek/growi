@@ -35,9 +35,9 @@ const SiteUrlSetting = (props: Props) => {
 
   return (
     <React.Fragment>
-      <p className="card well">{t('site_url.desc')}</p>
+      <p className="card custom-card">{t('site_url.desc')}</p>
       {!adminAppContainer.state.isSetSiteUrl
-          && (<p className="alert alert-danger"><i className="icon-exclamation"></i> {t('site_url.warn')}</p>)}
+          && (<p className="alert alert-danger"><span className="material-symbols-outlined">error</span> {t('site_url.warn')}</p>)}
 
       { adminAppContainer.state.siteUrlUseOnlyEnvVars && (
         <div className="row">
@@ -53,7 +53,7 @@ const SiteUrlSetting = (props: Props) => {
         </div>
       ) }
 
-      <div className="row form-group">
+      <div className="row">
         <div className="col-md-9 offset-md-3">
           <table className="table settings-table">
             <colgroup>
