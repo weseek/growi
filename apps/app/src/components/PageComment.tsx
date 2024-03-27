@@ -1,5 +1,6 @@
+import type { FC } from 'react';
 import React, {
-  FC, useState, useMemo, memo, useCallback,
+  useState, useMemo, memo, useCallback,
 } from 'react';
 
 import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
@@ -7,11 +8,11 @@ import { Button } from 'reactstrap';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
-import { RendererOptions } from '~/interfaces/renderer-options';
+import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 import { useCommentForCurrentPageOptions } from '~/stores/renderer';
 
-import { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
+import type { ICommentHasId, ICommentHasIdList } from '../interfaces/comment';
 import { useSWRxPageComment } from '../stores/comment';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
@@ -153,10 +154,10 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   return (
     <div className={`${styles['page-comment-styles']} page-comments-row comment-list`}>
       <div className="page-comments">
-        <div className="page-comments-list" id="page-comments-list">
+        <div className="page-comments-list mb-3" id="page-comments-list">
           {commentsExceptReply.map((comment) => {
 
-            const defaultCommentThreadClasses = 'page-comment-thread pb-5';
+            const defaultCommentThreadClasses = 'page-comment-thread mb-2';
             const hasReply: boolean = Object.keys(allReplies).includes(comment._id);
 
             let commentThreadClasses = '';
