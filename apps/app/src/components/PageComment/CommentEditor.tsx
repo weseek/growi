@@ -9,9 +9,6 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
-import {
-  Button, TabContent, TabPane,
-} from 'reactstrap';
 
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
@@ -27,7 +24,6 @@ import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
@@ -42,17 +38,6 @@ const logger = loggerFactory('growi:components:CommentEditor');
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
-
-const navTabMapping = {
-  comment_editor: {
-    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
-    i18n: 'Write',
-  },
-  comment_preview: {
-    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
-    i18n: 'Preview',
-  },
-};
 
 export type CommentEditorProps = {
   pageId: string,
@@ -310,29 +295,50 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
     const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
     const cancelButton = (
-      <Button
+      <button
+        type="button"
         className="btn btn-outline-neutral-secondary"
         onClick={cancelButtonClickedHandler}
       >
         {t('Cancel')}
-      </Button>
+      </button>
     );
     const submitButton = (
-      <Button
+      <button
+        type="button"
         data-testid="comment-submit-button"
         className="btn btn-primary"
         onClick={postCommentHandler}
       >
         {t('comment')}
-      </Button>
+      </button>
     );
 
     return (
       <>
         <div className="comment-write p-3">
-          <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId="comment_editor">
+          <div className="d-flex justify-content-between align-items-center mb-2">
+            <div className="d-flex">
+              <UserPicture user={currentUser} noLink noTooltip />
+              <p className="ms-2 mb-0">Add a comment</p>
+            </div>
+            <ul className="nav nav-pills">
+              <li className="nav-item">
+                <a className="nav-link" href="#comment_preview" data-bs-toggle="tab">
+                  <span className="material-symbols-outlined me-1">play_arrow</span>
+                  {t('Preview')}
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link active" aria-current="page" href="#comment_editor" data-bs-toggle="tab">
+                  <span className="material-symbols-outlined me-1 fs-5">edit_square</span>
+                  {t('Write')}
+                </a>
+              </li>
+            </ul>
+          </div>
+          <div className="tab-content">
+            <div id="comment_editor" className="tab-pane active">
               <CodeMirrorEditorComment
                 acceptedUploadFileType={acceptedUploadFileType}
                 onChange={onChangeHandler}
@@ -340,27 +346,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onUpload={uploadHandler}
                 editorSettings={editorSettings}
               />
-              {/* <Editor
-                ref={editorRef}
-                value={commentBody ?? ''} // DO NOT use state
-                isUploadable={isUploadable}
-                isUploadAllFileAllowed={isUploadAllFileAllowed}
-                onChange={onChangeHandler}
-                onUpload={uploadHandler}
-                onCtrlEnter={ctrlEnterHandler}
-                isComment
-              /> */}
-              {/*
-                Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
-                See a review comment in https://github.com/weseek/growi/pull/3473
-              */}
-            </TabPane>
-            <TabPane tabId="comment_preview">
+            </div>
+            <div id="comment_preview" className="tab-pane">
               <div className="comment-form-preview">
                 {commentPreview}
               </div>
-            </TabPane>
-          </TabContent>
+            </div>
+          </div>
         </div>
 
         <div className="comment-submit px-3 pb-3">
@@ -370,7 +362,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
             {isSlackConfigured && isSlackEnabled != null
               && (
-                <div className="align-self-center me-md-2">
+                <div className="align-self-center me-md-3">
                   <SlackNotification
                     isSlackEnabled={isSlackEnabled}
                     slackChannels={slackChannels}
