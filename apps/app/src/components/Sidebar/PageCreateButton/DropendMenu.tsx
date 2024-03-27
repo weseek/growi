@@ -26,6 +26,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
   return (
     <DropdownMenu
       container="body"
+      data-testid="grw-page-create-button-dropend-menu"
     >
       <DropdownItem
         onClick={onClickCreateNewPage}
