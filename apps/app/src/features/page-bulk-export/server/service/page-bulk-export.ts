@@ -1,4 +1,3 @@
-import { createGzip } from 'node:zlib';
 import type { Readable } from 'stream';
 import { Writable } from 'stream';
 
@@ -6,6 +5,7 @@ import { type IPage, isPopulated } from '@growi/core';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
+import type { QueueObject } from 'async';
 import mongoose from 'mongoose';
 
 import type { PageModel, PageDocument } from '~/server/models/page';
@@ -16,6 +16,11 @@ import loggerFactory from '~/utils/logger';
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
 const streamToPromise = require('stream-to-promise');
+
+// Custom type for back pressure workaround
+interface ArchiverWithQueue extends Archiver {
+  _queue?: QueueObject<any>;
+}
 
 class PageBulkExportService {
 
@@ -80,9 +85,16 @@ class PageBulkExportService {
 
           if (revision != null && isPopulated(revision)) {
             const markdownBody = revision.body;
-            // write to zip
             const pathNormalized = normalizePath(page.path);
-            zipArchiver.append(markdownBody, { name: `${pathNormalized}.md` });
+            // Since archiver does not provide a proper way to back pressure at the moment, use the _queue property as a workaround
+            // ref: https://github.com/archiverjs/node-archiver/issues/611
+            const { _queue } = zipArchiver.append(markdownBody, { name: `${pathNormalized}.md` }) as ArchiverWithQueue;
+            if (_queue == null) {
+              throw Error('Cannot back pressure the export pipeline. Aborting the export.');
+            }
+            if (_queue.length() > 100) {
+              await _queue.drain();
+            }
           }
         }
         catch (err) {
