@@ -78,7 +78,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
-  const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
   const [incremented, setIncremented] = useState(false);
@@ -100,10 +99,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       router.events.off('routeChangeComplete', onRouterChangeComplete);
     };
   }, [onRouterChangeComplete, router.events]);
-
-  const handleSelect = useCallback((activeTab: string) => {
-    setActiveTab(activeTab);
-  }, []);
 
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
   const slackChannelsDataString = slackChannelsData?.toString();
@@ -128,7 +123,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
 
     setComment('');
-    setActiveTab('comment_editor');
     setError(undefined);
     initializeSlackEnabled();
     // reset value
