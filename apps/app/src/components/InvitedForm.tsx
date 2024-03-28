@@ -141,7 +141,6 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
-            <div className="eff"></div>
             <span className="btn-label">
               {isLoading ? (
                 <LoadingSpinner />
@@ -155,7 +154,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       </form>
       <div className="input-group mt-4 d-flex justify-content-center">
         <a href="https://growi.org" className="link-growi-org">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span><span className="org">.ORG</span>
         </a>
       </div>
     </div>

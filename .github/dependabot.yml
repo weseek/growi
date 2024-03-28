@@ -26,5 +26,4 @@ updates:
       - dependency-name: string-width
       - dependency-name: "@handsontable/react"
       - dependency-name: handsontable
-      - dependency-name: reveal.js
 
