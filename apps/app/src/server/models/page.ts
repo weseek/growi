@@ -144,7 +144,7 @@ const schema = new Schema<PageDocument, PageModel>({
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
   wip: { type: Boolean },
-  ttlTimestamp: { type: Date, index: true },
+  ttlTimestamp: { type: Date },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -153,6 +153,9 @@ const schema = new Schema<PageDocument, PageModel>({
   toJSON: { getters: true },
   toObject: { getters: true },
 });
+
+schema.index({ ttlTimestamp: 1 });
+
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
