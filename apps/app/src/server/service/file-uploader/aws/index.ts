@@ -1,3 +1,5 @@
+import { Writable } from 'stream';
+
 import {
   S3Client,
   HeadObjectCommand,
@@ -8,6 +10,9 @@ import {
   ListObjectsCommand,
   type GetObjectCommandInput,
   ObjectCannedACL,
+  CreateMultipartUploadCommand,
+  UploadPartCommand,
+  CompleteMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
@@ -16,12 +21,13 @@ import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachmen
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
-
+import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import { ContentHeaders } from './utils';
+} from '../file-uploader';
+import { ContentHeaders } from '../utils';
+
+import { AwsMultipartUploader } from './multipart-upload';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
@@ -91,9 +97,12 @@ const getFilePathOnStorage = (attachment) => {
   return filePath;
 };
 
+export interface IAwsFileUploader {
+  createMultipartUploader: (uploadKey: string) => AwsMultipartUploader
+}
 
 // TODO: rewrite this module to be a type-safe implementation
-class AwsFileUploader extends AbstractFileUploader {
+class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
   /**
    * @inheritdoc
@@ -214,6 +223,12 @@ class AwsFileUploader extends AbstractFileUploader {
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
 
+  }
+
+  createMultipartUploader(uploadKey: string) {
+    const s3 = S3Factory();
+    const awsConfig = getAwsConfig();
+    return new AwsMultipartUploader(s3, awsConfig.bucket, uploadKey);
   }
 
 }
