@@ -233,6 +233,7 @@
     "@testing-library/user-event": "^14.5.2",
     "@types/express": "^4.17.11",
     "@types/jest": "^29.5.2",
+    "@types/node-cron": "^3.0.11",
     "@types/react-scroll": "^1.8.4",
     "@types/throttle-debounce": "^5.0.1",
     "@types/unzip-stream": "^0.3.4",
