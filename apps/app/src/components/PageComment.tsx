@@ -4,7 +4,7 @@ import React, {
 } from 'react';
 
 import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
-import { Button } from 'reactstrap';
+import { UserPicture } from '@growi/ui/dist/components';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
@@ -171,16 +171,15 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                   <div className="d-flex flex-row-reverse">
                     <NotAvailableForGuest>
                       <NotAvailableForReadOnlyUser>
-                        <Button
-                          data-testid="comment-reply-button"
-                          outline
-                          color="secondary"
-                          size="sm"
-                          className="btn-comment-reply"
+                        <button
+                          type="button"
+                          id="comment-reply-button"
+                          className="btn btn-secondary btn-comment-reply text-start w-100 ms-5"
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
-                          <span className="material-symbols-outlined">replay</span> Reply
-                        </Button>
+                          <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-2" />
+                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>Reply...</small>
+                        </button>
                       </NotAvailableForReadOnlyUser>
                     </NotAvailableForGuest>
                   </div>

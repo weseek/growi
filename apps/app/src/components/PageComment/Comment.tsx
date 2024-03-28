@@ -111,10 +111,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
     deleteBtnClicked(comment);
   };
 
-  const renderText = (comment: string) => {
-    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
-  };
-
   const commentBody = useMemo(() => {
     if (rendererOptions == null) {
       return <></>;
@@ -151,7 +147,7 @@ export const Comment = (props: CommentProps): JSX.Element => {
         />
       ) : (
         <div id={commentId} className={rootClassName}>
-          <div className="page-comment-main bg-secondary rounded">
+          <div className="page-comment-main bg-secondary rounded mb-2">
             <div className="d-flex align-items-center">
               <UserPicture user={creator} additionalClassName="me-2" />
               <div className="small fw-bold me-3">

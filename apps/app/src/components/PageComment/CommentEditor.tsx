@@ -349,7 +349,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </div>
         </div>
 
-        <div className="comment-submit px-3 pb-3">
+        <div className="comment-submit px-3 pb-3 mb-2">
           <div className="d-flex">
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
