@@ -1,9 +1,14 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
 // layout
 .login-page :global {
 
   .nologin-header,
   .nologin-dialog {
-    width: 320px;
+    width: 420px;
+    @include bs.media-breakpoint-down(sm) {
+      width: 320px;
+    }
   }
 
 }
