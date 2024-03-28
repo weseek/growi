@@ -275,7 +275,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-4`} ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group`} ref={rootElemRef}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}

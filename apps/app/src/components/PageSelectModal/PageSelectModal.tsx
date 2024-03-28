@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, memo } from 'react';
 
 import nodePath from 'path';
 
@@ -15,9 +15,29 @@ import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stor
 
 import { ItemsTree } from '../ItemsTree';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
+const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
+
+  const { children } = props;
+
+  const calcViewHeight = useCallback(() => {
+    return window.innerHeight / 2;
+  }, []);
+
+  return (
+    <div className="grw-page-select-modal-wrapper">
+      <StickyStretchableScroller
+        stickyElemSelector=".modal-body"
+        calcViewHeight={calcViewHeight}
+      >
+        { children }
+      </StickyStretchableScroller>
+    </div>
+  );
+});
 
 export const PageSelectModal: FC = () => {
   const {
@@ -82,16 +102,20 @@ export const PageSelectModal: FC = () => {
       size="sm"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
-      <ModalBody>
-        <ItemsTree
-          CustomTreeItem={TreeItemForModal}
-          isEnableActions={!isGuestUser}
-          isReadOnlyUser={!!isReadOnlyUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-          onClickTreeItem={onClickTreeItem}
-        />
+      <ModalBody className="p-0">
+        <TreeForModalWrapper>
+          <div className="p-3">
+            <ItemsTree
+              CustomTreeItem={TreeItemForModal}
+              isEnableActions={!isGuestUser}
+              isReadOnlyUser={!!isReadOnlyUser}
+              targetPath={path}
+              targetPathOrId={targetPathOrId}
+              targetAndAncestorsData={targetAndAncestorsData}
+              onClickTreeItem={onClickTreeItem}
+            />
+          </div>
+        </TreeForModalWrapper>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>
