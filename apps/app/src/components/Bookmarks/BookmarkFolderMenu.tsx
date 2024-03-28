@@ -117,7 +117,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         <DropdownItem
           toggle={false}
           onClick={onUnbookmarkHandler}
-          className="grw-bookmark-folder-menu-item text-danger"
+          className="grw-bookmark-folder-menu-item text-danger text-truncate"
         >
           <span className="material-symbols-outlined">bookmark</span>{' '}
           <span className="mx-2">
@@ -184,14 +184,14 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     <UncontrolledDropdown
       isOpen={isOpen}
       onToggle={toggleHandler}
-      className={`grw-bookmark-folder-dropdown ${styles['grw-bookmark-folder-dropdown']}`}
     >
       {children}
       <DropdownMenu
         end
         persist
         strategy="fixed"
-        className="z-1 grw-bookmark-folder-menu"
+        container="body"
+        className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>
