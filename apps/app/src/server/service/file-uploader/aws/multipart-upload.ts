@@ -1,5 +1,5 @@
 import {
-  CreateMultipartUploadCommand, UploadPartCommand, type S3Client, CompleteMultipartUploadCommand,
+  CreateMultipartUploadCommand, UploadPartCommand, type S3Client, CompleteMultipartUploadCommand, AbortMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 
 import loggerFactory from '~/utils/logger';
@@ -10,12 +10,14 @@ enum UploadStatus {
   BEFORE_INIT,
   IN_PROGRESS,
   COMPLETED,
+  ABORTED
 }
 
 export interface IAwsMultipartUploader {
   initUpload(): Promise<void>;
   uploadPart(body: Buffer, partNumber: number): Promise<void>;
   completeUpload(): Promise<void>;
+  abortUpload(): Promise<void>;
 }
 
 /**
@@ -53,6 +55,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     }));
     this.uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
+    logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
   }
 
   async uploadPart(body: Buffer, partNumber: number): Promise<void> {
@@ -84,6 +87,19 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       },
     }));
     this.currentStatus = UploadStatus.COMPLETED;
+    logger.info(`Multipart upload completed. Upload key: ${this.uploadKey}`);
+  }
+
+  async abortUpload(): Promise<void> {
+    this.validateUploadStatus(UploadStatus.IN_PROGRESS);
+
+    await this.s3Client.send(new AbortMultipartUploadCommand({
+      Bucket: this.bucket,
+      Key: this.uploadKey,
+      UploadId: this.uploadId,
+    }));
+    this.currentStatus = UploadStatus.ABORTED;
+    logger.info(`Multipart upload aborted. Upload key: ${this.uploadKey}`);
   }
 
   private validateUploadStatus(desiredStatus: UploadStatus): void {
@@ -95,11 +111,17 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       errMsg = 'Multipart upload has already been completed';
     }
 
-    if (desiredStatus === UploadStatus.BEFORE_INIT) {
+    if (this.currentStatus === UploadStatus.ABORTED) {
+      errMsg = 'Multipart upload has been aborted';
+    }
+
+    // currentStatus is IN_PROGRESS or BEFORE_INIT
+
+    if (this.currentStatus === UploadStatus.IN_PROGRESS && desiredStatus === UploadStatus.BEFORE_INIT) {
       errMsg = 'Multipart upload has already been initiated';
     }
 
-    if (desiredStatus === UploadStatus.IN_PROGRESS) {
+    if (this.currentStatus === UploadStatus.BEFORE_INIT && desiredStatus === UploadStatus.IN_PROGRESS) {
       errMsg = 'Multipart upload not initiated';
     }
 
