@@ -309,23 +309,23 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
     return (
       <>
-        <div className="comment-write p-3">
+        <div className="comment-write px-4 pt-3 pb-1">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="d-flex">
               <UserPicture user={currentUser} noLink noTooltip />
               <p className="ms-2 mb-0">Add a comment</p>
             </div>
-            <ul className="nav nav-pills">
+            <ul className="nav nav-pills rounded-2">
               <li className="nav-item">
-                <a className="nav-link" href="#comment_preview" data-bs-toggle="tab">
-                  <span className="material-symbols-outlined me-1">play_arrow</span>
-                  {t('Preview')}
+                <a className="nav-link rounded-1 rounded-end-0" href="#comment_preview" data-bs-toggle="tab">
+                  <span className="material-symbols-outlined">play_arrow</span>
+                  <small>{t('Preview')}</small>
                 </a>
               </li>
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#comment_editor" data-bs-toggle="tab">
+                <a className="nav-link active rounded-1 rounded-start-0" aria-current="page" href="#comment_editor" data-bs-toggle="tab">
                   <span className="material-symbols-outlined me-1 fs-5">edit_square</span>
-                  {t('Write')}
+                  <small>{t('Write')}</small>
                 </a>
               </li>
             </ul>
@@ -348,7 +348,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </div>
         </div>
 
-        <div className="comment-submit px-3 pb-3 mb-2">
+        <div className="comment-submit px-4 pb-3 mb-2">
           <div className="d-flex">
             <span className="flex-grow-1" />
             <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
