@@ -46,7 +46,6 @@ import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
 import Workflow from '../../../features/approval-workflow/server/models/workflow';
-import { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PathAlreadyExistsError } from '../../models/errors';
