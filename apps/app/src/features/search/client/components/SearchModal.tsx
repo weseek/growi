@@ -94,7 +94,6 @@ const SearchModal = (): JSX.Element => {
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
-                <div className="border-top mt-2 mb-2" />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
