@@ -52,5 +52,4 @@ jobs:
         CODEBUILD__environmentTypeOverride: ${{ (matrix.platform == 'amd64' && 'LINUX_CONTAINER') || 'ARM_CONTAINER' }}
         CODEBUILD__environmentVariablesOverride: '[
           { "name": "IMAGE_TAG", "type": "PLAINTEXT", "value": "docker.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}" },
-          { "name": "IMAGE_TAG_GHCR", "type": "PLAINTEXT", "value": "ghcr.io/${{ inputs.image-name }}:${{ inputs.tag-temporary }}-${{ matrix.platform }}" }
         ]'
