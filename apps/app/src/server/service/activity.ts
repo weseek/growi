@@ -1,14 +1,16 @@
 import type { IPage } from '@growi/core';
 import mongoose from 'mongoose';
 
+import type { IActivity, SupportedActionType } from '~/interfaces/activity';
 import {
-  IActivity, SupportedActionType, AllSupportedActions, ActionGroupSize,
+  AllSupportedActions, ActionGroupSize,
   AllEssentialActions, AllSmallGroupActions, AllMediumGroupActions, AllLargeGroupActions,
 } from '~/interfaces/activity';
-import Activity, { ActivityDocument } from '~/server/models/activity';
+import type { ActivityDocument } from '~/server/models/activity';
+import Activity from '~/server/models/activity';
 
 import loggerFactory from '../../utils/logger';
-import Crowi from '../crowi';
+import type Crowi from '../crowi';
 
 
 import type { GeneratePreNotify, GetAdditionalTargetUsers } from './pre-notify';
@@ -145,6 +147,16 @@ class ActivityService {
       const isNotSpec = foundCreatedAt?.expireAfterSeconds == null || foundCreatedAt?.expireAfterSeconds !== activityExpirationSeconds;
       const shoudDropIndex = foundCreatedAt != null && isNotSpec;
       const shoudCreateIndex = foundCreatedAt == null || shoudDropIndex;
+
+      logger.info('activityService.createTtlIndex', {
+        activityExpirationSeconds,
+        indexes,
+        foundCreatedAt,
+        targetField,
+        isNotSpec,
+        shoudDropIndex,
+        shoudCreateIndex,
+      });
 
       if (shoudDropIndex) {
         await collection.dropIndex(targetField);
