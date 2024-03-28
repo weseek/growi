@@ -6,7 +6,6 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
-import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
 import {
@@ -25,6 +24,7 @@ import {
   MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
+import { WideViewMenuItem, CommunicationMenuItems } from '../SubNavButtons';
 
 import { BookmarkButtons } from './BookmarkButtons';
 import LikeButtons from './LikeButtons';
@@ -59,40 +59,6 @@ const Tags = (props: TagsProps): JSX.Element => {
   );
 };
 
-type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (newValue: boolean) => void,
-  expandContentWidth?: boolean,
-}
-
-const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
-  const { t } = useTranslation();
-
-  const {
-    onClickMenuItem, expandContentWidth,
-  } = props;
-
-  return (
-    <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth))}
-      className="grw-page-control-dropdown-item"
-    >
-      <div className="form-check form-switch ms-1">
-        <input
-          id="switchContentWidth"
-          className="form-check-input"
-          type="checkbox"
-          checked={expandContentWidth}
-          onChange={() => {}}
-        />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
-          { t('wide_view') }
-        </label>
-      </div>
-    </DropdownItem>
-  );
-};
-
-
 type CommonProps = {
   disableSeenUserInfoPopover?: boolean,
   showPageControlDropdown?: boolean,
@@ -102,6 +68,7 @@ type CommonProps = {
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
+  onClickWorkflowMenuItem?: (pageId: string) => void,
 }
 
 type PageControlsSubstanceProps = CommonProps & {
@@ -119,7 +86,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth, onClickWorkflowMenuItem,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -224,16 +191,29 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
   }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
+  const workflowMenuItemClickHandler = useCallback(async(pageId: string) => {
+    if (onClickWorkflowMenuItem == null) {
+      return;
+    }
+
+    onClickWorkflowMenuItem(pageId);
+  }, [onClickWorkflowMenuItem]);
+
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
       return undefined;
     }
-    const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
-
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+    const TopMenuItemRenderer = () => {
+      return (
+        <>
+          <WideViewMenuItem onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />
+          <DropdownItem divider />
+          <CommunicationMenuItems pageId={pageId} onClickWokflowMenuItem={workflowMenuItemClickHandler} />
+        </>
+      );
     };
-    return wideviewMenuItemRenderer;
-  }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
+    return TopMenuItemRenderer;
+  }, [pageInfo, switchContentWidthClickHandler, workflowMenuItemClickHandler, expandContentWidth]);
 
   if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;

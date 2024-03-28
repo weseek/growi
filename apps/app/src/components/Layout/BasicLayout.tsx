@@ -23,6 +23,7 @@ const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
+const WorkflowModal = dynamic(() => import('~/features/approval-workflow/client/components/WorkflowModal'), { ssr: false });
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 
 
@@ -58,6 +59,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
         <DeleteAttachmentModal />
         <DeleteBookmarkFolderModal />
         <PutbackPageModal />
+        <WorkflowModal />
         <SearchModal />
       </DndProvider>
 
