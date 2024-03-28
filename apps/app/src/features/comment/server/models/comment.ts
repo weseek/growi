@@ -1,9 +1,10 @@
 import type { IUser } from '@growi/core/dist/interfaces';
-import {
-  Types, Document, Model, Schema, Query,
+import type {
+  Types, Document, Model, Query,
 } from 'mongoose';
+import { Schema } from 'mongoose';
 
-import { IComment } from '~/interfaces/comment';
+import type { IComment } from '~/interfaces/comment';
 import { getOrCreateModel } from '~/server/util/mongoose-utils';
 import loggerFactory from '~/utils/logger';
 
@@ -111,10 +112,10 @@ commentSchema.statics.countCommentByPageId = async function(page) {
   return this.count({ page });
 };
 
-commentSchema.methods.removeWithReplies = async function(comment) {
-  await this.remove({
-    $or: (
-      [{ replyTo: this._id }, { _id: this._id }]),
+commentSchema.statics.removeWithReplies = async function(comment) {
+  await this.deleteMany({
+    $or:
+      [{ replyTo: comment._id }, { _id: comment._id }],
   });
 };
 

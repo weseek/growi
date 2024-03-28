@@ -304,18 +304,16 @@
   }
 
   // Bookmark dropdown menu
-  .grw-bookmark-folder-dropdown  {
-    .grw-bookmark-folder-menu {
-      .form-control{
-        &:focus {
-          color: $body-color
-        }
+  .grw-bookmark-folder-menu {
+    .form-control{
+      &:focus {
+        color: $body-color
       }
-      .grw-bookmark-folder-menu-item {
-        @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
-        .grw-bookmark-folder-menu-item-title {
-          color: $body-color
-        }
+    }
+    .grw-bookmark-folder-menu-item {
+      @include mixins-buttons.button-outline-svg-icon-variant($gray-400, $primary);
+      .grw-bookmark-folder-menu-item-title {
+        color: $body-color
       }
     }
   }

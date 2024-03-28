@@ -26,7 +26,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4
       with:
-        images: weseek/growi-slackbot-proxy,ghcr.io/weseek/growi-slackbot-proxy,asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy
+        images: weseek/growi-slackbot-proxy,asia.gcr.io/${{ secrets.GCP_PRJ_ID_SLACKBOT_PROXY }}/growi-slackbot-proxy
         tags: |
           type=raw,value=latest
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -34,13 +34,6 @@ jobs:
     - name: Login to docker.io registry
       run: |
         echo ${{ secrets. DOCKER_REGISTRY_PASSWORD }} | docker login --username wsmoogle --password-stdin
-
-    - name: Login to GitHub Container Registry
-      uses: docker/login-action@v2
-      with:
-        registry: ghcr.io
-        username: wsmoogle
-        password: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 
     - name: Authenticate to Google Cloud for GROWI.cloud
       uses: google-github-actions/auth@v1

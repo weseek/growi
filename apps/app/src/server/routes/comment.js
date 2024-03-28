@@ -475,7 +475,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
-      await comment.removeWithReplies(comment);
+      await Comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
       commentEvent.emit(CommentEvent.DELETE, comment);
     }
