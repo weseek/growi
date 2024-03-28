@@ -1,4 +1,5 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
@@ -25,7 +26,7 @@ const CustomCopyToClipBoard: FC<Props> = (props: Props) => {
     <>
       <CopyToClipboard text={props.textToBeCopied || ''} onCopy={showToolTip}>
         <div className="btn input-group-text" id="tooltipTarget">
-          <i className="fa fa-clipboard mx-1" aria-hidden="true"></i>
+          <span className="material-symbols-outlined mx-1" aria-hidden="true">content_paste</span>
         </div>
       </CopyToClipboard>
       <Tooltip target="tooltipTarget" fade={false} isOpen={tooltipOpen}>

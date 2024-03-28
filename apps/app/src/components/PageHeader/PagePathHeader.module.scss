@@ -1,0 +1,20 @@
+.page-path-header :global {
+  max-width: calc(100vw - 650px);
+  input {
+    min-width: 20px;
+    min-height: unset;
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 1em;
+  }
+
+  .page-path-header-buttons {
+    height: 0;
+
+    .btn {
+      width: 24px;
+      height: 24px;
+      transform: translateY(12px);
+    }
+  }
+}

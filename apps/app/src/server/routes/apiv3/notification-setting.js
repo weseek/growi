@@ -1,6 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { GlobalNotificationSettingType } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 import { removeNullPropertyFromObject } from '~/utils/object-utils';
 
@@ -283,11 +284,11 @@ module.exports = (crowi) => {
 
     let notification;
 
-    if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
+    if (notifyType === GlobalNotificationSettingType.MAIL) {
       notification = new GlobalNotificationMailSetting(crowi);
       notification.toEmail = toEmail;
     }
-    if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
+    if (notifyType === GlobalNotificationSettingType.SLACK) {
       notification = new GlobalNotificationSlackSetting(crowi);
       notification.slackChannels = slackChannels;
     }
@@ -350,8 +351,8 @@ module.exports = (crowi) => {
     } = req.body;
 
     const models = {
-      [GlobalNotificationSetting.TYPE.MAIL]: GlobalNotificationMailSetting,
-      [GlobalNotificationSetting.TYPE.SLACK]: GlobalNotificationSlackSetting,
+      [GlobalNotificationSettingType.MAIL]: GlobalNotificationMailSetting,
+      [GlobalNotificationSettingType.SLACK]: GlobalNotificationSlackSetting,
     };
 
     try {
@@ -368,11 +369,11 @@ module.exports = (crowi) => {
         setting = setting.toObject();
       }
 
-      if (notifyType === GlobalNotificationSetting.TYPE.MAIL) {
+      if (notifyType === GlobalNotificationSettingType.MAIL) {
         setting = GlobalNotificationMailSetting.hydrate(setting);
         setting.toEmail = toEmail;
       }
-      if (notifyType === GlobalNotificationSetting.TYPE.SLACK) {
+      if (notifyType === GlobalNotificationSettingType.SLACK) {
         setting = GlobalNotificationSlackSetting.hydrate(setting);
         setting.slackChannels = slackChannels;
       }

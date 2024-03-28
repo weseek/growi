@@ -13,10 +13,8 @@ import { useDescendantsPageListModal } from '~/stores/modal';
 
 import { CustomNavTab } from './CustomNavigation/CustomNav';
 import CustomTabContent from './CustomNavigation/CustomTabContent';
-import { DescendantsPageListProps } from './DescendantsPageList';
+import type { DescendantsPageListProps } from './DescendantsPageList';
 import ExpandOrContractButton from './ExpandOrContractButton';
-import PageListIcon from './Icons/PageListIcon';
-import TimeLineIcon from './Icons/TimeLineIcon';
 
 import styles from './DescendantsPageListModal.module.scss';
 
@@ -46,7 +44,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
   const navTabMapping = useMemo(() => {
     return {
       pagelist: {
-        Icon: PageListIcon,
+        Icon: () => <span className="material-symbols-outlined">subject</span>,
         Content: () => {
           if (status == null || status.path == null || !status.isOpened) {
             return <></>;
@@ -57,7 +55,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
         isLinkEnabled: () => !isSharedUser,
       },
       timeline: {
-        Icon: TimeLineIcon,
+        Icon: () => <span className="material-symbols-outlined">timeline</span>,
         Content: () => {
           if (status == null || !status.isOpened) {
             return <></>;

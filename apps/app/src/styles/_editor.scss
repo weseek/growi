@@ -4,6 +4,10 @@
 
 @import './organisms/wiki-custom-sidebar';
 
+:root {
+  --grw-codemirror-editor-content-font-family: var(--font-family-monospace);
+}
+
 // global imported
 .layout-root.editing {
   overflow: hidden !important;
@@ -27,7 +31,6 @@
    * Expand Editor
    *****************/
   .dynamic-layout-root {
-    width: calc(100vw - var.$grw-sidebar-nav-width);
     @extend .flex-expand-vh-100;
   }
 
@@ -70,10 +73,6 @@
         }
       }
 
-      .textarea-editor {
-        font-family: var(--font-family-monospace);
-        border: none;
-      }
     }
 
     .page-editor-preview-container {
@@ -96,14 +95,6 @@
       }
     }
 
-    .grw-editor-configuration-dropdown {
-      .icon-container {
-        width: 20px;
-      }
-      .menuitem-label {
-        min-width: 130px;
-      }
-    }
   }
 
   // .builtin-editor .tab-pane#edit

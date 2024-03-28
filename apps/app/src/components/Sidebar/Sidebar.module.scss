@@ -86,7 +86,7 @@
     &:global {
       &.grw-sidebar-collapsed {
         .sidebar-contents-container {
-          background-color: rgba(var(--grw-highlight-100-rgb), .5);
+          background-color: rgba(var(--grw-highlight-100-rgb), .8);
           backdrop-filter: blur(20px);
         }
       }
@@ -108,7 +108,7 @@
     &:global {
       &.grw-sidebar-collapsed {
         .sidebar-contents-container {
-          background-color: rgba(var(--grw-highlight-800-rgb), .5);
+          background-color: rgba(var(--grw-highlight-800-rgb), .8);
           backdrop-filter: blur(20px);
         }
       }

@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
@@ -21,7 +22,7 @@ export const AuditLogSettings: FC = () => {
     <>
       <h4 className="mt-4">{t('admin:audit_log_management.activity_expiration_date')}</h4>
       <p className="form-text text-muted">
-        {t('admin:audit_log_management.activity_expiration_date_explain')}
+        {t('admin:audit_log_management.activity_expiration_date_explanation')}
       </p>
       <p className="alert alert-warning col-6">
         <span className="material-symbols-outlined">error</span>
@@ -50,11 +51,11 @@ export const AuditLogSettings: FC = () => {
         </a>
       </h4>
       <p className="form-text text-muted">
-        {t('admin:audit_log_management.available_action_list_explain')}
+        {t('admin:audit_log_management.available_action_list_explanation')}
       </p>
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>
-          <i className={`fa fa-fw fa-arrow-right ${isExpandActionList ? 'fa-rotate-90' : ''}`}></i>
+          <span className={`material-symbols-outlined me-1 ${isExpandActionList ? 'rotate-90' : ''}`}>navigate_next</span>
           { t('admin:audit_log_management.action_list') }
         </button>
       </p>

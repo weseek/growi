@@ -6,6 +6,7 @@ import React, {
 import dynamic from 'next/dynamic';
 
 import { SidebarMode } from '~/interfaces/ui';
+import { useIsSearchPage } from '~/stores/context';
 import {
   useDrawerOpened,
   useCollapsedContentsOpened,
@@ -135,7 +136,7 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${openClass}`} style={{ width: collapsibleContentsWidth }}>
         {children}
       </div>
     </div>
@@ -181,6 +182,8 @@ export const Sidebar = (): JSX.Element => {
     isDrawerMode, isCollapsedMode, isDockMode,
   } = useSidebarMode();
 
+  const { data: isSearchPage } = useIsSearchPage();
+
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
   // eslint-disable-next-line no-nested-ternary
@@ -204,7 +207,7 @@ export const Sidebar = (): JSX.Element => {
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       ) }
-      { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
+      { sidebarMode != null && !isDockMode() && !isSearchPage && <AppTitleOnSubnavigation /> }
       <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }

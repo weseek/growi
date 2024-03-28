@@ -1,7 +1,8 @@
-import { PageGrant, GroupType } from '@growi/core';
+import { GroupType, Origin } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { Comment } from '~/features/comment/server/models/comment';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import loggerFactory from '~/utils/logger';
@@ -140,8 +141,15 @@ export const getPageSchema = (crowi) => {
     return relations.map((relation) => { return relation.relatedTag.name });
   };
 
-  pageSchema.methods.isUpdatable = function(previousRevision) {
-    const revision = this.latestRevision || this.revision;
+  pageSchema.methods.isUpdatable = async function(previousRevision, origin) {
+    const populatedPageDataWithRevisionOrigin = await this.populate('revision', 'origin');
+    const latestRevisionOrigin = populatedPageDataWithRevisionOrigin.revision.origin;
+    const ignoreLatestRevision = origin === Origin.Editor && (latestRevisionOrigin === Origin.Editor || latestRevisionOrigin === Origin.View);
+    if (ignoreLatestRevision) {
+      return true;
+    }
+
+    const revision = this.latestRevision || this.revision._id;
     // comparing ObjectId with string
     // eslint-disable-next-line eqeqeq
     if (revision != previousRevision) {
@@ -638,50 +646,11 @@ export const getPageSchema = (crowi) => {
     return { templateBody, templateTags };
   };
 
-  pageSchema.statics.applyScopesToDescendantsAsyncronously = async function(parentPage, user, isV4 = false) {
-    const builder = new this.PageQueryBuilder(this.find());
-    builder.addConditionToListOnlyDescendants(parentPage.path);
-
-    if (isV4) {
-      builder.addConditionAsRootOrNotOnTree();
-    }
-    else {
-      builder.addConditionAsOnTree();
-    }
-
-    // add grant conditions
-    await addConditionToFilteringByViewerToEdit(builder, user);
-
-    const grant = parentPage.grant;
-
-    await builder.query.updateMany({}, {
-      grant,
-      grantedGroups: grant === PageGrant.GRANT_USER_GROUP ? parentPage.grantedGroups : null,
-      grantedUsers: grant === PageGrant.GRANT_OWNER ? [user._id] : null,
-    });
-
-  };
-
   pageSchema.statics.findListByPathsArray = async function(paths, includeEmpty = false) {
     const queryBuilder = new this.PageQueryBuilder(this.find(), includeEmpty);
     queryBuilder.addConditionToListByPathsArray(paths);
 
     return await queryBuilder.query.exec();
-  };
-
-  pageSchema.statics.publicizePages = async function(pages) {
-    const operationsToPublicize = pages.map((page) => {
-      return {
-        updateOne: {
-          filter: { _id: page._id },
-          update: {
-            grantedGroups: null,
-            grant: this.GRANT_PUBLIC,
-          },
-        },
-      };
-    });
-    await this.bulkWrite(operationsToPublicize);
   };
 
   /**

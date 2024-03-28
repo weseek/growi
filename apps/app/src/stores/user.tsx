@@ -1,5 +1,6 @@
 import type { IUserHasId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
@@ -44,7 +45,7 @@ type usernameResult = {
 
 export const useSWRxUsernames = (q: string, offset?: number, limit?: number, options?: usernameRequestOptions): SWRResponse<usernameResult, Error> => {
   return useSWRImmutable(
-    (q != null && q.trim() !== '') ? ['/users/usernames', q, offset, limit, options] : null,
+    (q != null && q.trim() !== '') ? ['/users/usernames', q, offset, limit, JSON.stringify(options)] : null,
     ([endpoint, q, offset, limit, options]) => apiv3Get(endpoint, {
       q, offset, limit, options,
     }).then(result => result.data),
