@@ -1,9 +1,10 @@
-import React, {
-  type FC,
+import type { FC } from 'react';
+import {
   memo, useCallback, useEffect, useState,
 } from 'react';
 
 import dynamic from 'next/dynamic';
+import SimpleBar from 'simplebar-react';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores/context';
@@ -17,10 +18,12 @@ import {
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
+
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
+
 
 import styles from './Sidebar.module.scss';
 
@@ -136,7 +139,10 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div
+        className={`sidebar-contents-container flex-grow-1 overflow-x-hidden ${openClass}`}
+        style={{ width: collapsibleContentsWidth }}
+      >
         {children}
       </div>
     </div>
@@ -174,6 +180,47 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
+const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: HTMLElement | null): number => {
+
+  let maxHeight: number;
+
+  switch (sidebarMode) {
+    case SidebarMode.DOCK:
+    case SidebarMode.DRAWER:
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
+      break;
+    case SidebarMode.COLLAPSED:
+      maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top * 2 : window.innerHeight;
+      break;
+  }
+
+  return maxHeight;
+};
+
+const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
+
+  const { sidebarMode } = props;
+
+  const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
+
+  useEffect(() => {
+    const elem = document.getElementById('grw-sidebar-contents-wrapper');
+    const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
+
+    setSimplebarMaxHeight(maxHeight);
+  }, [sidebarMode]);
+
+  return (
+    <div id="grw-sidebar-contents-wrapper">
+      <SimpleBar
+        style={{ maxHeight: simplebarMaxHeight }}
+      >
+        <SidebarContents />
+      </SimpleBar>
+    </div>
+  );
+});
+SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
 
 export const Sidebar = (): JSX.Element => {
 
@@ -183,6 +230,11 @@ export const Sidebar = (): JSX.Element => {
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
+
+
+  if (sidebarMode == null) {
+    return <></>;
+  }
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -213,7 +265,7 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
-            <SidebarContents />
+            <SidebarContentsWrapper sidebarMode={sidebarMode} />
           </CollapsibleContainer>
         </ResizableContainer>
       </DrawableContainer>
