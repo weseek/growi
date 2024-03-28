@@ -142,8 +142,8 @@ class PageBulkExportService {
   private getMultipartUploadWritable(multipartUploader: IAwsMultipartUploader): Writable {
     let partNumber = 1;
     // Buffer to store stream data before upload. When the buffer is full, it will be uploaded as a part.
-    let part = Buffer.alloc(this.partSize);
-    let filledPartSize = 0;
+    let buffer = Buffer.alloc(this.partSize);
+    let filledBufferSize = 0;
 
     return new Writable({
       write: async(chunk: Buffer, encoding, callback) => {
@@ -156,18 +156,18 @@ class PageBulkExportService {
             // - If the remaining chunk size is larger than the remaining buffer size:
             //     - Fill the buffer, and upload => dataSize is the remaining buffer size
             //     - The remaining chunk after upload will be added to buffer in the next iteration
-            const dataSize = Math.min(this.partSize - filledPartSize, chunk.length - offset);
+            const dataSize = Math.min(this.partSize - filledBufferSize, chunk.length - offset);
             // Add chunk data to buffer
-            chunk.copy(part, filledPartSize, offset, offset + dataSize);
-            filledPartSize += dataSize;
+            chunk.copy(buffer, filledBufferSize, offset, offset + dataSize);
+            filledBufferSize += dataSize;
 
             // When buffer reaches partSize, upload
-            if (filledPartSize === this.partSize) {
+            if (filledBufferSize === this.partSize) {
               // eslint-disable-next-line no-await-in-loop
-              await multipartUploader.uploadPart(part, partNumber);
+              await multipartUploader.uploadPart(buffer, partNumber);
               // Reset buffer after upload
-              part = Buffer.alloc(this.partSize);
-              filledPartSize = 0;
+              buffer = Buffer.alloc(this.partSize);
+              filledBufferSize = 0;
               partNumber += 1;
             }
 
@@ -183,9 +183,9 @@ class PageBulkExportService {
       },
       async final(callback) {
         try {
-          if (filledPartSize > 0) {
-            const finalPart = Buffer.alloc(filledPartSize);
-            part.copy(finalPart, 0, 0, filledPartSize);
+          if (filledBufferSize > 0) {
+            const finalPart = Buffer.alloc(filledBufferSize);
+            buffer.copy(finalPart, 0, 0, filledBufferSize);
             await multipartUploader.uploadPart(finalPart, partNumber);
           }
           await multipartUploader.completeUpload();
