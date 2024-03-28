@@ -31,7 +31,7 @@ jobs:
         # retrieve local font files
         lfs: true
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -143,7 +143,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -234,7 +234,7 @@ jobs:
     - name: Install fonts
       run: sudo apt install fonts-noto
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
