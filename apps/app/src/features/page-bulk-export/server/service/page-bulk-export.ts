@@ -158,7 +158,6 @@ class PageBulkExportService {
             //     - The remaining chunk after upload will be added to buffer in the next iteration
             const dataSize = Math.min(this.partSize - filledPartSize, chunk.length - offset);
             // Add chunk data to buffer
-            // buffer = Buffer.concat([buffer, chunk.slice(offset, offset + dataSize)]);
             chunk.copy(part, filledPartSize, offset, offset + dataSize);
             filledPartSize += dataSize;
 
