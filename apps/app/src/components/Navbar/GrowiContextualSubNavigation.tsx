@@ -297,6 +297,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
           d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
+        id="grw-contextual-sub-nav"
       >
 
         {

@@ -46,15 +46,15 @@ const SecurityManagementContents = () => {
         i18n: 'OIDC',
       },
       passport_google: {
-        Icon: () => <i className="fa fa-google" />,
+        Icon: () => <span className="growi-custom-icons align-bottom">google</span>,
         i18n: 'Google',
       },
       passport_github: {
-        Icon: () => <i className="fa fa-github" />,
+        Icon: () => <span className="growi-custom-icons align-bottom">github</span>,
         i18n: 'GitHub',
       },
       // passport_facebook: {
-      //   Icon: () => <i className="fa fa-facebook" />,
+      //   Icon: () => <span className="growi-custom-icons align-bottom">facebook</span>,
       //   i18n: '(TBD) Facebook',
       // },
     };
