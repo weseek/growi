@@ -84,3 +84,27 @@
     }
   }
 }
+
+// Light mode color
+@include bs.color-mode(light) {
+  .comment-styles :global {
+    // == Colors
+    .bg-comment {
+      background-color: rgba( bs.$gray-200, 0.5 );
+      border: 1px solid bs.$gray-200;
+      backdrop-filter: blur(35px);
+    }
+  }
+}
+
+// dark mode color
+@include bs.color-mode(dark) {
+  .comment-styles :global {
+    // == Colors
+    .bg-comment {
+      background-color: rgba( bs.$gray-200, 0.5 );
+      border: 1px solid bs.$gray-200;
+      backdrop-filter: blur(35px);
+    }
+  }
+}
