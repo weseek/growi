@@ -8,7 +8,7 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
+import { LightBoxToggle } from '~/components/ReactMarkdownComponents/LightBoxToggle';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
@@ -80,7 +80,7 @@ export const generatePresentationViewOptions = (
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.img = LightBox;
+    components.img = LightBoxToggle;
   }
 
   if (config.isEnabledXssPrevention) {

@@ -17,7 +17,7 @@ import type { Pluggable } from 'unified';
 
 import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
 import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
+import { LightBoxToggle } from '~/components/ReactMarkdownComponents/LightBoxToggle';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
@@ -118,7 +118,7 @@ export const generateViewOptions = (
     components.table = TableWithEditButton;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.img = LightBox;
+    components.img = LightBoxToggle;
     components.slide = SlideViewer;
   }
 
@@ -225,7 +225,7 @@ export const generateSimpleViewOptions = (
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.img = LightBox;
+    components.img = LightBoxToggle;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -305,7 +305,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.drawio = drawio.DrawioViewer;
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
-    components.img = LightBox;
+    components.img = LightBoxToggle;
     components.slide = SlideViewer;
   }
 
