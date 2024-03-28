@@ -1,5 +1,5 @@
-import type { FC } from 'react';
-import React from 'react';
+import type { CSSProperties } from 'react';
+import React, { useMemo } from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -7,6 +7,10 @@ import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
+import {
+  useCurrentProductNavWidth,
+  useSidebarMode, useIsDeviceLargerThanMd,
+} from '~/stores/ui';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
@@ -33,7 +37,7 @@ const Separator = (): JSX.Element => {
   return <span className={styles['grw-mx-02em']}>/</span>;
 };
 
-export const PagePathNav: FC<Props> = (props: Props) => {
+export const PagePathNav = (props: Props): JSX.Element => {
   const {
     pageId, pagePath, isWipPage, isSingleLineMode, isCollapseParents,
     formerLinkClassName, latterLinkClassName,
@@ -103,10 +107,27 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   );
 };
 
+PagePathNav.displayName = 'PagePathNav';
+
 
 type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 
 export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
+
+  const { data: currentProductNavWidth } = useCurrentProductNavWidth();
+  const { isDockMode } = useSidebarMode();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+
+  const stickyMaxWidth: CSSProperties | undefined = useMemo(() => {
+    if (currentProductNavWidth == null) {
+      return undefined;
+    }
+    return {
+      // Widen max width to PageControls
+      maxWidth: `calc(100% - (${isDeviceLargerThanMd ? 500 : 350}px - (100vw - ${isDockMode() ? currentProductNavWidth : 45}px - 100%) / 2))`,
+    };
+  }, [currentProductNavWidth, isDockMode, isDeviceLargerThanMd]);
+
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
@@ -117,7 +138,7 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className={`d-inline-block pe-auto ${isCollapseParents ? 'is-collapse-with-top' : ''}`}>
+          <div className="d-inline-block pe-auto" style={isCollapseParents ? stickyMaxWidth : {}}>
             <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'} />
           </div>
         );
@@ -125,3 +146,5 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
     </Sticky>
   );
 };
+
+PagePathNavSticky.displayName = 'PagePathNavSticky';
