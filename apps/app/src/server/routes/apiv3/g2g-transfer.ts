@@ -7,6 +7,7 @@ import { body } from 'express-validator';
 import multer from 'multer';
 
 import { isG2GTransferError } from '~/server/models/vo/g2g-transfer-error';
+import { exportService } from '~/server/service/export';
 import { IDataGROWIInfo, X_GROWI_TRANSFER_KEY_HEADER_NAME } from '~/server/service/g2g-transfer';
 import loggerFactory from '~/utils/logger';
 import { TransferKey } from '~/utils/vo/transfer-key';
@@ -36,7 +37,7 @@ const validator = {
  */
 module.exports = (crowi: Crowi): Router => {
   const {
-    g2gTransferPusherService, g2gTransferReceiverService, exportService, importService,
+    g2gTransferPusherService, g2gTransferReceiverService, importService,
     growiBridgeService, configManager,
   } = crowi;
   if (g2gTransferPusherService == null || g2gTransferReceiverService == null || exportService == null || importService == null
@@ -165,9 +166,9 @@ module.exports = (crowi: Crowi): Router => {
       const zipFile = importService.getFile(file.filename);
       await importService.unzip(zipFile);
 
-      const { meta: parsedMeta, innerFileStats: _innerFileStats } = await growiBridgeService.parseZipFile(zipFile);
-      innerFileStats = _innerFileStats;
-      meta = parsedMeta;
+      const zipFileStat = await growiBridgeService.parseZipFile(zipFile);
+      innerFileStats = zipFileStat?.innerFileStats;
+      meta = zipFileStat?.meta;
     }
     catch (err) {
       logger.error(err);

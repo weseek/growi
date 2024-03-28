@@ -77,7 +77,7 @@ export const deleteCompletelyUserHomeBySystem = async(userHomepagePath: string, 
     // Find descendant pages with system deletion condition
     const builder = new PageQueryBuilder(Page.find(), true)
       .addConditionForSystemDeletion()
-      .addConditionToListOnlyDescendants(userHomepage.path, {});
+      .addConditionToListOnlyDescendants(userHomepage.path);
 
     // Stream processing to delete descendant pages
     // ────────┤ start │─────────

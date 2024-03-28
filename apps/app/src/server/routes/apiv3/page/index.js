@@ -16,6 +16,7 @@ import { GlobalNotificationSettingEvent } from '~/server/models';
 import Subscription from '~/server/models/subscription';
 import UserGroup from '~/server/models/user-group';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
