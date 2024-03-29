@@ -2,7 +2,7 @@ name: Release Docker Images for RC (for master)
 
 on:
   schedule:
-    cron:
+    - cron:
       - '0 15 * * 1-5' # Weekdays at 24:00hrs (JST) Executed
 
 
