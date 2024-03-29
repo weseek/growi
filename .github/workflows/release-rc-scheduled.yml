@@ -2,9 +2,8 @@ name: Release Docker Images for RC (for master)
 
 on:
   schedule:
-    - cron:
-      - '0 15 * * 1-5' # Weekdays at 24:00hrs (JST) Executed
-
+    # Weekdays at 24:00hrs (JST) Executed
+    - cron: '0 15 * * 1-5'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
