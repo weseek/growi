@@ -67,34 +67,39 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
 
   return (
     <div className={`${styles['revision-diff-container']}`}>
-      <div className="comparison-header">
-        <div className="container pt-1 pe-0">
-          <div className="row">
-            <div className="col comparison-source-wrapper pt-1 px-0">
-              <span className="comparison-source pe-3">{t('page_history.comparing_source')}</span><UserDate dateTime={previousRevision.createdAt} />
-              <Link
-                href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${previousRevision._id}`)}
-                className="ms-3"
-                onClick={onClose}
-                prefetch={false}
-              >
-                <span className="material-symbols-outlined">login</span>
-              </Link>
-            </div>
-            <div className="col comparison-target-wrapper pt-1">
-              <span className="comparison-target pe-3">{t('page_history.comparing_target')}</span><UserDate dateTime={currentRevision.createdAt} />
-              <Link
-                href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${currentRevision._id}`)}
-                className="ms-3"
-                onClick={onClose}
-                prefetch={false}
-              >
-                <span className="material-symbols-outlined">login</span>
-              </Link>
-            </div>
+      <div className="container">
+        <div className="row mt-2">
+          <div className="col px-0 py-2">
+            <span className="fw-bold">{t('page_history.comparing_source')}</span>
+            <Link
+              href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${previousRevision._id}`)}
+              className="small ms-2
+                link-created-at
+                link-secondary link-opacity-75 link-opacity-100-hover
+                link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+              onClick={onClose}
+              prefetch={false}
+            >
+              <UserDate dateTime={previousRevision.createdAt} />
+            </Link>
+          </div>
+          <div className="col px-0 py-2">
+            <span className="fw-bold">{t('page_history.comparing_target')}</span>
+            <Link
+              href={urljoin(returnPathForURL(currentPagePath, currentPageId), `?revisionId=${currentRevision._id}`)}
+              className="small ms-2
+                link-created-at
+                link-secondary link-opacity-75 link-opacity-100-hover
+                link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"
+              onClick={onClose}
+              prefetch={false}
+            >
+              <UserDate dateTime={currentRevision.createdAt} />
+            </Link>
           </div>
         </div>
       </div>
+      {/* eslint-disable-next-line react/no-danger */}
       <div className="revision-history-diff pb-1" dangerouslySetInnerHTML={diffView} />
     </div>
   );
