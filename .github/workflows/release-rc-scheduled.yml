@@ -1,9 +1,9 @@
-name: Release Docker Images for RC (for dev/7.0.x)
+name: Release Docker Images for RC (for master)
 
 on:
-  push:
-    branches:
-      - dev/7.0.x
+  schedule:
+    cron:
+      - '0 15 * * 1-5' # Weekdays at 24:00hrs (JST) Executed
 
 
 concurrency:
