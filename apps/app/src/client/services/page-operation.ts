@@ -8,7 +8,9 @@ import type {
   IApiv3PageCreateParams, IApiv3PageCreateResponse, IApiv3PageUpdateParams, IApiv3PageUpdateResponse,
 } from '~/interfaces/apiv3';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
-import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
+import {
+  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useSWRxTagsInfo,
+} from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
 
@@ -107,6 +109,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { mutate: mutateGrant } = useSWRxIsGrantNormalized(pageId);
 
   // update swr 'currentPageId', 'currentPage', remote states
   return useCallback(async() => {
@@ -129,6 +132,8 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       mutateEditingMarkdown(updatedPage.revision.body);
     }
 
+    await mutateGrant();
+
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
       remoteRevisionBody: updatedPage.revision.body,
@@ -139,7 +144,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {
