@@ -39,7 +39,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
           </div>
         </PopoverBody>
       </Popover>
-      <UncontrolledTooltip data-testid="seen-user-info-tooltip" placement="bottom" target="btn-seen-user" fade={false}>
+      <UncontrolledTooltip data-testid="seen-user-info-tooltip" target="btn-seen-user" fade={false}>
         {t('tooltip.footprints')}
       </UncontrolledTooltip>
     </div>
