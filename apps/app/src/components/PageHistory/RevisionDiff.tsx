@@ -1,13 +1,16 @@
-import React from 'react';
+import { useMemo } from 'react';
 
 import type { IRevisionHasPageId } from '@growi/core';
 import { returnPathForURL } from '@growi/core/dist/utils/path-utils';
 import { createPatch } from 'diff';
 import type { Diff2HtmlConfig } from 'diff2html';
 import { html } from 'diff2html';
+import { ColorSchemeType } from 'diff2html/lib/types';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
+
+import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
 import UserDate from '../User/UserDate';
 
@@ -31,6 +34,19 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
     currentRevision, previousRevision, revisionDiffOpened, currentPageId, currentPagePath, onClose,
   } = props;
 
+  const { theme } = useNextThemes();
+
+  const colorScheme: ColorSchemeType = useMemo(() => {
+    switch (theme) {
+      case Themes.DARK:
+        return ColorSchemeType.DARK;
+      case Themes.LIGHT:
+        return ColorSchemeType.LIGHT;
+      default:
+        return ColorSchemeType.AUTO;
+    }
+  }, [theme]);
+
   const previousText = (currentRevision._id === previousRevision._id) ? '' : previousRevision.body;
 
   const patch = createPatch(
@@ -42,6 +58,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const option: Diff2HtmlConfig = {
     outputFormat: 'side-by-side',
     drawFileList: false,
+    colorScheme,
   };
 
   const diffViewHTML = revisionDiffOpened ? html(patch, option) : '';
