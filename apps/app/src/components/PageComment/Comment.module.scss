@@ -92,7 +92,7 @@
     .bg-comment {
       background-color: rgba( bs.$gray-200, 0.5 );
       border: 1px solid bs.$gray-200;
-      backdrop-filter: blur(35px);
+      backdrop-filter: blur(10px);
     }
 
     .comment-timestamp {
@@ -108,7 +108,7 @@
     .bg-comment {
       background-color: rgba( bs.$gray-800, 0.3 );
       border: 1px solid bs.$gray-700;
-      backdrop-filter: blur(35px);
+      backdrop-filter: blur(10px);
     }
 
     .comment-timestamp {
