@@ -56,7 +56,7 @@ export const PersonalDropdown = (): JSX.Element => {
           data-testid="personal-dropdown-menu"
           className={styles['personal-dropdown-menu']}
         >
-          <DropdownItem className={styles['personal-dropdown-header']}>
+          <DropdownItem className={styles['personal-dropdown-header']} header>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
