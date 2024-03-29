@@ -442,7 +442,7 @@ export const HandsontableModal = (): JSX.Element => {
         contractWindow={contractWindow}
         expandWindow={expandWindow}
       />
-      <button type="button" className="btn btn-close" onClick={cancel} aria-label="Close"></button>
+      <button type="button" className="btn btn-close ms-2" onClick={cancel} aria-label="Close"></button>
     </span>
   );
 
