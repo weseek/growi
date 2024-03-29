@@ -5,7 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
 import type {
-  IApiv3PageCreateParams, IApiv3PageCreateResponse, IApiv3PageUpdateParams, IApiv3PageUpdateResponse,
+  IApiv3PageCreateParams, IApiv3PageCreateResponse,
 } from '~/interfaces/apiv3';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
