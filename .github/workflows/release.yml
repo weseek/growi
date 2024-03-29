@@ -82,7 +82,6 @@ jobs:
 
     outputs:
       TAGS: ${{ steps.meta.outputs.tags }}
-      TAGS_GHCR: ${{ steps.meta-ghcr.outputs.tags }}
 
     steps:
     - uses: actions/checkout@v3
@@ -103,23 +102,11 @@ jobs:
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
-    - name: Docker meta for ghcr.io
-      uses: docker/metadata-action@v4
-      id: meta-ghcr
-      with:
-        images: ghcr.io/weseek/growi
-        sep-tags: ','
-        tags: |
-          type=raw,value=latest
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
-
 
   build-image:
     needs: create-github-release
 
-    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@dev/6.3.x
     with:
       source-version: refs/tags/v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
       image-name: weseek/growi
@@ -131,7 +118,7 @@ jobs:
   publish-image:
     needs: [determine-tags, build-image]
 
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
+    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@dev/6.3.x
     with:
       tags: ${{ needs.determine-tags.outputs.TAGS }}
       registry: docker.io
@@ -140,21 +127,9 @@ jobs:
     secrets:
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
-  publish-image-ghcr:
-    needs: [determine-tags, build-image]
-
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
-    with:
-      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
-      registry: ghcr.io
-      image-name: weseek/growi
-      tag-temporary: latest
-    secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
-
 
   post-publish:
-    needs: [create-github-release, publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image]
     runs-on: ubuntu-latest
 
     steps:
@@ -171,7 +146,7 @@ jobs:
         readme-filepath: ./apps/app/docker/README.md
 
     - name: Slack Notification
-      uses: weseek/ghaction-release-slack-notification@master
+      uses: weseek/ghaction-release-slack-notification@dev/6.3.x
       with:
         channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -179,7 +154,7 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image]
     runs-on: ubuntu-latest
 
     steps:
