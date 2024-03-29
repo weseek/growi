@@ -45,7 +45,7 @@ export const PersonalDropdown = (): JSX.Element => {
         direction="end"
       >
         <DropdownToggle
-          className="btn btn-primary"
+          className={`btn btn-primary ${styles['btn-personal-dropdown']} opacity-100`}
           data-testid="personal-dropdown-button"
         >
           <UserPicture user={currentUser} noLink noTooltip />
