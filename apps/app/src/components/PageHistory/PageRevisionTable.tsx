@@ -56,6 +56,7 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
 
   useEffect(() => {
     if (revisions != null) {
+      // when both source and target are specified
       if (sourceRevisionId != null && targetRevisionId != null) {
         const sourceRevision = revisions.filter(revision => revision._id === sourceRevisionId)[0];
         const targetRevision = revisions.filter(revision => revision._id === targetRevisionId)[0];
@@ -63,11 +64,10 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
         setTargetRevision(targetRevision);
       }
       else {
-        const latestRevision = revisions != null ? revisions[0] : null;
-        if (latestRevision != null) {
-          setSourceRevision(latestRevision);
-          setTargetRevision(latestRevision);
-        }
+        const latestRevision = revisions != null ? revisions[0] : undefined;
+        const previousRevision = revisions.length >= 2 ? revisions[1] : latestRevision;
+        setTargetRevision(latestRevision);
+        setSourceRevision(previousRevision);
       }
     }
   }, [revisions, sourceRevisionId, targetRevisionId]);
@@ -210,13 +210,15 @@ export const PageRevisionTable = (props: PageRevisionTableProps): JSX.Element =>
       </table>
 
       {sourceRevision != null && targetRevision != null && (
-        <RevisionComparer
-          sourceRevision={sourceRevision}
-          targetRevision={targetRevision}
-          currentPageId={currentPageId}
-          currentPagePath={currentPagePath}
-          onClose={onClose}
-        />
+        <div className="mt-5">
+          <RevisionComparer
+            sourceRevision={sourceRevision}
+            targetRevision={targetRevision}
+            currentPageId={currentPageId}
+            currentPagePath={currentPagePath}
+            onClose={onClose}
+          />
+        </div>
       )
       }
     </>
