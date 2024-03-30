@@ -1,32 +1,33 @@
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
-import { format } from 'date-fns';
-import { useRouter } from 'next/router';
+import { Dropdown } from 'reactstrap';
 
-import { createPage, exist } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
-import { useCurrentUser } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
-import loggerFactory from '~/utils/logger';
+import { useCreateTemplatePage } from '~/client/services/create-page';
+import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
+import { useCreateNewPage, useCreateTodaysMemo } from './hooks';
 
-const logger = loggerFactory('growi:cli:PageCreateButton');
 
 export const PageCreateButton = React.memo((): JSX.Element => {
-  const router = useRouter();
-  const { data: currentPage, isLoading } = useSWRxCurrentPage();
-  const { data: currentUser } = useCurrentUser();
-
   const [isHovered, setIsHovered] = useState(false);
-  const [isCreating, setIsCreating] = useState(false);
 
-  const now = format(new Date(), 'yyyy/MM/dd');
-  const userHomepagePath = pagePathUtils.userHomepagePath(currentUser);
-  const todaysPath = `${userHomepagePath}/memo/${now}`;
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+
+  const { createNewPage, isCreating: isNewPageCreating } = useCreateNewPage();
+  // TODO: https://redmine.weseek.co.jp/issues/138806
+  const { createTodaysMemo, isCreating: isTodaysPageCreating, todaysPath } = useCreateTodaysMemo();
+  // TODO: https://redmine.weseek.co.jp/issues/138805
+  const {
+    createTemplate,
+    isCreating: isTemplatePageCreating, isCreatable: isTemplatePageCreatable,
+  } = useCreateTemplatePage();
+
+  const createNewPageWithToastr = useToastrOnError(createNewPage);
+  const createTodaysMemoWithToastr = useToastrOnError(createTodaysMemo);
+  const createTemplateWithToastr = useToastrOnError(createTemplate);
 
   const onMouseEnterHandler = () => {
     setIsHovered(true);
@@ -34,170 +35,39 @@ export const PageCreateButton = React.memo((): JSX.Element => {
 
   const onMouseLeaveHandler = () => {
     setIsHovered(false);
+    setDropdownOpen(false);
   };
 
-  const onClickCreateNewPageButtonHandler = useCallback(async() => {
-    if (isLoading) return;
+  const toggle = () => setDropdownOpen(!dropdownOpen);
 
-    try {
-      setIsCreating(true);
-
-      const parentPath = currentPage == null
-        ? '/'
-        : currentPage.path;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-        shouldGeneratePath: true,
-      };
-
-      const response = await createPage(parentPath, '', params);
-
-      router.push(`${response.page.id}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPage, isLoading, router]);
-
-  const onClickCreateTodaysButtonHandler = useCallback(async() => {
-    if (currentUser == null) {
-      return;
-    }
-
-    try {
-      setIsCreating(true);
-
-      // TODO: get grant, grantUserGroupId data from parent page
-      // https://redmine.weseek.co.jp/issues/133892
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-      };
-
-      const res = await exist(JSON.stringify([todaysPath]));
-      if (!res.pages[todaysPath]) {
-        await createPage(todaysPath, '', params);
-      }
-
-      router.push(`${todaysPath}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentUser, router, todaysPath]);
-
-  const onClickTemplateForChildrenButtonHandler = useCallback(async() => {
-    if (isLoading) return;
-
-    try {
-      setIsCreating(true);
-
-      const path = currentPage == null || currentPage.path === '/'
-        ? '/_template'
-        : `${currentPage.path}/_template`;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        await createPage(path, '', params);
-      }
-
-      router.push(`${path}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPage, isLoading, router]);
-
-  const onClickTemplateForDescendantsButtonHandler = useCallback(async() => {
-    if (isLoading) return;
-
-    try {
-      setIsCreating(true);
-
-      const path = currentPage == null || currentPage.path === '/'
-        ? '/__template'
-        : `${currentPage.path}/__template`;
-
-      const params = {
-        isSlackEnabled: false,
-        slackChannels: '',
-        grant: 4,
-        // grant: currentPage?.grant || 1,
-        // grantUserGroupId: currentPage?.grantedGroup?._id,
-      };
-
-      const res = await exist(JSON.stringify([path]));
-      if (!res.pages[path]) {
-        await createPage(path, '', params);
-      }
-
-      router.push(`${path}#edit`);
-    }
-    catch (err) {
-      logger.warn(err);
-      toastError(err);
-    }
-    finally {
-      setIsCreating(false);
-    }
-  }, [currentPage, isLoading, router]);
-
-  // TODO: update button design
-  // https://redmine.weseek.co.jp/issues/132683
   return (
     <div
-      className="d-flex flex-row"
+      className="d-flex flex-row mt-2"
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
     >
       <div className="btn-group flex-grow-1">
         <CreateButton
           className="z-2"
-          onClick={onClickCreateNewPageButtonHandler}
-          disabled={isCreating}
+          onClick={createNewPageWithToastr}
+          disabled={isNewPageCreating || isTodaysPageCreating || isTemplatePageCreating}
         />
       </div>
       { isHovered && (
-        <div className="btn-group dropend position-absolute">
-          <DropendToggle
-            className="dropdown-toggle dropdown-toggle-split"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          />
+        <Dropdown
+          isOpen={dropdownOpen}
+          toggle={toggle}
+          direction="end"
+          className="position-absolute"
+        >
+          <DropendToggle />
           <DropendMenu
+            onClickCreateNewPage={createNewPageWithToastr}
+            onClickCreateTodaysMemo={createTodaysMemoWithToastr}
+            onClickCreateTemplate={isTemplatePageCreatable ? createTemplateWithToastr : undefined}
             todaysPath={todaysPath}
-            onClickCreateNewPageButtonHandler={onClickCreateNewPageButtonHandler}
-            onClickCreateTodaysButtonHandler={onClickCreateTodaysButtonHandler}
-            onClickTemplateForChildrenButtonHandler={onClickTemplateForChildrenButtonHandler}
-            onClickTemplateForDescendantsButtonHandler={onClickTemplateForDescendantsButtonHandler}
           />
-        </div>
+        </Dropdown>
       )}
     </div>
   );

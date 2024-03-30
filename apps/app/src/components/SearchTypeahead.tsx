@@ -1,14 +1,18 @@
+import type {
+  FC, ForwardRefRenderFunction,
+  KeyboardEvent, MouseEvent,
+} from 'react';
 import React, {
-  FC, ForwardRefRenderFunction, forwardRef, useImperativeHandle,
-  KeyboardEvent, useCallback, useRef, useState, MouseEvent, useEffect,
+  forwardRef, useImperativeHandle, useCallback, useRef, useState, useEffect,
 } from 'react';
 
 import { UserPicture, PageListMeta, PagePathLabel } from '@growi/ui/dist/components';
+import type { TypeaheadRef } from 'react-bootstrap-typeahead';
 import { AsyncTypeahead, Menu, MenuItem } from 'react-bootstrap-typeahead';
 
-import { IFocusable } from '~/client/interfaces/focusable';
-import { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
-import { IPageWithSearchMeta } from '~/interfaces/search';
+import type { IFocusable } from '~/client/interfaces/focusable';
+import type { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
+import type { IPageWithSearchMeta } from '~/interfaces/search';
 import { useSWRxSearch } from '~/stores/search';
 
 
@@ -29,7 +33,7 @@ const ResetFormButton: FC<ResetFormButtonProps> = (props: ResetFormButtonProps) 
     <span />
   ) : (
     <button type="button" className="btn btn-outline-secondary search-clear text-muted border-0" onMouseDown={onReset}>
-      <i className="icon-close" />
+      <span className="material-symbols-outlined">close</span>
     </button>
   );
 };
@@ -43,15 +47,6 @@ type Props = TypeaheadProps & {
   helpElement?: React.ReactNode,
 };
 
-// see https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
-type TypeaheadInstance = {
-  setState(input: { text: string | undefined; }): void;
-  clear: () => void,
-  focus: () => void,
-  toggleMenu: () => void,
-  state: { selected: IPageWithSearchMeta[] }
-}
-
 const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Props, ref) => {
   const {
     onSearchError, onSearch, onInputChange, onChange, onSubmit,
@@ -61,7 +56,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
 
   const [input, setInput] = useState(keywordOnInit);
   const [searchKeyword, setSearchKeyword] = useState('');
-  const [isForcused, setFocused] = useState(false);
+  const [isFocused, setFocused] = useState(false);
 
   const { data: searchResult, error: searchError, isLoading } = useSWRxSearch(
     disableIncrementalSearch ? null : searchKeyword,
@@ -69,7 +64,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     { limit: 10 },
   );
 
-  const typeaheadRef = useRef<TypeaheadInstance>(null);
+  const typeaheadRef = useRef<TypeaheadRef>(null);
 
   const focusToTypeahead = () => {
     const instance = typeaheadRef.current;
@@ -141,14 +136,18 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
     if (selectedItems.length > 0) {
       setInput(selectedItems[0].data.path);
 
+      if (onInputChange != null) {
+        onInputChange(selectedItems[0].data.path);
+      }
+
       if (onChange != null) {
         onChange(selectedItems);
       }
     }
-  }, [onChange]);
+  }, [onChange, onInputChange]);
 
   const keyDownHandler = useCallback((event: KeyboardEvent) => {
-    if (event.keyCode === 13) { // Enter key
+    if (event.key === 'Enter') {
       if (onSubmit != null && input != null && input.length > 0) {
         // schedule to submit with 100ms delay
         timeoutIdRef.current = setTimeout(() => onSubmit(input), DELAY_FOR_SUBMISSION);
@@ -168,19 +167,20 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
   useEffect(() => {
     // update input with Next Link
     // update input workaround. see: https://github.com/ericgio/react-bootstrap-typeahead/issues/266#issuecomment-414987723
-    if (typeaheadRef.current != null) {
+    if (typeaheadRef.current != null && keywordOnInit != null) {
       typeaheadRef.current.setState({
         text: keywordOnInit,
       });
     }
   }, [keywordOnInit]);
 
-  const labelKey = useCallback((option?: IPageWithSearchMeta) => {
-    return option?.data.path ?? '';
+
+  const labelKey = useCallback((option: IPageWithSearchMeta) => {
+    return option.data.path ?? '';
   }, []);
 
   const renderMenu = useCallback((options: IPageWithSearchMeta[], menuProps) => {
-    if (!isForcused) {
+    if (!isFocused) {
       return <></>;
     }
 
@@ -216,7 +216,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         ))}
       </Menu>
     );
-  }, [disableIncrementalSearch, helpElement, input, isForcused]);
+  }, [disableIncrementalSearch, helpElement, input, isFocused]);
 
   const isOpenAlways = helpElement != null;
 
@@ -232,7 +232,7 @@ const SearchTypeahead: ForwardRefRenderFunction<IFocusable, Props> = (props: Pro
         isLoading={isLoading}
         labelKey={labelKey}
         defaultInputValue={keywordOnInit}
-        options={searchResult?.data} // Search result (Some page names)
+        options={searchResult?.data ?? []} // Search result (Some page names)
         align="left"
         open={isOpenAlways || undefined}
         renderMenu={renderMenu}

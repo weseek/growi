@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { type IUserHasId, type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
+import { type IPagePopulatedToShowRevision, getIdForRef } from '@growi/core';
 import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -8,12 +8,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import superjson from 'superjson';
 
-import { useLayoutFluidClassNameByPage } from '~/client/services/layout';
 import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLinkPageView';
-import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
@@ -27,8 +27,9 @@ import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
+import type { CommonProps } from '../utils/commons';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -108,8 +109,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   }, [mutateCurrentPage, props.isNotFound, props.shareLink?.relatedPage._id, props.skipSSR]);
 
 
-  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(props.shareLinkRelatedPage);
-
   const pagePath = props.shareLinkRelatedPage?.path ?? '';
 
   const title = generateCustomTitleForPage(props, pagePath);
@@ -120,12 +119,10 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
 
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
+      <div className="dynamic-layout-root justify-content-between">
         <nav className="sticky-top">
           <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
 
         <ShareLinkPageView
           pagePath={pagePath}
@@ -204,23 +201,6 @@ function getAction(props: Props): SupportedActionType {
 
   return action;
 }
-
-async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-
-  const parameters = {
-    ip: req.ip,
-    endpoint: req.originalUrl,
-    action,
-    user: req.user?._id,
-    snapshot: {
-      username: req.user?.username,
-    },
-  };
-
-  await req.crowi.activityService.createActivity(parameters);
-}
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { crowi, params } = req;

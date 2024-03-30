@@ -238,14 +238,14 @@ class SecuritySetting extends React.Component {
           </button>
         </div>
         <p className="form-text text-muted small">
-          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explain`)}
+          {t(`security_settings.${getDeletionTypeForT(deletionType)}_explanation`)}
         </p>
       </div>
     );
   }
 
   renderPageDeletePermission(currentState, setState, deletionType, isButtonDisabled) {
-    const { t } = this.props;
+    const { t, adminGeneralSecurityContainer } = this.props;
 
     const expantDeleteOptionsState = this.expantDeleteOptionsState(deletionType);
 
@@ -265,7 +265,28 @@ class SecuritySetting extends React.Component {
           {
             !isRecursiveDeletion(deletionType)
               ? (
-                <>{this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}</>
+                <>
+                  {this.renderPageDeletePermissionDropdown(currentState, setState, deletionType, isButtonDisabled)}
+                  {currentState === PageDeleteConfigValue.Anyone && deletionType === DeletionType.CompleteDeletion && (
+                    <>
+                      <input
+                        id="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox"
+                        className="form-check-input"
+                        type="checkbox"
+                        checked={adminGeneralSecurityContainer.state.isAllGroupMembershipRequiredForPageCompleteDeletion}
+                        onChange={() => { adminGeneralSecurityContainer.switchIsAllGroupMembershipRequiredForPageCompleteDeletion() }}
+                      />
+                      <label className="form-check-label" htmlFor="isAllGroupMembershipRequiredForPageCompleteDeletionCheckbox">
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion')}
+                      </label>
+                      <p
+                        className="form-text text-muted small mt-2"
+                      >
+                        {t('security_settings.is_all_group_membership_required_for_page_complete_deletion_explanation')}
+                      </p>
+                    </>
+                  )}
+                </>
               )
               : (
                 <>
@@ -275,14 +296,14 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
+                    <span className={`material-symbols-outlined me-1 ${expantDeleteOptionsState ? 'rotate-90' : ''}`}>navigate_next</span>
                     { t('security_settings.other_options') }
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
                       <p className="card custom-card">
                         <span className="text-warning">
-                          <i className="icon-info"></i>
+                          <span className="material-symbols-outlined">info</span>
                           {/* eslint-disable-next-line react/no-danger */}
                           <span dangerouslySetInnerHTML={{ __html: t('security_settings.page_delete_rights_caution') }} />
                         </span>
@@ -347,11 +368,11 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><i className="icon-fw icon-check text-success"></i>{ t('security_settings.always_displayed') }</td>
+                <td><span className="material-symbols-outlined text-success me-1">check_circle</span>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><i className="icon-fw icon-ban text-danger"></i>{ t('security_settings.always_hidden') }</td>
+                <td><span className="material-symbols-outlined text-danger me-1">cancel</span>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
@@ -423,8 +444,8 @@ class SecuritySetting extends React.Component {
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
               <p className="alert alert-warning mt-2 col-6">
-                <i className="icon-exclamation icon-fw">
-                </i><b>FIXED</b><br />
+                <span className="material-symbols-outlined me-1">error</span>
+                <b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_settings.Fixed by env var',
@@ -468,8 +489,21 @@ class SecuritySetting extends React.Component {
                 {t('security_settings.user_homepage_deletion.enable_user_homepage_deletion')}
               </label>
             </div>
+            <div className="custom-control custom-switch custom-checkbox-success mt-2">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                id="is-force-delete-user-homepage-on-user-deletion"
+                checked={adminGeneralSecurityContainer.state.isForceDeleteUserHomepageOnUserDeletion}
+                onChange={() => { adminGeneralSecurityContainer.switchIsForceDeleteUserHomepageOnUserDeletion() }}
+                disabled={!adminGeneralSecurityContainer.state.isUsersHomepageDeletionEnabled}
+              />
+              <label className="form-check-label" htmlFor="is-force-delete-user-homepage-on-user-deletion">
+                {t('security_settings.user_homepage_deletion.enable_force_delete_user_homepage_on_user_deletion')}
+              </label>
+            </div>
             <p
-              className="form-text text-muted small"
+              className="form-text text-muted small mt-2"
               dangerouslySetInnerHTML={{ __html: t('security_settings.user_homepage_deletion.desc') }}
             />
           </div>
@@ -492,7 +526,7 @@ class SecuritySetting extends React.Component {
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
             <p className="card custom-card">
               <span className="text-warning">
-                <i className="icon-info"></i> {t('security_settings.max_age_caution')}
+                <span className="material-symbols-outlined">info</span> {t('security_settings.max_age_caution')}
               </span>
             </p>
           </div>

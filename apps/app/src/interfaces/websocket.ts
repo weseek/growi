@@ -44,7 +44,6 @@ export const SocketEventName = {
   PageCreated: 'page:create',
   PageUpdated: 'page:update',
   PageDeleted: 'page:delete',
-
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

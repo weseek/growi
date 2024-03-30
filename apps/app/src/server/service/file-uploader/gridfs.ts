@@ -11,6 +11,7 @@ import loggerFactory from '~/utils/logger';
 import { configManager } from '../config-manager';
 
 import { AbstractFileUploader, type TemporaryUrl, type SaveFileParam } from './file-uploader';
+import { ContentHeaders } from './utils';
 
 const logger = loggerFactory('growi:service:fileUploaderGridfs');
 
@@ -152,10 +153,13 @@ module.exports = function(crowi) {
   (lib as any).uploadAttachment = async function(fileStream, attachment) {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
+    const contentHeaders = new ContentHeaders(attachment);
+
     return AttachmentFile.promisifiedWrite(
       {
+        // put type and the file name for reference information when uploading
         filename: attachment.fileName,
-        contentType: attachment.fileFormat,
+        contentType: contentHeaders.contentType?.value.toString(),
       },
       fileStream,
     );

@@ -3,6 +3,7 @@ import React, { useMemo } from 'react';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import dynamic from 'next/dynamic';
 
+import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -44,6 +45,8 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
   const { data: viewOptions } = useViewOptions();
 
+  const shouldExpandContent = useShouldExpandContent(page);
+
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
   const specialContents = useMemo(() => {
@@ -64,7 +67,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
 
   const Contents = () => {
-    if (isNotFound) {
+    if (isNotFound || page.revision == null) {
       return <></>;
     }
 
@@ -72,7 +75,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return (
         <>
           <h2 className="text-muted mt-4">
-            <i className="icon-ban" aria-hidden="true" />
+            <span className="material-symbols-outlined" aria-hidden="true">block</span>
             <span> Page is expired</span>
           </h2>
         </>
@@ -93,13 +96,14 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     <PageViewLayout
       headerContents={headerContents}
       sideContents={sideContents}
+      expandContentWidth={shouldExpandContent}
     >
       { specialContents }
       { specialContents == null && (
         <>
           { isNotFound && (
             <h2 className="text-muted mt-4">
-              <i className="icon-ban" aria-hidden="true" />
+              <span className="material-symbols-outlined" aria-hidden="true">block</span>
               <span> Page is not found</span>
             </h2>
           ) }

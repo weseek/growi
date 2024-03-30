@@ -1,9 +1,9 @@
-import React, { FC, useImperativeHandle } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui/dist/components';
 
-import type { IInAppNotificationOpenable } from '~/client/interfaces/in-app-notification-openable';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import FormattedDistanceDate from '../../FormattedDistanceDate';
@@ -13,20 +13,12 @@ type Props = {
   actionMsg: string
   actionIcon: string
   actionUsers: string
-  publishOpen:() => void
-  ref: React.ForwardedRef<IInAppNotificationOpenable>
 };
 
 export const ModelNotification: FC<Props> = (props) => {
   const {
-    notification, actionMsg, actionIcon, actionUsers, publishOpen, ref,
+    notification, actionMsg, actionIcon, actionUsers,
   } = props;
-
-  useImperativeHandle(ref, () => ({
-    open() {
-      publishOpen();
-    },
-  }));
 
   return (
     <div className="p-2 overflow-hidden">
@@ -35,7 +27,7 @@ export const ModelNotification: FC<Props> = (props) => {
         {actionMsg}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      <i className={`${actionIcon} me-2`} />
+      <span className="material-symbols-outlined me-2">{actionIcon}</span>
       <FormattedDistanceDate
         id={notification._id}
         date={notification.createdAt}

@@ -124,11 +124,11 @@ function NotificationSetting(props) {
   const navTabMapping = useMemo(() => {
     return {
       user_trigger_notification: {
-        Icon: () => <i className="icon-settings" />,
+        Icon: () => <span className="material-symbols-outlined">settings</span>,
         i18n: 'User trigger notification',
       },
       global_notification: {
-        Icon: () => <i className="icon-settings" />,
+        Icon: () => <span className="material-symbols-outlined">settings</span>,
         i18n: 'Global notification',
       },
     };

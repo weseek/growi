@@ -5,31 +5,33 @@ import React, {
 import path from 'path';
 
 import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import {
-  IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
-} from '~/stores/modal';
+import type { IPageForItem } from '~/interfaces/page';
+import type { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName } from '~/interfaces/websocket';
+import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
   useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutatePageList,
 } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
-import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-import { ItemNode, SimpleItemProps } from '../TreeItem';
+import { ItemNode, type TreeItemProps } from '../TreeItem';
 
 import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
+
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -89,10 +91,12 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   isReadOnlyUser: boolean
+  isWipPageShown?: boolean
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
-  CustomTreeItem: React.FunctionComponent<SimpleItemProps>
+  CustomTreeItem: React.FunctionComponent<TreeItemProps>
+  onClickTreeItem?: (page: IPageForItem) => void;
 }
 
 /*
@@ -100,7 +104,7 @@ type ItemsTreeProps = {
  */
 export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, isWipPageShown, CustomTreeItem, onClickTreeItem,
   } = props;
 
   const { t } = useTranslation();
@@ -271,17 +275,19 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
+      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-4`} ref={rootElemRef}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
           isOpen
           isEnableActions={isEnableActions}
+          isWipPageShown={isWipPageShown}
           isReadOnlyUser={isReadOnlyUser}
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}
           onClickDeleteMenuItem={onClickDeleteMenuItem}
+          onClick={onClickTreeItem}
         />
       </ul>
     );

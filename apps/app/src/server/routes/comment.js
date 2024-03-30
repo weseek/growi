@@ -3,6 +3,9 @@ import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { GlobalNotificationSettingEvent } from '../models';
+import { preNotifyService } from '../service/pre-notify';
+
 /**
  * @swagger
  *  tags:
@@ -266,13 +269,20 @@ module.exports = function(crowi, app) {
       event: createdComment,
       action: SupportedAction.ACTION_COMMENT_CREATE,
     };
-    activityEvent.emit('update', res.locals.activity._id, parameters, page);
+
+    const getAdditionalTargetUsers = async(activity) => {
+      const mentionedUsers = await crowi.commentService.getMentionedUsers(activity.event);
+
+      return mentionedUsers;
+    };
+
+    activityEvent.emit('update', res.locals.activity._id, parameters, page, preNotifyService.generatePreNotify, getAdditionalTargetUsers);
 
     res.json(ApiResponse.success({ comment: createdComment }));
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, page, req.user, {
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.COMMENT, page, req.user, {
         comment: createdComment,
       });
     }
@@ -465,7 +475,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
-      await comment.removeWithReplies(comment);
+      await Comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
       commentEvent.emit(CommentEvent.DELETE, comment);
     }

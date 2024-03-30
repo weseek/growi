@@ -6,11 +6,6 @@
   @extend .flex-expand-vert;
 }
 
-.dynamic-layout-root.growi-layout-fluid .grw-container-convertible {
-  width: 100%;
-  max-width: none;
-}
-
 .grw-bg-image-wrapper {
   position: fixed;
   width: 100%;
@@ -50,6 +45,26 @@
 
   @include bs.media-breakpoint-up(lg) {
     margin-top: 2rem;
+  }
+}
+
+// md/lg layout padding
+.ps-sidebar {
+  @include bs.media-breakpoint-between(md, xl) {
+    padding-left: var.$grw-sidebar-nav-width;
+  }
+}
+
+.wide-gutter-x-lg {
+  @include bs.media-breakpoint-up(lg) {
+    &,
+    .container,
+    .container-fluid,
+    .container-xxl,
+    .container-xl,
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
   }
 }
 

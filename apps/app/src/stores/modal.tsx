@@ -3,11 +3,12 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
-import { SWRResponse } from 'swr';
+import { useSWRStatic } from '@growi/core/dist/swr';
+import type { SWRResponse } from 'swr';
 
-import Linker from '~/client/models/Linker';
+
 import MarkdownTable from '~/client/models/MarkdownTable';
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
 } from '~/interfaces/ui';
@@ -363,33 +364,35 @@ type PageAccessoriesModalUtils = {
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+
+  const { data, mutate } = swrResponse;
 
   return Object.assign(swrResponse, {
-    open: (activatedContents) => {
-      if (swrResponse.data == null) {
+    open: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
+      mutate({
         isOpened: true,
         activatedContents,
       });
-    },
-    close: () => {
-      if (swrResponse.data == null) {
+    }, [data, mutate]),
+    close: useCallback(() => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({ isOpened: false });
-    },
-    selectContents: (activatedContents) => {
-      if (swrResponse.data == null) {
+      mutate({ isOpened: false });
+    }, [data, mutate]),
+    selectContents: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: swrResponse.data.isOpened,
+      mutate({
+        isOpened: data.isOpened,
         activatedContents,
       });
-    },
+    }, [data, mutate]),
   });
 };
 
@@ -507,8 +510,6 @@ type HandsonTableModalSaveHandler = (table: MarkdownTable) => void;
 type HandsontableModalStatus = {
   isOpened: boolean,
   table: MarkdownTable,
-  // TODO: Define editor type
-  editor?: any,
   autoFormatMarkdownTable?: boolean,
   // onSave is passed only when editing table directly from the page.
   onSave?: HandsonTableModalSaveHandler
@@ -517,7 +518,6 @@ type HandsontableModalStatus = {
 type HandsontableModalStatusUtils = {
   open(
     table: MarkdownTable,
-    editor?: any,
     autoFormatMarkdownTable?: boolean,
     onSave?: HandsonTableModalSaveHandler
   ): void
@@ -541,7 +541,6 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
   const initialData: HandsontableModalStatus = {
     isOpened: false,
     table: defaultMarkdownTable(),
-    editor: undefined,
     autoFormatMarkdownTable: false,
   };
 
@@ -549,14 +548,14 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
 
   const { mutate } = swrResponse;
 
-  const open = useCallback((table: MarkdownTable, editor?: any, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
+  const open = useCallback((table: MarkdownTable, autoFormatMarkdownTable?: boolean, onSave?: HandsonTableModalSaveHandler): void => {
     mutate({
-      isOpened: true, table, editor, autoFormatMarkdownTable, onSave,
+      isOpened: true, table, autoFormatMarkdownTable, onSave,
     });
   }, [mutate]);
   const close = useCallback((): void => {
     mutate({
-      isOpened: false, table: defaultMarkdownTable(), editor: undefined, autoFormatMarkdownTable: false, onSave: undefined,
+      isOpened: false, table: defaultMarkdownTable(), autoFormatMarkdownTable: false, onSave: undefined,
     });
   }, [mutate]);
 
@@ -570,13 +569,17 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
 /*
  * ConflictDiffModal
  */
+type ResolveConflictHandler = (newMarkdown: string) => Promise<void> | void;
+
 type ConflictDiffModalStatus = {
-  isOpened: boolean,
+ isOpened: boolean,
+ requestRevisionBody?: string,
+ onResolve?: ResolveConflictHandler
 }
 
 type ConflictDiffModalUtils = {
-  open(): void,
-  close(): void,
+ open(requestRevisionBody: string, onResolveConflict: ResolveConflictHandler): void,
+ close(): void,
 }
 
 export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
@@ -585,8 +588,8 @@ export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Err
   const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
 
   return Object.assign(swrResponse, {
-    open: () => {
-      swrResponse.mutate({ isOpened: true });
+    open: (requestRevisionBody: string, onResolve: ResolveConflictHandler) => {
+      swrResponse.mutate({ isOpened: true, requestRevisionBody, onResolve });
     },
     close: () => {
       swrResponse.mutate({ isOpened: false });
@@ -634,38 +637,6 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
   };
 };
 
-/*
- * TemplateModal
- */
-
-type TemplateSelectedCallback = (templateText: string) => void;
-type TemplateModalOptions = {
-  onSubmit?: TemplateSelectedCallback,
-}
-export type TemplateModalStatus = TemplateModalOptions & {
-  isOpened: boolean,
-}
-
-type TemplateModalUtils = {
-  open(opts: TemplateModalOptions): void,
-  close(): void,
-}
-
-export const useTemplateModal = (): SWRResponse<TemplateModalStatus, Error> & TemplateModalUtils => {
-
-  const initialStatus: TemplateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<TemplateModalStatus, Error>('templateModal', undefined, { fallbackData: initialStatus });
-
-  return Object.assign(swrResponse, {
-    open: (opts: TemplateModalOptions) => {
-      swrResponse.mutate({ isOpened: true, onSubmit: opts.onSubmit });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
-};
-
 /**
  * DeleteAttachmentModal
  */
@@ -709,35 +680,6 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     open,
     close,
   };
-};
-
-/*
- * LinkEditModal
- */
-type LinkEditModalStatus = {
-  isOpened: boolean,
-  defaultMarkdownLink?: Linker,
-  onSave?: (linkText: string) => void
-}
-
-type LinkEditModalUtils = {
-  open(defaultMarkdownLink: Linker, onSave: (linkText: string) => void): void,
-  close(): void,
-}
-
-export const useLinkEditModal = (): SWRResponse<LinkEditModalStatus, Error> & LinkEditModalUtils => {
-
-  const initialStatus: LinkEditModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<LinkEditModalStatus, Error>('linkEditModal', undefined, { fallbackData: initialStatus });
-
-  return Object.assign(swrResponse, {
-    open: (defaultMarkdownLink: Linker, onSave: (linkText: string) => void) => {
-      swrResponse.mutate({ isOpened: true, defaultMarkdownLink, onSave });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
 };
 
 /*

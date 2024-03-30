@@ -36,10 +36,11 @@
 @import 'bootstrap/scss/placeholders';
 
 // Helpers
-@import 'bootstrap/scss/helpers';
+@import './override/helpers';
 
 // Utilities
 @import 'bootstrap/scss/utilities/api';
 
 // override
-@import './override';
+@import './override/badge';
+@import './override/buttons';

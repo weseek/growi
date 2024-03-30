@@ -1,67 +1,60 @@
+import type { CSSProperties } from 'react';
 import React, {
   useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState,
 } from 'react';
 
-import EventEmitter from 'events';
+
+import type EventEmitter from 'events';
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey, AcceptedUploadFileType,
+  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
+import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
-import { useRouter } from 'next/router';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { useUpdateStateAfterSave, useSaveOrUpdate } from '~/client/services/page-operation';
-import { apiGet, apiPostForm } from '~/client/util/apiv1-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
-import { OptionsToSave } from '~/interfaces/page-operation';
-import { SocketEventName } from '~/interfaces/websocket';
+import { useShouldExpandContent } from '~/client/services/layout';
+import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
+import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
+import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import {
-  useDefaultIndentSize,
+  useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
-  useIsEditable, useIsUploadAllFileAllowed, useIsUploadEnabled, useIsIndentSizeForced,
+  useIsEditable, useIsIndentSizeForced,
+  useAcceptedUploadFileType,
 } from '~/stores/context';
 import {
-  useCurrentIndentSize, useIsSlackEnabled, usePageTagsForEditors,
-  useIsEnabledUnsavedWarning,
-  useIsConflict,
+  useEditorSettings,
+  useCurrentIndentSize,
   useEditingMarkdown,
   useWaitingSaveProcessing,
 } from '~/stores/editor';
-import { useConflictDiffModal } from '~/stores/modal';
 import {
-  useCurrentPagePath, useSWRMUTxCurrentPage, useSWRxCurrentPage, useSWRxTagsInfo, useCurrentPageId, useIsNotFound, useIsLatestRevision, useTemplateBodyData,
+  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-import {
-  useRemoteRevisionId,
-  useRemoteRevisionBody,
-  useRemoteRevisionLastUpdatedAt,
-  useRemoteRevisionLastUpdateUser,
-} from '~/stores/remote-latest-page';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
   useEditorMode, useSelectedGrant,
 } from '~/stores/ui';
+import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
-import { useGlobalSocket } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
-
-// import { ConflictDiffModal } from './PageEditor/ConflictDiffModal';
-// import { ConflictDiffModal } from './ConflictDiffModal';
-// import Editor from './Editor';
+import { EditorNavbar } from './EditorNavbar';
+import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
-import scrollSyncHelper from './ScrollSyncHelper';
+import { useScrollSync } from './ScrollSyncHelper';
+import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
 import '@growi/editor/dist/style.css';
-import EditorNavbarBottom from './EditorNavbarBottom';
 
 
 const logger = loggerFactory('growi:PageEditor');
@@ -72,12 +65,16 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
-
-// for scrolling
-let lastScrolledDateWithCursor: Date | null = null;
-let isOriginOfScrollSyncEditor = false;
-let isOriginOfScrollSyncPreview = false;
-
+export type SaveOptions = {
+  slackChannels: string,
+  overwriteScopesOfDescendants?: boolean
+}
+export type Save = (
+  revisionId?: string,
+  requestMarkdown?: string,
+  opts?: SaveOptions,
+  onConflict?: ConflictHandler
+) => Promise<IPageHasId | null>
 
 type Props = {
   visibility?: boolean,
@@ -86,60 +83,46 @@ type Props = {
 export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const { t } = useTranslation();
-  const router = useRouter();
 
   const previewRef = useRef<HTMLDivElement>(null);
-  const codeMirrorEditorContainerRef = useRef<HTMLDivElement>(null);
+  const [previewRect] = useRect(previewRef);
 
   const { data: isNotFound } = useIsNotFound();
-  const { data: pageId, mutate: mutateCurrentPageId } = useCurrentPageId();
+  const { data: pageId } = useCurrentPageId();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { data: grantData } = useSelectedGrant();
-  const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
-  const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
-  const { data: editingMarkdown, mutate: mutateEditingMarkdown } = useEditingMarkdown();
+  const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
-  const { data: isSlackEnabled } = useIsSlackEnabled();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
-  const { data: isUploadAllFileAllowed } = useIsUploadAllFileAllowed();
-  const { data: isUploadEnabled } = useIsUploadEnabled();
-  const { data: conflictDiffModalStatus, close: closeConflictDiffModal } = useConflictDiffModal();
-  const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
-  const { mutate: mutateRemotePageId } = useRemoteRevisionId();
-  const { mutate: mutateRemoteRevisionId } = useRemoteRevisionBody();
-  const { mutate: mutateRemoteRevisionLastUpdatedAt } = useRemoteRevisionLastUpdatedAt();
-  const { mutate: mutateRemoteRevisionLastUpdateUser } = useRemoteRevisionLastUpdateUser();
-
-  const { data: socket } = useGlobalSocket();
+  const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
+  const { data: editorSettings } = useEditorSettings();
+  const { data: user } = useCurrentUser();
+  const { onEditorsUpdated } = useEditingUsers();
+  const onConflict = useConflictResolver();
 
   const { data: rendererOptions } = usePreviewOptions();
-  const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
-  const { mutate: mutateIsConflict } = useIsConflict();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
 
-  const saveOrUpdate = useSaveOrUpdate();
+  const shouldExpandContent = useShouldExpandContent(currentPage);
+
   const updateStateAfterSave = useUpdateStateAfterSave(pageId, { supressEditingMarkdownMutation: true });
 
+  useConflictEffect();
+
   const { resolvedTheme } = useNextThemes();
-  mutateResolvedTheme(resolvedTheme);
+  mutateResolvedTheme({ themeData: resolvedTheme });
 
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const [createdPageRevisionIdWithAttachment, setCreatedPageRevisionIdWithAttachment] = useState();
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  const currentRevisionId = currentPage?.revision?._id ?? createdPageRevisionIdWithAttachment;
+  const currentRevisionId = currentPage?.revision?._id;
+  const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -164,86 +147,45 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
-
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
-  const mutateIsEnabledUnsavedWarningWithDebounce = useMemo(() => debounce(600, throttle(900, (value: string) => {
-    // Displays an unsaved warning alert
-    mutateIsEnabledUnsavedWarning(value !== initialValueRef.current);
-  })), [mutateIsEnabledUnsavedWarning]);
 
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
-    mutateIsEnabledUnsavedWarningWithDebounce(value);
-  }, [mutateIsEnabledUnsavedWarningWithDebounce, setMarkdownPreviewWithDebounce]);
+  }, [setMarkdownPreviewWithDebounce]);
 
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
+  const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
-  const checkIsConflict = useCallback((data) => {
-    const { s2cMessagePageUpdated } = data;
+  const scrollEditorHandlerThrottle = useMemo(() => throttle(25, scrollEditorHandler), [scrollEditorHandler]);
+  const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
-    const isConflict = markdownToPreview !== s2cMessagePageUpdated.revisionBody;
-
-    mutateIsConflict(isConflict);
-
-  }, [markdownToPreview, mutateIsConflict]);
-
-  // TODO: remove workaround
-  // for https://redmine.weseek.co.jp/issues/125923
-  useEffect(() => {
-    setCreatedPageRevisionIdWithAttachment(undefined);
-  }, [router]);
-
-  useEffect(() => {
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.PageUpdated, checkIsConflict);
-
-    return () => {
-      socket.off(SocketEventName.PageUpdated, checkIsConflict);
-    };
-
-  }, [socket, checkIsConflict]);
-
-  const optionsToSave = useMemo((): OptionsToSave | undefined => {
-    if (grantData == null) {
-      return;
-    }
-    const grantedGroups = grantData.grantedGroups?.map((group) => {
-      return { item: group.id, type: group.type };
-    });
-    const optionsToSave = {
-      isSlackEnabled: isSlackEnabled ?? false,
-      slackChannels: '', // set in save method by opts in SavePageControlls.tsx
-      grant: grantData.grant,
-      // pageTags: pageTags ?? [],
-      grantUserGroupIds: grantedGroups,
-    };
-    return optionsToSave;
-  }, [grantData, isSlackEnabled]);
-
-
-  const save = useCallback(async(opts?: {slackChannels: string, overwriteScopesOfDescendants?: boolean}): Promise<IPageHasId | null> => {
-    if (currentPathname == null || optionsToSave == null) {
-      logger.error('Some materials to save are invalid', { grantData, isSlackEnabled, currentPathname });
+  const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
+    if (pageId == null || grantData == null) {
+      logger.error('Some materials to save are invalid', {
+        pageId, grantData,
+      });
       throw new Error('Some materials to save are invalid');
     }
-
-    const options = Object.assign(optionsToSave, opts);
 
     try {
       mutateWaitingSaveProcessing(true);
 
-      const { page } = await saveOrUpdate(
-        codeMirrorEditor?.getDoc() ?? '',
-        { pageId, path: currentPagePath || currentPathname, revisionId: currentRevisionId },
-        options,
-      );
+      const { page } = await updatePage({
+        pageId,
+        revisionId,
+        body: markdown ?? '',
+        grant: grantData?.grant,
+        origin: Origin.Editor,
+        userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
+          return { item: group.id, type: group.type };
+        }),
+        ...(opts ?? {}),
+      });
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
@@ -252,67 +194,52 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
     catch (error) {
       logger.error('failed to save', error);
-      toastError(error);
-      if (error.code === 'conflict') {
-        mutateRemotePageId(error.data.revisionId);
-        mutateRemoteRevisionId(error.data.revisionBody);
-        mutateRemoteRevisionLastUpdatedAt(error.data.createdAt);
-        mutateRemoteRevisionLastUpdateUser(error.data.user);
+
+      const remoteRevisionData = extractRemoteRevisionDataFromErrorObj(error);
+      if (remoteRevisionData != null) {
+        onConflict?.(remoteRevisionData, markdown ?? '', save, opts);
+        toastWarning(t('modal_resolve_conflict.conflicts_with_new_body_on_server_side'));
+        return null;
       }
+
+      toastError(error);
       return null;
     }
     finally {
       mutateWaitingSaveProcessing(false);
     }
+  }, [pageId, grantData, mutateWaitingSaveProcessing, t]);
 
-  }, [
-    codeMirrorEditor,
-    currentPathname, optionsToSave, grantData, isSlackEnabled, saveOrUpdate, pageId,
-    currentPagePath, currentRevisionId,
-    mutateWaitingSaveProcessing, mutateRemotePageId, mutateRemoteRevisionId, mutateRemoteRevisionLastUpdatedAt, mutateRemoteRevisionLastUpdateUser,
-  ]);
-
-  const saveAndReturnToViewHandler = useCallback(async(opts: {slackChannels: string, overwriteScopesOfDescendants?: boolean}) => {
-    const page = await save(opts);
+  const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
+    const markdown = codeMirrorEditor?.getDoc();
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, opts, onConflict);
     if (page == null) {
       return;
     }
 
-    if (isNotFound) {
-      await router.push(`/${page._id}`);
-    }
-    else {
-      updateStateAfterSave?.();
-    }
     mutateEditorMode(EditorMode.View);
-  }, [save, isNotFound, mutateEditorMode, router, updateStateAfterSave]);
+    updateStateAfterSave?.();
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
-    const page = await save();
+    const markdown = codeMirrorEditor?.getDoc();
+    const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
+    const page = await save(revisionId, markdown, undefined, onConflict);
     if (page == null) {
       return;
     }
 
-    if (isNotFound) {
-      await router.push(`/${page._id}#edit`);
-    }
-    else {
-      updateStateAfterSave?.();
-    }
     toastSuccess(t('toaster.save_succeeded'));
-    mutateEditorMode(EditorMode.Editor);
-
-  }, [isNotFound, mutateEditorMode, router, save, t, updateStateAfterSave]);
+    updateStateAfterSave?.();
+  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
     files.forEach(async(file) => {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const resLimit: any = await apiGet('/attachments.limit', {
-          fileSize: file.size,
-        });
+        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
 
         if (!resLimit.isUploadable) {
           throw new Error(resLimit.errorMessage);
@@ -320,17 +247,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
         const formData = new FormData();
         formData.append('file', file);
-        if (currentPagePath != null) {
-          formData.append('path', currentPagePath);
-        }
         if (pageId != null) {
           formData.append('page_id', pageId);
         }
-        if (pageId == null) {
-          formData.append('page_body', codeMirrorEditor?.getDoc() ?? '');
-        }
 
-        const resAdd: any = await apiPostForm('/attachments.add', formData);
+        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
+
         const attachment = resAdd.attachment;
         const fileName = attachment.originalName;
 
@@ -340,173 +262,20 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
           // modify to "![fileName](url)" syntax
           insertText = `!${insertText}`;
         }
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.insertText(insertText);
+
         codeMirrorEditor?.insertText(insertText);
       }
       catch (e) {
         logger.error('failed to upload', e);
         toastError(e);
       }
-      finally {
-        // TODO: implement
-        // refs: https://redmine.weseek.co.jp/issues/126528
-        // editorRef.current.terminateUploadingState();
-      }
     });
 
-  }, [codeMirrorEditor, currentPagePath, pageId]);
-
-  const acceptedFileType = useMemo(() => {
-    if (!isUploadEnabled) {
-      return AcceptedUploadFileType.NONE;
-    }
-    if (isUploadAllFileAllowed) {
-      return AcceptedUploadFileType.ALL;
-    }
-    return AcceptedUploadFileType.IMAGE;
-  }, [isUploadAllFileAllowed, isUploadEnabled]);
-
-  const scrollPreviewByEditorLine = useCallback((line: number) => {
-    if (previewRef.current == null) {
-      return;
-    }
-
-    // prevent circular invocation
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false; // turn off the flag
-      return;
-    }
-
-    // turn on the flag
-    isOriginOfScrollSyncEditor = true;
-    scrollSyncHelper.scrollPreview(previewRef.current, line);
-  }, []);
-  const scrollPreviewByEditorLineWithThrottle = useMemo(() => throttle(20, scrollPreviewByEditorLine), [scrollPreviewByEditorLine]);
-
-  /**
-   * the scroll event handler from codemirror
-   * @param {any} data {left, top, width, height, clientWidth, clientHeight} object that represents the current scroll position,
-   *                    the size of the scrollable area, and the size of the visible area (minus scrollbars).
-   *                    And data.line is also available that is added by Editor component
-   * @see https://codemirror.net/doc/manual.html#events
-   */
-  const editorScrolledHandler = useCallback(({ line }: { line: number }) => {
-    // prevent scrolling
-    //   if the elapsed time from last scroll with cursor is shorter than 40ms
-    const now = new Date();
-    if (lastScrolledDateWithCursor != null && now.getTime() - lastScrolledDateWithCursor.getTime() < 40) {
-      return;
-    }
-
-    scrollPreviewByEditorLineWithThrottle(line);
-  }, [scrollPreviewByEditorLineWithThrottle]);
-
-  /**
-   * scroll Preview element by cursor moving
-   * @param {number} line
-   */
-  const scrollPreviewByCursorMoving = useCallback((line: number) => {
-    if (previewRef.current == null) {
-      return;
-    }
-
-    // prevent circular invocation
-    if (isOriginOfScrollSyncPreview) {
-      isOriginOfScrollSyncPreview = false; // turn off the flag
-      return;
-    }
-
-    // turn on the flag
-    isOriginOfScrollSyncEditor = true;
-    if (previewRef.current != null) {
-      scrollSyncHelper.scrollPreviewToRevealOverflowing(previewRef.current, line);
-    }
-  }, []);
-  const scrollPreviewByCursorMovingWithThrottle = useMemo(() => throttle(20, scrollPreviewByCursorMoving), [scrollPreviewByCursorMoving]);
-
-  /**
-   * the scroll event handler from codemirror
-   * @param {number} line
-   * @see https://codemirror.net/doc/manual.html#events
-   */
-  const editorScrollCursorIntoViewHandler = useCallback((line: number) => {
-    // record date
-    lastScrolledDateWithCursor = new Date();
-    scrollPreviewByCursorMovingWithThrottle(line);
-  }, [scrollPreviewByCursorMovingWithThrottle]);
-
-  /**
-   * scroll Editor component by scroll event of Preview component
-   * @param {number} offset
-   */
-  // const scrollEditorByPreviewScroll = useCallback((offset: number) => {
-  //   if (editorRef.current == null || previewRef.current == null) {
-  //     return;
-  //   }
-
-  //   // prevent circular invocation
-  //   if (isOriginOfScrollSyncEditor) {
-  //     isOriginOfScrollSyncEditor = false; // turn off the flag
-  //     return;
-  //   }
-
-  //   // turn on the flag
-  //   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  //   isOriginOfScrollSyncPreview = true;
-
-  //   scrollSyncHelper.scrollEditor(editorRef.current, previewRef.current, offset);
-  // }, []);
-  // const scrollEditorByPreviewScrollWithThrottle = useMemo(() => throttle(20, scrollEditorByPreviewScroll), [scrollEditorByPreviewScroll]);
-
-  const afterResolvedHandler = useCallback(async() => {
-    // get page data from db
-    const pageData = await mutateCurrentPage();
-
-    // update tag
-    await mutateTagsInfo(); // get from DB
-    syncTagsInfoForEditor(); // sync global state for client
-
-    // clear isConflict
-    mutateIsConflict(false);
-
-    // set resolved markdown in editing markdown
-    const markdown = pageData?.revision.body ?? '';
-    mutateEditingMarkdown(markdown);
-
-  }, [mutateCurrentPage, mutateEditingMarkdown, mutateIsConflict, mutateTagsInfo, syncTagsInfoForEditor]);
-
-
-  // initialize
-  useEffect(() => {
-    if (initialValue == null) {
-      return;
-    }
-    codeMirrorEditor?.initDoc(initialValue);
-    setMarkdownToPreview(initialValue);
-    mutateIsEnabledUnsavedWarning(false);
-  }, [codeMirrorEditor, initialValue, mutateIsEnabledUnsavedWarning]);
+  }, [codeMirrorEditor, pageId]);
 
   // initial caret line
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor]);
-
-  // set handler to set caret line
-  useEffect(() => {
-    const handler = (line) => {
-      codeMirrorEditor?.setCaretLine(line);
-
-      if (previewRef.current != null) {
-        scrollSyncHelper.scrollPreview(previewRef.current, line);
-      }
-    };
-    globalEmitter.on('setCaretLine', handler);
-
-    return function cleanup() {
-      globalEmitter.removeListener('setCaretLine', handler);
-    };
   }, [codeMirrorEditor]);
 
   // set handler to save and return to View
@@ -542,19 +311,45 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [initialValue, isIndentSizeForced, mutateCurrentIndentSize]);
 
-  // when transitioning to a different page, if the initialValue is the same,
-  // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
-  const onRouterChangeComplete = useCallback(() => {
-    codeMirrorEditor?.initDoc(initialValue);
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor, initialValue]);
-
+  // set handler to set caret line
   useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
+    const handler = (lineNumber?: number) => {
+      codeMirrorEditor?.setCaretLine(lineNumber);
+
+      // TODO: scroll to the caret line
     };
-  }, [onRouterChangeComplete, router.events]);
+    globalEmitter.on('setCaretLine', handler);
+
+    return function cleanup() {
+      globalEmitter.removeListener('setCaretLine', handler);
+    };
+  }, [codeMirrorEditor]);
+
+  // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
+  // // when transitioning to a different page, if the initialValue is the same,
+  // // UnControlled CodeMirror value does not reset, so explicitly set the value to initialValue
+  // const onRouterChangeComplete = useCallback(() => {
+  //   codeMirrorEditor?.initDoc(ydoc?.getText('codemirror').toString());
+  //   codeMirrorEditor?.setCaretLine();
+  // }, [codeMirrorEditor, ydoc]);
+
+  // useEffect(() => {
+  //   router.events.on('routeChangeComplete', onRouterChangeComplete);
+  //   return () => {
+  //     router.events.off('routeChangeComplete', onRouterChangeComplete);
+  //   };
+  // }, [onRouterChangeComplete, router.events]);
+
+  const pastEndStyle: CSSProperties | undefined = useMemo(() => {
+    if (previewRect == null) {
+      return undefined;
+    }
+
+    const previewRectHeight = previewRect.height;
+
+    // containerHeight - 1.5 line height
+    return { paddingBottom: `calc(${previewRectHeight}px - 2em)` };
+  }, [previewRect]);
 
   if (!isEditable) {
     return <></>;
@@ -566,53 +361,42 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   return (
     <div data-testid="page-editor" id="page-editor" className={`flex-expand-vert ${props.visibility ? '' : 'd-none'}`}>
-      <div className="flex-expand-vert justify-content-center align-items-center" style={{ minHeight: '72px' }}>
-        <div>Header</div>
-      </div>
+
+      <EditorNavbar />
+
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
-        <div className="page-editor-editor-container flex-expand-vert">
-          {/* <Editor
-            ref={editorRef}
-            value={initialValue}
-            isUploadable={isUploadable}
-            isUploadAllFileAllowed={isUploadAllFileAllowed}
-            indentSize={currentIndentSize}
-            onScroll={editorScrolledHandler}
-            onScrollCursorIntoView={editorScrollCursorIntoViewHandler}
-            onChange={markdownChangedHandler}
-            onUpload={uploadHandler}
-            onSave={saveWithShortcut}
-          /> */}
+        <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
+            acceptedUploadFileType={acceptedUploadFileType}
+            onScroll={scrollEditorHandlerThrottle}
             indentSize={currentIndentSize ?? defaultIndentSize}
-            acceptedFileType={acceptedFileType}
+            user={user ?? undefined}
+            pageId={pageId ?? undefined}
+            initialValue={initialValue}
+            editorSettings={editorSettings}
+            onEditorsUpdated={onEditorsUpdated}
           />
         </div>
-        <div className="page-editor-preview-container flex-expand-vert d-none d-lg-flex">
+        <div
+          ref={previewRef}
+          onScroll={scrollPreviewHandlerThrottle}
+          className="page-editor-preview-container flex-expand-vert overflow-y-auto d-none d-lg-flex"
+        >
           <Preview
-            ref={previewRef}
             rendererOptions={rendererOptions}
             markdown={markdownToPreview}
             pagePath={currentPagePath}
-            // TODO: implement
-            // refs: https://redmine.weseek.co.jp/issues/126519
-            // onScroll={offset => scrollEditorByPreviewScrollWithThrottle(offset)}
+            expandContentWidth={shouldExpandContent}
+            style={pastEndStyle}
           />
         </div>
-        {/*
-        <ConflictDiffModal
-          isOpen={conflictDiffModalStatus?.isOpened}
-          onClose={() => closeConflictDiffModal()}
-          markdownOnEdit={markdownToPreview}
-          optionsToSave={optionsToSave}
-          afterResolvedHandler={afterResolvedHandler}
-        />
-        */}
       </div>
+
       <EditorNavbarBottom />
+
     </div>
   );
 });

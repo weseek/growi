@@ -1,33 +1,38 @@
 import { useEffect } from 'react';
 
-import type { Extension } from '@codemirror/state';
+import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
-import { useCodeMirrorEditorIsolated } from '../stores';
+import { GlobalCodeMirrorEditorKey } from '../consts';
+import { setDataLine } from '../services/extensions/setDataLine';
+import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor } from '.';
-
+import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
+  [
+    scrollPastEnd(),
+    setDataLine,
+  ],
 ];
 
-type Props = {
-  onChange?: (value: string) => void,
-  onSave?: () => void,
-  onUpload?: (files: File[]) => void,
-  acceptedFileType?: AcceptedUploadFileType,
-  indentSize?: number,
+type Props = CodeMirrorEditorProps & {
+  user?: IUserHasId,
+  pageId?: string,
+  initialValue?: string,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, acceptedFileType, indentSize,
+    user, pageId, initialValue,
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
+
+  useCollaborativeEditorMode(user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
@@ -59,14 +64,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
-      onUpload={onUpload}
-      acceptedFileType={acceptedFileTypeNoOpt}
-      indentSize={indentSize}
+      onSave={onSave}
+      {...otherProps}
     />
   );
 };

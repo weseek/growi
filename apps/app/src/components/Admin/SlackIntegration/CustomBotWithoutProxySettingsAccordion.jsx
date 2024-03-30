@@ -10,7 +10,7 @@ import Accordion from '../Common/Accordion';
 import CustomBotWithoutProxySecretTokenSection from './CustomBotWithoutProxySecretTokenSection';
 import ManageCommandsProcessWithoutProxy from './ManageCommandsProcessWithoutProxy';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
-import { addLogs } from './slak-integration-util';
+import { addLogs } from './slack-integration-util';
 
 
 export const botInstallationStep = {
@@ -78,7 +78,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
         <div className="my-5 d-flex flex-column align-items-center">
           <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
             {t('admin:slack_integration.accordion.create_bot')}
-            <i className="fa fa-external-link ms-2" aria-hidden="true" />
+            <span className="growi-custom-icons ms-2">external_link</span>
           </button>
           <a
             href={t('admin:slack_integration.docs_url.custom_bot_without_proxy_setting')}
@@ -88,7 +88,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
             <p className="text-center mt-1">
               <small>
                 {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-                <i className="fa fa-external-link ms-2" aria-hidden="true" />
+                <span className="growi-custom-icons ms-2">external_link</span>
               </small>
             </p>
           </a>
@@ -115,7 +115,7 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.REGISTER_SLACK_CONFIGURATION)}
         // eslint-disable-next-line max-len
-        title={<><span className="me-3">3</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <i className="ms-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="me-3">3</span>{t('admin:slack_integration.accordion.register_secret_and_token')}{isEnterdSecretAndToken && <span className="material-symbols-outlined ms-3 text-success">check</span>}</>}
       >
         <CustomBotWithoutProxySecretTokenSection
           onUpdatedSecretToken={props.onUpdatedSecretToken}
@@ -138,17 +138,17 @@ const CustomBotWithoutProxySettingsAccordion = (props) => {
       <Accordion
         defaultIsActive={defaultOpenAccordionKeys.has(botInstallationStep.CONNECTION_TEST)}
         // eslint-disable-next-line max-len
-        title={<><span className="me-3">5</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}</>}
+        title={<><span className="me-3">5</span>{t('admin:slack_integration.accordion.test_connection')}{isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}</>}
       >
         <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
         <p className="text-center text-warning">
-          <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+          <span className="material-symbols-outlined">info</span>{t('admin:slack_integration.accordion.test_connection_only_public_channel')}
         </p>
         <div className="d-flex justify-content-center">
           <form className="align-items-center" onSubmit={e => submitForm(e)}>
             <div className="input-group col-8">
               <div>
-                <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+                <span className="input-group-text" id="slack-channel-addon"><span className="material-symbols-outlined">tag</span></span>
               </div>
               <input
                 className="form-control"

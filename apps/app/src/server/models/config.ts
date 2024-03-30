@@ -70,8 +70,10 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'security:pageCompleteDeletionAuthority' : undefined,
   'security:pageRecursiveDeletionAuthority' : undefined,
   'security:pageRecursiveCompleteDeletionAuthority' : undefined,
+  'security:isAllGroupMembershipRequiredForPageCompleteDeletion' : true,
   'security:disableLinkSharing' : false,
-  'security:isUsersHomepageDeletionEnabled': false,
+  'security:user-homepage-deletion:isEnabled': false,
+  'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': false,
 
   'security:passport-local:isEnabled' : true,
   'security:passport-ldap:isEnabled' : false,

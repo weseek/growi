@@ -1,29 +1,19 @@
-@use '~/styles/variables' as var;
 @use '~/styles/mixins';
 
-@include mixins.editing(true) {
-  .page-editor-preview-body :global {
+.page-editor-preview-body :global {
+  .wiki {
+    max-width: 980px;
+    padding: 0px 15px;
+    margin: 0 auto;
   }
 }
 
 // modify width for fluid layout
-@include mixins.editing(true) {
-  .dynamic-layout-root:not(.growi-layout-fluid) {
-    :local {
-      .page-editor-preview-body :global {
-        .wiki {
-          max-width: 980px;
-          margin: 0 auto;
-        }
-      }
-    }
-  }
-  .dynamic-layout-root.growi-layout-fluid {
-    :local {
-      .page-editor-preview-body :global {
-        .wiki {
-          margin: 0 auto;
-        }
+.page-editor-preview-body {
+  &:global {
+    &.fluid-layout {
+      .wiki {
+        @include mixins.fluid-layout();
       }
     }
   }

@@ -8,8 +8,8 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IPageGrantData } from '~/interfaces/page';
-import { ApplicableGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -31,7 +31,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
 
   const [isGroupSelectModalShown, setIsGroupSelectModalShown] = useState(false);
-  const [selectedGroups, setSelectedGroups] = useState<ApplicableGroup[]>([]);
+  const [selectedGroups, setSelectedGroups] = useState<PopulatedGrantedGroup[]>([]);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
@@ -47,7 +47,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
   }, [isOpen]);
 
-  const groupListItemClickHandler = (group: ApplicableGroup) => {
+  const groupListItemClickHandler = (group: PopulatedGrantedGroup) => {
     if (selectedGroups.find(g => g.item._id === group.item._id) != null) {
       setSelectedGroups(selectedGroups.filter(g => g.item._id !== group.item._id));
     }
@@ -68,7 +68,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
+        userRelatedGrantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
           return { item: g.item._id, type: g.type };
         }) : null,
       });
@@ -99,10 +99,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.grantedGroups == null || grantData.grantedGroups.length === 0) {
+      if (grantData.userRelatedGrantedGroups == null || grantData.userRelatedGrantedGroups.length === 0) {
         return t('fix_page_grant.modal.grant_label.isForbidden');
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.grantedGroups.map(g => g.name).join(', ')})`;
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.userRelatedGrantedGroups.map(g => g.name).join(', ')})`;
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed
@@ -297,7 +297,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
+          <span className="material-symbols-outlined mx-1" aria-hidden="true">error</span>
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

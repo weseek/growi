@@ -1,8 +1,213 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.2.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.0...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.0](https://github.com/weseek/growi/compare/v6.3.2...v7.0.0) - 2024-03-27
+
+### BREAKING CHANGES
+
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+* support: Omit promster (#8105) @yuki-takei
+* support: Omit HackMD (CodiMD) (#8094) @yuki-takei
+* support: Revoke well classes (#8041) @soumaeda
+
+### 💎 Features
+
+* feat: Not required latest revision when updating from Editor (#8522) @miya
+* feat: Add editing user list on page header (#8486) @jam411
+* feat: implement to add table when doing a line break in table markdown (#8461) @WNomunomu
+* feat: WIP Page (#8484) @miya
+* feat: 140020 140992 sidebar style (#8497) @yukendev
+* feat: Select parent page from PageSelectModal (#8446) @WNomunomu
+* feat: CollapsedParentsDropdown to display ancestor pathname (#8444) @miya
+* feat: Enable and fix page duplication of user unrelated pages (#8442) @arafubeatbox
+* feat: Multiple group grant for page (#8331) @arafubeatbox
+* feat: Built-in Collaborative Editor (#8176) @jam411
+* feat: Changing page title and path in edit mode (#8252) @WNomunomu
+* feat: Notification count badge (#8372) @miya
+* feat: Unread filtering for In-app notification (#8373) @miya
+* feat: Show notifications in sidebar (#8371) @miya
+* feat: Uniform behavior when creating pages from create new page button (#8297) @jam411
+* feat: New incremental search (#8238) @miya
+* feat: Allow deletion of user homepage when the user is deleted (#8224) @jam411
+* feat: LDAP/Keycloak group sync (#7857) @arafubeatbox
+* feat: Implementation of autocompletion function for emoji input (#8137) @WNomunomu
+* feat: Create page when click edit button if page is not found (#8174) @jam411
+* feat: Presentation preview and support Marp  (#8029) @reiji-h
+
+### 🚀 Improvement
+
+* imprv: New login design (#8607) @satof3
+* imprv: Multi group grant page duplicate explanation (#8507) @arafubeatbox
+* imprv: Update design for user homepage side contents (#8465) @jam411
+* imprv: Update page accessories modal design (#8466) @jam411
+* imprv: Creating/updating page APIs (#8459) @yuki-takei
+* imprv: improve PageHeader component (#8439) @WNomunomu
+* imprv: Use unzip stream instead of unzipper (#8378) @ryu-sato
+* imprv: Allow plugin that contain slashes in the branch name to be installed (#8359) @ryu-sato
+* imprv: Refactor DrawioViewer re-rendering by the resizing trigger (#8314) @yuki-takei
+* imprv: Upload handler use apiv3 post (#8279) @reiji-h
+* imprv: Apply content headers for attachment response (#8245) @yuki-takei
+* imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
+* imprv: Update RichAttachments feat on shared pages (#8206) @jam411
+* imprv: Certify shared page attachment middleware (#8211) @yuki-takei
+* imprv: Able to edit tags in editor (#8167) @soumaeda
+* imprv: Responsive layout (#8200) @yuki-takei
+* imprv: Sidebar on edit (#8181) @yuki-takei
+* imprv: Sidebar mode (#8160) @yuki-takei
+* imprv: Limit the file types in editor. (#8146) @reiji-h
+* imprv: Support Ctrl+V file paste. (#8124) @reiji-h
+* imprv: i18n for marp settings (#8110) @moekumasaka
+* imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
+* imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
+* imprv: Admin customize presentation form (#8083) @meiri-k
+* imprv: Search behavior (#8069) @yuki-takei
+* imprv: i18n resetting password mail body (#8058) @meiri-k
+* imprv: Add installed date to questionnaire answer (#7971) @TatsuyaIse
+* imprv: Export md with page name (#8005) @soumaeda
+* imprv: Show modal when you delete plugin (#7875) @soumaeda
+* imprv: Create  Japanese  ejs files (#7957) @meiri-k
+* imprv: Sidebar shows skelton with suspense (#7975) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Show both UserGroups and ExternalUserGroups for group delete modal transfer select (#8519) @arafubeatbox
+* fix: Multi group grant page becomes public when one of groups deleted (#8518) @arafubeatbox
+* fix: pages are not displayed in page tree (#8515) @WNomunomu
+* fix: Page being able to delete completely when not allowed (#8374) @arafubeatbox
+* fix: Logs are not saved when viewing the page (#8406) @miya
+* fix: Normalize duplicated root pages to valid paths when server startup (#8414) @miya
+* fix: Configured auditlog environment variables are not reflected in the administration screen (#8383) @miya
+* fix: Plugin is broken after unzipping (#8358) @ryu-sato
+* fix: Keycloak group sync config not loaded on sync execution (#8339) @arafubeatbox
+* fix: SAML callback action throws the field is undefined error when the ACL Rule string is only white space (#8322) @yuki-takei
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
+* fix: Remove groups not related to the user from the user groups that are specified automatically when creating child pages (#8266) @arafubeatbox
+* fix: Certify shared page attachment middleware (#8255) @yuki-takei
+* fix: Show liker counts in lsx (#8194) @yuki-takei
+* fix: Marp is enabled incorrectly problem (#8100) @reiji-h
+* fix: Fixing swagger for tag update api (#8010) @miya
+* fix: Modification of links in the docs (#8004) @miya
+* fix: Type safe implementation for objects imported from ElasticsearchClient (#7862) @miya
+* fix: Consider an empty page when renaming and duplicating (v6.1.x) (#7980) @yuki-takei
+* fix: Consider an empty page when renaming and duplicating (#7979) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Upgrade Next.js v14 (#8586) @yuki-takei
+* imprv: New login design (#8607) @satof3
+* support: Node.js v20 (#8528) @miya
+* support: Upgrade react bootstrap typeahead (#8500) @jam411
+* ci(deps): bump ip from 2.0.0 to 2.0.1 (#8508) @dependabot
+* support: React Testing Library (#8393) @miya
+* ci(deps-dev): bump vite from 4.5.1 to 4.5.2 (#8392) @dependabot
+* support: Build GROWI custom icons (#8356) @yukendev
+* ci(deps-dev): bump vite from 4.5.0 to 4.5.1 (#8302) @dependabot
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+* support: Install material-symbols (#8182) @yuki-takei
+* ci(deps-dev): bump postcss from 8.4.26 to 8.4.31 (#8142) @dependabot
+* ci(deps): bump cypress-io/github-action from 5 to 6 (#8051) @dependabot
+* ci(deps): bump amannn/action-semantic-pull-request from 5.0.2 to 5.3.0 (#8127) @dependabot
+* ci(deps): bump aws-actions/configure-aws-credentials from 2 to 4 (#8128) @dependabot
+* support: Internationalization USER_REGISTRATION_APPROVAL_REQUEST label for v62x (#8130) @jam411
+* ci(deps): bump get-func-name from 2.0.0 to 2.0.2 (#8119) @dependabot
+* support: Omit promster (#8105) @yuki-takei
+* support: Omit HackMD (CodiMD) (#8094) @yuki-takei
+* support: Revoke well classes (#8041) @soumaeda
+* support: Upgrade to reactstrap v9 (#7984) @jam411
+* support: Update CodeMirror to v6 (#7968) @yuki-takei
+
+## [v6.3.2](https://github.com/weseek/growi/compare/v6.3.1...v6.3.2) - 2024-03-25
+
+### 🐛 Bug Fixes
+
+* fix: Show both UserGroups and ExternalUserGroups for group delete modal transfer select (#8519) @arafubeatbox
+
+### 🧰 Maintenance
+
+* ci(deps): bump ip from 2.0.0 to 2.0.1 (#8508) @dependabot
+
+## [v6.3.1](https://github.com/weseek/growi/compare/v6.3.0...v6.3.1) - 2024-02-01
+
+### 💎 Features
+
+* feat: Normalize duplicated root pages to valid paths when server startup (#8414) @miya
+
+### 🚀 Improvement
+
+* imprv: Use unzip stream instead of unzipper (#8378) @ryu-sato
+* imprv: Allow plugin that contain slashes in the branch name to be installed (#8359) @ryu-sato
+
+### 🐛 Bug Fixes
+
+* fix: Page being able to delete completely when not allowed (#8374) @arafubeatbox
+* fix: Logs are not saved when viewing the page (#8406) @miya
+* fix: Preventing duplication of `/user/username` pages (#8413) @WNomunomu
+* fix: Non-admin user cannot rename pages v63x (#8410) @jam411
+* fix: Duplicate root pages are created unintentionally (#8404) @miya
+* fix: Configured auditlog environment variables are not reflected in the administration screen (#8383) @miya
+* fix: plugin is broken after unzipping (#8358) @ryu-sato
+* fix: Keycloak group sync config not loaded on sync execution (#8339) @arafubeatbox
+
+### 🧰 Maintenance
+
+* support: React Testing Library (#8393) @miya
+* ci(deps-dev): bump vite from 4.5.1 to 4.5.2 (#8392) @dependabot
+
+## [v6.3.0](https://github.com/weseek/growi/compare/v6.2.5...v6.3.0) - 2023-12-14
+
+### BREAKING CHANGES
+
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+
+### 💎 Features
+
+* feat: LDAP/Keycloak group sync (#7857) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Refactor DrawioViewer re-rendering by the resizing trigger (#8314) @yuki-takei
+* imprv: Apply content headers for attachment response (#8245) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: SAML callback action throws the field is undefined error when the ACL Rule string is only white space (#8322) @yuki-takei
+* fix: Remove groups not related to the user from the user groups that are specified automatically when creating child pages (#8266) @arafubeatbox
+* fix: Certify shared page attachment middleware (#8255) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Add test for delete-completely-user-home-by-system.ts (#8323) @jam411
+* ci(deps-dev): bump vite from 4.5.0 to 4.5.1 (#8302) @dependabot
+* support: TypeScriptize attachment codes (#8243) @yuki-takei
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+
+## [v6.2.5](https://github.com/weseek/growi/compare/v6.2.4...v6.2.5) - 2023-12-14
+
+### 🐛 Bug Fixes
+
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
+
+## [v6.2.4](https://github.com/weseek/growi/compare/v6.2.3...v6.2.4) - 2023-11-29
+
+### 💎 Features
+
+* feat: Show create date in Attachment Data list (#8229) @sakazuki
+
+### 🚀 Improvement
+
+* imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
+* imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
+
+### 🐛 Bug Fixes
+
+* fix: Certify shared page attachment middleware (6.2.x) (#8256) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Refactor deleteCompletelyUserHomeBySystem (#8262) @jam411
 
 ## [v6.2.3](https://github.com/weseek/growi/compare/v6.2.2...v6.2.3) - 2023-11-13
 

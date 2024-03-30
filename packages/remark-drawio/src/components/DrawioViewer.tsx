@@ -56,16 +56,22 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
       return;
     }
 
-    const mxgraphs = drawioContainerRef.current.getElementsByClassName('mxgraph');
+    const mxgraphs = drawioContainerRef.current.getElementsByClassName('mxgraph') as HTMLCollectionOf<HTMLElement>;
     if (mxgraphs.length > 0) {
       // This component should have only one '.mxgraph' element
       const div = mxgraphs[0];
 
       if (div != null) {
         div.innerHTML = '';
+        div.style.width = '';
+        div.style.height = '';
 
         // render diagram with createViewerForElement
         try {
+          GraphViewer.useResizeSensor = false;
+          GraphViewer.prototype.checkVisibleState = false;
+          GraphViewer.prototype.lightboxZIndex = 1055; // set $zindex-modal
+          GraphViewer.prototype.toolbarZIndex = 1055; // set $zindex-modal
           GraphViewer.createViewerForElement(div);
         }
         catch (err) {
@@ -139,6 +145,26 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
   }, [onRenderingUpdated]);
   // *******************************  end  *******************************
 
+  // *******************  detect container is resized  *******************
+  useEffect(() => {
+    if (drawioContainerRef.current == null) {
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      entries.forEach(() => {
+        // setElementWidth(el.contentRect.width);
+        onRenderingStart?.();
+        renderDrawioWithDebounce();
+      });
+    });
+    observer.observe(drawioContainerRef.current);
+    return () => {
+      observer.disconnect();
+    };
+  }, [onRenderingStart, renderDrawioWithDebounce]);
+  // *******************************  end  *******************************
+
   return (
     <div
       key={`drawio-viewer-${diagramIndex}`}
@@ -149,7 +175,8 @@ export const DrawioViewer = memo((props: DrawioViewerProps): JSX.Element => {
     >
       {/* show error */}
       { error != null && (
-        <span className="text-muted"><i className="icon-fw icon-exclamation"></i>
+        <span className="text-muted">
+          <span className="material-symbols-outlined me-1">error</span>
           {error.name && <strong>{error.name}: </strong>}
           {error.message}
         </span>

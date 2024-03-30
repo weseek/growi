@@ -6,6 +6,7 @@ import React, {
 import dynamic from 'next/dynamic';
 
 import { SidebarMode } from '~/interfaces/ui';
+import { useIsSearchPage } from '~/stores/context';
 import {
   useDrawerOpened,
   useCollapsedContentsOpened,
@@ -129,13 +130,17 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
     mutateCollapsedContentsOpened(false);
   }, [isCollapsedMode, mutateCollapsedContentsOpened]);
 
-  const openClass = `${isCollapsedContentsOpened ? 'open' : ''}`;
+  const closedClass = isCollapsedMode() && !isCollapsedContentsOpened ? 'd-none' : '';
+  const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';
   const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div
+        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
+        style={{ width: collapsibleContentsWidth }}
+      >
         {children}
       </div>
     </div>
@@ -143,15 +148,19 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
 
 });
 
+// for data-* attributes
+type HTMLElementProps = JSX.IntrinsicElements &
+  Record<keyof JSX.IntrinsicElements, { [p: `data-${string}`]: string | number }>;
 
 type DrawableContainerProps = {
+  divProps?: HTMLElementProps['div'],
   className?: string,
   children?: React.ReactNode,
 }
 
 const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
-  const { className, children } = props;
+  const { divProps, className, children } = props;
 
   const { data: isDrawerOpened, mutate } = useDrawerOpened();
 
@@ -159,7 +168,7 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
 
   return (
     <>
-      <div className={`${className} ${openClass}`}>
+      <div {...divProps} className={`${className} ${openClass}`}>
         {children}
       </div>
       { isDrawerOpened && (
@@ -176,6 +185,8 @@ export const Sidebar = (): JSX.Element => {
     data: sidebarMode,
     isDrawerMode, isCollapsedMode, isDockMode,
   } = useSidebarMode();
+
+  const { data: isSearchPage } = useIsSearchPage();
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -200,8 +211,8 @@ export const Sidebar = (): JSX.Element => {
           <span className="material-symbols-outlined">reorder</span>
         </DrawerToggler>
       ) }
-      { sidebarMode != null && !isDockMode() && <AppTitleOnSubnavigation /> }
-      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end vh-100`} data-testid="grw-sidebar">
+      { sidebarMode != null && !isDockMode() && !isSearchPage && <AppTitleOnSubnavigation /> }
+      <DrawableContainer className={`${grwSidebarClass} ${modeClass} border-end flex-expand-vh-100`} divProps={{ 'data-testid': 'grw-sidebar' }}>
         <ResizableContainer>
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />

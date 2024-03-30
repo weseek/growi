@@ -181,7 +181,7 @@ class LocalSecuritySettingContents extends React.Component {
                   <div className="alert alert-warning p-1 my-1 small d-inline-block">
                     <span>{t('commons:alert.password_reset_please_enable_mailer')}</span>
                     <Link href="/admin/app#mail-settings">
-                      <i className="fa fa-link"></i> {t('app_setting.mail_settings')}
+                      <span className="material-symbols-outlined">link</span> {t('app_setting.mail_settings')}
                     </Link>
                   </div>
                 )}
@@ -210,7 +210,7 @@ class LocalSecuritySettingContents extends React.Component {
                   <div className="alert alert-warning p-1 my-1 small d-inline-block">
                     <span>{t('commons:alert.please_enable_mailer')}</span>
                     <Link href="/admin/app#mail-settings">
-                      <i className="fa fa-link"></i> {t('app_setting.mail_settings')}
+                      <span className="material-symbols-outlined">link</span> {t('app_setting.mail_settings')}
                     </Link>
                   </div>
                 )}

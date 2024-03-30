@@ -31,6 +31,7 @@ const validator = {
     body('hideRestrictedByOwner').if(value => value != null).isBoolean(),
     body('hideRestrictedByGroup').if(value => value != null).isBoolean(),
     body('isUsersHomepageDeletionEnabled').if(value => value != null).isBoolean(),
+    body('isForceDeleteUserHomepageOnUserDeletion').if(value => value != null).isBoolean(),
   ],
   shareLinkSetting: [
     body('disableLinkSharing').if(value => value != null).isBoolean(),
@@ -356,9 +357,13 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion:
+        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
+        isForceDeleteUserHomepageOnUserDeletion:
+        await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
         wikiMode: await configManager.getConfig('crowi', 'security:wikiMode'),
         sessionMaxAge: await configManager.getConfig('crowi', 'security:sessionMaxAge'),
       },
@@ -624,9 +629,14 @@ module.exports = (crowi) => {
       'security:pageRecursiveDeletionAuthority': req.body.pageRecursiveDeletionAuthority,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
+      'security:isAllGroupMembershipRequiredForPageCompleteDeletion': req.body.isAllGroupMembershipRequiredForPageCompleteDeletion,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
-      'security:isUsersHomepageDeletionEnabled': req.body.isUsersHomepageDeletionEnabled,
+      'security:user-homepage-deletion:isEnabled': req.body.isUsersHomepageDeletionEnabled,
+      // Validate user-homepage-deletion config
+      'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion': req.body.isUsersHomepageDeletionEnabled
+        ? req.body.isForceDeleteUserHomepageOnUserDeletion
+        : false,
     };
 
     // Validate delete config
@@ -653,9 +663,13 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion:
+        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
-        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:isUsersHomepageDeletionEnabled'),
+        isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
+        isForceDeleteUserHomepageOnUserDeletion:
+        await configManager.getConfig('crowi', 'security:user-homepage-deletion:isForceDeleteUserHomepageOnUserDeletion'),
       };
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_SECURITY_SETTINGS_UPDATE };

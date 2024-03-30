@@ -1,45 +1,61 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
-// TODO: activate (https://redmine.weseek.co.jp/issues/128307)
-.grw-slack-notification :global {
-  // $input-height-slack: bs.$form-check-indicator-size * 1.5;
-  // border-color: bs.$gray-200;
 
-  // border-style: solid;
-  // border-width: 1px;
-  // border-radius: $input-height-slack/2 2px 2px $input-height-slack/2;
-
-  // .form-control {
-  //   height: $input-height-slack;
-  //   border: transparent;
-  //   @include bs.media-breakpoint-up(sm) {
-  //     width: 130px;
-  //   }
-  //   @include bs.media-breakpoint-up(md) {
-  //     width: 180px;
-  //   }
-  // }
-  // // height settings for slack button's responsive design
-  // // in the input and form-control element
-  // .grw-form-control-slack-notification.form-control {
-  //   height: $input-height-slack;
-  // }
-  // .grw-input-group-slack-notification {
-  //   height: $input-height-slack;
-  //   label {
-  //     display: flex;
-  //     align-items: center;
-  //     justify-content: center;
-  //     margin-bottom: 0;
-  //   }
-  // }
-
-  // .form-check-label {
-  //   &::before {
-  //     border: transparent;
-  //   }
-  // }
+.grw-slack-switch :global {
+  .input-group-text {
+    background-color: inherit;
+  }
+  .form-check-input {
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-attachment:scroll;
+    background-clip: border-box;
+    background-origin: padding-box;
+    background-size: 30%, 45%;
+    box-shadow: none;
+    transition: all 0.4s ease-out;
+  }
+  .form-control::placeholder {
+    color: bs.$gray-500
+  }
 }
-//　TODO デザインの使用が確定して実装、本タスクのスコープ外
-// .grw-slack-notification-xd {
-// }
+
+:root[data-bs-theme='light'] {
+  .grw-slack-switch :global {
+    .form-check-input:not(:checked) {
+      background-color: bs.$gray-200;
+      background-image:
+        url('/images/icons/slack/slack-logo-off.svg'),
+        url('/images/icons/slack/slack-logo-background.svg');
+      background-position: 15%, 5%, 50%, 50%;
+    }
+
+    .form-check-input:checked {
+      background-color: #E7A9E8;
+      background-image:
+        url('/images/icons/slack/slack-logo-on.svg'),
+        url('/images/icons/slack/slack-logo-background.svg');
+      background-position: 85%, 95%, 50%, 50%;
+    }
+  }
+}
+
+:root[data-bs-theme='dark'] {
+  .grw-slack-switch :global {
+    .form-check-input:not(:checked) {
+      background-color: bs.$gray-200;
+      background-image:
+        url('/images/icons/slack/slack-logo-dark-off.svg'),
+        url('/images/icons/slack/slack-logo-dark-background.svg');
+      background-position: 14%, 4%, 50%, 50%;
+    }
+
+    .form-check-input:checked {
+      background-color: #731f74;
+      background-image:
+        url('/images/icons/slack/slack-logo-dark-on.svg'),
+        url('/images/icons/slack/slack-logo-dark-background.svg');
+      background-position: 86%, 95%, 50%, 50%;
+    }
+  }
+}

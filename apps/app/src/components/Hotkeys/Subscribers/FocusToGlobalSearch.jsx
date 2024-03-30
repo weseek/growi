@@ -1,11 +1,12 @@
 import { useEffect } from 'react';
 
+import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsEditable } from '~/stores/context';
-import { useGlobalSearchFormRef } from '~/stores/ui';
+
 
 const FocusToGlobalSearch = (props) => {
   const { data: isEditable } = useIsEditable();
-  const { data: globalSearchFormRef } = useGlobalSearchFormRef();
+  const { data: searchModalData, open: openSearchModal } = useSearchModal();
 
   // setup effect
   useEffect(() => {
@@ -13,16 +14,13 @@ const FocusToGlobalSearch = (props) => {
       return;
     }
 
-    // ignore when dom that has 'modal in' classes exists
-    if (document.getElementsByClassName('modal in').length > 0) {
-      return;
+    if (!searchModalData.isOpened) {
+      openSearchModal();
+      // remove this
+      props.onDeleteRender();
     }
 
-    globalSearchFormRef.current.focus();
-
-    // remove this
-    props.onDeleteRender();
-  }, [globalSearchFormRef, isEditable, props]);
+  }, [isEditable, openSearchModal, props, searchModalData.isOpened]);
 
   return null;
 };

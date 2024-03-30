@@ -2,9 +2,11 @@ import {
   useCallback, useEffect, useState,
 } from 'react';
 
+import { AcceptedUploadFileType } from '@growi/core';
 import { toast } from 'react-toastify';
 
-import { AcceptedUploadFileType, GlobalCodeMirrorEditorKey } from '../../consts';
+import { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorTheme, KeyMapMode } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
@@ -14,6 +16,9 @@ import { Preview } from './Preview';
 export const Playground = (): JSX.Element => {
 
   const [markdownToPreview, setMarkdownToPreview] = useState('');
+  const [editorTheme, setEditorTheme] = useState<EditorTheme>('defaultlight');
+  const [editorKeymap, setEditorKeymap] = useState<KeyMapMode>('default');
+  const [editorSettings, setEditorSettings] = useState<EditorSettings>();
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
@@ -29,6 +34,15 @@ export const Playground = (): JSX.Element => {
   useEffect(() => {
     codeMirrorEditor?.setCaretLine();
   }, [codeMirrorEditor]);
+
+  useEffect(() => {
+    setEditorSettings({
+      theme: editorTheme,
+      keymapMode: editorKeymap,
+      styleActiveLine: true,
+      autoFormatMarkdownTable: true,
+    });
+  }, [setEditorSettings, editorKeymap, editorTheme]);
 
   // set handler to save with shortcut key
   const saveHandler = useCallback(() => {
@@ -60,12 +74,13 @@ export const Playground = (): JSX.Element => {
             onChange={setMarkdownToPreview}
             onUpload={uploadHandler}
             indentSize={4}
-            acceptedFileType={AcceptedUploadFileType.ALL}
+            acceptedUploadFileType={AcceptedUploadFileType.ALL}
+            editorSettings={editorSettings}
           />
         </div>
         <div className="flex-expand-vert d-none d-lg-flex bg-light text-dark border-start border-dark-subtle p-3">
           <Preview markdown={markdownToPreview} />
-          <PlaygroundController />
+          <PlaygroundController setEditorTheme={setEditorTheme} setEditorKeymap={setEditorKeymap} />
         </div>
       </div>
       <div className="flex-expand-vert justify-content-center align-items-center bg-dark" style={{ minHeight: '50px' }}>

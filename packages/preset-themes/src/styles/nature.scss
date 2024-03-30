@@ -1,125 +1,34 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+:root[data-bs-theme] {
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-@use './variables' as var;
-@use './theme/mixins/page-editor-mode-manager';
-@use './theme/hsl-functions' as hsl;
+  $primary: #4FA529;
+  $highlight: #9DE201;
 
-.growi:not(.login-page) {
-  // add background-image
-  .page-editor-preview-container {
-    background-attachment: fixed;
-    background-position: center center;
-    background-size: cover;
-  }
-}
+  @include generate-color-palette('primary', $primary, black, white);
+  @include generate-color-palette('highlight', $highlight, black, white);
 
-//== Light Mode
-//
-:root[data-bs-theme='light'] {
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-  --primary-hs: 311,100%;
-  --primary-l: 14%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-  --secondary-hs: 208,7%;
-  --secondary-l: 46%;
+  $body-color:                $gray-800;
+  $body-bg:                   mix(#9DE201, white, 5%);
 
-  // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-  --bgcolor-global-hs: 0,0%;
-  --bgcolor-global-l: 99%;
-  --bgcolor-inline-code: #{bs.$gray-100}; //optional
-  --bgcolor-card: #f1ffe4;
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 10%)};
-  //--bgcolor-keyword-highlighted: #{$grw-marker-yellow};
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         $gray-200;
 
-  // Font colors
-  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
-  --color-global-hs: 311,100%;
-  --color-global-l: 14%;
-  --color-reversal: #eeeeee;
-  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
-  --color-link-hs: 328,100%;
-  --color-link-l: 25%;
-  --color-link-hover: #{hsl.lighten(var(--color-link), 20%)};
-  --color-link-wiki: #{hsl.lighten(var(--primary), 20%)};
-  --color-link-wiki-hs: var(--primary-hs);
-  --color-link-wiki-l: calc(var(--primary-l) + 20%);
-  --color-link-wiki-hover: #{hsl.lighten(var(--primary), 40%)};
-  --color-link-nabvar: #a7a7a7;
-  --color-inline-code: #c7254e; // optional
-  --color-search: white;
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          $gray-100;
 
-  // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-hs: 158,30%;
-  --bgcolor-navbar-l: 20%;
-  --bgcolor-search-top-dropdown: hsl(var(--bgcolor-search-top-dropdown-hs),var(--bgcolor-search-top-dropdown-l));
-  --bgcolor-search-top-dropdown-hs: 115,95%;
-  --bgcolor-search-top-dropdown-l: 36%;
-  --border-image-navbar: linear-gradient(to right, #5c78ef 0%, #16bc42 50%, #5c78ef 100%);
+  $border-color:              $gray-300;
 
-  // Logo colors
-  --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: #{lighten(desaturate(bs.$gray-100, 10%), 15%)};
+  $link-color:                $gray-800;
 
-  // Sidebar
-  --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
-  --bgcolor-sidebar-hs: 158,71%;
-  --bgcolor-sidebar-l: 33%;
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
 
-  // Sidebar contents
-  --color-sidebar-context: hsl(var(--color-sidebar-context-hs),var(--color-sidebar-context-l));
-  --color-sidebar-context-hs: 328,100%;
-  --color-sidebar-context-l: 25%;
-  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
-  --bgcolor-sidebar-context-hs: 67,31%;
-  --bgcolor-sidebar-context-l: 94%;
+  @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  // Sidebar resize button
-  --color-resize-button: white;
-  --bgcolor-resize-button: hsl(var(--bgcolor-resize-button-hs),var(--bgcolor-resize-button-l));
-  --bgcolor-resize-button-hs: 115,95%;
-  --bgcolor-resize-button-l: 36%;
-  --color-resize-button-hover: var(--color-reversal);
-  --bgcolor-resize-button-hover: #{hsl.lighten(var(--bgcolor-resize-button), 5%)};
+  @import '@growi/core/scss/bootstrap/theming/apply-light';
 
-  // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-  --bgcolor-subnav-hs: 0,0%;
-  --bgcolor-subnav-l: 98%;
-
-  // Icon colors
-  --color-editor-icons: var(--color-global);
-
-  // Border colors
-  --border-color-theme: #{bs.$gray-300};
-  --bordercolor-inline-code: #ccc8c8; // optional
-
-  // Table colors
-  --border-color-table: #{bs.$gray-400}; // optional
-
-  // admin theme box
-  --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
-
-  // Search Top
-  .grw-global-search {
-    .btn-secondary.dropdown-toggle {
-      color: var(--color-search);
-    }
-  }
-
-  // Navs
-  .nav-tabs .nav-link.active {
-    color: var(--color-link) !important;
-    &:hover {
-      color: var(--color-link-hover) !important;
-    }
-  }
-
-  // Button
-  .btn-group.grw-page-editor-mode-manager {
-    .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(var(--bgcolor-navbar), #{hsl.lighten(var(--bgcolor-navbar), 65%)}, #{hsl.lighten(var(--bgcolor-navbar), 70%)});
-    }
-  }
+  --grw-wiki-link-color-rgb: var(--grw-primary-600-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-700-rgb);
 }

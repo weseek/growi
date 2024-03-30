@@ -1,13 +1,13 @@
-import React, {
-  FC, useState, useCallback, useRef,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback, useRef } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { IClearable } from '~/client/interfaces/clearable';
+import type { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/toastr';
-import { SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
 import { useSWRxActivity } from '~/stores/activity';
 import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
@@ -152,8 +152,8 @@ export const AuditLogManagement: FC = () => {
       <button type="button" className="btn btn-outline-secondary mb-4" onClick={() => setIsSettingPage(!isSettingPage)}>
         {
           isSettingPage
-            ? <><i className="fa fa-hand-o-left me-1" />{t('admin:audit_log_management.return')}</>
-            : <><i className="fa icon-settings me-1" />{t('admin:audit_log_management.settings')}</>
+            ? <><span className="material-symbols-outlined">arrow_left_alt</span>{t('admin:audit_log_management.return')}</>
+            : <><span className="material-symbols-outlined">settings</span>{t('admin:audit_log_management.settings')}</>
         }
       </button>
 
@@ -163,7 +163,7 @@ export const AuditLogManagement: FC = () => {
         </span>
         { !isSettingPage && (
           <button type="button" className="btn btn-sm ms-auto grw-btn-reload" onClick={reloadButtonPushedHandler}>
-            <i className="icon icon-reload"></i>
+            <span className="material-symbols-outlined">refresh</span>
           </button>
         )}
       </h2>
@@ -213,7 +213,7 @@ export const AuditLogManagement: FC = () => {
           { isLoading
             ? (
               <div className="text-muted text-center mb-5">
-                <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+                <LoadingSpinner className="me-1 fs-3" />
               </div>
             )
             : (

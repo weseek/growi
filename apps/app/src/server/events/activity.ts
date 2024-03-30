@@ -1,6 +1,6 @@
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../crowi';
+import type Crowi from '../crowi';
 
 const logger = loggerFactory('growi:events:activity');
 
