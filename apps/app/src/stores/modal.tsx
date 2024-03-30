@@ -3,6 +3,7 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
+import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
 
@@ -363,33 +364,35 @@ type PageAccessoriesModalUtils = {
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+
+  const { data, mutate } = swrResponse;
 
   return Object.assign(swrResponse, {
-    open: (activatedContents) => {
-      if (swrResponse.data == null) {
+    open: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
+      mutate({
         isOpened: true,
         activatedContents,
       });
-    },
-    close: () => {
-      if (swrResponse.data == null) {
+    }, [data, mutate]),
+    close: useCallback(() => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({ isOpened: false });
-    },
-    selectContents: (activatedContents) => {
-      if (swrResponse.data == null) {
+      mutate({ isOpened: false });
+    }, [data, mutate]),
+    selectContents: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: swrResponse.data.isOpened,
+      mutate({
+        isOpened: data.isOpened,
         activatedContents,
       });
-    },
+    }, [data, mutate]),
   });
 };
 

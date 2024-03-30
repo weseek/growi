@@ -5,16 +5,18 @@ import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
-export const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
-export const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
+const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
 class YjsConnectionManager {
+
+  private static instance: YjsConnectionManager;
 
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
-  constructor(io: Server) {
+  private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
@@ -22,8 +24,19 @@ class YjsConnectionManager {
       collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
       flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
     });
+  }
 
-    this.getCurrentYdoc = this.getCurrentYdoc.bind(this);
+  public static getInstance(io?: Server) {
+    if (this.instance != null) {
+      return this.instance;
+    }
+
+    if (io == null) {
+      throw new Error("'io' is required if initialize YjsConnectionManager");
+    }
+
+    this.instance = new YjsConnectionManager(io);
+    return this.instance;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
@@ -60,6 +73,16 @@ class YjsConnectionManager {
     persistedYdoc.destroy();
   }
 
+  public async handleYDocUpdate(pageId: string, newValue: string): Promise<void> {
+    // TODO: https://redmine.weseek.co.jp/issues/132775
+    // It's necessary to confirm that the user is not editing the target page in the Editor
+    const currentYdoc = this.getCurrentYdoc(pageId);
+    const currentMarkdownLength = currentYdoc.getText('codemirror').length;
+    currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
+    currentYdoc.getText('codemirror').insert(0, newValue);
+    Y.encodeStateAsUpdate(currentYdoc);
+  }
+
   private getCurrentYdoc(pageId: string): Y.Doc {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     if (currentYdoc == null) {
@@ -70,4 +93,11 @@ class YjsConnectionManager {
 
 }
 
-export default YjsConnectionManager;
+export const instantiateYjsConnectionManager = (io: Server): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance(io);
+};
+
+// export the singleton instance
+export const getYjsConnectionManager = (): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance();
+};

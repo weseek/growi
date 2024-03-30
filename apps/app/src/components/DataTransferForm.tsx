@@ -11,8 +11,8 @@ const DataTransferForm = (): JSX.Element => {
   const { transferKey, generateTransferKey } = useGenerateTransferKey();
 
   return (
-    <div data-testid="installerForm" className="p-3">
-      <p className="alert alert-success">
+    <div data-testid="installerForm" className="py-3 px-4">
+      <p className="text-white fs-5 mt-2">
         <strong>{ t('g2g_data_transfer.transfer_data_to_this_growi')}</strong>
       </p>
 
@@ -22,8 +22,8 @@ const DataTransferForm = (): JSX.Element => {
             {t('g2g_data_transfer.publish_transfer_key')}
           </button>
         </div>
-        <div className="col-md-12 mt-1">
-          <div>
+        <div className="col-md-12 mt-2">
+          <div className="d-flex">
             <input className="form-control" type="text" value={transferKey} readOnly />
             <CustomCopyToClipBoard textToBeCopied={transferKey} message="copied_to_clipboard" />
           </div>
