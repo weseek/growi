@@ -1,11 +1,12 @@
-import React, { ReactNode, useEffect } from 'react';
-
+import type { ReactNode } from 'react';
+import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity } from '@growi/core';
+import { isIPageInfoForEntity, isPopulated } from '@growi/core';
 import type {
-  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision, IUserHasId,
+  GroupType,
+  IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
   isClient, pagePathUtils, pathUtils,
@@ -20,10 +21,11 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName, useLayoutFluidClassNameByPage } from '~/client/services/layout';
+import { useEditorModeClassName } from '~/client/services/layout';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript'; import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { EditorConfig } from '~/interfaces/editor-settings';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { PageModel, PageDocument } from '~/server/models/page';
@@ -37,7 +39,8 @@ import {
   useIsAclEnabled, useIsSearchPage, useIsEnabledAttachTitleHeader,
   useCsrfToken, useIsSearchScopeChildrenAsDefault, useIsEnabledMarp, useCurrentPathname,
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
-  useEditorConfig, useIsAllReplyShown, useIsUploadableFile, useIsUploadableImage, useIsContainerFluid, useIsNotCreatable,
+  useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
+  useIsUploadAllFileAllowed, useIsUploadEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -57,7 +60,7 @@ import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
-  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR,
+  getNextI18NextConfig, getServerSideCommonProps, generateCustomTitleForPage, useInitSidebarConfig, skipSSR, addActivity,
 } from './utils/commons';
 
 
@@ -77,6 +80,7 @@ const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditMod
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -156,7 +160,8 @@ type Props = CommonProps & {
   // highlightJsStyle: string,
   isAllReplyShown: boolean,
   isContainerFluid: boolean,
-  editorConfig: EditorConfig,
+  isUploadEnabled: boolean,
+  isUploadAllFileAllowed: boolean,
   isEnabledStaleNotification: boolean,
   isEnabledAttachTitleHeader: boolean,
   // isEnabledLinebreaks: boolean,
@@ -183,7 +188,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // commons
-  useEditorConfig(props.editorConfig);
   useCsrfToken(props.csrfToken);
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -217,18 +221,17 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // useGrowiRendererConfig(props.growiRendererConfigStr != null ? JSON.parse(props.growiRendererConfigStr) : undefined);
   useIsAllReplyShown(props.isAllReplyShown);
 
-  useIsUploadableFile(props.editorConfig.upload.isUploadableFile);
-  useIsUploadableImage(props.editorConfig.upload.isUploadableImage);
+  useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
+  useIsUploadEnabled(props.isUploadEnabled);
 
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
-  const pagePath = pageWithMeta?.data.path ?? props.currentPathname;
   const revisionBody = pageWithMeta?.data.revision?.body;
 
   useCurrentPathname(props.currentPathname);
 
-  useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
+  const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
@@ -249,8 +252,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
 
-  const growiLayoutFluidClass = useLayoutFluidClassNameByPage(pageWithMeta?.data);
-
   // Store initial data (When revisionBody is not SSR)
   useEffect(() => {
     if (!props.skipSSR) {
@@ -260,7 +261,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     if (currentPageId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
+        mutateEditingMarkdown(pageData?.revision?.body);
       };
 
       // If skipSSR is true, use the API to retrieve page data.
@@ -316,6 +317,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
 
+  // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
+  // So preferentially take page data from useSWRxCurrentPage
+  const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
+
   const title = generateCustomTitleForPage(props, pagePath);
 
   return (
@@ -323,7 +328,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div className={`dynamic-layout-root ${growiLayoutFluidClass} justify-content-between`}>
+      <div className="dynamic-layout-root justify-content-between">
         <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
@@ -378,6 +383,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <TemplateModal />
       <LinkEditModal />
       <TagEditModal />
+      <ConflictDiffModal />
     </>
   );
 };
@@ -398,21 +404,6 @@ class MultiplePagesHitsError extends ExtensibleCustomError {
 
 }
 
-// apply parent page grant fot creating page
-async function applyGrantToPage(props: Props, ancestor: any) {
-  await ancestor.populate('grantedGroup');
-  const grant = {
-    grant: ancestor.grant,
-  };
-  const grantedGroup = ancestor.grantedGroup ? {
-    grantedGroup: {
-      id: ancestor.grantedGroup.id,
-      name: ancestor.grantedGroup.name,
-    },
-  } : {};
-  props.grantData = Object.assign(grant, grantedGroup);
-}
-
 async function injectPageData(context: GetServerSidePropsContext, props: Props): Promise<void> {
   const { model: mongooseModel } = await import('mongoose');
 
@@ -422,7 +413,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService, configManager } = crowi;
+  const { pageService, configManager, pageGrantService } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -473,10 +464,24 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
       props.templateBodyData = templateData.templateBody as string;
     }
 
-    // apply pagrent page grant
+    // apply parent page grant, without groups that user isn't related to
     const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
     if (ancestor != null) {
-      await applyGrantToPage(props, ancestor);
+      ancestor.populate('grantedGroups.item');
+      const userRelatedGrantedGroups = (await pageGrantService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
+        if (isPopulated(group.item)) {
+          return {
+            id: group.item._id,
+            name: group.item.name,
+            type: group.type,
+          };
+        }
+        return null;
+      }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
+      props.grantData = {
+        grant: ancestor.grant,
+        userRelatedGrantedGroups,
+      };
     }
   }
 
@@ -559,12 +564,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
   props.isEnabledStaleNotification = configManager.getConfig('crowi', 'customize:isEnabledStaleNotification');
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
-  props.editorConfig = {
-    upload: {
-      isUploadableFile: crowi.fileUploadService.getFileUploadEnabled(),
-      isUploadableImage: crowi.fileUploadService.getIsUploadable(),
-    },
-  };
+  props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
+  props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
@@ -602,8 +604,24 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
+const getAction = (props: Props): SupportedActionType => {
+  if (props.isNotCreatable) {
+    return SupportedAction.ACTION_PAGE_NOT_CREATABLE;
+  }
+  if (props.isForbidden) {
+    return SupportedAction.ACTION_PAGE_FORBIDDEN;
+  }
+  if (props.isNotFound) {
+    return SupportedAction.ACTION_PAGE_NOT_FOUND;
+  }
+  if (pagePathUtils.isUsersHomepage(props.pageWithMeta?.data.path ?? '')) {
+    return SupportedAction.ACTION_PAGE_USER_HOME_VIEW;
+  }
+  return SupportedAction.ACTION_PAGE_VIEW;
+};
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
-  const req = context.req as CrowiRequest<IUserHasId & any>;
+  const req = context.req as CrowiRequest;
   const { user } = req;
 
   const result = await getServerSideCommonProps(context);
@@ -645,6 +663,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   injectServerConfigurations(context, props);
   await injectNextI18NextConfigurations(context, props, ['translation']);
 
+  addActivity(context, getAction(props));
   return {
     props,
   };

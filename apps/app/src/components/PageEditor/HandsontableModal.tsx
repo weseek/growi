@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 
+import { useHandsontableModalForEditor } from '@growi/editor/src/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
-import Handsontable from 'handsontable';
+import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
 import {
   Collapse,
@@ -10,7 +11,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import mtu from '~/components/PageEditor/MarkdownTableUtil';
+import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';
 
 import ExpandOrContractButton from '../ExpandOrContractButton';
@@ -32,11 +33,13 @@ export const HandsontableModal = (): JSX.Element => {
 
   const { t } = useTranslation('commons');
   const { data: handsontableModalData, close: closeHandsontableModal } = useHandsontableModal();
+  const { data: handsontableModalForEditorData } = useHandsontableModalForEditor();
 
   const isOpened = handsontableModalData?.isOpened ?? false;
+  const isOpendInEditor = handsontableModalForEditorData?.isOpened ?? false;
   const table = handsontableModalData?.table;
   const autoFormatMarkdownTable = handsontableModalData?.autoFormatMarkdownTable ?? false;
-  const editor = handsontableModalData?.editor;
+  const editor = handsontableModalForEditorData?.editor;
   const onSave = handsontableModalData?.onSave;
 
   const defaultMarkdownTable = () => {
@@ -102,8 +105,9 @@ export const HandsontableModal = (): JSX.Element => {
   const debouncedHandleWindowExpandedChange = debounce(100, handleWindowExpandedChange);
 
   const handleModalOpen = () => {
-    const initTableInstance = table == null ? defaultMarkdownTable : table.clone();
-    setMarkdownTable(table ?? defaultMarkdownTable);
+    const markdownTableState = table == null && editor != null ? getMarkdownTable(editor) : table;
+    const initTableInstance = markdownTableState == null ? defaultMarkdownTable : markdownTableState.clone();
+    setMarkdownTable(markdownTableState ?? defaultMarkdownTable);
     setMarkdownTableOnInit(initTableInstance);
     debouncedHandleWindowExpandedChange();
   };
@@ -163,7 +167,10 @@ export const HandsontableModal = (): JSX.Element => {
       return;
     }
 
-    mtu.replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
+    if (editor == null) {
+      return;
+    }
+    replaceFocusedMarkdownTableWithEditor(editor, newMarkdownTable);
     cancel();
   };
 
@@ -435,13 +442,13 @@ export const HandsontableModal = (): JSX.Element => {
         contractWindow={contractWindow}
         expandWindow={expandWindow}
       />
-      <button type="button" className="btn btn-close" onClick={cancel} aria-label="Close"></button>
+      <button type="button" className="btn btn-close ms-2" onClick={cancel} aria-label="Close"></button>
     </span>
   );
 
   return (
     <Modal
-      isOpen={isOpened}
+      isOpen={isOpened || isOpendInEditor}
       toggle={cancel}
       backdrop="static"
       keyboard={false}
@@ -450,40 +457,40 @@ export const HandsontableModal = (): JSX.Element => {
       className={`handsontable-modal ${isWindowExpanded && 'grw-modal-expanded'}`}
       onOpened={handleModalOpen}
     >
-      <ModalHeader tag="h4" toggle={cancel} close={closeButton} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={cancel} close={closeButton}>
         {t('handsontable_modal.title')}
       </ModalHeader>
       <ModalBody className="p-0 d-flex flex-column">
-        <div className="grw-hot-modal-navbar px-4 py-3 border-bottom">
+        <div className="grw-hot-modal-navbar p-3">
           <button
             type="button"
-            className="me-4 data-import-button btn btn-secondary"
+            className="me-4 data-import-button btn btn-outline-neutral-secondary"
             data-bs-toggle="collapse"
             data-bs-target="#collapseDataImport"
             aria-expanded={isDataImportAreaExpanded}
             onClick={toggleDataImportArea}
           >
             <span className="me-3">{t('handsontable_modal.data_import')}</span>
-            <i className={isDataImportAreaExpanded ? 'fa fa-angle-up' : 'fa fa-angle-down'}></i>
+            <span className="material-symbols-outlined">{isDataImportAreaExpanded ? 'expand_less' : 'expand_more'}</span>
           </button>
           <div role="group" className="btn-group">
-            <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('l') }}>
-              <i className="ti ti-align-left"></i>
+            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('l') }}>
+              <span className="material-symbols-outlined">format_align_left</span>
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('c') }}>
-              <i className="ti ti-align-center"></i>
+            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('c') }}>
+              <span className="material-symbols-outlined">format_align_center</span>
             </button>
-            <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('r') }}>
-              <i className="ti ti-align-right"></i>
+            <button type="button" className="btn btn-outline-neutral-secondary" onClick={() => { alignButtonHandler('r') }}>
+              <span className="material-symbols-outlined">format_align_right</span>
             </button>
           </div>
           <Collapse isOpen={isDataImportAreaExpanded}>
-            <div className="mt-4">
+            <div className="py-3 border-bottom">
               <MarkdownTableDataImportForm onCancel={toggleDataImportArea} onImport={importData} />
             </div>
           </Collapse>
         </div>
-        <div ref={c => setHotTableContainer(c)} className="m-4 hot-table-container">
+        <div ref={c => setHotTableContainer(c)} className="hot-table-container px-3">
           <HotTable
             ref={c => setHotTable(c)}
             data={markdownTable.table}
@@ -500,9 +507,9 @@ export const HandsontableModal = (): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
-        <button type="button" className="btn btn-danger" onClick={reset}>{t('commons:Reset')}</button>
+        <button type="button" className="btn btn-outline-danger" onClick={reset}>{t('commons:Reset')}</button>
         <div className="ms-auto">
-          <button type="button" className="me-2 btn btn-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
+          <button type="button" className="me-2 btn btn-outline-neutral-secondary" onClick={cancel}>{t('handsontable_modal.cancel')}</button>
           <button type="button" className="btn btn-primary" onClick={save}>{t('handsontable_modal.done')}</button>
         </div>
       </ModalFooter>

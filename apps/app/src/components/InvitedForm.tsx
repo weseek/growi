@@ -1,5 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -83,7 +84,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Email Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-envelope"></i>
+            <span className="material-symbols-outlined">mail</span>
           </span>
           <input
             type="text"
@@ -98,7 +99,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* UserID Form */}
         <div className="input-group" id="input-group-username">
           <span className="input-group-text">
-            <i className="icon-user"></i>
+            <span className="material-symbols-outlined">person</span>
           </span>
           <input
             type="text"
@@ -112,7 +113,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Name Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-tag"></i>
+            <span className="material-symbols-outlined">sell</span>
           </span>
           <input
             type="text"
@@ -126,7 +127,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Password Form */}
         <div className="input-group">
           <span className="input-group-text">
-            <i className="icon-lock"></i>
+            <span className="material-symbols-outlined">lock</span>
           </span>
           <input
             type="password"
@@ -140,15 +141,20 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
-            <div className="eff"></div>
-            <span className="btn-label"><i className={isLoading ? 'fa fa-spinner fa-pulse me-1' : 'icon-user-follow'} /></span>
+            <span className="btn-label">
+              {isLoading ? (
+                <LoadingSpinner />
+              ) : (
+                <span className="material-symbols-outlined">person_add</span>
+              )}
+            </span>
             <span className="btn-label-text">{t('Create')}</span>
           </button>
         </div>
       </form>
       <div className="input-group mt-4 d-flex justify-content-center">
         <a href="https://growi.org" className="link-growi-org">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span><span className="org">.ORG</span>
         </a>
       </div>
     </div>

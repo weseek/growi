@@ -14,8 +14,6 @@
       width: 70px;
       height: 30px;
     }
-
-    @include mixins.border-vertical('before', 70%, 1, true);
   }
 }
 
@@ -31,7 +29,7 @@
 // == Colors
 @include bs.color-mode(light) {
   .grw-page-editor-mode-manager :global {
-    .btn-outline-primary {
+    .btn {
       $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-700));
       $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-100));
       $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-100-rgb));
@@ -51,7 +49,7 @@
 }
 @include bs.color-mode(dark) {
   .grw-page-editor-mode-manager :global {
-    .btn-outline-primary {
+    .btn {
       $color: var(--grw-page-editor-mode-manager-btn-color, var(--grw-primary-300));
       $bg: var(--grw-page-editor-mode-manager-btn-bg, var(--grw-primary-800));
       $bg-rgb: var(--grw-page-editor-mode-manager-btn-bg-rgb, var(--grw-primary-800-rgb));

@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http';
+import type { IncomingMessage } from 'http';
 
 import axiosRetry from 'axios-retry';
 import luceneQueryParser from 'lucene-query-parser';
@@ -9,14 +9,15 @@ import { Strategy as GitHubStrategy } from 'passport-github';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import LdapStrategy from 'passport-ldapauth';
 import { Strategy as LocalStrategy } from 'passport-local';
-import { Profile, Strategy as SamlStrategy, VerifiedCallback } from 'passport-saml';
+import type { Profile, VerifiedCallback } from 'passport-saml';
+import { Strategy as SamlStrategy } from 'passport-saml';
 import urljoin from 'url-join';
 
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:PassportService');
 
@@ -738,7 +739,7 @@ class PassportService implements S2sMessageHandlable {
     return oidcIssuer;
   }
 
-  setupSamlStrategy() {
+  setupSamlStrategy(): void {
 
     this.resetSamlStrategy();
 
@@ -760,6 +761,7 @@ class PassportService implements S2sMessageHandlable {
             : configManager.getConfig('crowi', 'security:passport-saml:callbackUrl'), // DEPRECATED: backward compatible with v3.2.3 and below
           issuer: configManager.getConfig('crowi', 'security:passport-saml:issuer'),
           cert: configManager.getConfig('crowi', 'security:passport-saml:cert'),
+          disableRequestedAuthnContext: true,
         },
         (profile: Profile, done: VerifiedCallback) => {
           if (profile) {
@@ -849,6 +851,11 @@ class PassportService implements S2sMessageHandlable {
     }
 
     const { field, term } = luceneRule;
+
+    if (field == null) {
+      return true;
+    }
+
     const unescapedField = this.literalUnescape(field);
     if (unescapedField === '<implicit>') {
       return attributes[term] != null;
@@ -984,4 +991,4 @@ class PassportService implements S2sMessageHandlable {
 
 }
 
-module.exports = PassportService;
+export default PassportService;

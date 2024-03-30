@@ -2,6 +2,7 @@ import {
   useState, useCallback, useEffect,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -53,9 +54,9 @@ const QuestionnaireSettings = (): JSX.Element => {
         <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">
-            <span className="text-info me-2"><i className="icon-info icon-fw"></i>{t('app_setting.about_data_sent')}</span>
+            <span className="text-info me-2"><span className="material-symbols-outlined">info</span>{t('app_setting.about_data_sent')}</span>
             <a href={t('app_setting.docs_link')} rel="noreferrer" target="_blank" className="d-inline">
-              {t('app_setting.learn_more')} <i className="icon-share-alt"></i>
+              {t('app_setting.learn_more')} <span className="material-symbols-outlined">share</span>
             </a>
           </div>
           {t('app_setting.other_info_will_be_sent')}<br />
@@ -65,7 +66,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoading && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       )}
 

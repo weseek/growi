@@ -9,11 +9,14 @@ import { useDeleteAttachmentModal } from '~/stores/modal';
 
 import styles from './RichAttachment.module.scss';
 
-export const RichAttachment: React.FC<{
+type RichAttachmentProps = {
   attachmentId: string,
   url: string,
-  attachmentName: string
-}> = React.memo(({ attachmentId, url, attachmentName }) => {
+  attachmentName: string,
+}
+
+export const RichAttachment = React.memo((props: RichAttachmentProps) => {
+  const { attachmentId, attachmentName } = props;
   const { t } = useTranslation();
   const { data: attachment, remove } = useSWRxAttachment(attachmentId);
   const { open: openDeleteAttachmentModal } = useDeleteAttachmentModal();
@@ -58,14 +61,16 @@ export const RichAttachment: React.FC<{
           </div>
           <div className="ps-0">
             <div className="d-inline-block">
-              <a target="_blank" rel="noopener noreferrer" href={filePathProxied}>
+              {/* Since we need to include the "referer" to view the attachment on the shared page */}
+              {/* eslint-disable-next-line react/jsx-no-target-blank */}
+              <a target="_blank" rel="noopener" href={filePathProxied}>
                 {attachmentName || originalName}
               </a>
               <a className="ms-2 attachment-download" href={downloadPathProxied}>
-                <i className="icon-cloud-download" />
+                <span className="material-symbols-outlined">cloud_download</span>
               </a>
-              <a className="ms-2 text-danger attachment-delete" onClick={onClickTrashButtonHandler}>
-                <i className="icon-trash" />
+              <a className="ml-2 text-danger attachment-delete d-share-link-none" type="button" onClick={onClickTrashButtonHandler}>
+                <span className="material-symbols-outlined">delete</span>
               </a>
             </div>
             <div className="d-flex align-items-center">

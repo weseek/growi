@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 
-import { PageGrant } from '@growi/core';
+import { PageGrant, GroupType } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,
@@ -8,8 +8,8 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IPageGrantData } from '~/interfaces/page';
-import { IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import type { IPageGrantData } from '~/interfaces/page';
+import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
 
@@ -29,7 +29,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   } = props;
 
   const [selectedGrant, setSelectedGrant] = useState<PageGrant>(PageGrant.GRANT_RESTRICTED);
-  const [selectedGroup, setSelectedGroup] = useState<{_id: string, name: string} | undefined>(undefined); // TODO: Typescriptize model
+
+  const [isGroupSelectModalShown, setIsGroupSelectModalShown] = useState(false);
+  const [selectedGroups, setSelectedGroups] = useState<PopulatedGrantedGroup[]>([]);
 
   // Alert message state
   const [shouldShowModalAlert, setShowModalAlert] = useState<boolean>(false);
@@ -40,14 +42,23 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   useEffect(() => {
     if (isOpen) {
       setSelectedGrant(PageGrant.GRANT_RESTRICTED);
-      setSelectedGroup(undefined);
+      setSelectedGroups([]);
       setShowModalAlert(false);
     }
   }, [isOpen]);
 
+  const groupListItemClickHandler = (group: PopulatedGrantedGroup) => {
+    if (selectedGroups.find(g => g.item._id === group.item._id) != null) {
+      setSelectedGroups(selectedGroups.filter(g => g.item._id !== group.item._id));
+    }
+    else {
+      setSelectedGroups([...selectedGroups, group]);
+    }
+  };
+
   const submit = async() => {
     // Validate input values
-    if (selectedGrant === PageGrant.GRANT_USER_GROUP && selectedGroup == null) {
+    if (selectedGrant === PageGrant.GRANT_USER_GROUP && selectedGroups.length === 0) {
       setShowModalAlert(true);
       return;
     }
@@ -57,7 +68,9 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     try {
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
-        grantedGroup: selectedGroup?._id,
+        userRelatedGrantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
+          return { item: g.item._id, type: g.type };
+        }) : null,
       });
 
       toastSuccess(t('Successfully updated'));
@@ -86,10 +99,10 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.grantedGroup == null) {
+      if (grantData.userRelatedGrantedGroups == null || grantData.userRelatedGrantedGroups.length === 0) {
         return t('fix_page_grant.modal.grant_label.isForbidden');
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')}: (${grantData.grantedGroup.name})`;
+      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.userRelatedGrantedGroups.map(g => g.name).join(', ')})`;
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed
@@ -177,32 +190,18 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
                 <div className="dropdown ms-2">
                   <button
                     type="button"
-                    className="btn btn-secondary dropdown-toggle text-end w-100 border-0 shadow-none"
-                    data-bs-toggle="dropdown"
+                    className="btn btn-secondary dropdown-toggle text-right w-100 border-0 shadow-none"
                     disabled={selectedGrant !== PageGrant.GRANT_USER_GROUP} // disable when its radio input is not selected
+                    onClick={() => setIsGroupSelectModalShown(true)}
                   >
                     <span className="float-start ms-2">
                       {
-                        selectedGroup == null
+                        selectedGroups.length === 0
                           ? t('fix_page_grant.modal.select_group_default_text')
-                          : selectedGroup.name
+                          : selectedGroups.map(g => g.item.name).join(', ')
                       }
                     </span>
                   </button>
-                  <div className="dropdown-menu">
-                    {
-                      applicableGroups != null && applicableGroups.map(g => (
-                        <button
-                          key={g._id}
-                          className="dropdown-item"
-                          type="button"
-                          onClick={() => setSelectedGroup(g)}
-                        >
-                          {g.name}
-                        </button>
-                      ))
-                    }
-                  </div>
                 </div>
               </div>
               {
@@ -225,12 +224,47 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   };
 
   return (
-    <Modal size="lg" isOpen={isOpen} toggle={close}>
-      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
-        { t('fix_page_grant.modal.title') }
-      </ModalHeader>
-      {renderModalBodyAndFooter()}
-    </Modal>
+    <>
+      <Modal size="lg" isOpen={isOpen} toggle={close}>
+        <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+          { t('fix_page_grant.modal.title') }
+        </ModalHeader>
+        {renderModalBodyAndFooter()}
+      </Modal>
+      {applicableGroups != null && (
+        <Modal
+          isOpen={isGroupSelectModalShown}
+          toggle={() => setIsGroupSelectModalShown(false)}
+        >
+          <ModalHeader tag="h4" toggle={() => setIsGroupSelectModalShown(false)} className="bg-purple text-light">
+            {t('user_group.select_group')}
+          </ModalHeader>
+          <ModalBody>
+            <>
+              { applicableGroups.map((group) => {
+                const groupIsGranted = selectedGroups?.find(g => g.item._id === group.item._id) != null;
+                const activeClass = groupIsGranted ? 'active' : '';
+
+                return (
+                  <button
+                    className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
+                    type="button"
+                    key={group.item._id}
+                    onClick={() => groupListItemClickHandler(group)}
+                  >
+                    <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
+                    <h5 className="d-inline-block ml-3">{group.item.name}</h5>
+                    {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
+                    {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
+                  </button>
+                );
+              }) }
+              <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsGroupSelectModalShown(false)}>{t('Done')}</button>
+            </>
+          </ModalBody>
+        </Modal>
+      )}
+    </>
   );
 };
 
@@ -263,7 +297,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
+          <span className="material-symbols-outlined mx-1" aria-hidden="true">error</span>
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

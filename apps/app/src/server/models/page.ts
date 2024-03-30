@@ -3,23 +3,33 @@
 import assert from 'assert';
 import nodePath from 'path';
 
-import type { IPage, HasObjectId } from '@growi/core';
-import { isPopulated } from '@growi/core/dist/interfaces';
-import { isTopPage, hasSlash, collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
+import {
+  type IPage,
+  GroupType, type HasObjectId,
+} from '@growi/core';
+import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
+import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
+import type { Model, Document, AnyObject } from 'mongoose';
 import mongoose, {
-  Schema, Model, Document, AnyObject,
+  Schema,
 } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 
 import loggerFactory from '../../utils/logger';
+import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import type { UserGroupDocument } from './user-group';
+import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
 /*
@@ -53,10 +63,12 @@ type PaginatedPages = {
   offset: number
 }
 
-export type CreateMethod = (path: string, body: string, user, options: PageCreateOptions) => Promise<PageDocument & { _id: any }>
+export type CreateMethod = (path: string, body: string, user, options: IOptionsForCreate) => Promise<PageDocument & { _id: any }>
+
 export interface PageModel extends Model<PageDocument> {
   [x: string]: any; // for obsolete static methods
   findByIdsAndViewer(pageIds: ObjectIdLike[], user, userGroups?, includeEmpty?: boolean, includeAnyoneWithTheLink?: boolean): Promise<PageDocument[]>
+  findByPath(path: string, includeEmpty?: boolean): Promise<PageDocument | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: true, includeEmpty?: boolean): Promise<PageDocument & HasObjectId | null>
   findByPathAndViewer(path: string | null, user, userGroups?, useFindOne?: false, includeEmpty?: boolean): Promise<(PageDocument & HasObjectId)[]>
   countByPathAndViewer(path: string | null, user, userGroups?, includeEmpty?:boolean): Promise<number>
@@ -65,6 +77,14 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
+  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
+  findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
+  removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
+  findTemplate(path: string): Promise<{
+    templateBody?: string,
+    templateTags?: string[],
+  }>
+  removeGroupsToDeleteFromPages(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]): Promise<void>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
@@ -78,7 +98,6 @@ export interface PageModel extends Model<PageDocument> {
   STATUS_DELETED
 }
 
-type IObjectId = mongoose.Types.ObjectId;
 const ObjectId = mongoose.Schema.Types.ObjectId;
 
 const schema = new Schema<PageDocument, PageModel>({
@@ -95,13 +114,37 @@ const schema = new Schema<PageDocument, PageModel>({
   status: { type: String, default: STATUS_PUBLISHED, index: true },
   grant: { type: Number, default: GRANT_PUBLIC, index: true },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup', index: true },
+  grantedGroups: {
+    type: [{
+      type: {
+        type: String,
+        enum: Object.values(GroupType),
+        required: true,
+        default: 'UserGroup',
+      },
+      item: {
+        type: ObjectId,
+        refPath: 'grantedGroups.type',
+        required: true,
+        index: true,
+      },
+    }],
+    validate: [function(arr) {
+      if (arr == null) return true;
+      const uniqueItemValues = new Set(arr.map(e => e.item));
+      return arr.length === uniqueItemValues.size;
+    }, 'grantedGroups contains non unique item'],
+    default: [],
+    required: true,
+  },
   creator: { type: ObjectId, ref: 'User', index: true },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
   liker: [{ type: ObjectId, ref: 'User' }],
   seenUsers: [{ type: ObjectId, ref: 'User' }],
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
+  wip: { type: Boolean },
+  ttlTimestamp: { type: Date, index: true },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -159,6 +202,18 @@ export class PageQueryBuilder {
         $or: [
           { status: null },
           { status: STATUS_PUBLISHED },
+        ],
+      });
+
+    return this;
+  }
+
+  addConditionToExcludeWipPage(): PageQueryBuilder {
+    this.query = this.query
+      .and({
+        $or: [
+          { wip: undefined },
+          { wip: false },
         ],
       });
 
@@ -301,11 +356,10 @@ export class PageQueryBuilder {
 
   async addConditionForParentNormalization(user): Promise<PageQueryBuilder> {
     // determine UserGroup condition
-    let userGroups;
-    if (user != null) {
-      const UserGroupRelation = mongoose.model('UserGroupRelation') as any; // TODO: Typescriptize model
-      userGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const userGroups = user != null ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : null;
 
     const grantConditions: any[] = [
       { grant: null },
@@ -320,7 +374,10 @@ export class PageQueryBuilder {
 
     if (userGroups != null && userGroups.length > 0) {
       grantConditions.push(
-        { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+        {
+          grant: GRANT_USER_GROUP,
+          grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+        },
       );
     }
 
@@ -350,11 +407,10 @@ export class PageQueryBuilder {
 
   // add viewer condition to PageQueryBuilder instance
   async addViewerCondition(user, userGroups = null, includeAnyoneWithTheLink = false): Promise<PageQueryBuilder> {
-    let relatedUserGroups = userGroups;
-    if (user != null && relatedUserGroups == null) {
-      const UserGroupRelation: any = mongoose.model('UserGroupRelation');
-      relatedUserGroups = await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user);
-    }
+    const relatedUserGroups = (user != null && userGroups == null) ? [
+      ...(await UserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+      ...(await ExternalUserGroupRelation.findAllUserGroupIdsRelatedToUser(user)),
+    ] : userGroups;
 
     this.addConditionToFilteringByViewer(user, relatedUserGroups, includeAnyoneWithTheLink);
     return this;
@@ -615,8 +671,13 @@ schema.statics.findRecentUpdatedPages = async function(
 
   const baseQuery = this.find({});
   const queryBuilder = new PageQueryBuilder(baseQuery, includeEmpty);
+
   if (!options.includeTrashed) {
     queryBuilder.addConditionToExcludeTrashed();
+  }
+
+  if (!options.includeWipPage) {
+    queryBuilder.addConditionToExcludeWipPage();
   }
 
   queryBuilder.addConditionToListWithDescendants(path, options);
@@ -932,7 +993,10 @@ export function generateGrantCondition(
   }
   else if (userGroups != null && userGroups.length > 0) {
     grantConditions.push(
-      { grant: GRANT_USER_GROUP, grantedGroup: { $in: userGroups } },
+      {
+        grant: GRANT_USER_GROUP,
+        grantedGroups: { $elemMatch: { item: { $in: userGroups } } },
+      },
     );
   }
 
@@ -977,6 +1041,39 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
   return ancestors[0];
 };
 
+schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]) {
+  const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
+  const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
+    const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item).toString()));
+    acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
+    return acc;
+  }, { canPublicize: [], cannotPublicize: [] });
+
+  // Only publicize pages that can only be accessed by the groups to be deleted
+  const publicizeQueries = pageGroups.canPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: {
+          grantedGroups: [],
+          grant: this.GRANT_PUBLIC,
+        },
+      },
+    };
+  });
+  // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
+  const removeFromGrantedGroupsQueries = pageGroups.cannotPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item).toString())) } },
+      },
+    };
+  });
+
+  await this.bulkWrite([...publicizeQueries, ...removeFromGrantedGroupsQueries]);
+};
+
 /*
  * get latest revision body length
  */
@@ -1004,18 +1101,30 @@ schema.methods.calculateAndUpdateLatestRevisionBodyLength = async function(this:
   // eslint-disable-next-line rulesdir/no-populate
   const populatedPageDocument = await this.populate<PageDocument>('revision', 'body');
 
+  assert(populatedPageDocument.revision != null);
   assert(isPopulated(populatedPageDocument.revision));
 
   this.latestRevisionBodyLength = populatedPageDocument.revision.body.length;
   await this.save();
 };
 
-export type PageCreateOptions = {
-  format?: string
-  grantUserGroupId?: ObjectIdLike
-  grant?: number
-  overwriteScopesOfDescendants?: boolean
-}
+schema.methods.publish = function() {
+  this.wip = undefined;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.unpublish = function() {
+  this.wip = true;
+  this.ttlTimestamp = undefined;
+};
+
+schema.methods.makeWip = function(disableTtl: boolean) {
+  this.wip = true;
+
+  if (!disableTtl) {
+    this.ttlTimestamp = new Date();
+  }
+};
 
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance

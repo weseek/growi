@@ -1,7 +1,11 @@
+import { GroupType } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 
+
 import { SupportedAction } from '~/interfaces/activity';
+import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/user-group-relation-serializer';
 import UserGroup from '~/server/models/user-group';
+import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
 import loggerFactory from '~/utils/logger';
 
@@ -36,7 +40,6 @@ module.exports = (crowi) => {
   const activityEvent = crowi.event('activity');
 
   const {
-    UserGroupRelation,
     User,
     Page,
   } = crowi.models;
@@ -108,17 +111,16 @@ module.exports = (crowi) => {
    *                      type: object
    *                      description: a result of `UserGroup.find`
    */
-  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => { // TODO 85062: userGroups with no parent
+  router.get('/', loginRequiredStrictly, adminRequired, async(req, res) => {
     const { query } = req;
 
-    // TODO 85062: improve sort
     try {
       const page = query.page != null ? parseInt(query.page) : undefined;
       const limit = query.limit != null ? parseInt(query.limit) : undefined;
       const offset = query.offset != null ? parseInt(query.offset) : undefined;
       const pagination = query.pagination != null ? query.pagination !== 'false' : undefined;
 
-      const result = await UserGroup.findUserGroupsWithPagination({
+      const result = await UserGroup.findWithPagination({
         page, limit, offset, pagination,
       });
       const { docs: userGroups, totalDocs: totalUserGroups, limit: pagingLimit } = result;
@@ -176,12 +178,11 @@ module.exports = (crowi) => {
     }
   });
 
-  // TODO 85062: improve sort
   router.get('/children', loginRequiredStrictly, adminRequired, validator.listChildren, async(req, res) => {
     try {
       const { parentIds, includeGrandChildren = false } = req.query;
 
-      const userGroupsResult = await UserGroup.findChildUserGroupsByParentIds(parentIds, includeGrandChildren);
+      const userGroupsResult = await UserGroup.findChildrenByParentIds(parentIds, includeGrandChildren);
       return res.apiv3({
         childUserGroups: userGroupsResult.childUserGroups,
         grandChildUserGroups: userGroupsResult.grandChildUserGroups,
@@ -428,10 +429,17 @@ module.exports = (crowi) => {
    */
   router.delete('/:id', loginRequiredStrictly, adminRequired, validator.delete, apiV3FormValidator, addActivity, async(req, res) => {
     const { id: deleteGroupId } = req.params;
-    const { actionName, transferToUserGroupId } = req.query;
+    const { actionName, transferToUserGroupId, transferToUserGroupType } = req.query;
+
+    const transferToUserGroup = typeof transferToUserGroupId === 'string'
+        && (transferToUserGroupType === GroupType.userGroup || transferToUserGroupType === GroupType.externalUserGroup)
+      ? {
+        item: transferToUserGroupId,
+        type: transferToUserGroupType,
+      } : undefined;
 
     try {
-      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, transferToUserGroupId, req.user);
+      const userGroups = await crowi.userGroupService.removeCompletelyByRootGroupId(deleteGroupId, actionName, req.user, transferToUserGroup);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_DELETE };
       activityEvent.emit('update', res.locals.activity._id, parameters);
@@ -654,13 +662,12 @@ module.exports = (crowi) => {
       const userGroups = await UserGroup.findGroupsWithAncestorsRecursively(userGroup);
       const userGroupIds = userGroups.map(g => g._id);
 
-      // check for duplicate users in groups
+      // remove existing relations from list to create
       const existingRelations = await UserGroupRelation.find({ relatedGroup: { $in: userGroupIds }, relatedUser: user._id });
       const existingGroupIds = existingRelations.map(r => r.relatedGroup);
+      const groupIdsToCreateRelation = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
 
-      const groupIdsOfRelationToCreate = excludeTestIdsFromTargetIds(userGroupIds, existingGroupIds);
-
-      const insertedRelations = await UserGroupRelation.createRelations(groupIdsOfRelationToCreate, user);
+      const insertedRelations = await UserGroupRelation.createRelations(groupIdsToCreateRelation, user);
       const serializedUser = serializeUserSecurely(user);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_ADD_USER };
@@ -763,7 +770,8 @@ module.exports = (crowi) => {
     try {
       const userGroup = await UserGroup.findById(id);
       const userGroupRelations = await UserGroupRelation.findAllRelationForUserGroup(userGroup);
-      return res.apiv3({ userGroupRelations });
+      const serialized = userGroupRelations.map(relation => serializeUserGroupRelationSecurely(relation));
+      return res.apiv3({ userGroupRelations: serialized });
     }
     catch (err) {
       const msg = `Error occurred in fetching user group relations for group: ${id}`;
@@ -810,7 +818,11 @@ module.exports = (crowi) => {
     try {
       const { docs, totalDocs } = await Page.paginate({
         grant: Page.GRANT_USER_GROUP,
-        grantedGroup: { $in: [id] },
+        grantedGroups: {
+          $elemMatch: {
+            item: id,
+          },
+        },
       }, {
         offset,
         limit,

@@ -1,194 +1,42 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+:root[data-bs-theme] {
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
 
-@use './variables' as var;
-@use './theme/mixins/page-editor-mode-manager';
-@use './theme/mixins/hsl-button';
-@use './theme/hsl-functions' as hsl;
+  $primary: #559B44;
+  $highlight: #F2869C;
 
-//== Light Mode
-//
-:root[data-bs-theme='light'] {
-  --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-  --primary-hs: 348,100%;
-  --primary-l: 86%;
-  --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-  --secondary-hs: 326,57%;
-  --secondary-l: 72%;
+  @include generate-color-palette('primary', $primary, #002000, white);
+  @include generate-color-palette('highlight', $highlight, #401702, white);
 
-  // Background colors
-  --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-  --bgcolor-global-hs: 0,0%;
-  --bgcolor-global-l: 100%;
-  --bgcolor-inline-code: #{bs.$gray-100}; //optional
-  --bgcolor-card: #{bs.$gray-100};
-  --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 50%)};
-  --bgcolor-keyword-highlighted: #{var.$grw-marker-cyan};
+  $body-color:                #4C5F40;
+  $body-bg:                   white;
 
-  // Font colors
-  --color-global: hsl(var(--color-global-hs),var(--color-global-l));
-  --color-global-hs: 0,0%;
-  --color-global-l: 0%;
-  --color-reversal: white;
-  --color-link: hsl(var(--color-link-hs),var(--color-link-l));
-  --color-link-hs: 108,32%;
-  --color-link-l: 50%;
-  --color-link-hover: #{hsl.lighten(var(--color-link), 10%)};
-  --color-link-wiki: var(--color-link);
-  --color-link-wiki-hs: var(--color-link-hs);
-  --color-link-wiki-l: var(--color-link-l);
-  --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 10%)};
-  --color-link-nabvar: var(--bgcolor-global);
-  --color-inline-code: #c7254e; // optional
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         $gray-200;
 
-  // List Group colors
-  // $color-list: $color-global;
-  --bgcolor-list: #fff0f5;
-  --color-list-hover: #{hsl.lighten(var(--secondary), 20%)};
-  --bgcolor-list-hover: #{darken(#fff0f5, 2%)};
-  --color-list-active: var(--bgcolor-global);
-  --bgcolor-list-active: var(--secondary);
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          $gray-100;
 
-  // Navbar
-  --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-  --bgcolor-navbar-hs: 349,55%;
-  --bgcolor-navbar-l: 62%;
-  --bgcolor-search-top-dropdown: var(--primary);
-  --bgcolor-search-top-dropdown-hs: var(--primary-hs);
-  --bgcolor-search-top-dropdown-l: var(--primary-l);
-  --border-image-navbar: linear-gradient(to right, #cbe682 0%, #4ad6e8 50%, #ea42f0 100%);
+  $border-color:              $gray-300;
 
-  // Logo colors
-  --bgcolor-logo: var(--bgcolor-navbar);
-  --fillcolor-logo-mark: #{lighten(desaturate(bs.$gray-100, 10%), 15%)};
+  $link-color:                $gray-800;
 
-  // Sidebar
-  --bgcolor-sidebar: var(--primary);
-  --bgcolor-sidebar-hs: var(--primary-hs);
-  --bgcolor-sidebar-l: var(--primary-l);
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
 
-  // Sidebar resize button
-  --color-resize-button: var(--color-reversal);
-  --bgcolor-resize-button: var(--color-link);
-  --bgcolor-resize-button-hs: var(--color-link-hs);
-  --bgcolor-resize-button-l: var(--color-link-l);
-  --color-resize-button-hover: var(--color-reversal);
-  --bgcolor-resize-button-hover: #{hsl.lighten(var(--color-link), 5%)};
+  @import '@growi/core/scss/bootstrap/init-stage-2';
 
-  // Sidebar contents
-  --color-sidebar-context: var(--color-link);
-  --color-sidebar-context-hs: var(--color-link-hs);
-  --color-sidebar-context-l: var(--color-link-l);
-  --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
-  --bgcolor-sidebar-context-hs: 150,100%;
-  --bgcolor-sidebar-context-l: 100%;
+  @import '@growi/core/scss/bootstrap/theming/apply-light';
 
-  // Sidebar list group
-  --bgcolor-sidebar-list-group: #fafbff; // optional
-
-  // Subnavigation
-  --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-  --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-  --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
-
-  // Icon colors
-  --color-editor-icons: var(--color-global);
-
-  // Border colors
-  --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
-  --bordercolor-inline-code: #ccc8c8; // optional
-
-  // Dropdown colors
-  --bgcolor-dropdown-link-active: #{var.$growi-blue};
-
-  // admin theme box
-  --color-theme-color-box: #{hsl.darken(var(--primary), 20%)};
+  --grw-wiki-link-color-rgb: var(--grw-primary-500-rgb);
+  --grw-wiki-link-hover-color-rgb: var(--grw-primary-600-rgb);
+  --grw-sidebar-nav-btn-color: var(--grw-highlight-600);
 
   &, body {
-    background-image: url('../images/spring/spring02.svg');
+    background-image: url('../images/spring/spring02.jpg');
     background-attachment: fixed;
     background-position: bottom;
     background-size: cover;
-  }
-
-  .grw-navbar {
-    border-bottom: var(--secondary) 4px solid;
-  }
-
-  //Button
-  // Outline buttons are applyed the accent color to this spring theme cuz the primary is too light and it looks like unable to click them.
-  .btn.btn-outline-primary {
-    @include hsl-button.button-outline-variant(var(--secondary), var(--secondary), #{hsl.lighten(var(--secondary), 20%)}, var(--secondary));
-  }
-  .btn-group.grw-page-editor-mode-manager {
-    .btn.btn-outline-primary {
-      @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.darken(var(--primary), 50%)}, #{hsl.lighten(var(--primary), 5%)}, #{hsl.lighten(var(--primary), 10%)});
-    }
-  }
-
-  .growi:not(.login-page) {
-    // add background-image
-    .page-editor-preview-container {
-      background-image: url('../images/spring/spring02.svg');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
-    }
-  }
-
-  // login and register
-  .nologin {
-    .page-wrapper{
-      background-color: #fff0f5;
-      background-image: url('../images/spring/spring.svg');
-      background-attachment: fixed;
-      background-position: bottom;
-      background-size: cover;
-
-      .nologin-header,
-      .nologin-dialog {
-        background-color: rgba(black, 0.1);
-        a.link-switch {
-          color: var(--color-global);
-        }
-      }
-
-      .grw-external-auth-form {
-        border-color: var(--secondary);
-      }
-    }
-  }
-
-  .table {
-    background-color: var(--bgcolor-global);
-  }
-
-  /*
-    Cards
-  */
-  .card-timeline > .card-header {
-    background-color: antiquewhite;
-  }
-
-  .admin-bot-card {
-    .grw-botcard-title-active {
-      color: var(--color-reversal);
-    }
-  }
-
-  h1,
-  h2 {
-    color: var(--color-link);
-
-    svg {
-      fill: var(--color-link);
-    }
-  }
-
-  .nav.nav-tabs {
-    > .nav-item {
-      > .nav-link.active {
-        color: var(--color-link);
-      }
-    }
   }
 }

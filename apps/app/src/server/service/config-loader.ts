@@ -4,9 +4,8 @@ import { parseISO } from 'date-fns';
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
-import ConfigModel, {
-  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '../models/config';
+import type { Config } from '../models/config';
+import ConfigModel, { defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs } from '../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -508,6 +507,54 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  AZURE_TENANT_ID: {
+    ns:      'crowi',
+    key:     'azure:tenantId',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AZURE_CLIENT_ID: {
+    ns:      'crowi',
+    key:     'azure:clientId',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AZURE_CLIENT_SECRET: {
+    ns:      'crowi',
+    key:     'azure:clientSecret',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AZURE_STORAGE_ACCOUNT_NAME: {
+    ns:      'crowi',
+    key:     'azure:storageAccountName',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AZURE_STORAGE_CONTAINER_NAME: {
+    ns:      'crowi',
+    key:     'azure:storageContainerName',
+    type:    ValueType.STRING,
+    default: null,
+  },
+  AZURE_LIFETIME_SEC_FOR_TEMPORARY_URL: {
+    ns:      'crowi',
+    key:     'azure:lifetimeSecForTemporaryUrl',
+    type:    ValueType.NUMBER,
+    default: 120,
+  },
+  AZURE_REFERENCE_FILE_WITH_RELAY_MODE: {
+    ns:      'crowi',
+    key:     'azure:referenceFileWithRelayMode',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
+  AZURE_USES_ONLY_ENV_VARS_FOR_SOME_OPTIONS: {
+    ns:      'crowi',
+    key:     'azure:useOnlyEnvVarsForSomeOptions',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   GROWI_CLOUD_URI: {
     ns:      'crowi',
     key:     'app:growiCloudUri',
@@ -663,6 +710,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key: 'app:ssrMaxRevisionBodyLength',
     type: ValueType.NUMBER,
     default: 30000,
+  },
+  WIP_PAGE_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:wipPageExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 172800, // 2 days
   },
 };
 

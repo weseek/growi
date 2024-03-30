@@ -38,7 +38,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
           <h2 className="admin-setting-header">
             {t('plugins.plugin_card')}
             <button type="button" className="btn btn-sm ms-auto grw-btn-reload" onClick={() => mutate()}>
-              <i className="icon icon-reload"></i>
+              <span className="material-symbols-outlined">refresh</span>
             </button>
           </h2>
           {data?.plugins == null
@@ -54,7 +54,7 @@ export const PluginsExtensionPageContents = (): JSX.Element => {
                     id={plugin._id}
                     name={plugin.meta.name}
                     url={plugin.origin.url}
-                    isEnalbed={plugin.isEnabled}
+                    isEnabled={plugin.isEnabled}
                     desc={plugin.meta.desc}
                     onDelete={() => openPluginDeleteModal(plugin)}
                   />

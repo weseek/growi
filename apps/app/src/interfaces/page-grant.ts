@@ -1,9 +1,16 @@
-import { PageGrant } from '@growi/core';
+import { PageGrant, GroupType } from '@growi/core';
+
+import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
+import { UserGroupDocument } from '~/server/models/user-group';
 
 import { IPageGrantData } from './page';
 
+
+type UserGroupType = typeof GroupType.userGroup;
+type ExternalUserGroupType = typeof GroupType.externalUserGroup;
+export type PopulatedGrantedGroup = {type: UserGroupType, item: UserGroupDocument } | {type: ExternalUserGroupType, item: ExternalUserGroupDocument }
 export type IDataApplicableGroup = {
-  applicableGroups?: {_id: string, name: string}[] // TODO: Typescriptize model
+  applicableGroups?: PopulatedGrantedGroup[]
 }
 
 export type IDataApplicableGrant = null | IDataApplicableGroup;

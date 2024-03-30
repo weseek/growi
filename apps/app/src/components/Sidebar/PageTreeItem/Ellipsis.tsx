@@ -1,5 +1,6 @@
+import type { FC } from 'react';
 import React, {
-  useCallback, useState, FC,
+  useCallback, useState,
 } from 'react';
 
 import nodePath from 'path';
@@ -15,26 +16,25 @@ import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { IPageForItem } from '~/interfaces/page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import {
-  SimpleItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
 } from '../../TreeItem';
 
-type EllipsisProps = SimpleItemToolProps & {page: IPageForItem};
-
-export const Ellipsis: FC<EllipsisProps> = (props) => {
+export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const { t } = useTranslation();
 
   const {
-    page, onRenamed, onClickDuplicateMenuItem,
+    itemNode, onRenamed, onClickDuplicateMenuItem,
     onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
   } = props;
+
+  const { page } = itemNode;
 
   const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(page._id ?? null);
@@ -126,10 +126,12 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
     }
   };
 
+  const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
+
   return (
     <>
       {isRenameInputShown ? (
-        <div className="flex-fill">
+        <div className={`position-absolute ${hasChildren ? 'ms-5' : 'ms-4'}`}>
           <NotDraggableForClosableTextInput>
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
@@ -141,7 +143,7 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <SimpleItemTool page={page} isEnableActions={false} isReadOnlyUser={false} />
+        <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">
@@ -160,7 +162,7 @@ export const Ellipsis: FC<EllipsisProps> = (props) => {
           >
             {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <i id="option-button-in-page-tree" className="icon-options fa fa-rotate-90 p-1"></i>
+              <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
             </DropdownToggle>
           </PageItemControl>
         </div>

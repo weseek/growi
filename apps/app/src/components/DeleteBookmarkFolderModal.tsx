@@ -1,5 +1,6 @@
 
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -42,11 +43,11 @@ const DeleteBookmarkFolderModal: FC = () => {
   return (
     <Modal size="md" isOpen={isOpened} toggle={closeBookmarkFolderDeleteModal} data-testid="page-delete-modal" className="grw-create-page">
       <ModalHeader tag="h4" toggle={closeBookmarkFolderDeleteModal} className="bg-danger text-light">
-        <i className="icon-fw icon-trash"></i>
+        <span className="material-symbols-outlined">delete</span>
         {t('bookmark_folder.delete_modal.modal_header_label')}
       </ModalHeader>
       <ModalBody>
-        <div className="pb-1">
+        <div className="pb-1 text-break">
           <label className="form-label">{ t('bookmark_folder.delete_modal.modal_body_description') }:</label><br />
           <FolderIcon isOpen={false} /> {deleteBookmarkFolderModalData?.bookmarkFolder?.name}
         </div>
@@ -58,7 +59,7 @@ const DeleteBookmarkFolderModal: FC = () => {
           className="btn btn-danger"
           onClick={onClickDeleteButton}
         >
-          <i className="me-1 icon-trash" aria-hidden="true"></i>
+          <span className="material-symbols-outlined" aria-hidden="true">delete</span>
           {t('bookmark_folder.delete_modal.modal_footer_button')}
         </button>
       </ModalFooter>

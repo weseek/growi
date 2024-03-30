@@ -1,16 +1,18 @@
+import type { IGrantedGroup } from '@growi/core';
+import { GroupType } from '@growi/core';
 import { addSeconds } from 'date-fns';
+import type {
+  Model, Document, QueryOptions, FilterQuery,
+} from 'mongoose';
 import mongoose, {
-  Schema, Model, Document, QueryOptions, FilterQuery,
+  Schema,
 } from 'mongoose';
 
+import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import { PageActionType, PageActionStage } from '~/interfaces/page-operation';
-import {
-  IPageForResuming, IUserForResuming, IOptionsForResuming,
-} from '~/server/models/interfaces/page-operation';
-
 
 import loggerFactory from '../../utils/logger';
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 const TIME_TO_ADD_SEC = 10;
@@ -18,6 +20,34 @@ const TIME_TO_ADD_SEC = 10;
 const logger = loggerFactory('growi:models:page-operation');
 
 const ObjectId = mongoose.Schema.Types.ObjectId;
+
+
+type IPageForResuming = {
+  _id: ObjectIdLike,
+  path: string,
+  isEmpty: boolean,
+  parent?: ObjectIdLike,
+  grant?: number,
+  grantedUsers?: ObjectIdLike[],
+  grantedGroups: IGrantedGroup[],
+  descendantCount: number,
+  status?: number,
+  revision?: ObjectIdLike,
+  lastUpdateUser?: ObjectIdLike,
+  creator?: ObjectIdLike,
+};
+
+type IUserForResuming = {
+  _id: ObjectIdLike,
+};
+
+type IOptionsForResuming = {
+  format: 'md' | 'pdf',
+  updateMetadata?: boolean,
+  createRedirectPage?: boolean,
+  prevDescendantCount?: number,
+} & IOptionsForUpdate & IOptionsForCreate;
+
 
 /*
  * Main Schema
@@ -58,7 +88,17 @@ const pageSchemaForResuming = new Schema<IPageForResuming>({
   status: { type: String },
   grant: { type: Number },
   grantedUsers: [{ type: ObjectId, ref: 'User' }],
-  grantedGroup: { type: ObjectId, ref: 'UserGroup' },
+  grantedGroups: [{
+    type: {
+      type: String,
+      enum: Object.values(GroupType),
+      required: true,
+      default: 'UserGroup',
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   creator: { type: ObjectId, ref: 'User' },
   lastUpdateUser: { type: ObjectId, ref: 'User' },
 });
@@ -72,7 +112,17 @@ const optionsSchemaForResuming = new Schema<IOptionsForResuming>({
   updateMetadata: { type: Boolean },
   prevDescendantCount: { type: Number },
   grant: { type: Number },
-  grantUserGroupId: { type: ObjectId, ref: 'UserGroup' },
+  grantUserGroupIds: [{
+    type: {
+      type: String,
+      enum: Object.values(GroupType),
+      required: true,
+      default: 'UserGroup',
+    },
+    item: {
+      type: ObjectId, refPath: 'grantedGroups.type', required: true,
+    },
+  }],
   format: { type: String },
   overwriteScopesOfDescendants: { type: Boolean },
 }, { _id: false });

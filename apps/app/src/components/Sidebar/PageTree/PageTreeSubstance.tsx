@@ -1,6 +1,9 @@
 import React, { memo, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import {
+  UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem,
+} from 'reactstrap';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
@@ -12,8 +15,14 @@ import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
 
+type HeaderProps = {
+  isWipPageShown: boolean,
+  onWipPageShownChange?: () => void
+}
 
-export const PageTreeHeader = memo(() => {
+export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: HeaderProps) => {
+  const { t } = useTranslation();
+
   const { mutate: mutateRootPage } = useSWRxRootPage({ suspense: true });
   useSWRxV5MigrationStatus({ suspense: true });
 
@@ -25,6 +34,29 @@ export const PageTreeHeader = memo(() => {
   return (
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
+
+      <UncontrolledButtonDropdown className="me-1">
+        <DropdownToggle color="transparent" className="p-0 border-0">
+          <span className="material-symbols-outlined">more_horiz</span>
+        </DropdownToggle>
+
+        <DropdownMenu container="body">
+          <DropdownItem onClick={onWipPageShownChange} className="">
+            <div className="form-check form-switch">
+              <input
+                id="wipPageVisibility"
+                className="form-check-input"
+                type="checkbox"
+                checked={isWipPageShown}
+                onChange={() => {}}
+              />
+              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+                {t('sidebar_header.show_wip_page')}
+              </label>
+            </div>
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledButtonDropdown>
     </>
   );
 });
@@ -44,8 +76,11 @@ const PageTreeUnavailable = () => {
   );
 };
 
-export const PageTreeContent = memo(() => {
-  const { t } = useTranslation();
+type PageTreeContentProps = {
+  isWipPageShown: boolean,
+}
+
+export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
@@ -75,6 +110,7 @@ export const PageTreeContent = memo(() => {
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
+        isWipPageShown={isWipPageShown}
         targetPath={path}
         targetPathOrId={targetPathOrId}
         targetAndAncestorsData={targetAndAncestorsData}

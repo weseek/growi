@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -14,6 +13,7 @@ type Props = {
   onClickSubmit?: (userGroupData: Partial<IUserGroupHasId>) => Promise<IUserGroupHasId | void>
   isShow?: boolean
   onHide?: () => Promise<void> | void
+  isExternalGroup?: boolean
 };
 
 export const UserGroupModal: FC<Props> = (props: Props) => {
@@ -21,7 +21,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
   const { t } = useTranslation('admin');
 
   const {
-    userGroup, buttonLabel, onClickSubmit, isShow, onHide,
+    userGroup, buttonLabel, onClickSubmit, isShow, onHide, isExternalGroup = false,
   } = props;
 
   /*
@@ -86,6 +86,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
               value={currentName}
               onChange={onChangeNameHandler}
               required
+              disabled={isExternalGroup}
             />
           </div>
 
@@ -94,6 +95,13 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
               {t('Description')}
             </label>
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
+            {isExternalGroup && (
+              <p className="form-text text-muted">
+                <small>
+                  {t('external_user_group.description_form_detail')}
+                </small>
+              </p>
+            )}
           </div>
 
           {/* TODO 90732: Add a drop-down to show selectable parents */}

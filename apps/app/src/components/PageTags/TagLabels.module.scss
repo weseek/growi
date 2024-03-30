@@ -8,11 +8,34 @@ $grw-tag-label-font-size: 12px;
     font-weight: normal;
     border-radius: bs.$border-radius;
   }
+
+  .grw-tag-simple-bar {
+    width: 15.5rem;
+    max-height: 5rem;
+  }
+
 }
 
+// apply font-size
+.grw-tag-labels :global {
+  .btn-edit-tags {
+    --bs-btn-font-size: 14px;
+
+    @include bs.media-breakpoint-down(lg) {
+      --bs-btn-font-size: 16px;
+    }
+  }
+}
 
 .grw-tag-labels-skeleton :global {
   width: 137px;
   height: calc(#{$grw-tag-label-font-size} + #{bs.$badge-padding-y} * 2);
   font-size: $grw-tag-label-font-size; // set font-size to use the same em value in bs.$badge-padding-y(https://getbootstrap.jp/docs/5.0/components/badge/#variables)
+}
+
+.grw-tag-icon-button {
+  padding: 6px 8px;
+  @include bs.media-breakpoint-down(sm) {
+    box-shadow: 0px 3px 6px rgba(black, 0.15);
+  }
 }

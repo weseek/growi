@@ -63,7 +63,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                   data-html="true"
                   title={t('user_management.password_setting_help')}
                 >
-                  <small><i className="icon-question" aria-hidden="true"></i></small>
+                  <small><span className="material-symbols-outlined" aria-hidden="true">help</span></small>
                 </span>
               </div>
             </th>
@@ -92,7 +92,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                 <td>
                   <div className="btn-group admin-user-menu">
                     <button type="button" className="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">
-                      <i className="icon-settings"></i> <span className="caret"></span>
+                      <span className="material-symbols-outlined">settings</span> <span className="caret"></span>
                     </button>
                     <ul className="dropdown-menu" role="menu">
                       <li className="dropdown-header">{t('user_management.user_table.edit_menu')}</li>
@@ -102,7 +102,7 @@ const ExternalAccountTable = (props: ExternalAccountTableProps): JSX.Element => 
                         role="button"
                         onClick={() => removeExtenalAccount(ea._id)}
                       >
-                        <i className="icon-fw icon-fire text-danger"></i> {t('Delete')}
+                        <span className="material-symbols-outlined text-danger">delete_forever</span> {t('Delete')}
                       </button>
                     </ul>
                   </div>

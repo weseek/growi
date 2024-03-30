@@ -1,11 +1,12 @@
 import React from 'react';
 
+import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
-import { useIsDeviceLargerThanMd, useDrawerOpened } from '~/stores/ui';
+import { useDrawerOpened } from '~/stores/ui';
 
-import { GlobalSearch } from './GlobalSearch';
+import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiNavbarBottom.module.scss';
 
@@ -13,26 +14,17 @@ import styles from './GrowiNavbarBottom.module.scss';
 export const GrowiNavbarBottom = (): JSX.Element => {
 
   const { data: isDrawerOpened, mutate: mutateDrawerOpened } = useDrawerOpened();
-  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { open: openCreateModal } = usePageCreateModal();
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
+  const { open: openSearchModal } = useSearchModal();
 
   return (
-    <div className={`
+    <GroundGlassBar className={`
       ${styles['grw-navbar-bottom']}
       ${isDrawerOpened ? styles['grw-navbar-bottom-drawer-opened'] : ''}
       d-md-none d-edit-none d-print-none fixed-bottom`}
     >
-
-      { !isDeviceLargerThanMd && !isSearchPage && (
-        <div id="grw-global-search-collapse" className="grw-global-search collapse bg-dark">
-          <div className="p-3">
-            <GlobalSearch dropup />
-          </div>
-        </div>
-      ) }
-
       <div className="navbar navbar-expand px-4 px-sm-5">
 
         <ul className="navbar-nav flex-grow-1 d-flex align-items-center justify-content-between">
@@ -62,8 +54,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
                 <a
                   role="button"
                   className="nav-link btn-lg"
-                  data-bs-target="#grw-global-search-collapse"
-                  data-bs-toggle="collapse"
+                  onClick={openSearchModal}
                 >
                   <span className="material-symbols-outlined fs-2">search</span>
                 </a>
@@ -84,6 +75,6 @@ export const GrowiNavbarBottom = (): JSX.Element => {
         </ul>
       </div>
 
-    </div>
+    </GroundGlassBar>
   );
 };

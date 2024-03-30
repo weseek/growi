@@ -1,24 +1,15 @@
 @use '~/styles/mixins' as *;
 
 .grw-recent-changes-resize-button :global {
-  font-size: 12px;
   line-height: normal;
   transform: translateY(-2px);
-
-  .form-check-label::before {
-    padding-left: 19px;
-    content: 'L';
-  }
-
-  .form-check-input:checked + .form-check-label::before {
-    padding-left: 5px;
-    content: 'S';
-  }
 }
 
 .list-group-item :global {
+  font-size: 12px;
+
   .grw-recent-changes-skeleton-small {
-    @include grw-skeleton-text($font-size:14px, $line-height:16px);
+    @include grw-skeleton-text($font-size: 14px, $line-height: 16px);
     max-width: 120px;
   }
 
@@ -28,32 +19,8 @@
   }
 
   .grw-recent-changes-skeleton-date {
-    @include grw-skeleton-text($font-size:10px, $line-height:12px);
+    @include grw-skeleton-text($font-size: 10px, $line-height: 12px);
     width: 80px;
-  }
-
-  .grw-recent-changes-item-lower {
-    height: 17.5px;
-  }
-  .footstamp-icon {
-    svg {
-      width: 14px;
-      height: 14px;
-      transform: translateY(-3.5px);
-    }
-  }
-
-  .grw-list-counts {
-    height: 14px;
-    font-size: 12px;
-  }
-
-  .grw-formatted-distance-date {
-    font-size: 10px;
-  }
-
-  .icon-lock {
-    font-size: 14px;
   }
 
   // For truncate-text
@@ -64,4 +31,30 @@
   .truncate-text {
     max-width: fit-content;
   }
+}
+
+.grw-recent-changes-item-lower :global {
+  font-size: 12px;
+
+  .material-symbols-outlined {
+    font-size: 14px;
+  }
+  .grw-formatted-distance-date {
+    font-size: 10px;
+  }
+}
+
+// == Colors
+.grw-former-link a {
+  --bs-link-opacity: 0.5;
+
+  &:global {
+    &:hover {
+      --bs-link-opacity: 1;
+    }
+  }
+}
+
+.grw-recent-changes-item-lower :global {
+  color: var(--bs-gray-500);
 }

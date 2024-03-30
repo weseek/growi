@@ -96,7 +96,7 @@
       "granted_users": {
         "type": "keyword"
       },
-      "granted_group": {
+      "granted_groups": {
         "type": "keyword"
       },
       "created_at": {

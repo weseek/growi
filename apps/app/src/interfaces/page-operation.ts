@@ -26,13 +26,3 @@ export type IPageOperationProcessData = {
 export type IPageOperationProcessInfo = {
   [pageId: string]: IPageOperationProcessData,
 }
-
-export type OptionsToSave = {
-  isSlackEnabled: boolean;
-  slackChannels: string;
-  grant: number;
-  pageTags: string[] | null;
-  grantUserGroupId?: string | null;
-  grantUserGroupName?: string | null;
-  shouldGeneratePath?: boolean | null;
-};

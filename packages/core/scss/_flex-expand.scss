@@ -2,21 +2,24 @@
   display: flex;
   flex-direction: row;
   flex-grow: 1;
-  height: 100%;
 }
 
 .flex-expand-vert {
   display: flex;
   flex: 1;
   flex-direction: column;
-  height: 100%;
 }
 
 .flex-expand-vh-100 {
   height: 100vh;
 
-  .flex-expand-horiz,
-  .flex-expand-vert {
+  .flex-expand-horiz {
+    height: 100%;
     overflow-y: auto;
+  }
+
+  .flex-expand-vert {
+    height: 100%;
+    overflow-y: hidden;
   }
 }

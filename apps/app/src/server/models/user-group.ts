@@ -1,7 +1,6 @@
 import type { IUserGroup } from '@growi/core';
-import mongoose, {
-  Schema, Model, Document,
-} from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -13,12 +12,14 @@ export interface UserGroupModel extends Model<UserGroupDocument> {
   [x:string]: any, // for old methods
 
   PAGE_ITEMS: 10,
+
+  findGroupsWithDescendantsRecursively: (groups: UserGroupDocument[], descendants?: UserGroupDocument[]) => Promise<UserGroupDocument[]>,
 }
 
 /*
  * define schema
  */
-const ObjectId = mongoose.Schema.Types.ObjectId;
+const ObjectId = Schema.Types.ObjectId;
 
 const schema = new Schema<UserGroupDocument, UserGroupModel>({
   name: { type: String, required: true, unique: true },
@@ -31,7 +32,7 @@ schema.plugin(mongoosePaginate);
 
 const PAGE_ITEMS = 10;
 
-schema.statics.findUserGroupsWithPagination = function(opts) {
+schema.statics.findWithPagination = function(opts) {
   const query = { parent: null };
   const options = Object.assign({}, opts);
   if (options.page == null) {
@@ -48,11 +49,7 @@ schema.statics.findUserGroupsWithPagination = function(opts) {
 };
 
 
-schema.statics.findChildUserGroupsByParentIds = async function(parentIds, includeGrandChildren = false) {
-  if (!Array.isArray(parentIds)) {
-    throw Error('parentIds must be an array.');
-  }
-
+schema.statics.findChildrenByParentIds = async function(parentIds: string[], includeGrandChildren = false) {
   const childUserGroups = await this.find({ parent: { $in: parentIds } });
 
   let grandChildUserGroups: UserGroupDocument[] | null = null;
@@ -72,16 +69,14 @@ schema.statics.countUserGroups = function() {
 };
 
 schema.statics.createGroup = async function(name, description, parentId) {
-  // create without parent
-  if (parentId == null) {
-    return this.create({ name, description });
+  let parent: UserGroupDocument | null = null;
+  if (parentId != null) {
+    parent = await this.findOne({ _id: parentId });
+    if (parent == null) {
+      throw Error('Parent does not exist.');
+    }
   }
 
-  // create with parent
-  const parent = await this.findOne({ _id: parentId });
-  if (parent == null) {
-    throw Error('Parent does not exist.');
-  }
   return this.create({ name, description, parent });
 };
 
@@ -115,7 +110,9 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
  * @param descendants UserGroupDocument[]
  * @returns UserGroupDocument[]
  */
-schema.statics.findGroupsWithDescendantsRecursively = async function(groups, descendants = groups) {
+schema.statics.findGroupsWithDescendantsRecursively = async function(
+    groups: UserGroupDocument[], descendants: UserGroupDocument[] = groups,
+): Promise<UserGroupDocument[]> {
   const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
 
   if (nextGroups.length === 0) {

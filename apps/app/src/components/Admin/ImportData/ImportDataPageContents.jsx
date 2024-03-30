@@ -41,12 +41,12 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>
                   <th>{t('importer_management.category')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined text-success">arrow_circle_right</span></th>
                   <th>{t('importer_management.page_path')}</th>
                 </tr>
                 <tr>
@@ -143,7 +143,7 @@ class ImportDataPageContents extends React.Component {
               <tbody>
                 <tr>
                   <th>{t('importer_management.article')}</th>
-                  <th><i className="icon-arrow-right-circle text-success"></i></th>
+                  <th><span className="material-symbols-outlined">arrow_circle_right</span></th>
                   <th>{t('importer_management.page')}</th>
                 </tr>
                 <tr>

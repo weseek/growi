@@ -3,6 +3,9 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import {
+  AllEditorTheme, AllKeyMap, EditorTheme, KeyMapMode,
+} from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -68,11 +71,55 @@ export const SetCaretLineRow = (): JSX.Element => {
   );
 };
 
-export const PlaygroundController = (): JSX.Element => {
+
+type SetParamRowProps = {
+    update: (value: any) => void,
+    items: string[],
+}
+
+const SetParamRow = (
+    props: SetParamRowProps,
+): JSX.Element => {
+  const { update, items } = props;
+  return (
+    <>
+      <div className="row mt-3">
+        <h2>default</h2>
+        <div className="col">
+          <div>
+            { items.map((item) => {
+              return (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => {
+                    update(item);
+                  }}
+                >{item}
+                </button>
+              );
+            }) }
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+
+type PlaygroundControllerProps = {
+  setEditorTheme: (value: EditorTheme) => void
+  setEditorKeymap: (value: KeyMapMode) => void
+};
+
+export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
+  const { setEditorTheme, setEditorKeymap } = props;
   return (
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
+      <SetParamRow update={setEditorTheme} items={AllEditorTheme} />
+      <SetParamRow update={setEditorKeymap} items={AllKeyMap} />
     </div>
   );
 };

@@ -1,8 +1,8 @@
+import type { FC } from 'react';
 import React, {
-  useState, FC, useMemo, useEffect,
+  useState, useMemo, useEffect,
 } from 'react';
 
-import { isIPageInfoForEntity } from '@growi/core';
 import type {
   HasObjectId,
   IPageInfoForEntity, IPageToDeleteWithMeta, IDataWithMeta,
@@ -42,6 +42,11 @@ const deleteIconAndKey = {
   },
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const isIPageInfoForEntityForDeleteModal = (pageInfo: any | undefined): pageInfo is IPageInfoForEntity => {
+  return pageInfo != null && 'isDeletable' in pageInfo && 'isAbleToDeleteCompletely' in pageInfo;
+};
+
 const PageDeleteModal: FC = () => {
   const { t } = useTranslation();
 
@@ -50,14 +55,14 @@ const PageDeleteModal: FC = () => {
   const isOpened = deleteModalData?.isOpened ?? false;
 
   const notOperatablePages: IPageToDeleteWithMeta[] = (deleteModalData?.pages ?? [])
-    .filter(p => !isIPageInfoForEntity(p.meta));
+    .filter(p => !isIPageInfoForEntityForDeleteModal(p.meta));
   const notOperatablePageIds = notOperatablePages.map(p => p.data._id);
 
   const { injectTo } = useSWRxPageInfoForList(notOperatablePageIds);
 
   // inject IPageInfo to operate
   let injectedPages: IDataWithMeta<HasObjectId & { path: string }, IPageInfoForEntity>[] | null = null;
-  if (deleteModalData?.pages != null && notOperatablePageIds.length > 0) {
+  if (deleteModalData?.pages != null) {
     injectedPages = injectTo(deleteModalData?.pages);
   }
 
@@ -218,7 +223,7 @@ const PageDeleteModal: FC = () => {
         {!isAbleToDeleteCompletely
         && (
           <p className="alert alert-warning p-2 my-0">
-            <i className="icon-ban icon-fw"></i>{ t('modal_delete.delete_completely_restriction') }
+            <span className="material-symbols-outlined">block</span>{ t('modal_delete.delete_completely_restriction') }
           </p>
         )}
       </div>
@@ -285,7 +290,7 @@ const PageDeleteModal: FC = () => {
           onClick={deleteButtonHandler}
           data-testid="delete-page-button"
         >
-          <i className={`me-1 icon-${deleteIconAndKey[deleteMode].icon}`} aria-hidden="true"></i>
+          <span className="material-symbols-outlined me-1" aria-hidden="true">{deleteIconAndKey[deleteMode].icon}</span>
           { t(`modal_delete.delete_${deleteIconAndKey[deleteMode].translationKey}`) }
         </button>
       </>

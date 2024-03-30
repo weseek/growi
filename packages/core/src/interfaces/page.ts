@@ -3,13 +3,22 @@ import type { HasObjectId } from './has-object-id';
 import type { IRevision, HasRevisionShortbody, IRevisionHasId } from './revision';
 import type { SubscriptionStatusType } from './subscription';
 import type { ITag } from './tag';
-import type { IUser, IUserGroupHasId, IUserHasId } from './user';
+import type {
+  IUser, IUserGroup, IUserGroupHasId, IUserHasId,
+} from './user';
 
+export const GroupType = { userGroup: 'UserGroup', externalUserGroup: 'ExternalUserGroup' } as const;
+export type GroupType = typeof GroupType[keyof typeof GroupType];
+
+export type IGrantedGroup = {
+  type: GroupType,
+  item: Ref<IUserGroup>,
+}
 
 export type IPage = {
   path: string,
   status: string,
-  revision: Ref<IRevision>,
+  revision?: Ref<IRevision>,
   tags: Ref<ITag>[],
   creator: any,
   createdAt: Date,
@@ -20,7 +29,7 @@ export type IPage = {
   isEmpty: boolean,
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
-  grantedGroup: Ref<any>,
+  grantedGroups: IGrantedGroup[],
   lastUpdateUser: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number
@@ -30,18 +39,20 @@ export type IPage = {
   latestRevision?: Ref<IRevision>,
   latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
+  wip?: boolean,
+  ttlTimestamp?: Date
 }
 
 export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
   lastUpdateUser: IUserHasId,
 }
 
-export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroup'|'revision'|'author'> & {
+export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroups'|'revision'|'author'> & {
   lastUpdateUser: IUserHasId,
   creator: IUserHasId | null,
   deleteUser: IUserHasId,
-  grantedGroup: IUserGroupHasId,
-  revision: IRevisionHasId,
+  grantedGroups: { type: GroupType, item: IUserGroupHasId }[],
+  revision?: IRevisionHasId,
   author: IUserHasId,
 }
 
@@ -54,11 +65,6 @@ export const PageGrant = {
 } as const;
 type UnionPageGrantKeys = keyof typeof PageGrant;
 export type PageGrant = typeof PageGrant[UnionPageGrantKeys];
-
-/**
- * Neither pages with grant `GRANT_RESTRICTED` nor `GRANT_SPECIFIED` can be on a page tree.
- */
-export type PageGrantCanBeOnTree = typeof PageGrant[Exclude<UnionPageGrantKeys, 'GRANT_RESTRICTED' | 'GRANT_SPECIFIED'>];
 
 export const PageStatus = {
   STATUS_PUBLISHED: 'published',

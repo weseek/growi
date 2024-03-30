@@ -10,10 +10,7 @@ describe('Test page service methods', () => {
   let Page;
   let Revision;
   let User;
-  let UserGroup;
-  let UserGroupRelation;
   let Tag;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -28,10 +25,6 @@ describe('Test page service methods', () => {
   let globalGroupUser1;
   let globalGroupUser2;
   let globalGroupUser3;
-  let globalGroupIsolate;
-  let globalGroupA;
-  let globalGroupB;
-  let globalGroupC;
 
   let pageOpId1;
   let pageOpId2;
@@ -45,18 +38,13 @@ describe('Test page service methods', () => {
     await crowi.configManager.updateConfigsInTheSameNamespace('crowi', { 'app:isV5Compatible': true });
 
     User = mongoose.model('User');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
     Tag = mongoose.model('Tag');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
     PageRedirect = mongoose.model('PageRedirect');
-    UserGroup = mongoose.model('UserGroup');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
     PageOperation = mongoose.model('PageOperation');
 
     /*
@@ -73,11 +61,6 @@ describe('Test page service methods', () => {
     globalGroupUser1 = await User.findOne({ username: 'gGroupUser1' });
     globalGroupUser2 = await User.findOne({ username: 'gGroupUser2' });
     globalGroupUser3 = await User.findOne({ username: 'gGroupUser3' });
-    // groups
-    globalGroupIsolate = await UserGroup.findOne({ name: 'globalGroupIsolate' });
-    globalGroupA = await UserGroup.findOne({ name: 'globalGroupA' });
-    globalGroupB = await UserGroup.findOne({ name: 'globalGroupB' });
-    globalGroupC = await UserGroup.findOne({ name: 'globalGroupC' });
     // page
     rootPage = await Page.findOne({ path: '/' });
 
@@ -385,7 +368,7 @@ describe('Test page service methods', () => {
           status: 'published',
           grant: 1,
           grantedUsers: [],
-          grantedGroup: null,
+          grantedGroups: [],
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },
@@ -414,7 +397,7 @@ describe('Test page service methods', () => {
           status: 'published',
           grant: 1,
           grantedUsers: [],
-          grantedGroup: null,
+          grantedGroups: [],
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },
@@ -443,7 +426,7 @@ describe('Test page service methods', () => {
           status: 'published',
           grant: 1,
           grantedUsers: [],
-          grantedGroup: null,
+          grantedGroups: [],
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },
@@ -472,7 +455,7 @@ describe('Test page service methods', () => {
           status: 'published',
           grant: Page.GRANT_PUBLIC,
           grantedUsers: [],
-          grantedGroup: null,
+          grantedGroups: [],
           creator: dummyUser1._id,
           lastUpdateUser: dummyUser1._id,
         },

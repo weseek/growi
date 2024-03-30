@@ -1,13 +1,13 @@
 import { pagePathUtils } from '@growi/core/dist/utils';
-import { collectAncestorPaths } from '@growi/core/dist/utils/page-path-utils';
 
-import {
-  IPageOperationProcessInfo, IPageOperationProcessData, PageActionType, PageActionStage,
-} from '~/interfaces/page-operation';
-import PageOperation, { PageOperationDocument } from '~/server/models/page-operation';
+import type { IPageOperationProcessInfo, IPageOperationProcessData } from '~/interfaces/page-operation';
+import { PageActionType, PageActionStage } from '~/interfaces/page-operation';
+import type { PageOperationDocument } from '~/server/models/page-operation';
+import PageOperation from '~/server/models/page-operation';
 import loggerFactory from '~/utils/logger';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
+import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 
 const logger = loggerFactory('growi:services:page-operation');
 
