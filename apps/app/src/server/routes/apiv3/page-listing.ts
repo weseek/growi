@@ -124,7 +124,7 @@ const routerFactory = (crowi: Crowi): Router => {
     const pageGrantService: IPageGrantService = crowi.pageGrantService!;
 
     try {
-      const pages = pageIds != null
+      const pages = pageIds != null && pageIds !== ''
         ? await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true)
         : await Page.findByPathAndViewer(path as string, req.user, null, false, true);
 
