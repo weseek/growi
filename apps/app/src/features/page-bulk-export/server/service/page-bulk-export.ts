@@ -37,7 +37,7 @@ class PageBulkExportService {
     const timeStamp = (new Date()).getTime();
     const uploadKey = `page-bulk-export-${timeStamp}.zip`;
 
-    const pageReadableStream = this.getPageReadableStream(basePagePath);
+    const pageReadable = this.getPageReadable(basePagePath);
     const zipArchiver = this.setUpZipArchiver();
     const pagesWritable = this.getPageWritable(zipArchiver);
 
@@ -57,7 +57,7 @@ class PageBulkExportService {
 
     // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
     // Hence, execution of two pipelines is required.
-    pipeline(pageReadableStream, pagesWritable, err => this.handleExportError(err, multipartUploader));
+    pipeline(pageReadable, pagesWritable, err => this.handleExportError(err, multipartUploader));
     pipeline(zipArchiver, multipartUploadWritable, err => this.handleExportError(err, multipartUploader));
   }
 
@@ -72,9 +72,9 @@ class PageBulkExportService {
   }
 
   /**
-   * Get a ReadableStream of all the pages under the specified path, including the root page.
+   * Get a Readable of all the pages under the specified path, including the root page.
    */
-  private getPageReadableStream(basePagePath: string): Readable {
+  private getPageReadable(basePagePath: string): Readable {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
