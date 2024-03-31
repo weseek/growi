@@ -40,3 +40,13 @@
     border: solid 1px bs.$gray-400;
   }
 }
+
+
+// == Colors
+.revision-toc :global {
+  .revision-toc-content {
+    ::marker {
+      color: var(--bs-tertiary-color);
+    }
+  }
+}

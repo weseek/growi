@@ -15,6 +15,8 @@ import { useCurrentUser } from '~/stores/context';
 
 import { SkeletonItem } from './SkeletonItem';
 
+import styles from './PersonalDropdown.module.scss';
+
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
 export const PersonalDropdown = (): JSX.Element => {
@@ -52,58 +54,64 @@ export const PersonalDropdown = (): JSX.Element => {
         <DropdownMenu
           container="body"
           data-testid="personal-dropdown-menu"
+          className={styles['personal-dropdown-menu']}
         >
-          <DropdownItem header>
+          <DropdownItem className={styles['personal-dropdown-header']}>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>
-            <h5 className="ms-1">{currentUser.name}</h5>
-            <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">person</span>
-              {currentUser.username}
+            <div className="ms-1 fs-6">{currentUser.name}</div>
+            <div className="d-flex align-items-center my-2">
+              <small className="material-symbols-outlined me-1 pb-0 fs-6">person</small>
+              <span>{currentUser.username}</span>
             </div>
             <div className="d-flex align-items-center">
-              <span className="material-symbols-outlined me-1">mail</span>
-              <span className="grw-email-sm">{currentUser.email}</span>
+              <span className="material-symbols-outlined me-1 pb-0 fs-6">mail</span>
+              <span className="item-text-email">{currentUser.email}</span>
             </div>
           </DropdownItem>
 
-          <DropdownItem divider />
+          <DropdownItem className="my-3" divider />
 
-          <DropdownItem>
-            <Link
-              href={pagePathUtils.userHomepagePath(currentUser)}
-              data-testid="grw-personal-dropdown-menu-user-home"
-            >
-              <span className="text-muted">
-                <span className="material-symbols-outlined me-1">home</span>{t('personal_dropdown.home')}
+          <Link
+            href={pagePathUtils.userHomepagePath(currentUser)}
+            data-testid="grw-personal-dropdown-menu-user-home"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
+              <span className="d-flex align-items-center">
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">home</span>
+                <span className="item-text">{t('personal_dropdown.home')}</span>
               </span>
-            </Link>
-          </DropdownItem>
+            </DropdownItem>
+          </Link>
 
-          <DropdownItem>
-            <Link
-              href="/me"
-              data-testid="grw-personal-dropdown-menu-user-settings"
-            >
-              <span className="text-muted">
-                <span className="material-symbols-outlined me-1">build</span>{t('personal_dropdown.settings')}
+          <Link
+            href="/me"
+            data-testid="grw-personal-dropdown-menu-user-settings"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
+              <span className="d-flex align-items-center">
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">discover_tune</span>
+                <span className="item-text">{t('personal_dropdown.settings')}</span>
               </span>
-            </Link>
-          </DropdownItem>
+            </DropdownItem>
+          </Link>
 
           <DropdownItem
             data-testid="grw-proactive-questionnaire-modal-toggle-btn"
             onClick={() => setQuestionnaireModalOpen(true)}
+            className={`my-1 ${styles['personal-dropdown-item']}`}
           >
-            <span className="text-muted">
-              <span className="material-symbols-outlined me-1">edit</span>{t('personal_dropdown.feedback')}
+            <span className="d-flex align-items-center">
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">edit_note</span>
+              <span className="item-text">{t('personal_dropdown.feedback')}</span>
             </span>
           </DropdownItem>
 
-          <DropdownItem onClick={logoutHandler}>
-            <span className="text-muted">
-              <span className="material-symbols-outlined me-1">logout</span>{t('Sign out')}
+          <DropdownItem onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
+            <span className="d-flex align-items-center">
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">logout</span>
+              <span className="item-text">{t('Sign out')}</span>
             </span>
           </DropdownItem>
         </DropdownMenu>

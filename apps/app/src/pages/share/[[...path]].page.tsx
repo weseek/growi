@@ -124,8 +124,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}

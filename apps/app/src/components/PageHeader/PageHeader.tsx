@@ -17,14 +17,16 @@ export const PageHeader: FC = () => {
   }
 
   return (
-    <div className={moduleClass}>
+    <div className={`${moduleClass} w-100`}>
       <PagePathHeader
         currentPage={currentPage}
       />
-      <PageTitleHeader
-        className="mt-2"
-        currentPage={currentPage}
-      />
+      <div className="row mt-1">
+        <PageTitleHeader
+          className="col"
+          currentPage={currentPage}
+        />
+      </div>
     </div>
   );
 };

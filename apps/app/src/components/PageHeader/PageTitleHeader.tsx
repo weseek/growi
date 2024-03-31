@@ -70,12 +70,11 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
 
   return (
-    <div className={`d-flex align-items-center ${moduleClass} ${props.className ?? ''}`}>
-      <div className="me-1">
+    <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
+      <div className="me-1 d-inline-block overflow-hidden">
         { isRenameInputShown && (
-          <div className="position-absolute">
+          <div className="position-absolute w-100">
             <ClosableTextInput
-              useAutosizeInput
               value={editedPageTitle}
               placeholder={t('Input page name')}
               inputClassName="fs-4"
@@ -87,12 +86,16 @@ export const PageTitleHeader: FC<Props> = (props) => {
             />
           </div>
         ) }
-        <h1 className={`mb-0 fs-4 ${isRenameInputShown ? 'invisible' : ''}`} onClick={onClickPageTitle}>
+        <h1 className={`mb-0 fs-4 ${isRenameInputShown ? 'invisible' : ''} text-truncate`} onClick={onClickPageTitle}>
           {pageTitle}
         </h1>
       </div>
 
-      <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
+      <div className={`${isRenameInputShown ? 'invisible' : ''} d-flex align-items-center`}>
+        { currentPage.wip && (
+          <span className="badge rounded-pill text-bg-secondary ms-2">WIP</span>
+        )}
+
         <CopyDropdown
           pageId={currentPage._id}
           pagePath={currentPage.path}

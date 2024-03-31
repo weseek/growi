@@ -24,6 +24,7 @@ import {
 
 import { Ellipsis } from './Ellipsis';
 
+import styles from './PageTreeItem.module.scss';
 
 const logger = loggerFactory('growi:cli:Item');
 
@@ -177,6 +178,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
+      isWipPageShown={props.isWipPageShown}
       onClick={itemSelectedHandler}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}

@@ -113,7 +113,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
-    <CustomTag id={id} className={`revision-head ${styles['revision-head']} ${isActive ? 'blink' : ''}`}>
+    <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''}`}>
       {children}
       <NextLink href={`#${id}`} className="revision-head-link">
         <span className="material-symbols-outlined">link</span>

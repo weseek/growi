@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import type { IPageHasId } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
@@ -95,11 +96,6 @@ export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3P
   return res.data;
 };
 
-export const updatePage = async(params: IApiv3PageUpdateParams): Promise<IApiv3PageUpdateResponse> => {
-  const res = await apiv3Put<IApiv3PageUpdateResponse>('/page', params);
-  return res.data;
-};
-
 export type UpdateStateAfterSaveOption = {
   supressEditingMarkdownMutation: boolean,
 }
@@ -124,7 +120,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     await mutateCurrentPageId(pageId);
     const updatedPage = await mutateCurrentPage();
 
-    if (updatedPage == null) { return }
+    if (updatedPage == null || updatedPage.revision == null) { return }
 
     // supress to mutate only when updated from built-in editor
     // and see: https://github.com/weseek/growi/pull/7118
@@ -157,5 +153,15 @@ interface PageExistResponse {
 
 export const exist = async(path: string): Promise<PageExistResponse> => {
   const res = await apiv3Get<PageExistResponse>('/page/exist', { path });
+  return res.data;
+};
+
+export const publish = async(pageId: string): Promise<IPageHasId> => {
+  const res = await apiv3Put(`/page/${pageId}/publish`);
+  return res.data;
+};
+
+export const unpublish = async(pageId: string): Promise<IPageHasId> => {
+  const res = await apiv3Put(`/page/${pageId}/unpublish`);
   return res.data;
 };

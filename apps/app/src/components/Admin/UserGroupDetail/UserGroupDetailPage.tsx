@@ -2,7 +2,9 @@ import React, {
   useState, useCallback, useEffect, useMemo,
 } from 'react';
 
-import type { IUserGroup, IUserGroupHasId } from '@growi/core';
+import {
+  GroupType, getIdForRef, type IGrantedGroup, type IUserGroup, type IUserGroupHasId,
+} from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -13,8 +15,9 @@ import {
   apiv3Get, apiv3Put, apiv3Delete, apiv3Post,
 } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
-import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
+import { SearchTypes } from '~/interfaces/user-group';
 import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
@@ -84,6 +87,10 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
 
   const { data: childUserGroupsList, mutate: mutateChildUserGroups, updateChild } = useChildUserGroupList(currentUserGroupId, isExternalGroup);
   const childUserGroups = childUserGroupsList != null ? childUserGroupsList.childUserGroups : [];
+  const childUserGroupsForDeleteModal: IGrantedGroup[] = childUserGroups.map((group) => {
+    const groupType = isExternalGroup ? GroupType.externalUserGroup : GroupType.userGroup;
+    return { item: group, type: groupType };
+  });
   const grandChildUserGroups = childUserGroupsList != null ? childUserGroupsList.grandChildUserGroups : [];
   const childUserGroupIds = childUserGroups.map(group => group._id);
 
@@ -296,12 +303,15 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
     setDeleteModalShown(false);
   }, [setSelectedUserGroup, setDeleteModalShown]);
 
-  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: string, transferToUserGroupId: string) => {
+  const deleteChildUserGroupById = useCallback(async(deleteGroupId: string, actionName: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup | null) => {
     const url = isExternalGroup ? `/external-user-groups/${deleteGroupId}` : `/user-groups/${deleteGroupId}`;
+    const transferToUserGroupId = transferToUserGroup != null ? getIdForRef(transferToUserGroup.item) : null;
+    const transferToUserGroupType = transferToUserGroup != null ? transferToUserGroup.type : null;
     try {
       const res = await apiv3Delete(url, {
         actionName,
         transferToUserGroupId,
+        transferToUserGroupType,
       });
 
       // sync
@@ -448,7 +458,7 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
       />
 
       <UserGroupDeleteModal
-        userGroups={childUserGroups}
+        userGroups={childUserGroupsForDeleteModal}
         deleteUserGroup={selectedUserGroup}
         onDelete={deleteChildUserGroupById}
         isShow={isDeleteModalShown}

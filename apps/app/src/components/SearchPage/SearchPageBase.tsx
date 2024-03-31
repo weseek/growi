@@ -3,6 +3,7 @@ import React, {
   forwardRef, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
@@ -181,7 +182,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
           {/* Loading */}
           { pages == null && (
             <div className="mw-0 flex-grow-1 flex-basis-0 m-5 text-muted text-center">
-              <i className="fa fa-2x fa-spinner fa-pulse me-1"></i>
+              <LoadingSpinner className="me-1 fs-3" />
             </div>
           ) }
 

@@ -17,6 +17,7 @@ class S2cMessagePageUpdated {
     this.revisionId = revision;
     this.revisionBody = page.revision.body;
     this.revisionUpdateAt = updatedAt;
+    this.revisionOrigin = page.revision.origin;
 
     if (user != null) {
       this.remoteLastUpdateUser = user;

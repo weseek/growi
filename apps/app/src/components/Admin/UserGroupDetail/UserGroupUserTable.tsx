@@ -52,9 +52,9 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                       type="button"
                       id={`admin-group-menu-button-${relatedUser._id}`}
                       className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                      data-toggle="dropdown"
+                      data-bs-toggle="dropdown"
                     >
-                      <i className="icon-settings"></i>
+                      <span className="material-symbols-outlined fs-5">settings</span>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
                       <button
@@ -77,7 +77,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={props.onClickPlusBtn}>
-                <i className="ti ti-plus"></i>
+                <span className="material-symbols-outlined">add</span>
               </button>
             </td>
             <td></td>

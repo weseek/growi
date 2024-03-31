@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import { Origin } from '@growi/core';
 import { userHomepagePath } from '@growi/core/dist/utils/page-path-utils';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +33,7 @@ export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
     if (!isCreatable || todaysPath == null) return;
 
     return createAndTransit(
-      { path: todaysPath },
+      { path: todaysPath, wip: true, origin: Origin.View },
       { shouldCheckPageExists: true },
     );
   }, [createAndTransit, isCreatable, todaysPath]);

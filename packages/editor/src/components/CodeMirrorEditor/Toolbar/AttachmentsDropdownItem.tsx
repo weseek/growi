@@ -11,6 +11,7 @@ type Props = {
   acceptedUploadFileType: AcceptedUploadFileType,
   children?: ReactNode,
   onUpload?: (files: File[]) => void,
+  onClose?: () => void,
 }
 
 export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
@@ -19,18 +20,32 @@ export const AttachmentsDropdownItem = (props: Props): JSX.Element => {
     acceptedUploadFileType,
     children,
     onUpload,
+    onClose,
   } = props;
 
   const {
     getRootProps,
     getInputProps,
     open,
-  } = useFileDropzone({ onUpload, acceptedUploadFileType });
+  } = useFileDropzone({
+    // close after uploading
+    // https://github.com/weseek/growi/pull/8564
+    onUpload: (files: File[]) => { onUpload?.(files); onClose?.() },
+    acceptedUploadFileType,
+    dropzoneOpts: {
+      noClick: true,
+      noDrag: true,
+      noKeyboard: true,
+      // close after cancelling
+      // https://github.com/weseek/growi/pull/8564
+      onFileDialogCancel: onClose,
+    },
+  });
 
   return (
     <div {...getRootProps()} className="dropzone">
       <input {...getInputProps()} />
-      <DropdownItem className="d-flex gap-2 align-items-center" onClick={open}>
+      <DropdownItem toggle={false} className="d-flex gap-2 align-items-center" onClick={open}>
         {children}
       </DropdownItem>
     </div>

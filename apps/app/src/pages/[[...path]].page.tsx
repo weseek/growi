@@ -80,6 +80,7 @@ const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditMod
 const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
 const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
+const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -260,7 +261,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     if (currentPageId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision.body);
+        mutateEditingMarkdown(pageData?.revision?.body);
       };
 
       // If skipSSR is true, use the API to retrieve page data.
@@ -382,6 +383,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <TemplateModal />
       <LinkEditModal />
       <TagEditModal />
+      <ConflictDiffModal />
     </>
   );
 };

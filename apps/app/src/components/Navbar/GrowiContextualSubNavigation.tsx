@@ -8,6 +8,7 @@ import type {
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { DropdownItem } from 'reactstrap';
 
@@ -35,6 +36,8 @@ import {
 import { CreateTemplateModal } from '../CreateTemplateModal';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
+
+import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
@@ -178,6 +181,8 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { currentPage } = props;
 
+  const { t } = useTranslation();
+
   const router = useRouter();
 
   const { data: shareLinkId } = useShareLinkId();
@@ -296,11 +301,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   return (
     <>
-      <div
+      <GroundGlassBar
         className={`${styles['grw-contextual-sub-navigation']}
           d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
+        id="grw-contextual-sub-nav"
       >
         {pageId != null && (
           <PageControls
@@ -328,7 +334,18 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             // grantUserGroupId={grantUserGroupId}
           />
         )}
-      </div>
+
+        { isGuestUser && (
+          <div className="mt-2">
+            <Link href="/login#register" className="btn me-2" prefetch={false}>
+              <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+            </Link>
+            <Link href="/login#login" className="btn btn-primary" prefetch={false}>
+              <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
+            </Link>
+          </div>
+        ) }
+      </GroundGlassBar>
 
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal

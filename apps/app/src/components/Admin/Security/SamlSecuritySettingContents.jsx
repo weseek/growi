@@ -471,7 +471,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           target="_blank"
                           rel="noreferer noreferrer"
                         >
-                          Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
+                          Apache Lucene - Query Parser Syntax <span className="growi-custom-icons">external_link</span>
                         </a>.
                       </p>
                       <div className="accordion" id="accordionId">
@@ -484,7 +484,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                               aria-expanded="true"
                               aria-controls="ablchelp"
                             >
-                              <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                              <span
+                                className="material-symbols-outlined me-1"
+                                small
+                              >{this.state.isHelpOpened ? 'expand_more' : 'chevron_right'}
+                              </span> Show more...
                             </button>
                           </h2>
                           <Collapse isOpen={this.state.isHelpOpened}>

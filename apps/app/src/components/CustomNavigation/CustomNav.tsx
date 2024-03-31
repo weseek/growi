@@ -183,7 +183,7 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
                 className={`p-0 ${isActive ? 'active' : inactiveClassnames.join(' ')}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  { Icon != null && <Icon /> } {i18n}
+                  { Icon != null && <span className="me-1"><Icon /></span> } {i18n}
                 </NavLink>
               </NavItem>
             );

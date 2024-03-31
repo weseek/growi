@@ -1,81 +1,10 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-@use './variables' as var;
-
 @import './mixins/editing';
 @import './mixins/fluid-layout';
 @import './mixins/share-link';
 
-@mixin variable-font-size($basesize) {
-  font-size: $basesize * 0.6;
-
-  @include bs.media-breakpoint-only(sm) {
-    font-size: #{$basesize * 0.7};
-  }
-  @include bs.media-breakpoint-only(md) {
-    font-size: #{$basesize * 0.8};
-  }
-  @include bs.media-breakpoint-only(lg) {
-    font-size: #{$basesize * 0.9};
-  }
-  @include bs.media-breakpoint-up(xl) {
-    font-size: $basesize;
-  }
-}
-
 @mixin apply-navigation-transition() {
   transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
   transition-duration: 300ms;
-}
-
-@mixin border-vertical($beforeOrAfter, $borderLength, $zIndex: initial, $isBtnGroup: false) {
-  position: relative;
-  @if $isBtnGroup {
-    &:not(:first-child) {
-      margin-left: 0;
-      border-left: none;
-    }
-    &:not(:last-child) {
-      border-right: none;
-    }
-  }
-  &:not(:first-child) {
-    &::#{$beforeOrAfter} {
-      position: absolute;
-      top: calc((100% - #{$borderLength}) / 2);
-      left: 0;
-      z-index: $zIndex;
-      width: 100%;
-      height: $borderLength;
-      margin-left: -0.5px;
-      content: '';
-      border-left: 1px solid transparent;
-      transition: border-color 0.15s ease-in-out;
-    }
-  }
-}
-
-@keyframes fadeout {
-  100% {
-    opacity: 0;
-  }
-}
-
-@mixin blink-bgcolor($bgcolor) {
-  position: relative;
-  z-index: 1;
-
-  &::after {
-    position: absolute;
-    top: 15%;
-    left: 0;
-    z-index: -1;
-    width: 100%;
-    height: 70%;
-    content: '';
-    background-color: $bgcolor;
-    border-radius: 2px;
-    animation: fadeout 1s ease-in 1.5s forwards;
-  }
 }
 
 @mixin grw-skeleton-text($font-size, $line-height) {
