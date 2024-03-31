@@ -79,7 +79,7 @@ class PageBulkExportService {
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find())
-      .addConditionToListOnlyDescendants(basePagePath);
+      .addConditionToListWithDescendants(basePagePath);
 
     return builder
       .query
