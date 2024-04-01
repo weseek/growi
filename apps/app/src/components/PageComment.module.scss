@@ -21,6 +21,7 @@
   }
 }
 
+// // Light mode color
 @include bs.color-mode(light) {
   .page-comment-styles :global {
     .btn-comment-reply {
@@ -31,9 +32,20 @@
       --bs-btn-border-color: #{( bs.$gray-200 )};
       --bs-btn-hover-border-color: #{( bs.$gray-300 )};
     }
+
+    .bg-comment {
+      background-color: rgba( bs.$gray-200, 0.5 );
+      border: 1px solid bs.$gray-200;
+      backdrop-filter: blur(10px);
+    }
+
+    .comment-timestamp {
+      color: bs.$gray-500;
+    }
   }
 }
 
+// dark mode color
 @include bs.color-mode(dark) {
   .page-comment-styles :global {
     .btn-comment-reply {
@@ -43,6 +55,16 @@
       --bs-btn-hover-bg: #{( bs.$gray-800 )};
       --bs-btn-border-color: #{( bs.$gray-700 )};
       --bs-btn-hover-border-color: #{( bs.$gray-600 )};
+    }
+
+    .bg-comment {
+      background-color: rgba( bs.$gray-800, 0.3 );
+      border: 1px solid bs.$gray-700;
+      backdrop-filter: blur(10px);
+    }
+
+    .comment-timestamp {
+      color: bs.$gray-600;
     }
   }
 }

@@ -84,35 +84,3 @@
     }
   }
 }
-
-// Light mode color
-@include bs.color-mode(light) {
-  .comment-styles :global {
-    // == Colors
-    .bg-comment {
-      background-color: rgba( bs.$gray-200, 0.5 );
-      border: 1px solid bs.$gray-200;
-      backdrop-filter: blur(10px);
-    }
-
-    .comment-timestamp {
-      color: bs.$gray-500;
-    }
-  }
-}
-
-// dark mode color
-@include bs.color-mode(dark) {
-  .comment-styles :global {
-    // == Colors
-    .bg-comment {
-      background-color: rgba( bs.$gray-800, 0.3 );
-      border: 1px solid bs.$gray-700;
-      backdrop-filter: blur(10px);
-    }
-
-    .comment-timestamp {
-      color: bs.$gray-600;
-    }
-  }
-}
