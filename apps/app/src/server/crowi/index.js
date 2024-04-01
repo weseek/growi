@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-this-alias */
+import { throws } from 'assert';
 import http from 'http';
 import path from 'path';
 
@@ -32,6 +33,7 @@ import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
+import PageCleanupCronService from '../service/page/page-cleanup-cron';
 import PassportService from '../service/passport';
 import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
@@ -100,6 +102,7 @@ class Crowi {
     this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
+    this.pageCleanupCronService = null;
 
     this.tokens = null;
 
@@ -175,6 +178,9 @@ Crowi.prototype.init = async function() {
     this.setupExternalAccountService(),
     this.setupExternalUserGroupSyncService(),
   ]);
+
+  // Must be called after this.setupPageService() completes
+  await this.setupPageCleanupCronService();
 
   await this.autoInstall();
 
@@ -735,6 +741,13 @@ Crowi.prototype.setupPageService = async function() {
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
     await this.pageOperationService.init();
+  }
+};
+
+Crowi.prototype.setupPageCleanupCronService = async function() {
+  if (this.pageCleanupCronService == null) {
+    this.pageCleanupCronService = new PageCleanupCronService(this);
+    this.pageCleanupCronService.startCron();
   }
 };
 
