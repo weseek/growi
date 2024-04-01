@@ -319,13 +319,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               <li className="nav-item">
                 <a className="nav-link rounded-1 rounded-end-0" href="#comment_preview" data-bs-toggle="tab">
                   <span className="material-symbols-outlined">play_arrow</span>
-                  <small>{t('Preview')}</small>
+                  <small className="d-none d-sm-inline-block">{t('Preview')}</small>
                 </a>
               </li>
               <li className="nav-item">
                 <a className="nav-link active rounded-1 rounded-start-0" aria-current="page" href="#comment_editor" data-bs-toggle="tab">
                   <span className="material-symbols-outlined me-1 fs-5">edit_square</span>
-                  <small>{t('Write')}</small>
+                  <small className="d-none d-sm-inline-block">{t('Write')}</small>
                 </a>
               </li>
             </ul>
