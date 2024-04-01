@@ -1,6 +1,7 @@
 import React from 'react';
 
-import {
+import { IExternalAuthProviderType } from '@growi/core';
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -10,11 +11,11 @@ import Head from 'next/head';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { IExternalAccountLoginError, isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
+import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
+import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
-import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
-} from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from '~/pages/utils/commons';
 import {
   useCsrfToken,
   useCurrentPathname,
@@ -27,7 +28,7 @@ type Props = CommonProps & {
   registrationMode: RegistrationMode,
   pageWithMetaStr: string,
   isMailerSetup: boolean,
-  enabledStrategies: unknown,
+  enabledExternalAuthType: IExternalAuthProviderType[],
   registrationWhitelist: string[],
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
@@ -55,7 +56,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <LoginForm
-        objOfIsExternalAuthEnableds={props.enabledStrategies}
+        enabledExternalAuthType={props.enabledExternalAuthType}
         isLocalStrategySetup={props.isLocalStrategySetup}
         isLdapStrategySetup={props.isLdapStrategySetup}
         isLdapSetupFailed={props.isLdapSetupFailed}
@@ -88,15 +89,15 @@ function injectEnabledStrategies(context: GetServerSidePropsContext, props: Prop
     configManager,
   } = crowi;
 
-  const enabledStrategies = {
-    google: configManager.getConfig('crowi', 'security:passport-google:isEnabled'),
-    github: configManager.getConfig('crowi', 'security:passport-github:isEnabled'),
-    facebook: false,
-    saml: configManager.getConfig('crowi', 'security:passport-saml:isEnabled'),
-    oidc: configManager.getConfig('crowi', 'security:passport-oidc:isEnabled'),
-  };
+  props.enabledExternalAuthType = [
+    configManager.getConfig('crowi', 'security:passport-google:isEnabled') === true ? IExternalAuthProviderType.google : undefined,
+    configManager.getConfig('crowi', 'security:passport-github:isEnabled') === true ? IExternalAuthProviderType.github : undefined,
+    // configManager.getConfig('crowi', 'security:passport-facebook:isEnabled') ?? IExternalAuthProviderType.facebook : undefined,
+    configManager.getConfig('crowi', 'security:passport-saml:isEnabled') === true ? IExternalAuthProviderType.saml : undefined,
+    configManager.getConfig('crowi', 'security:passport-oidc:isEnabled') === true ? IExternalAuthProviderType.oidc : undefined,
 
-  props.enabledStrategies = enabledStrategies;
+  ]
+    .filter((authType): authType is Exclude<typeof authType, undefined> => authType != null);
 }
 
 async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
