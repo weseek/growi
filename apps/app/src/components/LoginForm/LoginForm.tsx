@@ -15,48 +15,13 @@ import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
-import { CompleteUserRegistration } from './CompleteUserRegistration';
+import { CompleteUserRegistration } from '../CompleteUserRegistration';
+
+import { ExternalAuthButton } from './ExternalAuthButton';
 
 import styles from './LoginForm.module.scss';
 
 const moduleClass = styles['login-form'];
-
-
-const ExternalAuthButton = ({ authType }: {authType: IExternalAuthProviderType}): JSX.Element => {
-  const { t } = useTranslation();
-
-  const authIcon = {
-    google: <span className="growi-custom-icons align-bottom">google</span>,
-    github: <span className="growi-custom-icons align-bottom">github</span>,
-    facebook: <span className="growi-custom-icons align-bottom">facebook</span>,
-    oidc: <span className="growi-custom-icons align-bottom">openid</span>,
-    saml: <span className="material-symbols-outlined align-bottom">key</span>,
-  };
-  const authBtn = `btn-auth-${authType.toString()}`;
-  const signin = {
-    google: 'Google',
-    github: 'GitHub',
-    facebook: 'Facebook',
-    oidc: 'OIDC',
-    saml: 'SAML',
-  };
-
-  const handleLoginWithExternalAuth = () => {
-    window.location.href = `/passport/${authType.toString()}`;
-  };
-
-  return (
-    <button
-      key={`btn-auth-${authType.toString()}`}
-      type="button"
-      className={`btn btn-secondary ${authBtn} my-2 col-10 col-sm-7 mx-auto d-flex`}
-      onClick={handleLoginWithExternalAuth}
-    >
-      <span>{authIcon[authType.toString()]}</span>
-      <span className="flex-grow-1">{t('Sign in with External auth', { signin: signin[authType.toString()] })}</span>
-    </button>
-  );
-};
 
 
 type LoginFormProps = {
@@ -315,7 +280,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
         </div>
       </>
     );
-  }, [props, t, enabledExternalAuthType]);
+  }, [props, t]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
