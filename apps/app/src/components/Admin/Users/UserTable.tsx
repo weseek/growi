@@ -43,7 +43,7 @@ const UserTable = (props: UserTableProps) => {
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'text-bg-warning';
+        additionalClassName = 'text-bg-secondary';
         text = 'Invited';
         break;
     }

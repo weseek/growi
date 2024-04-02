@@ -167,11 +167,11 @@ const UserManagement = (props: UserManagementProps) => {
 
           <div className="offset-md-1 col-md-6 my-2">
             <div>
-              {renderCheckbox('all', 'All', 'secondary')}
+              {renderCheckbox('all', 'All', 'primary')}
               {renderCheckbox('registered', 'Approval Pending', 'info')}
               {renderCheckbox('active', 'Active', 'success')}
               {renderCheckbox('suspended', 'Suspended', 'warning')}
-              {renderCheckbox('invited', 'Invited', 'warning')}
+              {renderCheckbox('invited', 'Invited', 'secondary')}
             </div>
             <div>
               { isNotifyCommentShow && <span className="text-warning">{t('admin:user_management.click_twice_same_checkbox')}</span> }
