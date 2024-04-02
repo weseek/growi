@@ -154,8 +154,6 @@ const schema = new Schema<PageDocument, PageModel>({
   toObject: { getters: true },
 });
 
-schema.index({ ttlTimestamp: 1 });
-
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
