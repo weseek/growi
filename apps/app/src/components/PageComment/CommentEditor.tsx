@@ -303,7 +303,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         className="btn btn-primary"
         onClick={postCommentHandler}
       >
-        {t('comment')}
+        {t('page_comment.comment')}
       </button>
     );
 

@@ -74,7 +74,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
 
   return (
     <div className={`${styles['page-comment-styles']} page-comments-row mt-5 py-4 border-top d-edit-none d-print-none`}>
-      <h4 className="mb-3">{t('comments')}</h4>
+      <h4 className="mb-3">{t('page_comment.comments')}</h4>
       <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
         <PageComment
           pageId={pageId}
