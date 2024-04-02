@@ -1,7 +1,7 @@
 import {
-  useState, useEffect, useCallback, memo, useMemo,
+  useState, useCallback, memo,
 } from 'react';
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
