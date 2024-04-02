@@ -3,12 +3,15 @@
 @use '~/styles/atoms/placeholders/buttons';
 
 .login-form :global {
-  // To adjust the behavior, this problem is not solved.
-  // See https://github.com/AaronCCWong/react-card-flip/issues/56
-  .react-card-front,
-  .react-card-back {
-    height: 0% !important;
-  }
+  //
+  // deactivated in order to fix https://redmine.weseek.co.jp/issues/143531 -- 2024.04.02 Yuki Takei
+  //
+  // // To adjust the behavior, this problem is not solved.
+  // // See https://github.com/AaronCCWong/react-card-flip/issues/56
+  // .react-card-front,
+  // .react-card-back {
+  //   height: 0% !important;
+  // }
 
   .collapse-external-auth {
     overflow: hidden;
