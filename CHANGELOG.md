@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.3](https://github.com/weseek/growi/compare/v6.3.2...v6.3.3) - 2024-04-02
+
+### 🚀 Improvement
+
+* imprv: Disable RequestedAuthnContext in SAML authentication (v6.3.x) (#8634) @yuki-takei
 
 ## [v6.3.2](https://github.com/weseek/growi/compare/v6.3.1...v6.3.2) - 2024-03-25
 
