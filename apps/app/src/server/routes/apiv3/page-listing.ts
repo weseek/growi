@@ -5,7 +5,7 @@ import { isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
-import { query, oneOf } from 'express-validator';
+import { query, oneOf, validationResult } from 'express-validator';
 import mongoose from 'mongoose';
 
 
@@ -38,10 +38,16 @@ const validator = {
     query('id').isMongoId(),
     query('path').isString(),
   ], 'id or path is required'),
-  pageIdsOrPathRequired: oneOf([
-    query('pageIds').isArray(),
-    query('path').isString(),
-  ], 'pageIds or path is required'),
+  pageIdsOrPathRequired: [
+    // type check independent of existence check
+    query('pageIds').isArray().optional(),
+    query('path').isString().optional(),
+    // existence check
+    oneOf([
+      query('pageIds').exists(),
+      query('path').exists(),
+    ], 'pageIds or path is required'),
+  ],
   infoParams: [
     query('attachBookmarkCount').isBoolean().optional(),
     query('attachShortBody').isBoolean().optional(),
@@ -124,7 +130,7 @@ const routerFactory = (crowi: Crowi): Router => {
     const pageGrantService: IPageGrantService = crowi.pageGrantService!;
 
     try {
-      const pages = pageIds != null && pageIds !== ''
+      const pages = pageIds != null
         ? await Page.findByIdsAndViewer(pageIds as string[], req.user, null, true)
         : await Page.findByPathAndViewer(path as string, req.user, null, false, true);
 
