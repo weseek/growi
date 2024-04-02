@@ -153,14 +153,14 @@ export const Comment = (props: CommentProps): JSX.Element => {
               <div className="small fw-bold me-3">
                 <Username user={creator} />
               </div>
-              <Link href={`#${commentId}`} prefetch={false} className="small comment-timestamp">
+              <Link href={`#${commentId}`} prefetch={false} className="small page-comment-revision">
                 <FormattedDistanceDate id={commentId} date={comment.createdAt} />
               </Link>
               <span className="ms-2">
                 <Link
                   id={`page-comment-revision-${commentId}`}
                   href={urljoin(returnPathForURL(pagePath, pageId), revHref)}
-                  className="page-comment-revision comment-timestamp"
+                  className="page-comment-revision"
                   prefetch={false}
                 >
                   <span className="material-symbols-outlined">history</span>

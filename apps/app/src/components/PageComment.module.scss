@@ -38,10 +38,6 @@
       border: 1px solid bs.$gray-200;
       backdrop-filter: blur(10px);
     }
-
-    .comment-timestamp {
-      color: bs.$gray-500;
-    }
   }
 }
 
@@ -61,10 +57,6 @@
       background-color: rgba( bs.$gray-800, 0.3 );
       border: 1px solid bs.$gray-700;
       backdrop-filter: blur(10px);
-    }
-
-    .comment-timestamp {
-      color: bs.$gray-600;
     }
   }
 }

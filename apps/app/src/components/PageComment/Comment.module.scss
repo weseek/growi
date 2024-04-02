@@ -84,3 +84,21 @@
     }
   }
 }
+
+// // Light mode color
+@include bs.color-mode(light) {
+  .comment-styles :global {
+    .page-comment-revision {
+      color: bs.$gray-500;
+    }
+  }
+}
+
+// // Dark mode color
+@include bs.color-mode(dark) {
+  .comment-styles :global {
+    .page-comment-revision {
+      color: bs.$gray-600;
+    }
+  }
+}
