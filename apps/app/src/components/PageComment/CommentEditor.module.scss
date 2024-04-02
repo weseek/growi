@@ -11,6 +11,11 @@
   .comment-form {
     position: relative;
 
+    // background
+    .bg-comment {
+      @extend %bg-comment
+    }
+
     // user icon
     .picture {
       @extend %picture;

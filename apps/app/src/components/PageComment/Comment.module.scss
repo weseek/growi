@@ -11,6 +11,11 @@
 
     scroll-margin-top: var.$grw-scroll-margin-top-in-view;
 
+    // background
+    .bg-comment {
+      @extend %bg-comment;
+    }
+
     // user icon
     .picture {
       @extend %picture;
