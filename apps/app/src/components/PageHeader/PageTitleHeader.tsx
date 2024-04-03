@@ -6,6 +6,7 @@ import nodePath from 'path';
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
+import { isMovablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 
 import { ValidationTarget } from '~/client/util/input-validator';
@@ -29,6 +30,8 @@ export const PageTitleHeader: FC<Props> = (props) => {
   const { currentPage } = props;
 
   const currentPagePath = currentPage.path;
+
+  const isMovable = isMovablePage(currentPagePath);
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const pageTitle = dPagePath.latter;
@@ -65,9 +68,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
   }, [currentPagePath]);
 
   const onClickPageTitle = useCallback(() => {
+    if (!isMovable) {
+      return;
+    }
+
     setEditedPagePath(currentPagePath);
     setRenameInputShown(true);
-  }, [currentPagePath]);
+  }, [currentPagePath, isMovable]);
 
 
   return (
@@ -90,7 +97,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <h1
           className={`mb-0 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
-            border rounded-2 ${borderColorClass}
+            ${isMovable ? 'border rounded-2' : ''} ${borderColorClass}
           `}
           onClick={onClickPageTitle}
         >
