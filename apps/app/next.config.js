@@ -70,6 +70,9 @@ module.exports = async(phase, { defaultConfig }) => {
   /** @type {import('next').NextConfig} */
   const nextConfig = {
 
+    // for OpenTelemetry
+    // https://nextjs.org/docs/app/building-your-application/optimizing/open-telemetry
+    experimental: { instrumentationHook: true },
     reactStrictMode: true,
     poweredByHeader: false,
     pageExtensions: ['page.tsx', 'page.ts', 'page.jsx', 'page.js'],
