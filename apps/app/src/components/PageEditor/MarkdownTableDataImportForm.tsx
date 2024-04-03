@@ -66,7 +66,7 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
           <option value="html">HTML</option>
         </select>
       </div>
-      <div>
+      <div className="mt-2">
         <label htmlFor="data-import-form-type-textarea" className="form-label">{t('import_data')}</label>
         <textarea
           id="data-import-form-type-textarea"
@@ -88,8 +88,8 @@ export const MarkdownTableDataImportForm = (props: MarkdownTableDataImportFormPr
           />
         </div>
       </Collapse>
-      <div className="d-flex justify-content-end">
-        <Button color="secondary me-2" onClick={onCancel}>{t('cancel')}</Button>
+      <div className="mt-3 d-flex justify-content-end">
+        <Button color="outline-neutral-secondary me-2" onClick={onCancel}>{t('cancel')}</Button>
         <Button color="primary" onClick={importButtonHandler}>{t('import')}</Button>
       </div>
     </form>

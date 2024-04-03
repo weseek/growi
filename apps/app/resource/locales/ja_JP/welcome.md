@@ -1,60 +1,51 @@
 # :tada: GROWI へようこそ
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
 
-GROWI は個人・法人向けの Wiki | ナレッジベースツールです。  
+GROWI は法人・個人向けの wiki | ナレッジベースツールです。  
 会社や大学の研究室、サークルでのナレッジ情報を簡単に共有でき、作られたページは誰でも編集が可能です。
 
 知っている情報をカジュアルに書き出しみんなで編集することで、**チーム内での暗黙知を減らす**ことができます。  
-当たり前に共有される情報を日々増やしていきましょう。
+当たり前に共有される情報を日々増やしていきましょう！
 
-### :beginner: 簡単なページの作り方
-
-- 右上の "**作成**"ボタンまたは右下の**鉛筆アイコン**のボタンからページを書き始めることができます
-    - ページタイトルは後から変更できますので、適当に入力しても大丈夫です
-        - タイトル入力欄では、半角の `/` (スラッシュ) でページ階層を作れます
-        - （例）`/カテゴリ1/カテゴリ2/作りたいページタイトル` のように入力してみてください
-- `- ` を行頭につけると、この文章のような箇条書きを書くことができます
-- 画像やPDF、Word/Excel/PowerPointなどの添付ファイルも、コピー＆ペースト、ドラッグ＆ドロップで貼ることができます
-- 書けたら "**更新**" ボタンを押してページを公開しましょう
-    - `Ctrl(⌘) + S` でも保存できます
-
-さらに詳しくはこちら: [ページを作成する](https://docs.growi.org/ja/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">Tips</div>
-  <div class="card-body"><ul>
-    <li>Ctrl(⌘) + "/" でショートカットヘルプを表示します</li>
-    <li>HTML/CSS の記述には、<a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4</a> を利用できます</li>
-  </ul></div>
+<div class="alert alert-primary" role="alert">
+※こちらのページは wiki の TOP ページとして自由に編集してご活用ください
 </div>
 
+# :beginner: GROWI でできること
+## 1. **【情報の蓄積】** ページを作成し情報やナレッジの蓄積ができます
+- ページの作成と編集方法 
+    - 画面左上の「鉛筆アイコン」から新規でページを作成することが可能です
+    - 作成済みのページは画面右上の「Edit」からページを編集することが可能です
+- ページの管理方法
+    - GROWI ではページを「階層構造」で管理します
+        - ` /ページa/ページb/ページc ` のような構造
+    - 「階層構造」とは別に「タグ」でもページを管理することが可能です
 
-# :anchor: 管理者の方へ <small>〜Wikiを作ったら〜</small>
+## 2. **【情報の検索】** 情報やナレッジは様々な方法で検索できます
+- キーワード検索
+- 各種サイドバーを活用した検索
+    - 「ページツリー」からの検索
+    - 「最新の変更」からの検索
+    - 「タグ」からの検索 など…
 
-### :arrow_right: 複数人でWikiを使いますか？
-- :heavy_check_mark: メンバーを招待しましょう
-    - [Wikiに新しいメンバーを追加・招待する](https://docs.growi.org/ja/admin-guide/management-cookbook/user-management.html#%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E4%BB%AE%E7%99%BA%E8%A1%8C)
-### :arrow_right: Slackと連携してページやコメントの通知を受け取りましょう
-- :heavy_check_mark:  [Slack連携](https://docs.growi.org/ja/admin-guide/management-cookbook/slack-integration/#%E6%A6%82%E8%A6%81)
-### :arrow_right: 他のシステムからの乗り換えですか？
-- :heavy_check_mark: 他の GROWI、esa. io、Qiita:Team のデータをインポートすることが出来ます
-    -  [データのインポート](https://docs.growi.org/ja/admin-guide/management-cookbook/import.html)
+## 3. **【情報の共有】** 情報やナレッジは社内外を問わず簡単に共有可能です
+- 社内のメンバーに対してはページの URL やパーマリンクを送ることで共有が可能です
+    - 社内のメンバー内でも「ユーザーグループ」を活用することで閲覧権限の管理をすることが可能です
+- アカウントを保有していない社外のユーザーのページ閲覧を可能にすることも可能です
+    - 「共有リンク」を活用し社外のユーザーに情報を共有しましょう
 
-さらに詳しくはこちら: [管理者ガイド](https://docs.growi.org/ja/admin-guide/)
+#### :bulb:ページの編集方法が分からないときは [Sandbox](/Sandbox) を確認してみましょう！
 
 
-# コンテンツリストアップ例
+# :wrench:管理者の方へ ～ GROWI を作成したら～
 
-テーブルと `$lsx` を使ってコンテンツリストを表示できます。
+### :arrow_right: 複数人で GROWI を使いますか？
+- :heavy_check_mark: メンバーを招待しましょう！
+    - [GROWI に新しいメンバーを追加・招待する](https://docs.growi.org/ja/admin-guide/management-cookbook/user-management.html#%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E4%BB%AE%E7%99%BA%E8%A1%8C)
 
-| 全てのページリスト (First 15 pages) | [/Sandbox] 配下ページ一覧 |
-| ----------------------------------- | ------------------------- |
-| $lsx(/,num=15)                      | $lsx(/Sandbox)            |
+### :arrow_right: GROWI の見た目はこのままで満足ですか？
+- :heavy_check_mark: GROWI の見た目をカスタイマイズしましょう！
+    - [GROWI のテーマをカスタイマイズする](/admin/customize)
 
-# Slack
-
-<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
-
-GROWI をより良いものにするために、是非 Slack に参加してください。  
-開発に関する議論を行っている他、導入時の質問等も受け付けています。
+### :arrow_right: GROWI のセキュリティ設定は完了していますか？
+- :heavy_check_mark: GROWI のセキュリティ設定を更新しましょう！
+    - [GROWI のセキュリティ設定を更新する](/admin/security)

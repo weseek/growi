@@ -15,7 +15,7 @@ import Accordion from '../Common/Accordion';
 
 import ManageCommandsProcess from './ManageCommandsProcess';
 import MessageBasedOnConnection from './MessageBasedOnConnection';
-import { addLogs } from './slak-integration-util';
+import { addLogs } from './slack-integration-util';
 
 const logger = loggerFactory('growi:SlackIntegration:WithProxyAccordionsWrapper');
 
@@ -25,7 +25,7 @@ const BotCreateProcess = () => {
     <div className="my-5 d-flex flex-column align-items-center">
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://api.slack.com/apps', '_blank')}>
         {t('admin:slack_integration.accordion.create_bot')}
-        <i className="fa fa-external-link ms-2" aria-hidden="true" />
+        <span className="growi-custom-icons ms-2">external_link</span>
       </button>
       <a
         href={t('admin:slack_integration.docs_url.custom_bot_with_proxy_setting')}
@@ -35,7 +35,7 @@ const BotCreateProcess = () => {
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_create_a_bot')}
-            <i className="fa fa-external-link ms-2" aria-hidden="true" />
+            <span className="growi-custom-icons ms-2">external_link</span>
           </small>
         </p>
       </a>
@@ -49,7 +49,7 @@ const BotInstallProcessForOfficialBot = () => {
     <div className="my-5 d-flex flex-column align-items-center">
       <button type="button" className="btn btn-primary text-nowrap" onClick={() => window.open('https://slackbot-proxy.growi.org/', '_blank')}>
         {t('admin:slack_integration.accordion.install_now')}
-        <i className="fa fa-external-link ms-2" aria-hidden="true" />
+        <span className="growi-custom-icons ms-2">external_link</span>
       </button>
       <a
         href={t('admin:slack_integration.docs_url.official_bot_setting')}
@@ -59,7 +59,7 @@ const BotInstallProcessForOfficialBot = () => {
         <p className="text-center mt-1">
           <small>
             {t('admin:slack_integration.accordion.how_to_install')}
-            <i className="fa fa-external-link ms-2" aria-hidden="true" />
+            <span className="growi-custom-icons ms-2">external_link</span>
           </small>
         </p>
       </a>
@@ -240,13 +240,13 @@ const TestProcess = ({
     <>
       <p className="text-center m-4">{t('admin:slack_integration.accordion.test_connection_by_pressing_button')}</p>
       <p className="text-center text-warning">
-        <i className="icon-info">{t('admin:slack_integration.accordion.test_connection_only_public_channel')}</i>
+        <span className="material-symbols-outlined me-1">info</span>{t('admin:slack_integration.accordion.test_connection_only_public_channel')}
       </p>
       <div className="d-flex justify-content-center">
         <form className="justify-content-center" onSubmit={e => submitForm(e)}>
           <div className="input-group col-8">
             <div>
-              <span className="input-group-text" id="slack-channel-addon"><i className="fa fa-hashtag" /></span>
+              <span className="input-group-text" id="slack-channel-addon"><span className="material-symbols-outlined">tag</span></span>
             </div>
             <input
               className="form-control"
@@ -391,7 +391,7 @@ const WithProxyAccordions = (props) => {
               <>
                 <span className="me-3">{key}</span>
                 {t(`admin:slack_integration.accordion.${value.title}`)}
-                {value.title === 'test_connection' && isLatestConnectionSuccess && <i className="ms-3 text-success fa fa-check"></i>}
+                {value.title === 'test_connection' && isLatestConnectionSuccess && <span className="material-symbols-outlined ms-3 text-success">check</span>}
               </>
             )}
             key={key}

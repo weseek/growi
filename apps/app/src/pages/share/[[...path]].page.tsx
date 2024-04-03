@@ -12,7 +12,8 @@ import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { ShareLinkPageView } from '~/components/ShareLinkPageView';
-import { SupportedAction, SupportedActionType } from '~/interfaces/activity';
+import type { SupportedActionType } from '~/interfaces/activity';
+import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
@@ -26,8 +27,9 @@ import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores
 import loggerFactory from '~/utils/logger';
 
 import type { NextPageWithLayout } from '../_app.page';
+import type { CommonProps } from '../utils/commons';
 import {
-  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, CommonProps, skipSSR,
+  getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
 } from '../utils/commons';
 
 const logger = loggerFactory('growi:next-page:share');
@@ -122,8 +124,6 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
           <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
-
         <ShareLinkPageView
           pagePath={pagePath}
           rendererConfig={props.rendererConfig}
@@ -201,23 +201,6 @@ function getAction(props: Props): SupportedActionType {
 
   return action;
 }
-
-async function addActivity(context: GetServerSidePropsContext, action: SupportedActionType): Promise<void> {
-  const req: CrowiRequest = context.req as CrowiRequest;
-
-  const parameters = {
-    ip: req.ip,
-    endpoint: req.originalUrl,
-    action,
-    user: req.user?._id,
-    snapshot: {
-      username: req.user?.username,
-    },
-  };
-
-  await req.crowi.activityService.createActivity(parameters);
-}
-
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const req = context.req as CrowiRequest;
   const { crowi, params } = req;

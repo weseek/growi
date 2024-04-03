@@ -1,11 +1,16 @@
-import React, { type ReactNode, useCallback, useState } from 'react';
+import React, { type ReactNode, useCallback } from 'react';
 
-import type { IGrantedGroup } from '@growi/core';
+import { Origin } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { EditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
-import { useOnPageEditorModeButtonClicked } from './hooks';
+import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { toastError } from '~/client/util/toastr';
+import { useIsNotFound } from '~/stores/page';
+import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+
+import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
+
 
 import styles from './PageEditorModeManager.module.scss';
 
@@ -15,7 +20,7 @@ type PageEditorModeButtonProps = {
   editorMode: EditorMode,
   children?: ReactNode,
   isBtnDisabled?: boolean,
-  onClick?: (mode: EditorMode) => void,
+  onClick?: () => void,
 }
 const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
   const {
@@ -34,7 +39,7 @@ const PageEditorModeButton = React.memo((props: PageEditorModeButtonProps) => {
     <button
       type="button"
       className={classNames.join(' ')}
-      onClick={() => onClick?.(editorMode)}
+      onClick={onClick}
       data-testid={`${editorMode}-button`}
     >
       {children}
@@ -46,9 +51,6 @@ type Props = {
   editorMode: EditorMode | undefined,
   isBtnDisabled: boolean,
   path?: string,
-  grant?: number,
-  // grantUserGroupId?: string
-  grantUserGroupIds?: IGrantedGroup[]
 }
 
 export const PageEditorModeManager = (props: Props): JSX.Element => {
@@ -56,25 +58,34 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     editorMode = EditorMode.View,
     isBtnDisabled,
     path,
-    // grant,
-    // grantUserGroupId,
   } = props;
 
-  const { t } = useTranslation();
-  const [isCreating, setIsCreating] = useState(false);
+  const { t } = useTranslation('commons');
 
+  const { data: isNotFound } = useIsNotFound();
+  const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
-  const onPageEditorModeButtonClicked = useOnPageEditorModeButtonClicked(setIsCreating, path);
-  const _isBtnDisabled = isCreating || isBtnDisabled;
+  const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
-  const pageEditorModeButtonClickedHandler = useCallback((viewType: EditorMode) => {
-    if (_isBtnDisabled) {
+  const editButtonClickedHandler = useCallback(async() => {
+    if (isNotFound == null || isNotFound === false) {
+      mutateEditorMode(EditorMode.Editor);
       return;
     }
 
-    onPageEditorModeButtonClicked?.(viewType);
-  }, [_isBtnDisabled, onPageEditorModeButtonClicked]);
+    try {
+      await createAndTransit(
+        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
+        { shouldCheckPageExists: true },
+      );
+    }
+    catch (err) {
+      toastError(t('toaster.create_failed', { target: path }));
+    }
+  }, [createAndTransit, isNotFound, mutateEditorMode, path, t]);
+
+  const _isBtnDisabled = isCreating || isBtnDisabled;
 
   return (
     <>
@@ -89,7 +100,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             currentEditorMode={editorMode}
             editorMode={EditorMode.View}
             isBtnDisabled={_isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
+            onClick={() => mutateEditorMode(EditorMode.View)}
           >
             <span className="material-symbols-outlined fs-4">play_arrow</span>{t('View')}
           </PageEditorModeButton>
@@ -99,7 +110,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             currentEditorMode={editorMode}
             editorMode={EditorMode.Editor}
             isBtnDisabled={_isBtnDisabled}
-            onClick={pageEditorModeButtonClickedHandler}
+            onClick={editButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
           </PageEditorModeButton>

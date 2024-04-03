@@ -2,7 +2,7 @@
 
 @use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';
-@use './theme/hsl-functions' as hsl;
+// @use './theme/hsl-functions' as hsl;
 
 .growi:not(.login-page) {
   // add background-image

@@ -53,12 +53,6 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
               defaultValue={adminCustomizeContainer.state.currentCustomizeNoscript || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeNoscript(e.target.value) }}
             />
-            {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <span className="form-text text-muted text-end">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true"></i>
-              {t('admin:customize_settings.ctrl_space')}
-            </span>
-            */}
           </div>
 
           <a
@@ -69,7 +63,7 @@ const CustomizeNoscriptSetting = (props: Props): JSX.Element => {
             aria-expanded="false"
             aria-controls="collapseExampleHtml"
           >
-            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+            <span className="material-symbols-outlined me-1" aria-hidden="true">navigate_next</span>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleHtml">

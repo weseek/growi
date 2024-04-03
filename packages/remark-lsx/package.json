@@ -1,6 +1,6 @@
 {
   "name": "@growi/remark-lsx",
-  "version": "7.0.0-RC.0",
+  "version": "7.0.2-RC.0",
   "description": "GROWI plugin to list pages",
   "license": "MIT",
   "keywords": [
@@ -50,7 +50,7 @@
     "unist-util-visit": "^4.0.0"
   },
   "peerDependencies": {
-    "next": "^13",
+    "next": "^14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

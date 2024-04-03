@@ -14,7 +14,6 @@ import { KeycloakUserGroupSyncService } from '~/features/external-user-group/ser
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
-import CdnResourcesService from '~/services/cdn-resources-service';
 import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
@@ -29,6 +28,7 @@ import { instanciate as instanciateExternalAccountService } from '../service/ext
 import { FileUploader, getUploader } from '../service/file-uploader'; // eslint-disable-line no-unused-vars
 import { G2GTransferPusherService, G2GTransferReceiverService } from '../service/g2g-transfer';
 import { InstallerService } from '../service/installer';
+import { normalizeData } from '../service/normalize-data';
 import PageService from '../service/page';
 import PageGrantService from '../service/page-grant';
 import PageOperationService from '../service/page-operation';
@@ -37,7 +37,9 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
+import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -48,6 +50,12 @@ class Crowi {
 
   /** @type {AppService} */
   appService;
+
+  /** @type {import('../service/page').IPageService} */
+  pageService;
+
+  /** @type UserNotificationService */
+  userNotificationService;
 
   /** @type {FileUploader} */
   fileUploadService;
@@ -73,7 +81,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.userNotificationService = null;
     this.xssService = null;
     this.aclService = null;
     this.appService = null;
@@ -85,9 +92,7 @@ class Crowi {
     this.pluginService = null;
     this.searchService = null;
     this.socketIoService = null;
-    this.pageService = null;
     this.syncPageStatusService = null;
-    this.cdnResourcesService = new CdnResourcesService();
     this.slackIntegrationService = null;
     this.inAppNotificationService = null;
     this.activityService = null;
@@ -172,6 +177,8 @@ Crowi.prototype.init = async function() {
   ]);
 
   await this.autoInstall();
+
+  await normalizeData();
 };
 
 /**
@@ -470,8 +477,13 @@ Crowi.prototype.start = async function() {
 
   // setup terminus
   this.setupTerminus(httpServer);
+
   // attach to socket.io
   this.socketIoService.attachServer(httpServer);
+
+  // Initialization YjsConnectionManager
+  instantiateYjsConnectionManager(this.socketIoService.io);
+  this.socketIoService.setupYjsConnection();
 
   // listen
   const serverListening = httpServer.listen(this.port, () => {
@@ -712,11 +724,13 @@ Crowi.prototype.setupGrowiPluginService = async function() {
 };
 
 Crowi.prototype.setupPageService = async function() {
-  if (this.pageService == null) {
-    this.pageService = new PageService(this);
-  }
   if (this.pageGrantService == null) {
     this.pageGrantService = new PageGrantService(this);
+  }
+  // initialize after pageGrantService since pageService uses pageGrantService in constructor
+  if (this.pageService == null) {
+    this.pageService = new PageService(this);
+    await this.pageService.createTtlIndex();
   }
   if (this.pageOperationService == null) {
     this.pageOperationService = new PageOperationService(this);
