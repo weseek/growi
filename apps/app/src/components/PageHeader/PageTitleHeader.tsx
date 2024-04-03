@@ -97,7 +97,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
         <h1
           className={`mb-0 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
-            ${isMovable ? 'border rounded-2' : ''} ${borderColorClass}
+            ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}
           onClick={onClickPageTitle}
         >
