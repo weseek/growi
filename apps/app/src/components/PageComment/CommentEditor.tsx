@@ -9,6 +9,9 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/router';
+import {
+  TabContent, TabPane,
+} from 'reactstrap';
 
 import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
@@ -24,6 +27,7 @@ import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
+import { CustomNavTab } from '../CustomNavigation/CustomNavButton';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
@@ -38,6 +42,16 @@ const logger = loggerFactory('growi:components:CommentEditor');
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
+const navTabMapping = {
+  comment_editor: {
+    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
+    i18n: 'Write',
+  },
+  comment_preview: {
+    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
+    i18n: 'Preview',
+  },
+};
 
 export type CommentEditorProps = {
   pageId: string,
@@ -78,6 +92,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
+  const [activeTab, setActiveTab] = useState('comment_editor');
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
   const [incremented, setIncremented] = useState(false);
@@ -99,6 +114,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       router.events.off('routeChangeComplete', onRouterChangeComplete);
     };
   }, [onRouterChangeComplete, router.events]);
+
+  const handleSelect = useCallback((activeTab: string) => {
+    setActiveTab(activeTab);
+  }, []);
 
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
   const slackChannelsDataString = slackChannelsData?.toString();
@@ -123,6 +142,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
 
     setComment('');
+    setActiveTab('comment_editor');
     setError(undefined);
     initializeSlackEnabled();
     // reset value
@@ -309,29 +329,16 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
     return (
       <>
-        <div className="comment-write px-4 pt-3 pb-1">
+        <div className="px-4 pt-3 pb-1">
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="d-flex">
               <UserPicture user={currentUser} noLink noTooltip />
               <p className="ms-2 mb-0">Add a comment</p>
             </div>
-            <ul className="nav nav-pills rounded-2">
-              <li className="nav-item">
-                <a className="nav-link rounded-1 rounded-end-0" href="#comment_preview" data-bs-toggle="tab">
-                  <span className="material-symbols-outlined">play_arrow</span>
-                  <small className="d-none d-sm-inline-block">{t('Preview')}</small>
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link active rounded-1 rounded-start-0" aria-current="page" href="#comment_editor" data-bs-toggle="tab">
-                  <span className="material-symbols-outlined me-1 fs-5">edit_square</span>
-                  <small className="d-none d-sm-inline-block">{t('Write')}</small>
-                </a>
-              </li>
-            </ul>
+            <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} />
           </div>
-          <div className="tab-content">
-            <div id="comment_editor" className="tab-pane active">
+          <TabContent activeTab={activeTab}>
+            <TabPane tabId="comment_editor">
               <CodeMirrorEditorComment
                 acceptedUploadFileType={acceptedUploadFileType}
                 onChange={onChangeHandler}
@@ -339,13 +346,13 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
                 onUpload={uploadHandler}
                 editorSettings={editorSettings}
               />
-            </div>
-            <div id="comment_preview" className="tab-pane">
+            </TabPane>
+            <TabPane tabId="comment_preview">
               <div className="comment-form-preview">
                 {commentPreview}
               </div>
-            </div>
-          </div>
+            </TabPane>
+          </TabContent>
         </div>
 
         <div className="comment-submit px-4 pb-3 mb-2">

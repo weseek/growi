@@ -1,0 +1,39 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@include bs.color-mode(light) {
+  .grw-custom-nav-tab :global {
+    .nav-title {
+      background-color: bs.$gray-100;
+    }
+
+    .active {
+      background-color: bs.$gray-500;
+    }
+    .passive {
+      background-color: white;
+      &:hover {
+        background-color: bs.$gray-100;
+      }
+    }
+  }
+}
+
+
+@include bs.color-mode(dark) {
+  .grw-custom-nav-tab :global {
+    .nav-title {
+      border: 2px solid bs.$gray-800;
+    }
+
+    .active {
+      background-color: bs.$gray-800;
+    }
+    .passive {
+      background-color: bs.$gray-600;
+      &:hover {
+        background-color: rgba(bs.$gray-600, 0.1);
+      }
+    }
+  }
+}
+

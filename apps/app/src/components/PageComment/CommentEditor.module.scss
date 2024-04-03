@@ -26,45 +26,4 @@
       padding-top: 0.5em;
     }
   }
-  .comment-write {
-    .nav {
-      --bs-nav-link-padding-x: 12px;
-      --bs-nav-link-padding-y: 6px;
-    }
-  }
-}
-
-@include bs.color-mode(light) {
-  .comment-editor-styles :global {
-    .comment-write {
-      .nav.nav-pills {
-        background-color: white;
-        &:hover {
-          background-color: bs.$gray-100;
-        }
-        border: 2px solid bs.$gray-500;
-        --bs-nav-link-color: #{ bs.$gray-500 };
-        --bs-nav-link-hover-color: #{ bs.$gray-500 };
-        --bs-nav-pills-link-active-bg: #{ bs.$gray-500 };
-      }
-    }
-  }
-}
-
-@include bs.color-mode(dark) {
-  .comment-editor-styles :global {
-    .comment-write {
-      .nav.nav-pills {
-        // background-color: bs.$gray-600;
-        &:hover {
-          background-color: rgba(bs.$gray-600, 0.1);
-        }
-        border: 2px solid bs.$gray-800;
-        --bs-nav-pills-link-active-color: #{ bs.$gray-400 };
-        --bs-nav-link-color: #{ bs.$gray-400 };
-        --bs-nav-link-hover-color: #{ bs.$gray-400 };
-        --bs-nav-pills-link-active-bg: #{ bs.$gray-800 };
-      }
-    }
-  }
 }
