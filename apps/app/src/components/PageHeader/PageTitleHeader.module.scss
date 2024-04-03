@@ -5,6 +5,9 @@
     min-height: unset;
     padding: 0 0.5rem;
     line-height: 1em;
+    transform: translateX(-0.5rem) translateY(0rem);
+  }
+}
 
 .page-title-header-border-color {
   --bs-border-color: transparent;
