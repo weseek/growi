@@ -21,9 +21,8 @@ export const PageHeader: FC = () => {
       <PagePathHeader
         currentPage={currentPage}
       />
-      <div className="row mt-1">
+      <div className="mt-1">
         <PageTitleHeader
-          className="col"
           currentPage={currentPage}
         />
       </div>
