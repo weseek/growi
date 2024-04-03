@@ -95,7 +95,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
           </div>
         ) }
         <h1
-          className={`mb-0 fs-4
+          className={`mb-0 px-2 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}
@@ -114,7 +114,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
           pageId={currentPage._id}
           pagePath={currentPage.path}
           dropdownToggleId={`copydropdown-${currentPage._id}`}
-          dropdownToggleClassName="ms-2 p-1"
+          dropdownToggleClassName="p-1"
         >
           <span className="material-symbols-outlined fs-6">content_paste</span>
         </CopyDropdown>
