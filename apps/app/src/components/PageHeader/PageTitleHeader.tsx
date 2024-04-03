@@ -16,7 +16,8 @@ import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import styles from './PageTitleHeader.module.scss';
 
-const moduleClass = styles['page-title-header'];
+const moduleClass = styles['page-title-header'] ?? '';
+const borderColorClass = styles['page-title-header-border-color'] ?? '';
 
 type Props = {
   currentPage: IPagePopulatedToShowRevision,
@@ -86,7 +87,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
             />
           </div>
         ) }
-        <h1 className={`mb-0 fs-4 ${isRenameInputShown ? 'invisible' : ''} text-truncate`} onClick={onClickPageTitle}>
+        <h1
+          className={`mb-0 fs-4
+            ${isRenameInputShown ? 'invisible' : ''} text-truncate
+            border rounded-2 ${borderColorClass}
+          `}
+          onClick={onClickPageTitle}
+        >
           {pageTitle}
         </h1>
       </div>
