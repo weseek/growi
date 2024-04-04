@@ -63,14 +63,14 @@ const findElementIndexFromDataLine = (previewElements: Array<Element>, dataline:
 
 
 type SourceElement = {
-  start: DOMRect,
-  top: DOMRect,
-  next: DOMRect | undefined,
+  start?: DOMRect,
+  top?: DOMRect,
+  next?: DOMRect,
 }
 
 type TargetElement = {
-  start: DOMRect,
-  next: DOMRect | undefined,
+  start?: DOMRect,
+  next?: DOMRect,
 }
 
 const calcScrollElementToTop = (element: Element): number => {
@@ -78,7 +78,13 @@ const calcScrollElementToTop = (element: Element): number => {
 };
 
 const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: TargetElement): number => {
-  if (sourceElement.start === sourceElement.next || sourceElement.next == null || targetElement.next == null) {
+  if (sourceElement.start === sourceElement.next) {
+    return 0;
+  }
+  if (sourceElement.start == null || sourceElement.top == null || sourceElement.next == null) {
+    return 0;
+  }
+  if (targetElement.start == null || targetElement.next == null) {
     return 0;
   }
   const sourceAllHeight = sourceElement.next.top - sourceElement.start.top;
@@ -101,6 +107,8 @@ const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLEl
 
   const topEditorElementIndex = findTopElementIndex(editorElements);
   const topPreviewElementIndex = findElementIndexFromDataLine(previewElements, getDataLine(editorElements[topEditorElementIndex]));
+
+  console.log(getDataLine(editorElements[topEditorElementIndex]));
 
   const startEditorElementIndex = findElementIndexFromDataLine(editorElements, getDataLine(previewElements[topPreviewElementIndex]));
   const nextEditorElementIndex = findElementIndexFromDataLine(editorElements, getDataLine(previewElements[topPreviewElementIndex + 1]));
