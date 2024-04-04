@@ -154,7 +154,7 @@ export class InstallerService {
       return adminUser;
     }
     catch (err) {
-      logger.error(err);
+      logger.error('Create first admin user failed', err);
       throw new FailedToCreateAdminUserError(err);
     }
 
