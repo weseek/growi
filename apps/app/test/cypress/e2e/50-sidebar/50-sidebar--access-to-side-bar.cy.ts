@@ -22,7 +22,7 @@ describe('Access to sidebar', () => {
         cy.visit('/');
 
         // Since this is a sidebar test, call collapseSidebar in beforeEach.
-        cy.collapseSidebar(false);
+        cy.collapseSidebar(false, true);
       });
 
       describe('Test show/collapse button', () => {
