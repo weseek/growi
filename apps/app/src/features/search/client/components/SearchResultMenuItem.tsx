@@ -47,6 +47,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
 
   return (
     <div>
+      <div className="border-top mt-2 mb-2" />
       {searchResult?.data
         .map((item, index) => (
           <SearchMenuItem
