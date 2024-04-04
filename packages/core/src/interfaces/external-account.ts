@@ -5,9 +5,10 @@ import type { IUser } from './user';
 export const IExternalAuthProviderType = {
   ldap: 'ldap',
   saml: 'saml',
-  oicd: 'oidc',
+  oidc: 'oidc',
   google: 'google',
   github: 'github',
+  facebook: 'facebook',
 } as const;
 
 export type IExternalAuthProviderType = typeof IExternalAuthProviderType[keyof typeof IExternalAuthProviderType]

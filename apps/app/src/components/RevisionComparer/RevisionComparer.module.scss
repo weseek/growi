@@ -1,3 +1,7 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+@use '@growi/ui/scss/atoms/btn-muted';
+
 .revision-compare :global {
   .revision-compare-container {
     min-height: 100px;
@@ -13,6 +17,10 @@
   }
 
   .grw-copy-dropdown {
+    .btn.btn-copy {
+      @include btn-muted.colorize(bs.$gray-500);
+    }
+
     .dropdown-menu {
       min-width: 310px;
 
