@@ -52,20 +52,20 @@ export const SwitchingButtonGroup = (props: Props): JSX.Element => {
       role="group"
     >
       <SwitchingButton
-        active={!showPreview}
-        className="px-2"
-        onClick={() => onSelected?.(false)}
-      >
-        <span className="material-symbols-outlined me-1">edit_square</span>
-        <span className="d-none d-sm-inline">{t('Write')}</span>
-      </SwitchingButton>
-      <SwitchingButton
         active={showPreview}
         className="ps-2 pe-3"
         onClick={() => onSelected?.(true)}
       >
         <span className="material-symbols-outlined me-0">play_arrow</span>
         <span className="d-none d-sm-inline">{t('Preview')}</span>
+      </SwitchingButton>
+      <SwitchingButton
+        active={!showPreview}
+        className="px-2"
+        onClick={() => onSelected?.(false)}
+      >
+        <span className="material-symbols-outlined me-1">edit_square</span>
+        <span className="d-none d-sm-inline">{t('Write')}</span>
       </SwitchingButton>
     </div>
   );
