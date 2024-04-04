@@ -11,7 +11,6 @@ import {
 } from 'reactstrap';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import type { IPageGrantData } from '~/interfaces/page';
 import {
   useIsEditable, useIsAclEnabled,
   useIsSlackConfigured,
@@ -20,7 +19,6 @@ import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } fro
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  useSelectedGrant,
   useEditorMode, useIsDeviceLargerThanMd,
   EditorMode,
 } from '~/stores/ui';
@@ -154,7 +152,6 @@ export const SavePageControls = (): JSX.Element | null => {
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: isEditable } = useIsEditable();
   const { data: isAclEnabled } = useIsAclEnabled();
-  const { data: grantData, mutate: mutateGrant } = useSelectedGrant();
 
   const { data: editorMode } = useEditorMode();
   const { data: currentPagePath } = useCurrentPagePath();
@@ -184,19 +181,13 @@ export const SavePageControls = (): JSX.Element | null => {
     setSlackChannels(slackChannels);
   }, []);
 
-  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
-    mutateGrant(grantData);
-  }, [mutateGrant]);
-
-  if (isEditable == null || isAclEnabled == null || grantData == null) {
+  if (isEditable == null || isAclEnabled == null) {
     return null;
   }
 
   if (!isEditable) {
     return null;
   }
-
-  const { grant, userRelatedGrantedGroups } = grantData;
 
   const isGrantSelectorDisabledPage = isTopPage(currentPage?.path ?? '') || isUsersProtectedPages(currentPage?.path ?? '');
 
@@ -224,12 +215,7 @@ export const SavePageControls = (): JSX.Element | null => {
             {
               isAclEnabled && (
                 <div className="me-2">
-                  <GrantSelector
-                    grant={grant}
-                    disabled={isGrantSelectorDisabledPage}
-                    userRelatedGrantedGroups={userRelatedGrantedGroups}
-                    onUpdateGrant={updateGrantHandler}
-                  />
+                  <GrantSelector disabled={isGrantSelectorDisabledPage} />
                 </div>
               )
             }
@@ -256,11 +242,8 @@ export const SavePageControls = (): JSX.Element | null => {
                   isAclEnabled && (
                     <>
                       <GrantSelector
-                        grant={grant}
                         disabled={isGrantSelectorDisabledPage}
                         openInModal
-                        userRelatedGrantedGroups={userRelatedGrantedGroups}
-                        onUpdateGrant={updateGrantHandler}
                       />
                     </>
                   )
