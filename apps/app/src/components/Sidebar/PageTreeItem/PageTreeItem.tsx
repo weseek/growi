@@ -17,12 +17,14 @@ import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
 
+import type { ItemNode } from '../../TreeItem';
 import {
-  SimpleItem, useNewPageInput, ItemNode, type TreeItemProps,
+  SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
 
+import styles from './PageTreeItem.module.scss';
 
 const logger = loggerFactory('growi:cli:Item');
 
@@ -176,6 +178,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
       isReadOnlyUser={props.isReadOnlyUser}
+      isWipPageShown={props.isWipPageShown}
       onClick={itemSelectedHandler}
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}

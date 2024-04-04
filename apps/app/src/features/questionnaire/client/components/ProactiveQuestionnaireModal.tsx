@@ -24,8 +24,8 @@ const QuestionnaireCompletionModal = (props: ModalProps): JSX.Element => {
       toggle={onClose}
       centered
     >
-      <ModalBody className="bg-primary overflow-hidden p-0" style={{ borderRadius: 8 }}>
-        <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
+      <ModalBody className="overflow-hidden p-0" style={{ borderRadius: 8 }}>
+        <div className="m-2 p-4" style={{ borderRadius: 8 }}>
           <div className="text-center">
             <h2 className="my-4">{t('questionnaire_modal.title')}</h2>
             <p className="mb-1">{t('questionnaire_modal.successfully_submitted')}</p>
@@ -83,8 +83,8 @@ const ProactiveQuestionnaireModal = (props: ModalProps): JSX.Element => {
         toggle={onClose}
         centered
       >
-        <ModalBody className="bg-primary overflow-hidden p-0" style={{ borderRadius: 8 }}>
-          <div className="bg-white m-2 p-4" style={{ borderRadius: 8 }}>
+        <ModalBody className="overflow-hidden p-0" style={{ borderRadius: 8 }}>
+          <div className="m-2 p-4" style={{ borderRadius: 8 }}>
             <div className="text-center">
               <h2 className="my-4">{t('questionnaire_modal.title')}</h2>
               <p className="mb-1">{t('questionnaire_modal.more_satisfied_services')}</p>

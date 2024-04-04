@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
@@ -54,7 +55,7 @@ export const AuditLogSettings: FC = () => {
       </p>
       <p className="mt-1">
         <button type="button" className="btn btn-link p-0" aria-expanded="false" onClick={() => setIsExpandActionList(!isExpandActionList)}>
-          <i className={`fa fa-fw fa-arrow-right ${isExpandActionList ? 'fa-rotate-90' : ''}`}></i>
+          <span className={`material-symbols-outlined me-1 ${isExpandActionList ? 'rotate-90' : ''}`}>navigate_next</span>
           { t('admin:audit_log_management.action_list') }
         </button>
       </p>

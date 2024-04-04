@@ -21,6 +21,10 @@ export const PageContentFooter = (props: PageContentFooterProps): JSX.Element =>
     creator, lastUpdateUser, createdAt, updatedAt,
   } = page;
 
+  if (page.isEmpty) {
+    return <></>;
+  }
+
   return (
     <div className={`${styles['page-content-footer']} page-content-footer py-4 d-edit-none d-print-none}`}>
       <div className="container-lg grw-container-convertible">

@@ -18,6 +18,7 @@ import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 
 import { Comment } from '~/features/comment/server';
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import { SupportedAction } from '~/interfaces/activity';
 import { V5ConversionErrCode } from '~/interfaces/errors/v5-conversion-error';
@@ -30,6 +31,7 @@ import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import {
   type IPageOperationProcessInfo, type IPageOperationProcessData, PageActionStage, PageActionType,
 } from '~/interfaces/page-operation';
+import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
 import type { CreateMethod } from '~/server/models/page';
 import {
@@ -37,7 +39,9 @@ import {
 } from '~/server/models/page';
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
+import type { UserGroupDocument } from '~/server/models/user-group';
 import { createBatchStream } from '~/server/util/batch-stream';
+import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -68,7 +72,7 @@ const debug = require('debug')('growi:services:page');
 
 const logger = loggerFactory('growi:services:page');
 const {
-  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath, collectAncestorPaths,
+  isTrashPage, isTopPage, omitDuplicateAreaPageFromPages, getUsernameByPath,
   canMoveByPath, isUsersTopPage, isMovablePage, isUsersHomepage, hasSlash, generateChildrenRegExp,
 } = pagePathUtils;
 
@@ -584,6 +588,8 @@ class PageService implements IPageService {
 
       this.activityEvent.emit('updated', activity, page, preNotify);
     }
+
+    this.disableAncestorPagesTtl(newPagePath);
     return renamedPage;
   }
 
@@ -2406,7 +2412,7 @@ class PageService implements IPageService {
         newChildGrantedGroups = this.getNewGrantedGroupsSyncronously(userRelatedGroups, userRelatedParentGrantedGroups, childPage);
       }
       const canChangeGrant = this.pageGrantService
-        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, PageGrant.GRANT_USER_GROUP, newChildGrantedGroups);
+        .validateGrantChangeSyncronously(userRelatedGroups, childPage.grantedGroups, grant, newChildGrantedGroups);
       if (canChangeGrant) {
         operations.push({
           updateOne: {
@@ -2501,23 +2507,19 @@ class PageService implements IPageService {
   }
 
 
-  async handlePrivatePagesForGroupsToDelete(groupsToDelete, action, transferToUserGroup: IGrantedGroup, user) {
-    const Page = this.crowi.model('Page');
-    const pages = await Page.find({
-      grantedGroups: {
-        $elemMatch: {
-          item: { $in: groupsToDelete },
-        },
-      },
-    });
+  async handlePrivatePagesForGroupsToDelete(
+      groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[], action: PageActionOnGroupDelete, transferToUserGroup: IGrantedGroup, user,
+  ): Promise<void> {
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    const pages = await Page.find({ grantedGroups: { $elemMatch: { item: { $in: groupsToDelete } } } });
 
     switch (action) {
-      case 'public':
-        await Page.publicizePages(pages);
+      case PageActionOnGroupDelete.publicize:
+        await Page.removeGroupsToDeleteFromPages(pages, groupsToDelete);
         break;
-      case 'delete':
+      case PageActionOnGroupDelete.delete:
         return this.deleteMultipleCompletely(pages, user);
-      case 'transfer':
+      case PageActionOnGroupDelete.transfer:
         await Page.transferPagesToGroup(pages, transferToUserGroup);
         break;
       default:
@@ -3811,12 +3813,19 @@ class PageService implements IPageService {
       const parent = await this.getParentAndFillAncestorsByUser(user, path);
       page.parent = parent._id;
     }
+
+    // Make WIP
+    if (options.wip) {
+      const hasChildren = await Page.exists({ parent: page._id });
+      page.makeWip(hasChildren != null); // disableTtl = hasChildren != null
+    }
+
     // Save
     let savedPage = await page.save();
 
     // Create revision
     const Revision = mongoose.model('Revision') as any; // TODO: Typescriptize model
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user);
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, options.origin);
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -3849,6 +3858,8 @@ class PageService implements IPageService {
    * Used to run sub operation in create method
    */
   async createSubOperation(page, user, options: IOptionsForCreate, pageOpId: ObjectIdLike): Promise<void> {
+    await this.disableAncestorPagesTtl(page.path);
+
     // Update descendantCount
     await this.updateDescendantCountOfAncestors(page._id, 1, false);
 
@@ -3908,7 +3919,7 @@ class PageService implements IPageService {
     page.applyScope(user, grant, grantUserGroupIds);
 
     let savedPage = await page.save();
-    const newRevision = Revision.prepareRevision(savedPage, body, null, user, { format });
+    const newRevision = Revision.prepareRevision(savedPage, body, null, user, undefined, { format });
     savedPage = await pushRevision(savedPage, newRevision, user);
     await savedPage.populateDataToShowRevision();
 
@@ -3931,6 +3942,18 @@ class PageService implements IPageService {
       },
   ): Promise<boolean> {
     return this.canProcessCreate(path, grantData, false);
+  }
+
+  private async disableAncestorPagesTtl(path: string): Promise<void> {
+    const Page = mongoose.model<PageDocument, PageModel>('Page');
+
+    const ancestorPaths = collectAncestorPaths(path);
+    const ancestorPageIds = await Page.aggregate([
+      { $match: { path: { $in: ancestorPaths, $nin: ['/'] }, isEmpty: false } },
+      { $project: { _id: 1 } },
+    ]);
+
+    await Page.updateMany({ _id: { $in: ancestorPageIds } }, { $unset: { ttlTimestamp: true } });
   }
 
   /**
@@ -4123,6 +4146,10 @@ class PageService implements IPageService {
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
 
+    // If updated at least once, publish
+    pageData.publish();
+
+
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
     const grantUserGroupIds = options.userRelatedGrantUserGroupIds != null
@@ -4133,12 +4160,17 @@ class PageService implements IPageService {
     const shouldBeOnTree = grant !== PageGrant.GRANT_RESTRICTED;
     const isChildrenExist = await Page.count({ path: new RegExp(`^${escapeStringRegexp(addTrailingSlash(clonedPageData.path))}`), parent: { $ne: null } });
 
+    const isGrantChangeable = await this.pageGrantService.validateGrantChange(user, pageData.grantedGroups, grant, grantUserGroupIds);
+    if (!isGrantChangeable) {
+      throw Error('The selected grant or grantedGroup is not assignable to this page.');
+    }
+
     if (shouldBeOnTree) {
       let isGrantNormalized = false;
       try {
         const shouldCheckDescendants = !options.overwriteScopesOfDescendants;
         // eslint-disable-next-line max-len
-        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants, false, pageData.grantedGroups);
+        isGrantNormalized = await this.pageGrantService.isGrantNormalized(user, clonedPageData.path, grant, grantedUserIds, grantUserGroupIds, shouldCheckDescendants, false);
       }
       catch (err) {
         logger.error(`Failed to validate grant of page at "${clonedPageData.path}" of grant ${grant}:`, err);
@@ -4182,14 +4214,14 @@ class PageService implements IPageService {
     let savedPage = await newPageData.save();
 
     // Update body
-    const isBodyPresent = body != null && previousBody != null;
+    const isBodyPresent = body != null;
     const shouldUpdateBody = isBodyPresent;
     if (shouldUpdateBody) {
-      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user);
+      const origin = options.origin;
+      const newRevision = await Revision.prepareRevision(newPageData, body, previousBody, user, origin);
       savedPage = await pushRevision(savedPage, newRevision, user);
       await savedPage.populateDataToShowRevision();
     }
-
 
     this.pageEvent.emit('update', savedPage, user);
 
@@ -4396,6 +4428,34 @@ class PageService implements IPageService {
         page.processData = processData;
       }
     });
+  }
+
+  async createTtlIndex(): Promise<void> {
+    const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
+    const collection = mongoose.connection.collection('pages');
+
+    try {
+      const targetField = 'ttlTimestamp_1';
+
+      const indexes = await collection.indexes();
+      const foundTargetField = indexes.find(i => i.name === targetField);
+
+      const isNotSpec = foundTargetField?.expireAfterSeconds == null || foundTargetField?.expireAfterSeconds !== wipPageExpirationSeconds;
+      const shoudDropIndex = foundTargetField != null && isNotSpec;
+      const shoudCreateIndex = foundTargetField == null || shoudDropIndex;
+
+      if (shoudDropIndex) {
+        await collection.dropIndex(targetField);
+      }
+
+      if (shoudCreateIndex) {
+        await collection.createIndex({ ttlTimestamp: 1 }, { expireAfterSeconds: wipPageExpirationSeconds });
+      }
+    }
+    catch (err) {
+      logger.error('Failed to create TTL Index', err);
+      throw err;
+    }
   }
 
 }

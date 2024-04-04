@@ -66,33 +66,33 @@ export const RevisionComparer = (props: RevisionComparerProps): JSX.Element => {
     <div className={`${styles['revision-compare']} revision-compare`}>
       <div className="d-flex">
         <h4 className="align-self-center">{ t('page_history.comparing_revisions') }</h4>
-        <Dropdown
-          className="grw-copy-dropdown align-self-center ms-auto"
-          isOpen={dropdownOpen}
-          toggle={() => toggleDropdown()}
-        >
-          <DropdownToggle
-            caret
-            className="d-block text-muted bg-transparent btn-copy border-0 py-0"
+
+        { !isNodiff && (
+          <Dropdown
+            className="grw-copy-dropdown align-self-center ms-auto"
+            isOpen={dropdownOpen}
+            toggle={() => toggleDropdown()}
           >
-            <i className="ti ti-clipboard"></i>
-          </DropdownToggle>
-          <DropdownMenu strategy="fixed" end>
-            {/* Page path URL */}
-            <CopyToClipboard text={generateURL(currentPagePath)}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Page URL', { ns: 'commons' })} contents={generateURL(currentPagePath)} />
-              </DropdownItem>
-            </CopyToClipboard>
-            {/* Permanent Link URL */}
-            <CopyToClipboard text={generateURL(currentPageId)}>
-              <DropdownItem className="px-3">
-                <DropdownItemContents title={t('copy_to_clipboard.Permanent link', { ns: 'commons' })} contents={generateURL(currentPageId)} />
-              </DropdownItem>
-            </CopyToClipboard>
-            <DropdownItem divider className="my-0"></DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+            <DropdownToggle className="btn-copy">
+              <span className="material-symbols-outlined">content_paste</span>
+            </DropdownToggle>
+            <DropdownMenu strategy="fixed" end>
+              {/* Page path URL */}
+              <CopyToClipboard text={generateURL(currentPagePath)}>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Page URL', { ns: 'commons' })} contents={generateURL(currentPagePath)} />
+                </DropdownItem>
+              </CopyToClipboard>
+              {/* Permanent Link URL */}
+              <CopyToClipboard text={generateURL(currentPageId)}>
+                <DropdownItem className="px-3">
+                  <DropdownItemContents title={t('copy_to_clipboard.Permanent link', { ns: 'commons' })} contents={generateURL(currentPageId)} />
+                </DropdownItem>
+              </CopyToClipboard>
+              <DropdownItem divider className="my-0"></DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        ) }
       </div>
 
       <div className={`revision-compare-container ${isNodiff ? 'nodiff' : ''}`}>

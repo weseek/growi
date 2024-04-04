@@ -5,23 +5,12 @@
 @include mixins.editing() {
   .grw-editor-navbar-bottom :global {
     .grw-grant-selector {
-      @include bs.media-breakpoint-down(sm) {
-        .btn .label {
-          display: none;
-        }
-      }
-      @include bs.media-breakpoint-up(md) {
-        .dropdown-toggle {
-          min-width: 100px;
-
-          // caret
-          &::after {
-            margin-left: 1em;
-          }
-        }
+      max-width: 250px;
+      .material-symbols-outlined  {
+        padding-bottom: 2px;
+        font-size: 19px;
       }
     }
-
     .btn-submit {
       width: 100px;
     }

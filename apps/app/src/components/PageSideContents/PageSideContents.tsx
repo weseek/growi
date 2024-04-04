@@ -1,6 +1,7 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useRef } from 'react';
 
-import { getIdForRef, type IPageHasId, type IPageInfoForOperation } from '@growi/core';
+import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { getIdForRef, type IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -58,7 +59,7 @@ const Tags = (props: TagsProps): JSX.Element => {
   const isTagLabelsDisabled = !!isGuestUser || !!isReadOnlyUser;
 
   return (
-    <div className="grw-taglabels-container">
+    <div className="grw-tag-labels-container">
       <PageTags
         tags={tagsInfoData.tags}
         isTagLabelsDisabled={isTagLabelsDisabled}
@@ -70,7 +71,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 
 
 export type PageSideContentsProps = {
-  page: IPageHasId,
+  page: IPagePopulatedToShowRevision,
   isSharedUser?: boolean,
 }
 
@@ -81,6 +82,8 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { page, isSharedUser } = props;
 
+  const tagsRef = useRef<HTMLDivElement>(null);
+
   const { data: pageInfo } = useSWRxPageInfo(page._id);
 
   const pagePath = page.path;
@@ -88,13 +91,16 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
   const isUsersHomepagePath = isUsersHomepage(pagePath);
   const isTrash = isTrashPage(pagePath);
 
-
   return (
     <>
       {/* Tags */}
-      <Suspense fallback={<PageTagsSkeleton />}>
-        <Tags pageId={page._id} revisionId={getIdForRef(page.revision)} />
-      </Suspense>
+      { page.revision != null && (
+        <div ref={tagsRef}>
+          <Suspense fallback={<PageTagsSkeleton />}>
+            <Tags pageId={page._id} revisionId={page.revision._id} />
+          </Suspense>
+        </div>
+      ) }
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
         {/* Page list */}
@@ -125,7 +131,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       </div>
 
       <div className="d-none d-xl-block">
-        <TableOfContents />
+        <TableOfContents tagsElementHeight={tagsRef.current?.clientHeight} />
         {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>

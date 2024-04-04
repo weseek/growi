@@ -18,12 +18,12 @@
   }
 }
 
-// apply larger font when smaller than lg
-@include bs.media-breakpoint-down(lg) {
-  .btn-page-accessories :global {
-    .material-symbols-outlined {
-      font-size: 2em;
-    }
+// apply font-size
+.btn-page-accessories :global {
+  --bs-btn-font-size: 14px;
+
+  @include bs.media-breakpoint-down(lg) {
+    --bs-btn-font-size: 16px;
   }
 }
 

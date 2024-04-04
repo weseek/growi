@@ -1,23 +1,17 @@
-import { defaultKeymap } from '@codemirror/commands';
 import { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
-import { emacs } from '@replit/codemirror-emacs';
-import { vscodeKeymap } from '@replit/codemirror-vscode-keymap';
-
-import { vimKeymap } from './vim';
 
 
-export const getKeyMap = (keyMapName: KeyMapMode, onSave?: () => void): Extension => {
+export const getKeymap = async(keyMapName?: KeyMapMode, onSave?: () => void): Promise<Extension> => {
   switch (keyMapName) {
     case 'vim':
-      return vimKeymap(onSave);
+      return (await import('./vim')).vimKeymap(onSave);
     case 'emacs':
-      return emacs();
+      return (await import('@replit/codemirror-emacs')).emacs();
     case 'vscode':
-      return keymap.of(vscodeKeymap);
-    case 'default':
-      return keymap.of(defaultKeymap);
+      return keymap.of((await import('@replit/codemirror-vscode-keymap')).vscodeKeymap);
   }
+  return keymap.of((await import('@codemirror/commands')).defaultKeymap);
 };
 
 const KeyMapMode = {
@@ -27,5 +21,6 @@ const KeyMapMode = {
   vscode: 'vscode',
 } as const;
 
+export const DEFAULT_KEYMAP = 'default';
 export const AllKeyMap = Object.values(KeyMapMode);
 export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];

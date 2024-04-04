@@ -3,6 +3,7 @@ import React, { useCallback, useState } from 'react';
 import {
   PageGrant, isPopulated, GroupType, type IGrantedGroup,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledDropdown,
@@ -18,19 +19,19 @@ import { useMyUserGroups } from './use-my-user-groups';
 
 const AVAILABLE_GRANTS = [
   {
-    grant: PageGrant.GRANT_PUBLIC, iconClass: 'icon-people', btnStyleClass: 'outline-info', label: 'Public',
+    grant: PageGrant.GRANT_PUBLIC, iconName: 'group', btnStyleClass: 'outline-info', label: 'Public',
   },
   {
-    grant: PageGrant.GRANT_RESTRICTED, iconClass: 'icon-link', btnStyleClass: 'outline-teal', label: 'Anyone with the link',
+    grant: PageGrant.GRANT_RESTRICTED, iconName: 'link', btnStyleClass: 'outline-success', label: 'Anyone with the link',
   },
   // { grant: 3, iconClass: '', label: 'Specified users only' },
   {
-    grant: PageGrant.GRANT_OWNER, iconClass: 'icon-lock', btnStyleClass: 'outline-danger', label: 'Only me',
+    grant: PageGrant.GRANT_OWNER, iconName: 'lock', btnStyleClass: 'outline-danger', label: 'Only me',
   },
   {
     grant: PageGrant.GRANT_USER_GROUP,
-    iconClass: 'icon-options',
-    btnStyleClass: 'outline-purple',
+    iconName: 'more_horiz',
+    btnStyleClass: 'outline-warning',
     label: 'Only inside the group',
     reselectLabel: 'Reselect the group',
   },
@@ -39,6 +40,7 @@ const AVAILABLE_GRANTS = [
 
 type Props = {
   disabled?: boolean,
+  openInModal?: boolean,
   grant: PageGrant,
   userRelatedGrantedGroups?: {
     id: string,
@@ -57,6 +59,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
   const {
     disabled,
+    openInModal,
     userRelatedGrantedGroups,
     onUpdateGrant,
     grant: currentGrant,
@@ -118,8 +121,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
         : opt.label;
 
       const labelElm = (
-        <span>
-          <i className={`icon icon-fw ${opt.iconClass}`}></i>
+        <span className={openInModal ? 'py-2' : ''}>
+          <span className="material-symbols-outlined me-2">{opt.iconName}</span>
           <span className="label">{t(label)}</span>
         </span>
       );
@@ -137,15 +140,16 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (userRelatedGrantedGroups != null && userRelatedGrantedGroups.length > 0) {
       const labelElm = (
         <span>
-          <i className="icon icon-fw icon-organization"></i>
+          <span className="material-symbols-outlined me-1">account_tree</span>
           <span className="label">
             {userRelatedGrantedGroups.length > 1
               ? (
+              // substring for group name truncate
                 <span>
-                  {`${userRelatedGrantedGroups[0].name}... `}
-                  <span className="badge badge-purple">+{userRelatedGrantedGroups.length - 1}</span>
+                  {`${userRelatedGrantedGroups[0].name.substring(0, 30)}, ... `}
+                  <span className="badge bg-primary">+{userRelatedGrantedGroups.length - 1}</span>
                 </span>
-              ) : userRelatedGrantedGroups[0].name}
+              ) : userRelatedGrantedGroups[0].name.substring(0, 30)}
           </span>
         </span>
       );
@@ -158,17 +162,22 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
     return (
       <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
-        <UncontrolledDropdown direction="up" size="sm">
-          <DropdownToggle color={dropdownToggleBtnColor} caret className="d-flex justify-content-between align-items-center" disabled={disabled}>
+        <UncontrolledDropdown direction={openInModal ? 'down' : 'up'} size="sm">
+          <DropdownToggle
+            color={dropdownToggleBtnColor}
+            caret
+            className="w-100 text-truncate d-flex justify-content-between align-items-center"
+            disabled={disabled}
+          >
             {dropdownToggleLabelElm}
           </DropdownToggle>
-          <DropdownMenu container="body">
+          <DropdownMenu container={openInModal ? '' : 'body'}>
             {dropdownMenuElems}
           </DropdownMenu>
         </UncontrolledDropdown>
       </div>
     );
-  }, [changeGrantHandler, currentGrant, disabled, userRelatedGrantedGroups, t]);
+  }, [changeGrantHandler, currentGrant, disabled, userRelatedGrantedGroups, t, openInModal]);
 
   /**
    * Render select grantgroup modal.
@@ -182,7 +191,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
     if (myUserGroups == null) {
       return (
         <div className="my-3 text-center">
-          <i className="fa fa-lg fa-spinner fa-pulse mx-auto text-muted"></i>
+          <LoadingSpinner className="mx-auto text-muted fs-4" />
         </div>
       );
     }
@@ -192,37 +201,49 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <div>
           <h4>{t('user_group.belonging_to_no_group')}</h4>
           { currentUser?.admin && (
-            <p><a href="/admin/user-groups"><i className="icon icon-fw icon-login"></i>{t('user_group.manage_user_groups')}</a></p>
+            <p><a href="/admin/user-groups"><span className="material-symbols-outlined me-1">login</span>{t('user_group.manage_user_groups')}</a></p>
           ) }
         </div>
       );
     }
 
     return (
-      <>
+      <div className="d-flex flex-column">
         { myUserGroups.map((group) => {
           const groupIsGranted = userRelatedGrantedGroups?.find(g => g.id === group.item._id) != null;
           const activeClass = groupIsGranted ? 'active' : '';
 
           return (
             <button
-              className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
+              className={`btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3 ${activeClass}`}
               type="button"
               key={group.item._id}
               onClick={() => groupListItemClickHandler(group)}
             >
-              <span className="align-middle"><input type="checkbox" checked={groupIsGranted} /></span>
-              <h5 className="d-inline-block ml-3">{group.item.name}</h5>
-              {group.type === GroupType.externalUserGroup && <span className="ml-2 badge badge-pill badge-info">{group.item.provider}</span>}
+              <input type="checkbox" checked={groupIsGranted} />
+              <p className="ms-3 mb-0">{group.item.name}</p>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
         }) }
-        <button type="button" className="btn btn-primary mt-2 float-right" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
-      </>
+        <button type="button" className="btn btn-primary mt-2 mx-auto" onClick={() => setIsSelectGroupModalShown(false)}>{t('Done')}</button>
+      </div>
     );
 
   }, [currentUser?.admin, groupListItemClickHandler, myUserGroups, shouldFetch, t, userRelatedGrantedGroups]);
+
+  const renderModalCloseButton = useCallback(() => {
+    return (
+      <button
+        type="button"
+        className="btn border-0 text-muted"
+        onClick={() => setIsSelectGroupModalShown(false)}
+      >
+        <span className="material-symbols-outlined">close</span>
+      </button>
+    );
+  }, [setIsSelectGroupModalShown]);
 
   return (
     <>
@@ -233,8 +254,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
         <Modal
           isOpen={isSelectGroupModalShown}
           toggle={() => setIsSelectGroupModalShown(false)}
+          centered
         >
-          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-light">
+          <ModalHeader tag="p" toggle={() => setIsSelectGroupModalShown(false)} className="fs-5 text-muted fw-bold pb-2" close={renderModalCloseButton()}>
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>

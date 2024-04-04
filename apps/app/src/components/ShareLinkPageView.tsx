@@ -67,7 +67,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
 
   const Contents = () => {
-    if (isNotFound) {
+    if (isNotFound || page.revision == null) {
       return <></>;
     }
 

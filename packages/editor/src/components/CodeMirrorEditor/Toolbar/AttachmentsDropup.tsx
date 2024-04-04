@@ -1,40 +1,64 @@
+import { useState } from 'react';
+
+import { AcceptedUploadFileType } from '@growi/core';
 import {
-  UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
+  Dropdown,
 } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
-import { AcceptedUploadFileType } from '../../../consts/accepted-upload-file-type';
 
-import { AttachmentsButton } from './AttachmentsButton';
+import { AttachmentsDropdownItem } from './AttachmentsDropdownItem';
 import { LinkEditButton } from './LinkEditButton';
+
+import styles from './AttachmentsDropup.module.scss';
+
+const btnAttachmentToggleClass = styles['btn-attachment-toggle'];
+
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
-  onFileOpen: () => void,
-  acceptedFileType: AcceptedUploadFileType,
+  acceptedUploadFileType: AcceptedUploadFileType,
+  onUpload?: (files: File[]) => void,
 }
 
 export const AttachmentsDropup = (props: Props): JSX.Element => {
-  const { onFileOpen, acceptedFileType, editorKey } = props;
+  const { acceptedUploadFileType, editorKey, onUpload } = props;
+
+  const [isOpen, setOpen] = useState(false);
 
   return (
     <>
-      <UncontrolledDropdown direction="up" className="lh-1">
-        <DropdownToggle className="btn-toolbar-button rounded-circle">
+      <Dropdown isOpen={isOpen} toggle={() => setOpen(!isOpen)} direction="up" className="lh-1">
+        <DropdownToggle className={`${btnAttachmentToggleClass} btn-toolbar-button rounded-circle`} color="unset">
           <span className="material-symbols-outlined fs-6">add</span>
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem className="mt-1" header>
             Attachments
           </DropdownItem>
+
           <DropdownItem divider />
-          <AttachmentsButton onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
+
+          { acceptedUploadFileType === AcceptedUploadFileType.ALL && (
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload} onClose={() => setOpen(false)}>
+              <span className="material-symbols-outlined fs-5">attach_file</span>
+              Files
+            </AttachmentsDropdownItem>
+          ) }
+
+          { acceptedUploadFileType !== AcceptedUploadFileType.NONE && (
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload} onClose={() => setOpen(false)}>
+              <span className="material-symbols-outlined fs-5">image</span>
+              Images
+            </AttachmentsDropdownItem>
+          ) }
+
           <LinkEditButton editorKey={editorKey} />
         </DropdownMenu>
-      </UncontrolledDropdown>
+      </Dropdown>
     </>
   );
 };

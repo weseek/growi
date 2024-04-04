@@ -49,12 +49,6 @@ const CustomizeCssSetting = (props: Props): JSX.Element => {
               defaultValue={adminCustomizeContainer.state.currentCustomizeCss || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeCss(e.target.value) }}
             />
-            {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <p className="form-text text-muted text-end">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('admin:customize_settings.ctrl_space')}
-            </p>
-            */}
           </div>
 
           <AdminUpdateButtonRow onClick={onClickSubmit} disabled={adminCustomizeContainer.state.retrieveError != null} />

@@ -87,12 +87,12 @@ class PasswordSettings extends React.Component {
         ) }
 
         {(this.state.isPasswordSet)
-          ? <h2 className="border-bottom my-4">{t('personal_settings.update_password')}</h2>
-          : <h2 className="border-bottom my-4">{t('personal_settings.set_new_password')}</h2>}
+          ? <h2 className="border-bottom mt-4 mb-5 pb-2 fs-4">{t('personal_settings.update_password')}</h2>
+          : <h2 className="border-bottom mt-4 mb-5 pb-2 fs-4">{t('personal_settings.set_new_password')}</h2>}
         {(this.state.isPasswordSet)
         && (
           <div className="row mb-3">
-            <label htmlFor="oldPassword" className="col-md-3 text-md-end form-label">{ t('personal_settings.current_password') }</label>
+            <label htmlFor="oldPassword" className="col-md-3 text-md-end col-form-label">{ t('personal_settings.current_password') }</label>
             <div className="col-md-5">
               <input
                 className="form-control"
@@ -105,7 +105,7 @@ class PasswordSettings extends React.Component {
           </div>
         )}
         <div className="row mb-3">
-          <label htmlFor="newPassword" className="col-md-3 text-md-end form-label">{t('personal_settings.new_password') }</label>
+          <label htmlFor="newPassword" className="col-md-3 text-md-end col-form-label">{t('personal_settings.new_password') }</label>
           <div className="col-md-5">
             {/* to prevent autocomplete username into userForm[email] in BasicInfoSettings component */}
             {/* https://developer.mozilla.org/en-US/docs/Web/Security/Securing_your_site/Turning_off_form_autocompletion */}
@@ -120,7 +120,7 @@ class PasswordSettings extends React.Component {
           </div>
         </div>
         <div className={`row mb-3 ${isIncorrectConfirmPassword && 'has-error'}`}>
-          <label htmlFor="newPasswordConfirm" className="col-md-3 text-md-end form-label">{t('personal_settings.new_password_confirm') }</label>
+          <label htmlFor="newPasswordConfirm" className="col-md-3 text-md-end col-form-label">{t('personal_settings.new_password_confirm') }</label>
           <div className="col-md-5">
             <input
               className="form-control"
@@ -135,7 +135,7 @@ class PasswordSettings extends React.Component {
         </div>
 
         <div className="row my-3">
-          <div className="offset-5">
+          <div className="text-center">
             <button
               data-testid="grw-password-settings-update-button"
               type="button"

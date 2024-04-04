@@ -1,42 +1,42 @@
 import { Extension } from '@codemirror/state';
 
-export const getEditorTheme = async(themeName: EditorTheme): Promise<Extension> => {
+export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {
-    case 'Eclipse':
+    case 'eclipse':
       return (await import('@uiw/codemirror-theme-eclipse')).eclipse;
-    case 'Basic':
+    case 'basic':
       return (await import('cm6-theme-basic-light')).basicLight;
-    case 'Ayu':
+    case 'ayu':
       return (await import('./ayu')).ayu;
-    case 'Rosé Pine':
+    case 'rosepine':
       return (await import('./rose-pine')).rosePine;
-    case 'DefaultDark':
+    case 'defaultdark':
       return (await import('./original-dark')).originalDark;
-    case 'Material':
+    case 'material':
       return (await import('cm6-theme-material-dark')).materialDark;
-    case 'Nord':
+    case 'nord':
       return (await import('cm6-theme-nord')).nord;
-    case 'Cobalt':
+    case 'cobalt':
       return (await import('./cobalt')).cobalt;
-    case 'Kimbie':
+    case 'kimbie':
       return (await import('@uiw/codemirror-theme-kimbie')).kimbie;
   }
   return (await import('./original-light')).originalLight;
 };
 
 const EditorTheme = {
-  DefaultLight: 'DefaultLight',
-  Eclipse: 'Eclipse',
-  Basic: 'Basic',
-  Ayu: 'Ayu',
-  'Rosé Pine': 'Rosé Pine',
-  DefaultDark: 'DefaultDark',
-  Material: 'Material',
-  Nord: 'Nord',
-  Cobalt: 'Cobalt',
-  Kimbie: 'Kimbie',
+  defaultlight: 'defaultlight',
+  eclipse: 'eclipse',
+  basic: 'basic',
+  ayu: 'ayu',
+  rosepine:  'rosepine',
+  defaultdark: 'defaultdark',
+  material: 'material',
+  nord: 'nord',
+  cobalt: 'cobalt',
+  kimbie: 'kimbie',
 } as const;
 
-
+export const DEFAULT_THEME = 'defaultlight';
 export const AllEditorTheme = Object.values(EditorTheme);
 export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]

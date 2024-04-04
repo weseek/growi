@@ -6,6 +6,7 @@ import React, {
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -47,10 +48,13 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
 
   return (
-    <div className="flex-grow-1 d-flex align-items-center pe-none">
+    <div
+      className="flex-grow-1 d-flex align-items-center pe-none"
+      style={{ minWidth: 0 }}
+    >
       {shouldShowAttentionIcon && (
         <>
-          <i id="path-recovery" className="fa fa-warning mr-2 text-warning"></i>
+          <span id="path-recovery" className="material-symbols-outlined mr-2 text-warning">warning</span>
           <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
             {t('tooltip.operation.attention.rename')}
           </UncontrolledTooltip>
@@ -58,7 +62,12 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
       )}
       {page != null && page.path != null && page._id != null && (
         <div className="grw-pagetree-title-anchor flex-grow-1">
-          <p className={`text-truncate m-auto ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</p>
+          <div className="d-flex align-items-center">
+            <span className={`text-truncate me-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            { page.wip && (
+              <span className="wip-page-badge badge rounded-pill me-1 text-bg-secondary">WIP</span>
+            )}
+          </div>
         </div>
       )}
     </div>
@@ -90,7 +99,7 @@ type SimpleItemProps = TreeItemProps & {
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
-    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
     itemRef, itemClass, mainClassName,
   } = props;
 
@@ -165,6 +174,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
+    isWipPageShown,
     targetPathOrId,
     onRenamed,
     onClickDuplicateMenuItem,
@@ -178,6 +188,9 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const CustomNextComponents = props.customNextComponents;
 
+  if (!isWipPageShown && page.wip) {
+    return <></>;
+  }
 
   return (
     <div
@@ -188,8 +201,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item list-group-item-action rounded border-0 py-0 pr-3 d-flex align-items-center
-        ${page.isTarget ? 'grw-pagetree-current-page-item' : ''}`}
+        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center text-muted ${page.isTarget ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
@@ -198,7 +210,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-triangle-btn btn ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`grw-pagetree-triangle-btn btn p-0 ${isOpen ? 'grw-pagetree-open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
@@ -237,7 +249,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
               <ItemClassFixed {...itemProps} />
               {isProcessingSubmission && (currentChildren.length - 1 === index) && (
                 <div className="text-muted text-center">
-                  <i className="fa fa-spinner fa-pulse mr-1"></i>
+                  <LoadingSpinner className="mr-1" />
                 </div>
               )}
             </div>

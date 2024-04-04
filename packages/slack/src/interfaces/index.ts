@@ -1,4 +1,5 @@
 export * from './channel';
+export * from './connection-status';
 export * from './growi-command-processor';
 export * from './growi-interaction-processor';
 export * from './growi-event-processor';
