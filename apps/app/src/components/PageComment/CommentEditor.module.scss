@@ -4,10 +4,6 @@
 
 // display cheatsheet for comment form only
 .comment-editor-styles :global {
-  .cm-editor {
-    height: 300px !important;
-  }
-
   .comment-form {
     position: relative;
 
@@ -21,9 +17,18 @@
       @extend %picture;
     }
 
-    // textarea
-    .comment-form-preview {
-      padding-top: 0.5em;
-    }
+  }
+}
+
+
+// adjust height
+.comment-editor-styles :global {
+  .cm-gutters {
+    min-height: 300px !important;
+  }
+  .comment-preview-container {
+    min-height: page-editor-inheritance.$navbar-editor-height
+      + comment-inheritance.$codemirror-default-height;
+    padding-top: 0.5em;
   }
 }

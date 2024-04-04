@@ -338,7 +338,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               />
             </TabPane>
             <TabPane tabId="comment_preview">
-              <div className="comment-form-preview">
+              <div className="comment-preview-container">
                 {commentPreview}
               </div>
             </TabPane>
