@@ -149,6 +149,8 @@ export class InstallerService {
       // create initial pages
       await this.createInitialPages(globalLang, options?.serverDate);
 
+      logger.debug('admin', adminUser);
+
       return adminUser;
     }
     catch (err) {
