@@ -37,7 +37,7 @@ export const SearchResultMenuItem = (props: Props): JSX.Element => {
       <>
         <div className="border-top mt-2 mb-2" />
         Searching...
-        <div className="border-top" />
+
       </>
     );
   }
