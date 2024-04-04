@@ -17,7 +17,7 @@ export const InAppNotificationForms = (props: InAppNotificationFormsProps): JSX.
   return (
     <div className="my-2">
       <div className="form-check form-switch">
-        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">{t('in_app_notification.only_unread', 'Only unread')}</label>
+        <label className="form-check-label" htmlFor="flexSwitchCheckDefault">{t('in_app_notification.only_unread')}</label>
         <input
           id="flexSwitchCheckDefault"
           className="form-check-input"
