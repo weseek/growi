@@ -3,9 +3,9 @@ import { memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import styles from './CustomNavButton.module.scss';
+import styles from './SwitchingButtonGroup.module.scss';
 
-const moduleClass = styles['grw-custom-nav-tab'] ?? '';
+const moduleClass = styles['btn-group-switching'] ?? '';
 
 
 type SwitchingButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
@@ -33,17 +33,17 @@ const SwitchingButton = memo((props: SwitchingButtonProps) => {
 });
 
 
-type CustomNavTabProps = {
+type Props = {
   showPreview: boolean,
-  onNavSelected?: (showPreview: boolean) => void,
+  onSelected?: (showPreview: boolean) => void,
 };
 
-export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
+export const SwitchingButtonGroup = (props: Props): JSX.Element => {
 
   const { t } = useTranslation();
 
   const {
-    showPreview, onNavSelected,
+    showPreview, onSelected,
   } = props;
 
   return (
@@ -54,14 +54,14 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
       <SwitchingButton
         active={!showPreview}
         className="px-2"
-        onClick={() => onNavSelected?.(false)}
+        onClick={() => onSelected?.(false)}
       >
         <span className="material-symbols-outlined me-1">edit_square</span>{t('Write')}
       </SwitchingButton>
       <SwitchingButton
         active={showPreview}
         className="ps-2 pe-3"
-        onClick={() => onNavSelected?.(true)}
+        onClick={() => onSelected?.(true)}
       >
         <span className="material-symbols-outlined me-0">play_arrow</span>{t('Preview')}
       </SwitchingButton>

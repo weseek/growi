@@ -1,7 +1,7 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 
-.grw-custom-nav-tab :global {
+.btn-group-switching :global {
   .btn {
     --bs-btn-border-width: 2px;
 
@@ -18,7 +18,7 @@
 
 // == Colors
 @include bs.color-mode(light) {
-  .grw-custom-nav-tab :global {
+  .btn-group-switching :global {
     .btn {
       $bg: var(--bs-gray-500);
 
@@ -32,7 +32,7 @@
   }
 }
 @include bs.color-mode(dark) {
-  .grw-custom-nav-tab :global {
+  .btn-group-switching :global {
     .btn {
       $bg: var(--bs-gray-800);
 

@@ -27,11 +27,12 @@ import { useCurrentPagePath } from '~/stores/page';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { CustomNavTab } from '../CustomNavigation/CustomNavButton';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
 import { CommentPreview } from './CommentPreview';
+import { SwitchingButtonGroup } from './SwitchingButtonGroup';
+
 
 import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
@@ -324,7 +325,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               <UserPicture user={currentUser} noLink noTooltip />
               <p className="ms-2 mb-0">Add a comment</p>
             </div>
-            <CustomNavTab showPreview={showPreview} onNavSelected={handleSelect} />
+            <SwitchingButtonGroup showPreview={showPreview} onSelected={handleSelect} />
           </div>
           <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
             <TabPane tabId="comment_editor">
