@@ -68,6 +68,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
+  // TODO: https://redmine.weseek.co.jp/issues/132775
+  const hasDraft = false;
+
   const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
       mutateEditorMode(EditorMode.Editor);
@@ -113,6 +116,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             onClick={editButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
+            { hasDraft && <span className="position-absolute top-0 start-100 translate-middle p-1 bg-primary border border-light rounded-circle" />}
           </PageEditorModeButton>
         )}
       </div>
