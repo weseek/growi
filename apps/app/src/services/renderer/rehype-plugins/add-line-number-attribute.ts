@@ -1,7 +1,7 @@
 import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Element } from 'hast-util-select/lib/types';
 import type { Plugin } from 'unified';
-import { visit } from 'unist-util-visit';
+import { visit, EXIT, CONTINUE } from 'unist-util-visit';
 
 import { addClassToProperties } from './add-class';
 
@@ -13,6 +13,11 @@ export const rehypePlugin: Plugin = () => {
       if (REGEXP_TARGET_TAGNAMES.test(node.tagName as string)) {
         const properties = node.properties ?? {};
 
+        // skip footnotes node
+        if (properties?.id === 'footnote-label') {
+          return EXIT;
+        }
+
         // add class
         addClassToProperties(properties, 'has-data-line');
         // add attribute
@@ -20,6 +25,7 @@ export const rehypePlugin: Plugin = () => {
 
         node.properties = properties;
       }
+      return CONTINUE;
     });
   };
 };
