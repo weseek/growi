@@ -5545,11 +5545,6 @@
     "@uiw/codemirror-extensions-basic-setup" "4.21.8"
     codemirror "^6.0.0"
 
-"@vercel/otel@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@vercel/otel/-/otel-1.8.1.tgz#9600bd07f40c73f0b51124f8175f987a5f2fabcb"
-  integrity sha512-jHcmxGmA6Tv948uxzMtuixRHwxWoSrcl27KzrZgQBfDM6h0Xf77yLPtZtazj1j9L/yTH8ooFoXxkVXpYDNQ77g==
-
 "@vitejs/plugin-react@^4.0.3", "@vitejs/plugin-react@^4.2.1":
   version "4.2.1"
   resolved "https://registry.yarnpkg.com/@vitejs/plugin-react/-/plugin-react-4.2.1.tgz#744d8e4fcb120fc3dbaa471dadd3483f5a304bb9"
