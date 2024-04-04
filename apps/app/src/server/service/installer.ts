@@ -134,7 +134,8 @@ export class InstallerService {
       );
     }
     catch (err) {
-      logger.error(err);
+      logger.info('最初のページの作成失敗！');
+      logger.error('Create initial page failed', err);
       throw err;
     }
 
@@ -154,6 +155,7 @@ export class InstallerService {
       return adminUser;
     }
     catch (err) {
+      logger.info('ユーザー作成失敗!');
       logger.error('Create first admin user failed', err);
       throw new FailedToCreateAdminUserError(err);
     }
