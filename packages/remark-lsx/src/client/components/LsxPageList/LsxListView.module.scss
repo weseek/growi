@@ -1,7 +1,8 @@
 @use '@growi/ui/scss/molecules/page_list';
 
 .page-list :global {
-  .page-list-ul > li > a:not(:hover) {
-    text-decoration: none;
+  .page-list-ul > li > div > a {
+    --grw-wiki-link-color-rgb: $body-color;
+    --grw-wiki-link-hover-color-rgb: $body-color;
   }
 }
