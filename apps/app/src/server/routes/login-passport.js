@@ -313,6 +313,7 @@ module.exports = function(crowi, app) {
       debug('--- authenticate with LocalStrategy ---');
       debug('user', user);
       debug('info', info);
+      debug('req.body.loginForm', req.body.loginForm);
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
