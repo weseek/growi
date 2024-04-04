@@ -1,39 +1,46 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+
+.grw-custom-nav-tab :global {
+  .btn {
+    --bs-btn-border-width: 2px;
+
+    width: 110px;
+    height: 38px;
+
+    @include bs.media-breakpoint-up(md) {
+      width: 90px;
+      height: 30px;
+    }
+  }
+}
+
+
+// == Colors
 @include bs.color-mode(light) {
   .grw-custom-nav-tab :global {
-    .nav-title {
-      background-color: bs.$gray-100;
-    }
+    .btn {
+      $bg: var(--bs-gray-500);
 
-    .active {
-      background-color: bs.$gray-500;
-    }
-    .passive {
-      background-color: white;
-      &:hover {
-        background-color: bs.$gray-100;
-      }
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-bg: var(--bs-gray-100);
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-color: white;
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
     }
   }
 }
-
-
 @include bs.color-mode(dark) {
   .grw-custom-nav-tab :global {
-    .nav-title {
-      border: 2px solid bs.$gray-800;
-    }
+    .btn {
+      $bg: var(--bs-gray-800);
 
-    .active {
-      background-color: bs.$gray-800;
-    }
-    .passive {
-      background-color: bs.$gray-600;
-      &:hover {
-        background-color: rgba(bs.$gray-600, 0.1);
-      }
+      --bs-btn-border-color: #{$bg};
+      --bs-btn-hover-bg: #{rgba(bs.$gray-600, 0.1)};
+      --bs-btn-hover-border-color: #{$bg};
+      --bs-btn-active-bg: #{$bg};
+      --bs-btn-active-border-color: #{$bg};
     }
   }
 }
-

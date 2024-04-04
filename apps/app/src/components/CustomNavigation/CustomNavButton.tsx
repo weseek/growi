@@ -1,4 +1,5 @@
-import { memo, type ReactNode } from 'react';
+import type { ButtonHTMLAttributes, DetailedHTMLProps } from 'react';
+import { memo } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -7,26 +8,24 @@ import styles from './CustomNavButton.module.scss';
 const moduleClass = styles['grw-custom-nav-tab'] ?? '';
 
 
-type SwitchingButtonProps = {
-  active?: boolean,
-  children?: ReactNode,
-  onClick?: () => void,
+type SwitchingButtonProps = DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement> & {
+    active?: boolean,
 }
+
 const SwitchingButton = memo((props: SwitchingButtonProps) => {
   const {
-    active, children, onClick,
+    active, className, children, onClick, ...rest
   } = props;
-
-  const classNames = ['btn py-1 px-2 d-flex align-items-center justify-content-center'];
-  if (active) {
-    classNames.push('active');
-  }
 
   return (
     <button
       type="button"
-      className={classNames.join(' ')}
+      className={`btn btn-sm py-1 d-flex align-items-center justify-content-center
+        ${className}
+        ${active ? 'active' : ''}
+      `}
       onClick={onClick}
+      {...rest}
     >
       {children}
     </button>
@@ -54,12 +53,14 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
     >
       <SwitchingButton
         active={!showPreview}
+        className="px-2"
         onClick={() => onNavSelected?.(false)}
       >
         <span className="material-symbols-outlined me-1">edit_square</span>{t('Write')}
       </SwitchingButton>
       <SwitchingButton
         active={showPreview}
+        className="ps-2 pe-3"
         onClick={() => onNavSelected?.(true)}
       >
         <span className="material-symbols-outlined me-0">play_arrow</span>{t('Preview')}
