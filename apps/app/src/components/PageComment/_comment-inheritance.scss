@@ -22,15 +22,26 @@
 }
 
 %picture {
-  float: left;
-  width: 3em;
-  height: 3em;
-  margin-top: 0.8em;
-
-  @include bs.media-breakpoint-down(xs) {
-    width: 2em;
-    height: 2em;
-  }
+  width: 1.2em;
+  height: 1.2em;
 }
 
 $codemirror-default-height: 300px;
+
+// // Light mode color
+@include bs.color-mode(light) {
+  %bg-comment {
+    background-color: rgba( bs.$gray-200, 0.5 );
+    border: 1px solid bs.$gray-200;
+    backdrop-filter: blur(10px);
+  }
+}
+
+// // Dark mode color
+@include bs.color-mode(dark) {
+  %bg-comment {
+    background-color: rgba( bs.$gray-800, 0.3 );
+    border: 1px solid bs.$gray-700;
+    backdrop-filter: blur(10px);
+  }
+}

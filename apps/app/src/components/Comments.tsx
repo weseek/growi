@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef } from 'react';
 
 import type { IRevisionHasId } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
@@ -12,7 +13,6 @@ import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 import { useCurrentUser } from '../stores/context';
 
 import type { CommentEditorProps } from './PageComment/CommentEditor';
-
 
 const { isTopPage } = pagePathUtils;
 
@@ -32,6 +32,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   const {
     pageId, pagePath, revision, onLoaded,
   } = props;
+
+  const { t } = useTranslation('');
 
   const { mutate } = useSWRxPageComment(pageId);
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
@@ -69,7 +71,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
   };
 
   return (
-    <div className="page-comments-row mt-5 py-4 border-top border-3 d-edit-none d-print-none">
+    <div className="page-comments-row mt-5 py-4 border-top d-edit-none d-print-none">
+      <h4 className="mb-3">{t('page_comment.comments')}</h4>
       <div id="page-comments-list" className="page-comments-list" ref={pageCommentParentRef}>
         <PageComment
           pageId={pageId}
