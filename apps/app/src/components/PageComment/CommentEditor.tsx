@@ -45,10 +45,12 @@ const SlackNotification = dynamic(() => import('../SlackNotification').then(mod 
 const navTabMapping = {
   comment_editor: {
     Icon: () => <span className="material-symbols-outlined">edit_square</span>,
+    roundClass: 'rounded-end-0',
     i18n: 'Write',
   },
   comment_preview: {
     Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
+    roundClass: 'rounded-start-0',
     i18n: 'Preview',
   },
 };

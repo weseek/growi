@@ -53,15 +53,15 @@ export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
             const isActive = activeTab === key;
             const _isLinkEnabled = value.isLinkEnabled ?? true;
             const isLinkEnabled = typeof _isLinkEnabled === 'boolean' ? _isLinkEnabled : _isLinkEnabled(value);
-            const { Icon, i18n } = value;
+            const { Icon, i18n, roundClass } = value;
 
             return (
               <NavItem
                 key={key}
-                className={`${isActive ? 'active' : 'passive'}`}
+                className={`${isActive ? 'active' : 'passive'} rounded-1 ${roundClass}`}
               >
                 <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  { Icon != null && <span className="me-1"><Icon /></span> } {i18n}
+                  { Icon != null && <span className="me-1"><Icon /></span> } <small>{i18n}</small>
                 </NavLink>
               </NavItem>
             );

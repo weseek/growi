@@ -24,6 +24,7 @@ export type ICustomTabContent = {
   Content?: () => JSX.Element,
   i18n?: string,
   Icon?: () => JSX.Element,
+  roundeClass?: string,
   isLinkEnabled?: boolean | ((content: ICustomTabContent) => boolean),
 };
 
