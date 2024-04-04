@@ -13,7 +13,7 @@ import {
   TabContent, TabPane,
 } from 'reactstrap';
 
-import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
+import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
 import type { IEditorMethods } from '~/interfaces/editor-methods';
 import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
@@ -201,40 +201,21 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
-    files.forEach(async(file) => {
-      try {
-        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
-
-        if (!resLimit.isUploadable) {
-          throw new Error(resLimit.errorMessage);
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        if (pageId != null) {
-          formData.append('page_id', pageId);
-        }
-
-        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
-
-        const attachment = resAdd.attachment;
+    uploadAttachments(pageId, files, {
+      onUploaded: (attachment) => {
         const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = `!${insertText}`;
-        }
+        const prefix = attachment.fileFormat.startsWith('image/')
+          ? '!' // use "![fileName](url)" syntax when image
+          : '';
+        const insertText = `${prefix}[${fileName}](${attachment.filePathProxied})\n`;
 
         codeMirrorEditor?.insertText(insertText);
-      }
-      catch (e) {
-        logger.error('failed to upload', e);
-        toastError(e);
-      }
+      },
+      onError: (error) => {
+        toastError(error);
+      },
     });
-
   }, [codeMirrorEditor, pageId]);
 
   const getCommentHtml = useCallback(() => {
