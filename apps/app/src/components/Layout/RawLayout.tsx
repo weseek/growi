@@ -1,6 +1,7 @@
-import React, { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import React, { useState } from 'react';
 
-import { ColorScheme } from '@growi/core';
+import type { ColorScheme } from '@growi/core';
 import Head from 'next/head';
 import { ToastContainer } from 'react-toastify';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
@@ -8,6 +9,10 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { useNextThemes, NextThemesProvider } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
+
+import styles from './RawLayout.module.scss';
+
+const toastContainerClass = styles['grw-toast-container'] ?? '';
 
 const logger = loggerFactory('growi:cli:RawLayout');
 
@@ -41,7 +46,7 @@ export const RawLayout = ({ children, className }: Props): JSX.Element => {
       <NextThemesProvider>
         <div className={classNames.join(' ')}>
           {children}
-          <ToastContainer theme={colorScheme} />
+          <ToastContainer className={toastContainerClass} theme={colorScheme} />
         </div>
       </NextThemesProvider>
     </>
