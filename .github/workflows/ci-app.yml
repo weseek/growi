@@ -30,16 +30,16 @@ jobs:
         node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
           cache-dependency-path: '**/yarn.lock'
 
       - name: Cache/Restore node_modules
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -49,7 +49,7 @@ jobs:
             node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
@@ -79,7 +79,7 @@ jobs:
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Cache dist
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: |
             **/.turbo
@@ -101,9 +101,9 @@ jobs:
           - 27017/tcp
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
@@ -111,7 +111,7 @@ jobs:
 
       - name: Cache/Restore node_modules
         id: cache-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -121,7 +121,7 @@ jobs:
             node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
@@ -143,7 +143,7 @@ jobs:
           MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi_test
 
       - name: Upload coverage report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: Coverage Report
           path: |
@@ -161,7 +161,7 @@ jobs:
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Cache dist
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: |
             **/.turbo
@@ -183,9 +183,9 @@ jobs:
           - 27017/tcp
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'yarn'
@@ -193,7 +193,7 @@ jobs:
 
       - name: Cache/Restore node_modules
         id: cache-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: |
             **/node_modules
@@ -203,7 +203,7 @@ jobs:
             node_modules-7.x-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Restore dist
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: |
             **/.turbo
@@ -238,7 +238,7 @@ jobs:
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Cache dist
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: |
             **/.turbo
