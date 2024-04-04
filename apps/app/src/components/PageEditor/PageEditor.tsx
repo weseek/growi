@@ -286,15 +286,22 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // TODO: https://redmine.weseek.co.jp/issues/142729
   // https://regex101.com/r/Wg2Hh6/1
   // set handler to focus
-  useLayoutEffect(() => {
+  // initial caret line
+  useEffect(() => {
     const untitledPageRegex = /^Untitled-\d+$/;
     const isNewlyCreatedPage = (
       currentPage?.wip && currentPage?.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPage?.path ?? ''))
     ) ?? false;
-    if (editorMode === EditorMode.Editor && !isNewlyCreatedPage) {
+    if (!isNewlyCreatedPage) {
+      codeMirrorEditor?.setCaretLine();
+    }
+  }, [codeMirrorEditor, currentPage]);
+
+  useLayoutEffect(() => {
+    if (editorMode === EditorMode.Editor) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, editorMode, currentPage]);
+  }, [codeMirrorEditor, editorMode]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
