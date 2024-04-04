@@ -23,8 +23,12 @@
 
 // adjust height
 .comment-editor-styles :global {
+  .cm-editor {
+    min-height: comment-inheritance.$codemirror-default-height !important;
+    max-height: #{2 * comment-inheritance.$codemirror-default-height};
+  }
   .cm-gutters {
-    min-height: 300px !important;
+    min-height: comment-inheritance.$codemirror-default-height !important;
   }
   .comment-preview-container {
     min-height: page-editor-inheritance.$navbar-editor-height
