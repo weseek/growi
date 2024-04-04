@@ -1,11 +1,11 @@
-import { Schema as SanitizeOption } from 'hast-util-sanitize';
+import type { Schema as SanitizeOption } from 'hast-util-sanitize';
 import type { Element } from 'hast-util-select/lib/types';
 import type { Plugin } from 'unified';
 import { visit } from 'unist-util-visit';
 
 import { addClassToProperties } from './add-class';
 
-const REGEXP_TARGET_TAGNAMES = new RegExp(/^(h1|h2|h3|h4|h5|h6|p|img|pre|blockquote|hr|ol|ul|table|tr)$/);
+const REGEXP_TARGET_TAGNAMES = new RegExp(/^(h1|h2|h3|h4|h5|h6|p|img|pre|blockquote|hr|ol|ul|table)$/);
 
 export const rehypePlugin: Plugin = () => {
   return (tree) => {
