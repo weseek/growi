@@ -285,7 +285,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // TODO: https://redmine.weseek.co.jp/issues/142729
   // https://regex101.com/r/Wg2Hh6/1
-  // set handler to focus
   // initial caret line
   useEffect(() => {
     const untitledPageRegex = /^Untitled-\d+$/;
@@ -297,6 +296,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     }
   }, [codeMirrorEditor, currentPage]);
 
+  // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
       codeMirrorEditor?.focus();
