@@ -96,7 +96,6 @@ export const PageTitleHeader: FC<Props> = (props) => {
         { isRenameInputShown && (
           <div className="position-absolute w-100">
             <ClosableTextInput
-              useAutosizeInput
               value={isNewlyCreatedPage ? '' : editedPageTitle}
               placeholder={t('Input page name')}
               inputClassName="fs-4"
