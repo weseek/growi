@@ -438,10 +438,12 @@ Crowi.prototype.autoInstall = function() {
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
+    const createdUser = installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
       allowGuestMode,
       serverDate,
     });
+
+    logger.debug('createdUser', createdUser);
   }
   catch (err) {
     logger.warn('Automatic installation failed.', err);
