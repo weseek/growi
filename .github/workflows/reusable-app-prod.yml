@@ -108,7 +108,7 @@ jobs:
     - name: Upload report as artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Bundle Analyzing Report
+        name: Bundle Analyzing Report (node${{ inputs.node-version }})
         path: |
           apps/app/.next/analyze/client.html
           apps/app/.next/analyze/server.html
