@@ -5,6 +5,8 @@ import path from 'path';
 import { createTerminus } from '@godaddy/terminus';
 import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
 import lsxRoutes from '@growi/remark-lsx/dist/server/index.cjs';
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { Resource } from '@opentelemetry/resources';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
@@ -467,7 +469,12 @@ Crowi.prototype.start = async function() {
     resource: new Resource({
       [SEMRESATTRS_SERVICE_NAME]: 'next-app',
     }),
-    spanProcessor: new SimpleSpanProcessor(new ConsoleSpanExporter()),
+    spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter({ url: 'http://otel-collector:4317' })),
+    instrumentations: [getNodeAutoInstrumentations({
+      '@opentelemetry/instrumentation-fs': {
+        enabled: false,
+      },
+    })],
   });
   sdk.start();
 
