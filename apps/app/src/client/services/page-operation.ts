@@ -4,9 +4,6 @@ import type { IPageHasId } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
-import type {
-  IApiv3PageCreateParams, IApiv3PageCreateResponse, IApiv3PageUpdateParams, IApiv3PageUpdateResponse,
-} from '~/interfaces/apiv3';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import { useCurrentPageId, useSWRMUTxCurrentPage, useSWRxTagsInfo } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
@@ -89,11 +86,6 @@ export const exportAsMarkdown = (pageId: string, revisionId: string, format: str
  */
 export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
-};
-
-export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3PageCreateResponse> => {
-  const res = await apiv3Post<IApiv3PageCreateResponse>('/page', params);
-  return res.data;
 };
 
 export type UpdateStateAfterSaveOption = {
