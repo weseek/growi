@@ -42,19 +42,6 @@ const logger = loggerFactory('growi:components:CommentEditor');
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
-const navTabMapping = {
-  comment_editor: {
-    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
-    roundClass: 'rounded-end-0',
-    i18n: 'Write',
-  },
-  comment_preview: {
-    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
-    roundClass: 'rounded-start-0',
-    i18n: 'Preview',
-  },
-};
-
 export type CommentEditorProps = {
   pageId: string,
   isForNewComment?: boolean,
@@ -94,7 +81,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
-  const [activeTab, setActiveTab] = useState('comment_editor');
+  const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
   const [incremented, setIncremented] = useState(false);
@@ -117,8 +104,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     };
   }, [onRouterChangeComplete, router.events]);
 
-  const handleSelect = useCallback((activeTab: string) => {
-    setActiveTab(activeTab);
+  const handleSelect = useCallback((showPreview: boolean) => {
+    setShowPreview(showPreview);
   }, []);
 
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
@@ -144,7 +131,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
 
     setComment('');
-    setActiveTab('comment_editor');
+    setShowPreview(false);
     setError(undefined);
     initializeSlackEnabled();
     // reset value
@@ -276,7 +263,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         </NotAvailableForGuest>
       </div>
     );
-  }, []);
+  }, [currentUser]);
 
   // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
   //   setComment(newValue);
@@ -337,9 +324,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
               <UserPicture user={currentUser} noLink noTooltip />
               <p className="ms-2 mb-0">Add a comment</p>
             </div>
-            <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} />
+            <CustomNavTab showPreview={showPreview} onNavSelected={handleSelect} />
           </div>
-          <TabContent activeTab={activeTab}>
+          <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
             <TabPane tabId="comment_editor">
               <CodeMirrorEditorComment
                 acceptedUploadFileType={acceptedUploadFileType}

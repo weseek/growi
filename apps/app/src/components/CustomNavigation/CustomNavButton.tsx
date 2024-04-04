@@ -1,73 +1,69 @@
-import React, {
-  useRef, useMemo, useCallback,
-} from 'react';
+import { memo, type ReactNode } from 'react';
 
-import {
-  Nav, NavItem, NavLink,
-} from 'reactstrap';
-
-import type { ICustomNavTabMappings } from '~/interfaces/ui';
+import { useTranslation } from 'next-i18next';
 
 import styles from './CustomNavButton.module.scss';
 
+const moduleClass = styles['grw-custom-nav-tab'] ?? '';
+
+
+type SwitchingButtonProps = {
+  active?: boolean,
+  children?: ReactNode,
+  onClick?: () => void,
+}
+const SwitchingButton = memo((props: SwitchingButtonProps) => {
+  const {
+    active, children, onClick,
+  } = props;
+
+  const classNames = ['btn py-1 px-2 d-flex align-items-center justify-content-center'];
+  if (active) {
+    classNames.push('active');
+  }
+
+  return (
+    <button
+      type="button"
+      className={classNames.join(' ')}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+});
+
+
 type CustomNavTabProps = {
-  activeTab: string,
-  navTabMapping: ICustomNavTabMappings,
-  onNavSelected?: (selectedTabKey: string) => void,
+  showPreview: boolean,
+  onNavSelected?: (showPreview: boolean) => void,
 };
 
 export const CustomNavTab = (props: CustomNavTabProps): JSX.Element => {
 
+  const { t } = useTranslation();
+
   const {
-    activeTab, navTabMapping, onNavSelected,
+    showPreview, onNavSelected,
   } = props;
 
-  const navContainerRef = useRef<HTMLDivElement>(null);
-
-  const navTabRefs: { [key: string]: HTMLAnchorElement } = useMemo(() => {
-    const obj = {};
-    Object.keys(navTabMapping).forEach((key) => {
-      obj[key] = React.createRef();
-    });
-    return obj;
-  }, [navTabMapping]);
-
-  const navLinkClickHandler = useCallback((key) => {
-    if (onNavSelected != null) {
-      onNavSelected(key);
-    }
-  }, [onNavSelected]);
-
-  function registerNavLink(key: string, anchorElem: HTMLAnchorElement | null) {
-    if (anchorElem != null) {
-      navTabRefs[key] = anchorElem;
-    }
-  }
-
   return (
-    <div className={`grw-custom-nav-tab ${styles['grw-custom-nav-tab']}`}>
-      <div ref={navContainerRef} className="d-flex justify-content-between">
-        <Nav className="nav-title rounded">
-          {Object.entries(navTabMapping).map(([key, value]) => {
-
-            const isActive = activeTab === key;
-            const _isLinkEnabled = value.isLinkEnabled ?? true;
-            const isLinkEnabled = typeof _isLinkEnabled === 'boolean' ? _isLinkEnabled : _isLinkEnabled(value);
-            const { Icon, i18n, roundClass } = value;
-
-            return (
-              <NavItem
-                key={key}
-                className={`${isActive ? 'active' : 'passive'} rounded-1 ${roundClass}`}
-              >
-                <NavLink type="button" key={key} innerRef={elm => registerNavLink(key, elm)} disabled={!isLinkEnabled} onClick={() => navLinkClickHandler(key)}>
-                  { Icon != null && <span className="me-1"><Icon /></span> } <small>{i18n}</small>
-                </NavLink>
-              </NavItem>
-            );
-          })}
-        </Nav>
-      </div>
+    <div
+      className={`btn-group ${moduleClass}`}
+      role="group"
+    >
+      <SwitchingButton
+        active={!showPreview}
+        onClick={() => onNavSelected?.(false)}
+      >
+        <span className="material-symbols-outlined me-1">edit_square</span>{t('Write')}
+      </SwitchingButton>
+      <SwitchingButton
+        active={showPreview}
+        onClick={() => onNavSelected?.(true)}
+      >
+        <span className="material-symbols-outlined me-0">play_arrow</span>{t('Preview')}
+      </SwitchingButton>
     </div>
   );
 
