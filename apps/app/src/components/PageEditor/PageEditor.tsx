@@ -273,11 +273,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   }, [codeMirrorEditor, pageId]);
 
-  // initial caret line
-  useEffect(() => {
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor]);
-
   // set handler to save and return to View
   useEffect(() => {
     globalEmitter.on('saveAndReturnToView', saveAndReturnToViewHandler);
@@ -286,6 +281,20 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
   }, [saveAndReturnToViewHandler]);
+
+
+  // TODO: https://redmine.weseek.co.jp/issues/142729
+  // https://regex101.com/r/Wg2Hh6/1
+  // initial caret line
+  useEffect(() => {
+    const untitledPageRegex = /^Untitled-\d+$/;
+    const isNewlyCreatedPage = (
+      currentPage?.wip && currentPage?.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPage?.path ?? ''))
+    ) ?? false;
+    if (!isNewlyCreatedPage) {
+      codeMirrorEditor?.setCaretLine();
+    }
+  }, [codeMirrorEditor, currentPage]);
 
   // set handler to focus
   useLayoutEffect(() => {

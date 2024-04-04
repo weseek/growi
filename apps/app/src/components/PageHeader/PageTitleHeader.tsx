@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -14,6 +14,7 @@ import { ValidationTarget } from '~/client/util/input-validator';
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+
 
 import styles from './PageTitleHeader.module.scss';
 
@@ -43,6 +44,12 @@ export const PageTitleHeader: FC<Props> = (props) => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
+  // TODO: https://redmine.weseek.co.jp/issues/142729
+  // https://regex101.com/r/Wg2Hh6/1
+  const untitledPageRegex = /^Untitled-\d+$/;
+
+  const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
+
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
   }, []);
@@ -52,8 +59,9 @@ export const PageTitleHeader: FC<Props> = (props) => {
   }, []);
 
   const onInputChange = useCallback((inputText: string) => {
+    const newPageTitle = pathUtils.removeHeadingSlash(inputText);
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
-    const newPagePath = nodePath.resolve(parentPagePath, inputText);
+    const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
 
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
@@ -76,6 +84,11 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [currentPagePath, isMovable]);
 
+  useEffect(() => {
+    if (isNewlyCreatedPage) {
+      setRenameInputShown(true);
+    }
+  }, [currentPage._id, isNewlyCreatedPage]);
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
@@ -83,13 +96,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
         { isRenameInputShown && (
           <div className="position-absolute w-100">
             <ClosableTextInput
-              value={editedPageTitle}
+              value={isNewlyCreatedPage ? '' : editedPageTitle}
               placeholder={t('Input page name')}
               inputClassName="fs-4"
               onPressEnter={onPressEnter}
               onPressEscape={onPressEscape}
               onChange={onInputChange}
-              onClickOutside={() => setRenameInputShown(false)}
+              onClickOutside={() => { setRenameInputShown(false) }}
               validationTarget={ValidationTarget.PAGE}
             />
           </div>
