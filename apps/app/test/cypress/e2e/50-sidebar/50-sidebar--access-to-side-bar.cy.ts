@@ -197,7 +197,7 @@ describe('Access to sidebar', () => {
 
         it('Successfully access to custom sidebar', () => {
           cy.getByTestid('grw-sidebar-contents').within(() => {
-            cy.get('.grw-sidebar-content-header > h3').find('a');
+            cy.get('.grw-sidebar-content-header > h4').find('a');
 
             cy.waitUntilSkeletonDisappear();
             cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`, { blackout: blackoutOverride });
