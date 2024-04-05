@@ -137,16 +137,17 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
-  const { mutate: mutatePageControlsX } = usePageControlsX();
+  const { mutateAndSave: mutatePageControlsX } = usePageControlsX();
+
   const pageControlsRef = useRef<HTMLDivElement>(null);
   const [pageControlsRect] = useRect(pageControlsRef);
 
   useEffect(() => {
-    if (pageControlsRect == null) {
+    if (pageControlsRect?.x == null) {
       return;
     }
     mutatePageControlsX(pageControlsRect.x);
-  }, [pageControlsRect, mutatePageControlsX]);
+  }, [pageControlsRect?.x, mutatePageControlsX]);
 
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
