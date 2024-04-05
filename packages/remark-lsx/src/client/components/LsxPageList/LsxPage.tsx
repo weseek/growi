@@ -110,9 +110,10 @@ export const LsxPage = React.memo((props: Props): JSX.Element => {
   }, [basisViewersCount, pageNode]);
 
   return (
-    <li className={`page-list-li ${styles['page-list-li']}`}>
+    <li className={`page-list-li ${styles['page-list-li']} my-2`}>
       <div className="d-flex align-items-center">
-        {iconElement} {pagePathElement}{pageListMetaElement}
+        {iconElement} {pagePathElement}
+        <span className="ms-2">{pageListMetaElement}</span>
       </div>
       {childrenElements}
     </li>
