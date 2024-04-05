@@ -348,6 +348,10 @@
     "compare_latest": "Compare latest revision",
     "compare_previous": "Compare previous revision"
   },
+  "lsx": {
+    "load_more": "Load more",
+    "pages_left": "\"{{leftItemsNum}}\"pages left"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "Move/Rename page",

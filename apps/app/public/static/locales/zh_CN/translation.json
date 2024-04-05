@@ -338,6 +338,10 @@
     "compare_latest": "比較最新版本",
     "compare_previous": "比較以前的版本"
   },
+  "lsx": {
+    "load_more": "Load more",
+    "pages_left": "\"{{leftItemsNum}}\"pages left"
+  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "页面 移动/重命名",
