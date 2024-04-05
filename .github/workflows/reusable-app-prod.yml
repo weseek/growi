@@ -325,7 +325,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.cypress-report-artifact-name }}
+        name: ${{ inputs.cypress-report-artifact-name }}-${{ matrix.spec-group }}
         path: |
           apps/app/test/cypress/screenshots
           apps/app/test/cypress/videos
