@@ -1,5 +1,5 @@
-import type { FC } from 'react';
-import React from 'react';
+import type { CSSProperties, FC } from 'react';
+import React, { useMemo } from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -7,6 +7,7 @@ import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
+import { usePageControlsX } from '~/stores/ui';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
@@ -107,6 +108,14 @@ export const PagePathNav: FC<Props> = (props: Props) => {
 type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 
 export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
+
+  const { data: pageControlsX } = usePageControlsX();
+  const maxWidth: CSSProperties | undefined = useMemo(() => {
+    if (pageControlsX == null) {
+      return;
+    }
+    return { maxWidth: `1000px - ${pageControlsX}` };
+  }, [pageControlsX]);
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
@@ -117,7 +126,7 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className={`d-inline-block pe-auto ${isCollapseParents ? 'is-collapse-with-top' : ''}`}>
+          <div className="d-inline-block pe-auto" style={isCollapseParents ? maxWidth : {}}>
             <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'} />
           </div>
         );
