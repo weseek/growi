@@ -176,8 +176,6 @@ Crowi.prototype.init = async function() {
     this.setupExternalUserGroupSyncService(),
   ]);
 
-  await this.autoInstall();
-
   await normalizeData();
 };
 
@@ -504,6 +502,8 @@ Crowi.prototype.start = async function() {
 
   // Execute this asynchronously after the express server is ready so it does not block the ongoing process
   this.asyncAfterExpressServerReady();
+
+  this.autoInstall();
 
   return serverListening;
 };
