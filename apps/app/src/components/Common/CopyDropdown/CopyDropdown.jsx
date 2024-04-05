@@ -120,6 +120,7 @@ export const CopyDropdown = (props) => {
 
         <DropdownMenu
           strategy="fixed"
+          container="body"
         >
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
