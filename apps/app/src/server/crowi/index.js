@@ -483,6 +483,8 @@ Crowi.prototype.start = async function() {
   instantiateYjsConnectionManager(this.socketIoService.io);
   this.socketIoService.setupYjsConnection();
 
+  this.autoInstall();
+
   // listen
   const serverListening = httpServer.listen(this.port, () => {
     logger.info(`[${this.node_env}] Express server is listening on port ${this.port}`);
@@ -500,8 +502,6 @@ Crowi.prototype.start = async function() {
 
   // Execute this asynchronously after the express server is ready so it does not block the ongoing process
   this.asyncAfterExpressServerReady();
-
-  this.autoInstall();
 
   return serverListening;
 };
