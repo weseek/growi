@@ -86,7 +86,7 @@ jobs:
         yarn --frozen-lockfile
 
     - name: Download screenshots taken by cypress
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: apps/app/test/cypress
