@@ -124,7 +124,7 @@ const LsxSubstance = React.memo(({
         </div>
       </div>
     );
-  }, [data, setSize]);
+  }, [data, setSize, t]);
 
 
   return (
