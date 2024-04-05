@@ -239,7 +239,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             >
               <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
               <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
-              <small>Add Comment in markdown...</small>
+              <small>{t('page_comment.add_a_comment')}...</small>
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
