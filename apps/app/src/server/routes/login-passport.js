@@ -312,8 +312,6 @@ module.exports = function(crowi, app) {
     passport.authenticate('local', (err, user, info) => {
       debug('--- authenticate with LocalStrategy ---');
       debug('user', user);
-      debug('info', info);
-      debug('req.body.loginForm', req.body.loginForm);
 
       if (err) { // DB Error
         logger.error('Database Server Error: ', err);
