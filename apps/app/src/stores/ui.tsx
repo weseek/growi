@@ -271,15 +271,15 @@ export const useCurrentSidebarContents = (
   return withUtils(swrResponse, { mutateAndSave });
 };
 
-export const usePageControlsRect = (
-    initialData?: DOMRect,
-): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<DOMRect>, DOMRect> => {
-  const swrResponse = useSWRStatic('pageControlsRect', initialData, { fallbackData: new DOMRect() });
+export const usePageControlsX = (
+    initialData?: number,
+): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
+  const swrResponse = useSWRStatic('pageControlsX', initialData, { fallbackData: 1000 });
 
   const { mutate } = swrResponse;
 
-  const mutateAndSave: MutateAndSaveUserUISettings<DOMRect> = useCallback((data, opt?) => {
-    scheduleToPut({ currentPageControlsRect: data });
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opt?) => {
+    scheduleToPut({ currentPageControlsX: data });
     return mutate(data, opt);
   }, [mutate]);
 

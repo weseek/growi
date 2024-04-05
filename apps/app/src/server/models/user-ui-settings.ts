@@ -23,8 +23,8 @@ const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
     enum: SidebarContentsType,
     default: SidebarContentsType.RECENT,
   },
-  currentPageControlsRect: {
-    type: DOMRect,
+  currentPageControlsX: {
+    type: Number,
   },
   currentProductNavWidth: { type: Number },
   preferCollapsedModeByUser: { type: Boolean, default: false },

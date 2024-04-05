@@ -2,7 +2,7 @@ import type { SidebarContentsType } from './ui';
 
 export interface IUserUISettings {
   currentSidebarContents: SidebarContentsType,
-  currentPageControlsRect: DOMRect,
+  currentPageControlsX: number,
   currentProductNavWidth: number,
   preferCollapsedModeByUser: boolean,
 }
