@@ -1,6 +1,7 @@
 import type { Ref, IUser } from '@growi/core';
+import type { Model, Document } from 'mongoose';
 import {
-  Schema, Model, Document,
+  Schema,
 } from 'mongoose';
 
 
@@ -21,6 +22,9 @@ const schema = new Schema<UserUISettingsDocument, UserUISettingsModel>({
     type: String,
     enum: SidebarContentsType,
     default: SidebarContentsType.RECENT,
+  },
+  currentPageControlsRect: {
+    type: DOMRect,
   },
   currentProductNavWidth: { type: Number },
   preferCollapsedModeByUser: { type: Boolean, default: false },
