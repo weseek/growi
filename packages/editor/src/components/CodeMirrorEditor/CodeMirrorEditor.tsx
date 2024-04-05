@@ -205,7 +205,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
+    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden rounded`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />

@@ -18,11 +18,11 @@ jobs:
       RELEASED_VERSION: ${{ steps.package-json.outputs.packageVersion }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'yarn'
@@ -84,7 +84,7 @@ jobs:
       TAGS: ${{ steps.meta.outputs.tags }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
@@ -133,7 +133,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
@@ -158,11 +158,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'yarn'
