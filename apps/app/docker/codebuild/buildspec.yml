@@ -20,7 +20,6 @@ phases:
   build:
     commands:
       - docker build -t ${IMAGE_TAG} -f ./apps/app/docker/Dockerfile .
-      - docker tag ${IMAGE_TAG}
 
   post_build:
     commands:

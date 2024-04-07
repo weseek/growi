@@ -21,7 +21,7 @@ import { throttle, debounce } from 'throttle-debounce';
 import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
-import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
+import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import {
   useDefaultIndentSize, useCurrentUser,
@@ -237,46 +237,29 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
-    files.forEach(async(file) => {
-      try {
-        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
+    if (pageId == null) {
+      logger.error('pageId is invalid', {
+        pageId,
+      });
+      throw new Error('pageId is invalid');
+    }
 
-        if (!resLimit.isUploadable) {
-          throw new Error(resLimit.errorMessage);
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        if (pageId != null) {
-          formData.append('page_id', pageId);
-        }
-
-        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
-
-        const attachment = resAdd.attachment;
+    uploadAttachments(pageId, files, {
+      onUploaded: (attachment) => {
         const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = `!${insertText}`;
-        }
+        const prefix = attachment.fileFormat.startsWith('image/')
+          ? '!' // use "![fileName](url)" syntax when image
+          : '';
+        const insertText = `${prefix}[${fileName}](${attachment.filePathProxied})\n`;
 
         codeMirrorEditor?.insertText(insertText);
-      }
-      catch (e) {
-        logger.error('failed to upload', e);
-        toastError(e);
-      }
+      },
+      onError: (error) => {
+        toastError(error);
+      },
     });
-
   }, [codeMirrorEditor, pageId]);
-
-  // initial caret line
-  useEffect(() => {
-    codeMirrorEditor?.setCaretLine();
-  }, [codeMirrorEditor]);
 
   // set handler to save and return to View
   useEffect(() => {
@@ -286,6 +269,20 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       globalEmitter.removeListener('saveAndReturnToView', saveAndReturnToViewHandler);
     };
   }, [saveAndReturnToViewHandler]);
+
+
+  // TODO: https://redmine.weseek.co.jp/issues/142729
+  // https://regex101.com/r/Wg2Hh6/1
+  // initial caret line
+  useEffect(() => {
+    const untitledPageRegex = /^Untitled-\d+$/;
+    const isNewlyCreatedPage = (
+      currentPage?.wip && currentPage?.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPage?.path ?? ''))
+    ) ?? false;
+    if (!isNewlyCreatedPage) {
+      codeMirrorEditor?.setCaretLine();
+    }
+  }, [codeMirrorEditor, currentPage]);
 
   // set handler to focus
   useLayoutEffect(() => {

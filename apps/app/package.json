@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.0.1-RC.0",
+  "version": "7.0.2-RC.0",
   "license": "MIT",
   "scripts": {
     "//// for production": "",
@@ -244,7 +244,7 @@
     "babel-loader": "^8.2.5",
     "bootstrap": "^5.3.1",
     "connect-browser-sync": "^2.1.0",
-    "diff2html": "^3.4.35",
+    "diff2html": "^3.4.47",
     "downshift": "^8.2.3",
     "eazy-logger": "^3.1.0",
     "eslint-plugin-cypress": "^2.12.1",
