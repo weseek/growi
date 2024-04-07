@@ -46,7 +46,7 @@
   },
   "peerDependencies": {
     "@marp-team/marpit": "*",
-    "next": "^13",
+    "next": "^14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

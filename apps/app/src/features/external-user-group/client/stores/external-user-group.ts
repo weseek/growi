@@ -7,9 +7,7 @@ import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import type {
   IExternalUserGroupHasId, IExternalUserGroupRelationHasId, KeycloakGroupSyncSettings, LdapGroupSyncSettings,
 } from '~/features/external-user-group/interfaces/external-user-group';
-import type {
-  ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, MyUserGroupsResult, UserGroupRelationListResult,
-} from '~/interfaces/user-group-response';
+import type { ChildUserGroupListResult, IUserGroupRelationHasIdPopulatedUser, UserGroupRelationListResult } from '~/interfaces/user-group-response';
 
 export const useSWRxLdapGroupSyncSettings = (): SWRResponse<LdapGroupSyncSettings, Error> => {
   return useSWR(
@@ -26,14 +24,6 @@ export const useSWRxKeycloakGroupSyncSettings = (): SWRResponse<KeycloakGroupSyn
     endpoint => apiv3Get(endpoint).then((response) => {
       return response.data;
     }),
-  );
-};
-
-export const useSWRxMyExternalUserGroups = (shouldFetch: boolean, path: string):
-  SWRResponse<{ userGroup: IExternalUserGroupHasId, canGrantPage: boolean }[], Error> => {
-  return useSWR(
-    shouldFetch ? '/me/external-user-groups' : null,
-    endpoint => apiv3Get<MyUserGroupsResult<IExternalUserGroupHasId>>(endpoint, { path }).then(result => result.data.userGroups),
   );
 };
 

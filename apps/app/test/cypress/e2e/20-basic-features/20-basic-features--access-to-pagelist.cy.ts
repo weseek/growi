@@ -31,7 +31,7 @@ context('Access to pagelist', () => {
   it('Page list modal is successfully opened ', () => {
     // Wait until the string "You cannot see this page" is no longer displayed
     cy.getByTestid('page-list-item-L').eq(0).within(() => {
-      cy.get('.icon-exclamation').should('not.exist');
+      cy.get('.material-symbols-outlined').contains('error').should('not.exist');
     });
 
     cy.waitUntilSpinnerDisappear();

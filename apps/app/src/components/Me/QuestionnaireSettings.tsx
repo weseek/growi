@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -45,7 +46,7 @@ export const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoadingCurrentUser && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       )}
 

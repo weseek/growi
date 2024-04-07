@@ -475,13 +475,13 @@ export const HandsontableModal = (): JSX.Element => {
           </button>
           <div role="group" className="btn-group">
             <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('l') }}>
-              <i className="ti ti-align-left"></i>
+              <span className="material-symbols-outlined">format_align_left</span>
             </button>
             <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('c') }}>
-              <i className="ti ti-align-center"></i>
+              <span className="material-symbols-outlined">format_align_center</span>
             </button>
             <button type="button" className="btn btn-secondary" onClick={() => { alignButtonHandler('r') }}>
-              <i className="ti ti-align-right"></i>
+              <span className="material-symbols-outlined">format_align_right</span>
             </button>
           </div>
           <Collapse isOpen={isDataImportAreaExpanded}>

@@ -77,7 +77,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={props.onClickPlusBtn}>
-                <i className="ti ti-plus"></i>
+                <span className="material-symbols-outlined">add</span>
               </button>
             </td>
             <td></td>

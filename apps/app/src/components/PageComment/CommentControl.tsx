@@ -22,7 +22,7 @@ export const CommentControl = (props: CommentControlProps): JSX.Element => {
         className="btn btn-link p-2 me-2"
         onClick={onClickDeleteBtn}
       >
-        <i className="ti ti-close"></i>
+        <span className="material-symbols-outlined">close</span>
       </button>
     </div>
   );

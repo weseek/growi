@@ -6,6 +6,7 @@ import React, {
 
 import { useCodeMirrorEditorIsolated } from '@growi/editor';
 import { useDrawioModalForEditor } from '@growi/editor/src/stores/use-drawio';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,
   ModalBody,
@@ -17,6 +18,7 @@ import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
+
 
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
@@ -133,7 +135,7 @@ export const DrawioModal = (): JSX.Element => {
         {/* Loading spinner */}
         <div className="w-100 h-100 position-absolute d-flex">
           <div className="mx-auto my-auto">
-            <i className="fa fa-3x fa-spinner fa-pulse mx-auto text-muted"></i>
+            <LoadingSpinner className="mx-auto text-muted fs-2" />
           </div>
         </div>
         {/* iframe */}
