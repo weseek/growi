@@ -95,14 +95,14 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate' : ''} small`}>
+    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate small' : ''}`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className="material-symbols-outlined ms-2">lock</span>;
+    locked = <span className="material-symbols-outlined ms-2 fs-6">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -114,7 +114,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
 
         <div className="flex-grow-1 ms-2">
-          <div className={`row ${isSmall ? 'gy-0' : 'gy-2'}`}>
+          <div className={`row ${isSmall ? 'gy-0' : 'gy-1'}`}>
 
             <div className="col-12">
               { !dPagePath.isRoot && <FormerLink /> }

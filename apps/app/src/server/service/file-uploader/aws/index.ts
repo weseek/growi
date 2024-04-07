@@ -85,7 +85,7 @@ const S3Factory = (): S3Client => {
 };
 
 const getFilePathOnStorage = (attachment) => {
-  if (attachment.filePath != null) {
+  if (attachment.filePath != null) { // DEPRECATED: remains for backward compatibility for v3.3.x or below
     return attachment.filePath;
   }
 
