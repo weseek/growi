@@ -243,9 +243,8 @@ export const GrantSelector = (props: Props): JSX.Element => {
               onClick={() => groupListItemClickHandler(group)}
               disabled={cannotGrantGroup}
             >
-<<<<<<< HEAD
-              <span className="align-middle"><input type="checkbox" checked={isGroupGranted} disabled={cannotGrantGroup} /></span>
-              <h5 className="d-inline-block ms-3">{group.name}</h5>
+              <input type="checkbox" checked={isGroupGranted} disabled={cannotGrantGroup} />
+              <p className="ms-3 mb-0">{group.name}</p>
               {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
@@ -259,14 +258,9 @@ export const GrantSelector = (props: Props): JSX.Element => {
               key={group.id}
               disabled
             >
-              <span className="align-middle"><input type="checkbox" checked disabled /></span>
-              <h5 className="d-inline-block ms-3">{group.name}</h5>
+              <input type="checkbox" checked disabled />
+              <p className="ms-3 mb-0">{group.name}</p>
               {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
-=======
-              <input type="checkbox" checked={groupIsGranted} />
-              <p className="ms-3 mb-0">{group.item.name}</p>
-              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
->>>>>>> master
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
