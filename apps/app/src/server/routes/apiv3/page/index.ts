@@ -539,12 +539,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /page/is-grant-normalized:
+   *    /page/grant-data:
    *      get:
    *        tags: [Page]
    *        summary: /page/info
-   *        description: Retrieve current page's isGrantNormalized value
-   *        operationId: getIsGrantNormalized
+   *        description: Retrieve current page's grant data
+   *        operationId: getPageGrantData
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -553,7 +553,7 @@ module.exports = (crowi) => {
    *              $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
-   *            description: Successfully retrieved current isGrantNormalized.
+   *            description: Successfully retrieved current grant data.
    *            content:
    *              application/json:
    *                schema:
@@ -566,7 +566,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/is-grant-normalized', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
