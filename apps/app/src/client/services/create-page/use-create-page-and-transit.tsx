@@ -2,11 +2,13 @@ import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { createPage, exist } from '~/client/services/page-operation';
+import { exist } from '~/client/services/page-operation';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
+
+import { createPage } from './create-page';
 
 const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 

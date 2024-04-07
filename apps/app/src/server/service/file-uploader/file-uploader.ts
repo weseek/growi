@@ -2,6 +2,7 @@ import { randomUUID } from 'crypto';
 
 import type { Response } from 'express';
 
+import type { ICheckLimitResult } from '~/interfaces/attachment';
 import { type RespondOptions, ResponseMode } from '~/server/interfaces/attachment';
 import { Attachment, type IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
@@ -15,11 +16,6 @@ export type SaveFileParam = {
   filePath: string,
   contentType: string,
   data,
-}
-
-export type CheckLimitResult = {
-  isUploadable: boolean,
-  errorMessage?: string,
 }
 
 export type TemporaryUrl = {
@@ -38,7 +34,7 @@ export interface FileUploader {
   deleteFiles(): void,
   getFileUploadTotalLimit(): number,
   getTotalFileSize(): Promise<number>,
-  doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult>,
+  doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult>,
   determineResponseMode(): ResponseMode,
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
@@ -135,7 +131,7 @@ export abstract class AbstractFileUploader implements FileUploader {
    * Check files size limits for all uploaders
    *
    */
-  async doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<CheckLimitResult> {
+  async doCheckLimit(uploadFileSize: number, maxFileSize: number, totalLimit: number): Promise<ICheckLimitResult> {
     if (uploadFileSize > maxFileSize) {
       return { isUploadable: false, errorMessage: 'File size exceeds the size limit per file' };
     }

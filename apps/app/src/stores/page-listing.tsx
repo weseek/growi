@@ -111,7 +111,10 @@ export const useSWRxPageInfoForList = (
     shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
     ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
-        pageIds, path, attachBookmarkCount, attachShortBody,
+        pageIds: pageIds != null ? pageIds : undefined, // Do not pass null to avoid empty query parameter
+        path: path != null ? path : undefined, // Do not pass null to avoid empty query parameter
+        attachBookmarkCount,
+        attachShortBody,
       }).then(response => response.data);
     },
   );

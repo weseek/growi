@@ -11,8 +11,8 @@ import { useAppTitle } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 
-import CustomBotWithProxyConnectionStatus from './CustomBotWithProxyConnectionStatus';
-import DeleteSlackBotSettingsModal from './DeleteSlackBotSettingsModal';
+import { CustomBotWithProxyConnectionStatus } from './CustomBotWithProxyConnectionStatus';
+import { DeleteSlackBotSettingsModal } from './DeleteSlackBotSettingsModal';
 import { SlackAppIntegrationControl } from './SlackAppIntegrationControl';
 import WithProxyAccordions from './WithProxyAccordions';
 
@@ -78,7 +78,7 @@ const OfficialBotSettings = (props) => {
       <h2 className="admin-setting-header">{t('admin:slack_integration.official_bot_integration')}
         <a href={t('admin:slack_integration.docs_url.official_bot')} target="_blank" rel="noopener noreferrer">
           <span
-            className="growi-custom-icons btn-link ms-2 fs-3"
+            className="growi-custom-icons btn-link ms-2"
             onClick={() => window.open(`${t('admin:slack_integration.docs_url.official_bot')}`, '_blank')}
           >
             external_link
