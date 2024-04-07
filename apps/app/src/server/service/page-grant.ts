@@ -12,6 +12,7 @@ import mongoose from 'mongoose';
 import type { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
+import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus, type GroupGrantData } from '~/interfaces/page';
 import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { PageDocument, PageModel } from '~/server/models/page';
@@ -106,9 +107,6 @@ export interface IPageGrantService {
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
   isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
-  getCanGrantPageForUserGroups: (
-    userGroups: UserGroupDocument[], groupType: GroupType, targetPath: string
-  ) => Promise<{ userGroup: UserGroupDocument, canGrantPage: boolean}[]>
   getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>
 }
 
@@ -527,44 +525,6 @@ class PageGrantService implements IPageGrantService {
   }
 
   /**
-   * Get 'canGrantPage' for each user group given, which shows if a page can be granted to a user group.
-   * To calculate 'canGrantPage', the same logic as isGrantNormalized will be executed, except only the ancestor info will be used.
-   *
-   * @param userGroups
-   * @param groupType
-   * @param targetPath
-   * @returns
-   */
-  async getCanGrantPageForUserGroups(
-      userGroups: UserGroupDocument[], groupType: GroupType, targetPath: string,
-  ): Promise<{ userGroup: UserGroupDocument, canGrantPage: boolean}[]> {
-    const Page = mongoose.model<IPage, PageModel>('Page');
-    if (isTopPage(targetPath)) {
-      return userGroups.map((group) => {
-        return { userGroup: group, canGrantPage: true };
-      });
-    }
-
-    const page = await Page.findByPath(targetPath);
-    const grantedUserIds = page?.grantedUsers?.map(user => getIdForRef(user)) ?? [];
-
-    const comparableAncestor = await this.generateComparableAncestor(targetPath, false);
-
-    const withCanGrantPage = userGroups.map((group) => {
-      const groupsToGrant = [...(page?.grantedGroups ?? []), { item: group._id, type: groupType }];
-      const comparableTarget: ComparableTarget = {
-        grant: PageGrant.GRANT_USER_GROUP,
-        grantedUserIds,
-        grantedGroupIds: groupsToGrant,
-      };
-
-      return { userGroup: group, canGrantPage: this.validateGrant(comparableTarget, comparableAncestor) };
-    });
-
-    return withCanGrantPage;
-  }
-
-  /**
    * Separate normalizable pages and NOT normalizable pages by PageService.prototype.isGrantNormalized method.
    * normalizable pages = Pages which are able to run normalizeParentRecursively method (grant & userGroup rule is correct)
    * @param pageIds pageIds to be tested
@@ -694,12 +654,23 @@ class PageGrantService implements IPageGrantService {
     return data;
   }
 
+  /**
+   * Get the group grant data of page.
+   * To calculate if a group can be granted to page, the same logic as isGrantNormalized will be executed, except only the ancestor info will be used.
+   * @param page
+   * @param user
+   * @returns
+   */
   async getPageGroupGrantData(page: PageDocument, user): Promise<GroupGrantData> {
+    if (isTopPage(page.path)) {
+      return { userRelatedGroups: [], nonUserRelatedGrantedGroups: [] };
+    }
+
     const userRelatedGroups = await this.getUserRelatedGroups(user);
-    const userRelatedGroupsData = userRelatedGroups.map((group) => {
+    let userRelatedGroupsData: UserRelatedGroupsData[] = userRelatedGroups.map((group) => {
       const provider = group.type === GroupType.externalUserGroup ? group.item.provider : undefined;
       return {
-        // TODO: change un-grantable groups to UserGroupPageGrantStatus.cannotGrant (https://redmine.weseek.co.jp/issues/142310)
+        // default status as notGranted
         id: group.item._id.toString(), name: group.item.name, type: group.type, provider, status: UserGroupPageGrantStatus.notGranted,
       };
     });
@@ -713,6 +684,8 @@ class PageGrantService implements IPageGrantService {
 
     const populatedGrantedGroups = await this.getPopulatedGrantedGroups(page.grantedGroups);
 
+    // Set the status of user-related granted groups as isGranted
+    // Append non-user-related granted groups to nonUserRelatedGrantedGroups
     populatedGrantedGroups.forEach((group) => {
       const userRelatedGrantedGroup = userRelatedGroupsData.find((userRelatedGroup) => {
         return userRelatedGroup.id === group.item._id.toString();
@@ -726,6 +699,23 @@ class PageGrantService implements IPageGrantService {
           id: group.item._id.toString(), name: group.item.name, type: group.type, provider,
         });
       }
+    });
+
+    // Check if group can be granted to page for non-granted groups
+    const grantedUserIds = page.grantedUsers?.map(user => getIdForRef(user)) ?? [];
+    const comparableAncestor = await this.generateComparableAncestor(page.path, false);
+    userRelatedGroupsData = userRelatedGroupsData.map((groupData) => {
+      if (groupData.status === UserGroupPageGrantStatus.isGranted) {
+        return groupData;
+      }
+      const groupsToGrant = [...(page.grantedGroups ?? []), { item: groupData.id, type: groupData.type }];
+      const comparableTarget: ComparableTarget = {
+        grant: PageGrant.GRANT_USER_GROUP,
+        grantedUserIds,
+        grantedGroupIds: groupsToGrant,
+      };
+      const status = this.validateGrant(comparableTarget, comparableAncestor) ? UserGroupPageGrantStatus.notGranted : UserGroupPageGrantStatus.cannotGrant;
+      return { ...groupData, status };
     });
 
     return { userRelatedGroups: userRelatedGroupsData, nonUserRelatedGrantedGroups };

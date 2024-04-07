@@ -92,10 +92,6 @@ export const GrantSelector = (props: Props): JSX.Element => {
     setIsSelectGroupModalShown(true);
   }, []);
 
-  const updateGrantHandler = useCallback((grantData: IPageGrantData): void => {
-    mutateGrant(grantData);
-  }, [mutateGrant]);
-
   /**
    * change event handler for grant selector
    */

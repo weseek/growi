@@ -13,10 +13,6 @@ export type UserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupH
   userGroups: TUSERGROUP[],
 };
 
-export type MyUserGroupsResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
-  userGroups: { userGroup: TUSERGROUP, canGrantPage: boolean }[],
-};
-
 export type ChildUserGroupListResult<TUSERGROUP extends IUserGroupHasId = IUserGroupHasId> = {
   childUserGroups: TUSERGROUP[],
   grandChildUserGroups: TUSERGROUP[],
