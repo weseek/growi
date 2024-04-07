@@ -16,7 +16,6 @@ import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus, type GroupGrantData } from '~/interfaces/page';
 import type { IRecordApplicableGrant, PopulatedGrantedGroup } from '~/interfaces/page-grant';
 import type { PageDocument, PageModel } from '~/server/models/page';
-import type { UserGroupDocument } from '~/server/models/user-group';
 import UserGroup from '~/server/models/user-group';
 import { includesObjectIds, excludeTestIdsFromTargetIds, hasIntersection } from '~/server/util/compare-objectId';
 
@@ -657,9 +656,6 @@ class PageGrantService implements IPageGrantService {
   /**
    * Get the group grant data of page.
    * To calculate if a group can be granted to page, the same logic as isGrantNormalized will be executed, except only the ancestor info will be used.
-   * @param page
-   * @param user
-   * @returns
    */
   async getPageGroupGrantData(page: PageDocument, user): Promise<GroupGrantData> {
     if (isTopPage(page.path)) {
@@ -717,6 +713,13 @@ class PageGrantService implements IPageGrantService {
       const status = this.validateGrant(comparableTarget, comparableAncestor) ? UserGroupPageGrantStatus.notGranted : UserGroupPageGrantStatus.cannotGrant;
       return { ...groupData, status };
     });
+
+    const statusPriority = {
+      [UserGroupPageGrantStatus.notGranted]: 0,
+      [UserGroupPageGrantStatus.isGranted]: 1,
+      [UserGroupPageGrantStatus.cannotGrant]: 2,
+    };
+    userRelatedGroupsData.sort((a, b) => statusPriority[a.status] - statusPriority[b.status]);
 
     return { userRelatedGroups: userRelatedGroupsData, nonUserRelatedGrantedGroups };
   }

@@ -253,7 +253,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         { nonUserRelatedGrantedGroups.map((group) => {
           return (
             <button
-              className="btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 active"
+              className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3 active"
               type="button"
               key={group.id}
               disabled
