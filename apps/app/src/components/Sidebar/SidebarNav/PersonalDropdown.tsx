@@ -45,7 +45,7 @@ export const PersonalDropdown = (): JSX.Element => {
         direction="end"
       >
         <DropdownToggle
-          className="btn btn-primary"
+          className={`btn btn-primary ${styles['btn-personal-dropdown']} opacity-100`}
           data-testid="personal-dropdown-button"
         >
           <UserPicture user={currentUser} noLink noTooltip />
@@ -56,7 +56,7 @@ export const PersonalDropdown = (): JSX.Element => {
           data-testid="personal-dropdown-menu"
           className={styles['personal-dropdown-menu']}
         >
-          <DropdownItem className={styles['personal-dropdown-header']}>
+          <DropdownItem className={styles['personal-dropdown-header']} header>
             <div className="mt-2 mb-3">
               <UserPicture user={currentUser} size="lg" noLink noTooltip />
             </div>

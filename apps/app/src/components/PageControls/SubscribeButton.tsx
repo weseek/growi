@@ -1,4 +1,5 @@
-import React, { FC, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useCallback } from 'react';
 
 import { SubscriptionStatusType } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -41,7 +42,7 @@ const SubscribeButton: FC<Props> = (props: Props) => {
         </span>
       </button>
 
-      <UncontrolledTooltip data-testid="subscribe-button-tooltip" placement="top" target="subscribe-button" fade={false}>
+      <UncontrolledTooltip data-testid="subscribe-button-tooltip" target="subscribe-button" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
     </>

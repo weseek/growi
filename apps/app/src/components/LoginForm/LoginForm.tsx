@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import type { IExternalAuthProviderType } from '@growi/core';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -14,9 +15,14 @@ import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
-import { CompleteUserRegistration } from './CompleteUserRegistration';
+import { CompleteUserRegistration } from '../CompleteUserRegistration';
+
+import { ExternalAuthButton } from './ExternalAuthButton';
 
 import styles from './LoginForm.module.scss';
+
+const moduleClass = styles['login-form'];
+
 
 type LoginFormProps = {
   username?: string,
@@ -29,7 +35,7 @@ type LoginFormProps = {
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
-  objOfIsExternalAuthEnableds?: any,
+  enabledExternalAuthType?: IExternalAuthProviderType[],
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
 }
@@ -40,10 +46,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, objOfIsExternalAuthEnableds,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-  const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+  const isSomeExternalAuthEnabled = enabledExternalAuthType != null && enabledExternalAuthType.length > 0;
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
@@ -78,12 +84,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return t(key);
   }, [t]);
-
-  const handleLoginWithExternalAuth = useCallback((e) => {
-    const auth = e.currentTarget.id;
-
-    window.location.href = `/passport/${auth}`;
-  }, []);
 
   const resetLoginErrors = useCallback(() => {
     if (loginErrors.length === 0) return;
@@ -196,31 +196,33 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="text-white opacity-75 d-flex align-items-center">
               <span className="material-symbols-outlined">person</span>
             </span>
             <input
               type="text"
-              className="form-control rounded-0"
+              className={`form-control rounded ms-2 ${isLdapStrategySetup ? 'ldap-space' : ''}`}
               data-testid="tiUsernameForLogin"
               placeholder="Username or E-mail"
               onChange={(e) => { setUsernameForLogin(e.target.value) }}
               name="usernameForLogin"
             />
             {isLdapStrategySetup && (
-              <small className="input-group-text text-success">
-                <span className="material-symbols-outlined">select_check_box</span>LDAP
+              <small className="badge text-bg-success input-ldap d-flex align-items-center">
+                <span className="material-symbols-outlined">network_node</span>
+                <span className="">LDAP</span>
               </small>
             )}
+
           </div>
 
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="text-white opacity-75 d-flex align-items-center">
               <span className="material-symbols-outlined">lock</span>
             </span>
             <input
               type="password"
-              className="form-control rounded-0"
+              className="form-control rounded ms-2"
               data-testid="tiPasswordForLogin"
               placeholder="Password"
               onChange={(e) => { setPasswordForLogin(e.target.value) }}
@@ -231,20 +233,18 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group my-4">
             <button
               type="submit"
-              id="login"
-              className="btn btn-fill rounded-0 login mx-auto"
+              className="btn btn-secondary btn-login col-7 mx-auto d-flex"
               data-testid="btnSubmitForLogin"
               disabled={isLoading}
             >
-              <div className="eff"></div>
-              <span className="btn-label">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="material-symbols-outlined">login</span>
                 )}
               </span>
-              <span className="btn-label-text">{t('Sign in')}</span>
+              <span className="flex-grow-1">{t('Sign in')}</span>
             </button>
           </div>
         </form>
@@ -263,63 +263,24 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   ]);
 
 
-  const renderExternalAuthInput = useCallback((auth) => {
-    const authIconNames = {
-      google: 'google',
-      github: 'github',
-      facebook: 'facebook',
-      oidc: 'openid',
-      saml: 'key',
-    };
-
-    return (
-      <div key={auth} className="col-6 my-2">
-        <button type="button" className="btn btn-fill rounded-0" id={auth} onClick={handleLoginWithExternalAuth}>
-          <div className="eff"></div>
-          <span className="btn-label">
-            <span className="growi-custom-icons align-bottom">{authIconNames[auth]}</span>
-          </span>
-          <span className="btn-label-text">{t('Sign in')}</span>
-        </button>
-        <div className="small text-end">by {auth} Account</div>
-      </div>
-    );
-  }, [handleLoginWithExternalAuth, t]);
-
   const renderExternalAuthLoginForm = useCallback(() => {
-    const { isLocalStrategySetup, isLdapStrategySetup, objOfIsExternalAuthEnableds } = props;
-    const isExternalAuthCollapsible = isLocalStrategySetup || isLdapStrategySetup;
-    const collapsibleClass = isExternalAuthCollapsible ? 'collapse collapse-external-auth' : '';
+    const { enabledExternalAuthType } = props;
+
+    if (enabledExternalAuthType == null) {
+      return <></>;
+    }
 
     return (
       <>
-        <div className="grw-external-auth-form border-top border-bottom">
-          <div id="external-auth" className={`external-auth ${collapsibleClass}`}>
-            <div className="row mt-2">
-              {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
-                if (!objOfIsExternalAuthEnableds[auth]) {
-                  return;
-                }
-                return renderExternalAuthInput(auth);
-              })}
-            </div>
-          </div>
+        <div className="text-center text-line d-flex align-items-center mb-3">
+          <p className="text-white mb-0">{t('or')}</p>
         </div>
-        <div className="text-center">
-          <button
-            type="button"
-            className="btn btn-secondary btn-external-auth-tab btn-sm rounded-0 mb-3"
-            data-bs-toggle={isExternalAuthCollapsible ? 'collapse' : ''}
-            data-bs-target="#external-auth"
-            aria-expanded="false"
-            aria-controls="external-auth"
-          >
-            External Auth
-          </button>
+        <div className="mt-2">
+          { enabledExternalAuthType.map(authType => <ExternalAuthButton authType={authType} />) }
         </div>
       </>
     );
-  }, [props, renderExternalAuthInput]);
+  }, [props, t]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -420,13 +381,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group" id="input-group-username">
-                <span className="input-group-text">
+                <span className="text-white opacity-75 d-flex align-items-center">
                   <span className="material-symbols-outlined">person</span>
                 </span>
                 {/* username */}
                 <input
                   type="text"
-                  className="form-control rounded-0"
+                  className="form-control rounded ms-2"
                   onChange={(e) => { setUsernameForRegister(e.target.value) }}
                   placeholder={t('User ID')}
                   name="username"
@@ -438,13 +399,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 <span id="help-block-username"></span>
               </p>
               <div className="input-group">
-                <span className="input-group-text">
+                <span className="text-white opacity-75 d-flex align-items-center">
                   <span className="material-symbols-outlined">sell</span>
                 </span>
                 {/* name */}
                 <input
                   type="text"
-                  className="form-control rounded-0"
+                  className="form-control rounded ms-2"
                   onChange={(e) => { setNameForRegister(e.target.value) }}
                   placeholder={t('Name')}
                   name="name"
@@ -456,14 +417,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           )}
 
           <div className="input-group">
-            <span className="input-group-text">
+            <span className="text-white opacity-75 d-flex align-items-center">
               <span className="material-symbols-outlined">mail</span>
             </span>
             {/* email */}
             <input
               type="email"
               disabled={!isMailerSetup && isEmailAuthenticationEnabled}
-              className="form-control rounded-0"
+              className="form-control rounded ms-2"
               onChange={(e) => { setEmailForRegister(e.target.value) }}
               placeholder={t('Email')}
               name="email"
@@ -490,13 +451,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           {!isEmailAuthenticationEnabled && (
             <div>
               <div className="input-group">
-                <span className="input-group-text">
+                <span className="text-white opacity-75 d-flex align-items-center">
                   <span className="material-symbols-outlined">lock</span>
                 </span>
                 {/* Password */}
                 <input
                   type="password"
-                  className="form-control rounded-0"
+                  className="form-control rounded ms-2"
                   onChange={(e) => { setPasswordForRegister(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
@@ -510,35 +471,31 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           <div className="input-group justify-content-center my-4">
             <button
               type="submit"
-              className="btn btn-fill rounded-0"
-              id="register"
+              className="btn btn-secondary btn-register d-flex col-7"
               disabled={(!isMailerSetup && isEmailAuthenticationEnabled) || isLoading}
             >
-              <div className="eff"></div>
-              <span className="btn-label">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <span className="material-symbols-outlined">login</span>
+                  <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <span className="btn-label-text">{submitText}</span>
+              <span className="flex-grow-1">{submitText}</span>
             </button>
           </div>
         </form>
 
-        <div className="border-bottom"></div>
-
         <div className="row">
-          <div className="text-end col-12 mt-2 py-2">
+          <div className="text-end col-12 mb-5">
             <a
               href="#login"
-              id="login"
-              className="link-switch"
-              style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+              className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"
+              style={{ pointerEvents: isLoading ? 'none' : undefined }}
               onClick={switchForm}
             >
-              <span className="material-symbols-outlined">login</span>{t('Sign in is here')}
+              <span className="material-symbols-outlined fs-5">login</span>
+              <span className="flex-grow-1">{t('Sign in is here')}</span>
             </a>
           </div>
         </div>
@@ -554,32 +511,37 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   }
 
   return (
-    <div className={`login-form ${styles['login-form']}`}>
-      <div className="nologin-dialog mx-auto" id="nologin-dialog" data-testid="login-form">
+    <div className={moduleClass}>
+      <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
-          <div className="col-12">
+          <div className="col-12 px-md-4">
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
-                  <div className="text-end mb-2">
-                    <a href="/forgot-password" className="d-block link-switch">
-                      <span className="material-symbols-outlined">vpn_key</span>{t('forgot_password.forgot_password')}
+                  <div className="mt-4">
+                    <a
+                      href="/forgot-password"
+                      className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"
+                      style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+                    >
+                      <span className="material-symbols-outlined">vpn_key</span>
+                      <span className="flex-grow-1">{t('forgot_password.forgot_password')}</span>
                     </a>
                   </div>
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="text-end mb-2">
+                  <div className="mt-2 mb-5">
                     <a
                       href="#register"
-                      id="register"
-                      className="link-switch"
+                      className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"
                       style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
                       onClick={switchForm}
                     >
-                      <span className="material-symbols-outlined">check_box</span> {t('Sign up is here')}
+                      <span className="material-symbols-outlined">person_add</span>
+                      <span className="flex-grow-1">{t('Sign up is here')}</span>
                     </a>
                   </div>
                 )}
@@ -592,7 +554,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
         </div>
         <a href="https://growi.org" className="link-growi-org ps-3">
-          <span className="growi">GROWI</span>.<span className="org">org</span>
+          <span className="growi">GROWI</span><span className="org">.org</span>
         </a>
       </div>
     </div>

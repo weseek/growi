@@ -163,11 +163,12 @@ export const GrantSelector = (props: Props): JSX.Element => {
           <span className="label">
             {grantedGroupNames.length > 1
               ? (
+              // substring for group name truncate
                 <span>
-                  {`${grantedGroupNames[0]}... `}
-                  <span className="badge badge-purple">+{grantedGroupNames.length - 1}</span>
+                  {`${grantedGroupNames[0].substring(0, 30)}, ... `}
+                  <span className="badge bg-primary">+{grantedGroupNames.length - 1}</span>
                 </span>
-              ) : grantedGroupNames[0]}
+              ) : grantedGroupNames[0].substring(0, 30)}
           </span>
         </span>
       );
@@ -181,7 +182,12 @@ export const GrantSelector = (props: Props): JSX.Element => {
     return (
       <div className="grw-grant-selector mb-0" data-testid="grw-grant-selector">
         <UncontrolledDropdown direction={openInModal ? 'down' : 'up'} size="sm">
-          <DropdownToggle color={dropdownToggleBtnColor} caret className="w-100 d-flex justify-content-between align-items-center" disabled={disabled}>
+          <DropdownToggle
+            color={dropdownToggleBtnColor}
+            caret
+            className="w-100 text-truncate d-flex justify-content-between align-items-center"
+            disabled={disabled}
+          >
             {dropdownToggleLabelElm}
           </DropdownToggle>
           <DropdownMenu container={openInModal ? '' : 'body'}>
@@ -231,12 +237,13 @@ export const GrantSelector = (props: Props): JSX.Element => {
 
           return (
             <button
-              className={`btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 ${activeClass}`}
+              className={`btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3 ${activeClass}`}
               type="button"
               key={group.id}
               onClick={() => groupListItemClickHandler(group)}
               disabled={cannotGrantGroup}
             >
+<<<<<<< HEAD
               <span className="align-middle"><input type="checkbox" checked={isGroupGranted} disabled={cannotGrantGroup} /></span>
               <h5 className="d-inline-block ms-3">{group.name}</h5>
               {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
@@ -255,6 +262,11 @@ export const GrantSelector = (props: Props): JSX.Element => {
               <span className="align-middle"><input type="checkbox" checked disabled /></span>
               <h5 className="d-inline-block ms-3">{group.name}</h5>
               {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.provider}</span>}
+=======
+              <input type="checkbox" checked={groupIsGranted} />
+              <p className="ms-3 mb-0">{group.item.name}</p>
+              {group.type === GroupType.externalUserGroup && <span className="ms-2 badge badge-pill badge-info">{group.item.provider}</span>}
+>>>>>>> master
               {/* TODO: Replace <div className="small">(TBD) List group members</div> */}
             </button>
           );
@@ -264,6 +276,18 @@ export const GrantSelector = (props: Props): JSX.Element => {
     );
 
   }, [currentUser?.admin, groupListItemClickHandler, shouldFetch, t, groupGrantData, selectedGrant?.userRelatedGrantedGroups]);
+
+  const renderModalCloseButton = useCallback(() => {
+    return (
+      <button
+        type="button"
+        className="btn border-0 text-muted"
+        onClick={() => setIsSelectGroupModalShown(false)}
+      >
+        <span className="material-symbols-outlined">close</span>
+      </button>
+    );
+  }, [setIsSelectGroupModalShown]);
 
   return (
     <>
@@ -276,7 +300,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
           toggle={() => setIsSelectGroupModalShown(false)}
           centered
         >
-          <ModalHeader tag="h4" toggle={() => setIsSelectGroupModalShown(false)} className="bg-purple text-muted">
+          <ModalHeader tag="p" toggle={() => setIsSelectGroupModalShown(false)} className="fs-5 text-muted fw-bold pb-2" close={renderModalCloseButton()}>
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>

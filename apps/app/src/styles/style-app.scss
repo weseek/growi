@@ -4,10 +4,10 @@
 @import 'mixins';
 
 // atoms
-@import 'atoms/buttons';
 @import 'atoms/custom_control';
 @import 'atoms/code';
 @import 'atoms/tag';
+@import 'atoms/tooltip';
 
 // molecules
 @import 'molecules/toastr';

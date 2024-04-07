@@ -29,8 +29,8 @@ type Props = {
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
-const Separator = (): JSX.Element => {
-  return <span className={styles['grw-mx-02em']}>/</span>;
+const Separator = ({ className }: {className?: string}): JSX.Element => {
+  return <span className={`separator ${className ?? ''} ${styles['grw-mx-02em']}`}>/</span>;
 };
 
 export const PagePathNav: FC<Props> = (props: Props) => {
@@ -69,10 +69,10 @@ export const PagePathNav: FC<Props> = (props: Props) => {
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
     formerLink = (
-      <div className="fs-5">
+      <>
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
         <Separator />
-      </div>
+      </>
     );
     latterLink = (
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
@@ -83,7 +83,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
 
   return (
     <div>
-      <span className={formerLinkClassName}>{formerLink}</span>
+      <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
         <h1 className={`m-0 ${latterLinkClassName}`}>
           {latterLink}

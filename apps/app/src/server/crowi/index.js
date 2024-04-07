@@ -37,7 +37,9 @@ import SearchService from '../service/search';
 import { SlackIntegrationService } from '../service/slack-integration';
 import UserGroupService from '../service/user-group';
 import { UserNotificationService } from '../service/user-notification';
+import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -173,8 +175,6 @@ Crowi.prototype.init = async function() {
     this.setupExternalAccountService(),
     this.setupExternalUserGroupSyncService(),
   ]);
-
-  await this.autoInstall();
 
   await normalizeData();
 };
@@ -412,7 +412,7 @@ Crowi.prototype.setupMailer = async function() {
   }
 };
 
-Crowi.prototype.autoInstall = function() {
+Crowi.prototype.autoInstall = async function() {
   const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
   const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
 
@@ -436,7 +436,7 @@ Crowi.prototype.autoInstall = function() {
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
+    await installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
       allowGuestMode,
       serverDate,
     });
@@ -475,8 +475,15 @@ Crowi.prototype.start = async function() {
 
   // setup terminus
   this.setupTerminus(httpServer);
+
   // attach to socket.io
   this.socketIoService.attachServer(httpServer);
+
+  // Initialization YjsConnectionManager
+  instantiateYjsConnectionManager(this.socketIoService.io);
+  this.socketIoService.setupYjsConnection();
+
+  await this.autoInstall();
 
   // listen
   const serverListening = httpServer.listen(this.port, () => {
