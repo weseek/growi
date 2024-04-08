@@ -1,6 +1,5 @@
-import {
-  FC, useCallback, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
@@ -10,10 +9,9 @@ import {
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
-import {
-  BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
-} from '~/interfaces/bookmark-info';
-import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
+import type { BookmarkFolderItems, DragItemDataType, DragItemType } from '~/interfaces/bookmark-info';
+import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import type { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
 import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
@@ -221,7 +219,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDropable}
       >
         <li
-          className="list-group-item list-group-item-action border-0 py-0 pe-3 d-flex align-items-center"
+          className="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center rounded"
           onClick={loadChildFolder}
           style={{ paddingLeft }}
         >
@@ -229,7 +227,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             {childrenExists && (
               <button
                 type="button"
-                className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
+                className={`grw-foldertree-triangle-btn btn px-0 ${isOpen ? 'grw-foldertree-open' : ''}`}
                 onClick={loadChildFolder}
               >
                 <div className="d-flex justify-content-center">
@@ -249,7 +247,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             />
           ) : (
             <>
-              <div className="grw-foldertree-title-anchor ps-2">
+              <div className="grw-foldertree-title-anchor ps-1">
                 <p className="text-truncate m-auto ">{name}</p>
               </div>
             </>
