@@ -26,6 +26,10 @@ services:
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
 
     tty: true
+    networks:
+    - default
+    # First, "docker compose up" in cloned https://github.com/vercel/opentelemetry-collector-dev-setup
+    - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -63,3 +67,8 @@ volumes:
   node_modules_app:
   node_modules_slackbot-proxy:
   buildcache_app:
+
+networks:
+  default:
+  opentelemetry-collector-dev-setup_default:
+    external: true
