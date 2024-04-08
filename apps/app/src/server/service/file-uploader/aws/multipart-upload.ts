@@ -13,6 +13,7 @@ enum UploadStatus {
   ABORTED
 }
 
+// Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
 export interface IAwsMultipartUploader {
   initUpload(): Promise<void>;
   uploadPart(body: Buffer, partNumber: number): Promise<void>;
@@ -56,6 +57,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     this.uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
     logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
+    console.time('Multipart upload');
   }
 
   async uploadPart(body: Buffer, partNumber: number): Promise<void> {
@@ -88,6 +90,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     }));
     this.currentStatus = UploadStatus.COMPLETED;
     logger.info(`Multipart upload completed. Upload key: ${this.uploadKey}`);
+    console.timeEnd('Multipart upload');
   }
 
   async abortUpload(): Promise<void> {
