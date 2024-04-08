@@ -323,7 +323,9 @@ jobs:
 
     - name: Upload results
       if: always()
-      uses: actions/upload-artifact@v4
+      # Use v3 until the following issues are resolved
+      # see: https://github.com/actions/upload-artifact/issues/478
+      uses: actions/upload-artifact@v3
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: |
