@@ -340,7 +340,7 @@
   },
   "lsx": {
     "load_more": "Load more",
-    "pages_left": "\"{{leftItemsNum}}\"pages left"
+    "pages_left": "\"{{leftItemsNum}}\" pages left"
   },
   "modal_rename": {
     "label": {

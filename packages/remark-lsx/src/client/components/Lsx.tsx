@@ -1,7 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
-import { useTranslation } from 'next-i18next';
 
 import { useSWRxLsx } from '../stores/lsx';
 import { generatePageNodeTree } from '../utils/page-node';
@@ -46,8 +45,6 @@ const LsxSubstance = React.memo(({
 
   const hasError = error != null;
   const errorMessage = error?.message;
-
-  const { t } = useTranslation();
 
   const Error = useCallback((): JSX.Element => {
     if (!hasError) {
@@ -118,13 +115,20 @@ const LsxSubstance = React.memo(({
             className="btn btn btn-outline-secondary btn-load-more"
             onClick={() => setSize(size => size + 1)}
           >
+            Load more<br />
+            <span className="text-muted small start-items-label">
+              {leftItemsNum} pages left
+            </span>
+            {/* TODO: traslation
+            https://redmine.weseek.co.jp/issues/133681
+            https://redmine.weseek.co.jp/issues/140566
             {t('lsx.load_more')}<br />
-            <span className="text-muted small start-items-label">{t('lsx.pages_left')}</span>
+            <span className="text-muted small start-items-label">{t('lsx.pages_left')}</span> */}
           </button>
         </div>
       </div>
     );
-  }, [data, setSize, t]);
+  }, [data, setSize]);
 
 
   return (

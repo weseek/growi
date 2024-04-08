@@ -383,7 +383,7 @@
   },
   "lsx": {
     "load_more": "さらに表示",
-    "pages_left": "残り\"{{leftItemsNum}}\"ページ"
+    "pages_left": "残り\"{{leftItemsNum}}\" ページ"
   },
   "modal_rename": {
     "label": {
