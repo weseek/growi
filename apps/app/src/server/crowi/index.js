@@ -6,10 +6,12 @@ import { createTerminus } from '@godaddy/terminus';
 import attachmentRoutes from '@growi/remark-attachment-refs/dist/server';
 import lsxRoutes from '@growi/remark-lsx/dist/server/index.cjs';
 import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-grpc';
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-grpc';
 import { Resource } from '@opentelemetry/resources';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
-import { SimpleSpanProcessor, ConsoleSpanExporter } from '@opentelemetry/sdk-trace-node';
+import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
 import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
 import mongoose from 'mongoose';
 import next from 'next';
@@ -464,19 +466,39 @@ Crowi.prototype.start = async function() {
   await this.init();
   await this.buildServer();
 
+  // setup OpenTelemetry
+  // see: https://opentelemetry.io/docs/languages/js/getting-started/nodejs/#setup
+  const newNodeSDKConfiguration = () => {
+    return {
+      resource: new Resource({
+        [SEMRESATTRS_SERVICE_NAME]: 'next-app',
+      }),
+      traceExporter: new OTLPTraceExporter({ url: 'http://otel-collector:4317' }),
+      metricReader: new PeriodicExportingMetricReader({
+        exporter: new OTLPMetricExporter({ url: 'http://otel-collector:4317' }),
+        exportIntervalMillis: 10000,
+      }),
+      instrumentations: [getNodeAutoInstrumentations({
+        // この module は大量の trace を生成するため、無効化する
+        // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
+        '@opentelemetry/instrumentation-fs': {
+          enabled: false,
+        },
+      })],
+      // 全 trace の半分を出す
+      // see: https://opentelemetry.io/docs/languages/js/sampling/
+      sampler: new TraceIdRatioBasedSampler(0.5),
+    };
+  };
+
   // setup instrumentation for OpenTelemetry
-  const sdk = new NodeSDK({
-    resource: new Resource({
-      [SEMRESATTRS_SERVICE_NAME]: 'next-app',
-    }),
-    spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter({ url: 'http://otel-collector:4317' })),
-    instrumentations: [getNodeAutoInstrumentations({
-      '@opentelemetry/instrumentation-fs': {
-        enabled: false,
-      },
-    })],
-  });
-  sdk.start();
+  const sdk = new NodeSDK(newNodeSDKConfiguration());
+  await sdk.start();
+  // 以下の restart コードは動かない
+  // span/metrics ともに何も出なくなる
+  // await sdk.shutdown();
+  // const newSdk = new NodeSDK(newNodeSDKConfiguration());
+  // await newSdk.start();
 
   // setup Next.js
   this.nextApp = next({ dev });
