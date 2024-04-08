@@ -32,6 +32,7 @@ export type IApiv3PageUpdateParams = IOptionsForUpdate & {
   origin?: Origin,
   isSlackEnabled?: boolean,
   slackChannels?: string,
+  wip?: boolean
 };
 
 export type IApiv3PageUpdateResponse = {
