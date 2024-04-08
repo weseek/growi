@@ -12,7 +12,7 @@ import { Resource } from '@opentelemetry/resources';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
-import { SEMRESATTRS_SERVICE_NAME } from '@opentelemetry/semantic-conventions';
+import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_INSTANCE_ID, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 import mongoose from 'mongoose';
 import next from 'next';
 
@@ -472,9 +472,14 @@ Crowi.prototype.start = async function() {
     return {
       resource: new Resource({
         [SEMRESATTRS_SERVICE_NAME]: 'next-app',
+        // TODO: 環境変数から入れられるようにしたい
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: 'growi-app-XXXX',
+        [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
+      // TODO: 宛先を環境変数から設定できるようにしたい
       traceExporter: new OTLPTraceExporter({ url: 'http://otel-collector:4317' }),
       metricReader: new PeriodicExportingMetricReader({
+        // TODO: 宛先を環境変数から設定できるようにしたい
         exporter: new OTLPMetricExporter({ url: 'http://otel-collector:4317' }),
         exportIntervalMillis: 10000,
       }),
