@@ -18,8 +18,11 @@ export default class AnnouncementService {
 
   crowi!: Crowi;
 
+  activityEvent: any;
+
   constructor(crowi: Crowi) {
     this.crowi = crowi;
+    this.activityEvent = crowi.event('activity');
 
     this.getReadRate = this.getReadRate.bind(this);
     this.upsertByActivity = this.upsertByActivity.bind(this);
@@ -66,10 +69,14 @@ export default class AnnouncementService {
 
   };
 
-  createAnnouncement = async(activiy: ActivityDocument, target: IUser, preNotify: PreNotify): Promise<void> => {
+  createAnnouncement = async(activity: ActivityDocument, target: IUser, preNotify: PreNotify): Promise<void> => {
     const props = preNotifyService.generateInitialPreNotifyProps();
 
     await preNotify(props);
+
+    // Announcementを保存する処理();
+
+    this.activityEvent.emit('updated', activity, target, preNotify);
 
     return;
   };
