@@ -2,7 +2,7 @@ import type {
   IUser, IPage, Ref, HasObjectId,
 } from '@growi/core';
 
-import { AnnouncementStatuses } from '../features/announcement/server/events/announcement-utils';
+import type { AnnouncementStatuses } from '../features/announcement/server/events/announcement-utils';
 
 type AnnouncementStatuses = typeof AnnouncementStatuses;
 
