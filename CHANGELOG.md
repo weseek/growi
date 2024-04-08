@@ -1124,7 +1124,6 @@ See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin
 
 ### 🐛 Bug Fixes
 
-- fix: Too many footstamps icons are shown by lsx output 3 (#6000) @yuki-takei
 - fix: Adjust PageItemControl alignment (#5994) @yuki-takei
 - fix: CodeMirror placeholder color (#5993) @yuki-takei
 - fix: Chinese notation is broken on create new page modal (#5973) @jam411
@@ -1249,8 +1248,6 @@ See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin
 - fix: Default markdown linker with relative path does not respect the current page path (#5788) @yuki-takei
 - fix: Include any public pages as applicable ancestors (#5786) @hakumizuki
 - fix: Not create unnecessary empty pages when ancestors are public (#5774) @hakumizuki
-- fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
-- fix:  footstamp-icon size (#5759) @kaoritokashiki
 
 ## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
 
@@ -1274,7 +1271,6 @@ See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin
 
 - fix: Get attachment list api without "page" parameter returns 500 response (#5726) @miya
 - fix: New user notification email is also sent TO: deleted_at_<epoch_time>@deleted (#5735) @yuki-takei
-- fix: Too many footstamps icons are shown by lsx output (#5727) @yuki-takei
 
 ## [v5.0.2](https://github.com/weseek/growi/compare/v5.0.1...v5.0.2) - 2022-04-15
 
