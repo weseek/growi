@@ -58,7 +58,7 @@ jobs:
 
 
   test-prod-node20:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@support/rollback-to-v3-for-actions-upload-artifact
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 20.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
