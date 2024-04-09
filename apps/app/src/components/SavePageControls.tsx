@@ -59,8 +59,8 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
 
   const saveAndMakeWip = useCallback(() => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { wip: true });
-  }, []);
+    globalEmitter.emit('saveAndReturnToView', { wip: true, slackChannels });
+  }, [slackChannels]);
 
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
