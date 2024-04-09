@@ -177,14 +177,7 @@
     border-top: 1px solid bs.$border-color;
     /* Hide the section label for visual users. */
     #footnote-label {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      word-wrap: normal;
-      border: 0;
+      display: none;
     }
   }
   /* Place `[` and `]` around footnote references. */

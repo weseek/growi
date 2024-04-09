@@ -43,7 +43,7 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
+  // TODO: https://redmine.weseek.co.jp/issues/142729
   const basePathname = 'Untitled';
 
   if (_path != null) {

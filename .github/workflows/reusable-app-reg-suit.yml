@@ -49,12 +49,12 @@ jobs:
       EXPECTED_IMAGES_EXIST: ${{ steps.check-expected-images.outputs.EXPECTED_IMAGES_EXIST }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ inputs.checkout-ref }}
         fetch-depth: 0
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: ${{ inputs.node-version }}
         cache: 'yarn'
@@ -72,7 +72,7 @@ jobs:
 
     - name: Cache/Restore node_modules
       id: cache-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: |
           **/node_modules
@@ -86,7 +86,7 @@ jobs:
         yarn --frozen-lockfile
 
     - name: Download screenshots taken by cypress
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: ${{ inputs.cypress-report-artifact-name }}
         path: apps/app/test/cypress

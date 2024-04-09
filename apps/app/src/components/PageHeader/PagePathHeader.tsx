@@ -23,12 +23,13 @@ const moduleClass = styles['page-path-header'];
 
 
 type Props = {
-  currentPage: IPagePopulatedToShowRevision
+  currentPage: IPagePopulatedToShowRevision,
+  className?: string,
 }
 
 export const PagePathHeader: FC<Props> = memo((props: Props) => {
   const { t } = useTranslation();
-  const { currentPage } = props;
+  const { currentPage, className } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -102,7 +103,7 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small position-relative`}
+      className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >

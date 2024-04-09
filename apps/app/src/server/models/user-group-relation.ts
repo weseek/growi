@@ -1,10 +1,13 @@
-import { isPopulated, type IUserGroupHasId, type IUserGroupRelation } from '@growi/core';
-import mongoose, { Model, Schema, Document } from 'mongoose';
+import {
+  getIdForRef, isPopulated, type IUserGroupHasId, type IUserGroupRelation,
+} from '@growi/core';
+import type { Model, Document } from 'mongoose';
+import mongoose, { Schema } from 'mongoose';
 
-import { ObjectIdLike } from '../interfaces/mongoose-utils';
+import type { ObjectIdLike } from '../interfaces/mongoose-utils';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import { UserGroupDocument } from './user-group';
+import type { UserGroupDocument } from './user-group';
 
 const debug = require('debug')('growi:models:userGroupRelation');
 const mongoosePaginate = require('mongoose-paginate-v2');
@@ -28,6 +31,8 @@ export interface UserGroupRelationModel extends Model<UserGroupRelationDocument>
   countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 
   findAllGroupsForUser: (user) => Promise<UserGroupDocument[]>
+
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
 }
 
 /*
@@ -138,12 +143,12 @@ schema.statics.findAllGroupsForUser = async function(user): Promise<UserGroupDoc
  * @param {User} user
  * @returns {Promise<ObjectId[]>}
  */
-schema.statics.findAllUserGroupIdsRelatedToUser = async function(user) {
+schema.statics.findAllUserGroupIdsRelatedToUser = async function(user): Promise<string[]> {
   const relations = await this.find({ relatedUser: user._id })
     .select('relatedGroup')
     .exec();
 
-  return relations.map((relation) => { return relation.relatedGroup });
+  return relations.map((relation) => { return getIdForRef(relation.relatedGroup) });
 };
 
 /**
