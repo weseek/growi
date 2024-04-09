@@ -19,12 +19,12 @@ const getDataLine = (element: Element | null): number => {
 
 const getEditorElements = (editorRootElement: HTMLElement): Array<Element> => {
   return Array.from(editorRootElement.getElementsByClassName('cm-line'))
-    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line')) });
+    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN) });
 };
 
 const getPreviewElements = (previewRootElement: HTMLElement): Array<Element> => {
   return Array.from(previewRootElement.getElementsByClassName('has-data-line'))
-    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line')) });
+    .filter((element) => { return !Number.isNaN(element.getAttribute('data-line') ?? Number.NaN) });
 };
 
 // Ref: https://github.com/mikolalysenko/binary-search-bounds/blob/f436a2a8af11bf3208434e18bbac17e18e7a3a30/search-bounds.js
@@ -63,14 +63,14 @@ const findElementIndexFromDataLine = (previewElements: Array<Element>, dataline:
 
 
 type SourceElement = {
-  start: DOMRect,
-  top: DOMRect,
-  next: DOMRect | undefined,
+  start?: DOMRect,
+  top?: DOMRect,
+  next?: DOMRect,
 }
 
 type TargetElement = {
-  start: DOMRect,
-  next: DOMRect | undefined,
+  start?: DOMRect,
+  next?: DOMRect,
 }
 
 const calcScrollElementToTop = (element: Element): number => {
@@ -78,7 +78,13 @@ const calcScrollElementToTop = (element: Element): number => {
 };
 
 const calcScorllElementByRatio = (sourceElement: SourceElement, targetElement: TargetElement): number => {
-  if (sourceElement.start === sourceElement.next || sourceElement.next == null || targetElement.next == null) {
+  if (sourceElement.start === sourceElement.next) {
+    return 0;
+  }
+  if (sourceElement.start == null || sourceElement.top == null || sourceElement.next == null) {
+    return 0;
+  }
+  if (targetElement.start == null || targetElement.next == null) {
     return 0;
   }
   const sourceAllHeight = sourceElement.next.top - sourceElement.start.top;
@@ -106,6 +112,10 @@ const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLEl
   const nextEditorElementIndex = findElementIndexFromDataLine(editorElements, getDataLine(previewElements[topPreviewElementIndex + 1]));
 
   let newScrollTop = previewRootElement.scrollTop;
+
+  if (previewElements[topPreviewElementIndex] == null) {
+    return;
+  }
 
   newScrollTop += calcScrollElementToTop(previewElements[topPreviewElementIndex]);
   newScrollTop += calcScorllElementByRatio(
@@ -135,6 +145,10 @@ const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLE
 
   const startEditorElementIndex = findElementIndexFromDataLine(editorElements, getDataLine(previewElements[topPreviewElementIndex]));
   const nextEditorElementIndex = findElementIndexFromDataLine(editorElements, getDataLine(previewElements[topPreviewElementIndex + 1]));
+
+  if (editorElements[startEditorElementIndex] == null) {
+    return;
+  }
 
   let newScrollTop = editorRootElement.scrollTop;
 

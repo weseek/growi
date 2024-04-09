@@ -1,12 +1,13 @@
-import { Schema, Model, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 
-import { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
+import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
 import { getOrCreateModel } from '../../../../server/util/mongoose-utils';
-import { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
+import type { IExternalUserGroupRelation } from '../../interfaces/external-user-group';
 
-import { ExternalUserGroupDocument } from './external-user-group';
+import type { ExternalUserGroupDocument } from './external-user-group';
 
 export interface ExternalUserGroupRelationDocument extends IExternalUserGroupRelation, Document {}
 
@@ -24,6 +25,8 @@ export interface ExternalUserGroupRelationModel extends Model<ExternalUserGroupR
   countByGroupIdsAndUser: (userGroupIds: ObjectIdLike[], userData) => Promise<number>
 
   findAllGroupsForUser: (user) => Promise<ExternalUserGroupDocument[]>
+
+  findAllUserGroupIdsRelatedToUser: (user) => Promise<string[]>
 }
 
 const schema = new Schema<ExternalUserGroupRelationDocument, ExternalUserGroupRelationModel>({
