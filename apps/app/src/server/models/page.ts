@@ -1126,11 +1126,6 @@ schema.methods.makeWip = function(disableTtl: boolean) {
   }
 };
 
-schema.methods.toggleWip = function(wip: boolean) {
-  this.wip = wip;
-  this.ttlTimestamp = undefined;
-};
-
 /*
  * Merge obsolete page model methods and define new methods which depend on crowi instance
  */

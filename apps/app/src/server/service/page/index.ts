@@ -4147,7 +4147,15 @@ class PageService implements IPageService {
     const newPageData = pageData;
 
     // Once updated it's exempt from automatic deletion
-    newPageData.toggleWip(options.wip);
+    if (options.wip == null) {
+      newPageData.ttlTimestamp = undefined;
+    }
+    else if (options.wip) {
+      newPageData.unpublish();
+    }
+    else {
+      newPageData.publish();
+    }
 
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;

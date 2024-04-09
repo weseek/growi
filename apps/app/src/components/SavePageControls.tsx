@@ -49,12 +49,12 @@ const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: bo
 
   const save = useCallback(async(): Promise<void> => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { slackChannels });
+    globalEmitter.emit('saveAndReturnToView', { wip: false, slackChannels });
   }, [slackChannels]);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { overwriteScopesOfDescendants: true, slackChannels });
+    globalEmitter.emit('saveAndReturnToView', { wip: false, overwriteScopesOfDescendants: true, slackChannels });
   }, [slackChannels]);
 
   const saveAndMakeWip = useCallback(() => {
