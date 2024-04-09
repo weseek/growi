@@ -67,7 +67,7 @@ declare global {
 
 export type SaveOptions = {
   wip: boolean,
-  slackChannels: string,
+  slackChannels?: string,
   overwriteScopesOfDescendants?: boolean
 }
 export type Save = (
@@ -225,16 +225,17 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, mutateEditorMode, onConflict, save, updateStateAfterSave]);
 
   const saveWithShortcut = useCallback(async() => {
+    const wip = currentPage?.wip ?? false;
     const markdown = codeMirrorEditor?.getDoc();
     const revisionId = isRevisionIdRequiredForPageUpdate ? currentRevisionId : undefined;
-    const page = await save(revisionId, markdown, undefined, onConflict);
+    const page = await save(revisionId, markdown, { wip }, onConflict);
     if (page == null) {
       return;
     }
 
     toastSuccess(t('toaster.save_succeeded'));
     updateStateAfterSave?.();
-  }, [codeMirrorEditor, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
+  }, [codeMirrorEditor, currentPage?.wip, currentRevisionId, isRevisionIdRequiredForPageUpdate, onConflict, save, t, updateStateAfterSave]);
 
 
   // the upload event handler
