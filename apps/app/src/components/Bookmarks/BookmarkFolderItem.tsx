@@ -140,6 +140,12 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     return true;
   };
 
+  const triangleBtnClassName = (isOpen: boolean, childrenExists: boolean): string => {
+    if (!childrenExists) {
+      return 'grw-foldertree-triangle-btn btn px-0 opacity-25';
+    }
+    return `grw-foldertree-triangle-btn btn px-0 ${isOpen ? 'grw-foldertree-open' : ''}`;
+  };
 
   const renderChildFolder = () => {
     return isOpen && children?.map((childFolder) => {
@@ -224,17 +230,15 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           style={{ paddingLeft }}
         >
           <div className="grw-triangle-container d-flex justify-content-center">
-            {childrenExists && (
-              <button
-                type="button"
-                className={`grw-foldertree-triangle-btn btn px-0 ${isOpen ? 'grw-foldertree-open' : ''}`}
-                onClick={loadChildFolder}
-              >
-                <div className="d-flex justify-content-center">
-                  <span className="material-symbols-outlined">arrow_right</span>
-                </div>
-              </button>
-            )}
+            <button
+              type="button"
+              className={triangleBtnClassName(isOpen, childrenExists)}
+              onClick={loadChildFolder}
+            >
+              <div className="d-flex justify-content-center">
+                <span className="material-symbols-outlined">arrow_right</span>
+              </div>
+            </button>
           </div>
           <div>
             <FolderIcon isOpen={isOpen} />
