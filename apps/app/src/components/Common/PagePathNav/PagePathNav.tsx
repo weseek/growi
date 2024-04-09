@@ -1,14 +1,15 @@
 import type { CSSProperties, FC } from 'react';
-import React, { useEffect, useMemo, useRef } from 'react';
+import React, {
+  useMemo, useRef,
+} from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
-import { useRect } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
-import { usePageControlsX } from '~/stores/ui';
+import { usePageControlsX, useCurrentProductNavWidth, useSidebarMode } from '~/stores/ui';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
@@ -111,15 +112,19 @@ type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
 
   const { data: pageControlsX } = usePageControlsX();
+  const { data: sidebarWidth } = useCurrentProductNavWidth();
+  const { data: sidebarMode } = useSidebarMode();
   const pagePathNavRef = useRef<HTMLDivElement>(null);
-  const [pagePathNavRect] = useRect(pagePathNavRef);
 
   const navMaxWidth: CSSProperties | undefined = useMemo(() => {
-    if (pageControlsX == null || pagePathNavRect?.x == null) {
+    if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null) {
       return;
     }
-    return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRect.x}px - 10px)` };
-  }, [pageControlsX, pagePathNavRect?.x]);
+    // console.log('sideBarMode: ', sidebarMode, pagePathNavRef.current.getBoundingClientRect().x);
+    console.log(' sideBarWidth: ', sidebarWidth, ' pageControsX: ', pageControlsX, ' pagePathNavRef current x: ',
+      pagePathNavRef.current.getBoundingClientRect().x);
+    return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRef.current.getBoundingClientRect().x}px - 10px)` };
+  }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode]);
 
   return (
     // Controlling pointer-events
