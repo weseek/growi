@@ -15,7 +15,7 @@ import {
 import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus } from '~/interfaces/page';
 import { useCurrentUser } from '~/stores/context';
-import { useCurrentPageId, useSWRxIsGrantNormalized } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentGrantData } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 
 
@@ -64,7 +64,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
   const shouldFetch = isSelectGroupModalShown;
   const { data: selectedGrant, mutate: mutateSelectedGrant } = useSelectedGrant();
   const { data: currentPageId } = useCurrentPageId();
-  const { data: grantData } = useSWRxIsGrantNormalized(currentPageId);
+  const { data: grantData } = useSWRxCurrentGrantData(currentPageId);
 
   const currentPageGrantData = grantData?.grantData.currentPageGrant;
   const groupGrantData = currentPageGrantData?.groupGrantData;
@@ -253,7 +253,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
         { nonUserRelatedGrantedGroups.map((group) => {
           return (
             <button
-              className="btn btn-outline-primary w-100 d-flex justify-content-start mb-3 align-items-center p-3 active"
+              className="btn btn-outline-primary d-flex justify-content-start mb-3 mx-4 align-items-center p-3 active"
               type="button"
               key={group.id}
               disabled

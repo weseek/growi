@@ -11,7 +11,7 @@ import { toastError, toastSuccess } from '~/client/util/toastr';
 import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
 import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxApplicableGrant, useSWRxCurrentGrantData, useSWRxCurrentPage } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
@@ -287,7 +287,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
-  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(currentUser != null ? pageId : null);
+  const { data: dataIsGrantNormalized } = useSWRxCurrentGrantData(currentUser != null ? pageId : null);
   const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null ? pageId : null);
 
   // Dependencies

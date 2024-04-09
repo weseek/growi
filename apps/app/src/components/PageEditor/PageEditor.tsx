@@ -36,7 +36,7 @@ import {
   useWaitingSaveProcessing,
 } from '~/stores/editor';
 import {
-  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxIsGrantNormalized,
+  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -104,7 +104,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
-  const { mutate: mutateIsGrantNormalized } = useSWRxIsGrantNormalized(currentPage?._id);
+  const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();

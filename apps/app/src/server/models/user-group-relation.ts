@@ -1,5 +1,5 @@
 import {
-  getIdForRef, isPopulated, type IUserGroupHasId, type IUserGroupRelation,
+  getIdForRef, isPopulated, type IUserGroupRelation,
 } from '@growi/core';
 import type { Model, Document } from 'mongoose';
 import mongoose, { Schema } from 'mongoose';
