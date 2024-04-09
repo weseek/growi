@@ -8,7 +8,7 @@ on:
         type: string
       skip-cypress:
         type: boolean
-      cypress-report-artifact-name:
+      cypress-report-artifact-name-prefix:
         type: string
       cypress-config-video:
         type: boolean
@@ -325,7 +325,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ inputs.cypress-report-artifact-name }}
+        name: ${{ cypress-report-artifact-name-prefix }}${{ matrix.spec-group }}
         path: |
           apps/app/test/cypress/screenshots
           apps/app/test/cypress/videos
