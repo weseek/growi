@@ -5,6 +5,7 @@ import React, {
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
+import { useRect } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
@@ -115,16 +116,17 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
   const { data: sidebarWidth } = useCurrentProductNavWidth();
   const { data: sidebarMode } = useSidebarMode();
   const pagePathNavRef = useRef<HTMLDivElement>(null);
+  const [pagePathNavRect] = useRect(pagePathNavRef);
 
   const navMaxWidth: CSSProperties | undefined = useMemo(() => {
-    if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null) {
+    if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null || pagePathNavRect == null) {
       return;
     }
     // console.log('sideBarMode: ', sidebarMode, pagePathNavRef.current.getBoundingClientRect().x);
-    console.log(' sideBarWidth: ', sidebarWidth, ' pageControsX: ', pageControlsX, ' pagePathNavRef current x: ',
-      pagePathNavRef.current.getBoundingClientRect().x);
+    console.log(' sideBarWidth: ', sidebarWidth, ' pageControsX: ', pageControlsX, ' pagePathNavRef.x: ',
+      pagePathNavRef.current.getBoundingClientRect().x, ' pagePathNavRect.x: ', pagePathNavRect.x);
     return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRef.current.getBoundingClientRect().x}px - 10px)` };
-  }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode]);
+  }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode, pagePathNavRect]);
 
   return (
     // Controlling pointer-events
