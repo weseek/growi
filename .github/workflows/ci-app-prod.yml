@@ -48,13 +48,13 @@ concurrency:
 
 jobs:
 
-  # test-prod-node18:
-  #   uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
-  #   with:
-  #     node-version: 18.x
-  #     skip-cypress: true
-  #   secrets:
-  #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+  test-prod-node18:
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
+    with:
+      node-version: 18.x
+      skip-cypress: true
+    secrets:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
 
   test-prod-node20:
