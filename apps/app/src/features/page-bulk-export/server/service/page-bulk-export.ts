@@ -6,6 +6,7 @@ import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
 import archiver from 'archiver';
 import type { QueueObject } from 'async';
+import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 
 import type { PageModel, PageDocument } from '~/server/models/page';
@@ -150,6 +151,9 @@ class PageBulkExportService {
         try {
           await multipartUploader.uploadPart(part, partNumber);
           partNumber += 1;
+          // First aid to prevent unexplained memory leaks
+          logger.info('global.gc() invoked.');
+          gc();
         }
         catch (err) {
           callback(err);
