@@ -1,18 +1,12 @@
 import type { IRevision, Ref } from '@growi/core';
 
-import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, BookmarkedPage } from '~/interfaces/bookmark-info';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from './apiv3-client';
 
-// Check if bookmark folder item has children
-export const hasChildren = (item: BookmarkFolderItems | BookmarkFolderItems[]): boolean => {
-  if (item === null) {
-    return false;
-  }
-  if (Array.isArray(item)) {
-    return item.length > 0;
-  }
-  return item.children && item.children.length > 0;
+// Check if bookmark folder item has children or bookmarks
+export const hasChildren = ({ children, bookmarks }: { children?: BookmarkFolderItems[], bookmarks?: BookmarkedPage[] }): boolean => {
+  return !!((children && children.length > 0) || (bookmarks && bookmarks.length > 0));
 };
 
 // Add new folder helper

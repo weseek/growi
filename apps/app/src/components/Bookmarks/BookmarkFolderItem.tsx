@@ -50,7 +50,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
-  const childrenExists = hasChildren(children);
+  const childrenExists = hasChildren({ children, bookmarks });
 
   const paddingLeft = BASE_FOLDER_PADDING * level;
 
