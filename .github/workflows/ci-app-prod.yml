@@ -49,7 +49,7 @@ concurrency:
 jobs:
 
   test-prod-node18:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@fix/failed-upload-cypress-test-result-screenshots
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 18.x
       skip-cypress: true
