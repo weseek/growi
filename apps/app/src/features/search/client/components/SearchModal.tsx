@@ -49,7 +49,10 @@ const SearchModal = (): JSX.Element => {
   };
 
   useEffect(() => {
-    if (!searchModalData?.isOpened || typeof searchModalData?.searchKeyword === 'undefined') {
+    if (!searchModalData?.isOpened) {
+      return;
+    }
+    if (searchModalData?.searchKeyword == null) {
       setSearchKeyword('');
     }
     else {
