@@ -2,7 +2,7 @@ import type {
   ForwardRefRenderFunction,
 } from 'react';
 import React, {
-  forwardRef, useCallback, useRef,
+  forwardRef, useCallback,
 } from 'react';
 
 // import type { TypeaheadRef } from 'react-bootstrap-typeahead';
@@ -18,17 +18,6 @@ type Props = TypeaheadProps & {
 
 const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (props: Props) => {
   const { keywordOnInit } = props;
-
-  /*
-  const inputRef : React.RefObject<HTMLInputElement> = React.createRef();
-
-  const blurFromSearchModalTriggerinput = () => {
-    const instance = inputRef.current;
-    if (instance != null) {
-      instance.blur();
-    }
-  };
-  */
 
   const { open: openSearchModal } = useSearchModal();
 
