@@ -1,8 +1,12 @@
 import type { IncomingHttpHeaders } from 'http';
 
+import type { IUser, IUserHasId } from '@growi/core';
 import { Lang } from '@growi/core';
+import type { Document } from 'mongoose';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
+
+import { configManager } from '~/server/service/config-manager';
 
 const ACCEPT_LANG_MAP = {
   en: Lang.en_US,
@@ -26,7 +30,7 @@ const getPreferredLanguage = (sortedAcceptLanguagesArray: string[]): Lang => {
   * Detect locale from browser accept language
   * @param headers
   */
-export const detectLocaleFromBrowserAcceptLanguage = (headers: IncomingHttpHeaders): Lang => {
+const detectLocaleFromBrowserAcceptLanguage = (headers: IncomingHttpHeaders): Lang => {
   // 1. get the header accept-language
   // ex. "ja,ar-SA;q=0.8,en;q=0.6,en-CA;q=0.4,en-US;q=0.2"
   const acceptLanguages = headers['accept-language'];
@@ -56,4 +60,9 @@ export const detectLocaleFromBrowserAcceptLanguage = (headers: IncomingHttpHeade
     .map(item => acceptLanguagesDict[item]);
 
   return getPreferredLanguage(sortedAcceptLanguagesArray);
+};
+
+export const determineLocale = (headers: IncomingHttpHeaders, user?: IUserHasId | (IUser & Document<any, any, any>)): Lang => {
+  return user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
 };

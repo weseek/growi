@@ -1,5 +1,7 @@
-import type { IPage, IUser, IUserHasId } from '@growi/core';
-import { allOrigin, Lang } from '@growi/core';
+import { allOrigin } from '@growi/core';
+import type {
+  IPage, IUser, IUserHasId, Lang,
+} from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
@@ -7,6 +9,7 @@ import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
+// import { i18n } from 'next-i18next';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
@@ -20,7 +23,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
-import { detectLocaleFromBrowserAcceptLanguage } from '~/utils/locale-utils';
+import { determineLocale } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -41,12 +44,9 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(locale: Lang, _parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  const basePathnames = {
-    [Lang.en_US]: 'Untitled',
-    [Lang.ja_JP]: '無題のページ',
-    [Lang.zh_CN]: 'Untitled',
-  };
-  const basePathname = basePathnames[locale] || 'Untitled';
+  // const t = i18n?.getFixedT(locale);
+  // const basePathname = t?.('create_page.untitled') || 'Undefined';
+  const basePathname = 'Undefined';
 
   if (_path != null) {
     const path = normalizePath(_path);
@@ -214,9 +214,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       try {
         const { path, parentPath, optionalParentPath } = req.body;
 
-        // determine language
-        const locale = req.user == null ? detectLocaleFromBrowserAcceptLanguage(req.headers)
-          : (req.user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+        const locale = determineLocale(req.headers, req.user);
 
         pathToCreate = await determinePath(locale, parentPath, path, optionalParentPath);
       }

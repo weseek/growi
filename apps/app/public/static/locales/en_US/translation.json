@@ -850,5 +850,8 @@
     "show_wip_page": "Show WIP",
     "size_s": "Size: S",
     "size_l": "Size: L"
+  },
+  "create_page": {
+    "untitled": "Untitled"
   }
 }
