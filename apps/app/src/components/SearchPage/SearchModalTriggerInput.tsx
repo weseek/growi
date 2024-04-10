@@ -5,8 +5,6 @@ import React, {
   forwardRef, useCallback,
 } from 'react';
 
-// import type { TypeaheadRef } from 'react-bootstrap-typeahead';
-
 import type { IFocusable } from '~/client/interfaces/focusable';
 import type { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 
