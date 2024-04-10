@@ -57,7 +57,7 @@ export const SwitchingButtonGroup = (props: Props): JSX.Element => {
         onClick={() => onSelected?.(true)}
       >
         <span className="material-symbols-outlined me-0">play_arrow</span>
-        <span className="d-none d-sm-inline">{t('preview')}</span>
+        <span className="d-none d-sm-inline">{t('page_comment.preview')}</span>
       </SwitchingButton>
       <SwitchingButton
         active={!showPreview}
@@ -65,7 +65,7 @@ export const SwitchingButtonGroup = (props: Props): JSX.Element => {
         onClick={() => onSelected?.(false)}
       >
         <span className="material-symbols-outlined me-1">edit_square</span>
-        <span className="d-none d-sm-inline">{t('write')}</span>
+        <span className="d-none d-sm-inline">{t('page_comment.write')}</span>
       </SwitchingButton>
     </div>
   );

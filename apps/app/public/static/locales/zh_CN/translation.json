@@ -11,7 +11,6 @@
   "PathRecovery": "路径恢复",
   "Copy": "复制",
   "preview": "预览",
-  "write": "内容",
   "desktop": "电脑",
   "phone": "手机",
   "tablet": "平板",
@@ -321,6 +320,8 @@
   "page_comment": {
     "comments": "评论",
     "comment": "评论",
+    "preview": "预览",
+    "write": "输入",
     "add_a_comment": "Add a comment",
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
     "no_user_found": "未找到用户名",
