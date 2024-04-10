@@ -1,6 +1,8 @@
-import type { CSSProperties, FC } from 'react';
+import type { FC } from 'react';
 import React, {
+  useEffect,
   useMemo, useRef,
+  useState,
 } from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -9,7 +11,9 @@ import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
-import { usePageControlsX, useCurrentProductNavWidth, useSidebarMode } from '~/stores/ui';
+import {
+  usePageControlsX, useCurrentProductNavWidth, useSidebarMode,
+} from '~/stores/ui';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
@@ -28,6 +32,7 @@ type Props = {
   isCollapseParents?: boolean,
   formerLinkClassName?: string,
   latterLinkClassName?: string,
+  maxWidth?: number,
 }
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
@@ -39,7 +44,7 @@ const Separator = ({ className }: {className?: string}): JSX.Element => {
 export const PagePathNav: FC<Props> = (props: Props) => {
   const {
     pageId, pagePath, isWipPage, isSingleLineMode, isCollapseParents,
-    formerLinkClassName, latterLinkClassName,
+    formerLinkClassName, latterLinkClassName, maxWidth,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -85,7 +90,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   const copyDropdownId = `copydropdown-${pageId}`;
 
   return (
-    <div>
+    <div style={{ maxWidth }}>
       <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
         <h1 className={`m-0 ${latterLinkClassName}`}>
@@ -114,33 +119,49 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
   const { data: pageControlsX } = usePageControlsX();
   const { data: sidebarWidth } = useCurrentProductNavWidth();
   const { data: sidebarMode } = useSidebarMode();
-  const pagePathNavRef = useRef<HTMLDivElement>(null);
+  const pagePathNavRef = useRef<HTMLDivElement | null>(null);
 
-  const navMaxWidth: CSSProperties | undefined = useMemo(() => {
+  const [navMaxWidth, setNavMaxWidth] = useState<number | undefined>();
+
+  // const navMaxWidth: CSSProperties | undefined = useMemo(() => {
+  //   if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null || isPreferCollapsedMode == null) {
+  //     return;
+  //   }
+  //   return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRef.current.getBoundingClientRect().x}px - 10px)` };
+  // }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode, isPreferCollapsedMode]);
+
+
+  useEffect(() => {
     if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null) {
       return;
     }
-    // console.log('sideBarMode: ', sidebarMode, pagePathNavRef.current.getBoundingClientRect().x);
-    console.log(' sideBarWidth: ', sidebarWidth, ' pageControsX: ', pageControlsX, ' pagePathNavRef.x: ',
-      pagePathNavRef.current.getBoundingClientRect().x);
-    return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRef.current.getBoundingClientRect().x}px - 10px)` };
+    console.log(pagePathNavRef.current.getBoundingClientRect());
+    setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
   }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode]);
 
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
-    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
-      {({ status }: { status: boolean }) => {
-        const isCollapseParents = status === Sticky.STATUS_FIXED;
-        return (
+    <div ref={pagePathNavRef}>
+      <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
+        {({ status }: { status: boolean }) => {
+          const isCollapseParents = status === Sticky.STATUS_FIXED;
+          return (
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className="d-inline-block pe-auto" style={isCollapseParents ? navMaxWidth : {}} ref={pagePathNavRef}>
-            <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'} />
-          </div>
-        );
-      }}
-    </Sticky>
+          //
+            <div className="d-inline-block pe-auto">
+              <PagePathNav
+                {...props}
+                isCollapseParents={isCollapseParents}
+                latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'}
+                maxWidth={isCollapseParents ? navMaxWidth : undefined}
+              />
+            </div>
+          );
+        }}
+      </Sticky>
+    </div>
   );
 };
