@@ -20,6 +20,6 @@ export const useSearchModal = (status?: SearchModalStatus): SWRResponse<SearchMo
     open: (keywordOnInit?: string) => {
       swrResponse.mutate({ isOpened: true, searchKeyword: keywordOnInit });
     },
-    close: () => swrResponse.mutate({ isOpened: false, searchKeyword: '' }),
+    close: () => swrResponse.mutate({ isOpened: false, searchKeyword: undefined }),
   };
 };
