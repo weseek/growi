@@ -9,7 +9,7 @@ context('Access to sharelink by guest', () => {
       cy.login(user.username, user.password);
     });
 
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox/Bootstrap5');
 
     // open dropdown
     cy.waitUntil(() => {
