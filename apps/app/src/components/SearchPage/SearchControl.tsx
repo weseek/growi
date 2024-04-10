@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchModalTriggerinput from './SearchModalTriggerInput';
+import { SearchModalTriggerinput } from './SearchModalTriggerInput';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 

@@ -13,7 +13,7 @@ type Props = {
   keywordOnInit: string,
 };
 
-const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (props: Props) => {
+export const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (props: Props) => {
   const { keywordOnInit } = props;
 
   const { open: openSearchModal } = useSearchModal();
@@ -35,5 +35,3 @@ const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (pr
     </div>
   );
 };
-
-export default SearchModalTriggerinput;
