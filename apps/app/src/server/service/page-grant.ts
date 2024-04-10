@@ -106,7 +106,8 @@ export interface IPageGrantService {
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
   isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
-  getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>
+  getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>,
+  calcApplicableGrantData: (page, user) => Promise<IRecordApplicableGrant>
 }
 
 class PageGrantService implements IPageGrantService {
