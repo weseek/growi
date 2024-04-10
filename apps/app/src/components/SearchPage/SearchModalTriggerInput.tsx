@@ -1,11 +1,6 @@
-import type {
-  ForwardRefRenderFunction,
-} from 'react';
 import React, {
-  forwardRef, useCallback,
+  useCallback,
 } from 'react';
-
-import type { IFocusable } from '~/client/interfaces/focusable';
 
 import { useSearchModal } from '../../features/search/client/stores/search';
 
@@ -13,7 +8,7 @@ type Props = {
   keywordOnInit: string,
 };
 
-export const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (props: Props) => {
+export const SearchModalTriggerinput: React.FC<Props> = (props: Props) => {
   const { keywordOnInit } = props;
 
   const { open: openSearchModal } = useSearchModal();
