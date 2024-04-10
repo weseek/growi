@@ -152,7 +152,7 @@ context('Editor while navigation', () => {
 
     // type (without save)
     const bodyWorld = ' world!!'
-    cy.get('.cm-content').should('be.visible').type(`{moveToEnd} ${bodyWorld}`, { force: true });
+    cy.get('.cm-content').should('be.visible').type(`{moveToEnd}${bodyWorld}`, { force: true });
     cy.getByTestid('page-editor-preview-body').should('contain.text', `${bodyHello}${bodyWorld}`);
     cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page2-modified`);
 
