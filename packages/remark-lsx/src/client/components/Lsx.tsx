@@ -119,11 +119,6 @@ const LsxSubstance = React.memo(({
             <span className="text-muted small start-items-label">
               {leftItemsNum} pages left
             </span>
-            {/* TODO: traslation
-            https://redmine.weseek.co.jp/issues/133681
-            https://redmine.weseek.co.jp/issues/140566
-            {t('lsx.load_more')}<br />
-            <span className="text-muted small start-items-label">{t('lsx.pages_left')}</span> */}
           </button>
         </div>
       </div>

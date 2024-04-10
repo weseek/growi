@@ -381,10 +381,6 @@
     "compare_latest": "最新と比較",
     "compare_previous": "1つ前のバージョンと比較"
   },
-  "lsx": {
-    "load_more": "さらに表示",
-    "pages_left": "残り\"{{leftItemsNum}}\" ページ"
-  },
   "modal_rename": {
     "label": {
       "Move/Rename page": "ページを移動/名前変更する",
