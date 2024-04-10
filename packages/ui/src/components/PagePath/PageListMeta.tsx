@@ -5,6 +5,8 @@ import assert from 'assert';
 import type { IPageHasId } from '@growi/core';
 import { templateChecker, pagePathUtils } from '@growi/core/dist/utils';
 
+import { FootstampIcon } from '../FootstampIcon';
+
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
 
@@ -45,7 +47,7 @@ const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
 
   return (
     <span className={`seen-users-count ${shouldSpaceOutIcon ? 'me-2' : ''} ${strengthClass}`}>
-      <span className="material-symbols-outlined">footprint</span>
+      <i className="footstamp-icon"><FootstampIcon /></i>
       {count}
     </span>
   );

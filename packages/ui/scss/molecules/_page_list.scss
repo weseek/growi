@@ -44,6 +44,13 @@
         margin-right: 2px;
       }
 
+      .footstamp-icon {
+        svg {
+          width: 14px;
+          height: 14px;
+        }
+      }
+
       .seen-users-count {
         &.strength-0,
         &.strength-1,
