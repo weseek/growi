@@ -37,10 +37,4 @@ const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (pr
   );
 };
 
-const ForwardedSearchTypeahead = forwardRef(SearchModalTriggerinput);
-
-ForwardedSearchTypeahead.defaultProps = {
-  keywordOnInit: '',
-};
-
-export default ForwardedSearchTypeahead;
+export default SearchModalTriggerinput;
