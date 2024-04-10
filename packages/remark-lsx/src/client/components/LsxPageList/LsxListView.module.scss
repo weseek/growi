@@ -6,7 +6,15 @@
   }
 
   .page-list-ul > li > div > a {
-    --grw-wiki-link-color-rgb: $body-color;
-    --grw-wiki-link-hover-color-rgb: $body-color;
+    padding: 0px;
+    color: inherit;
+
+    &:not(:hover) {
+      text-decoration: none;
+    }
+
+    &:hover {
+      color: inherit;
+    }
   }
 }
