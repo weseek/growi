@@ -15,30 +15,19 @@ context('TemplateModal', () => {
 
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    cy.getByTestid('editor-button').click();
 
-    // show TemplateModal
-    cy.waitUntil(() => {
-      // do
-      cy.get('.navbar-editor > ul > li:nth-child(16) > button').click({force: true});
-      // wait until
-      return cy.getByTestid('template-modal').then($elem => $elem.is(':visible'));
-    });
+    cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
+
+    // open TemplateModal
+    cy.getByTestid('open-template-button').click();
+    cy.getByTestid('template-modal').should('be.visible');
+    cy.screenshot(`${ssPrefix}opened`);
 
     // close TemplateModal
     cy.getByTestid('template-modal').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}opened`);
-      cy.get('button.close').click();
+      cy.get('.btn-close').click();
     });
-
     cy.screenshot(`${ssPrefix}close`);
   });
 
@@ -48,30 +37,20 @@ context('TemplateModal', () => {
 
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@pageEditorModeManager').within(() => {
-        cy.get('button:nth-child(2)').click();
-      });
-      // until
-      return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-    })
-    cy.get('.grw-editor-navbar-bottom').should('be.visible');
+    cy.getByTestid('editor-button').click();
 
-    // show TemplateModal
-    cy.waitUntil(() => {
-      // do
-      cy.get('.navbar-editor > ul > li:nth-child(16) > button').click({force: true});
-      // wait until
-      return cy.getByTestid('template-modal').then($elem => $elem.is(':visible'));
-    });
+    cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
+
+    // open TemplateModal
+    cy.getByTestid('open-template-button').click();
+    cy.getByTestid('template-modal').should('be.visible');
 
     // select template and template locale
     cy.getByTestid('template-modal').should('be.visible').within(() => {
       // select first template
       cy.get('.list-group > .list-group-item:nth-child(1)').click();
       // check preview exist
-      cy.get('.card-body > .page-editor-preview-body > .wiki').should('exist');
+      cy.get('.card-body').should('be.visible');
       cy.screenshot(`${ssPrefix}select-template`);
 
       // change template locale
