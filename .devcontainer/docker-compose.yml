@@ -28,8 +28,8 @@ services:
     tty: true
     networks:
     - default
-    # First, "docker compose up" in cloned https://github.com/vercel/opentelemetry-collector-dev-setup
-    - opentelemetry-collector-dev-setup_default
+    # https://redmine.weseek.co.jp/issues/144306 で整備予定
+    # - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -70,5 +70,6 @@ volumes:
 
 networks:
   default:
-  opentelemetry-collector-dev-setup_default:
-    external: true
+  # https://redmine.weseek.co.jp/issues/144306 で整備予定
+  # opentelemetry-collector-dev-setup_default:
+  #   external: true
