@@ -6,11 +6,10 @@ import React, {
 } from 'react';
 
 import type { IFocusable } from '~/client/interfaces/focusable';
-import type { TypeaheadProps } from '~/client/interfaces/react-bootstrap-typeahead';
 
 import { useSearchModal } from '../../features/search/client/stores/search';
 
-type Props = TypeaheadProps & {
+type Props = {
   keywordOnInit: string,
 };
 
