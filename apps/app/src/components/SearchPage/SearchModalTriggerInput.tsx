@@ -23,14 +23,12 @@ const SearchModalTriggerinput: ForwardRefRenderFunction<IFocusable, Props> = (pr
 
   const inputClickHandler = useCallback(() => {
     openSearchModal(keywordOnInit);
-    // blurFromSearchModalTriggerinput();
   }, [openSearchModal, keywordOnInit]);
 
   return (
     <div>
       <input
         className="form-control"
-        // ref={input}
         type="input"
         data-testid="open-search-modal-button"
         value={keywordOnInit}
