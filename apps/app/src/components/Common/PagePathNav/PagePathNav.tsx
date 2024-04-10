@@ -1,7 +1,6 @@
-import type { FC } from 'react';
 import React, {
   useEffect,
-  useMemo, useRef,
+  useRef,
   useState,
 } from 'react';
 
@@ -41,7 +40,7 @@ const Separator = ({ className }: {className?: string}): JSX.Element => {
   return <span className={`separator ${className ?? ''} ${styles['grw-mx-02em']}`}>/</span>;
 };
 
-export const PagePathNav: FC<Props> = (props: Props) => {
+export const PagePathNav = (props: Props): JSX.Element => {
   const {
     pageId, pagePath, isWipPage, isSingleLineMode, isCollapseParents,
     formerLinkClassName, latterLinkClassName, maxWidth,
@@ -111,6 +110,8 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   );
 };
 
+PagePathNav.displayName = 'PagePathNav';
+
 
 type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 
@@ -156,3 +157,5 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
     </div>
   );
 };
+
+PagePathNavSticky.displayName = 'PagePathNavSticky';
