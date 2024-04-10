@@ -123,19 +123,10 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
 
   const [navMaxWidth, setNavMaxWidth] = useState<number | undefined>();
 
-  // const navMaxWidth: CSSProperties | undefined = useMemo(() => {
-  //   if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null || isPreferCollapsedMode == null) {
-  //     return;
-  //   }
-  //   return { maxWidth: `calc(${pageControlsX}px - ${pagePathNavRef.current.getBoundingClientRect().x}px - 10px)` };
-  // }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode, isPreferCollapsedMode]);
-
-
   useEffect(() => {
     if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null) {
       return;
     }
-    console.log(pagePathNavRef.current.getBoundingClientRect());
     setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
   }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode]);
 
