@@ -32,6 +32,7 @@ const Preview = (props: Props): JSX.Element => {
 
   return (
     <div
+      data-testid="page-editor-preview-body"
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       style={style}
     >
