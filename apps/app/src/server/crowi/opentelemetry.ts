@@ -29,7 +29,7 @@ export class OpenTelemetry {
       resource: new Resource({
         [SEMRESATTRS_SERVICE_NAME]: 'next-app',
         // TODO: 環境変数から入れられるようにしたい
-        // https://redmine.weseek.co.jp/issues/144351 で決定予定
+        // https://redmine.weseek.co.jp/issues/144352 で実施予定
         [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.instanceId,
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
