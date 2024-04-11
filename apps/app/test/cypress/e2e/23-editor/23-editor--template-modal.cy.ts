@@ -16,7 +16,6 @@ context('TemplateModal', () => {
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.getByTestid('editor-button').click();
-
     cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
 
     // open TemplateModal
@@ -38,7 +37,6 @@ context('TemplateModal', () => {
     // move to edit mode
     cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
     cy.getByTestid('editor-button').click();
-
     cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
 
     // open TemplateModal
