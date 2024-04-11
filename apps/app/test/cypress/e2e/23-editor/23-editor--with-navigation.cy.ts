@@ -45,7 +45,7 @@ context('Editor while uploading to a new page', () => {
       return cy.getByTestid('grw-grant-selector-dropdown-menu').then($elem => $elem.is(':visible'))
     });
 
-     // Select "Only me"
+    // Select "Only me"
     cy.getByTestid('grw-grant-selector-dropdown-menu').find('.dropdown-item').should('have.length', 4).then((menuItems) => {
       // click "Only me"
       menuItems[2].click();
@@ -123,7 +123,6 @@ context('Editor while navigation', () => {
     const bodyHello = 'hello';
     cy.get('.cm-content').should('be.visible').type(bodyHello, { force: true });
     cy.getByTestid('page-editor-preview-body').should('contain.text', bodyHello);
-    // cy.getByTestid('page-editor').should('be.visible');
     cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page1`);
 
     // save page1
