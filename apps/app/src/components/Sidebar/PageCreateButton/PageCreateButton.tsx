@@ -45,6 +45,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       className="d-flex flex-row mt-2"
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
+      data-testid="grw-page-create-button"
     >
       <div className="btn-group flex-grow-1">
         <CreateButton

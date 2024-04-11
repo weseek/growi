@@ -5,6 +5,7 @@ import React, {
 
 import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'next-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
@@ -49,6 +50,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
+
+  const { t } = useTranslation('');
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -178,7 +181,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
                           <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-2" />
-                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>Reply...</small>
+                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>{t('page_comment.reply')}...</small>
                         </button>
                       </NotAvailableForReadOnlyUser>
                     </NotAvailableForGuest>
