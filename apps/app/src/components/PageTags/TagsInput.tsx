@@ -42,6 +42,12 @@ export const TagsInput: FC<Props> = (props: Props) => {
     if (event.key === ' ') {
       event.preventDefault();
 
+      // fix: https://redmine.weseek.co.jp/issues/140689
+      const isComposing = event.nativeEvent.isComposing;
+      if (isComposing) {
+        return;
+      }
+
       const initialItem = tagsInputRef?.current?.state?.initialItem;
       const handleMenuItemSelect = tagsInputRef?.current?._handleMenuItemSelect;
 
