@@ -64,6 +64,11 @@ import {
 } from './utils/commons';
 
 
+import styles from './[[...path]].module.scss';
+
+const subnavigationTopBlockClass = styles['subnavigation-top-block'];
+
+
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
   var globalEmitter: EventEmitter;
@@ -329,6 +334,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
+
+        <div className={`${subnavigationTopBlockClass} d-block d-md-none border-bottom`}></div>
         <nav className="sticky-top">
           <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
         </nav>
