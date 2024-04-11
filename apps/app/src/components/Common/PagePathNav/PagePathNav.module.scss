@@ -14,6 +14,7 @@
     z-index: bs.$zindex-sticky;
   }
 
+  // TODO:Responsive font size
   // set smaller font-size when sticky
   .sticky-inner-wrapper.active {
     h1 {
@@ -22,7 +23,8 @@
   }
   // avoid sticky-top nav to turnate page path
   .is-collapse-with-top {
-    @include bs.media-breakpoint-down(md) {
+    max-width: calc(100% - 100px);
+    @include bs.media-breakpoint-up(sm) {
       max-width: calc(100% - 350px);
     }
     @include bs.media-breakpoint-up(md) {
