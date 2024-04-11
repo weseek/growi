@@ -45,7 +45,7 @@ import {
 import { useEditingMarkdown } from '~/stores/editor';
 import {
   useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
-  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
+  useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData, useHasYjsDraft,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
@@ -225,6 +225,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+
+  useHasYjsDraft(props.hasYjsDraft);
 
   const { pageWithMeta } = props;
 

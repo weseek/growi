@@ -52,6 +52,10 @@ export const useTemplateBodyData = (initialData?: string): SWRResponse<string, E
   return useSWRStatic<string, Error>('templateBodyData', initialData);
 };
 
+export const useHasYjsDraft = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useSWRStatic<boolean, Error>('hasYjsDraft', initialData);
+};
+
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
