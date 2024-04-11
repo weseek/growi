@@ -40,7 +40,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   } = props;
 
   const {
-    name, _id: folderId, children, parent, bookmarks,
+    name, _id: folderId, childFolder, parent, bookmarks,
   } = bookmarkFolder;
 
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
@@ -50,7 +50,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
-  const childrenExists = hasChildren({ children, bookmarks });
+  const childrenExists = hasChildren({ childFolder, bookmarks });
 
   const paddingLeft = BASE_FOLDER_PADDING * level;
 
@@ -63,14 +63,14 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       // TODO: do not use any type
-      await updateBookmarkFolder(folderId, folderName, parent as any, children);
+      await updateBookmarkFolder(folderId, folderName, parent as any, childFolder);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, children, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, childFolder, folderId, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -97,7 +97,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         if (item.bookmarkFolder != null) {
-          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.children);
+          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.childFolder);
           bookmarkFolderTreeMutation();
         }
       }
@@ -127,7 +127,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       // Maximum folder hierarchy of 2 levels
       // If the drop source folder has child folders, the drop source folder cannot be moved because the drop source folder hierarchy is already 2.
       // If the destination folder has a parent, the source folder cannot be moved because the destination folder hierarchy is already 2.
-      if (item.bookmarkFolder.children.length !== 0 || bookmarkFolder.parent != null) {
+      if (item.bookmarkFolder.childFolder.length !== 0 || bookmarkFolder.parent != null) {
         return false;
       }
 
@@ -148,7 +148,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   };
 
   const renderChildFolder = () => {
-    return isOpen && children?.map((childFolder) => {
+    return isOpen && childFolder?.map((childFolder) => {
       return (
         <div key={childFolder._id} className="grw-foldertree-item-children">
           <BookmarkFolderItem
@@ -205,13 +205,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async() => {
     try {
-      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.children);
+      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.childFolder);
       bookmarkFolderTreeMutation();
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolder._id, bookmarkFolder.children, bookmarkFolder.name, bookmarkFolderTreeMutation]);
+  }, [bookmarkFolder._id, bookmarkFolder.childFolder, bookmarkFolder.name, bookmarkFolderTreeMutation]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">

@@ -4,9 +4,9 @@ import type { BookmarkFolderItems, BookmarkedPage } from '~/interfaces/bookmark-
 
 import { apiv3Delete, apiv3Post, apiv3Put } from './apiv3-client';
 
-// Check if bookmark folder item has children or bookmarks
-export const hasChildren = ({ children, bookmarks }: { children?: BookmarkFolderItems[], bookmarks?: BookmarkedPage[] }): boolean => {
-  return !!((children && children.length > 0) || (bookmarks && bookmarks.length > 0));
+// Check if bookmark folder item has childFolder or bookmarks
+export const hasChildren = ({ childFolder, bookmarks }: { childFolder?: BookmarkFolderItems[], bookmarks?: BookmarkedPage[] }): boolean => {
+  return !!((childFolder && childFolder.length > 0) || (bookmarks && bookmarks.length > 0));
 };
 
 // Add new folder helper
@@ -35,8 +35,10 @@ export const toggleBookmark = async(pageId: string, status: boolean): Promise<vo
 };
 
 // Update Bookmark folder
-export const updateBookmarkFolder = async(bookmarkFolderId: string, name: string, parent: string | null, children: BookmarkFolderItems[]): Promise<void> => {
+export const updateBookmarkFolder = async(
+    bookmarkFolderId: string, name: string, parent: string | null, childFolder: BookmarkFolderItems[],
+): Promise<void> => {
   await apiv3Put('/bookmark-folder', {
-    bookmarkFolderId, name, parent, children,
+    bookmarkFolderId, name, parent, childFolder,
   });
 };
