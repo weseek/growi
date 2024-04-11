@@ -1,9 +1,10 @@
 import { ErrorV3 } from '@growi/core/dist/models';
-import { Router, Request } from 'express';
+import type { Request } from 'express';
+import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type Crowi from '~/server/crowi';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
 import { pageBulkExportService } from '../../service/page-bulk-export';
@@ -34,16 +35,8 @@ module.exports = (crowi: Crowi): Router => {
 
     const { path, format } = req.body;
 
-    try {
-      // temporal await, remove it after multi-part upload is implemented in https://redmine.weseek.co.jp/issues/78038
-      await pageBulkExportService?.bulkExportWithBasePagePath(path, format);
-
-      return res.apiv3({}, 204);
-    }
-    catch (err) {
-      logger.error(err);
-      return res.apiv3Err(new ErrorV3('Error occurred in exporting page tree'));
-    }
+    pageBulkExportService?.bulkExportWithBasePagePath(path, format);
+    return res.apiv3({}, 204);
   });
 
   return router;

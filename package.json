@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.1-RC.0",
+  "version": "7.0.2-RC.0",
   "description": "Team collaboration software using markdown",
   "tags": [
     "wiki",
@@ -89,7 +89,7 @@
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~5.0.0",
-    "vite": "^4.5.2",
+    "vite": "^4.5.3",
     "vite-plugin-dts": "^2.3.0",
     "vite-tsconfig-paths": "^4.2.0",
     "vitest": "^0.34.6",

@@ -1,10 +1,11 @@
 import localFont from 'next/font/local';
 
-import { DefineStyle } from './types';
+import type { DefineStyle } from './types';
 
 const materialSymbolsOutlined = localFont({
   src: '../../../resource/fonts/MaterialSymbolsOutlined-opsz,wght,FILL@20..48,300,0..1.woff2',
   adjustFontFallback: false,
+  display: 'block',
 });
 
 export const useMaterialSymbolsOutlined: DefineStyle = () => (

@@ -1,5 +1,23 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+.btn-personal-dropdown :global {
+  img {
+    border: 2px solid var(--bs-border-color-translucent);
+  }
+}
+
+.personal-dropdown-header :global {
+  .item-text-email {
+    font-size: 10.5px;
+  }
+}
+
+.personal-dropdown-menu :global {
+  --bs-dropdown-font-size: 14px;
+}
+
+
+// == Colors
 @include bs.color-mode(light) {
   .personal-dropdown-header :global {
     color: var(--bs-gray-600);
@@ -19,15 +37,5 @@
   .personal-dropdown-item :global {
     --bs-link-color-rgb:var(--bs-gray-500);
     color: var(--bs-gray-500);
-  }
-}
-
-.personal-dropdown-menu :global {
-  --bs-dropdown-font-size: 14px;
-}
-
-.personal-dropdown-header :global {
-  .item-text-email {
-    font-size: 10.5px;
   }
 }
