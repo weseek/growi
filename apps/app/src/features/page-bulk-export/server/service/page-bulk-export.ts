@@ -40,38 +40,37 @@ class PageBulkExportService {
     this.crowi = crowi;
   }
 
-  async bulkExportWithBasePagePath(basePagePath: string, format: string): Promise<void> {
+  async bulkExportWithBasePagePath(basePagePath: string, format: PageBulkExportFormat): Promise<void> {
     const timeStamp = (new Date()).getTime();
     const uploadKey = `page-bulk-export-${timeStamp}.zip`;
-    const extension = format === PageBulkExportFormat.pdf ? 'pdf' : 'md';
-
-    const pagesReadable = this.getPageReadable(basePagePath);
-    const zipArchiver = this.setUpZipArchiver();
-    const pagesWritable = await this.getPageWritable(zipArchiver, extension);
-    const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.partSize);
-
-    // init multipart upload
     // TODO: Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
     const multipartUploader: IAwsMultipartUploader | undefined = this.crowi?.fileUploadService?.createMultipartUploader(uploadKey);
+
     try {
       if (multipartUploader == null) {
         throw Error('Multipart upload not available for configured file upload type');
       }
+
+      const pagesReadable = this.getPageReadable(basePagePath);
+      const zipArchiver = this.setUpZipArchiver();
+      const pagesWritable = await this.getPageWritable(zipArchiver, format);
+      const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.partSize);
+
       await multipartUploader.initUpload();
+      const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader);
+
+      // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
+      // Hence, execution of two pipelines is required.
+      pipeline(pagesReadable, pagesWritable, err => this.handleExportError(err, multipartUploader));
+      pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable, err => this.handleExportError(err, multipartUploader));
     }
     catch (err) {
       await this.handleExportError(err, multipartUploader);
       return;
     }
-    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader);
-
-    // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
-    // Hence, execution of two pipelines is required.
-    pipeline(pagesReadable, pagesWritable, err => this.handleExportError(err, multipartUploader));
-    pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable, err => this.handleExportError(err, multipartUploader));
   }
 
-  async handleExportError(err: Error | null, multipartUploader: IAwsMultipartUploader | undefined): Promise<void> {
+  private async handleExportError(err: Error | null, multipartUploader: IAwsMultipartUploader | undefined): Promise<void> {
     if (err != null) {
       logger.error(err);
       if (multipartUploader != null) {
@@ -101,7 +100,7 @@ class PageBulkExportService {
   /**
    * Get a Writable that writes the page body to a zip file
    */
-  private async getPageWritable(zipArchiver: Archiver, extension: string): Promise<Writable> {
+  private async getPageWritable(zipArchiver: Archiver, format: string): Promise<Writable> {
     // Create a browser instance
     const browser = await puppeteer.launch();
 
@@ -112,11 +111,11 @@ class PageBulkExportService {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
-            const body = extension === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body, browser)) : revision.body;
+            const body = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body, browser)) : revision.body;
             const pathNormalized = normalizePath(page.path);
             // Since archiver does not provide a proper way to back pressure at the moment, use the _queue property as a workaround
             // ref: https://github.com/archiverjs/node-archiver/issues/611
-            const { _queue } = zipArchiver.append(body, { name: `${pathNormalized}.${extension}` }) as ArchiverWithQueue;
+            const { _queue } = zipArchiver.append(body, { name: `${pathNormalized}.${format}` }) as ArchiverWithQueue;
             if (_queue == null) {
               throw Error('Cannot back pressure the export pipeline. Aborting the export.');
             }
