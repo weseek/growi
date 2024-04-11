@@ -29,13 +29,16 @@ export class OpenTelemetry {
       resource: new Resource({
         [SEMRESATTRS_SERVICE_NAME]: 'next-app',
         // TODO: 環境変数から入れられるようにしたい
+        // https://redmine.weseek.co.jp/issues/144351 で決定予定
         [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.instanceId,
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
       // TODO: 宛先を環境変数から設定できるようにしたい
+      // https://redmine.weseek.co.jp/issues/144352 で実施予定
       traceExporter: new OTLPTraceExporter({ url: 'http://otel-collector:4317' }),
       metricReader: new PeriodicExportingMetricReader({
         // TODO: 宛先を環境変数から設定できるようにしたい
+        // https://redmine.weseek.co.jp/issues/144352 で実施予定
         exporter: new OTLPMetricExporter({ url: 'http://otel-collector:4317' }),
         exportIntervalMillis: 10000,
       }),
