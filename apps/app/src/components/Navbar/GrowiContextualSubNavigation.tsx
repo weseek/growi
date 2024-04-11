@@ -288,12 +288,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     );
   }, [isLinkSharingDisabled, isReadOnlyUser, pageId, revisionId]);
 
-  // TODO:Change the sticky padding-top on scroll below sm https://redmine.weseek.co.jp/issues/144273
   return (
     <>
       <GroundGlassBar
         className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 pb-1 pt-5 pt-sm-1 gap-2 gap-md-4 d-print-none
+          d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
         id="grw-contextual-sub-nav"
