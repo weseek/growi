@@ -60,6 +60,7 @@ export type IDeleteManyPageApiv3Result = {
 
 export type IOptionsForUpdate = {
   origin?: Origin
+  wip?: boolean,
   grant?: PageGrant,
   userRelatedGrantUserGroupIds?: IGrantedGroup[],
   // isSyncRevisionToHackmd?: boolean,

@@ -66,6 +66,7 @@ declare global {
 }
 
 export type SaveOptions = {
+  wip: boolean,
   slackChannels: string,
   overwriteScopesOfDescendants?: boolean
 }
@@ -179,6 +180,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       const { page } = await updatePage({
         pageId,
         revisionId,
+        wip: opts?.wip,
         body: markdown ?? '',
         grant: selectedGrant?.grant,
         origin: Origin.Editor,
