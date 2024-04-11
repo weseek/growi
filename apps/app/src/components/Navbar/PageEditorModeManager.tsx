@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
-import { useIsNotFound } from '~/stores/page';
+import { useIsNotFound, useHasYjsDraft } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
@@ -65,11 +65,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+  const { data: hasYjsDraft } = useHasYjsDraft();
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
-
-  // TODO: https://redmine.weseek.co.jp/issues/132775
-  const hasYjsDraft = true;
 
   const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
