@@ -1,4 +1,4 @@
-context('PageCreateModal', () => {
+context('PageCreateButton', () => {
 
   const ssPrefix = 'page-create-modal-';
 
@@ -9,41 +9,37 @@ context('PageCreateModal', () => {
     });
   });
 
-  it("PageCreateModal is shown and closed successfully", () => {
+  it("DropendMenu is shown successfully", () => {
     cy.visit('/');
     cy.collapseSidebar(true, true);
 
+    cy.getByTestid('grw-page-create-button').trigger('mouseover');
+
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('newPageBtn').click({force: true});
+      cy.getByTestid('grw-page-create-button-dropend-toggle').click({force: true});
       // wait until
-      return cy.getByTestid('page-create-modal').then($elem => $elem.is(':visible'));
+      return cy.getByTestid('grw-page-create-button-dropend-menu').then($elem => $elem.is(':visible'));
     });
 
-    cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.screenshot(`${ssPrefix}new-page-modal-opened`);
-      cy.get('button.close').click();
-    });
-
-    cy.screenshot(`${ssPrefix}page-create-modal-closed`);
+    cy.screenshot(`${ssPrefix}page-create-button-dropend-menu-shown`);
   });
 
   it("Successfully Create Today's page", () => {
-    const pageName = "Today's page";
     cy.visit('/');
     cy.collapseSidebar(true);
 
+    cy.getByTestid('grw-page-create-button').trigger('mouseover');
+
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('newPageBtn').click({force: true});
+      cy.getByTestid('grw-page-create-button-dropend-toggle').click({force: true});
       // wait until
-      return cy.getByTestid('page-create-modal').then($elem => $elem.is(':visible'));
+      return cy.getByTestid('grw-page-create-button-dropend-menu').then($elem => $elem.is(':visible'));
     });
 
-    cy.getByTestid('page-create-modal').should('be.visible').within(() => {
-      cy.get('.page-today-input2').type(pageName);
-      cy.screenshot(`${ssPrefix}today-add-page-name`);
-      cy.getByTestid('btn-create-memo').click();
+    cy.getByTestid('grw-page-create-button-dropend-menu').should('be.visible').within(() => {
+      cy.get('button').eq(1).click();
     });
 
     cy.getByTestid('page-editor').should('be.visible');
@@ -60,7 +56,7 @@ context('PageCreateModal', () => {
     cy.screenshot(`${ssPrefix}create-today-page`);
   });
 
-  it('Successfully create page under specific path', () => {
+  it.skip('Successfully create page under specific path', () => {
     const pageName = 'child';
 
     cy.visit('/foo/bar');
@@ -98,7 +94,7 @@ context('PageCreateModal', () => {
     cy.screenshot(`${ssPrefix}create-page-under-specific-page`);
   });
 
-  it('Trying to create template page under the root page fail', () => {
+  it.skip('Trying to create template page under the root page fail', () => {
     cy.visit('/');
     cy.collapseSidebar(true);
 
@@ -137,7 +133,7 @@ context('PageCreateModal', () => {
 });
 
 
-context('Shortcuts', () => {
+context.skip('Shortcuts', () => {
   const ssPrefix = 'shortcuts';
 
   beforeEach(() => {

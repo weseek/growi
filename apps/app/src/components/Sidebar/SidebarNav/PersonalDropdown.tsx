@@ -5,12 +5,17 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import {
+  UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useCurrentUser } from '~/stores/context';
 
 import { SkeletonItem } from './SkeletonItem';
+
+import styles from './PersonalDropdown.module.scss';
 
 const ProactiveQuestionnaireModal = dynamic(() => import('~/features/questionnaire/client/components/ProactiveQuestionnaireModal'), { ssr: false });
 
@@ -36,71 +41,81 @@ export const PersonalDropdown = (): JSX.Element => {
 
   return (
     <>
-      <div className="dropend">
-        {/* Button */}
-        {/* remove .dropdown-toggle for hide caret */}
-        {/* See https://stackoverflow.com/a/44577512/13183572 */}
-        <button
-          type="button"
-          className="btn btn-primary"
-          data-bs-toggle="dropdown"
+      <UncontrolledDropdown
+        direction="end"
+      >
+        <DropdownToggle
+          className={`btn btn-primary ${styles['btn-personal-dropdown']} opacity-100`}
           data-testid="personal-dropdown-button"
-          aria-expanded="false"
         >
           <UserPicture user={currentUser} noLink noTooltip />
-        </button>
+        </DropdownToggle>
 
-        {/* Menu */}
-        <ul className="dropdown-menu" data-testid="personal-dropdown-menu">
-          <li className="px-4 pt-3 pb-2">
-            <UserPicture user={currentUser} size="lg" noLink noTooltip />
-            <h5>{currentUser.name}</h5>
-            <div className="d-flex align-items-center">
-              <i className="icon-user icon-fw"></i>{currentUser.username}
+        <DropdownMenu
+          container="body"
+          data-testid="personal-dropdown-menu"
+          className={styles['personal-dropdown-menu']}
+        >
+          <DropdownItem className={styles['personal-dropdown-header']} header>
+            <div className="mt-2 mb-3">
+              <UserPicture user={currentUser} size="lg" noLink noTooltip />
+            </div>
+            <div className="ms-1 fs-6">{currentUser.name}</div>
+            <div className="d-flex align-items-center my-2">
+              <small className="material-symbols-outlined me-1 pb-0 fs-6">person</small>
+              <span>{currentUser.username}</span>
             </div>
             <div className="d-flex align-items-center">
-              <i className="icon-envelope icon-fw"></i><span className="grw-email-sm">{currentUser.email}</span>
+              <span className="material-symbols-outlined me-1 pb-0 fs-6">mail</span>
+              <span className="item-text-email">{currentUser.email}</span>
             </div>
-          </li>
+          </DropdownItem>
 
-          <li className="dropdown-divider"></li>
+          <DropdownItem className="my-3" divider />
 
-          <li>
-            <Link
-              href={pagePathUtils.userHomepagePath(currentUser)}
-              className="dropdown-item"
-              data-testid="grw-personal-dropdown-menu-user-home"
-            >
-              <i className="icon-fw icon-home"></i>{t('personal_dropdown.home')}
-            </Link>
-          </li>
-          <li>
-            <Link
-              href="/me"
-              className="dropdown-item"
-              data-testid="grw-personal-dropdown-menu-user-settings"
-            >
-              <i className="icon-fw icon-wrench"></i>{t('personal_dropdown.settings')}
-            </Link>
-          </li>
-          <li>
-            <button
-              data-testid="grw-proactive-questionnaire-modal-toggle-btn"
-              type="button"
-              className="dropdown-item"
-              onClick={() => setQuestionnaireModalOpen(true)}
-            >
-              <span className="material-symbols-outlined">edit</span>{t('personal_dropdown.feedback')}
-            </button>
-          </li>
-          <li>
-            <button type="button" className="dropdown-item" onClick={logoutHandler}>
-              <i className="icon-fw icon-power"></i>{t('Sign out')}
-            </button>
-          </li>
-        </ul>
+          <Link
+            href={pagePathUtils.userHomepagePath(currentUser)}
+            data-testid="grw-personal-dropdown-menu-user-home"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
+              <span className="d-flex align-items-center">
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">home</span>
+                <span className="item-text">{t('personal_dropdown.home')}</span>
+              </span>
+            </DropdownItem>
+          </Link>
 
-      </div>
+          <Link
+            href="/me"
+            data-testid="grw-personal-dropdown-menu-user-settings"
+          >
+            <DropdownItem className={`my-1 ${styles['personal-dropdown-item']}`}>
+              <span className="d-flex align-items-center">
+                <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">discover_tune</span>
+                <span className="item-text">{t('personal_dropdown.settings')}</span>
+              </span>
+            </DropdownItem>
+          </Link>
+
+          <DropdownItem
+            data-testid="grw-proactive-questionnaire-modal-toggle-btn"
+            onClick={() => setQuestionnaireModalOpen(true)}
+            className={`my-1 ${styles['personal-dropdown-item']}`}
+          >
+            <span className="d-flex align-items-center">
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">edit_note</span>
+              <span className="item-text">{t('personal_dropdown.feedback')}</span>
+            </span>
+          </DropdownItem>
+
+          <DropdownItem onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
+            <span className="d-flex align-items-center">
+              <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">logout</span>
+              <span className="item-text">{t('Sign out')}</span>
+            </span>
+          </DropdownItem>
+        </DropdownMenu>
+      </UncontrolledDropdown>
 
       <ProactiveQuestionnaireModal isOpen={isQuestionnaireModalOpen} onClose={() => setQuestionnaireModalOpen(false)} />
     </>

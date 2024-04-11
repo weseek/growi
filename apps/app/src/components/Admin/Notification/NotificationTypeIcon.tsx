@@ -23,8 +23,13 @@ export const NotificationTypeIcon = (props: NotificationTypeIconProps): JSX.Elem
   }
 
   const elemId = `notification-${type}-${_id}`;
-  const className = type === 'mail' ? 'icon-fw fa fa-envelope-o' : 'icon-fw fa fa-hashtag';
+  const iconName = type === 'mail' ? 'mail' : 'tag';
   const toolChip = type === 'mail' ? 'Mail' : 'Slack';
 
-  return <><i id={elemId} className={className}></i><UncontrolledTooltip target={elemId}>{toolChip}</UncontrolledTooltip></>;
+  return (
+    <>
+      <span id={elemId} className="material-symbols-outlined me-1">{iconName}</span>
+      <UncontrolledTooltip target={elemId}>{toolChip}</UncontrolledTooltip>
+    </>
+  );
 };

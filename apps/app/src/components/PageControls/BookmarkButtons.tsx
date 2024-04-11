@@ -1,7 +1,7 @@
-import React, {
-  FC, useState, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import DropdownToggle from 'reactstrap/esm/DropdownToggle';
 import Popover from 'reactstrap/esm/Popover';
@@ -81,7 +81,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
           </span>
         </DropdownToggle>
       </BookmarkFolderMenu>
-      <UncontrolledTooltip placement="top" data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
+      <UncontrolledTooltip data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
@@ -95,7 +95,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
       </button>
       <Popover placement="bottom" isOpen={isBookmarkUsersPopoverOpen} target="po-total-bookmarks" toggle={toggleBookmarkUsersPopover} trigger="legacy">
         <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
-          { isLoadingBookmarkedUsers && <i className="fa fa-spinner fa-pulse"></i> }
+          { isLoadingBookmarkedUsers && <LoadingSpinner /> }
           { !isLoadingBookmarkedUsers && bookmarkedUsers != null && (
             <>
               { bookmarkedUsers.length > 0

@@ -1,5 +1,6 @@
 import type { IUserGroup } from '@growi/core';
-import { Schema, Model, Document } from 'mongoose';
+import type { Model, Document } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -12,7 +13,7 @@ export interface UserGroupModel extends Model<UserGroupDocument> {
 
   PAGE_ITEMS: 10,
 
-  findGroupsWithDescendantsRecursively: (groups, descendants?) => any,
+  findGroupsWithDescendantsRecursively: (groups: UserGroupDocument[], descendants?: UserGroupDocument[]) => Promise<UserGroupDocument[]>,
 }
 
 /*
@@ -109,7 +110,9 @@ schema.statics.findGroupsWithAncestorsRecursively = async function(group, ancest
  * @param descendants UserGroupDocument[]
  * @returns UserGroupDocument[]
  */
-schema.statics.findGroupsWithDescendantsRecursively = async function(groups, descendants = groups) {
+schema.statics.findGroupsWithDescendantsRecursively = async function(
+    groups: UserGroupDocument[], descendants: UserGroupDocument[] = groups,
+): Promise<UserGroupDocument[]> {
   const nextGroups = await this.find({ parent: { $in: groups.map(g => g._id) } });
 
   if (nextGroups.length === 0) {

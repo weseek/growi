@@ -96,10 +96,10 @@ class SamlSecurityManagementContents extends React.Component {
             <p className="form-text text-muted small">{t('security_settings.desc_of_callback_URL', { AuthName: 'SAML Identity' })}</p>
             {(siteUrl == null || siteUrl === '') && (
               <div className="alert alert-danger">
-                <i
-                  className="icon-exclamation"
+                <span className="material-symbols-outlined">error</span>
+                <span
                   // eslint-disable-next-line max-len
-                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<i class="icon-login"></i></a>`, ns: 'commons' }) }}
+                  dangerouslySetInnerHTML={{ __html: t('alert.siteUrl_is_not_set', { link: `<a href="/admin/app">${t('headers.app_settings', { ns: 'commons' })}<span class="material-symbols-outlined">login</span></a>`, ns: 'commons' }) }}
                 />
               </div>
             )}
@@ -471,7 +471,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                           target="_blank"
                           rel="noreferer noreferrer"
                         >
-                          Apache Lucene - Query Parser Syntax <i className="icon-share-alt"></i>
+                          Apache Lucene - Query Parser Syntax <span className="growi-custom-icons">external_link</span>
                         </a>.
                       </p>
                       <div className="accordion" id="accordionId">
@@ -484,7 +484,11 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
                               aria-expanded="true"
                               aria-controls="ablchelp"
                             >
-                              <i className={`icon-fw ${this.state.isHelpOpened ? 'icon-arrow-down' : 'icon-arrow-right'} small`}></i> Show more...
+                              <span
+                                className="material-symbols-outlined me-1"
+                                small
+                              >{this.state.isHelpOpened ? 'expand_more' : 'chevron_right'}
+                              </span> Show more...
                             </button>
                           </h2>
                           <Collapse isOpen={this.state.isHelpOpened}>

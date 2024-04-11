@@ -1,7 +1,11 @@
+import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
 import loggerFactory from '~/utils/logger';
+
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
+
+import { getYjsConnectionManager } from './yjs-connection-manager';
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -147,6 +151,21 @@ class SocketIoService {
       // set event handlers for joining rooms
       socket.on('join:page', ({ pageId }) => {
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
+    });
+  }
+
+  setupYjsConnection() {
+    const yjsConnectionManager = getYjsConnectionManager();
+    this.io.on('connection', (socket) => {
+      socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
+        try {
+          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
+        }
+        catch (error) {
+          logger.warn(error.message);
+          socket.emit(GlobalSocketEventName.YDocSyncError, 'An error occurred during YDoc synchronization.');
+        }
       });
     });
   }

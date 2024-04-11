@@ -1,6 +1,9 @@
 import { SupportedAction } from '~/interfaces/activity';
 import Tag from '~/server/models/tag';
 
+import PageTagRelation from '../models/page-tag-relation';
+import ApiResponse from '../util/apiResponse';
+
 /**
  * @swagger
  *
@@ -32,9 +35,7 @@ import Tag from '~/server/models/tag';
  */
 module.exports = function(crowi, app) {
 
-  const PageTagRelation = crowi.model('PageTagRelation');
   const activityEvent = crowi.event('activity');
-  const ApiResponse = require('../util/apiResponse');
   const actions = {};
   const api = {};
 
@@ -138,7 +139,6 @@ module.exports = function(crowi, app) {
   api.update = async function(req, res) {
     const Page = crowi.model('Page');
     const User = crowi.model('User');
-    const PageTagRelation = crowi.model('PageTagRelation');
     const Revision = crowi.model('Revision');
     const tagEvent = crowi.event('tag');
     const pageId = req.body.pageId;

@@ -357,6 +357,8 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion:
+        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),
@@ -627,6 +629,7 @@ module.exports = (crowi) => {
       'security:pageRecursiveDeletionAuthority': req.body.pageRecursiveDeletionAuthority,
       'security:pageCompleteDeletionAuthority': req.body.pageCompleteDeletionAuthority,
       'security:pageRecursiveCompleteDeletionAuthority': req.body.pageRecursiveCompleteDeletionAuthority,
+      'security:isAllGroupMembershipRequiredForPageCompleteDeletion': req.body.isAllGroupMembershipRequiredForPageCompleteDeletion,
       'security:list-policy:hideRestrictedByOwner': req.body.hideRestrictedByOwner,
       'security:list-policy:hideRestrictedByGroup': req.body.hideRestrictedByGroup,
       'security:user-homepage-deletion:isEnabled': req.body.isUsersHomepageDeletionEnabled,
@@ -660,6 +663,8 @@ module.exports = (crowi) => {
         pageCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageCompleteDeletionAuthority'),
         pageRecursiveDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveDeletionAuthority'),
         pageRecursiveCompleteDeletionAuthority: await configManager.getConfig('crowi', 'security:pageRecursiveCompleteDeletionAuthority'),
+        isAllGroupMembershipRequiredForPageCompleteDeletion:
+        await configManager.getConfig('crowi', 'security:isAllGroupMembershipRequiredForPageCompleteDeletion'),
         hideRestrictedByOwner: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner'),
         hideRestrictedByGroup: await configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup'),
         isUsersHomepageDeletionEnabled: await configManager.getConfig('crowi', 'security:user-homepage-deletion:isEnabled'),

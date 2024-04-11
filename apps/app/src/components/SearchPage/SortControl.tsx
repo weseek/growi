@@ -1,6 +1,11 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
+
 import { useTranslation } from 'next-i18next';
+
 import { SORT_AXIS, SORT_ORDER } from '../../interfaces/search';
+
+import styles from './SortControl.module.scss';
 
 const { DESC, ASC } = SORT_ORDER;
 
@@ -22,43 +27,35 @@ const SortControl: FC <Props> = (props: Props) => {
     }
   };
 
-  const renderOrderIcon = () => {
-    const iconClassName = ASC === order ? 'fa fa-sort-amount-asc' : 'fa fa-sort-amount-desc';
-    return <i className={iconClassName} aria-hidden="true" />;
-  };
 
   return (
     <>
-      <div className="input-group flex-nowrap">
-        <div>
-          <div className="input-group-text border text-muted" id="btnGroupAddon">
-            {renderOrderIcon()}
-          </div>
-        </div>
-        <div className="border rounded-end">
-          <button
-            type="button"
-            className="btn dropdown-toggle py-1"
-            data-bs-toggle="dropdown"
-          >
-            <span className="me-2 text-secondary">{t(`search_result.sort_axis.${sort}`)}</span>
-          </button>
-          <div className="dropdown-menu dropdown-menu-right">
-            {Object.values(SORT_AXIS).map((sortAxis) => {
-              const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
-              return (
-                <button
-                  key={sortAxis}
-                  className="dropdown-item"
-                  type="button"
-                  onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
-                >
-                  <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
+      <div className={`btn-group ${styles['sort-control']}`}>
+        <button
+          className="d-flex align-items-center btn btn-sm btn-outline-neutral-secondary rounded-pill"
+          type="button"
+          data-bs-toggle="dropdown"
+          aria-expanded="false"
+        >
+          <span className="material-symbols-outlined py-0">sort</span>
+          <span className="ms-2 me-auto">{t(`search_result.sort_axis.${sort}`)}</span>
+          <span className="material-symbols-outlined py-0">expand_more</span>
+        </button>
+        <ul className="dropdown-menu">
+          {Object.values(SORT_AXIS).map((sortAxis) => {
+            const nextOrder = (sort !== sortAxis || order === ASC) ? DESC : ASC;
+            return (
+              <button
+                key={sortAxis}
+                className="dropdown-item"
+                type="button"
+                onClick={() => { onClickChangeSort(sortAxis, nextOrder) }}
+              >
+                <span>{t(`search_result.sort_axis.${sortAxis}`)}</span>
+              </button>
+            );
+          })}
+        </ul>
       </div>
     </>
   );

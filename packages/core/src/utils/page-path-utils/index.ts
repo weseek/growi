@@ -1,5 +1,7 @@
 import escapeStringRegexp from 'escape-string-regexp';
 
+import { IUser } from '~/interfaces';
+
 import { isValidObjectId } from '../objectid-utils';
 import { addTrailingSlash } from '../path-utils';
 
@@ -100,7 +102,7 @@ export const isSharedPage = (path: string): boolean => {
 };
 
 const restrictedPatternsToCreate: Array<RegExp> = [
-  /\^|\$|\*|\+|#|%|\?/,
+  /\^|\$|\*|\+|#|<|>|%|\?/,
   /^\/-\/.*/,
   /^\/_r\/.*/,
   /^\/_apix?(\/.*)?/,
@@ -114,7 +116,7 @@ const restrictedPatternsToCreate: Array<RegExp> = [
   /\\/, // see: https://github.com/weseek/growi/issues/7241
   /^\/(_search|_private-legacy-pages)(\/.*|$)/,
   /^\/(installer|register|login|logout|admin|me|files|trash|paste|comments|tags|share|attachment)(\/.*|$)/,
-  /^\/user\/[^/]+$/, // see: https://regex101.com/r/utVQct/1
+  /^\/user(?:\/[^/]+)?$/, // https://regex101.com/r/9Eh2S1/1
 ];
 export const isCreatablePage = (path: string): boolean => {
   return !restrictedPatternsToCreate.some(pattern => path.match(pattern));
@@ -124,9 +126,8 @@ export const isCreatablePage = (path: string): boolean => {
  * return user's homepage path
  * @param user
  */
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-export const userHomepagePath = (user: any): string => {
-  if (!user || !user.username) {
+export const userHomepagePath = (user: IUser | null | undefined): string => {
+  if (user?.username == null) {
     return '';
   }
   return `/user/${user.username}`;
@@ -305,4 +306,3 @@ export const getUsernameByPath = (path: string): string | null => {
 
 
 export * from './is-top-page';
-export * from './collect-ancestor-paths';

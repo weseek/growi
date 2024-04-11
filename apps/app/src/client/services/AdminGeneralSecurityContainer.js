@@ -32,6 +32,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageRecursiveDeletionAuthority: PageRecursiveDeleteConfigValue.Inherit,
       currentPageCompleteDeletionAuthority: PageSingleDeleteCompConfigValue.AdminOnly,
       currentPageRecursiveCompleteDeletionAuthority: PageRecursiveDeleteCompConfigValue.Inherit,
+      isAllGroupMembershipRequiredForPageCompleteDeletion: true,
       previousPageRecursiveDeletionAuthority: null,
       previousPageRecursiveCompleteDeletionAuthority: null,
       expandOtherOptionsForDeletion: false,
@@ -73,6 +74,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       currentPageCompleteDeletionAuthority: generalSetting.pageCompleteDeletionAuthority,
       currentPageRecursiveDeletionAuthority: generalSetting.pageRecursiveDeletionAuthority,
       currentPageRecursiveCompleteDeletionAuthority: generalSetting.pageRecursiveCompleteDeletionAuthority,
+      isAllGroupMembershipRequiredForPageCompleteDeletion: generalSetting.isAllGroupMembershipRequiredForPageCompleteDeletion,
       isShowRestrictedByOwner: !generalSetting.hideRestrictedByOwner,
       isShowRestrictedByGroup: !generalSetting.hideRestrictedByGroup,
       isUsersHomepageDeletionEnabled: generalSetting.isUsersHomepageDeletionEnabled,
@@ -155,6 +157,13 @@ export default class AdminGeneralSecurityContainer extends Container {
   }
 
   /**
+   * Switch isAllGroupMembershipRequiredForPageCompleteDeletion
+   */
+  switchIsAllGroupMembershipRequiredForPageCompleteDeletion() {
+    this.setState({ isAllGroupMembershipRequiredForPageCompleteDeletion: !this.state.isAllGroupMembershipRequiredForPageCompleteDeletion });
+  }
+
+  /**
    * Change previousPageRecursiveDeletionAuthority
    */
   changePreviousPageRecursiveDeletionAuthority(val) {
@@ -225,6 +234,7 @@ export default class AdminGeneralSecurityContainer extends Container {
       pageCompleteDeletionAuthority: this.state.currentPageCompleteDeletionAuthority,
       pageRecursiveDeletionAuthority: this.state.currentPageRecursiveDeletionAuthority,
       pageRecursiveCompleteDeletionAuthority: this.state.currentPageRecursiveCompleteDeletionAuthority,
+      isAllGroupMembershipRequiredForPageCompleteDeletion: this.state.isAllGroupMembershipRequiredForPageCompleteDeletion,
       hideRestrictedByGroup: !this.state.isShowRestrictedByGroup,
       hideRestrictedByOwner: !this.state.isShowRestrictedByOwner,
       isUsersHomepageDeletionEnabled: this.state.isUsersHomepageDeletionEnabled,

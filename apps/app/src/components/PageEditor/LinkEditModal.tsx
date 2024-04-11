@@ -2,6 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import path from 'path';
 
+import Linker from '@growi/editor/src/services/link-util/Linker';
+import { useLinkEditModal } from '@growi/editor/src/stores/use-link-edit-modal';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -13,15 +15,11 @@ import {
 } from 'reactstrap';
 import validator from 'validator';
 
-
-import Linker from '~/client/models/Linker';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { useLinkEditModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import PagePreviewIcon from '../Icons/PagePreviewIcon';
 import SearchTypeahead from '../SearchTypeahead';
 
 import Preview from './Preview';
@@ -181,8 +179,8 @@ export const LinkEditModal = (): JSX.Element => {
         </div>
         <div className="d-flex align-items-center justify-content-center">
           <span className="lead mx-3">
-            <i className="d-none d-sm-block fa fa-caret-right"></i>
-            <i className="d-sm-none fa fa-caret-down"></i>
+            <span className="d-none d-sm-block material-symbols-outlined">arrow_right</span>
+            <span className="d-sm-none material-symbols-outlined">arrow_drop_down</span>
           </span>
         </div>
         <div className="card w-100 p-1 mb-0">
@@ -257,7 +255,7 @@ export const LinkEditModal = (): JSX.Element => {
               />
               <div className="d-none d-sm-block">
                 <button type="button" id="preview-btn" className={`btn btn-info btn-page-preview ${styles['btn-page-preview']}`}>
-                  <PagePreviewIcon />
+                  <span className="material-symbols-outlined">find_in_page</span>
                 </button>
                 <Popover trigger="focus" placement="right" isOpen={isPreviewOpen} target="preview-btn" toggle={toggleIsPreviewOpen}>
                   <PopoverBody>

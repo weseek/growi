@@ -8,7 +8,7 @@
       margin-right: 0.4em;
       content: '';
       border-left: $width solid;
-      opacity: 0.2;
+      border-left-color: var(--bs-border-color);
     }
   }
 
@@ -41,12 +41,13 @@
   }
 
   h1 {
-    padding: 0.5em 0;
+    padding: 0.3em 0;
     margin-top: 2em;
     font-size: 1.9em;
     line-height: 1.1em;
-    // style
-    border-bottom: solid 1px transparent;
+    border-bottom-color: var(--bs-border-color);
+    border-bottom-style: solid;
+    border-bottom-width: 2px;
   }
 
   h2 {
@@ -54,8 +55,9 @@
     font-size: 1.6em;
     font-weight: bold;
     line-height: 1.225;
-    // style
-    border-bottom: solid 1px transparent;
+    border-bottom-color: var(--bs-border-color);
+    border-bottom-style: solid;
+    border-bottom-width: 1px;
   }
 
   h3 {
@@ -175,14 +177,7 @@
     border-top: 1px solid bs.$border-color;
     /* Hide the section label for visual users. */
     #footnote-label {
-      position: absolute;
-      width: 1px;
-      height: 1px;
-      padding: 0;
-      overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      word-wrap: normal;
-      border: 0;
+      display: none;
     }
   }
   /* Place `[` and `]` around footnote references. */
@@ -309,6 +304,16 @@
         var(--bs-link-opacity, 1)
       );
     }
+  }
+}
 
+@include bs.color-mode(light) {
+  .wiki {
+    --bs-border-color: var(--bs-gray-300);
+  }
+}
+@include bs.color-mode(dark) {
+  .wiki {
+    --bs-border-color: var(--bs-gray-700);
   }
 }

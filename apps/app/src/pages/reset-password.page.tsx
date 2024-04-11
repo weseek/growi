@@ -1,13 +1,12 @@
 import React from 'react';
 
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
-import {
-  CommonProps, getNextI18NextConfig, getServerSideCommonProps,
-} from './utils/commons';
+import type { CommonProps } from './utils/commons';
+import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons';
 
 
 type Props = CommonProps & {
@@ -20,13 +19,13 @@ const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
   return (
-    <div id="main" className="main">
-      <div id="content-main" className="content-main container-lg">
+    <div className="main">
+      <div className="container-lg">
         <div className="container">
           <div className="row justify-content-md-center">
             <div className="col-md-6 mt-5">
               <div className="text-center">
-                <h1><i className="icon-lock-open large"></i></h1>
+                <h1><span className="material-symbols-outlined large">lock_open</span></h1>
                 <h2 className="text-center">{ t('forgot_password.reset_password') }</h2>
                 <h5>{ props.email }</h5>
                 <p className="mt-4">{ t('forgot_password.password_reset_excecution_desc') }</p>

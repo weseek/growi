@@ -8,12 +8,13 @@ import useSWR, {
   mutate, type SWRConfiguration, type SWRResponse, type Arguments,
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
-import useSWRInfinite, { SWRInfiniteResponse } from 'swr/infinite';
+import type { SWRInfiniteResponse } from 'swr/infinite';
+import useSWRInfinite from 'swr/infinite';
 
-import { IPagingResult } from '~/interfaces/paging-result';
+import type { IPagingResult } from '~/interfaces/paging-result';
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import {
+import type {
   AncestorsChildrenResult, ChildrenResult, V5MigrationStatus, RootPageResult,
 } from '../interfaces/page-listing-results';
 
@@ -32,19 +33,19 @@ type RecentApiResult = {
   totalCount: number,
   offset: number,
 }
-export const useSWRINFxRecentlyUpdated = (limit: number, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
+export const useSWRINFxRecentlyUpdated = (limit: number, includeWipPage?: boolean, config?: SWRConfiguration) : SWRInfiniteResponse<RecentApiResult, Error> => {
   return useSWRInfinite(
     (pageIndex, previousPageData) => {
       if (previousPageData != null && previousPageData.pages.length === 0) return null;
 
       if (pageIndex === 0 || previousPageData == null) {
-        return ['/pages/recent', undefined, limit];
+        return ['/pages/recent', undefined, limit, includeWipPage];
       }
 
       const offset = previousPageData.offset + limit;
-      return ['/pages/recent', offset, limit];
+      return ['/pages/recent', offset, limit, includeWipPage];
     },
-    ([endpoint, offset, limit]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit }).then(response => response.data),
+    ([endpoint, offset, limit, includeWipPage]) => apiv3Get<RecentApiResult>(endpoint, { offset, limit, includeWipPage }).then(response => response.data),
     {
       ...config,
       revalidateFirstPage: false,
@@ -110,7 +111,10 @@ export const useSWRxPageInfoForList = (
     shouldFetch ? ['/page-listing/info', pageIds, path, attachBookmarkCount, attachShortBody] : null,
     ([endpoint, pageIds, path, attachBookmarkCount, attachShortBody]) => {
       return apiv3Get(endpoint, {
-        pageIds, path, attachBookmarkCount, attachShortBody,
+        pageIds: pageIds != null ? pageIds : undefined, // Do not pass null to avoid empty query parameter
+        path: path != null ? path : undefined, // Do not pass null to avoid empty query parameter
+        attachBookmarkCount,
+        attachShortBody,
       }).then(response => response.data);
     },
   );

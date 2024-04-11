@@ -5,17 +5,15 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { IPagingResult } from '~/interfaces/paging-result';
+import type { IPagingResult } from '~/interfaces/paging-result';
 import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
 import CustomNavAndContents from './CustomNavigation/CustomNavAndContents';
-import { DescendantsPageListProps } from './DescendantsPageList';
+import type { DescendantsPageListProps } from './DescendantsPageList';
 import EmptyTrashButton from './EmptyTrashButton';
-import PageListIcon from './Icons/PageListIcon';
-
 
 const DescendantsPageList = dynamic<DescendantsPageListProps>(() => import('./DescendantsPageList').then(mod => mod.DescendantsPageList), { ssr: false });
 
@@ -83,7 +81,7 @@ export const TrashPageList = (): JSX.Element => {
   const navTabMapping = useMemo(() => {
     return {
       pagelist: {
-        Icon: PageListIcon,
+        Icon: () => <span className="material-symbols-outlined">subject</span>,
         Content: DescendantsPageListForTrash,
         i18n: t('page_list'),
       },

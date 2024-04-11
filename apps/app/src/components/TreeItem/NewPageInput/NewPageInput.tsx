@@ -40,7 +40,7 @@ export const NewPageInput: FC<Props> = (props) => {
     }
 
     try {
-      onSubmit?.(newPagePath);
+      await onSubmit?.(newPagePath);
       toastSuccess(t('successfully_saved_the_page'));
     }
     catch (err) {

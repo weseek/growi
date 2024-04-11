@@ -33,7 +33,7 @@ class StatusActivateButton extends React.Component {
 
     return (
       <button className="dropdown-item" type="button" onClick={() => { this.onClickAcceptBtn() }}>
-        <i className="icon-fw icon-user-following"></i> {t('user_management.user_table.accept')}
+        <span className="material-symbols-outlined me-1">person_add</span>{t('user_management.user_table.accept')}
       </button>
     );
   }

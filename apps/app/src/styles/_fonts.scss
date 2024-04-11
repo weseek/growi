@@ -6,9 +6,8 @@
 
 .material-symbols-outlined {
   display: inline-block;
-  padding-bottom: 3px;
   font-family: var(--grw-font-family-material-symbols-outlined);
-  font-size: 24px;  /* Preferred icon size */
+  font-size: 1.5em;  /* Preferred icon size */
   font-style: normal;
   font-weight: normal;
   line-height: 1;
@@ -16,7 +15,7 @@
   letter-spacing: normal;
   word-wrap: normal;
   white-space: nowrap;
-  vertical-align: middle;
+  vertical-align: bottom;
   direction: ltr;
 
   &.fill {
@@ -26,7 +25,7 @@
 
 .growi-custom-icons {
   font-family: var(--grw-font-family-custom-icon);
-  font-size: 16px;
+  font-size: 0.8em;
   font-style: normal;
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;

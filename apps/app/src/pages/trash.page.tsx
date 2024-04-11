@@ -1,12 +1,14 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
@@ -42,8 +44,10 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/trash');
 
   useGrowiCloudUri(props.growiCloudUri);
 
@@ -52,8 +56,6 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
 
   useIsSearchPage(false);
-  useCurrentPageId(null);
-  useCurrentPathname('/trash');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -68,16 +70,14 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <nav className="sticky-top">
-          TODO: implement navigation for /trash
-        </nav>
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div className="content-main container-lg mb-5 pb-5">
-          <PagePathNavSticky pagePath="/trash" />
-          <TrashPageList />
+        <div className="main ps-sidebar">
+          <div className="container-lg wide-gutter-x-lg">
+            <PagePathNavSticky pagePath="/trash" />
+            <TrashPageList />
+          </div>
         </div>
-
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
       </div>
     </>
   );

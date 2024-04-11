@@ -50,12 +50,6 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
               defaultValue={adminCustomizeContainer.state.currentCustomizeScript || ''}
               onChange={(e) => { adminCustomizeContainer.changeCustomizeScript(e.target.value) }}
             />
-            {/* disabled in v6.0.0 temporarily -- 2022.12.19 Yuki Takei
-            <span className="form-text text-muted text-end">
-              <i className="fa fa-fw fa-keyboard-o" aria-hidden="true" />
-              {t('admin:customize_settings.ctrl_space')}
-            </span>
-            */}
           </div>
 
           <a
@@ -66,7 +60,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
             aria-expanded="false"
             aria-controls="collapseExampleScript"
           >
-            <i className="fa fa-fw fa-chevron-right" aria-hidden="true"></i>
+            <span className="material-symbols-outlined me-1" aria-hidden="true">navigate_next</span>
             Example for Google Tag Manager
           </a>
           <div className="collapse" id="collapseExampleScript">

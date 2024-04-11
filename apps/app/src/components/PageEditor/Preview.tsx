@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react';
 import React from 'react';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
@@ -15,15 +16,15 @@ type Props = {
   markdown?: string,
   pagePath?: string | null,
   expandContentWidth?: boolean,
-  pastEnd?: number,
+  style?: CSSProperties,
   onScroll?: (scrollTop: number) => void,
 }
 
-const Preview = React.forwardRef((props: Props): JSX.Element => {
+const Preview = (props: Props): JSX.Element => {
 
   const {
     rendererOptions,
-    markdown, pagePath, pastEnd,
+    markdown, pagePath, style,
     expandContentWidth,
   } = props;
 
@@ -33,7 +34,7 @@ const Preview = React.forwardRef((props: Props): JSX.Element => {
     <div
       data-testid="page-editor-preview-body"
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
-      style={{ paddingBottom: pastEnd }}
+      style={style}
     >
       { markdown != null && (
         <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
@@ -41,8 +42,6 @@ const Preview = React.forwardRef((props: Props): JSX.Element => {
     </div>
   );
 
-});
-
-Preview.displayName = 'Preview';
+};
 
 export default Preview;

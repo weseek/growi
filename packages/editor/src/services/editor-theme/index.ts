@@ -1,26 +1,42 @@
 import { Extension } from '@codemirror/state';
-import { eclipse } from '@uiw/codemirror-theme-eclipse';
-import { kimbie } from '@uiw/codemirror-theme-kimbie';
-import { basicLight } from 'cm6-theme-basic-light';
-import { materialDark as materialDarkCM6 } from 'cm6-theme-material-dark';
-import { nord as nordCM6 } from 'cm6-theme-nord';
 
-import { ayu } from './ayu';
-import { cobalt } from './cobalt';
-import { originalDark } from './original-dark';
-import { originalLight } from './original-light';
-import { rosePine } from './rose-pine';
-
-
-export const AllEditorTheme: Record<string, Extension> = {
-  DefaultLight: originalLight,
-  Eclipse: eclipse,
-  Basic: basicLight,
-  Ayu: ayu,
-  'Rosé Pine': rosePine,
-  DefaultDark: originalDark,
-  Material: materialDarkCM6,
-  Nord: nordCM6,
-  Cobalt: cobalt,
-  Kimbie: kimbie,
+export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
+  switch (themeName) {
+    case 'eclipse':
+      return (await import('@uiw/codemirror-theme-eclipse')).eclipse;
+    case 'basic':
+      return (await import('cm6-theme-basic-light')).basicLight;
+    case 'ayu':
+      return (await import('./ayu')).ayu;
+    case 'rosepine':
+      return (await import('./rose-pine')).rosePine;
+    case 'defaultdark':
+      return (await import('./original-dark')).originalDark;
+    case 'material':
+      return (await import('cm6-theme-material-dark')).materialDark;
+    case 'nord':
+      return (await import('cm6-theme-nord')).nord;
+    case 'cobalt':
+      return (await import('./cobalt')).cobalt;
+    case 'kimbie':
+      return (await import('@uiw/codemirror-theme-kimbie')).kimbie;
+  }
+  return (await import('./original-light')).originalLight;
 };
+
+const EditorTheme = {
+  defaultlight: 'defaultlight',
+  eclipse: 'eclipse',
+  basic: 'basic',
+  ayu: 'ayu',
+  rosepine:  'rosepine',
+  defaultdark: 'defaultdark',
+  material: 'material',
+  nord: 'nord',
+  cobalt: 'cobalt',
+  kimbie: 'kimbie',
+} as const;
+
+export const DEFAULT_THEME = 'defaultlight';
+export const AllEditorTheme = Object.values(EditorTheme);
+export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]

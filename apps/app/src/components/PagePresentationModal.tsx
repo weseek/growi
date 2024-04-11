@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
@@ -21,7 +22,7 @@ import styles from './PagePresentationModal.module.scss';
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
+    <LoadingSpinner className="text-muted fs-1" />
   ),
 });
 
@@ -60,7 +61,7 @@ const PagePresentationModal = (): JSX.Element => {
     return <></>;
   }
 
-  const markdown = currentPage?.revision.body;
+  const markdown = currentPage?.revision?.body;
 
   return (
     <Modal
@@ -71,11 +72,12 @@ const PagePresentationModal = (): JSX.Element => {
     >
       <div className="grw-presentation-controls d-flex">
         <button
-          className={`btn ${fullscreen.active ? 'icon-size-actual' : 'icon-size-fullscreen'}`}
+          className="btn material-symbols-outlined"
           type="button"
           aria-label="fullscreen"
           onClick={toggleFullscreenHandler}
         >
+          {fullscreen.active ? 'close_fullscreen' : 'open_in_full'}
         </button>
         <button className="btn-close" type="button" aria-label="Close" onClick={closeHandler}></button>
       </div>
