@@ -40,6 +40,8 @@ import { UserNotificationService } from '../service/user-notification';
 import { instantiateYjsConnectionManager } from '../service/yjs-connection-manager';
 import { getMongoUri, mongoOptions } from '../util/mongoose-utils';
 
+import { OpenTelemetry } from './opentelemetry';
+
 
 const logger = loggerFactory('growi:crowi');
 const httpErrorHandler = require('../middlewares/http-error-handler');
@@ -455,6 +457,10 @@ Crowi.prototype.start = async function() {
 
   await this.init();
   await this.buildServer();
+
+  // 具体的な設定値については、https://redmine.weseek.co.jp/issues/144351 で決定予定
+  const otel = new OpenTelemetry('next-app', 'growi-app-XXX', this.version);
+  otel.startInstrumentation();
 
   // setup Next.js
   this.nextApp = next({ dev });
