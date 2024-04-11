@@ -172,6 +172,8 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
+  hasYjsDraft: boolean,
+
   grantData?: IPageGrantData,
 
   rendererConfig: RendererConfig,
@@ -525,6 +527,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
         props.currentPathname = `/${page._id}`;
       }
     }
+
+    props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
   }
 }
 
