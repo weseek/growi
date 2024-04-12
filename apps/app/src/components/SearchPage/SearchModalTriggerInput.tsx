@@ -22,7 +22,6 @@ export const SearchModalTriggerinput: React.FC<Props> = (props: Props) => {
       <input
         className="form-control"
         type="input"
-        data-testid="open-search-modal-button"
         value={keywordOnInit}
         onClick={inputClickHandler}
         readOnly
