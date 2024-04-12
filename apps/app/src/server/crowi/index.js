@@ -100,6 +100,7 @@ class Crowi {
     this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
+    this.announcementService = null;
 
     this.tokens = null;
 
@@ -165,6 +166,7 @@ Crowi.prototype.init = async function() {
     this.setupSyncPageStatusService(),
     this.setupQuestionnaireService(),
     this.setUpCustomize(), // depends on pluginService
+    this.setupAnnouncementService(),
   ]);
 
   await Promise.all([
@@ -789,6 +791,13 @@ Crowi.prototype.setupG2GTransferService = async function() {
   }
   if (this.g2gTransferReceiverService == null) {
     this.g2gTransferReceiverService = new G2GTransferReceiverService(this);
+  }
+};
+
+Crowi.prototype.setupAnnouncementService = async function() {
+  const AnnouncementService = require('../service/announcement');
+  if (this.announcementService == null) {
+    this.announcementService = new AnnouncementService(this);
   }
 };
 

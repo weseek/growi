@@ -1,14 +1,16 @@
-import type { IUser } from '@growi/core';
+import type { IPage, IUser, IUserHasId } from '@growi/core';
 import { subDays } from 'date-fns';
 import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
 import type { AnnouncementDocument } from '~/features/announcement';
 import { AnnouncementStatuses, Announcement } from '~/features/announcement';
+import type { IAnnouncement } from '~/interfaces/announcement';
 
 import type Crowi from '../crowi';
 import type { ActivityDocument } from '../models/activity';
 
 
+import type { PreNotifyProps } from './pre-notify';
 import { preNotifyService, type PreNotify } from './pre-notify';
 
 
@@ -25,56 +27,39 @@ export default class AnnouncementService {
     this.activityEvent = crowi.event('activity');
 
     this.getReadRate = this.getReadRate.bind(this);
-    this.upsertByActivity = this.upsertByActivity.bind(this);
+    this.insertByActivity = this.insertByActivity.bind(this);
+    this.createAnnouncement = this.createAnnouncement.bind(this);
+
   }
 
   getReadRate = async() => {};
 
-  upsertByActivity = async(
-      users: Types.ObjectId[], activity: ActivityDocument, snapshot: string, createdAt?: Date | null,
+  insertByActivity = async(
+      announcement: IAnnouncement,
   ): Promise<void> => {
 
-    const {
-      _id: activityId, targetModel, target, action,
-    } = activity;
+    const operation = [{
+      insertOne: {
+        document: announcement,
+      },
+    }];
 
-    const now = createdAt || Date.now();
-    const lastWeek = subDays(now, 7);
-    const operations = users.map((user) => {
-      const filter: FilterQuery<AnnouncementDocument> = {
-        user, target, action, createdAt: { $gt: lastWeek }, snapshot,
-      };
-      const parameters: UpdateQuery<AnnouncementDocument> = {
-        user,
-        targetModel,
-        target,
-        action,
-        status: STATUS_UNREAD,
-        createdAt: now,
-        snapshot,
-        $addToSet: { activities: activityId },
-      };
-      return {
-        updateOne: {
-          filter,
-          update: parameters,
-          upsert: true,
-        },
-      };
-    });
-
-    await Announcement.bulkWrite(operations);
+    await Announcement.bulkWrite(operation);
 
     return;
 
   };
 
-  createAnnouncement = async(activity: ActivityDocument, target: IUser, preNotify: PreNotify): Promise<void> => {
-    const props = preNotifyService.generateInitialPreNotifyProps();
+  createAnnouncement = async(activity: ActivityDocument, target: IPage, receivers: IUserHasId[], announcement: IAnnouncement): Promise<void> => {
 
-    await preNotify(props);
+    this.insertByActivity(announcement);
 
-    // Announcementを保存する処理();
+    const preNotify = async(props: PreNotifyProps) => {
+
+      const { notificationTargetUsers } = props;
+
+      notificationTargetUsers?.push(...receivers);
+    };
 
     this.activityEvent.emit('updated', activity, target, preNotify);
 
