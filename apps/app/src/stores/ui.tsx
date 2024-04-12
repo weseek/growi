@@ -271,6 +271,21 @@ export const useCurrentSidebarContents = (
   return withUtils(swrResponse, { mutateAndSave });
 };
 
+export const usePageControlsX = (
+    initialData?: number,
+): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
+  const swrResponse = useSWRStatic('pageControlsX', initialData, { fallbackData: 1000 });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opt?) => {
+    scheduleToPut({ currentPageControlsX: data });
+    return mutate(data, opt);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
   const swrResponse = useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
 
