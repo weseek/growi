@@ -171,7 +171,7 @@ export const GrantSelector = (props: Props): JSX.Element => {
           >
             {dropdownToggleLabelElm}
           </DropdownToggle>
-          <DropdownMenu container={openInModal ? '' : 'body'}>
+          <DropdownMenu data-testid="grw-grant-selector-dropdown-menu" container={openInModal ? '' : 'body'}>
             {dropdownMenuElems}
           </DropdownMenu>
         </UncontrolledDropdown>

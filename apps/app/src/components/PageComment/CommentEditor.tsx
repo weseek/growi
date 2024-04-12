@@ -239,7 +239,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
             >
               <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
               <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
-              <small>Add Comment in markdown...</small>
+              <small>{t('page_comment.add_a_comment')}...</small>
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
@@ -304,7 +304,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           <div className="d-flex justify-content-between align-items-center mb-2">
             <div className="d-flex">
               <UserPicture user={currentUser} noLink noTooltip />
-              <p className="ms-2 mb-0">Add a comment</p>
+              <p className="ms-2 mb-0">{t('page_comment.add_a_comment')}</p>
             </div>
             <SwitchingButtonGroup showPreview={showPreview} onSelected={handleSelect} />
           </div>
