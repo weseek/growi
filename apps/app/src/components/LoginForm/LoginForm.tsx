@@ -514,7 +514,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     <div className={moduleClass}>
       <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
-          <div className="col-12 px-md-4">
+          <div className="col-12 px-md-4 pb-5">
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
@@ -533,7 +533,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="mt-2 mb-5">
+                  <div className="mt-2">
                     <a
                       href="#register"
                       className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"
