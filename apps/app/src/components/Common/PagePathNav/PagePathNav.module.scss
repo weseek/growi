@@ -21,16 +21,6 @@
       font-size: 1.75rem !important;
     }
   }
-  // avoid sticky-top nav to turnate page path
-  .is-collapse-with-top {
-    max-width: calc(100% - 100px);
-    @include bs.media-breakpoint-up(sm) {
-      max-width: calc(100% - 350px);
-    }
-    @include bs.media-breakpoint-up(md) {
-      max-width: calc(100% - 500px);
-    }
-  }
 }
 
 .grw-page-path-nav :global {

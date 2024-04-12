@@ -1,4 +1,6 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, {
+  memo, useCallback, useEffect, useMemo, useRef,
+} from 'react';
 
 import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
@@ -6,6 +8,7 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -15,7 +18,9 @@ import {
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import {
+  EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
@@ -131,6 +136,19 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
+
+  const { mutateAndSave: mutatePageControlsX } = usePageControlsX();
+
+  const pageControlsRef = useRef<HTMLDivElement>(null);
+  const [pageControlsRect] = useRect(pageControlsRef);
+
+  useEffect(() => {
+    if (pageControlsRect?.x == null) {
+      return;
+    }
+    mutatePageControlsX(pageControlsRect.x);
+  }, [pageControlsRect?.x, mutatePageControlsX]);
+
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
@@ -253,7 +271,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const isViewMode = editorMode === EditorMode.View;
 
   return (
-    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
+    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }} ref={pageControlsRef}>
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
@@ -292,7 +310,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       ) }
       { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
-          alignEnd
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
