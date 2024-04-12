@@ -99,7 +99,13 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
 
 
 type CommonProps = {
+  pageId: string,
+  shareLinkId?: string | null,
+  revisionId?: string | null,
+  path?: string | null,
+  expandContentWidth?: boolean,
   disableSeenUserInfoPopover?: boolean,
+  hideSubControls?: boolean,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
@@ -110,12 +116,7 @@ type CommonProps = {
 }
 
 type PageControlsSubstanceProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId?: string | null,
-  path?: string | null,
   pageInfo: IPageInfoForOperation,
-  expandContentWidth?: boolean,
   onClickEditTagsButton: () => void,
 }
 
@@ -123,7 +124,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, hideSubControls, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -280,13 +281,14 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && _isIPageInfoForOperation && (
+
+      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      {revisionId != null && _isIPageInfoForOperation && (
+      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -294,14 +296,14 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      {revisionId != null && _isIPageInfoForOperation && (
+      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
           bookmarkCount={pageInfo.bookmarkCount}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && !hideSubControls && (
         <SeenUserInfo
           seenUsers={seenUsers}
           sumOfSeenUsers={sumOfSeenUsers}
@@ -326,18 +328,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   );
 };
 
-type PageControlsProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId?: string | null,
-  path?: string | null,
-  expandContentWidth?: boolean,
-};
+type PageControlsProps = CommonProps;
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, expandContentWidth,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    pageId, revisionId, shareLinkId,
+    ...rest
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -361,17 +357,11 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
 
   return (
     <PageControlsSubstance
-      {...props}
       pageInfo={pageInfo}
       pageId={pageId}
       revisionId={revisionId}
-      path={path}
       onClickEditTagsButton={onClickEditTagsButton}
-      onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-      onClickRenameMenuItem={onClickRenameMenuItem}
-      onClickDeleteMenuItem={onClickDeleteMenuItem}
-      onClickSwitchContentWidth={onClickSwitchContentWidth}
-      expandContentWidth={expandContentWidth}
+      {...rest}
     />
   );
 });
