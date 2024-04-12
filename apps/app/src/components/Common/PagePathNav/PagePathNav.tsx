@@ -125,19 +125,24 @@ export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element =>
   const [navMaxWidth, setNavMaxWidth] = useState<number | undefined>();
 
   useEffect(() => {
+    if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null) {
+      return;
+    }
+    setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
+  }, [pageControlsX, pagePathNavRef, sidebarWidth]);
 
+  useEffect(() => {
     // wait for the end of the animation of the opening and closing of the sidebar
     const timeout = setTimeout(() => {
-      if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null || sidebarMode == null) {
+      if (pageControlsX == null || pagePathNavRef.current == null || sidebarMode == null) {
         return;
       }
       setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
     }, 200);
-
     return () => {
       clearTimeout(timeout);
     };
-  }, [pageControlsX, pagePathNavRef, sidebarWidth, sidebarMode]);
+  }, [pageControlsX, pagePathNavRef, sidebarMode]);
 
   return (
     // Controlling pointer-events
