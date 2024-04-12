@@ -7,8 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchForm from '../SearchForm';
-
+import { SearchModalTriggerinput } from './SearchModalTriggerinput';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 
@@ -88,11 +87,8 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     <div className="shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchForm
-            isSearchServiceReachable={isSearchServiceReachable}
+          <SearchModalTriggerinput
             keywordOnInit={keyword}
-            disableIncrementalSearch
-            onSubmit={searchFormSubmittedHandler}
           />
         </div>
       </div>
