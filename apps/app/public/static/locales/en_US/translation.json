@@ -786,7 +786,7 @@
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed": "Path recovery failed"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
   },

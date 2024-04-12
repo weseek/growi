@@ -25,7 +25,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
       <div className="grw-user-page-list-m d-edit-none">
         <h2 id="bookmarks-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <span style={{ fontSize: '1.3em' }} className="material-symbols-outlined">bookmark</span>
-          {t('footer.bookmarks')}
+          {t('user_home_page.bookmarks')}
           <span className="ms-auto ps-2 ">
             <button type="button" className={`btn btn-sm grw-expand-compress-btn ${isExpanded ? 'active' : ''}`} onClick={() => setIsExpanded(!isExpanded)}>
               {isExpanded ? <span className="material-symbols-outlined">expand</span> : <span className="material-symbols-outlined">compress</span>}
@@ -40,7 +40,7 @@ export const UsersHomepageFooter = (props: UsersHomepageFooterProps): JSX.Elemen
       <div className="grw-user-page-list-m mt-5 d-edit-none">
         <h2 id="recently-created-list" className="grw-user-page-header border-bottom pb-2 mb-3 d-flex">
           <span className="growi-custom-icons me-1">recently_created</span>
-          {t('footer.recently_created')}
+          {t('user_home_page.recently_created')}
         </h2>
         <div id="user-created-list" className={`page-list ${styles['page-list']}`}>
           <RecentCreated userId={creatorId} />

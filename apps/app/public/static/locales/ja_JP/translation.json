@@ -819,7 +819,7 @@
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed": "パスを修復できませんでした"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
   },
