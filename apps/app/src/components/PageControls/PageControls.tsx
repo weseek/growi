@@ -292,7 +292,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       ) }
       { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
-          alignEnd
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
