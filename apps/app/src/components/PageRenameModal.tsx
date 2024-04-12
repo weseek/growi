@@ -210,11 +210,11 @@ const PageRenameModal = (): JSX.Element => {
     return (
       <>
         <div className="mb-3">
-          <label className="form-label w-100">{ t('modal_rename.label.Current page name') }</label><br />
+          <label className="form-label w-100">{ t('modal_rename.label.Current page name') }</label>
           <code>{ path }</code>
         </div>
         <div className="mb-3">
-          <label htmlFor="newPageName" className="form-label w-100">{ t('modal_rename.label.New page name') }</label><br />
+          <label htmlFor="newPageName" className="form-label w-100">{ t('modal_rename.label.New page name') }</label>
           <div className="input-group">
             <div>
               <span className="input-group-text">{siteUrl}</span>
