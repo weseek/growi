@@ -1,2 +1,2 @@
-export * from './components/Presentation';
-export * from './components/Slides';
+export * from './components';
+export * from './services';
