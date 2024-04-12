@@ -64,7 +64,8 @@
     "no_notification": "您没有任何通知",
     "all": "全部",
     "unopend": "未读",
-    "mark_all_as_read" : "标记为已读"
+    "mark_all_as_read" : "标记为已读",
+    "only_unread": "Only unread"
   },
 
   "personal_dropdown": {
