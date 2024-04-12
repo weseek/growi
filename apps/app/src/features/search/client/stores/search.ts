@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { SWRResponse } from 'swr';
 
 import { useStaticSWR } from '~/stores/use-static-swr';
@@ -17,9 +19,9 @@ export const useSearchModal = (status?: SearchModalStatus): SWRResponse<SearchMo
 
   return {
     ...swrResponse,
-    open: (keywordOnInit?: string) => {
+    open: useCallback((keywordOnInit?: string) => {
       swrResponse.mutate({ isOpened: true, searchKeyword: keywordOnInit });
-    },
-    close: () => swrResponse.mutate({ isOpened: false }),
+    }, [swrResponse]),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
   };
 };
