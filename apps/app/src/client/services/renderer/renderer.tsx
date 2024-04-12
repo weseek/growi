@@ -1,7 +1,6 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
-import * as slides from '@growi/presentation';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 // eslint-disable-next-line import/extensions
@@ -67,7 +66,6 @@ export const generateViewOptions = (
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
-    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -83,7 +81,6 @@ export const generateViewOptions = (
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
-      slides.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -260,7 +257,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
-    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
@@ -279,7 +275,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
-      slides.sanitizeOption,
     )]
     : () => {};
 
