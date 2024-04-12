@@ -1,12 +1,16 @@
 import React from 'react';
 
-import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
+import { hasEnabledSlideTypes } from '@growi/presentation';
+import type { FallbackProps } from 'react-error-boundary';
+import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import loggerFactory from '~/utils/logger';
 
+
 import 'katex/dist/katex.min.css';
+import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -33,14 +37,31 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
+  const [enableSlide, marp] = hasEnabledSlideTypes(markdown);
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      <ReactMarkdown
-        {...rendererOptions}
-        className={`wiki ${additionalClassName ?? ''}`}
-      >
-        {markdown}
-      </ReactMarkdown>
+      {
+        enableSlide
+          ? (
+            <SlideViewer
+              rendererOptions={rendererOptions}
+              marp={marp}
+            >
+              {markdown}
+            </SlideViewer>
+          )
+          : (
+            <ReactMarkdown
+              {...rendererOptions}
+              className={`wiki ${additionalClassName ?? ''}`}
+            >
+              {markdown}
+            </ReactMarkdown>
+          )
+
+
+      }
     </ErrorBoundary>
   );
 
