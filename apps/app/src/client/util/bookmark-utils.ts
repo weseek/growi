@@ -1,18 +1,12 @@
 import type { IRevision, Ref } from '@growi/core';
 
-import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, BookmarkedPage } from '~/interfaces/bookmark-info';
 
 import { apiv3Delete, apiv3Post, apiv3Put } from './apiv3-client';
 
-// Check if bookmark folder item has children
-export const hasChildren = (item: BookmarkFolderItems | BookmarkFolderItems[]): boolean => {
-  if (item === null) {
-    return false;
-  }
-  if (Array.isArray(item)) {
-    return item.length > 0;
-  }
-  return item.children && item.children.length > 0;
+// Check if bookmark folder item has childFolder or bookmarks
+export const hasChildren = ({ childFolder, bookmarks }: { childFolder?: BookmarkFolderItems[], bookmarks?: BookmarkedPage[] }): boolean => {
+  return !!((childFolder && childFolder.length > 0) || (bookmarks && bookmarks.length > 0));
 };
 
 // Add new folder helper
@@ -41,8 +35,10 @@ export const toggleBookmark = async(pageId: string, status: boolean): Promise<vo
 };
 
 // Update Bookmark folder
-export const updateBookmarkFolder = async(bookmarkFolderId: string, name: string, parent: string | null, children: BookmarkFolderItems[]): Promise<void> => {
+export const updateBookmarkFolder = async(
+    bookmarkFolderId: string, name: string, parent: string | null, childFolder: BookmarkFolderItems[],
+): Promise<void> => {
   await apiv3Put('/bookmark-folder', {
-    bookmarkFolderId, name, parent, children,
+    bookmarkFolderId, name, parent, childFolder,
   });
 };
