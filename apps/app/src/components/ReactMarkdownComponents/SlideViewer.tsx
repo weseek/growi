@@ -8,7 +8,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 const Slides = dynamic(() => import('../Presentation/Slides').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
-  marp: string | undefined,
+  marp: boolean,
   children: string,
   rendererOptions: RendererOptions,
 }
@@ -20,7 +20,7 @@ export const SlideViewer = React.memo((props: SlideViewerProps) => {
 
   return (
     <Slides
-      hasMarpFlag={marp != null}
+      hasMarpFlag={marp}
       options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
     >
       {children}
