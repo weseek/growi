@@ -96,7 +96,8 @@
     "Page URL": "ページURL",
     "Permanent link": "パーマリンク",
     "Page path and permanent link": "ページ名とパーマリンク",
-    "Markdown link": "マークダウン形式のリンク"
+    "Markdown link": "マークダウン形式のリンク",
+    "Append params": "パラメータの追加"
   },
 
   "crop_image_modal": {

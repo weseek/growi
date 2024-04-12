@@ -94,7 +94,8 @@
     "Page URL": "Page URL",
     "Permanent link": "Permanent link",
     "Page path and permanent link": "Page path and permanent link",
-    "Markdown link": "Markdown link"
+    "Markdown link": "Markdown link",
+    "Append params": "Append params"
   },
 
   "crop_image_modal": {
