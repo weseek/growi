@@ -19,7 +19,6 @@ import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents
 import { Header } from '~/components/ReactMarkdownComponents/Header';
 import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
-import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
@@ -119,7 +118,6 @@ export const generateViewOptions = (
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
-    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -306,7 +304,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
-    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
