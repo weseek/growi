@@ -4,17 +4,17 @@ export const hasEnabledSlideTypes = (markdown?: string): [boolean, boolean, bool
     return [false, false, false];
   }
 
-  const text = markdown.slice(0, 1000);
+  const text = markdown.slice(0, 300);
 
-  const reStartFrontmatter = /^---\n/;
-  const reEndFrontmatter = /\n---\n/;
+  const reStartFrontmatter = /^---\s*\n/g;
+  const reEndFrontmatter = /\n---\s*\n/g;
 
-  if (!reStartFrontmatter.test(text) && !reEndFrontmatter.test(text)) {
+  if (!reStartFrontmatter.test(text) || !reEndFrontmatter.test(text)) {
     return [false, false, false];
   }
 
-  const reEnableMarp = /\nmarp\s*:\s+true\n/;
-  const reEnableSlide = /\nslide\s*:\s+true\n/;
+  const reEnableMarp = /\nmarp\s*:\s+true\n/g;
+  const reEnableSlide = /\nslide\s*:\s+true\n/g;
 
   const marp = reEnableMarp.test(text) && reEnableMarp.lastIndex < reEndFrontmatter.lastIndex;
   const slide = reEnableSlide.test(text) && reEnableSlide.lastIndex < reEndFrontmatter.lastIndex;
