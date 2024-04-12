@@ -33,8 +33,8 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     ? 'Created by'
     : 'Updated by';
   const infoLabelForFooter = mode === 'create'
-    ? `${t('author_info.created_at')}`
-    : `${t('author_info.last_revision_posted_at')}`;
+    ? t('author_info.created_at')
+    : t('author_info.last_revision_posted_at');
   const userLabel = user != null
     ? (
       <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
