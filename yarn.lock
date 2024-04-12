@@ -4229,6 +4229,13 @@
   dependencies:
     "@types/react" "*"
 
+"@types/react-stickynode@^4.0.3":
+  version "4.0.3"
+  resolved "https://registry.yarnpkg.com/@types/react-stickynode/-/react-stickynode-4.0.3.tgz#77e592cf84590319648678117424f921e5d1b4da"
+  integrity sha512-K7YkwdhXQE4YVxIVweix4nkpdG4onm/dcnKK+qCj0vgUrNiKng+09zOfjF5AlOcC1HQkg5yxVLwp/0AzT84R0w==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@>=16.0.0", "@types/react@>=16.9.11", "@types/react@^18.2.14":
   version "18.2.19"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-18.2.19.tgz#f77cb2c8307368e624d464a25b9675fa35f95a8b"
@@ -14804,10 +14811,10 @@ react-scroll@^1.8.7:
     lodash.throttle "^4.1.1"
     prop-types "^15.7.2"
 
-react-stickynode@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/react-stickynode/-/react-stickynode-4.1.0.tgz#ecd80987f64b98f999c589cd4b992eee6bed9562"
-  integrity sha512-zylWgfad75jLfh/gYIayDcDWIDwO4weZrsZqDpjZ/axhF06zRjdCWFBgUr33Pvv2+htKWqPSFksWTyB6aMQ1ZQ==
+react-stickynode@^4.1.1:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/react-stickynode/-/react-stickynode-4.1.1.tgz#ea63509a1d83195a7846d8f39be1e4e9ccbf1d3e"
+  integrity sha512-+Xp3xantrxbFjqNiSbpvsZwCqZYiPq0njKTA+QsIZdmEHih1H/lOV9/LpS37d+v92iSydJJTZMeRaENWeqGeIA==
   dependencies:
     classnames "^2.0.0"
     core-js "^3.6.5"
