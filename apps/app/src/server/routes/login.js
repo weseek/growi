@@ -54,7 +54,9 @@ module.exports = function(crowi, app) {
     const preNotify = async(props) => {
       const adminUsers = await User.findAdmins();
 
-      props.push(...adminUsers);
+      const { notificationTargetUsers } = props;
+
+      notificationTargetUsers.push(...adminUsers);
     };
 
     await activityEvent.emit('updated', activity, user, preNotify);
