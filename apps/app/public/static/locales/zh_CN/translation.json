@@ -181,6 +181,10 @@
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
   },
+  "author_info": {
+    "created_at": "Created at",
+    "last_revision_posted_at": "Last revision posted at"
+  },
   "installer": {
     "tab": "创建账户",
     "title": "安装",
