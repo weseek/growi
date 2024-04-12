@@ -272,15 +272,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
-        <div className="text-center text-line d-flex align-items-center mb-3">
-          <p className="text-white mb-0">{t('or')}</p>
-        </div>
         <div className="mt-2">
           { enabledExternalAuthType.map(authType => <ExternalAuthButton authType={authType} />) }
         </div>
       </>
     );
-  }, [props, t]);
+  }, [props]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -518,6 +515,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+                {isLocalOrLdapStrategiesEnabled && isSomeExternalAuthEnabled && (
+                  <div className="text-center text-line d-flex align-items-center mb-3">
+                    <p className="text-white mb-0">{t('or')}</p>
+                  </div>
+                )}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="mt-4">
