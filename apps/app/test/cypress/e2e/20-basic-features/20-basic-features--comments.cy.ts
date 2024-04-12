@@ -38,7 +38,7 @@ context('Comment', () => {
     // Open comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click({force: true});
+      cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
       // wait until
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
@@ -60,7 +60,7 @@ context('Comment', () => {
     // Open reply comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('comment-reply-button',  { timeout: 14000 }).eq(0).click({force: true});
+      cy.getByTestid('comment-reply-button',  { timeout: 14000 }).eq(0).click();
       // wait until
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
