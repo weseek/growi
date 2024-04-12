@@ -5,12 +5,16 @@ import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
 
+
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsEnabledMarp } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
+
+import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
 
 
 import 'katex/dist/katex.min.css';
-import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
+
 
 const logger = loggerFactory('components:Page:RevisionRenderer');
 
@@ -37,6 +41,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
+  const { data: isEnabledMarp } = useIsEnabledMarp();
   const [enableSlide, marp] = hasEnabledSlideTypes(markdown);
 
   return (
@@ -46,7 +51,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
           ? (
             <SlideViewer
               rendererOptions={rendererOptions}
-              marp={marp}
+              marp={!!isEnabledMarp && marp}
             >
               {markdown}
             </SlideViewer>
@@ -59,8 +64,6 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
               {markdown}
             </ReactMarkdown>
           )
-
-
       }
     </ErrorBoundary>
   );
