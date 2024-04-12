@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { hasEnabledSlideTypes } from '@growi/presentation';
+import { hasEnabledSlideTypes } from '@growi/presentation/src/services';
 import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
