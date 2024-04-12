@@ -54,10 +54,10 @@ const Tags = (props: TagsProps): JSX.Element => {
     <div className="grw-tag-labels-container d-flex align-items-center">
       <button
         type="button"
-        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
+        className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <span className="material-symbols-outlined me-2">local_offer</span>
+        <span className="material-symbols-outlined me-1">local_offer</span>
         Tags
       </button>
     </div>
@@ -272,44 +272,50 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const isViewMode = editorMode === EditorMode.View;
 
   return (
-    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }} ref={pageControlsRef}>
+    <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
+
       {revisionId != null && !isViewMode && _isIPageInfoForOperation && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
 
-      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
-        <SubscribeButton
-          status={pageInfo.subscriptionStatus}
-          onClick={subscribeClickhandler}
-        />
-      )}
-      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
-        <LikeButtons
-          onLikeClicked={likeClickhandler}
-          sumOfLikers={sumOfLikers}
-          isLiked={isLiked}
-          likers={likers}
-        />
-      )}
-      {revisionId != null && _isIPageInfoForOperation && !hideSubControls && (
-        <BookmarkButtons
-          pageId={pageId}
-          isBookmarked={pageInfo.isBookmarked}
-          bookmarkCount={pageInfo.bookmarkCount}
-        />
-      )}
-      {revisionId != null && !hideSubControls && (
-        <SeenUserInfo
-          seenUsers={seenUsers}
-          sumOfSeenUsers={sumOfSeenUsers}
-          disabled={disableSeenUserInfoPopover}
-        />
+      { !hideSubControls && (
+        <div className="hstack gap-1">
+          {revisionId != null && _isIPageInfoForOperation && (
+            <SubscribeButton
+              status={pageInfo.subscriptionStatus}
+              onClick={subscribeClickhandler}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <LikeButtons
+              onLikeClicked={likeClickhandler}
+              sumOfLikers={sumOfLikers}
+              isLiked={isLiked}
+              likers={likers}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <BookmarkButtons
+              pageId={pageId}
+              isBookmarked={pageInfo.isBookmarked}
+              bookmarkCount={pageInfo.bookmarkCount}
+            />
+          )}
+          {revisionId != null && (
+            <SeenUserInfo
+              seenUsers={seenUsers}
+              sumOfSeenUsers={sumOfSeenUsers}
+              disabled={disableSeenUserInfoPopover}
+            />
+          ) }
+        </div>
       ) }
+
       { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
           pageId={pageId}
