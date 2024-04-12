@@ -43,7 +43,7 @@ context('Comment', () => {
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').type(commetText);
+    cy.get('.cm-content').should('be.visible').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // Check update comment count
@@ -60,12 +60,12 @@ context('Comment', () => {
     // Open reply comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('comment-reply-button',  { timeout: 24000 }).eq(0).click();
+      cy.getByTestid('comment-reply-button',  { timeout: 14000 }).eq(0).click({force: true});
       // wait until
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').type(commetText);
+    cy.get('.cm-content').should('be.visible').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // TODO : https://redmine.weseek.co.jp/issues/139431
