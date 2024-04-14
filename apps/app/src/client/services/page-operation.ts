@@ -9,7 +9,7 @@ import type {
 } from '~/interfaces/apiv3';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
-  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useSWRxTagsInfo,
+  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useSWRxApplicableGrant, useSWRxTagsInfo,
 } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -110,6 +110,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { mutate: mutateGrant } = useSWRxIsGrantNormalized(pageId);
+  const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(pageId);
 
   // update swr 'currentPageId', 'currentPage', remote states
   return useCallback(async() => {
@@ -133,6 +134,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     }
 
     await mutateGrant();
+    await mutateApplicableGrant();
 
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
@@ -144,7 +146,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateGrant, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {
