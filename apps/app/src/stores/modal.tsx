@@ -8,6 +8,8 @@ import type { SWRResponse } from 'swr';
 
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import type { CreatePageAndTransitOpts } from '~/client/services/create-page';
+import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
@@ -38,6 +40,35 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
   return {
     ...swrResponse,
     open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
+    close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* GrantedGroupsInheritanceSelectModal
+*/
+type GrantedGroupsInheritanceSelectModalStatus = {
+  isOpened: boolean,
+  params?: IApiv3PageCreateParams,
+  opts?: CreatePageAndTransitOpts,
+}
+
+type GrantedGroupsInheritanceSelectModalStatusUtils = {
+  open(params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+  close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+}
+
+export const useGrantedGroupsInheritanceSelectModal = (
+    status?: GrantedGroupsInheritanceSelectModalStatus,
+): SWRResponse<GrantedGroupsInheritanceSelectModalStatus, Error> & GrantedGroupsInheritanceSelectModalStatusUtils => {
+  const initialData: GrantedGroupsInheritanceSelectModalStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<GrantedGroupsInheritanceSelectModalStatus, Error>(
+    'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
+  );
+
+  return {
+    ...swrResponse,
+    open: (params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts) => swrResponse.mutate({ isOpened: true, params, opts }),
     close: () => swrResponse.mutate({ isOpened: false }),
   };
 };

@@ -2,8 +2,9 @@ import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { exist } from '~/client/services/page-operation';
+import { exist, nonUserRelatedGroupsGranted } from '~/client/services/page-operation';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
+import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
@@ -25,7 +26,7 @@ type OnAborted = () => void;
  */
 type OnTerminated = () => void;
 
-type CreatePageAndTransitOpts = {
+export type CreatePageAndTransitOpts = {
   shouldCheckPageExists?: boolean,
   onCreationStart?: OnCreated,
   onCreated?: OnCreated,
@@ -49,6 +50,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
+  const { open: openGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
 
   const [isCreating, setCreating] = useState(false);
 
@@ -57,6 +59,22 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       shouldCheckPageExists,
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
+
+    if (params?.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
+      try {
+        const { isNonUserRelatedGroupsGranted } = await nonUserRelatedGroupsGranted(params.parentPath);
+        if (isNonUserRelatedGroupsGranted) {
+          openGrantedGroupsInheritanceSelectModal(params, opts);
+          return;
+        }
+      }
+      catch (err) {
+        throw err;
+      }
+      finally {
+        onTerminated?.();
+      }
+    }
 
     // check the page existence
     if (shouldCheckPageExists && params.path != null) {

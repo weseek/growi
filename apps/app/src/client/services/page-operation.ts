@@ -148,6 +148,15 @@ export const exist = async(path: string): Promise<PageExistResponse> => {
   return res.data;
 };
 
+interface NonUserRelatedGroupsGrantedResponse {
+  isNonUserRelatedGroupsGranted: boolean,
+}
+
+export const nonUserRelatedGroupsGranted = async(path: string): Promise<NonUserRelatedGroupsGrantedResponse> => {
+  const res = await apiv3Get<NonUserRelatedGroupsGrantedResponse>('/page/non-user-related-groups-granted', { path });
+  return res.data;
+};
+
 export const publish = async(pageId: string): Promise<IPageHasId> => {
   const res = await apiv3Put(`/page/${pageId}/publish`);
   return res.data;

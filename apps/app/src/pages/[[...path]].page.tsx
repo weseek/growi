@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
+import { GrantedGroupsInheritanceSelectModal } from '~/components/GrantedGroupInheritanceSelectModal';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
@@ -47,7 +48,6 @@ import {
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
-import { useSelectedGrant } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
@@ -371,6 +371,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
       <LinkEditModal />
       <TagEditModal />
       <ConflictDiffModal />
+      <GrantedGroupsInheritanceSelectModal />
     </>
   );
 };
