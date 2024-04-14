@@ -2,7 +2,7 @@ import path from 'path';
 
 import type { IPage } from '@growi/core';
 import {
-  AllSubscriptionStatusType, SubscriptionStatusType,
+  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
@@ -201,8 +201,11 @@ module.exports = (crowi) => {
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
-    isGrantNormalized: [
+    getGrantData: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    nonUserRelatedGroupsGranted: [
+      query('path').isString(),
     ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
@@ -566,7 +569,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -632,6 +635,27 @@ module.exports = (crowi) => {
     };
 
     return res.apiv3({ isGrantNormalized, grantData });
+  });
+
+  // Check if non user related groups are granted page access
+  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator, async(req, res) => {
+    const { user } = req;
+    const { path } = req.query;
+    const pageGrantService = crowi.pageGrantService as IPageGrantService;
+    try {
+      const page = await Page.findByPathAndViewer(path, user, null, true);
+
+      if (page.grant !== PageGrant.GRANT_USER_GROUP) {
+        return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+      }
+
+      const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
+      return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
+    }
+    catch (err) {
+      logger.error('get-page-failed', err);
+      return res.apiv3Err(err, 500);
+    }
   });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {

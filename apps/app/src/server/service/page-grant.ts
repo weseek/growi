@@ -105,6 +105,7 @@ export interface IPageGrantService {
   getPopulatedGrantedGroups: (grantedGroups: IGrantedGroup[]) => Promise<PopulatedGrantedGroup[]>,
   getUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   getUserRelatedGrantedGroupsSyncronously: (userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument) => IGrantedGroup[],
+  getNonUserRelatedGrantedGroups: (page: PageDocument, user) => Promise<IGrantedGroup[]>,
   isUserGrantedPageAccess: (page: PageDocument, user, userRelatedGroups: PopulatedGrantedGroup[]) => boolean,
   getPageGroupGrantData: (page: PageDocument, user) => Promise<GroupGrantData>,
   calcApplicableGrantData: (page, user) => Promise<IRecordApplicableGrant>
@@ -774,6 +775,20 @@ class PageGrantService implements IPageGrantService {
         return userRelatedGroupIds.includes(group.item._id.toString());
       }
       return userRelatedGroupIds.includes(group.item);
+    }) || [];
+  }
+
+  /*
+   * get all groups of Page that user is not related to
+   */
+  async getNonUserRelatedGrantedGroups(page: PageDocument, user): Promise<IGrantedGroup[]> {
+    const userRelatedGroups = (await this.getUserRelatedGroups(user));
+    const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
+    return page.grantedGroups?.filter((group) => {
+      if (isPopulated(group.item)) {
+        return !userRelatedGroupIds.includes(group.item._id.toString());
+      }
+      return !userRelatedGroupIds.includes(group.item);
     }) || [];
   }
 
