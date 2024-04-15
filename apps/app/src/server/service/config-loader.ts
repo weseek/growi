@@ -717,23 +717,11 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
-  OPENTELEMETRY_OTLP_METRICS_ENDPOINT: {
-    ns: 'crowi',
-    key: 'instrumentation:otlpMetricsEndpoint',
-    type: ValueType.STRING,
-    default: null,
-  },
-  OPENTELEMETRY_OTLP_TRACES_ENDPOINT: {
-    ns: 'crowi',
-    key: 'instrumentation:otlpTracesEndpoint',
-    type: ValueType.STRING,
-    default: null,
-  },
   OPENTELEMETRY_INSTRUMENTATION_ENABLED: {
     ns: 'crowi',
     key: 'instrumentation:enabled',
     type: ValueType.BOOLEAN,
-    default: true,
+    default: null,
   },
   // TODO: fix after the decision of the instrumentation data specification
   // https://redmine.weseek.co.jp/issues/144351

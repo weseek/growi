@@ -32,9 +32,9 @@ export class OpenTelemetry {
         [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'instrumentation:serviceInstanceId'),
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
-      traceExporter: new OTLPTraceExporter({ url: configManager.getConfig('crowi', 'instrumentation:otlpTracesEndpoint') }),
+      traceExporter: new OTLPTraceExporter(),
       metricReader: new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({ url: configManager.getConfig('crowi', 'instrumentation:otlpMetricsEndpoint') }),
+        exporter: new OTLPMetricExporter(),
         exportIntervalMillis: 10000,
       }),
       instrumentations: [getNodeAutoInstrumentations({
@@ -44,9 +44,6 @@ export class OpenTelemetry {
           enabled: false,
         },
       })],
-      // send the half of all traces
-      // see: https://opentelemetry.io/docs/languages/js/sampling/
-      sampler: new TraceIdRatioBasedSampler(0.5),
     };
   }
 
