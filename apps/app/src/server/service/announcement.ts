@@ -67,3 +67,5 @@ export default class AnnouncementService {
   };
 
 }
+
+module.exports = AnnouncementService;
