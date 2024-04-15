@@ -211,7 +211,7 @@ const PageRenameModal = (): JSX.Element => {
       <>
         <div className="mb-3">
           <label className="form-label w-100">{ t('modal_rename.label.Current page name') }</label>
-          <code>{ path }</code>
+          <code className="fs-6">{ path }</code>
         </div>
         <div className="mb-3">
           <label htmlFor="newPageName" className="form-label w-100">{ t('modal_rename.label.New page name') }</label>
