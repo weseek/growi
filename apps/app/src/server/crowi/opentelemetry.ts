@@ -12,8 +12,6 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../service/config-manager';
 
-import type Crowi from '.';
-
 const logger = loggerFactory('growi:opentelemetry');
 
 export class OpenTelemetry {
