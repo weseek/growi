@@ -126,8 +126,8 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       mutateEditingMarkdown(updatedPage.revision.body);
     }
 
-    await mutateCurrentGrantData();
-    await mutateApplicableGrant();
+    mutateCurrentGrantData();
+    mutateApplicableGrant();
 
     const remoterevisionData = {
       remoteRevisionId: updatedPage.revision._id,
