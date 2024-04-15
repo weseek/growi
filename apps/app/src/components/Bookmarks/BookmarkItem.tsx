@@ -39,7 +39,7 @@ type Props = {
 
 export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_FOLDER_PADDING = 15;
-  const BASE_BOOKMARK_PADDING = 20;
+  const BASE_BOOKMARK_PADDING = 16;
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -56,7 +56,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
   const { latter: pageTitle, former: formerPagePath } = dPagePath;
   const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level + 1));
+  const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level));
   const dragItem: Partial<DragItemDataType> = {
     ...bookmarkedPage, parentFolder,
   };
@@ -148,7 +148,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 me-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 pe-1 me-auto d-flex align-items-center rounded"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}

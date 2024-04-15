@@ -14,19 +14,11 @@
     z-index: bs.$zindex-sticky;
   }
 
+  // TODO:Responsive font size
   // set smaller font-size when sticky
   .sticky-inner-wrapper.active {
     h1 {
       font-size: 1.75rem !important;
-    }
-  }
-  // avoid sticky-top nav to turnate page path
-  .is-collapse-with-top {
-    @include bs.media-breakpoint-down(md) {
-      max-width: calc(100% - 350px);
-    }
-    @include bs.media-breakpoint-up(md) {
-      max-width: calc(100% - 500px);
     }
   }
 }
@@ -34,5 +26,22 @@
 .grw-page-path-nav :global {
   .btn-copy {
     @include btn-muted.colorize(bs.$orange);
+  }
+}
+
+// == Colors
+.grw-former-link :global {
+  .separator {
+    opacity: 0.75;
+  }
+}
+
+.grw-former-link a {
+  --bs-link-opacity: 0.75;
+
+  &:global {
+    &:hover {
+      --bs-link-opacity: 1;
+    }
   }
 }

@@ -1,8 +1,36 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.1...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.1](https://github.com/weseek/growi/compare/v7.0.0...v7.0.1) - 2024-04-02
+
+### 🚀 Improvement
+
+* imprv: PagePathNav and PagePathHeader styles (#8643) @yuki-takei
+* imprv: Prevent tooltip flickering (#8642) @yuki-takei
+* imprv: PersonalDropdown style (#8641) @yuki-takei
+* imprv: Support color scheme in Page History (diff2html) (#8637) @yuki-takei
+* imprv: Disable RequestedAuthnContext in SAML authentication (v7.0.x) (#8635) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Admin users badge color in /admin/users (#8655) @satof3
+* fix: Custom logo style (#8656) @satof3
+* fix: Error when creating TTL index (#8653) @miya
+* fix: Login form style is broken (#8651) @yuki-takei
+* fix: Login buttons for external auth provider does not work (#8648) @yuki-takei
+* fix: Set `d-none` when the sidebar is closed in order to prevent scrollbars from appearing (#8640) @yuki-takei
+* fix: Style for Handsontable in dark mode (#8639) @yuki-takei
+* fix: Supress PageAccessoriesModal rerendering for keeping radio button selections of PageHistory (#8638) @yuki-takei
+* fix: Uncorrect update bookmark button clicked on page control (#8608) @jam411
+* fix: Counting comments when removing the thread (#8624) @yukendev
+
+### 🧰 Maintenance
+
+* support: Add light and dark badge color (#8652) @satof3
+* support: Omit configurations for publishing to GitHub Container Registry(ghcr.io) (#8628) @yuki-takei
 
 ## [v7.0.0](https://github.com/weseek/growi/compare/v6.3.2...v7.0.0) - 2024-03-27
 

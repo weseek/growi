@@ -59,7 +59,7 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
         id={idForSlackPopover}
         type="text"
         value={slackChannels}
-        placeholder="Input channels"
+        placeholder={`${t('slack_notification.input_channels')}`}
         onChange={updateSlackChannelsHandler}
       />
       <UncontrolledPopover trigger="focus" placement="top" target={idForSlackPopover}>

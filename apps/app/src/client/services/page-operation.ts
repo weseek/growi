@@ -4,12 +4,10 @@ import type { IPageHasId } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
 import urljoin from 'url-join';
 
-import type {
-  IApiv3PageCreateParams, IApiv3PageCreateResponse,
-} from '~/interfaces/apiv3';
 import { useEditingMarkdown, usePageTagsForEditors } from '~/stores/editor';
 import {
-  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useSWRxApplicableGrant, useSWRxTagsInfo,
+  useCurrentPageId, useSWRMUTxCurrentPage, useSWRxApplicableGrant, useSWRxTagsInfo,
+  useSWRxCurrentGrantData,
 } from '~/stores/page';
 import { useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
 import loggerFactory from '~/utils/logger';
@@ -93,11 +91,6 @@ export const resumeRenameOperation = async(pageId: string): Promise<void> => {
   await apiv3Post('/pages/resume-rename', { pageId });
 };
 
-export const createPage = async(params: IApiv3PageCreateParams): Promise<IApiv3PageCreateResponse> => {
-  const res = await apiv3Post<IApiv3PageCreateResponse>('/page', params);
-  return res.data;
-};
-
 export type UpdateStateAfterSaveOption = {
   supressEditingMarkdownMutation: boolean,
 }
@@ -109,7 +102,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
   const { mutate: mutateTagsInfo } = useSWRxTagsInfo(pageId);
   const { sync: syncTagsInfoForEditor } = usePageTagsForEditors(pageId);
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
-  const { mutate: mutateGrant } = useSWRxIsGrantNormalized(pageId);
+  const { mutate: mutateCurrentGrantData } = useSWRxCurrentGrantData(pageId);
   const { mutate: mutateApplicableGrant } = useSWRxApplicableGrant(pageId);
 
   // update swr 'currentPageId', 'currentPage', remote states
@@ -133,7 +126,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
       mutateEditingMarkdown(updatedPage.revision.body);
     }
 
-    await mutateGrant();
+    await mutateCurrentGrantData();
     await mutateApplicableGrant();
 
     const remoterevisionData = {
@@ -146,7 +139,7 @@ export const useUpdateStateAfterSave = (pageId: string|undefined|null, opts?: Up
     setRemoteLatestPageData(remoterevisionData);
   },
   // eslint-disable-next-line max-len
-  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateGrant, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
+  [pageId, mutateTagsInfo, syncTagsInfoForEditor, mutateCurrentPageId, mutateCurrentPage, opts?.supressEditingMarkdownMutation, mutateCurrentGrantData, mutateApplicableGrant, setRemoteLatestPageData, mutateEditingMarkdown]);
 };
 
 export const unlink = async(path: string): Promise<void> => {
