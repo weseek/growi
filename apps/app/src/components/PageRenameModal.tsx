@@ -241,14 +241,13 @@ const PageRenameModal = (): JSX.Element => {
                 )}
             </form>
           </div>
+          { isTargetPageDuplicate && (
+            <p className="text-danger">Error: Target path is duplicated.</p>
+          ) }
+          { isMatchedWithUserHomepagePath && (
+            <p className="text-danger">Error: Cannot move to directory under /user page.</p>
+          ) }
         </div>
-
-        { isTargetPageDuplicate && (
-          <p className="text-danger">Error: Target path is duplicated.</p>
-        ) }
-        { isMatchedWithUserHomepagePath && (
-          <p className="text-danger">Error: Cannot move to directory under /user page.</p>
-        ) }
 
         { !isV5Compatible(page.meta) && (
           <>
