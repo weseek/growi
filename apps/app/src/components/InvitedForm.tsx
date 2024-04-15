@@ -1,13 +1,12 @@
 import React, { useCallback, useState } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 
 import { useCurrentUser } from '../stores/context';
-
-import { LoadingSpinner } from './LoadingSpinner';
 
 
 export type InvitedFormProps = {
@@ -142,12 +141,11 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
         {/* Create Button */}
         <div className="input-group justify-content-center d-flex mt-4">
           <button type="submit" className="btn btn-fill" id="register" disabled={isLoading}>
-            <div className="eff"></div>
             <span className="btn-label">
               {isLoading ? (
                 <LoadingSpinner />
               ) : (
-                <i className="icon-user-follow" />
+                <span className="material-symbols-outlined">person_add</span>
               )}
             </span>
             <span className="btn-label-text">{t('Create')}</span>
@@ -156,7 +154,7 @@ export const InvitedForm = (props: InvitedFormProps): JSX.Element => {
       </form>
       <div className="input-group mt-4 d-flex justify-content-center">
         <a href="https://growi.org" className="link-growi-org">
-          <span className="growi">GROWI</span>.<span className="org">ORG</span>
+          <span className="growi">GROWI</span><span className="org">.ORG</span>
         </a>
       </div>
     </div>

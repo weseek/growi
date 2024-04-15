@@ -69,9 +69,8 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
             <span className="material-symbols-outlined fs-5">format_strikethrough</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('#', true)}>
-            {/* TODO: https://github.com/weseek/growi/pull/8558 */}
-            {/* <span className="growi-custom-icons">header</span> */}
-            <span className="material-symbols-outlined fs-5">block</span>
+            {/* TODO: chack and fix font-size. see: https://redmine.weseek.co.jp/issues/143015 */}
+            <span className="growi-custom-icons">header</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertMarkdownElements('`', '`')}>
             <span className="material-symbols-outlined fs-5">code</span>
@@ -83,6 +82,7 @@ export const TextFormatTools = (props: TextFormatToolsType): JSX.Element => {
             <span className="material-symbols-outlined fs-5">format_list_numbered</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('>')}>
+            {/* TODO: chack and fix font-size. see: https://redmine.weseek.co.jp/issues/143015 */}
             <span className="growi-custom-icons">format_quote</span>
           </button>
           <button type="button" className="btn btn-toolbar-button" onClick={() => onClickInsertPrefix('- [ ]')}>

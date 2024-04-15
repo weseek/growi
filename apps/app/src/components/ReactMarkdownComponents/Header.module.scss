@@ -17,3 +17,28 @@
     opacity: 1 !important;
   }
 }
+
+// blink
+@keyframes fadeout {
+  100% {
+    opacity: 0;
+  }
+}
+
+.blink {
+  position: relative;
+  z-index: 1;
+
+  &::after {
+    position: absolute;
+    top: 15%;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 70%;
+    content: '';
+    background-color: var(--bs-highlight-bg);
+    border-radius: 2px;
+    animation: fadeout 1s ease-in 1.5s forwards;
+  }
+}

@@ -1,4 +1,4 @@
-# :pencil: diagrams.net(former Draw.io)
+# :pencil: diagrams.net(Draw.io)
 
 See [diagrams.net](https://diagrams.net)
 
@@ -15,7 +15,7 @@ See [diagrams.net](https://diagrams.net)
 ```
 
 
-## AWS diagram
+## AWS configuration diagram
 
 ``` drawio
 3Zhdb5swFIZ/TS4XYRswuUzSr0mtVqmtejkZOASvgJHtfO3Xz+YjgdJqiaa1SbnBvD7G9vv4IJsRmeeba8nK9E7EkI2wE29G5GKEMfa9wNyssq0VhFyvVhaSx422Fx74b2hEp1GXPAbVC9RCZJqXfTESRQGR7mlMSrHuhyUi6/dasgUMhIeIZUP1mcc6rdUA071+A3yRtj0jf1LX5KwNbmaiUhaLdUcilyMyl0LoupRv5pBZ91pf6nZX79TuBiah0G80eFIgf4S/rCfYyVhowFRBI+xFIi9FYZthr3WvVaqYGxZy2+xRsugFpCndPN7dmtu0LJtuMxZBaswE2Te4HR7ezXA3cqW3ravGi9IW883CrpsxWyt3nIuQ24BZwrNsLjIhq2CSJOBHkdGVluIFOjUxnYSOY2pWIDU30G7tPO+F4pqLwsSEQmuRmwCmynp1JHwDZoizerS2HWzeNRR1JnENIgcttyakafANuQ3aZnG7Ph37vk8d6pAgoBO3rl131k3TIO0smVZjjZGLXUd7mKbQ2Ng+dvD+M+6n7xatUqDVgXTJ8XQVGZLFlJqEeYtsUl2fRRb7Y+QEJCCIBhQ5ExL0OBPHOReyqsre6VKnRjM+Vu4dxtg9nnEkFgXXYgh6ThFBV6cHmgRj10XUo9jByA1c90vk8/TeJvQ107Bm2wNpe8fTZiX/uWg6GRD3psSZeadH/C+p7RNvTAhxzaedUuoFwbkgf34w4i3Lw5gdSNw/nnhWvf9nsiyimtWBH/TCjPSzgCP/FXH3SwC/YJqFTMGBsOnxsONtwXIRh0PK1q/Z5PRymzgni3qwfW86X7FsCS113KcSLeXKWnNhd7hQxFN7nNlnk1GuuO2yqo+ZSqtg9BYXPwogTHYuQzw49Lzy2AxELGUEnc28OXgxuQA93AF2SEjIzB5j1X/7EdYNfJqcuU/uB/nUnpfP1ijvo4xC52SUNzTK/yij8DkZ5Q+Nov/HKPO4/2lT1XX+fZHLPw==
@@ -27,8 +27,7 @@ See [diagrams.net](https://diagrams.net)
 
 See [PlantUML](http://plantuml.com/).
 
-## Sequence diagram
-
+## Sequence Diagram
 ``` plantuml
 @startuml
 skinparam sequenceArrowThickness 2
@@ -63,7 +62,6 @@ deactivate A
 
 
 ## Class diagram
-
 ``` plantuml
 @startuml
 
@@ -155,7 +153,7 @@ State3 --> [*] : Aborted
 
 # :pencil: Mermaid
 
-## Pie chart diagram
+## Pie graph
 
 ```mermaid
 %%{init: {"pie": {"textPosition": 0.5}, "themeVariables": {"pieOuterStrokeWidth": "5px"}} }%%
@@ -167,7 +165,7 @@ pie showData
     "Iron" :  5
 ```
 
-## Gantt diagram
+## Gantt chart
 
 ```mermaid
 gantt
@@ -181,7 +179,7 @@ gantt
     another task      : 24d
 ```
 
-## Gitgraph diagram
+## Git tree diagram
 
 ```mermaid
 %%{init: { 'logLevel': 'debug', 'theme': 'base', 'gitGraph': {'rotateCommitLabel': true}} }%%
@@ -202,14 +200,13 @@ gitGraph
   commit
 ```
 
-## Mindmap diagram
+## Mind map
 
 ```mermaid
 mindmap
   root((mindmap))
     Origins
       Long history
-      ::icon(fa fa-book)
       Popularisation
         British popular psychology author Tony Buzan
     Research

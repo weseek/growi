@@ -1,64 +1,51 @@
-# :tada: 欢迎来到GROWI
+# :tada: 欢迎访问 GROWI
 
-[![GitHub Releases](https://img.shields.io/github/release/weseek/growi.svg)](https://github.com/weseek/growi/releases/latest)
-[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg?style=flat)](https://github.com/weseek/growi/blob/master/LICENSE)
+GROWI 是面向企业和个人的维基知识库工具。  
+知识信息可以在公司、大学实验室和俱乐部中轻松共享，任何人都可以编辑创建的页面。  
 
-GROWI是一个针对个人和公司的Wiki - 一个知识库工具。
-公司、大学实验室和俱乐部的知识可以轻松共享，任何人都可以编辑页面。
+随手写下你所知道的信息，然后一起编辑，可以减少团队中的隐性知识。  
+理所当然地增加每天共享的信息量！
 
-我们可以很容易地写下我们知道的东西，并一起编辑，我们可以**简化我们团队中的隐性知识（难以用语言解释的知识）**。 
-让我们每天增加信息交流。
-
-### :beginner: 如何轻松制作一个页面 
-
-- 从右上方的 "**创建**"按钮，或右下方的**铅笔图标开始。
-    - 页面标题以后可以再编辑，不用担心标题的问题。
-        - 在标题输入栏，可以用半宽的`/`（斜线）创建页面的层次。
-        - 例子）尝试输入`/category1/category2/page-title-we-want-to-create`。
-- 我们可以通过在行首添加`-`来创建一个要点。
-- 我们还可以复制和粘贴，拖放附件，如图片、PDF、Word/Excel/PowerPoint等。
-- 一旦我们完成了，按 "**更新**"按钮来发布页面。
-    - 我们也可以通过`Ctrl(⌘) + S`来保存。
-
-了解更多信息: [Create page](https://docs.growi.org/en/guide/features/create_page.html)
-
-<div class="mt-4 card border-primary">
-  <div class="card-header bg-primary text-light">
-    Tips
-  </div>
-  <div class="card-body">
-    <ul>
-      <li>Ctrl(⌘) + "/" 显示快速帮助。</li>
-      <li>你可以用 <a href="https://getbootstrap.com/docs/4.6/components/">Bootstrap 4编写HTML</a>.</li>
-    </ul>
-  </div>
+<div class="alert alert-primary" role="alert">
+※此页面可自由编辑，并作为维基的首页使用
 </div>
 
-# :anchor: 对于管理员来说 <small>〜如果你创建了一个Wiki〜</small>
+# :beginner: 使用 GROWI 可以做什么
+## 1. 可以创建页面来存储信息和知识。
+- 如何创建和编辑页面
+    - 可以通过屏幕左上角的 "铅笔图标 "创建新页面。
+    - 点击屏幕右上角的 "编辑 "可编辑已创建的页面。
+- 如何管理页面
+    - GROWI 采用 "分层结构 "管理页面。
+        - ` /page a/page b/page c ` 结构类似。
+    - 除了 "层次结构"，还可以通过 "标签 "来管理页面。
 
-### :arrow_right: 你会和多个人一起使用Wiki吗？
-- :heavy_check_mark: 让我们邀请一些成员。
-    - [Add/invite new members to the Wiki](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#temporary-issuance-of-a-new-user)
-### :arrow_right: 与Slack合作，接收页面和评论通知。
-- :heavy_check_mark:  [Slack integration](https://docs.growi.org/en/admin-guide/management-cookbook/slack-integration/#overview)
-### :arrow_right: 你是否从另一个系统转换？
-- :heavy_check_mark: 可以从其他GROWI, esa.io, Qiita:Team导入数据。
-    -  [Import Data](https://docs.growi.org/en/admin-guide/management-cookbook/import.html)
+## 2. 检索信息和知识的方式有以下几种。
+- 关键词搜索
+- 使用各种侧边栏进行搜索。
+    - 按 "页面树 "搜索。
+    - 按 "最新更改 "搜索。
+    - 按 "标签 "搜索 例如...
 
-了解更多信息: [Admin Guide](https://docs.growi.org/en/admin-guide/)
+## 3. 信息和知识可以很容易地在内部和外部共享。
+- 内部成员可通过发送页面的 URL 或 URL 链接获得通知。
+    - 使用 "用户组 "可以管理公司成员内部的查看权限。
+- 还可以允许未持有账户的外部用户查看页面。
+    - 使用 "共享链接 "与公司以外的用户共享信息。
+
+#### :bulb:如果不确定如何编辑页面，请选中 [Sandbox](/Sandbox)！
 
 
-# 内容列表示例
+# :wrench:针对管理员 - GROWI 创建后
 
-你可以用一个表格和`$lsx`来显示内容列表。
+### :arrow_right: 您是否与多人一起使用 GROWI？
+- :heavy_check_mark: 邀请您的会员
+    - [添加和邀请新成员加入 GROWI](https://docs.growi.org/en/admin-guide/management-cookbook/user-management.html#%E6%96%B0%E8%A6%8F%E3%83%A6%E3%83%BC%E3%82%B6%E3%83%BC%E3%81%AE%E4%BB%AE%E7%99%BA%E8%A1%8C)
 
-| 所有页面列表（前15页)      | [/Sandbox] 下级页面列表 |
-| ---------------------------| ------------------------|
-| $lsx(/,num=15)             | $lsx(/Sandbox)          |
+### :arrow_right: 您对 GROWI 现在的样子满意吗？
+- :heavy_check_mark: 定制 GROWI 的外观和感觉！
+    - [定制 GROWI 主题](/admin/customize)
 
-# Slack
-
-<a href="https://communityinviter.com/apps/wsgrowi/invite/">join our Slack team</a>
-
-我们欢迎新人加入我们的slack频道，帮助改善Growi。
-除了讨论发展问题，我们也很乐意在你加入时回答你的问题。
+### :arrow_right: GROWI 安全配置是否已完成？
+- :heavy_check_mark: 更新您的 GROWI 安全设置！
+    - [更新 GROWI 安全设置](/admin/security)

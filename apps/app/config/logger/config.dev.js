@@ -25,7 +25,6 @@ module.exports = {
   // 'growi:lib:importer': 'debug',
   // 'growi:routes:page': 'debug',
   'growi-plugin:*': 'debug',
-  // 'growi:InterceptorManager': 'debug',
   'growi:service:search-delegator:elasticsearch': 'debug',
   'growi:service:g2g-transfer': 'debug',
   'growi:service:questionnaire': 'debug',

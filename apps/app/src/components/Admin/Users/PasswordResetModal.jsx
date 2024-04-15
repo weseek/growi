@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -10,7 +11,6 @@ import {
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { useIsMailerSetup } from '~/stores/context';
 
 class PasswordResetModal extends React.Component {
@@ -126,7 +126,7 @@ class PasswordResetModal extends React.Component {
           </code>
           <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
-              <i className="fa fa-clone" aria-hidden="true"></i>
+              <span className="material-symbols-outlined" aria-hidden="true">content_copy</span>
             </button>
           </CopyToClipboard>
           <Tooltip

@@ -6,7 +6,6 @@ import useSWRImmutable from 'swr/immutable';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import InterceptorManager from '~/services/interceptor-manager';
 
 import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
@@ -16,10 +15,6 @@ import { useStaticSWR } from './use-static-swr';
 
 type Nullable<T> = T | null;
 
-
-export const useInterceptorManager = (): SWRResponse<InterceptorManager, Error> => {
-  return useContextSWR<InterceptorManager, Error>('interceptorManager', undefined, { fallbackData: new InterceptorManager() });
-};
 
 export const useCsrfToken = (initialData?: string): SWRResponse<string, Error> => {
   return useContextSWR<string, Error>('csrfToken', initialData);

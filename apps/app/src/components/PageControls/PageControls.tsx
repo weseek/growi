@@ -1,4 +1,6 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, {
+  memo, useCallback, useEffect, useMemo, useRef,
+} from 'react';
 
 import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
@@ -6,6 +8,7 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -15,7 +18,9 @@ import {
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import {
+  EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
@@ -132,6 +137,19 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
+  const { mutateAndSave: mutatePageControlsX } = usePageControlsX();
+
+  const pageControlsRef = useRef<HTMLDivElement>(null);
+  const [pageControlsRect] = useRect(pageControlsRef);
+
+  useEffect(() => {
+    if (pageControlsRect?.x == null) {
+      return;
+    }
+    mutatePageControlsX(pageControlsRect.x);
+  }, [pageControlsRect?.x, mutatePageControlsX]);
+
+
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
   const likers = usersList != null ? usersList.filter(({ _id }) => likerIds.includes(_id)).slice(0, 15) : [];
@@ -235,7 +253,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
@@ -249,25 +267,26 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     MenuItemType.REVERT,
   ];
 
+  const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
 
   return (
-    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
+    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }} ref={pageControlsRef}>
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
-      {revisionId != null && !isViewMode && (
+      {revisionId != null && !isViewMode && _isIPageInfoForOperation && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <SubscribeButton
           status={pageInfo.subscriptionStatus}
           onClick={subscribeClickhandler}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <LikeButtons
           onLikeClicked={likeClickhandler}
           sumOfLikers={sumOfLikers}
@@ -275,7 +294,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           likers={likers}
         />
       )}
-      {revisionId != null && (
+      {revisionId != null && _isIPageInfoForOperation && (
         <BookmarkButtons
           pageId={pageId}
           isBookmarked={pageInfo.isBookmarked}
@@ -289,9 +308,8 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           disabled={disableSeenUserInfoPopover}
         />
       ) }
-      { showPageControlDropdown && (
+      { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
-          alignEnd
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
@@ -337,7 +355,7 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
     return <></>;
   }
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 

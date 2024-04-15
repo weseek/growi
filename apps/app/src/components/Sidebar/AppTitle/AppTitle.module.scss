@@ -22,6 +22,10 @@
       padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
     }
   }
+
+  .confidential-tooltip {
+    max-width: 180px;
+  }
 }
 
 

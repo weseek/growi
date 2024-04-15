@@ -27,3 +27,20 @@
     @include btn-muted.colorize(bs.$orange);
   }
 }
+
+// == Colors
+.grw-former-link :global {
+  .separator {
+    opacity: 0.75;
+  }
+}
+
+.grw-former-link a {
+  --bs-link-opacity: 0.75;
+
+  &:global {
+    &:hover {
+      --bs-link-opacity: 1;
+    }
+  }
+}

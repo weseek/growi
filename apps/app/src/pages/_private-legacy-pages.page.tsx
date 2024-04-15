@@ -48,8 +48,8 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
   useCurrentPageId(null);
   useCurrentPathname('/_private-legacy-pages');
 

@@ -1,10 +1,14 @@
-import React from 'react';
+import React, {
+  useCallback,
+} from 'react';
 
 import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useDrawerOpened } from '~/stores/ui';
+
+import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiNavbarBottom.module.scss';
 
@@ -17,8 +21,12 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: isSearchPage } = useIsSearchPage();
   const { open: openSearchModal } = useSearchModal();
 
+  const searchButtonClickHandler = useCallback(() => {
+    openSearchModal();
+  }, [openSearchModal]);
+
   return (
-    <div className={`
+    <GroundGlassBar className={`
       ${styles['grw-navbar-bottom']}
       ${isDrawerOpened ? styles['grw-navbar-bottom-drawer-opened'] : ''}
       d-md-none d-edit-none d-print-none fixed-bottom`}
@@ -52,7 +60,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
                 <a
                   role="button"
                   className="nav-link btn-lg"
-                  onClick={openSearchModal}
+                  onClick={searchButtonClickHandler}
                 >
                   <span className="material-symbols-outlined fs-2">search</span>
                 </a>
@@ -73,6 +81,6 @@ export const GrowiNavbarBottom = (): JSX.Element => {
         </ul>
       </div>
 
-    </div>
+    </GroundGlassBar>
   );
 };

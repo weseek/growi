@@ -133,14 +133,15 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
     mutateCollapsedContentsOpened(false);
   }, [isCollapsedMode, mutateCollapsedContentsOpened]);
 
-  const openClass = `${isCollapsedContentsOpened ? 'open' : ''}`;
+  const closedClass = isCollapsedMode() && !isCollapsedContentsOpened ? 'd-none' : '';
+  const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';
   const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
       <div
-        className={`sidebar-contents-container flex-grow-1 overflow-x-hidden ${openClass}`}
+        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
         style={{ width: collapsibleContentsWidth }}
       >
         {children}

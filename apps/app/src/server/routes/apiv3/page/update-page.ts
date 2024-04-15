@@ -1,4 +1,4 @@
-import { allOrigin } from '@growi/core';
+import { Origin, allOrigin } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -20,6 +20,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import Xss from '~/services/xss';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
@@ -75,10 +76,18 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
+    body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
 
 
   async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument) {
+    // Reflect the updates in ydoc
+    const origin = req.body.origin;
+    if (origin === Origin.View || origin === undefined) {
+      const yjsConnectionManager = getYjsConnectionManager();
+      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+    }
+
     // persist activity
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
@@ -150,8 +159,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       let updatedPage;
       try {
-        const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin };
+        const {
+          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+        } = req.body;
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;

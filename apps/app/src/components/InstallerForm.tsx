@@ -2,6 +2,7 @@ import type { FormEventHandler } from 'react';
 import { memo, useCallback, useState } from 'react';
 
 import { Lang, AllLang } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
@@ -10,7 +11,11 @@ import { i18n as i18nConfig } from '^/config/next-i18next.config';
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 
-import { LoadingSpinner } from './LoadingSpinner';
+
+import styles from './InstallerForm.module.scss';
+
+const moduleClass = styles['installer-form'] ?? '';
+
 
 const InstallerForm = memo((): JSX.Element => {
   const { t, i18n } = useTranslation();
@@ -88,8 +93,8 @@ const InstallerForm = memo((): JSX.Element => {
     : <span><span className="material-symbols-outlined">block</span>{ t('installer.unavaliable_user_id') }</span>;
 
   return (
-    <div data-testid="installerForm" className={`nologin-dialog p-3 mx-auto${hasErrorClass}`}>
-      <div className="row">
+    <div data-testid="installerForm" className={`${moduleClass} nologin-dialog py-3 px-4 rounded-4 rounded-top-0 mx-auto${hasErrorClass}`}>
+      <div className="row mt-3">
         <div className="col-md-12">
           <p className="alert alert-success">
             <strong>{ t('installer.create_initial_account') }</strong><br />
@@ -97,14 +102,16 @@ const InstallerForm = memo((): JSX.Element => {
           </p>
         </div>
       </div>
-      <div className="row">
-        <form role="form" id="register-form" className="col-md-12" onSubmit={submitHandler}>
+      <div className="row mt-2">
+        <form role="form" id="register-form" className="ps-1" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
             <div className="input-group dropdown-with-icon">
-              <span className="input-group-text"></span><span className="material-symbols-outlined">language</span>
+              <span className="p-2 text-white opacity-75">
+                <span className="material-symbols-outlined">language</span>
+              </span>
               <button
                 type="button"
-                className="btn btn-secondary dropdown-toggle form-control text-end rounded-end"
+                className="btn btn-secondary dropdown-toggle form-control text-end rounded"
                 id="dropdownLanguage"
                 data-testid="dropdownLanguage"
                 data-bs-toggle="dropdown"
@@ -146,11 +153,13 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <span className="input-group-text"></span><span className="material-symbols-outlined">person</span>
+            <span className="p-2 text-white opacity-75">
+              <span className="material-symbols-outlined">person</span>
+            </span>
             <input
               data-testid="tiUsername"
               type="text"
-              className="form-control"
+              className="form-control rounded"
               placeholder={t('User ID')}
               name="registerForm[username]"
               // onBlur={checkUserName} // need not to check username before installation -- 2020.07.24 Yuki Takei
@@ -160,11 +169,13 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"></span><span className="material-symbols-outlined">sell</span>
+            <span className="p-2 text-white opacity-75">
+              <span className="material-symbols-outlined">sell</span>
+            </span>
             <input
               data-testid="tiName"
               type="text"
-              className="form-control"
+              className="form-control rounded"
               placeholder={t('Name')}
               name="registerForm[name]"
               required
@@ -172,11 +183,13 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"></span><span className="material-symbols-outlined">mail</span>
+            <span className="p-2 text-white opacity-75">
+              <span className="material-symbols-outlined">mail</span>
+            </span>
             <input
               data-testid="tiEmail"
               type="email"
-              className="form-control"
+              className="form-control rounded"
               placeholder={t('Email')}
               name="registerForm[email]"
               required
@@ -184,40 +197,40 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="input-group-text"></span> <span className="material-symbols-outlined">lock</span>
+            <span className="p-2 text-white opacity-75">
+              <span className="material-symbols-outlined">lock</span>
+            </span>
             <input
               data-testid="tiPassword"
               type="password"
-              className="form-control"
+              className="form-control rounded"
               placeholder={t('Password')}
               name="registerForm[password]"
               required
             />
           </div>
 
-          <div className="input-group mt-4 d-flex justify-content-center">
+          <div className="input-group mt-4 justify-content-center">
             <button
               data-testid="btnSubmit"
               type="submit"
-              className="btn-fill btn btn-register"
-              id="register"
+              className="btn btn-secondary btn-register col-6 d-flex"
               disabled={isLoading}
             >
-              <div className="eff"></div>
-              <span className="btn-label">
+              <span>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <i className="icon-user-follow" />
+                  <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <span className="btn-label-text">{ t('Create') }</span>
+              <span className="flex-grow-1">{ t('Create') }</span>
             </button>
           </div>
 
           <div>
             <a href="https://growi.org" className="link-growi-org">
-              <span className="growi">GROWI</span>.<span className="org">org</span>
+              <span className="growi">GROWI</span><span className="org">.org</span>
             </a>
           </div>
 

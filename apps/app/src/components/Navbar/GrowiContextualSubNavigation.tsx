@@ -36,6 +36,8 @@ import { CreateTemplateModal } from '../CreateTemplateModal';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
+import { GroundGlassBar } from './GroundGlassBar';
+
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
 
@@ -288,11 +290,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   return (
     <>
-      <div
+      <GroundGlassBar
         className={`${styles['grw-contextual-sub-navigation']}
           d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
         `}
         data-testid="grw-contextual-sub-nav"
+        id="grw-contextual-sub-nav"
       >
         {pageId != null && (
           <PageControls
@@ -331,7 +334,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             </Link>
           </div>
         ) }
-      </div>
+      </GroundGlassBar>
 
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal

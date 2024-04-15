@@ -1,4 +1,3 @@
-import React, { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -11,7 +10,7 @@ type Props = {
   onDeleteButtonClicked?: (slackAppIntegration: unknown) => void,
 }
 
-export const SlackAppIntegrationControl: FC<Props> = (props: Props) => {
+export const SlackAppIntegrationControl = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { slackAppIntegration, onIsPrimaryChanged, onDeleteButtonClicked } = props;

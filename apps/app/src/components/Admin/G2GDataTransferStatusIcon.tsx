@@ -1,8 +1,9 @@
 import React, { type ComponentPropsWithoutRef } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
+
 import { G2G_PROGRESS_STATUS, type G2GProgressStatus } from '~/interfaces/g2g-transfer';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 
 /**
  * Props for {@link G2GDataTransferStatusIcon}

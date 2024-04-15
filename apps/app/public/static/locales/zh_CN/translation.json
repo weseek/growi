@@ -41,9 +41,11 @@
   "Error": "误差",
   "Warning": "警告",
   "Sign in": "登录",
+  "Sign in with External auth": "Sign in with {{signin}}",
   "Sign up is here": "注册",
   "Sign in is here": "登录",
   "Sign up": "注册",
+  "or": "或者",
   "Sign up with Google Account": "Sign up with Google Account",
   "Sign in with Google Account": "Sign in with Google Account",
   "Sign up with this Google Account": "Sign up with this Google Account",
@@ -83,6 +85,7 @@
   "Go to this version": "查看此版本",
   "View diff": "查看差异",
   "No diff": "无差异",
+  "Latest": "最新",
   "User ID": "用户ID",
   "Home": "首页",
   "My Drafts": "My Drafts",
@@ -113,6 +116,7 @@
   "Error occurred": "Error occurred",
   "Input page name": "Input page name",
   "Input page name (optional)": "Input page name (optional)",
+  "Input parent page path": "Input parent page path",
   "New Page": "新页面",
   "Create under": "Create page under below:",
   "V5 Page Migration": "转换为V5的兼容性",
@@ -130,6 +134,7 @@
   "Only me": "只有我",
   "Only inside the group": "仅组内",
   "page_list": "Page List",
+  "comments": "Comments",
   "Reselect the group": "重新选择组",
   "Shareable link": "可分享链接",
   "The whitelist of registration permission E-mail address": "注册许可电子邮件地址的白名单",
@@ -150,6 +155,7 @@
   "wide_view": "视野开阔",
   "Recent Changes": "最新修改",
   "Page Tree": "页面树",
+  "Bookmarks": "书签",
   "In-App Notification": "通知",
   "original_path": "Original path",
   "new_path": "New path",
@@ -176,6 +182,10 @@
   },
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
+  },
+  "author_info": {
+    "created_at": "Created at",
+    "last_revision_posted_at": "Last revision posted at"
   },
   "installer": {
     "tab": "创建账户",
@@ -315,8 +325,15 @@
     "changes_not_saved": "您所做的更改可能不会保存。你真的想继续前进吗？"
   },
   "page_comment": {
+    "comments": "评论",
+    "comment": "评论",
+    "preview": "预览",
+    "write": "输入",
+    "add_a_comment": "Add a comment",
     "display_the_page_when_posting_this_comment": "Display the page when posting this comment",
-    "no_user_found": "未找到用户名"
+    "no_user_found": "未找到用户名",
+    "reply": "Reply",
+    "delete_comment": "Delete comment?"
   },
   "page_api_error": {
     "notfound_or_forbidden": "未找到或禁止原始页。",
@@ -513,7 +530,8 @@
   },
   "slack_notification": {
     "popover_title": "Slack Notification",
-    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list."
+    "popover_desc": "Input channel name. You can notify multiple channels by entering a comma-separated list.",
+    "input_channels": "Input channels"
   },
   "share_links": {
     "Shere this page link to public": "Shere this page link to public",
@@ -777,7 +795,7 @@
     "paths_recovered": "成功恢复了页面路径",
     "path_recovery_failed": "路径恢复失败"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "书签",
     "recently_created": "最近创建页面"
   },
