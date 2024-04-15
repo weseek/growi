@@ -87,6 +87,7 @@
   "Go to this version": "View this version",
   "View diff": "View diff",
   "No diff": "No diff",
+  "Latest": "Latest",
   "User ID": "User ID",
   "User Information": "User information",
   "User Activation": "User Activation",
@@ -126,6 +127,7 @@
   "Only me": "Only me",
   "Only inside the group": "Only inside the group",
   "page_list": "Page List",
+  "comments": "Comments",
   "Reselect the group": "Reselect the group",
   "Shareable link": "Shareable link",
   "The whitelist of registration permission E-mail address": "The whitelist of registration permission E-mail address",
@@ -147,6 +149,7 @@
   "wide_view": "Wide View",
   "Recent Changes": "Recent Changes",
   "Page Tree": "Page Tree",
+  "Bookmarks": "Bookmarks",
   "In-App Notification": "Notifications",
   "original_path": "Original path",
   "new_path": "New path",
@@ -172,6 +175,10 @@
   },
   "custom_navigation": {
     "no_pages_under_this_page": "There are no pages under this page."
+  },
+  "author_info": {
+    "created_at": "Created at",
+    "last_revision_posted_at": "Last revision posted at"
   },
   "installer": {
     "tab": "Create account",
@@ -785,7 +792,7 @@
     "paths_recovered": "Paths recovered successfully",
     "path_recovery_failed": "Path recovery failed"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "Bookmarks",
     "recently_created": "Recently Created"
   },
