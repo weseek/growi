@@ -33,7 +33,7 @@ export class OpenTelemetry {
     return {
       resource: new Resource({
         [SEMRESATTRS_SERVICE_NAME]: 'next-app',
-        [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.crowi.configManager?.getConfig('crowi', 'instrumentation:instanceId'),
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.crowi.configManager?.getConfig('crowi', 'instrumentation:serviceInstanceId'),
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
       traceExporter: new OTLPTraceExporter({ url: this.crowi.configManager?.getConfig('crowi', 'instrumentation:otlpTracesEndpoint') }),

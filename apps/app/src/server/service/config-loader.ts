@@ -717,26 +717,19 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
-  // match env name with otel library
-  // eslint-disable-next-line max-len
-  // see: https://github.com/open-telemetry/opentelemetry-js/blob/34387774caaa15307e8586206f1ca2e6df96605f/experimental/packages/opentelemetry-exporter-metrics-otlp-grpc/src/OTLPMetricExporter.ts#L78
-  OTEL_EXPORTER_OTLP_METRICS_ENDPOINT: {
+  OPENTELEMETRY_OTLP_METRICS_ENDPOINT: {
     ns: 'crowi',
     key: 'instrumentation:otlpMetricsEndpoint',
     type: ValueType.STRING,
     default: null,
   },
-  // eslint-disable-next-line max-len
-  // see: https://github.com/open-telemetry/opentelemetry-js/blob/34387774caaa15307e8586206f1ca2e6df96605f/experimental/packages/exporter-trace-otlp-grpc/src/OTLPTraceExporter.ts#L78
-  OTEL_EXPORTER_OTLP_TRACES_ENDPOINT: {
+  OPENTELEMETRY_OTLP_TRACES_ENDPOINT: {
     ns: 'crowi',
     key: 'instrumentation:otlpTracesEndpoint',
     type: ValueType.STRING,
     default: null,
   },
-  // eslint-disable-next-line max-len
-  // see: https://github.com/open-telemetry/opentelemetry-js/blob/34387774caaa15307e8586206f1ca2e6df96605f/experimental/packages/opentelemetry-sdk-node/src/sdk.ts#L107
-  OTEL_SDK_ENABLED: {
+  OPENTELEMETRY_INSTRUMENTATION_ENABLED: {
     ns: 'crowi',
     key: 'instrumentation:enabled',
     type: ValueType.BOOLEAN,
@@ -744,9 +737,9 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
   },
   // TODO: fix after the decision of the instrumentation data specification
   // https://redmine.weseek.co.jp/issues/144351
-  OTEL_SERVICE_INSTANCE_ID: {
+  OPENTELEMETRY_SERVICE_INSTANCE_ID: {
     ns: 'crowi',
-    key: 'instrumentation:instanceId',
+    key: 'instrumentation:serviceInstanceId',
     type: ValueType.STRING,
     default: null,
   },
