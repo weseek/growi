@@ -8,9 +8,13 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_INSTANCE_ID, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
+import loggerFactory from '~/utils/logger';
+
 import { configManager } from '../service/config-manager';
 
 import type Crowi from '.';
+
+const logger = loggerFactory('growi:opentelemetry');
 
 export class OpenTelemetry {
 
@@ -48,17 +52,19 @@ export class OpenTelemetry {
   }
 
   /**
-   * Overwrite "OTEL_SDK_ENABLED" env var before sdk.start() is invoked.
+   * Overwrite "OTEL_SDK_DISABLED" env var before sdk.start() is invoked if needed.
    * Since otel library sees it.
-   * @see definition ot "OTEL_SDK_ENABLED" in ConfigLoader
    */
-  // eslint-enable
-  private overwriteSdkEnabled(): void {
-    process.env.OTEL_SDK_ENABLED = configManager.getConfig('crowi', 'instrumentation:enabled');
+  private overwriteSdkDisabled(): void {
+    const instrumentationEnabled = configManager.getConfig('crowi', 'instrumentation:enabled');
+    if (instrumentationEnabled != null && instrumentationEnabled === false) {
+      logger.warn("OTEL_SDK_DISABLED is set 'true' since GROWI's 'instrumentation:enabled' config is false.");
+      process.env.OTEL_SDK_DISABLED = 'true';
+    }
   }
 
   public startInstrumentation(): void {
-    this.overwriteSdkEnabled();
+    this.overwriteSdkDisabled();
 
     this.sdkInstance = new NodeSDK(this.generateNodeSDKConfiguration());
     this.sdkInstance.start();
