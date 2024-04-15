@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {
+  useCallback,
+} from 'react';
 
 import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/stores/context';
@@ -18,6 +20,10 @@ export const GrowiNavbarBottom = (): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: isSearchPage } = useIsSearchPage();
   const { open: openSearchModal } = useSearchModal();
+
+  const searchButtonClickHandler = useCallback(() => {
+    openSearchModal();
+  }, [openSearchModal]);
 
   return (
     <GroundGlassBar className={`
@@ -54,7 +60,7 @@ export const GrowiNavbarBottom = (): JSX.Element => {
                 <a
                   role="button"
                   className="nav-link btn-lg"
-                  onClick={openSearchModal}
+                  onClick={searchButtonClickHandler}
                 >
                   <span className="material-symbols-outlined fs-2">search</span>
                 </a>

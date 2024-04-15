@@ -1,8 +1,8 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body } from 'express-validator';
-import { Types } from 'mongoose';
+import type { Types } from 'mongoose';
 
-import { BookmarkFolderItems } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { InvalidParentBookmarkFolderError } from '~/server/models/errors';
 import { serializeBookmarkSecurely } from '~/server/models/serializers/bookmark-serializer';
@@ -25,7 +25,7 @@ const validator = {
           throw new Error('Maximum folder hierarchy of 2 levels');
         }
       }),
-    body('children').optional().isArray().withMessage('Children must be an array'),
+    body('childFolder').optional().isArray().withMessage('Children must be an array'),
     body('bookmarkFolderId').optional().isMongoId().withMessage('Bookark Folder ID must be a valid mongo ID'),
   ],
   bookmarkPage: [
@@ -73,7 +73,7 @@ module.exports = (crowi) => {
         parentFolderId?: Types.ObjectId | string,
     ) => {
       const folders = await BookmarkFolder.find({ owner: userId, parent: parentFolderId })
-        .populate('children')
+        .populate('childFolder')
         .populate({
           path: 'bookmarks',
           model: 'Bookmark',
@@ -90,7 +90,7 @@ module.exports = (crowi) => {
       const returnValue: BookmarkFolderItems[] = [];
 
       const promises = folders.map(async(folder: BookmarkFolderItems) => {
-        const children = await getBookmarkFolders(userId, folder._id);
+        const childFolder = await getBookmarkFolders(userId, folder._id);
 
         // !! DO NOT THIS SERIALIZING OUTSIDE OF PROMISES !! -- 05.23.2023 ryoji-s
         // Serializing outside of promises will cause not populated.
@@ -101,7 +101,7 @@ module.exports = (crowi) => {
           name: folder.name,
           owner: folder.owner,
           bookmarks,
-          children,
+          childFolder,
           parent: folder.parent,
         };
         return res;
@@ -139,10 +139,10 @@ module.exports = (crowi) => {
 
   router.put('/', accessTokenParser, loginRequiredStrictly, validator.bookmarkFolder, async(req, res) => {
     const {
-      bookmarkFolderId, name, parent, children,
+      bookmarkFolderId, name, parent, childFolder,
     } = req.body;
     try {
-      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent, children);
+      const bookmarkFolder = await BookmarkFolder.updateBookmarkFolder(bookmarkFolderId, name, parent, childFolder);
       return res.apiv3({ bookmarkFolder });
     }
     catch (err) {
