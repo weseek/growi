@@ -54,10 +54,10 @@ const Tags = (props: TagsProps): JSX.Element => {
     <div className="grw-tag-labels-container d-flex align-items-center">
       <button
         type="button"
-        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
+        className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <span className="material-symbols-outlined me-2">local_offer</span>
+        <span className="material-symbols-outlined me-1">local_offer</span>
         Tags
       </button>
     </div>
@@ -99,7 +99,13 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
 
 
 type CommonProps = {
+  pageId: string,
+  shareLinkId?: string | null,
+  revisionId?: string | null,
+  path?: string | null,
+  expandContentWidth?: boolean,
   disableSeenUserInfoPopover?: boolean,
+  hideSubControls?: boolean,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
@@ -110,12 +116,7 @@ type CommonProps = {
 }
 
 type PageControlsSubstanceProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId?: string | null,
-  path?: string | null,
   pageInfo: IPageInfoForOperation,
-  expandContentWidth?: boolean,
   onClickEditTagsButton: () => void,
 }
 
@@ -123,7 +124,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, hideSubControls, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -271,43 +272,50 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const isViewMode = editorMode === EditorMode.View;
 
   return (
-    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }} ref={pageControlsRef}>
+    <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
       { isDeviceLargerThanMd && (
         <SearchButton />
       )}
+
       {revisionId != null && !isViewMode && _isIPageInfoForOperation && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && _isIPageInfoForOperation && (
-        <SubscribeButton
-          status={pageInfo.subscriptionStatus}
-          onClick={subscribeClickhandler}
-        />
-      )}
-      {revisionId != null && _isIPageInfoForOperation && (
-        <LikeButtons
-          onLikeClicked={likeClickhandler}
-          sumOfLikers={sumOfLikers}
-          isLiked={isLiked}
-          likers={likers}
-        />
-      )}
-      {revisionId != null && _isIPageInfoForOperation && (
-        <BookmarkButtons
-          pageId={pageId}
-          isBookmarked={pageInfo.isBookmarked}
-          bookmarkCount={pageInfo.bookmarkCount}
-        />
-      )}
-      {revisionId != null && (
-        <SeenUserInfo
-          seenUsers={seenUsers}
-          sumOfSeenUsers={sumOfSeenUsers}
-          disabled={disableSeenUserInfoPopover}
-        />
+
+      { !hideSubControls && (
+        <div className="hstack gap-1">
+          {revisionId != null && _isIPageInfoForOperation && (
+            <SubscribeButton
+              status={pageInfo.subscriptionStatus}
+              onClick={subscribeClickhandler}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <LikeButtons
+              onLikeClicked={likeClickhandler}
+              sumOfLikers={sumOfLikers}
+              isLiked={isLiked}
+              likers={likers}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <BookmarkButtons
+              pageId={pageId}
+              isBookmarked={pageInfo.isBookmarked}
+              bookmarkCount={pageInfo.bookmarkCount}
+            />
+          )}
+          {revisionId != null && (
+            <SeenUserInfo
+              seenUsers={seenUsers}
+              sumOfSeenUsers={sumOfSeenUsers}
+              disabled={disableSeenUserInfoPopover}
+            />
+          ) }
+        </div>
       ) }
+
       { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
           pageId={pageId}
@@ -326,18 +334,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   );
 };
 
-type PageControlsProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId?: string | null,
-  path?: string | null,
-  expandContentWidth?: boolean,
-};
+type PageControlsProps = CommonProps;
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, expandContentWidth,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    pageId, revisionId, shareLinkId,
+    ...rest
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -361,17 +363,11 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
 
   return (
     <PageControlsSubstance
-      {...props}
       pageInfo={pageInfo}
       pageId={pageId}
       revisionId={revisionId}
-      path={path}
       onClickEditTagsButton={onClickEditTagsButton}
-      onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-      onClickRenameMenuItem={onClickRenameMenuItem}
-      onClickDeleteMenuItem={onClickDeleteMenuItem}
-      onClickSwitchContentWidth={onClickSwitchContentWidth}
-      expandContentWidth={expandContentWidth}
+      {...rest}
     />
   );
 });

@@ -316,9 +316,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <nav className="sticky-top">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </nav>
+
+        <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
 
         <DisplaySwitcher
           pageView={(
