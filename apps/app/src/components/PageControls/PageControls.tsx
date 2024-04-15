@@ -35,6 +35,7 @@ import SubscribeButton from './SubscribeButton';
 
 import styles from './PageControls.module.scss';
 
+
 const logger = loggerFactory('growi:components/PageControls');
 
 
@@ -44,6 +45,7 @@ type TagsProps = {
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { onClickEditTagsButton } = props;
+  const { t } = useTranslation('');
 
   return (
     <div className="grw-tag-labels-container d-flex align-items-center">
@@ -53,7 +55,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         onClick={onClickEditTagsButton}
       >
         <span className="material-symbols-outlined me-2">local_offer</span>
-        Tags
+        <h4 className="mb-0">{t('Tags')}</h4>
       </button>
     </div>
   );
