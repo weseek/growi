@@ -8,37 +8,33 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_INSTANCE_ID, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
+import { configManager } from '../service/config-manager';
+
 import type Crowi from '.';
 
 export class OpenTelemetry {
 
-  crowi: Crowi;
-
   name: string;
-
-  instanceId: string;
 
   version: string;
 
   sdkInstance: NodeSDK;
 
-  constructor(crowi: Crowi, name: string, instanceId: string, version: string) {
-    this.crowi = crowi;
+  constructor(name: string, version: string) {
     this.name = name;
-    this.instanceId = instanceId;
     this.version = version;
   }
 
   private generateNodeSDKConfiguration(): Partial<NodeSDKConfiguration> {
     return {
       resource: new Resource({
-        [SEMRESATTRS_SERVICE_NAME]: 'next-app',
-        [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.crowi.configManager?.getConfig('crowi', 'instrumentation:serviceInstanceId'),
+        [SEMRESATTRS_SERVICE_NAME]: this.name,
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'instrumentation:serviceInstanceId'),
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
-      traceExporter: new OTLPTraceExporter({ url: this.crowi.configManager?.getConfig('crowi', 'instrumentation:otlpTracesEndpoint') }),
+      traceExporter: new OTLPTraceExporter({ url: configManager.getConfig('crowi', 'instrumentation:otlpTracesEndpoint') }),
       metricReader: new PeriodicExportingMetricReader({
-        exporter: new OTLPMetricExporter({ url: this.crowi.configManager?.getConfig('crowi', 'instrumentation:otlpMetricsEndpoint') }),
+        exporter: new OTLPMetricExporter({ url: configManager.getConfig('crowi', 'instrumentation:otlpMetricsEndpoint') }),
         exportIntervalMillis: 10000,
       }),
       instrumentations: [getNodeAutoInstrumentations({
@@ -61,7 +57,7 @@ export class OpenTelemetry {
    */
   // eslint-enable
   private overwriteSdkEnabled(): void {
-    process.env.OTEL_SDK_ENABLED = this.crowi.configManager?.getConfig('crowi', 'instrumentation:enabled');
+    process.env.OTEL_SDK_ENABLED = configManager.getConfig('crowi', 'instrumentation:enabled');
   }
 
   public startInstrumentation(): void {
