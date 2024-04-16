@@ -60,6 +60,8 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
 
+    // If parent page is granted to non-user-related groups, let the user select whether or not to inherit them.
+    // Once selected, the request with same params(+ onlyInheritUserRelatedGrantedGroups) and opts will be sent here.
     if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
       try {
         const { isNonUserRelatedGroupsGranted } = await nonUserRelatedGroupsGranted(params.parentPath);
