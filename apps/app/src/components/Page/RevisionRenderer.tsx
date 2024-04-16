@@ -42,16 +42,16 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isEnabledMarp } = useIsEnabledMarp();
-  const [enableSlide, marp] = hasEnabledSlideTypes(markdown);
+  const [, marp, useSlide] = hasEnabledSlideTypes(markdown);
+  const useMarp = !!isEnabledMarp && marp;
 
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       {
-        enableSlide
+        (useMarp || useSlide)
           ? (
             <SlideViewer
-              rendererOptions={rendererOptions}
-              marp={!!isEnabledMarp && marp}
+              marp={useMarp}
             >
               {markdown}
             </SlideViewer>
