@@ -1,4 +1,5 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+
 
 import { isPopulated } from '@growi/core';
 import type {
@@ -10,6 +11,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { useShouldExpandContent } from '~/client/services/layout';
@@ -30,6 +32,7 @@ import { mutatePageTree } from '~/stores/page-listing';
 import {
   useEditorMode, useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
+  useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
 import { CreateTemplateModal } from '../CreateTemplateModal';
@@ -194,11 +197,15 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
   const { data: isAbleToShowPageManagement } = useIsAbleToShowPageManagement();
   const { data: isAbleToChangeEditorMode } = useIsAbleToChangeEditorMode();
+  const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
 
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+
+  const [isStickyActive, setStickyActive] = useState(false);
+
 
   const path = currentPage?.path ?? currentPathname;
   // const grant = currentPage?.grant ?? grantData?.grant;
@@ -288,53 +295,68 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     );
   }, [isLinkSharingDisabled, isReadOnlyUser, pageId, revisionId]);
 
+  // hide sub controls when sticky on mobile device
+  const hideSubControls = useMemo(() => {
+    return !isDeviceLargerThanMd && isStickyActive;
+  }, [isDeviceLargerThanMd, isStickyActive]);
+
   return (
     <>
-      <GroundGlassBar
-        className={`${styles['grw-contextual-sub-navigation']}
-          d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
-        `}
-        data-testid="grw-contextual-sub-nav"
-        id="grw-contextual-sub-nav"
-      >
-        {pageId != null && (
-          <PageControls
-            pageId={pageId}
-            revisionId={revisionId}
-            shareLinkId={shareLinkId}
-            path={path ?? currentPathname} // If the page is empty, "path" is undefined
-            expandContentWidth={shouldExpandContent}
-            disableSeenUserInfoPopover={isSharedUser}
-            showPageControlDropdown={isAbleToShowPageManagement}
-            additionalMenuItemRenderer={additionalMenuItemsRenderer}
-            onClickDuplicateMenuItem={duplicateItemClickedHandler}
-            onClickRenameMenuItem={renameItemClickedHandler}
-            onClickDeleteMenuItem={deleteItemClickedHandler}
-            onClickSwitchContentWidth={switchContentWidthHandler}
-          />
-        )}
+      <GroundGlassBar className="py-4 d-block d-md-none d-print-none border-bottom" />
 
-        {isAbleToChangeEditorMode && (
-          <PageEditorModeManager
-            editorMode={editorMode}
-            isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
-            path={path}
-            // grant={grant}
-            // grantUserGroupId={grantUserGroupId}
-          />
-        )}
+      <Sticky className="z-1" onStateChange={status => setStickyActive(status.status === Sticky.STATUS_FIXED)}>
+        <GroundGlassBar>
 
-        { isGuestUser && (
-          <div className="mt-2">
-            <Link href="/login#register" className="btn me-2" prefetch={false}>
-              <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-            </Link>
-            <Link href="/login#login" className="btn btn-primary" prefetch={false}>
-              <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
-            </Link>
-          </div>
-        ) }
-      </GroundGlassBar>
+          <nav
+            className={`${styles['grw-contextual-sub-navigation']}
+              d-flex align-items-center justify-content-end px-2 px-sm-3 px-md-4 py-1 gap-2 gap-md-4 d-print-none
+            `}
+            data-testid="grw-contextual-sub-nav"
+            id="grw-contextual-sub-nav"
+          >
+
+            {pageId != null && (
+              <PageControls
+                pageId={pageId}
+                revisionId={revisionId}
+                shareLinkId={shareLinkId}
+                path={path ?? currentPathname} // If the page is empty, "path" is undefined
+                expandContentWidth={shouldExpandContent}
+                disableSeenUserInfoPopover={isSharedUser}
+                hideSubControls={hideSubControls}
+                showPageControlDropdown={isAbleToShowPageManagement}
+                additionalMenuItemRenderer={additionalMenuItemsRenderer}
+                onClickDuplicateMenuItem={duplicateItemClickedHandler}
+                onClickRenameMenuItem={renameItemClickedHandler}
+                onClickDeleteMenuItem={deleteItemClickedHandler}
+                onClickSwitchContentWidth={switchContentWidthHandler}
+              />
+            )}
+
+            {isAbleToChangeEditorMode && (
+              <PageEditorModeManager
+                editorMode={editorMode}
+                isBtnDisabled={!!isGuestUser || !!isReadOnlyUser}
+                path={path}
+                // grant={grant}
+                // grantUserGroupId={grantUserGroupId}
+              />
+            )}
+
+            { isGuestUser && (
+              <div className="mt-2">
+                <Link href="/login#register" className="btn me-2" prefetch={false}>
+                  <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                </Link>
+                <Link href="/login#login" className="btn btn-primary" prefetch={false}>
+                  <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
+                </Link>
+              </div>
+            ) }
+          </nav>
+
+        </GroundGlassBar>
+      </Sticky>
 
       {path != null && currentUser != null && !isReadOnlyUser && (
         <CreateTemplateModal
