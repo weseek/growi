@@ -46,19 +46,19 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const hasMarpFlag = isEnabledMarp && marp;
 
   useEffect(() => {
-    let deck: Reveal.Api;
     if (children != null) {
-      deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
-      deck.initialize()
-        .then(() => deck.slide(0)); // navigate to the first slide
-
-      deck.on('ready', removeAllHiddenElements);
-      deck.on('slidechanged', removeAllHiddenElements);
+      return;
     }
+    const deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
+    deck.initialize()
+      .then(() => deck.slide(0)); // navigate to the first slide
+
+    deck.on('ready', removeAllHiddenElements);
+    deck.on('slidechanged', removeAllHiddenElements);
 
     return function cleanup() {
-      deck?.off('ready', removeAllHiddenElements);
-      deck?.off('slidechanged', removeAllHiddenElements);
+      deck.off('ready', removeAllHiddenElements);
+      deck.off('slidechanged', removeAllHiddenElements);
     };
   }, [children, revealOptions]);
 
