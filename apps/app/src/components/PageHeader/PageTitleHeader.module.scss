@@ -6,6 +6,13 @@
     line-height: 1em;
     transform: translateX(0.05rem) translateY(0.05rem);
   }
+
+  .page-title-header-input {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
 .page-title-header-border-color {

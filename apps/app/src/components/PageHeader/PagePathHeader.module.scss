@@ -16,4 +16,11 @@
       transform: translateY(12px);
     }
   }
+
+  .page-path-header-input {
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
