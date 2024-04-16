@@ -113,17 +113,20 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
         className="d-inline-block overflow-hidden"
       >
         { isRenameInputShown && (
-          <div className="position-absolute w-100">
-            <ClosableTextInput
-              value={editingParentPagePath}
-              placeholder={t('Input parent page path')}
-              inputClassName="form-control-sm"
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              validationTarget={ValidationTarget.PAGE}
-              onClickOutside={onPressEscape}
-            />
+          <div className="position-relative">
+            <div className="position-absolute w-100">
+              <ClosableTextInput
+                value={editingParentPagePath}
+                placeholder={t('Input parent page path')}
+                inputClassName="form-control-sm"
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                onChange={onInputChange}
+                validationTarget={ValidationTarget.PAGE}
+                onClickOutside={onPressEscape}
+                useAutosizeInput
+              />
+            </div>
           </div>
         ) }
         <div
