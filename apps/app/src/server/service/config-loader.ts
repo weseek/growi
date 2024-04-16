@@ -717,6 +717,20 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  OPENTELEMETRY_INSTRUMENTATION_ENABLED: {
+    ns: 'crowi',
+    key: 'instrumentation:enabled',
+    type: ValueType.BOOLEAN,
+    default: null,
+  },
+  // TODO: fix after the decision of the instrumentation data specification
+  // https://redmine.weseek.co.jp/issues/144351
+  OPENTELEMETRY_SERVICE_INSTANCE_ID: {
+    ns: 'crowi',
+    key: 'instrumentation:serviceInstanceId',
+    type: ValueType.STRING,
+    default: null,
+  },
 };
 
 

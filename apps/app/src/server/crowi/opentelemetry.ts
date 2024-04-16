@@ -8,54 +8,62 @@ import { NodeSDK } from '@opentelemetry/sdk-node';
 import { TraceIdRatioBasedSampler } from '@opentelemetry/sdk-trace-node';
 import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_INSTANCE_ID, SEMRESATTRS_SERVICE_VERSION } from '@opentelemetry/semantic-conventions';
 
+import loggerFactory from '~/utils/logger';
+
+import { configManager } from '../service/config-manager';
+
+const logger = loggerFactory('growi:opentelemetry');
+
 export class OpenTelemetry {
 
   name: string;
-
-  instanceId: string;
 
   version: string;
 
   sdkInstance: NodeSDK;
 
-  constructor(name: string, instanceId: string, version: string) {
+  constructor(name: string, version: string) {
     this.name = name;
-    this.instanceId = instanceId;
     this.version = version;
   }
 
   private generateNodeSDKConfiguration(): Partial<NodeSDKConfiguration> {
     return {
       resource: new Resource({
-        [SEMRESATTRS_SERVICE_NAME]: 'next-app',
-        // TODO: 環境変数から入れられるようにしたい
-        // https://redmine.weseek.co.jp/issues/144352 で実施予定
-        [SEMRESATTRS_SERVICE_INSTANCE_ID]: this.instanceId,
+        [SEMRESATTRS_SERVICE_NAME]: this.name,
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'instrumentation:serviceInstanceId'),
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
-      // TODO: 宛先を環境変数から設定できるようにしたい
-      // https://redmine.weseek.co.jp/issues/144352 で実施予定
-      traceExporter: new OTLPTraceExporter({ url: 'http://otel-collector:4317' }),
+      traceExporter: new OTLPTraceExporter(),
       metricReader: new PeriodicExportingMetricReader({
-        // TODO: 宛先を環境変数から設定できるようにしたい
-        // https://redmine.weseek.co.jp/issues/144352 で実施予定
-        exporter: new OTLPMetricExporter({ url: 'http://otel-collector:4317' }),
+        exporter: new OTLPMetricExporter(),
         exportIntervalMillis: 10000,
       }),
       instrumentations: [getNodeAutoInstrumentations({
-        // この module は大量の trace を生成するため、無効化する
+        // disable fs instrumentation since this generates very large amount of traces
         // see: https://opentelemetry.io/docs/languages/js/libraries/#registration
         '@opentelemetry/instrumentation-fs': {
           enabled: false,
         },
       })],
-      // 全 trace の半分を出す
-      // see: https://opentelemetry.io/docs/languages/js/sampling/
-      sampler: new TraceIdRatioBasedSampler(0.5),
     };
   }
 
+  /**
+   * Overwrite "OTEL_SDK_DISABLED" env var before sdk.start() is invoked if needed.
+   * Since otel library sees it.
+   */
+  private overwriteSdkDisabled(): void {
+    const instrumentationEnabled = configManager.getConfig('crowi', 'instrumentation:enabled');
+    if (instrumentationEnabled != null && instrumentationEnabled === false) {
+      logger.warn("OTEL_SDK_DISABLED is set 'true' since GROWI's 'instrumentation:enabled' config is false.");
+      process.env.OTEL_SDK_DISABLED = 'true';
+    }
+  }
+
   public startInstrumentation(): void {
+    this.overwriteSdkDisabled();
+
     this.sdkInstance = new NodeSDK(this.generateNodeSDKConfiguration());
     this.sdkInstance.start();
   }
