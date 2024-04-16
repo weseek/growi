@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
@@ -199,8 +199,6 @@ class MailService implements S2sMessageHandlable {
     const templateVars = config.vars || {};
     const output = await renderFilePromisified(
       config.template,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       templateVars,
     );
 
