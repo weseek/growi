@@ -92,7 +92,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`} style={{ maxWidth }}>
-      <div className="me-1 d-inline-block overflow-hidden">
+      <div className="page-title-header-input me-1 d-inline-block overflow-x-scroll">
         { isRenameInputShown && (
           <div className="position-relative">
             <div className="position-absolute w-100">

@@ -109,8 +109,8 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
       onMouseLeave={() => setHover(false)}
     >
       <div
-        id="grw-page-path-header-container"
-        className="d-inline-block overflow-hidden"
+        // id="grw-page-path-header-container"
+        className="page-path-header-input d-inline-block overflow-x-scroll"
       >
         { isRenameInputShown && (
           <div className="position-relative">
