@@ -236,6 +236,21 @@ export const generatePresentationViewOptions = (
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
 
+  const { rehypePlugins } = options;
+
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(
+      addLineNumberAttribute.sanitizeOption,
+    )]
+    : () => {};
+
+  // add rehype plugins
+  rehypePlugins.push(
+    addLineNumberAttribute.rehypePlugin,
+    rehypeSanitizePlugin,
+  );
+
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
   }

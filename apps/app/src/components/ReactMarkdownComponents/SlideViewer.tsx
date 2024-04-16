@@ -3,20 +3,21 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
-import type { RendererOptions } from '~/interfaces/renderer-options';
+import { usePresentationViewOptions } from '~/stores/renderer';
 
 const Slides = dynamic(() => import('../Presentation/Slides').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
   marp: boolean,
   children: string,
-  rendererOptions: RendererOptions,
 }
 
 export const SlideViewer = React.memo((props: SlideViewerProps) => {
   const {
-    marp, children, rendererOptions,
+    marp, children,
   } = props;
+
+  const { data: rendererOptions } = usePresentationViewOptions();
 
   return (
     <Slides
