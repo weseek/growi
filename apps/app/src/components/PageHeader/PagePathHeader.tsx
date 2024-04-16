@@ -1,7 +1,6 @@
 import {
   useState, useCallback, memo,
 } from 'react';
-import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -25,11 +24,12 @@ const moduleClass = styles['page-path-header'];
 type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
+  maxWidth?: number,
 }
 
-export const PagePathHeader: FC<Props> = memo((props: Props) => {
+export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage, className } = props;
+  const { currentPage, className, maxWidth } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -104,12 +104,13 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     <div
       id="page-path-header"
       className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
+      style={{ maxWidth }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <div
         id="grw-page-path-header-container"
-        className="me-2 d-inline-block overflow-hidden"
+        className="d-inline-block overflow-hidden"
       >
         { isRenameInputShown && (
           <div className="position-absolute w-100">
@@ -136,7 +137,9 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+      <div
+        className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
+      >
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
