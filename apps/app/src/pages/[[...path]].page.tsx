@@ -21,7 +21,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
-import { GrantedGroupsInheritanceSelectModal } from '~/components/GrantedGroupInheritanceSelectModal';
+import { GrantedGroupsInheritanceSelectModal } from '~/components/GrantedGroupsInheritanceSelectModal';
 import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';

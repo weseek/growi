@@ -27,7 +27,9 @@ export const useCreateTemplatePage: UseCreateTemplatePage = () => {
     if (isLoadingPagePath || !isCreatable) return;
 
     return createAndTransit(
-      { path: normalizePath(`${currentPagePath}/${label}`), wip: false, origin: Origin.View },
+      {
+        path: normalizePath(`${currentPagePath}/${label}`), parentPath: currentPagePath, wip: false, origin: Origin.View,
+      },
       { shouldCheckPageExists: true },
     );
   }, [currentPagePath, isCreatable, isLoadingPagePath, createAndTransit]);

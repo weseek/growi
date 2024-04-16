@@ -30,7 +30,7 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
       toggle={() => closeModal()}
     >
       <ModalHeader tag="h4" toggle={() => closeModal()} className="bg-primary text-light">
-        閲覧権限のあるグループを選択
+        {t('modal_granted_groups_inheritance_select.select_granted_groups')}
       </ModalHeader>
       <ModalBody>
         <div className="p-3">
@@ -44,7 +44,7 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
               onChange={() => { setOnlyInheritUserRelatedGrantedGroups(false) }}
             />
             <label className="form-check-label" htmlFor="inheritAllGroupsRadio">
-              閲覧権限のあるグループを親ページから全て引き継ぐ
+              {t('modal_granted_groups_inheritance_select.inherit_all_granted_groups_from_parent')}
             </label>
           </div>
           <div className="form-check radio-primary mb-4">
@@ -57,11 +57,11 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
               onChange={() => { setOnlyInheritUserRelatedGrantedGroups(true) }}
             />
             <label className="form-check-label" htmlFor="onlyInheritRelatedGroupsRadio">
-              自分が所属するグループのみを親ページから引き継ぐ
+              {t('modal_granted_groups_inheritance_select.only_inherit_related_groups')}
             </label>
           </div>
           <div className="text-center">
-            <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>{t('Create')}</button>
+            <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>{t('modal_granted_groups_inheritance_select.create_page')}</button>
           </div>
         </div>
       </ModalBody>

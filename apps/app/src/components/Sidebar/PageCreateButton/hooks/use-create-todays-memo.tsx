@@ -25,18 +25,21 @@ export const useCreateTodaysMemo: UseCreateTodaysMemo = () => {
 
   const parentDirName = t('create_page_dropdown.todays.memo');
   const now = format(new Date(), 'yyyy/MM/dd');
+  const parentPath = `${userHomepagePath(currentUser)}/${parentDirName}`;
   const todaysPath = isCreatable
-    ? `${userHomepagePath(currentUser)}/${parentDirName}/${now}`
+    ? `${parentPath}/${now}`
     : null;
 
   const createTodaysMemo = useCallback(async() => {
     if (!isCreatable || todaysPath == null) return;
 
     return createAndTransit(
-      { path: todaysPath, wip: true, origin: Origin.View },
+      {
+        path: todaysPath, parentPath, wip: true, origin: Origin.View,
+      },
       { shouldCheckPageExists: true },
     );
-  }, [createAndTransit, isCreatable, todaysPath]);
+  }, [createAndTransit, isCreatable, todaysPath, parentPath]);
 
   return {
     isCreating,

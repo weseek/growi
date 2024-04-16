@@ -60,7 +60,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
 
-    if (params?.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
+    if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
       try {
         const { isNonUserRelatedGroupsGranted } = await nonUserRelatedGroupsGranted(params.parentPath);
         if (isNonUserRelatedGroupsGranted) {
@@ -121,7 +121,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       setCreating(false);
     }
 
-  }, [currentPagePath, mutateEditorMode, router]);
+  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal]);
 
   return {
     isCreating,
