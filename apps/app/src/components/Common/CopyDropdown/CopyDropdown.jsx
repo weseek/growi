@@ -110,7 +110,12 @@ export const CopyDropdown = (props) => {
 
   return (
     <>
-      <Dropdown className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`} isOpen={dropdownOpen} size="sm" toggle={toggleDropdown}>
+      <Dropdown
+        className={`${styles['grw-copy-dropdown']} grw-copy-dropdown d-print-none`}
+        isOpen={dropdownOpen}
+        size="sm"
+        toggle={toggleDropdown}
+      >
         <DropdownToggle
           caret={isShareLinkMode}
           className={`btn-copy ${dropdownToggleClassName}`}
@@ -143,7 +148,7 @@ export const CopyDropdown = (props) => {
 
           {/* Page path */}
           <CopyToClipboard text={pagePathWithParams} onCopy={showToolTip}>
-            <DropdownItem className="px-3">
+            <DropdownItem className="px-3 text-wrap">
               <DropdownItemContents title={t('copy_to_clipboard.Page path')} contents={pagePathWithParams} />
             </DropdownItem>
           </CopyToClipboard>
@@ -152,7 +157,7 @@ export const CopyDropdown = (props) => {
 
           {/* Page path URL */}
           <CopyToClipboard text={pagePathUrl} onCopy={showToolTip}>
-            <DropdownItem className="px-3">
+            <DropdownItem className="px-3 text-wrap">
               <DropdownItemContents title={t('copy_to_clipboard.Page URL')} contents={pagePathUrl} />
             </DropdownItem>
           </CopyToClipboard>
@@ -161,7 +166,7 @@ export const CopyDropdown = (props) => {
           {/* Permanent Link */}
           { pageId && (
             <CopyToClipboard text={permalink} onCopy={showToolTip}>
-              <DropdownItem className="px-3">
+              <DropdownItem className="px-3 text-wrap">
                 <DropdownItemContents title={t('copy_to_clipboard.Permanent link')} contents={permalink} />
               </DropdownItem>
             </CopyToClipboard>
@@ -172,7 +177,7 @@ export const CopyDropdown = (props) => {
           {/* Page path + Permanent Link */}
           { pageId && (
             <CopyToClipboard text={`${pagePathWithParams}\n${permalink}`} onCopy={showToolTip}>
-              <DropdownItem className="px-3">
+              <DropdownItem className="px-3 text-wrap">
                 <DropdownItemContents
                   title={t('copy_to_clipboard.Page path and permanent link')}
                   contents={<>{pagePathWithParams}<br />{permalink}</>}
