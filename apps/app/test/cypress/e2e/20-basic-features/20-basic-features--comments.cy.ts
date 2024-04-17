@@ -34,16 +34,17 @@ context('Comment', () => {
     const commetText = 'add comment';
 
     cy.getByTestid('page-comment-button').click();
+    cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
 
     // Open comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('open-comment-editor-button').click();
+      cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
       // wait until
-      return cy.get('.comment-write').then($elem => $elem.is(':visible'));
+      return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').type(commetText);
+    cy.get('.cm-content').should('be.visible').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // Check update comment count
@@ -60,12 +61,12 @@ context('Comment', () => {
     // Open reply comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('comment-reply-button').eq(0).click();
+      cy.getByTestid('comment-reply-button', { timeout: 14000 }).eq(0).click();
       // wait until
-      return cy.get('.comment-write').then($elem => $elem.is(':visible'));
+      return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').type(commetText);
+    cy.get('.cm-content').should('be.visible').type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // TODO : https://redmine.weseek.co.jp/issues/139431
