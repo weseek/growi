@@ -32,6 +32,7 @@ import {
   getServerSideCommonProps, generateCustomTitleForPage, getNextI18NextConfig, skipSSR, addActivity,
 } from '../utils/commons';
 
+
 const logger = loggerFactory('growi:next-page:share');
 
 type Props = CommonProps & {
@@ -120,9 +121,8 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
       </Head>
 
       <div className="dynamic-layout-root justify-content-between">
-        <nav className="sticky-top">
-          <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
-        </nav>
+
+        <GrowiContextualSubNavigationForSharedPage page={currentPage ?? props.shareLinkRelatedPage} isLinkSharingDisabled={props.disableLinkSharing} />
 
         <ShareLinkPageView
           pagePath={pagePath}

@@ -120,6 +120,7 @@ export const CopyDropdown = (props) => {
 
         <DropdownMenu
           strategy="fixed"
+          container="body"
         >
           <div className="d-flex align-items-center justify-content-between">
             <DropdownItem header className="px-3">
@@ -134,7 +135,7 @@ export const CopyDropdown = (props) => {
                   checked={isParamsAppended}
                   onChange={toggleAppendParams}
                 />
-                <label className="form-label form-check-label small" htmlFor={customSwitchForParamsId}>Append params</label>
+                <label className="form-label form-check-label small" htmlFor={customSwitchForParamsId}>{ t('copy_to_clipboard.Append params') }</label>
               </div>
             ) }
           </div>
