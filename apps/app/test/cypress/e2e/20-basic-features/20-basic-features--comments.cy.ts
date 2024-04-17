@@ -44,7 +44,7 @@ context('Comment', () => {
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').should('be.visible').type(commetText);
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // Check update comment count
@@ -66,7 +66,7 @@ context('Comment', () => {
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
 
-    cy.get('.cm-content').should('be.visible').type(commetText);
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
     cy.getByTestid("comment-submit-button").eq(0).click();
 
     // TODO : https://redmine.weseek.co.jp/issues/139431
