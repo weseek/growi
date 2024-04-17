@@ -14,14 +14,18 @@ const additionalExtensions: Extension[] = [
 ];
 
 
-type Props = CodeMirrorEditorProps & object
+type Props = CodeMirrorEditorProps & {
+  commentId?: string,
+}
 
 export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
   const {
-    onSave, ...otherProps
+    commentId,
+    onSave, ...rest
   } = props;
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
+  const key = commentId ?? GlobalCodeMirrorEditorKey.COMMENT_NEW;
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(key);
 
   // setup additional extensions
   useEffect(() => {
@@ -55,9 +59,9 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   return (
     <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.COMMENT}
+      editorKey={key}
       onSave={onSave}
-      {...otherProps}
+      {...rest}
     />
   );
 };

@@ -384,6 +384,32 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
   };
 };
 
+
+type EditingCommentsNumOperation = {
+  increment(): Promise<number | undefined>,
+  decrement(): Promise<number | undefined>,
+}
+
+export const useEditingCommentsNum = (): SWRResponse<number, Error> & EditingCommentsNumOperation => {
+  const swrResponse = useSWRStatic<number, Error>('editingCommentsNum', undefined, { fallbackData: 0 });
+
+  const { mutate } = swrResponse;
+
+  const increment = useCallback(() => {
+    return mutate(prevData => (prevData ?? 0) + 1);
+  }, [mutate]);
+  const decrement = useCallback(() => {
+    return mutate(prevData => Math.max(0, (prevData ?? 0) - 1));
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    increment,
+    decrement,
+  };
+};
+
+
 /** **********************************************************
  *                          SWR Hooks
  *                Determined value by context

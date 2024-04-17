@@ -1,11 +1,10 @@
 import type { Nullable } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 
-import { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
-
-import { useStaticSWR } from './use-static-swr';
+import type { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
 
 type IResponseComment = {
   comments: ICommentHasIdList,
@@ -62,23 +61,5 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
     ...swrResponse,
     update,
     post,
-  };
-};
-
-type EditingCommentsNumOperation = {
-  increment(): Promise<number | undefined>,
-  decrement(): Promise<number | undefined>,
-}
-
-export const useSWRxEditingCommentsNum = (): SWRResponse<number, Error> & EditingCommentsNumOperation => {
-  const swrResponse = useStaticSWR<number, Error>('editingCommentsNum', undefined, { fallbackData: 0 });
-
-  return {
-    ...swrResponse,
-    increment: () => swrResponse.mutate((swrResponse.data ?? 0) + 1),
-    decrement: () => {
-      const newValue = (swrResponse.data ?? 0) - 1;
-      return swrResponse.mutate(Math.max(0, newValue));
-    },
   };
 };

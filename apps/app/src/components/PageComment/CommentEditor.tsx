@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import React, {
-  useCallback, useState, useRef, useEffect,
+  useCallback, useState, useEffect,
   useMemo,
 } from 'react';
 
@@ -10,15 +10,13 @@ import {
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
 import {
   TabContent, TabPane,
 } from 'reactstrap';
 
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
-import type { IEditorMethods } from '~/interfaces/editor-methods';
-import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
+import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
@@ -26,6 +24,7 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
+import { useEditingCommentsNum } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
@@ -88,35 +87,19 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const {
     increment: incrementEditingCommentsNum,
     decrement: decrementEditingCommentsNum,
-  } = useSWRxEditingCommentsNum();
+  } = useEditingCommentsNum();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  const [comment, setComment] = useState(commentBody ?? '');
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(currentCommentId ?? GlobalCodeMirrorEditorKey.COMMENT_NEW);
+
+  const [isInitialized, setInitialized] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
-  const [incremented, setIncremented] = useState(false);
 
   const { t } = useTranslation('');
-
-  const editorRef = useRef<IEditorMethods>(null);
-
-  const router = useRouter();
-
-  // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
-  const onRouterChangeComplete = useCallback(() => {
-    editorRef.current?.setValue('');
-  }, []);
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
 
   const handleSelect = useCallback((showPreview: boolean) => {
     setShowPreview(showPreview);
@@ -142,21 +125,20 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   const initializeEditor = useCallback(async() => {
-    const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
-
-    setComment('');
-    setShowPreview(false);
-    setError(undefined);
-    initializeSlackEnabled();
-    // reset value
-    if (editorRef.current == null) { return }
-    editorRef.current.setValue('');
-
-    if (editingCommentsNum != null && editingCommentsNum === 0) {
-      mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
+    if (!isInitialized) {
+      const editingCommentsNum = await decrementEditingCommentsNum();
+      if (editingCommentsNum != null && editingCommentsNum === 0) {
+        mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
+      }
     }
 
-  }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
+    setInitialized(true);
+    setShowPreview(false);
+    setError(undefined);
+
+    initializeSlackEnabled();
+
+  }, [isInitialized, initializeSlackEnabled, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
     initializeEditor();
@@ -164,16 +146,18 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
+    const commentBody = codeMirrorEditor?.getDoc();
+
     try {
       if (currentCommentId != null) {
         // update current comment
-        await updateComment(comment, revisionId, currentCommentId);
+        await updateComment(commentBody, revisionId, currentCommentId);
       }
       else {
         // post new comment
         const postCommentArgs = {
           commentForm: {
-            comment,
+            comment: commentBody,
             revisionId,
             replyTo,
           },
@@ -198,10 +182,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
-  }, [
-    currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor,
-    updateComment, comment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor, updateComment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment]);
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
@@ -222,23 +204,10 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
-  // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
-  //   setComment(newValue);
-  //   if (!isClean && !incremented) {
-  //     incrementEditingCommentsNum();
-  //     setIncremented(true);
-  //   }
-  //   mutateIsEnabledUnsavedWarning(!isClean);
-  // }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
-
-  const onChangeHandler = useCallback((newValue: string) => {
-    setComment(newValue);
-
-    if (!incremented) {
-      incrementEditingCommentsNum();
-      setIncremented(true);
-    }
-  }, [incrementEditingCommentsNum, incremented]);
+  const onChangeHandler = useCallback(() => {
+    incrementEditingCommentsNum();
+    setInitialized(false);
+  }, [incrementEditingCommentsNum]);
 
   // initialize CodeMirrorEditor
   useEffect(() => {
@@ -283,6 +252,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
         <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
           <TabPane tabId="comment_editor">
             <CodeMirrorEditorComment
+              commentId={currentCommentId}
               acceptedUploadFileType={acceptedUploadFileType}
               onChange={onChangeHandler}
               onSave={postCommentHandler}
@@ -292,7 +262,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </TabPane>
           <TabPane tabId="comment_preview">
             <div className="comment-preview-container">
-              <CommentPreview markdown={comment} />
+              <CommentPreview markdown={codeMirrorEditor?.getDoc()} />
             </div>
           </TabPane>
         </TabContent>
