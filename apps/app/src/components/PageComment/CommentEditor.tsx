@@ -58,7 +58,7 @@ const CommentEditorLayout = ({ children }: { children: ReactNode }): JSX.Element
 };
 
 
-export type CommentEditorProps = {
+type CommentEditorProps = {
   pageId: string,
   replyTo?: string,
   revisionId: string,
