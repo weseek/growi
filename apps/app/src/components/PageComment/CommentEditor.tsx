@@ -150,9 +150,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
-    const commentBodyToPost = codeMirrorEditor?.getDoc();
-
-    if (commentBodyToPost == null || commentBodyToPost?.length === 0) return;
+    const commentBodyToPost = codeMirrorEditor?.getDoc() ?? '';
 
     try {
       if (currentCommentId != null) {
@@ -233,20 +231,17 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     </button>
   ), [cancelButtonClickedHandler, t]);
   const submitButton = useMemo(() => {
-    const commentBodyToPost = codeMirrorEditor?.getDoc() ?? '';
-
     return (
       <button
         type="button"
         data-testid="comment-submit-button"
         className="btn btn-primary"
         onClick={postCommentHandler}
-        disabled={commentBodyToPost.length === 0}
       >
         {t('page_comment.comment')}
       </button>
     );
-  }, [codeMirrorEditor, postCommentHandler, t]);
+  }, [postCommentHandler, t]);
 
   return (
     <CommentEditorLayout>
