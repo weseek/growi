@@ -1,5 +1,6 @@
 import {
   type RefObject, useCallback, useEffect,
+  useLayoutEffect,
 } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
@@ -7,6 +8,7 @@ import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
+import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import type { MutatorOptions } from 'swr';
@@ -15,9 +17,8 @@ import {
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import type { IFocusable } from '~/client/interfaces/focusable';
 import { scheduleToPut } from '~/client/services/user-ui-settings';
-import type { IPageGrantData, IPageSelectedGrant } from '~/interfaces/page';
+import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
@@ -385,27 +386,55 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
 };
 
 
-type EditingCommentsNumOperation = {
-  increment(): Promise<number | undefined>,
-  decrement(): Promise<number | undefined>,
+type UseCommentEditorDirtyMapOperation = {
+  evaluate(key: string, commentBody: string): Promise<number>,
+  clean(key: string): Promise<number>,
 }
 
-export const useEditingCommentsNum = (): SWRResponse<number, Error> & EditingCommentsNumOperation => {
-  const swrResponse = useSWRStatic<number, Error>('editingCommentsNum', undefined, { fallbackData: 0 });
+export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Error> & UseCommentEditorDirtyMapOperation => {
+  const router = useRouter();
+
+  const swrResponse = useSWRStatic<Map<string, boolean>, Error>('editingCommentsNum', undefined, { fallbackData: new Map() });
 
   const { mutate } = swrResponse;
 
-  const increment = useCallback(() => {
-    return mutate(prevData => (prevData ?? 0) + 1);
+  const evaluate = useCallback(async(key: string, commentBody: string) => {
+    const newMap = await mutate((map) => {
+      if (map == null) return new Map();
+
+      if (commentBody.length === 0) {
+        map.delete(key);
+      }
+      else {
+        map.set(key, true);
+      }
+
+      return map;
+    });
+    return newMap?.size ?? 0;
   }, [mutate]);
-  const decrement = useCallback(() => {
-    return mutate(prevData => Math.max(0, (prevData ?? 0) - 1));
+  const clean = useCallback(async(key: string) => {
+    const newMap = await mutate((map) => {
+      if (map == null) return new Map();
+      map.delete(key);
+      return map;
+    });
+    return newMap?.size ?? 0;
   }, [mutate]);
+
+  const reset = useCallback(() => mutate(new Map()), [mutate]);
+
+  useLayoutEffect(() => {
+    router.events.on('routeChangeComplete', reset);
+    return () => {
+      router.events.off('routeChangeComplete', reset);
+    };
+  }, [reset, router.events]);
 
   return {
     ...swrResponse,
-    increment,
-    decrement,
+    evaluate,
+    clean,
   };
 };
 

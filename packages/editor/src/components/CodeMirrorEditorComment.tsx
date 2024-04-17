@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
 import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
@@ -14,18 +13,13 @@ const additionalExtensions: Extension[] = [
 ];
 
 
-type Props = CodeMirrorEditorProps & {
-  commentId?: string,
-}
-
-export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
+export const CodeMirrorEditorComment = memo((props: CodeMirrorEditorProps): JSX.Element => {
   const {
-    commentId,
+    editorKey,
     onSave, ...rest
   } = props;
 
-  const key = commentId ?? GlobalCodeMirrorEditorKey.COMMENT_NEW;
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(key);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   // setup additional extensions
   useEffect(() => {
@@ -59,9 +53,9 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   return (
     <CodeMirrorEditor
-      editorKey={key}
+      editorKey={editorKey}
       onSave={onSave}
       {...rest}
     />
   );
-};
+});
