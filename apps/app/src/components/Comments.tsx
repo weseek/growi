@@ -18,7 +18,7 @@ const { isTopPage } = pagePathUtils;
 
 
 const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const CommentEditorPre = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditorPre), { ssr: false });
 
 export type CommentsProps = {
   pageId: string,
@@ -84,9 +84,8 @@ export const Comments = (props: CommentsProps): JSX.Element => {
       </div>
       {!isDeleted && (
         <div id="page-comment-write">
-          <CommentEditor
+          <CommentEditorPre
             pageId={pageId}
-            isForNewComment
             onCommentButtonClicked={onCommentButtonClickHandler}
             revisionId={revision._id}
           />

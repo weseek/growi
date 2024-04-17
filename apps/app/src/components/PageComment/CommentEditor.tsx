@@ -1,5 +1,7 @@
+import type { ReactNode } from 'react';
 import React, {
   useCallback, useState, useRef, useEffect,
+  useMemo,
 } from 'react';
 
 import {
@@ -43,9 +45,22 @@ const logger = loggerFactory('growi:components:CommentEditor');
 
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
+
+const CommentEditorLayout = ({ children }: { children: ReactNode }): JSX.Element => {
+  return (
+    <div className={`${styles['comment-editor-styles']} form`}>
+      <div className="comment-form">
+        <div className="bg-comment rounded">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
 export type CommentEditorProps = {
   pageId: string,
-  isForNewComment?: boolean,
   replyTo?: string,
   revisionId: string,
   currentCommentId?: string,
@@ -54,11 +69,10 @@ export type CommentEditorProps = {
   onCommentButtonClicked?: () => void,
 }
 
-
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
-    pageId, isForNewComment, replyTo, revisionId,
+    pageId, replyTo, revisionId,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
 
@@ -80,7 +94,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
   const [comment, setComment] = useState(commentBody ?? '');
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState();
@@ -146,18 +159,9 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
 
   const cancelButtonClickedHandler = useCallback(() => {
-    // change state to not ready
-    // when this editor is for the new comment mode
-    if (isForNewComment) {
-      setIsReadyToUse(false);
-    }
-
     initializeEditor();
-
-    if (onCancelButtonClicked != null) {
-      onCancelButtonClicked();
-    }
-  }, [isForNewComment, onCancelButtonClicked, initializeEditor]);
+    onCancelButtonClicked?.();
+  }, [onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
     try {
@@ -218,35 +222,6 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
     });
   }, [codeMirrorEditor, pageId]);
 
-  const getCommentHtml = useCallback(() => {
-    if (currentPagePath == null) {
-      return <></>;
-    }
-
-    return <CommentPreview markdown={comment} />;
-  }, [currentPagePath, comment]);
-
-  const renderBeforeReady = useCallback((): JSX.Element => {
-    return (
-      <div>
-        <NotAvailableForGuest>
-          <NotAvailableForReadOnlyUser>
-            <button
-              type="button"
-              className="btn btn-outline-primary w-100 text-start py-3"
-              onClick={() => setIsReadyToUse(true)}
-              data-testid="open-comment-editor-button"
-            >
-              <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
-              <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
-              <small>{t('page_comment.add_a_comment')}...</small>
-            </button>
-          </NotAvailableForReadOnlyUser>
-        </NotAvailableForGuest>
-      </div>
-    );
-  }, [currentUser]);
-
   // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
   //   setComment(newValue);
   //   if (!isClean && !incremented) {
@@ -274,102 +249,123 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [codeMirrorEditor, commentBody]);
 
 
-  const renderReady = () => {
-    const commentPreview = getCommentHtml();
-
-    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
-    const cancelButton = (
-      <button
-        type="button"
-        className="btn btn-outline-neutral-secondary"
-        onClick={cancelButtonClickedHandler}
-      >
-        {t('Cancel')}
-      </button>
-    );
-    const submitButton = (
-      <button
-        type="button"
-        data-testid="comment-submit-button"
-        className="btn btn-primary"
-        onClick={postCommentHandler}
-      >
-        {t('page_comment.comment')}
-      </button>
-    );
-
-    return (
-      <>
-        <div className="px-4 pt-3 pb-1">
-          <div className="d-flex justify-content-between align-items-center mb-2">
-            <div className="d-flex">
-              <UserPicture user={currentUser} noLink noTooltip />
-              <p className="ms-2 mb-0">{t('page_comment.add_a_comment')}</p>
-            </div>
-            <SwitchingButtonGroup showPreview={showPreview} onSelected={handleSelect} />
-          </div>
-          <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
-            <TabPane tabId="comment_editor">
-              <CodeMirrorEditorComment
-                acceptedUploadFileType={acceptedUploadFileType}
-                onChange={onChangeHandler}
-                onSave={postCommentHandler}
-                onUpload={uploadHandler}
-                editorSettings={editorSettings}
-              />
-            </TabPane>
-            <TabPane tabId="comment_preview">
-              <div className="comment-preview-container">
-                {commentPreview}
-              </div>
-            </TabPane>
-          </TabContent>
-        </div>
-
-        <div className="comment-submit px-4 pb-3 mb-2">
-          <div className="d-flex">
-            <span className="flex-grow-1" />
-            <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
-
-            {isSlackConfigured && isSlackEnabled != null
-              && (
-                <div className="align-self-center me-md-3">
-                  <SlackNotification
-                    isSlackEnabled={isSlackEnabled}
-                    slackChannels={slackChannels}
-                    onEnabledFlagChange={isSlackEnabledToggleHandler}
-                    onChannelChange={slackChannelsChangedHandler}
-                    id="idForComment"
-                  />
-                </div>
-              )
-            }
-            <div className="d-none d-sm-block">
-              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
-            </div>
-          </div>
-          <div className="d-block d-sm-none mt-2">
-            <div className="d-flex justify-content-end">
-              {error && errorMessage}
-              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  };
+  const errorMessage = useMemo(() => <span className="text-danger text-end me-2">{error}</span>, [error]);
+  const cancelButton = useMemo(() => (
+    <button
+      type="button"
+      className="btn btn-outline-neutral-secondary"
+      onClick={cancelButtonClickedHandler}
+    >
+      {t('Cancel')}
+    </button>
+  ), [cancelButtonClickedHandler, t]);
+  const submitButton = useMemo(() => (
+    <button
+      type="button"
+      data-testid="comment-submit-button"
+      className="btn btn-primary"
+      onClick={postCommentHandler}
+    >
+      {t('page_comment.comment')}
+    </button>
+  ), [postCommentHandler, t]);
 
   return (
-    <div className={`${styles['comment-editor-styles']} form page-comment-form`}>
-      <div className="comment-form">
-        <div className="comment-form-main bg-comment rounded">
-          {isReadyToUse
-            ? renderReady()
-            : renderBeforeReady()
+    <CommentEditorLayout>
+      <div className="px-4 pt-3 pb-1">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <div className="d-flex">
+            <UserPicture user={currentUser} noLink noTooltip />
+            <p className="ms-2 mb-0">{t('page_comment.add_a_comment')}</p>
+          </div>
+          <SwitchingButtonGroup showPreview={showPreview} onSelected={handleSelect} />
+        </div>
+        <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
+          <TabPane tabId="comment_editor">
+            <CodeMirrorEditorComment
+              acceptedUploadFileType={acceptedUploadFileType}
+              onChange={onChangeHandler}
+              onSave={postCommentHandler}
+              onUpload={uploadHandler}
+              editorSettings={editorSettings}
+            />
+          </TabPane>
+          <TabPane tabId="comment_preview">
+            <div className="comment-preview-container">
+              <CommentPreview markdown={comment} />
+            </div>
+          </TabPane>
+        </TabContent>
+      </div>
+
+      <div className="comment-submit px-4 pb-3 mb-2">
+        <div className="d-flex">
+          <span className="flex-grow-1" />
+          <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
+
+          {isSlackConfigured && isSlackEnabled != null
+            && (
+              <div className="align-self-center me-md-3">
+                <SlackNotification
+                  isSlackEnabled={isSlackEnabled}
+                  slackChannels={slackChannels}
+                  onEnabledFlagChange={isSlackEnabledToggleHandler}
+                  onChannelChange={slackChannelsChangedHandler}
+                  id="idForComment"
+                />
+              </div>
+            )
           }
+          <div className="d-none d-sm-block">
+            <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
+          </div>
+        </div>
+        <div className="d-block d-sm-none mt-2">
+          <div className="d-flex justify-content-end">
+            {error && errorMessage}
+            <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </CommentEditorLayout>
   );
 
+};
+
+
+export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
+
+  const { data: currentUser } = useCurrentUser();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme({ themeData: resolvedTheme });
+
+  const [isReadyToUse, setIsReadyToUse] = useState(false);
+
+  const { t } = useTranslation('');
+
+  const render = useCallback((): JSX.Element => {
+    return (
+      <CommentEditorLayout>
+        <NotAvailableForGuest>
+          <NotAvailableForReadOnlyUser>
+            <button
+              type="button"
+              className="btn btn-outline-primary w-100 text-start py-3"
+              onClick={() => setIsReadyToUse(true)}
+              data-testid="open-comment-editor-button"
+            >
+              <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
+              <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
+              <small>{t('page_comment.add_a_comment')}...</small>
+            </button>
+          </NotAvailableForReadOnlyUser>
+        </NotAvailableForGuest>
+      </CommentEditorLayout>
+    );
+  }, [currentUser, t]);
+
+  return isReadyToUse
+    ? <CommentEditor {...props} onCancelButtonClicked={() => setIsReadyToUse(false)} />
+    : render();
 };
