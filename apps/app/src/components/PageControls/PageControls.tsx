@@ -81,7 +81,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
       onClick={() => onClickMenuItem(!(expandContentWidth))}
       className="grw-page-control-dropdown-item"
     >
-      <div className="form-check form-switch ms-1">
+      <div className="form-check form-switch ms-1 mb-0">
         <input
           id="switchContentWidth"
           className="form-check-input"
@@ -89,7 +89,7 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
           checked={expandContentWidth}
           onChange={() => {}}
         />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
+        <label className="form-label form-check-label mb-0" htmlFor="switchContentWidth">
           { t('wide_view') }
         </label>
       </div>
