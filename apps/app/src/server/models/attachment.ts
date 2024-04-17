@@ -38,6 +38,7 @@ export interface IAttachmentModel extends Model<IAttachmentDocument> {
 const attachmentSchema = new Schema({
   page: { type: Types.ObjectId, ref: 'Page', index: true },
   creator: { type: Types.ObjectId, ref: 'User', index: true },
+  filePath: { type: String }, // DEPRECATED: remains for backward compatibility for v3.3.x or below
   fileName: { type: String, required: true, unique: true },
   fileFormat: { type: String, required: true },
   fileSize: { type: Number, default: 0 },

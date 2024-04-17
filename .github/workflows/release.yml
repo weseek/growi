@@ -146,7 +146,7 @@ jobs:
         readme-filepath: ./apps/app/docker/README.md
 
     - name: Slack Notification
-      uses: weseek/ghaction-release-slack-notification@dev/6.3.x
+      uses: weseek/ghaction-release-slack-notification@master
       with:
         channel: '#release'
         url: ${{ secrets.SLACK_WEBHOOK_URL }}
