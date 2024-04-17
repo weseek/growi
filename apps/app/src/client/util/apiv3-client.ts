@@ -1,5 +1,5 @@
 // eslint-disable-next-line no-restricted-imports
-import { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
 import urljoin from 'url-join';
 
 // eslint-disable-next-line no-restricted-imports

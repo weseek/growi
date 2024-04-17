@@ -1,21 +1,22 @@
+import type { ReactNode } from 'react';
 import React, {
-  useCallback, useState, useRef, useEffect,
+  useCallback, useState, useEffect,
+  useMemo,
 } from 'react';
 
 import {
   CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
 } from '@growi/editor';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
 import {
-  Button, TabContent, TabPane,
+  TabContent, TabPane,
 } from 'reactstrap';
 
-import { apiv3Get, apiv3PostForm } from '~/client/util/apiv3-client';
+import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
-import type { IEditorMethods } from '~/interfaces/editor-methods';
-import { useSWRxPageComment, useSWRxEditingCommentsNum } from '~/stores/comment';
+import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
 } from '~/stores/context';
@@ -23,14 +24,16 @@ import {
   useSWRxSlackChannels, useIsSlackEnabled, useIsEnabledUnsavedWarning, useEditorSettings,
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
+import { useCommentEditorDirtyMap } from '~/stores/ui';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { CustomNavTab } from '../CustomNavigation/CustomNav';
 import { NotAvailableForGuest } from '../NotAvailableForGuest';
 import { NotAvailableForReadOnlyUser } from '../NotAvailableForReadOnlyUser';
 
 import { CommentPreview } from './CommentPreview';
+import { SwitchingButtonGroup } from './SwitchingButtonGroup';
+
 
 import '@growi/editor/dist/style.css';
 import styles from './CommentEditor.module.scss';
@@ -42,20 +45,21 @@ const logger = loggerFactory('growi:components:CommentEditor');
 const SlackNotification = dynamic(() => import('../SlackNotification').then(mod => mod.SlackNotification), { ssr: false });
 
 
-const navTabMapping = {
-  comment_editor: {
-    Icon: () => <span className="material-symbols-outlined">edit_square</span>,
-    i18n: 'Write',
-  },
-  comment_preview: {
-    Icon: () => <span className="material-symbols-outlined">play_arrow</span>,
-    i18n: 'Preview',
-  },
+const CommentEditorLayout = ({ children }: { children: ReactNode }): JSX.Element => {
+  return (
+    <div className={`${styles['comment-editor-styles']} form`}>
+      <div className="comment-form">
+        <div className="bg-comment rounded">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export type CommentEditorProps = {
+
+type CommentEditorProps = {
   pageId: string,
-  isForNewComment?: boolean,
   replyTo?: string,
   revisionId: string,
   currentCommentId?: string,
@@ -64,11 +68,10 @@ export type CommentEditorProps = {
   onCommentButtonClicked?: () => void,
 }
 
-
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
-    pageId, isForNewComment, replyTo, revisionId,
+    pageId, replyTo, revisionId,
     currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
   } = props;
 
@@ -82,39 +85,33 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsEnabledUnsavedWarning } = useIsEnabledUnsavedWarning();
   const {
-    increment: incrementEditingCommentsNum,
-    decrement: decrementEditingCommentsNum,
-  } = useSWRxEditingCommentsNum();
+    evaluate: evaluateEditorDirtyMap,
+    clean: cleanEditorDirtyMap,
+  } = useCommentEditorDirtyMap();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
   const { resolvedTheme } = useNextThemes();
   mutateResolvedTheme({ themeData: resolvedTheme });
 
-  const [isReadyToUse, setIsReadyToUse] = useState(!isForNewComment);
-  const [comment, setComment] = useState(commentBody ?? '');
-  const [activeTab, setActiveTab] = useState('comment_editor');
+  const editorKey = useMemo(() => {
+    if (replyTo != null) {
+      return `comment_replyTo_${replyTo}`;
+    }
+    if (currentCommentId != null) {
+      return `comment_edit_${currentCommentId}`;
+    }
+    return GlobalCodeMirrorEditorKey.COMMENT_NEW;
+  }, [currentCommentId, replyTo]);
+
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
+
+  const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState();
   const [slackChannels, setSlackChannels] = useState<string>('');
-  const [incremented, setIncremented] = useState(false);
 
-  const editorRef = useRef<IEditorMethods>(null);
+  const { t } = useTranslation('');
 
-  const router = useRouter();
-
-  // UnControlled CodeMirror value is not reset on page transition, so explicitly set the value to the initial value
-  const onRouterChangeComplete = useCallback(() => {
-    editorRef.current?.setValue('');
-  }, []);
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', onRouterChangeComplete);
-    return () => {
-      router.events.off('routeChangeComplete', onRouterChangeComplete);
-    };
-  }, [onRouterChangeComplete, router.events]);
-
-  const handleSelect = useCallback((activeTab: string) => {
-    setActiveTab(activeTab);
+  const handleSelect = useCallback((showPreview: boolean) => {
+    setShowPreview(showPreview);
   }, []);
 
   // DO NOT dependent on slackChannelsData directly: https://github.com/weseek/growi/pull/7332
@@ -137,47 +134,34 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, []);
 
   const initializeEditor = useCallback(async() => {
-    const editingCommentsNum = comment !== '' ? await decrementEditingCommentsNum() : undefined;
+    const dirtyNum = await cleanEditorDirtyMap(editorKey);
+    mutateIsEnabledUnsavedWarning(dirtyNum > 0);
 
-    setComment('');
-    setActiveTab('comment_editor');
+    setShowPreview(false);
     setError(undefined);
+
     initializeSlackEnabled();
-    // reset value
-    if (editorRef.current == null) { return }
-    editorRef.current.setValue('');
 
-    if (editingCommentsNum != null && editingCommentsNum === 0) {
-      mutateIsEnabledUnsavedWarning(false); // must be after clearing comment or else onChange will override bool
-    }
-
-  }, [initializeSlackEnabled, comment, decrementEditingCommentsNum, mutateIsEnabledUnsavedWarning]);
+  }, [editorKey, cleanEditorDirtyMap, mutateIsEnabledUnsavedWarning, initializeSlackEnabled]);
 
   const cancelButtonClickedHandler = useCallback(() => {
-    // change state to not ready
-    // when this editor is for the new comment mode
-    if (isForNewComment) {
-      setIsReadyToUse(false);
-    }
-
     initializeEditor();
-
-    if (onCancelButtonClicked != null) {
-      onCancelButtonClicked();
-    }
-  }, [isForNewComment, onCancelButtonClicked, initializeEditor]);
+    onCancelButtonClicked?.();
+  }, [onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
+    const commentBodyToPost = codeMirrorEditor?.getDoc() ?? '';
+
     try {
       if (currentCommentId != null) {
         // update current comment
-        await updateComment(comment, revisionId, currentCommentId);
+        await updateComment(commentBodyToPost, revisionId, currentCommentId);
       }
       else {
         // post new comment
         const postCommentArgs = {
           commentForm: {
-            comment,
+            comment: commentBodyToPost,
             revisionId,
             replyTo,
           },
@@ -191,9 +175,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
       initializeEditor();
 
-      if (onCommentButtonClicked != null) {
-        onCommentButtonClicked();
-      }
+      onCommentButtonClicked?.();
 
       // Insert empty string as new comment editor is opened after comment
       codeMirrorEditor?.initDoc('');
@@ -202,93 +184,32 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       const errorMessage = err.message || 'An unknown error occured when posting comment';
       setError(errorMessage);
     }
-  }, [
-    currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor,
-    updateComment, comment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment,
-  ]);
+  // eslint-disable-next-line max-len
+  }, [currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor, updateComment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment]);
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
-    files.forEach(async(file) => {
-      try {
-        const { data: resLimit } = await apiv3Get('/attachment/limit', { fileSize: file.size });
-
-        if (!resLimit.isUploadable) {
-          throw new Error(resLimit.errorMessage);
-        }
-
-        const formData = new FormData();
-        formData.append('file', file);
-        if (pageId != null) {
-          formData.append('page_id', pageId);
-        }
-
-        const { data: resAdd } = await apiv3PostForm('/attachment', formData);
-
-        const attachment = resAdd.attachment;
+    uploadAttachments(pageId, files, {
+      onUploaded: (attachment) => {
         const fileName = attachment.originalName;
 
-        let insertText = `[${fileName}](${attachment.filePathProxied})\n`;
-        // when image
-        if (attachment.fileFormat.startsWith('image/')) {
-          // modify to "![fileName](url)" syntax
-          insertText = `!${insertText}`;
-        }
+        const prefix = attachment.fileFormat.startsWith('image/')
+          ? '!' // use "![fileName](url)" syntax when image
+          : '';
+        const insertText = `${prefix}[${fileName}](${attachment.filePathProxied})\n`;
 
         codeMirrorEditor?.insertText(insertText);
-      }
-      catch (e) {
-        logger.error('failed to upload', e);
-        toastError(e);
-      }
+      },
+      onError: (error) => {
+        toastError(error);
+      },
     });
-
   }, [codeMirrorEditor, pageId]);
 
-  const getCommentHtml = useCallback(() => {
-    if (currentPagePath == null) {
-      return <></>;
-    }
-
-    return <CommentPreview markdown={comment} />;
-  }, [currentPagePath, comment]);
-
-  const renderBeforeReady = useCallback((): JSX.Element => {
-    return (
-      <div className="text-center">
-        <NotAvailableForGuest>
-          <NotAvailableForReadOnlyUser>
-            <button
-              type="button"
-              className="btn btn-lg btn-link"
-              onClick={() => setIsReadyToUse(true)}
-              data-testid="open-comment-editor-button"
-            >
-              <span className="material-symbols-outlined">comment</span> Add Comment
-            </button>
-          </NotAvailableForReadOnlyUser>
-        </NotAvailableForGuest>
-      </div>
-    );
-  }, []);
-
-  // const onChangeHandler = useCallback((newValue: string, isClean: boolean) => {
-  //   setComment(newValue);
-  //   if (!isClean && !incremented) {
-  //     incrementEditingCommentsNum();
-  //     setIncremented(true);
-  //   }
-  //   mutateIsEnabledUnsavedWarning(!isClean);
-  // }, [mutateIsEnabledUnsavedWarning, incrementEditingCommentsNum, incremented]);
-
-  const onChangeHandler = useCallback((newValue: string) => {
-    setComment(newValue);
-
-    if (!incremented) {
-      incrementEditingCommentsNum();
-      setIncremented(true);
-    }
-  }, [incrementEditingCommentsNum, incremented]);
+  const onChangeHandler = useCallback(async(value: string) => {
+    const dirtyNum = await evaluateEditorDirtyMap(editorKey, value);
+    mutateIsEnabledUnsavedWarning(dirtyNum > 0);
+  }, [editorKey, evaluateEditorDirtyMap, mutateIsEnabledUnsavedWarning]);
 
   // initialize CodeMirrorEditor
   useEffect(() => {
@@ -299,116 +220,132 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [codeMirrorEditor, commentBody]);
 
 
-  const renderReady = () => {
-    const commentPreview = getCommentHtml();
-
-    const errorMessage = <span className="text-danger text-end me-2">{error}</span>;
-    const cancelButton = (
-      <Button
-        outline
-        color="danger"
-        size="xs"
-        className="btn btn-outline-danger rounded-pill"
-        onClick={cancelButtonClickedHandler}
-      >
-        Cancel
-      </Button>
-    );
-    const submitButton = (
-      <Button
+  const errorMessage = useMemo(() => <span className="text-danger text-end me-2">{error}</span>, [error]);
+  const cancelButton = useMemo(() => (
+    <button
+      type="button"
+      className="btn btn-outline-neutral-secondary"
+      onClick={cancelButtonClickedHandler}
+    >
+      {t('Cancel')}
+    </button>
+  ), [cancelButtonClickedHandler, t]);
+  const submitButton = useMemo(() => {
+    return (
+      <button
+        type="button"
         data-testid="comment-submit-button"
-        outline
-        color="primary"
-        className="btn btn-outline-primary rounded-pill"
+        className="btn btn-primary"
         onClick={postCommentHandler}
       >
-        Comment
-      </Button>
+        {t('page_comment.comment')}
+      </button>
     );
-
-    return (
-      <>
-        <div className="comment-write">
-          <CustomNavTab activeTab={activeTab} navTabMapping={navTabMapping} onNavSelected={handleSelect} hideBorderBottom />
-          <TabContent activeTab={activeTab}>
-            <TabPane tabId="comment_editor">
-              <CodeMirrorEditorComment
-                acceptedUploadFileType={acceptedUploadFileType}
-                onChange={onChangeHandler}
-                onSave={postCommentHandler}
-                onUpload={uploadHandler}
-                editorSettings={editorSettings}
-              />
-              {/* <Editor
-                ref={editorRef}
-                value={commentBody ?? ''} // DO NOT use state
-                isUploadable={isUploadable}
-                isUploadAllFileAllowed={isUploadAllFileAllowed}
-                onChange={onChangeHandler}
-                onUpload={uploadHandler}
-                onCtrlEnter={ctrlEnterHandler}
-                isComment
-              /> */}
-              {/*
-                Note: <OptionsSelector /> is not optimized for ComentEditor in terms of responsive design.
-                See a review comment in https://github.com/weseek/growi/pull/3473
-              */}
-            </TabPane>
-            <TabPane tabId="comment_preview">
-              <div className="comment-form-preview">
-                {commentPreview}
-              </div>
-            </TabPane>
-          </TabContent>
-        </div>
-
-        <div className="comment-submit">
-          <div className="d-flex">
-            <span className="flex-grow-1" />
-            <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
-
-            {isSlackConfigured && isSlackEnabled != null
-              && (
-                <div className="align-self-center me-md-2">
-                  <SlackNotification
-                    isSlackEnabled={isSlackEnabled}
-                    slackChannels={slackChannels}
-                    onEnabledFlagChange={isSlackEnabledToggleHandler}
-                    onChannelChange={slackChannelsChangedHandler}
-                    id="idForComment"
-                  />
-                </div>
-              )
-            }
-            <div className="d-none d-sm-block">
-              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
-            </div>
-          </div>
-          <div className="d-block d-sm-none mt-2">
-            <div className="d-flex justify-content-end">
-              {error && errorMessage}
-              <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  };
+  }, [postCommentHandler, t]);
 
   return (
-    <div className={`${styles['comment-editor-styles']} form page-comment-form`}>
-      <div className="comment-form">
-        <div className="comment-form-user">
-          <UserPicture user={currentUser} noLink noTooltip />
+    <CommentEditorLayout>
+      <div className="px-4 pt-3 pb-1">
+        <div className="d-flex justify-content-between align-items-center mb-2">
+          <div className="d-flex">
+            <UserPicture user={currentUser} noLink noTooltip />
+            <p className="ms-2 mb-0">{t('page_comment.add_a_comment')}</p>
+          </div>
+          <SwitchingButtonGroup showPreview={showPreview} onSelected={handleSelect} />
         </div>
-        <div className="comment-form-main">
-          {isReadyToUse
-            ? renderReady()
-            : renderBeforeReady()
+        <TabContent activeTab={showPreview ? 'comment_preview' : 'comment_editor'}>
+          <TabPane tabId="comment_editor">
+            <CodeMirrorEditorComment
+              editorKey={editorKey}
+              acceptedUploadFileType={acceptedUploadFileType}
+              onChange={onChangeHandler}
+              onSave={postCommentHandler}
+              onUpload={uploadHandler}
+              editorSettings={editorSettings}
+            />
+          </TabPane>
+          <TabPane tabId="comment_preview">
+            <div className="comment-preview-container">
+              <CommentPreview markdown={codeMirrorEditor?.getDoc() ?? ''} />
+            </div>
+          </TabPane>
+        </TabContent>
+      </div>
+
+      <div className="comment-submit px-4 pb-3 mb-2">
+        <div className="d-flex">
+          <span className="flex-grow-1" />
+          <span className="d-none d-sm-inline">{errorMessage && errorMessage}</span>
+
+          {isSlackConfigured && isSlackEnabled != null
+            && (
+              <div className="align-self-center me-md-3">
+                <SlackNotification
+                  isSlackEnabled={isSlackEnabled}
+                  slackChannels={slackChannels}
+                  onEnabledFlagChange={isSlackEnabledToggleHandler}
+                  onChannelChange={slackChannelsChangedHandler}
+                  id="idForComment"
+                />
+              </div>
+            )
           }
+          <div className="d-none d-sm-block">
+            <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
+          </div>
+        </div>
+        <div className="d-block d-sm-none mt-2">
+          <div className="d-flex justify-content-end">
+            {error && errorMessage}
+            <span className="me-2">{cancelButton}</span><span>{submitButton}</span>
+          </div>
         </div>
       </div>
-    </div>
+    </CommentEditorLayout>
   );
 
+};
+
+
+export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
+
+  const { data: currentUser } = useCurrentUser();
+  const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
+  const { resolvedTheme } = useNextThemes();
+  mutateResolvedTheme({ themeData: resolvedTheme });
+
+  const [isReadyToUse, setIsReadyToUse] = useState(false);
+
+  const { t } = useTranslation('');
+
+  const render = useCallback((): JSX.Element => {
+    return (
+      <CommentEditorLayout>
+        <NotAvailableForGuest>
+          <NotAvailableForReadOnlyUser>
+            <button
+              type="button"
+              className="btn btn-outline-primary w-100 text-start py-3"
+              onClick={() => setIsReadyToUse(true)}
+              data-testid="open-comment-editor-button"
+            >
+              <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-3" />
+              <span className="material-symbols-outlined me-1 fs-5">add_comment</span>
+              <small>{t('page_comment.add_a_comment')}...</small>
+            </button>
+          </NotAvailableForReadOnlyUser>
+        </NotAvailableForGuest>
+      </CommentEditorLayout>
+    );
+  }, [currentUser, t]);
+
+  return isReadyToUse
+    ? (
+      <CommentEditor
+        onCommentButtonClicked={() => setIsReadyToUse(false)}
+        onCancelButtonClicked={() => setIsReadyToUse(false)}
+        {...props}
+      />
+    )
+    : render();
 };

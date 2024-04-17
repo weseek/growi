@@ -2,8 +2,8 @@ import React, { useState, type FC, useCallback } from 'react';
 
 import { Origin } from '@growi/core';
 
-import { createPage } from '~/client/services/page-operation';
-import { useSWRxPageChildren, mutatePageTree } from '~/stores/page-listing';
+import { createPage } from '~/client/services/create-page';
+import { mutatePageTree } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../../utils/should-create-wip-page';
@@ -57,8 +57,6 @@ export const useNewPageInput = (): UseNewPageInput => {
 
     const { itemNode, stateHandlers } = props;
     const { page, children } = itemNode;
-
-    const { mutate: mutateChildren } = useSWRxPageChildren(stateHandlers?.isOpen ? page._id : null);
 
     const { getDescCount } = usePageTreeDescCountMap();
     const descendantCount = getDescCount(page._id) || page.descendantCount || 0;

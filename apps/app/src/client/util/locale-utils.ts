@@ -8,12 +8,14 @@ import * as nextI18NextConfig from '^/config/next-i18next.config';
 const DIAGRAMS_NET_LANG_MAP = {
   ja_JP: 'ja',
   zh_CN: 'zh',
+  fr_FR: 'fr',
 };
 
 const ACCEPT_LANG_MAP = {
   en: Lang.en_US,
   ja: Lang.ja_JP,
   zh: Lang.zh_CN,
+  fr: Lang.fr_FR,
 };
 
 export const getDiagramsNetLangCode = (lang) => {

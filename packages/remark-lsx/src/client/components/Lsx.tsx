@@ -1,6 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
 
-
 import { LoadingSpinner } from '@growi/ui/dist/components';
 
 import { useSWRxLsx } from '../stores/lsx';
@@ -117,7 +116,9 @@ const LsxSubstance = React.memo(({
             onClick={() => setSize(size => size + 1)}
           >
             Load more<br />
-            <span className="text-muted small start-items-label">({leftItemsNum} pages left)</span>
+            <span className="text-muted small start-items-label">
+              {leftItemsNum} pages left
+            </span>
           </button>
         </div>
       </div>
