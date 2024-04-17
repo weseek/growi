@@ -5,15 +5,20 @@ import { keymap, scrollPastEnd } from '@codemirror/view';
 
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
+
+import type { GlobalCodeMirrorEditorKey } from 'src/consts';
 
 
 const additionalExtensions: Extension[] = [
   scrollPastEnd(),
 ];
 
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
+}
 
-export const CodeMirrorEditorComment = memo((props: CodeMirrorEditorProps): JSX.Element => {
+export const CodeMirrorEditorComment = memo((props: Props): JSX.Element => {
   const {
     editorKey,
     onSave, ...rest

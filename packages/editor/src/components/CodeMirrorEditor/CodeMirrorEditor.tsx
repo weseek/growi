@@ -30,7 +30,6 @@ const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
 });
 
 export type CodeMirrorEditorProps = {
-  editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedUploadFileType?: AcceptedUploadFileType,
   indentSize?: number,
   editorSettings?: EditorSettings,
@@ -41,6 +40,7 @@ export type CodeMirrorEditorProps = {
 }
 
 type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
   hideToolbar?: boolean,
 }
 
