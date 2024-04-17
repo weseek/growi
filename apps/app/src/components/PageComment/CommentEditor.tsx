@@ -146,18 +146,20 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
   }, [onCancelButtonClicked, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
-    const commentBody = codeMirrorEditor?.getDoc();
+    const commentBodyToPost = codeMirrorEditor?.getDoc();
+
+    if (commentBodyToPost == null || commentBodyToPost?.length === 0) return;
 
     try {
       if (currentCommentId != null) {
         // update current comment
-        await updateComment(commentBody, revisionId, currentCommentId);
+        await updateComment(commentBodyToPost, revisionId, currentCommentId);
       }
       else {
         // post new comment
         const postCommentArgs = {
           commentForm: {
-            comment: commentBody,
+            comment: commentBodyToPost,
             revisionId,
             replyTo,
           },
@@ -171,9 +173,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
       initializeEditor();
 
-      if (onCommentButtonClicked != null) {
-        onCommentButtonClicked();
-      }
+      onCommentButtonClicked?.();
 
       // Insert empty string as new comment editor is opened after comment
       codeMirrorEditor?.initDoc('');
@@ -228,16 +228,21 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       {t('Cancel')}
     </button>
   ), [cancelButtonClickedHandler, t]);
-  const submitButton = useMemo(() => (
-    <button
-      type="button"
-      data-testid="comment-submit-button"
-      className="btn btn-primary"
-      onClick={postCommentHandler}
-    >
-      {t('page_comment.comment')}
-    </button>
-  ), [postCommentHandler, t]);
+  const submitButton = useMemo(() => {
+    const commentBodyToPost = codeMirrorEditor?.getDoc() ?? '';
+
+    return (
+      <button
+        type="button"
+        data-testid="comment-submit-button"
+        className="btn btn-primary"
+        onClick={postCommentHandler}
+        disabled={commentBodyToPost.length === 0}
+      >
+        {t('page_comment.comment')}
+      </button>
+    );
+  }, [codeMirrorEditor, postCommentHandler, t]);
 
   return (
     <CommentEditorLayout>
@@ -262,7 +267,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
           </TabPane>
           <TabPane tabId="comment_preview">
             <div className="comment-preview-container">
-              <CommentPreview markdown={codeMirrorEditor?.getDoc()} />
+              <CommentPreview markdown={codeMirrorEditor?.getDoc() ?? ''} />
             </div>
           </TabPane>
         </TabContent>
@@ -336,6 +341,12 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
   }, [currentUser, t]);
 
   return isReadyToUse
-    ? <CommentEditor {...props} onCancelButtonClicked={() => setIsReadyToUse(false)} />
+    ? (
+      <CommentEditor
+        onCommentButtonClicked={() => setIsReadyToUse(false)}
+        onCancelButtonClicked={() => setIsReadyToUse(false)}
+        {...props}
+      />
+    )
     : render();
 };

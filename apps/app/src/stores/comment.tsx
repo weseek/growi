@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import type { Nullable } from '@growi/core';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
@@ -24,8 +26,9 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
     ([endpoint, pageId]) => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
   );
 
-  const update = async(comment: string, revisionId: string, commentId: string) => {
-    const { mutate } = swrResponse;
+  const { mutate } = swrResponse;
+
+  const update = useCallback(async(comment: string, revisionId: string, commentId: string) => {
     await apiPost('/comments.update', {
       commentForm: {
         comment,
@@ -34,10 +37,9 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
       },
     });
     mutate();
-  };
+  }, [mutate]);
 
-  const post = async(args: ICommentPostArgs) => {
-    const { mutate } = swrResponse;
+  const post = useCallback(async(args: ICommentPostArgs) => {
     const { commentForm, slackNotificationForm } = args;
     const { comment, revisionId, replyTo } = commentForm;
     const { isSlackEnabled, slackChannels } = slackNotificationForm;
@@ -55,7 +57,7 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
       },
     });
     mutate();
-  };
+  }, [mutate, pageId]);
 
   return {
     ...swrResponse,
