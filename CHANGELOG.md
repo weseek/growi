@@ -1,8 +1,14 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.4](https://github.com/weseek/growi/compare/v6.3.3...v6.3.4) - 2024-04-17
+
+### 🐛 Bug Fixes
+
+* fix: Add filePath to the schema of attachement for backward compatibility for v3.3 or earlier (v6.3.x) (#8680) @yuki-takei
 
 ## [v6.3.3](https://github.com/weseek/growi/compare/v6.3.2...v6.3.3) - 2024-04-02
 
