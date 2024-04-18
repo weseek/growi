@@ -15,7 +15,7 @@ const DEFAULT_IMAGE = '/images/icons/user.svg';
 
 
 type UserPictureRootProps = {
-  user: Partial<IUser>,
+  user: IUser,
   className?: string,
   children?: ReactNode,
 }
@@ -28,11 +28,11 @@ const UserPictureRootWithLink = forwardRef<HTMLSpanElement, UserPictureRootProps
   const router = useRouter();
 
   const { user } = props;
-  const href = pagePathUtils.userHomepagePath(user);
 
   const clickHandler = useCallback(() => {
+    const href = pagePathUtils.userHomepagePath(user);
     router.push(href);
-  }, [href, router]);
+  }, [router, user]);
 
   // Using <span> tag here instead of <a> tag because UserPicture is used in SearchResultList which is essentially a anchor tag.
   // Nested anchor tags causes a warning.
@@ -64,7 +64,7 @@ const withTooltip = (UserPictureSpanElm: React.ForwardRefExoticComponent<UserPic
 /**
  * type guard to determine whether the specified object is IUser
  */
-const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is Partial<IUser> => {
+const isUserObj = (obj: Partial<IUser> | Ref<IUser>): obj is IUser => {
   return typeof obj !== 'string' && 'username' in obj;
 };
 
