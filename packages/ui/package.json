@@ -40,6 +40,7 @@
     "@growi/core": "link:../core"
   },
   "devDependencies": {
+    "date-fns": "^3.6.0",
     "reactstrap": "^9.2.0"
   },
   "peerDependencies": {

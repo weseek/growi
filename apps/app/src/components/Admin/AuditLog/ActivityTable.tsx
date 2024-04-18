@@ -4,7 +4,7 @@ import React, { useState, useCallback } from 'react';
 import { isPopulated } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'reactstrap';

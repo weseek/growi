@@ -103,7 +103,7 @@
     "cookie-parser": "^1.4.5",
     "csurf": "^1.11.0",
     "csv-to-markdown-table": "^1.4.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.7",
     "detect-indent": "^7.0.0",
     "diff": "^5.0.0",
