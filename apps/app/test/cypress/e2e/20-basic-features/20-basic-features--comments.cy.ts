@@ -34,7 +34,7 @@ context('Comment', () => {
     const commetText = 'add comment';
 
     cy.getByTestid('page-comment-button').click();
-    cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
+    // cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
 
     // Open comment editor
     cy.waitUntil(() => {
@@ -61,7 +61,7 @@ context('Comment', () => {
     // Open reply comment editor
     cy.waitUntil(() => {
       // do
-      cy.getByTestid('comment-reply-button', { timeout: 14000 }).eq(0).click();
+      cy.getByTestid('comment-reply-button', { timeout: 14000 }).click();
       // wait until
       return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     });
