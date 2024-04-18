@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
 
-import { exist, nonUserRelatedGroupsGranted } from '~/client/services/page-operation';
+import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-operation';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
@@ -64,7 +64,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
     // Once selected, the request with same params(+ onlyInheritUserRelatedGrantedGroups) and opts will be sent here.
     if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
       try {
-        const { isNonUserRelatedGroupsGranted } = await nonUserRelatedGroupsGranted(params.parentPath);
+        const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
         if (isNonUserRelatedGroupsGranted) {
           openGrantedGroupsInheritanceSelectModal(params, opts);
           return;

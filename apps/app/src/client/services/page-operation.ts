@@ -160,7 +160,7 @@ interface NonUserRelatedGroupsGrantedResponse {
   isNonUserRelatedGroupsGranted: boolean,
 }
 
-export const nonUserRelatedGroupsGranted = async(path: string): Promise<NonUserRelatedGroupsGrantedResponse> => {
+export const getIsNonUserRelatedGroupsGranted = async(path: string): Promise<NonUserRelatedGroupsGrantedResponse> => {
   const res = await apiv3Get<NonUserRelatedGroupsGrantedResponse>('/page/non-user-related-groups-granted', { path });
   return res.data;
 };

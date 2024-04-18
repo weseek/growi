@@ -1,7 +1,9 @@
 import { useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
-import { Modal, ModalHeader, ModalBody } from 'reactstrap';
+import {
+  Modal, ModalHeader, ModalBody, ModalFooter,
+} from 'reactstrap';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
@@ -29,11 +31,11 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
       isOpen={isOpened}
       toggle={() => closeModal()}
     >
-      <ModalHeader tag="h4" toggle={() => closeModal()} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => closeModal()} className="text-light">
         {t('modal_granted_groups_inheritance_select.select_granted_groups')}
       </ModalHeader>
       <ModalBody>
-        <div className="p-3">
+        <div className="px-3 pt-3">
           <div className="form-check radio-primary mb-3">
             <input
               type="radio"
@@ -47,7 +49,7 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
               {t('modal_granted_groups_inheritance_select.inherit_all_granted_groups_from_parent')}
             </label>
           </div>
-          <div className="form-check radio-primary mb-4">
+          <div className="form-check radio-primary">
             <input
               type="radio"
               id="onlyInheritRelatedGroupsRadio"
@@ -60,11 +62,12 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
               {t('modal_granted_groups_inheritance_select.only_inherit_related_groups')}
             </label>
           </div>
-          <div className="text-center">
-            <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>{t('modal_granted_groups_inheritance_select.create_page')}</button>
-          </div>
         </div>
       </ModalBody>
+      <ModalFooter className="grw-modal-footer">
+        <button type="button" className="me-2 btn btn-secondary" onClick={() => closeModal()}>{t('Cancel')}</button>
+        <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>{t('modal_granted_groups_inheritance_select.create_page')}</button>
+      </ModalFooter>
     </Modal>
   );
 };

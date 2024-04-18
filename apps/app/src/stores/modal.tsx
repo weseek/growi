@@ -66,10 +66,12 @@ export const useGrantedGroupsInheritanceSelectModal = (
     'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
   );
 
+  const { mutate } = swrResponse;
+
   return {
     ...swrResponse,
-    open: (params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts) => swrResponse.mutate({ isOpened: true, params, opts }),
-    close: () => swrResponse.mutate({ isOpened: false }),
+    open: useCallback((params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts) => mutate({ isOpened: true, params, opts }), [mutate]),
+    close: useCallback(() => mutate({ isOpened: false }), [mutate]),
   };
 };
 

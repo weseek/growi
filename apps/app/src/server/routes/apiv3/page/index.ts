@@ -645,6 +645,10 @@ module.exports = (crowi) => {
     try {
       const page = await Page.findByPathAndViewer(path, user, null, true);
 
+      if (page == null) {
+        return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+      }
+
       if (page.grant !== PageGrant.GRANT_USER_GROUP) {
         return res.apiv3({ isNonUserRelatedGroupsGranted: false });
       }
