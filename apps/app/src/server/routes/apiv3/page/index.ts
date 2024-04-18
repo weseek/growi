@@ -22,6 +22,8 @@ import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
 
+import type { ApiV3Response } from '../interfaces/apiv3-response';
+
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { publishPageHandlersFactory } from './publish-page';
@@ -638,29 +640,30 @@ module.exports = (crowi) => {
   });
 
   // Check if non user related groups are granted page access
-  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator, async(req, res) => {
-    const { user } = req;
-    const { path } = req.query;
-    const pageGrantService = crowi.pageGrantService as IPageGrantService;
-    try {
-      const page = await Page.findByPathAndViewer(path, user, null, true);
+  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
+    async(req, res: ApiV3Response) => {
+      const { user } = req;
+      const { path } = req.query;
+      const pageGrantService = crowi.pageGrantService as IPageGrantService;
+      try {
+        const page = await Page.findByPathAndViewer(path, user, null, true);
 
-      if (page == null) {
-        return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+        if (page == null) {
+          return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+        }
+
+        if (page.grant !== PageGrant.GRANT_USER_GROUP) {
+          return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+        }
+
+        const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
+        return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
       }
-
-      if (page.grant !== PageGrant.GRANT_USER_GROUP) {
-        return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+      catch (err) {
+        logger.error('get-page-failed', err);
+        return res.apiv3Err(err, 500);
       }
-
-      const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
-      return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
-    }
-    catch (err) {
-      logger.error('get-page-failed', err);
-      return res.apiv3Err(err, 500);
-    }
-  });
+    });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;

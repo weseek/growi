@@ -95,8 +95,10 @@ const PageCreateModal: React.FC = () => {
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
     return createAndTransit(
-      { path: joinedPath, wip: true, origin: Origin.View },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+      {
+        path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
+      },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal, onAborted: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
 
@@ -107,12 +109,13 @@ const PageCreateModal: React.FC = () => {
     return createAndTransit(
       {
         path: pageNameInput,
+        parentPath: pathname,
         wip: true,
         origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal, onAborted: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, pageNameInput]);
+  }, [closeCreateModal, createAndTransit, pageNameInput, pathname]);
 
   /**
    * access template page

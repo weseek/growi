@@ -60,24 +60,6 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
 
-    // If parent page is granted to non-user-related groups, let the user select whether or not to inherit them.
-    // Once selected, the request with same params(+ onlyInheritUserRelatedGrantedGroups) and opts will be sent here.
-    if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
-      try {
-        const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
-        if (isNonUserRelatedGroupsGranted) {
-          openGrantedGroupsInheritanceSelectModal(params, opts);
-          return;
-        }
-      }
-      catch (err) {
-        throw err;
-      }
-      finally {
-        onTerminated?.();
-      }
-    }
-
     // check the page existence
     if (shouldCheckPageExists && params.path != null) {
       const pagePath = params.path;
@@ -100,6 +82,23 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       }
       finally {
         onTerminated?.();
+      }
+    }
+
+    // If parent page is granted to non-user-related groups, let the user select whether or not to inherit them.
+    // Once selected, the request with same params(+ onlyInheritUserRelatedGrantedGroups) and opts will be sent here.
+    if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
+      try {
+        const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
+        if (isNonUserRelatedGroupsGranted) {
+          openGrantedGroupsInheritanceSelectModal(params, opts);
+          onAborted?.();
+          return;
+        }
+      }
+      catch (err) {
+        // Do not throw error when the parent page is empty, since empty parent page could be created on create request
+        if (err[0]?.code !== 'page_unreachable_or_empty') throw err;
       }
     }
 
