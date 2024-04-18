@@ -1,5 +1,6 @@
 import {
   forwardRef, useMemo, useRef, useEffect,
+  DetailedHTMLProps,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -23,11 +24,14 @@ import { Toolbar } from './Toolbar';
 
 import style from './CodeMirrorEditor.module.scss';
 
-const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
-  return (
-    <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
-  );
-});
+const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>(
+  (props, ref) => {
+    const { className, ...rest } = props;
+    return (
+      <div className={`${className} flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} {...rest} />
+    );
+  },
+);
 
 export type CodeMirrorEditorProps = {
   acceptedUploadFileType?: AcceptedUploadFileType,
@@ -48,6 +52,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
     hideToolbar,
+
     acceptedUploadFileType = AcceptedUploadFileType.NONE,
     indentSize,
     editorSettings,
