@@ -58,7 +58,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         onClick={onClickEditTagsButton}
       >
         <span className="material-symbols-outlined me-1">local_offer</span>
-        Tags
+        <span className="d-none d-sm-inline">Tags</span>
       </button>
     </div>
   );
@@ -273,7 +273,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
-      { isDeviceLargerThanMd && (
+      { isViewMode && isDeviceLargerThanMd && (
         <SearchButton />
       )}
 
