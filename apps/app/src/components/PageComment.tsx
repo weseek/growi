@@ -196,10 +196,10 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                   <CommentEditor
                     pageId={pageId}
                     replyTo={comment._id}
-                    onCancelButtonClicked={() => {
+                    onCanceled={() => {
                       removeShowEditorId(comment._id);
                     }}
-                    onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
+                    onCommented={() => onCommentButtonClickHandler(comment._id)}
                     revisionId={revisionId}
                   />
                 )}

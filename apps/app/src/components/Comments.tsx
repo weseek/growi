@@ -83,7 +83,7 @@ export const Comments = (props: CommentsProps): JSX.Element => {
         <div id="page-comment-write">
           <CommentEditorPre
             pageId={pageId}
-            onCommentButtonClicked={onCommentButtonClickHandler}
+            onCommented={onCommentButtonClickHandler}
             revisionId={revision._id}
           />
         </div>
