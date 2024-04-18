@@ -26,7 +26,7 @@ import { ReplyComments } from './PageComment/ReplyComments';
 import styles from './PageComment.module.scss';
 
 
-export type PageCommentProps = {
+type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
