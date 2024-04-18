@@ -1,6 +1,7 @@
 import type { FC } from 'react';
 import React, { useState, useCallback } from 'react';
 
+import { isPopulated } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns';
@@ -51,7 +52,7 @@ export const ActivityTable : FC<Props> = (props: Props) => {
                       <UserPicture user={activity.user} />
                       <a
                         className="ms-2"
-                        href={pagePathUtils.userHomepagePath(activity.user)}
+                        href={isPopulated(activity.user) ? pagePathUtils.userHomepagePath(activity.user) : undefined}
                       >
                         {activity.snapshot?.username}
                       </a>
