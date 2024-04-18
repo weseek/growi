@@ -15,7 +15,7 @@ export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension>
     case 'material':
       return (await import('cm6-theme-material-dark')).materialDark;
     case 'nord':
-      return (await import('cm6-theme-nord')).nord;
+      return (await import('./nord')).nord;
     case 'cobalt':
       return (await import('./cobalt')).cobalt;
     case 'kimbie':
