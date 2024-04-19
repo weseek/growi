@@ -17,7 +17,8 @@ export const PageHeader = (): JSX.Element => {
 
   const maxWidth = useMemo(() => {
     if (pageControlsX == null || pageHeaderRef.current == null) {
-      return undefined;
+      // Length that allows users to use PageHeader functionality.
+      return 300;
     }
     // At least 10px space between PageHeader and PageControls
     return pageControlsX - pageHeaderRef.current.getBoundingClientRect().x - 10;
