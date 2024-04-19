@@ -2,21 +2,22 @@ import type {
   HasObjectId, IUser, IPage,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
-import { subDays } from 'date-fns';
-import { Types, FilterQuery, UpdateQuery } from 'mongoose';
+import { subDays } from 'date-fns/subDays';
+import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
 import { AllEssentialActions } from '~/interfaces/activity';
-import { InAppNotificationStatuses, PaginateResult } from '~/interfaces/in-app-notification';
-import { ActivityDocument } from '~/server/models/activity';
+import type { PaginateResult } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import type { ActivityDocument } from '~/server/models/activity';
+import type { InAppNotificationDocument } from '~/server/models/in-app-notification';
 import {
   InAppNotification,
-  InAppNotificationDocument,
 } from '~/server/models/in-app-notification';
 import InAppNotificationSettings from '~/server/models/in-app-notification-settings';
 import Subscription from '~/server/models/subscription';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../crowi';
+import type Crowi from '../crowi';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { generateSnapshot } from './in-app-notification/in-app-notification-utils';
