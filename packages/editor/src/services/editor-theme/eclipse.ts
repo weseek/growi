@@ -1,9 +1,8 @@
-// Ref: https://github.com/vadimdemedes/thememirror/blob/94a6475a9113ec03d880fcb817aadcc5a16e82e4/source/themes/ayu-light.ts
+// Ref: @uiw/codemirror-theme-eclipse/esm/index.js
 
 import { tags as t } from '@lezer/highlight';
 import { createTheme } from '@uiw/codemirror-themes';
 
-// @uiw/codemirror-theme-eclipse/esm/index.js
 export const eclipse = createTheme({
   theme: 'light',
   settings: {
