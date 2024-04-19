@@ -23,7 +23,7 @@ export const Toolbar = memo((props: Props): JSX.Element => {
 
   const { editorKey, acceptedUploadFileType, onUpload } = props;
   return (
-    <div className={`d-flex gap-2 py-1 px-2 px-md-3 border-top codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
+    <div className={`d-flex gap-2 py-1 px-2 px-md-3 border-top ${styles['codemirror-editor-toolbar']}`}>
       <AttachmentsDropup editorKey={editorKey} onUpload={onUpload} acceptedUploadFileType={acceptedUploadFileType} />
       <TextFormatTools editorKey={editorKey} />
       <EmojiButton

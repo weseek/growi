@@ -10,7 +10,7 @@ import { isIPageInfoForListing, isIPageInfoForEntity } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pathUtils } from '@growi/core/dist/utils';
 import { UserPicture, PageListMeta } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import Clamp from 'react-multiline-clamp';

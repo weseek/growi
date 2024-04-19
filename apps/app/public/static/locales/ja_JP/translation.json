@@ -57,7 +57,7 @@
   "Timeline View": "タイムライン",
   "History": "更新履歴",
   "attachment_data": "添付データ",
-  "No_attachments_yet": "No attachments yet.",
+  "No_attachments_yet": "添付データはありません",
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Not available in this version": "このバージョンでは利用できません",
@@ -83,6 +83,7 @@
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
+  "Latest": "最新",
   "User ID": "ユーザーID",
   "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
@@ -125,6 +126,7 @@
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
   "page_list": "ページリスト",
+  "comments": "コメント",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -148,6 +150,7 @@
   "wide_view": "ワイドビュー",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
+  "Bookmarks": "ブックマーク",
   "In-App Notification": "通知",
   "original_path": "元のパス",
   "new_path": "新しいパス",
@@ -173,6 +176,10 @@
   },
   "custom_navigation": {
     "no_pages_under_this_page": "このページの配下にはページが存在しません。"
+  },
+  "author_info": {
+    "created_at": "作成日",
+    "last_revision_posted_at": "最終更新日"
   },
   "installer": {
     "tab": "アカウント作成",
@@ -818,7 +825,7 @@
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed": "パスを修復できませんでした"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
   },
