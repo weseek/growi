@@ -1,5 +1,6 @@
 import { GroupType, Origin } from '@growi/core';
 import { templateChecker, pagePathUtils, pathUtils } from '@growi/core/dist/utils';
+import { differenceInYears } from 'date-fns/differenceInYears';
 import escapeStringRegexp from 'escape-string-regexp';
 
 import { Comment } from '~/features/comment/server/models/comment';
@@ -18,7 +19,6 @@ import UserGroupRelation from './user-group-relation';
 
 const nodePath = require('path');
 
-const differenceInYears = require('date-fns/differenceInYears');
 const debug = require('debug')('growi:models:page');
 const mongoose = require('mongoose');
 const urljoin = require('url-join');

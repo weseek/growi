@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
