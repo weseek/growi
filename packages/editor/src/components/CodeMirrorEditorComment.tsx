@@ -1,7 +1,7 @@
 import { memo, useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
-import { keymap, scrollPastEnd } from '@codemirror/view';
+import { keymap } from '@codemirror/view';
 
 import { useCodeMirrorEditorIsolated } from '../stores';
 
@@ -11,7 +11,6 @@ import type { GlobalCodeMirrorEditorKey } from 'src/consts';
 
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
 ];
 
 type Props = CodeMirrorEditorProps & {
