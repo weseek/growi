@@ -1,5 +1,6 @@
 import {
   type RefObject, useCallback, useEffect,
+  useLayoutEffect,
 } from 'react';
 
 import { PageGrant, type Nullable } from '@growi/core';
@@ -7,6 +8,7 @@ import { type SWRResponseWithUtils, useSWRStatic, withUtils } from '@growi/core/
 import { pagePathUtils, isClient, isServer } from '@growi/core/dist/utils';
 import { Breakpoint } from '@growi/ui/dist/interfaces';
 import { addBreakpointListener, cleanupBreakpointListener } from '@growi/ui/dist/utils';
+import { useRouter } from 'next/router';
 import type { HtmlElementNode } from 'rehype-toc';
 import type SimpleBar from 'simplebar-react';
 import type { MutatorOptions } from 'swr';
@@ -15,9 +17,8 @@ import {
 } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
-import type { IFocusable } from '~/client/interfaces/focusable';
 import { scheduleToPut } from '~/client/services/user-ui-settings';
-import type { IPageGrantData } from '~/interfaces/page';
+import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
 import {
@@ -271,6 +272,21 @@ export const useCurrentSidebarContents = (
   return withUtils(swrResponse, { mutateAndSave });
 };
 
+export const usePageControlsX = (
+    initialData?: number,
+): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
+  const swrResponse = useSWRStatic('pageControlsX', initialData, { fallbackData: 1000 });
+
+  const { mutate } = swrResponse;
+
+  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opt?) => {
+    scheduleToPut({ currentPageControlsX: data });
+    return mutate(data, opt);
+  }, [mutate]);
+
+  return withUtils(swrResponse, { mutateAndSave });
+};
+
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
   const swrResponse = useSWRStatic('productNavWidth', initialData, { fallbackData: 320 });
 
@@ -348,8 +364,8 @@ export const useSidebarMode = (): SWRResponseWithUtils<DetectSidebarModeUtils, S
   };
 };
 
-export const useSelectedGrant = (initialData?: Nullable<IPageGrantData>): SWRResponse<Nullable<IPageGrantData>, Error> => {
-  return useStaticSWR<Nullable<IPageGrantData>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
+export const useSelectedGrant = (initialData?: Nullable<IPageSelectedGrant>): SWRResponse<Nullable<IPageSelectedGrant>, Error> => {
+  return useSWRStatic<Nullable<IPageSelectedGrant>, Error>('selectedGrant', initialData, { fallbackData: { grant: PageGrant.GRANT_PUBLIC } });
 };
 
 type PageTreeDescCountMapUtils = {
@@ -368,6 +384,60 @@ export const usePageTreeDescCountMap = (initialData?: UpdateDescCountData): SWRR
     update: (newData: UpdateDescCountData) => swrResponse.mutate(new Map([...(swrResponse.data || new Map()), ...newData])),
   };
 };
+
+
+type UseCommentEditorDirtyMapOperation = {
+  evaluate(key: string, commentBody: string): Promise<number>,
+  clean(key: string): Promise<number>,
+}
+
+export const useCommentEditorDirtyMap = (): SWRResponse<Map<string, boolean>, Error> & UseCommentEditorDirtyMapOperation => {
+  const router = useRouter();
+
+  const swrResponse = useSWRStatic<Map<string, boolean>, Error>('editingCommentsNum', undefined, { fallbackData: new Map() });
+
+  const { mutate } = swrResponse;
+
+  const evaluate = useCallback(async(key: string, commentBody: string) => {
+    const newMap = await mutate((map) => {
+      if (map == null) return new Map();
+
+      if (commentBody.length === 0) {
+        map.delete(key);
+      }
+      else {
+        map.set(key, true);
+      }
+
+      return map;
+    });
+    return newMap?.size ?? 0;
+  }, [mutate]);
+  const clean = useCallback(async(key: string) => {
+    const newMap = await mutate((map) => {
+      if (map == null) return new Map();
+      map.delete(key);
+      return map;
+    });
+    return newMap?.size ?? 0;
+  }, [mutate]);
+
+  const reset = useCallback(() => mutate(new Map()), [mutate]);
+
+  useLayoutEffect(() => {
+    router.events.on('routeChangeComplete', reset);
+    return () => {
+      router.events.off('routeChangeComplete', reset);
+    };
+  }, [reset, router.events]);
+
+  return {
+    ...swrResponse,
+    evaluate,
+    clean,
+  };
+};
+
 
 /** **********************************************************
  *                          SWR Hooks

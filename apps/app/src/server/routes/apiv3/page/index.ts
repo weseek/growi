@@ -1,23 +1,25 @@
 import path from 'path';
 
+import type { IPage } from '@growi/core';
 import {
   AllSubscriptionStatusType, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
+import type { IPageGrantData } from '~/interfaces/page';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import { apiV3FormValidator } from '~/server/middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '~/server/middlewares/exclude-read-only-user';
 import { GlobalNotificationSettingEvent } from '~/server/models';
+import type { PageModel } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
-import UserGroup from '~/server/models/user-group';
 import { configManager } from '~/server/service/config-manager';
+import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { divideByType } from '~/server/util/granted-group';
 import loggerFactory from '~/utils/logger';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
@@ -466,8 +468,7 @@ module.exports = (crowi) => {
       return res.apiv3Err(err, 500);
     }
 
-    const result = { page };
-    result.seenUser = page.seenUsers;
+    const result = { page, seenUser: page.seenUsers };
 
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
@@ -538,12 +539,12 @@ module.exports = (crowi) => {
   /**
    * @swagger
    *
-   *    /page/is-grant-normalized:
+   *    /page/grant-data:
    *      get:
    *        tags: [Page]
    *        summary: /page/info
-   *        description: Retrieve current page's isGrantNormalized value
-   *        operationId: getIsGrantNormalized
+   *        description: Retrieve current page's grant data
+   *        operationId: getPageGrantData
    *        parameters:
    *          - name: pageId
    *            in: query
@@ -552,7 +553,7 @@ module.exports = (crowi) => {
    *              $ref: '#/components/schemas/Page/properties/_id'
    *        responses:
    *          200:
-   *            description: Successfully retrieved current isGrantNormalized.
+   *            description: Successfully retrieved current grant data.
    *            content:
    *              application/json:
    *                schema:
@@ -565,10 +566,12 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/is-grant-normalized', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
-    const Page = crowi.model('Page');
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    const pageGrantService = crowi.pageGrantService as IPageGrantService;
+
     const page = await Page.findByIdAndViewer(pageId, req.user, null, false);
 
     if (page == null) {
@@ -579,29 +582,19 @@ module.exports = (crowi) => {
     const {
       path, grant, grantedUsers, grantedGroups,
     } = page;
-
-    let isGrantNormalized;
+    let isGrantNormalized = false;
     try {
-      isGrantNormalized = await crowi.pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
+      isGrantNormalized = await pageGrantService.isGrantNormalized(req.user, path, grant, grantedUsers, grantedGroups, false, false);
     }
     catch (err) {
       logger.error('Error occurred while processing isGrantNormalized.', err);
       return res.apiv3Err(err, 500);
     }
 
-    const userRelatedGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(page, req.user);
-    const { grantedUserGroups, grantedExternalUserGroups } = divideByType(userRelatedGrantedGroups);
-    const currentPageUserGroups = await UserGroup.find({ _id: { $in: grantedUserGroups } });
-    const currentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: grantedExternalUserGroups } });
-    const grantedUserGroupData = currentPageUserGroups.map((group) => {
-      return { id: group._id, name: group.name, type: 'UserGroup' };
-    });
-    const grantedExternalUserGroupData = currentPageExternalUserGroups.map((group) => {
-      return { id: group._id, name: group.name, type: 'ExternalUserGroup' };
-    });
-    const currentPageGrant = {
-      grant,
-      userRelatedGrantedGroups: [...grantedUserGroupData, ...grantedExternalUserGroupData],
+    const currentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(page, req.user);
+    const currentPageGrant: IPageGrantData = {
+      grant: page.grant,
+      groupGrantData: currentPageGroupGrantData,
     };
 
     // page doesn't have parent page
@@ -626,22 +619,10 @@ module.exports = (crowi) => {
       return res.apiv3({ isGrantNormalized, grantData });
     }
 
-    const userRelatedParentGrantedGroups = await crowi.pageGrantService.getUserRelatedGrantedGroups(parentPage, req.user);
-    const {
-      grantedUserGroups: parentGrantedUserGroupIds,
-      grantedExternalUserGroups: parentGrantedExternalUserGroupIds,
-    } = divideByType(userRelatedParentGrantedGroups);
-    const parentPageUserGroups = await UserGroup.find({ _id: { $in: parentGrantedUserGroupIds } });
-    const parentPageExternalUserGroups = await ExternalUserGroup.find({ _id: { $in: parentGrantedExternalUserGroupIds } });
-    const parentGrantedUserGroupData = parentPageUserGroups.map((group) => {
-      return { id: group._id, name: group.name };
-    });
-    const parentGrantedExternalUserGroupData = parentPageExternalUserGroups.map((group) => {
-      return { id: group._id, name: group.name };
-    });
-    const parentPageGrant = {
-      grant: parentPage.grant,
-      userRelatedGrantedGroups: [...parentGrantedUserGroupData, ...parentGrantedExternalUserGroupData],
+    const parentPageGroupGrantData = await pageGrantService.getPageGroupGrantData(parentPage, req.user);
+    const parentPageGrant: IPageGrantData = {
+      grant,
+      groupGrantData: parentPageGroupGrantData,
     };
 
     const grantData = {

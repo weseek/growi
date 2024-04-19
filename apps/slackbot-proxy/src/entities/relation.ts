@@ -1,4 +1,4 @@
-import { differenceInMilliseconds } from 'date-fns';
+import { differenceInMilliseconds } from 'date-fns/differenceInMilliseconds';
 import {
   Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne, Index,
 } from 'typeorm';

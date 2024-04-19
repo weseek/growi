@@ -13,7 +13,7 @@ const BookMarkLinkButton = React.memo(() => {
         className="btn btn-sm btn-outline-neutral-secondary rounded-pill d-flex align-items-center w-100"
       >
         <span className="material-symbols-outlined p-0">bookmark</span>
-        <span>{t('footer.bookmarks')}</span>
+        <span>{t('user_home_page.bookmarks')}</span>
       </button>
     </ScrollLink>
   );
@@ -30,7 +30,7 @@ const RecentlyCreatedLinkButton = React.memo(() => {
         className="btn btn-sm btn-outline-neutral-secondary rounded-pill d-flex align-items-center w-100"
       >
         <span className="growi-custom-icons mx-1">recently_created</span>
-        <span>{t('footer.recently_created')}</span>
+        <span>{t('user_home_page.recently_created')}</span>
       </button>
     </ScrollLink>
   );
