@@ -64,15 +64,15 @@ type CommentEditorProps = {
   revisionId: string,
   currentCommentId?: string,
   commentBody?: string,
-  onCancelButtonClicked?: () => void,
-  onCommentButtonClicked?: () => void,
+  onCanceled?: () => void,
+  onCommented?: () => void,
 }
 
 export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const {
     pageId, replyTo, revisionId,
-    currentCommentId, commentBody, onCancelButtonClicked, onCommentButtonClicked,
+    currentCommentId, commentBody, onCanceled, onCommented,
   } = props;
 
   const { data: currentUser } = useCurrentUser();
@@ -146,8 +146,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
   const cancelButtonClickedHandler = useCallback(() => {
     initializeEditor();
-    onCancelButtonClicked?.();
-  }, [onCancelButtonClicked, initializeEditor]);
+    onCanceled?.();
+  }, [onCanceled, initializeEditor]);
 
   const postCommentHandler = useCallback(async() => {
     const commentBodyToPost = codeMirrorEditor?.getDoc() ?? '';
@@ -175,7 +175,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
       initializeEditor();
 
-      onCommentButtonClicked?.();
+      onCommented?.();
 
       // Insert empty string as new comment editor is opened after comment
       codeMirrorEditor?.initDoc('');
@@ -185,7 +185,7 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
       setError(errorMessage);
     }
   // eslint-disable-next-line max-len
-  }, [currentCommentId, initializeEditor, onCommentButtonClicked, codeMirrorEditor, updateComment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment]);
+  }, [currentCommentId, initializeEditor, onCommented, codeMirrorEditor, updateComment, revisionId, replyTo, isSlackEnabled, slackChannels, postComment]);
 
   // the upload event handler
   const uploadHandler = useCallback((files: File[]) => {
@@ -309,6 +309,8 @@ export const CommentEditor = (props: CommentEditorProps): JSX.Element => {
 
 export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
 
+  const { onCommented, onCanceled, ...rest } = props;
+
   const { data: currentUser } = useCurrentUser();
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
   const { resolvedTheme } = useNextThemes();
@@ -342,9 +344,15 @@ export const CommentEditorPre = (props: CommentEditorProps): JSX.Element => {
   return isReadyToUse
     ? (
       <CommentEditor
-        onCommentButtonClicked={() => setIsReadyToUse(false)}
-        onCancelButtonClicked={() => setIsReadyToUse(false)}
-        {...props}
+        onCommented={() => {
+          onCommented?.();
+          setIsReadyToUse(false);
+        }}
+        onCanceled={() => {
+          onCanceled?.();
+          setIsReadyToUse(false);
+        }}
+        {...rest}
       />
     )
     : render();

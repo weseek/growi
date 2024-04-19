@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { IAdminExternalAccount } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
