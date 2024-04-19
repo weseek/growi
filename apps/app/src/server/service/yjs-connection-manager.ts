@@ -3,6 +3,8 @@ import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
+import { SocketEventName } from '~/interfaces/websocket';
+
 import { getMongoUri } from '../util/mongoose-utils';
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
@@ -74,11 +76,10 @@ class YjsConnectionManager {
       await this.mdb.flushDocument(pageId);
     });
 
-    currentYdoc.once('update', async() => {
-      socket
-        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-        .emit('yjsDraft:update', true);
-    });
+    // Tell client that a draft has been created
+    socket
+      .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+      .emit(SocketEventName.YjsUpdated, true);
 
     persistedYdoc.destroy();
   }

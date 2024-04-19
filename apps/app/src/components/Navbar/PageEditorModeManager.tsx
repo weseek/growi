@@ -7,6 +7,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
+import { SocketEventName } from '~/interfaces/websocket';
 import { useIsNotFound, useHasYjsDraft } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
@@ -96,10 +97,10 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
       mutateHasYjsDraft(hasYjsDraft);
     };
 
-    socket.on('yjsDraft:update', yjsDraftUpdateHandler);
+    socket.on(SocketEventName.YjsUpdated, yjsDraftUpdateHandler);
 
     return () => {
-      socket.off('yjsDraft:update', yjsDraftUpdateHandler);
+      socket.off(SocketEventName.YjsUpdated, yjsDraftUpdateHandler);
     };
 
   }, [mutateHasYjsDraft, socket]);

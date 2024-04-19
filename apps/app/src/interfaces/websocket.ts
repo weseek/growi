@@ -44,6 +44,9 @@ export const SocketEventName = {
   PageCreated: 'page:create',
   PageUpdated: 'page:update',
   PageDeleted: 'page:delete',
+
+  // Yjs
+  YjsUpdated: 'yjsDraft:update',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 
