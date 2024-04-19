@@ -1121,7 +1121,6 @@ See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin
 - imprv: Fix sidebar tag layout (#5984) @jam411
 - imprv: PageStatusAlert labels when data is outdated (#5961) @yuki-takei
 - imprv: Delete NotFoundAlert from not found page (#5919) @Shunm634-source
-
 ### 🐛 Bug Fixes
 - fix: Too many footstamps icons are shown by lsx output 3 (#6000) @yuki-takei
 - fix: Adjust PageItemControl alignment (#5994) @yuki-takei
@@ -1251,7 +1250,6 @@ See the upgrading guide for v6.1.x. => [English](https://docs.growi.org/en/admin
 - fix: Too many footstamps icons are shown by lsx output 2 (#5763) @yuki-takei
 - fix:  footstamp-icon size (#5759) @kaoritokashiki
 ## [v4.5.19](https://github.com/weseek/growi/compare/v4.5.18...v4.5.19) - 2022-04-28
-
 ### 🐛 Bug Fixes
 
 - fix: Swiping to previous/next page for Mac users (4.5.x) (#5758) @hirokei-camel
