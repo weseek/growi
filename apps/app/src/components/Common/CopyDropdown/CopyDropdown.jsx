@@ -155,7 +155,6 @@ export const CopyDropdown = (props) => {
                 title={t('copy_to_clipboard.Page path')}
                 contents={pagePathWithParams}
                 className="text-truncate d-block"
-                // style={{ direction: 'rtl' }}
               />
             </DropdownItem>
           </CopyToClipboard>
@@ -169,7 +168,6 @@ export const CopyDropdown = (props) => {
                 title={t('copy_to_clipboard.Page URL')}
                 contents={pagePathUrl}
                 className="text-truncate d-block"
-                // style={{ direction: 'rtl' }}
               />
             </DropdownItem>
           </CopyToClipboard>
@@ -183,7 +181,6 @@ export const CopyDropdown = (props) => {
                   title={t('copy_to_clipboard.Permanent link')}
                   contents={permalink}
                   className="text-truncate d-block"
-                  // style={{ direction: 'rtl' }}
                 />
               </DropdownItem>
             </CopyToClipboard>
