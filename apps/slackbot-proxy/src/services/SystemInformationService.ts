@@ -31,7 +31,7 @@ export class SystemInformationService {
     const proxyVersion = readPkgUpResult?.packageJson.version;
     if (proxyVersion == null) return logger.error('version is null');
 
-    const systemInfo: SystemInformation | undefined = await this.repository.findOne();
+    const [systemInfo] = await this.repository.find();
 
     // return if the version didn't change
     if (systemInfo != null && systemInfo.version === proxyVersion) {
