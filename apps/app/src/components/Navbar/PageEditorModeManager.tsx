@@ -1,6 +1,7 @@
-import React, { type ReactNode, useCallback } from 'react';
+import React, { type ReactNode, useCallback, useEffect } from 'react';
 
 import { Origin } from '@growi/core';
+import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 
 
@@ -65,7 +66,8 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const { data: hasYjsDraft } = useHasYjsDraft();
+  const { data: hasYjsDraft, mutate: mutateHasYjsDraft } = useHasYjsDraft();
+  const { data: socket } = useGlobalSocket();
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
@@ -85,6 +87,22 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
       toastError(t('toaster.create_failed', { target: path }));
     }
   }, [createAndTransit, isNotFound, mutateEditorMode, path, t]);
+
+  useEffect(() => {
+
+    if (socket == null) { return }
+
+    const yjsDraftUpdateHandler = (hasYjsDraft: boolean) => {
+      mutateHasYjsDraft(hasYjsDraft);
+    };
+
+    socket.on('yjsDraft:update', yjsDraftUpdateHandler);
+
+    return () => {
+      socket.off('yjsDraft:update', yjsDraftUpdateHandler);
+    };
+
+  }, [mutateHasYjsDraft, socket]);
 
   const _isBtnDisabled = isCreating || isBtnDisabled;
 

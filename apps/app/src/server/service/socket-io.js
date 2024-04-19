@@ -160,7 +160,7 @@ class SocketIoService {
     this.io.on('connection', (socket) => {
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
-          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
+          await yjsConnectionManager.handleYDocSync(pageId, initialValue, socket);
         }
         catch (error) {
           logger.warn(error.message);

@@ -1,9 +1,10 @@
-import type { Server } from 'socket.io';
+import type { Server, Socket } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
+import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
@@ -39,7 +40,7 @@ class YjsConnectionManager {
     return this.instance;
   }
 
-  public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
+  public async handleYDocSync(pageId: string, initialValue: string, socket: Socket): Promise<void> {
     const currentYdoc = this.getCurrentYdoc(pageId);
     if (currentYdoc == null) {
       return;
@@ -71,6 +72,12 @@ class YjsConnectionManager {
 
     currentYdoc.on('destroy', async() => {
       await this.mdb.flushDocument(pageId);
+    });
+
+    currentYdoc.once('update', async() => {
+      socket
+        .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+        .emit('yjsDraft:update', true);
     });
 
     persistedYdoc.destroy();
