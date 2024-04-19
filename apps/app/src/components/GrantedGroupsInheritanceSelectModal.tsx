@@ -5,26 +5,18 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 
 export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: modalData, close: closeModal } = useGrantedGroupsInheritanceSelectModal();
   const [onlyInheritUserRelatedGrantedGroups, setOnlyInheritUserRelatedGrantedGroups] = useState(false);
-  const { createAndTransit } = useCreatePageAndTransit();
 
-  const params = modalData?.params;
-  const opts = modalData?.opts;
-  const isOpened = modalData?.isOpened ?? false;
-
-  const onCreateBtnClick = () => {
-    if (params != null) {
-      params.onlyInheritUserRelatedGrantedGroups = onlyInheritUserRelatedGrantedGroups;
-      createAndTransit(params, opts);
-    }
-    closeModal();
+  const onCreateBtnClick = async() => {
+    await modalData?.onCreateBtnClick?.(onlyInheritUserRelatedGrantedGroups);
+    setOnlyInheritUserRelatedGrantedGroups(false); // reset to false after create request
   };
+  const isOpened = modalData?.isOpened ?? false;
 
   return (
     <Modal
@@ -66,7 +58,9 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
       </ModalBody>
       <ModalFooter className="grw-modal-footer">
         <button type="button" className="me-2 btn btn-secondary" onClick={() => closeModal()}>{t('Cancel')}</button>
-        <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>{t('modal_granted_groups_inheritance_select.create_page')}</button>
+        <button className="btn btn-primary" type="button" onClick={onCreateBtnClick}>
+          {t('modal_granted_groups_inheritance_select.create_page')}
+        </button>
       </ModalFooter>
     </Modal>
   );

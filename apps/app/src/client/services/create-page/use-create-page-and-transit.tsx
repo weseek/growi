@@ -50,7 +50,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
-  const { open: openGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
+  const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
 
   const [isCreating, setCreating] = useState(false);
 
@@ -78,6 +78,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
         }
       }
       catch (err) {
+        onAborted?.();
         throw err;
       }
       finally {
@@ -85,44 +86,52 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       }
     }
 
+    const _createAndTransit = async(onlyInheritUserRelatedGrantedGroups?: boolean) => {
+      try {
+        setCreating(true);
+        onCreationStart?.();
+
+        params.onlyInheritUserRelatedGrantedGroups = onlyInheritUserRelatedGrantedGroups;
+        const response = await createPage(params);
+
+        closeGrantedGroupsInheritanceSelectModal();
+
+        await router.push(`/${response.page._id}#edit`);
+        mutateEditorMode(EditorMode.Editor);
+
+        onCreated?.();
+      }
+      catch (err) {
+        onAborted?.();
+        throw err;
+      }
+      finally {
+        onTerminated?.();
+        setCreating(false);
+      }
+    };
+
     // If parent page is granted to non-user-related groups, let the user select whether or not to inherit them.
-    // Once selected, the request with same params(+ onlyInheritUserRelatedGrantedGroups) and opts will be sent here.
-    if (params.parentPath != null && params?.onlyInheritUserRelatedGrantedGroups == null) {
+    if (params.parentPath != null) {
       try {
         const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
         if (isNonUserRelatedGroupsGranted) {
-          openGrantedGroupsInheritanceSelectModal(params, opts);
-          onAborted?.();
+          // create and transit request will be made from modal
+          openGrantedGroupsInheritanceSelectModal(_createAndTransit);
           return;
         }
       }
       catch (err) {
         // Do not throw error when the parent page is empty, since empty parent page could be created on create request
-        if (err[0]?.code !== 'page_unreachable_or_empty') throw err;
+        if (err[0]?.code !== 'page_unreachable_or_empty') {
+          onAborted?.();
+          throw err;
+        }
       }
     }
 
-    // create and transit
-    try {
-      setCreating(true);
-      onCreationStart?.();
-
-      const response = await createPage(params);
-
-      await router.push(`/${response.page._id}#edit`);
-      mutateEditorMode(EditorMode.Editor);
-
-      onCreated?.();
-    }
-    catch (err) {
-      throw err;
-    }
-    finally {
-      onTerminated?.();
-      setCreating(false);
-    }
-
-  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal]);
+    await _createAndTransit();
+  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal]);
 
   return {
     isCreating,

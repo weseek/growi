@@ -49,12 +49,11 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 */
 type GrantedGroupsInheritanceSelectModalStatus = {
   isOpened: boolean,
-  params?: IApiv3PageCreateParams,
-  opts?: CreatePageAndTransitOpts,
+  onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>,
 }
 
 type GrantedGroupsInheritanceSelectModalStatusUtils = {
-  open(params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+  open(onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
   close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
 }
 
@@ -70,7 +69,9 @@ export const useGrantedGroupsInheritanceSelectModal = (
 
   return {
     ...swrResponse,
-    open: useCallback((params?: IApiv3PageCreateParams, opts?: CreatePageAndTransitOpts) => mutate({ isOpened: true, params, opts }), [mutate]),
+    open: useCallback(
+      (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
+    ),
     close: useCallback(() => mutate({ isOpened: false }), [mutate]),
   };
 };
