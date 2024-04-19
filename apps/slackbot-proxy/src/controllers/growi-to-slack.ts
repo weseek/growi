@@ -218,7 +218,7 @@ export class GrowiToSlackCtrl {
       })
       .execute();
 
-    const generatedRelation = await this.relationRepository.findOneBy({ id: response.identifiers[0].id });
+    const generatedRelation = await this.relationRepository.findOne({ id: response.identifiers[0].id });
 
     return res.send({ relation: generatedRelation, slackBotToken: token });
   }

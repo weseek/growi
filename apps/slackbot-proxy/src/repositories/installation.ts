@@ -7,7 +7,11 @@ import { Installation } from '~/entities/installation';
 @EntityRepository(Installation)
 export class InstallationRepository extends Repository<Installation> {
 
-  async findByTeamIdOrEnterpriseId(teamIdOrEnterpriseId:string): Promise<Installation|null> {
+  findByID(id: string): Promise<Installation | undefined> {
+    return this.findOne(id);
+  }
+
+  async findByTeamIdOrEnterpriseId(teamIdOrEnterpriseId:string): Promise<Installation|undefined> {
     return this.findOne({
       where: [
         { teamId: teamIdOrEnterpriseId },

@@ -151,7 +151,7 @@ export class RegisterService implements GrowiCommandProcessor<RegisterCommandBod
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!) ?? undefined;
+    const installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
 
     this.orderRepository.save({
       installation, growiUrl, tokenPtoG, tokenGtoP,

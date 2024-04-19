@@ -180,7 +180,7 @@ export class SelectGrowiService implements GrowiCommandProcessor<SelectGrowiComm
     });
 
     const installationId = authorizeResult.enterpriseId || authorizeResult.teamId;
-    let installation: Installation | null;
+    let installation: Installation | undefined;
     try {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       installation = await this.installationRepository.findByTeamIdOrEnterpriseId(installationId!);
