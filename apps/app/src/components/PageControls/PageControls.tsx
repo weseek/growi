@@ -55,7 +55,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         onClick={onClickEditTagsButton}
       >
         <span className="material-symbols-outlined me-2">local_offer</span>
-        <div className="mb-0">{t('Tags')}</div>
+        {t('Tags')}
       </button>
     </div>
   );
