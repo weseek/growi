@@ -2,9 +2,7 @@ import type {
   IUser, IPage, Ref, HasObjectId,
 } from '@growi/core';
 
-import type { AnnouncementStatuses } from '../features/announcement/server/events/announcement-utils';
-
-type AnnouncementStatuses = typeof AnnouncementStatuses;
+import type { AnnouncementStatusesType } from '../features/announcement/server/events/announcement-utils';
 
 export interface IAnnouncement {
   sender: Ref<IUser>
@@ -16,7 +14,7 @@ export interface IAnnouncement {
     {
       receiver: Ref<IUser>,
       updatedAt?: Date,
-      readStatus: AnnouncementStatuses,
+      readStatus: AnnouncementStatusesType,
     }
   ]
 }

@@ -4,4 +4,4 @@ export const AnnouncementStatuses = {
   STATUS_IGNORED: 'IGNORED',
 } as const;
 
-type AnnouncementStatuses = typeof AnnouncementStatuses[keyof typeof AnnouncementStatuses];
+export type AnnouncementStatusesType = typeof AnnouncementStatuses[keyof typeof AnnouncementStatuses];
