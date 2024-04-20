@@ -1,8 +1,16 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+
+
+import { createAnnouncement } from '~/client/services/announcement-operation';
+import { AnnouncementStatuses } from '~/features/announcement';
+import type { IAnnouncement } from '~/interfaces/announcement';
+import { useCurrentUser } from '~/stores/context';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { Sidebar } from '../Sidebar';
 
@@ -33,6 +41,37 @@ type Props = {
 
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
+
+  const { data: user } = useCurrentUser();
+  const { data: pageId } = useCurrentPageId();
+  const { data: currentPage } = useSWRxCurrentPage();
+
+  const date = new Date();
+
+  const announcement = () => {
+    if (user != null && pageId != null && currentPage?.creator != null) {
+
+      const receivers = [currentPage.creator];
+
+      const announcement: IAnnouncement = {
+        sender: user,
+        comment: 'test',
+        isReadReceiptTrackingEnabled: true,
+        pageId,
+        receivers: [
+          {
+            receiver: currentPage.creator,
+            updatedAt: date,
+            readStatus: AnnouncementStatuses.STATUS_UNREAD,
+          },
+        ],
+      };
+
+      createAnnouncement(announcement, user, pageId, receivers);
+    }
+
+  };
+
   return (
     <RawLayout className={`${className ?? ''}`}>
       <DndProvider backend={HTML5Backend}>
@@ -66,6 +105,14 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
 
       <ShortcutsModal />
       <SystemVersion showShortcutsButton />
+
+      <button
+        type="button"
+        onClick={announcement}
+      >
+        BUTTON
+      </button>
+
     </RawLayout>
   );
 };
