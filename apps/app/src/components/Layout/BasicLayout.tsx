@@ -6,7 +6,7 @@ import { DndProvider } from 'react-dnd';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 
 
-import { createAnnouncement } from '~/client/services/announcement-operation';
+import { createAnnouncement } from '~/client/util/announcement-utils';
 import { AnnouncementStatuses } from '~/features/announcement';
 import type { IAnnouncement } from '~/interfaces/announcement';
 import { useCurrentUser } from '~/stores/context';
@@ -62,12 +62,18 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
           {
             receiver: currentPage.creator,
             updatedAt: date,
-            readStatus: AnnouncementStatuses.STATUS_UNREAD,
+            readStatus: 'UNREAD',
           },
         ],
       };
 
       createAnnouncement(announcement, user, pageId, receivers);
+    }
+    else {
+      console.log(user);
+      console.log(pageId);
+      console.log(currentPage);
+      console.log(currentPage?.creator);
     }
 
   };

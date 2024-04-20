@@ -1,5 +1,5 @@
 import type { Router, Request } from 'express';
-import express from 'express';
+// import express from 'express';
 import { body, query } from 'express-validator';
 import type { UpdateQuery } from 'mongoose';
 import mongoose from 'mongoose';
@@ -12,6 +12,10 @@ import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-respo
 
 import type { AnnouncementDocument } from '../../../features/announcement/server/models';
 
+const express = require('express');
+
+const router = express.Router();
+
 module.exports = (crowi: Crowi): Router => {
 
   const activityEvent = crowi.event('activity');
@@ -20,7 +24,9 @@ module.exports = (crowi: Crowi): Router => {
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  const router = express.Router();
+  router.get('/', async(req, res) => {
+    res.send('hello world');
+  });
 
   router.post('/', loginRequiredStrictly, async(req: Request, res: ApiV3Response) => {
 
