@@ -6,19 +6,16 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
-import { type PageCommentProps } from '~/components/PageComment';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
 import { useCurrentUser } from '../stores/context';
 
-import type { CommentEditorProps } from './PageComment/CommentEditor';
-
 const { isTopPage } = pagePathUtils;
 
 
-const PageComment = dynamic<PageCommentProps>(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
-const CommentEditor = dynamic<CommentEditorProps>(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditor), { ssr: false });
+const PageComment = dynamic(() => import('~/components/PageComment').then(mod => mod.PageComment), { ssr: false });
+const CommentEditorPre = dynamic(() => import('./PageComment/CommentEditor').then(mod => mod.CommentEditorPre), { ssr: false });
 
 export type CommentsProps = {
   pageId: string,
@@ -84,10 +81,9 @@ export const Comments = (props: CommentsProps): JSX.Element => {
       </div>
       {!isDeleted && (
         <div id="page-comment-write">
-          <CommentEditor
+          <CommentEditorPre
             pageId={pageId}
-            isForNewComment
-            onCommentButtonClicked={onCommentButtonClickHandler}
+            onCommented={onCommentButtonClickHandler}
             revisionId={revision._id}
           />
         </div>
