@@ -1,12 +1,14 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
-import { useModelNotification } from './PageNotification';
+import { useModelNotification } from './ModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId

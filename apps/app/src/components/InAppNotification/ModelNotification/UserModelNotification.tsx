@@ -7,7 +7,7 @@ import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
-import { ModelNotificationUtils } from './PageModelNotification';
+import type { ModelNotificationUtils } from './PageModelNotification';
 import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 

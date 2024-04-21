@@ -1,6 +1,5 @@
-import React, {
-  FC, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback } from 'react';
 
 import type { IPage, HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';

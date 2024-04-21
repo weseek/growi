@@ -4,6 +4,7 @@ import type { Ref, HasObjectId, IUser } from '@growi/core';
 const MODEL_PAGE = 'Page';
 const MODEL_USER = 'User';
 const MODEL_COMMENT = 'Comment';
+const MODEL_PAGE_BULK_EXPORT_RESULT = 'PageBulkExportResult';
 
 // Action
 const ACTION_UNSETTLED = 'UNSETTLED';
@@ -166,6 +167,7 @@ const ACTION_ADMIN_SEARCH_INDICES_REBUILD = 'ADMIN_SEARCH_INDICES_REBUILD';
 export const SupportedTargetModel = {
   MODEL_PAGE,
   MODEL_USER,
+  MODEL_PAGE_BULK_EXPORT_RESULT,
 } as const;
 
 export const SupportedEventModel = {

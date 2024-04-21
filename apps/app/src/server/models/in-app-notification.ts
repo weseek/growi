@@ -1,6 +1,5 @@
-import {
-  Types, Document, Schema, Model,
-} from 'mongoose';
+import type { Types, Document, Model } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
 import { AllSupportedTargetModels, AllSupportedActions } from '~/interfaces/activity';
@@ -8,7 +7,7 @@ import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
 import { getOrCreateModel } from '../util/mongoose-utils';
 
-import { ActivityDocument } from './activity';
+import type { ActivityDocument } from './activity';
 
 
 const { STATUS_UNREAD, STATUS_UNOPENED, STATUS_OPENED } = InAppNotificationStatuses;
