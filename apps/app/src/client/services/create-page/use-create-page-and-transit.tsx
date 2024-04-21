@@ -78,7 +78,6 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
         }
       }
       catch (err) {
-        onAborted?.();
         throw err;
       }
       finally {
@@ -102,7 +101,6 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
         onCreated?.();
       }
       catch (err) {
-        onAborted?.();
         throw err;
       }
       finally {
@@ -124,7 +122,6 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       catch (err) {
         // Do not throw error when the parent page is empty, since empty parent page could be created on create request
         if (err[0]?.code !== 'page_unreachable_or_empty') {
-          onAborted?.();
           throw err;
         }
       }

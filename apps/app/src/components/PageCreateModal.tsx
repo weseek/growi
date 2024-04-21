@@ -98,7 +98,7 @@ const PageCreateModal: React.FC = () => {
       {
         path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal, onAborted: closeCreateModal },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
 
@@ -113,7 +113,7 @@ const PageCreateModal: React.FC = () => {
         wip: true,
         origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal, onAborted: closeCreateModal },
+      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
   }, [closeCreateModal, createAndTransit, pageNameInput, pathname]);
 
