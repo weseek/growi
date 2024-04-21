@@ -14,6 +14,9 @@ import type { IAwsMultipartUploader } from '~/server/service/file-uploader/aws/m
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
 
+import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
+import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
+import PageBulkExportJob from '../models/page-bulk-export-job';
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
@@ -35,7 +38,15 @@ class PageBulkExportService {
     this.crowi = crowi;
   }
 
-  async bulkExportWithBasePagePath(basePagePath: string): Promise<void> {
+  async bulkExportWithBasePagePath(basePagePath: string, currentUser): Promise<void> {
+    const Page = mongoose.model<IPage, PageModel>('Page');
+    const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
+
+    if (basePage == null) {
+      this.handleExportError(new Error('Base page not found or not accessible'));
+      return;
+    }
+
     const timeStamp = (new Date()).getTime();
     const uploadKey = `page-bulk-export-${timeStamp}.zip`;
 
@@ -57,7 +68,15 @@ class PageBulkExportService {
       await this.handleExportError(err, multipartUploader);
       return;
     }
-    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader);
+
+    const pageBulkExportJob = await PageBulkExportJob.create({
+      user: currentUser._id,
+      page: basePage._id,
+      uploadId: multipartUploader.uploadId,
+      format: PageBulkExportFormat.markdown,
+    });
+
+    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob);
 
     // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
     // Hence, execution of two pipelines is required.
@@ -65,7 +84,7 @@ class PageBulkExportService {
     pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable, err => this.handleExportError(err, multipartUploader));
   }
 
-  async handleExportError(err: Error | null, multipartUploader: IAwsMultipartUploader | undefined): Promise<void> {
+  async handleExportError(err: Error | null, multipartUploader?: IAwsMultipartUploader): Promise<void> {
     if (err != null) {
       logger.error(err);
       if (multipartUploader != null) {
@@ -143,7 +162,7 @@ class PageBulkExportService {
     return zipArchiver;
   }
 
-  private getMultipartUploadWritable(multipartUploader: IAwsMultipartUploader): Writable {
+  private getMultipartUploadWritable(multipartUploader: IAwsMultipartUploader, pageBulkExportJob: PageBulkExportJobDocument): Writable {
     let partNumber = 1;
 
     return new Writable({
@@ -164,6 +183,8 @@ class PageBulkExportService {
       async final(callback) {
         try {
           await multipartUploader.completeUpload();
+          pageBulkExportJob.completedAt = new Date();
+          await pageBulkExportJob.save();
         }
         catch (err) {
           callback(err);

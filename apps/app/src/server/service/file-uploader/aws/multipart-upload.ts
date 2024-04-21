@@ -19,6 +19,7 @@ export interface IAwsMultipartUploader {
   uploadPart(body: Buffer, partNumber: number): Promise<void>;
   completeUpload(): Promise<void>;
   abortUpload(): Promise<void>;
+  uploadId: string | undefined;
 }
 
 /**
@@ -33,7 +34,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   private uploadKey: string;
 
-  private uploadId: string | undefined;
+  private _uploadId: string | undefined;
 
   private s3Client: S3Client;
 
@@ -47,6 +48,10 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     this.uploadKey = uploadKey;
   }
 
+  get uploadId(): string | undefined {
+    return this._uploadId;
+  }
+
   async initUpload(): Promise<void> {
     this.validateUploadStatus(UploadStatus.BEFORE_INIT);
 
@@ -54,7 +59,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       Bucket: this.bucket,
       Key: this.uploadKey,
     }));
-    this.uploadId = response.UploadId;
+    this._uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
     logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
   }

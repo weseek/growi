@@ -1,9 +1,10 @@
 import { ErrorV3 } from '@growi/core/dist/models';
-import { Router, Request } from 'express';
+import type { Request } from 'express';
+import { Router } from 'express';
 import { body, validationResult } from 'express-validator';
 
-import Crowi from '~/server/crowi';
-import { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
+import type Crowi from '~/server/crowi';
+import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
 import loggerFactory from '~/utils/logger';
 
 import { pageBulkExportService } from '../../service/page-bulk-export';
@@ -34,7 +35,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const { path, format } = req.body;
 
-    pageBulkExportService?.bulkExportWithBasePagePath(path);
+    pageBulkExportService?.bulkExportWithBasePagePath(path, req.user);
     return res.apiv3({}, 204);
   });
 

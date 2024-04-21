@@ -15,12 +15,8 @@ export interface IPageBulkExportJob {
   lastUploadedPagePath: string, // the path of page that was uploaded last
   uploadId: string, // upload ID of multipart upload of S3/GCS
   format: PageBulkExportFormat,
-  expireAt: Date, // the date at which job execution expires
-}
-
-export interface IPageBulkExportResult {
+  completedAt: Date | null, // the date at which job was completed
   attachment: Ref<IAttachment>,
-  expireAt: Date, // the date at which downloading of result expires
 }
 
 // snapshot of page info to upload
