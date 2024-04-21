@@ -1,6 +1,7 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -159,6 +160,11 @@ class SocketIoService {
     const yjsConnectionManager = getYjsConnectionManager();
     this.io.on('connection', (socket) => {
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
+        // Tell client that a draft has been created
+        socket
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit(SocketEventName.YjsUpdated, true);
+
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue, socket);
         }

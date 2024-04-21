@@ -3,10 +3,7 @@ import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
-import { SocketEventName } from '~/interfaces/websocket';
-
 import { getMongoUri } from '../util/mongoose-utils';
-import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
@@ -75,11 +72,6 @@ class YjsConnectionManager {
     currentYdoc.on('destroy', async() => {
       await this.mdb.flushDocument(pageId);
     });
-
-    // Tell client that a draft has been created
-    socket
-      .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-      .emit(SocketEventName.YjsUpdated, true);
 
     persistedYdoc.destroy();
   }
