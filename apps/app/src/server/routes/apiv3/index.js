@@ -119,7 +119,5 @@ module.exports = (crowi, app) => {
   router.use('/templates', require('~/features/templates/server/routes/apiv3')(crowi));
   router.use('/page-bulk-export', require('~/features/page-bulk-export/server/routes/apiv3/page-bulk-export')(crowi));
 
-  router.use('/me', require('./me')(crowi));
-
   return [router, routerForAdmin, routerForAuth];
 };

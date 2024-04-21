@@ -102,7 +102,7 @@ export const ShareLinkForm: FC<Props> = (props: Props) => {
 
   return (
     <div className="share-link-form p-3">
-      <h3 className="grw-modal-head pb-2"> { t('share_links.share_settings') }</h3>
+      <h3 className="pb-2"> { t('share_links.share_settings') }</h3>
       <div className=" p-3">
 
         {/* ExpirationTypeOptions */}

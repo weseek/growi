@@ -50,9 +50,15 @@ const SearchModal = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
+      return;
+    }
+    if (searchModalData?.searchKeyword == null) {
       setSearchKeyword('');
     }
-  }, [searchModalData?.isOpened]);
+    else {
+      setSearchKeyword(searchModalData.searchKeyword);
+    }
+  }, [searchModalData?.isOpened, searchModalData?.searchKeyword]);
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">

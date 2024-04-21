@@ -3,7 +3,8 @@ import React from 'react';
 import type { IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
+import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 
@@ -18,6 +19,7 @@ export type AuthorInfoProps = {
 }
 
 export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
+  const { t } = useTranslation();
   const {
     date, user, mode = 'create', locate = 'subnav',
   } = props;
@@ -31,8 +33,8 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     ? 'Created by'
     : 'Updated by';
   const infoLabelForFooter = mode === 'create'
-    ? 'Created at'
-    : 'Last revision posted at';
+    ? t('author_info.created_at')
+    : t('author_info.last_revision_posted_at');
   const userLabel = user != null
     ? (
       <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>

@@ -1,6 +1,5 @@
-import {
-  FC, useCallback, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useState } from 'react';
 
 import type { IPageToDeleteWithMeta } from '@growi/core';
 import { DropdownToggle } from 'reactstrap';
@@ -10,10 +9,9 @@ import {
 } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { FolderIcon } from '~/components/Icons/FolderIcon';
-import {
-  BookmarkFolderItems, DragItemDataType, DragItemType, DRAG_ITEM_TYPE,
-} from '~/interfaces/bookmark-info';
-import { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
+import type { BookmarkFolderItems, DragItemDataType, DragItemType } from '~/interfaces/bookmark-info';
+import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import type { onDeletedBookmarkFolderFunction } from '~/interfaces/ui';
 import { useBookmarkFolderDeleteModal } from '~/stores/modal';
 
 import { BookmarkFolderItemControl } from './BookmarkFolderItemControl';
@@ -42,7 +40,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   } = props;
 
   const {
-    name, _id: folderId, children, parent, bookmarks,
+    name, _id: folderId, childFolder, parent, bookmarks,
   } = bookmarkFolder;
 
   const [targetFolder, setTargetFolder] = useState<string | null>(folderId);
@@ -52,7 +50,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const { open: openDeleteBookmarkFolderModal } = useBookmarkFolderDeleteModal();
 
-  const childrenExists = hasChildren(children);
+  const childrenExists = hasChildren({ childFolder, bookmarks });
 
   const paddingLeft = BASE_FOLDER_PADDING * level;
 
@@ -65,14 +63,14 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
   const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
     try {
       // TODO: do not use any type
-      await updateBookmarkFolder(folderId, folderName, parent as any, children);
+      await updateBookmarkFolder(folderId, folderName, parent as any, childFolder);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, children, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, childFolder, folderId, parent]);
 
   // Create new folder / subfolder handler
   const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
@@ -99,7 +97,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     if (dragItemType === DRAG_ITEM_TYPE.FOLDER) {
       try {
         if (item.bookmarkFolder != null) {
-          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.children);
+          await updateBookmarkFolder(item.bookmarkFolder._id, item.bookmarkFolder.name, bookmarkFolder._id, item.bookmarkFolder.childFolder);
           bookmarkFolderTreeMutation();
         }
       }
@@ -129,7 +127,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       // Maximum folder hierarchy of 2 levels
       // If the drop source folder has child folders, the drop source folder cannot be moved because the drop source folder hierarchy is already 2.
       // If the destination folder has a parent, the source folder cannot be moved because the destination folder hierarchy is already 2.
-      if (item.bookmarkFolder.children.length !== 0 || bookmarkFolder.parent != null) {
+      if (item.bookmarkFolder.childFolder.length !== 0 || bookmarkFolder.parent != null) {
         return false;
       }
 
@@ -142,9 +140,15 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     return true;
   };
 
+  const triangleBtnClassName = (isOpen: boolean, childrenExists: boolean): string => {
+    if (!childrenExists) {
+      return 'grw-foldertree-triangle-btn btn px-0 opacity-25';
+    }
+    return `grw-foldertree-triangle-btn btn px-0 ${isOpen ? 'grw-foldertree-open' : ''}`;
+  };
 
   const renderChildFolder = () => {
-    return isOpen && children?.map((childFolder) => {
+    return isOpen && childFolder?.map((childFolder) => {
       return (
         <div key={childFolder._id} className="grw-foldertree-item-children">
           <BookmarkFolderItem
@@ -201,13 +205,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   const onClickMoveToRootHandlerForBookmarkFolderItemControl = useCallback(async() => {
     try {
-      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.children);
+      await updateBookmarkFolder(bookmarkFolder._id, bookmarkFolder.name, null, bookmarkFolder.childFolder);
       bookmarkFolderTreeMutation();
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolder._id, bookmarkFolder.children, bookmarkFolder.name, bookmarkFolderTreeMutation]);
+  }, [bookmarkFolder._id, bookmarkFolder.childFolder, bookmarkFolder.name, bookmarkFolderTreeMutation]);
 
   return (
     <div id={`grw-bookmark-folder-item-${folderId}`} className="grw-foldertree-item-container">
@@ -221,22 +225,20 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         isDropable={isDropable}
       >
         <li
-          className="list-group-item list-group-item-action border-0 py-0 pe-3 d-flex align-items-center"
+          className="list-group-item list-group-item-action border-0 py-2 d-flex align-items-center rounded-1"
           onClick={loadChildFolder}
           style={{ paddingLeft }}
         >
           <div className="grw-triangle-container d-flex justify-content-center">
-            {childrenExists && (
-              <button
-                type="button"
-                className={`grw-foldertree-triangle-btn btn ${isOpen ? 'grw-foldertree-open' : ''}`}
-                onClick={loadChildFolder}
-              >
-                <div className="d-flex justify-content-center">
-                  <span className="material-symbols-outlined">arrow_right</span>
-                </div>
-              </button>
-            )}
+            <button
+              type="button"
+              className={triangleBtnClassName(isOpen, childrenExists)}
+              onClick={loadChildFolder}
+            >
+              <div className="d-flex justify-content-center">
+                <span className="material-symbols-outlined">arrow_right</span>
+              </div>
+            </button>
           </div>
           <div>
             <FolderIcon isOpen={isOpen} />
@@ -249,7 +251,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             />
           ) : (
             <>
-              <div className="grw-foldertree-title-anchor ps-2">
+              <div className="grw-foldertree-title-anchor ps-1">
                 <p className="text-truncate m-auto ">{name}</p>
               </div>
             </>
