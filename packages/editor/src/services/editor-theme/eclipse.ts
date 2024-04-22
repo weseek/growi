@@ -8,6 +8,7 @@ export const eclipse = createTheme({
   settings: {
     background: '#fff',
     foreground: '#000',
+    // Change color
     caret: '#000',
     selection: '#d7d4f0',
     selectionMatch: '#d7d4f0',
