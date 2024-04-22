@@ -40,6 +40,10 @@ export const SocketEventName = {
   // External user group sync
   externalUserGroup: generateGroupSyncEvents(),
 
+  // room per pageId
+  JoinPage: 'join:page',
+  LeavePage: 'leave:page',
+
   // Page Operation
   PageCreated: 'page:create',
   PageUpdated: 'page:update',
