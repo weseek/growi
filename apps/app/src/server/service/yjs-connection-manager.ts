@@ -1,4 +1,4 @@
-import type { Server, Socket } from 'socket.io';
+import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
 import { YSocketIO } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
@@ -39,7 +39,7 @@ class YjsConnectionManager {
     return this.instance;
   }
 
-  public async handleYDocSync(pageId: string, initialValue: string, socket: Socket): Promise<void> {
+  public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
     const currentYdoc = this.getCurrentYdoc(pageId);
     if (currentYdoc == null) {
       return;
