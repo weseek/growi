@@ -5,6 +5,7 @@ import React, {
 
 import { isPopulated, getIdForRef, type IRevisionHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'next-i18next';
 
 import { apiPost } from '~/client/util/apiv1-client';
 import { toastError } from '~/client/util/toastr';
@@ -25,7 +26,7 @@ import { ReplyComments } from './PageComment/ReplyComments';
 import styles from './PageComment.module.scss';
 
 
-export type PageCommentProps = {
+type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
@@ -49,6 +50,8 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
   const [showEditorIds, setShowEditorIds] = useState<Set<string>>(new Set());
   const [errorMessageOnDelete, setErrorMessageOnDelete] = useState<string>('');
   const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(pageId);
+
+  const { t } = useTranslation('');
 
   const commentsFromOldest = useMemo(() => (comments != null ? [...comments].reverse() : null), [comments]);
   const commentsExceptReply: ICommentHasIdList | undefined = useMemo(
@@ -165,8 +168,11 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
             return (
               <div key={comment._id} className={commentThreadClasses}>
+                {/* Comment */}
                 {commentElement(comment)}
+                {/* Reply comments */}
                 {hasReply && replyCommentsElement(allReplies[comment._id])}
+
                 {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                   <div className="d-flex flex-row-reverse">
                     <NotAvailableForGuest>
@@ -178,20 +184,22 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >
                           <UserPicture user={currentUser} noLink noTooltip additionalClassName="me-2" />
-                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>Reply...</small>
+                          <span className="material-symbols-outlined me-1 fs-5 pb-1">reply</span><small>{t('page_comment.reply')}...</small>
                         </button>
                       </NotAvailableForReadOnlyUser>
                     </NotAvailableForGuest>
                   </div>
                 )}
+
+                {/* Editor to reply */}
                 {(!isReadOnly && showEditorIds.has(comment._id)) && (
                   <CommentEditor
                     pageId={pageId}
                     replyTo={comment._id}
-                    onCancelButtonClicked={() => {
+                    onCanceled={() => {
                       removeShowEditorId(comment._id);
                     }}
-                    onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
+                    onCommented={() => onCommentButtonClickHandler(comment._id)}
                     revisionId={revisionId}
                   />
                 )}

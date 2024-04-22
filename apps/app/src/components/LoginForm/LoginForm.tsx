@@ -272,15 +272,12 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
     return (
       <>
-        <div className="text-center text-line d-flex align-items-center mb-3">
-          <p className="text-white mb-0">{t('or')}</p>
-        </div>
         <div className="mt-2">
           { enabledExternalAuthType.map(authType => <ExternalAuthButton authType={authType} />) }
         </div>
       </>
     );
-  }, [props, t]);
+  }, [props]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -514,10 +511,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     <div className={moduleClass}>
       <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
-          <div className="col-12 px-md-4">
+          <div className="col-12 px-md-4 pb-5">
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+                {isLocalOrLdapStrategiesEnabled && isSomeExternalAuthEnabled && (
+                  <div className="text-center text-line d-flex align-items-center mb-3">
+                    <p className="text-white mb-0">{t('or')}</p>
+                  </div>
+                )}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="mt-4">
@@ -533,7 +535,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="mt-2 mb-5">
+                  <div className="mt-2">
                     <a
                       href="#register"
                       className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"

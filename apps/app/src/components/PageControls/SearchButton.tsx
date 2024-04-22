@@ -17,7 +17,7 @@ const SearchButton = (): JSX.Element => {
   return (
     <button
       type="button"
-      className={`me-3 btn btn-search ${styles['btn-search']}`}
+      className={`btn btn-search ${styles['btn-search']}`}
       onClick={searchButtonClickHandler}
       data-testid="open-search-modal-button"
     >

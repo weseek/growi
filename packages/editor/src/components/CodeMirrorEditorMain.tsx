@@ -8,7 +8,7 @@ import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [

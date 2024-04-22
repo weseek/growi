@@ -36,3 +36,10 @@
     padding-top: 0.5em;
   }
 }
+
+// border-radius
+.comment-editor-styles :global {
+  .cm-editor, .cm-scroller {
+    border-radius: var(--bs-border-radius);
+  }
+}
