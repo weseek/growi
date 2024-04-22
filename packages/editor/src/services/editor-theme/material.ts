@@ -26,12 +26,12 @@ const base00 = '#2e3235',
   base_teal = '#4ebaaa'
 
 const invalid = base_red,
-  darkBackground = '#202325',
-  highlightBackground = '#545b61',
+  darkBackground = '#36383a',
+  highlightBackground = '#44494d',
   background = base00,
   tooltipBackground = base01,
   selection = base01,
-  cursor = base04
+  cursor = base05
 
 /// The editor theme styles for Material Dark.
 export const materialDarkTheme = EditorView.theme(

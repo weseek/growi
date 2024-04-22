@@ -1,5 +1,5 @@
 module.exports = {
   rules: {
-    'camelcase': 'off',
+    camelcase: 'off',
   }
 };
