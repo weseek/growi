@@ -68,10 +68,10 @@ export const useSetupGlobalSocketForPage = (pageId: string | undefined): void =>
   useEffect(() => {
     if (socket == null || pageId == null) { return }
 
-    socket.emit(SocketEventName.JoinPage, { socketId: socket.id, pageId });
+    socket.emit(SocketEventName.JoinPage, { pageId });
 
     return () => {
-      socket.emit(SocketEventName.LeavePage, { socketId: socket.id, pageId });
+      socket.emit(SocketEventName.LeavePage, { pageId });
     };
   }, [pageId, socket]);
 };
