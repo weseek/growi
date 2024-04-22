@@ -71,7 +71,6 @@ export const useSetupGlobalSocketForPage = (pageId: string | undefined): void =>
     socket.emit(SocketEventName.JoinPage, { socketId: socket.id, pageId });
 
     return () => {
-      console.log('あああ');
       socket.emit(SocketEventName.LeavePage, { socketId: socket.id, pageId });
     };
   }, [pageId, socket]);

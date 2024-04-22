@@ -152,7 +152,6 @@ class SocketIoService {
     this.io.on('connection', (socket) => {
       // set event handlers for joining rooms
       socket.on(SocketEventName.JoinPage, ({ pageId }) => {
-        console.log('こんにちは', pageId);
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
       });
     });
@@ -161,7 +160,6 @@ class SocketIoService {
   setupDefaultSocketLeaveRoomsEventHandler() {
     this.io.on('connection', (socket) => {
       socket.on(SocketEventName.LeavePage, ({ pageId }) => {
-        console.log('さようなら', pageId);
         socket.leave(getRoomNameWithId(RoomPrefix.PAGE, pageId));
       });
     });
