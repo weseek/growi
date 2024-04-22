@@ -160,13 +160,14 @@ class SocketIoService {
     const yjsConnectionManager = getYjsConnectionManager();
     this.io.on('connection', (socket) => {
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-        // Tell client that a draft has been created
-        socket
+
+        // Emit to the client in the room of the target pageId.
+        this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
           .emit(SocketEventName.YjsUpdated, true);
 
         try {
-          await yjsConnectionManager.handleYDocSync(pageId, initialValue, socket);
+          await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }
         catch (error) {
           logger.warn(error.message);
