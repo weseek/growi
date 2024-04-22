@@ -50,7 +50,7 @@ type TagsProps = {
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { onClickEditTagsButton } = props;
-  const { t } = useTranslation('');
+  const { t } = useTranslation();
 
   return (
     <div className="grw-tag-labels-container d-flex align-items-center">
