@@ -26,11 +26,14 @@ const base00 = '#2e3235',
   base_teal = '#4ebaaa'
 
 const invalid = base_red,
+  // Adjust color
   darkBackground = '#36383a',
+  // Adjust color
   highlightBackground = '#44494d',
   background = base00,
   tooltipBackground = base01,
   selection = base01,
+  // Change color
   cursor = base05
 
 /// The editor theme styles for Material Dark.
