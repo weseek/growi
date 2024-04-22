@@ -2,17 +2,17 @@ import { useCallback, useEffect } from 'react';
 
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
+import type { CurrentPageYjsDraft } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
-import { useHasYjsDraft } from '~/stores/page';
+import { useCurrentPageYjsDraft } from '~/stores/page';
 
 export const useYjsDraftEffect = (): void => {
-
-  const { mutate: mutateHasYjsDraft } = useHasYjsDraft();
+  const { mutate: mutateeCurrentPageYjsDraft } = useCurrentPageYjsDraft();
   const { data: socket } = useGlobalSocket();
 
-  const yjsDraftUpdateHandler = useCallback(((hasYjsDraft: boolean) => {
-    mutateHasYjsDraft(hasYjsDraft);
-  }), [mutateHasYjsDraft]);
+  const yjsDraftUpdateHandler = useCallback(((currentPageYjsDraft: CurrentPageYjsDraft) => {
+    mutateeCurrentPageYjsDraft(currentPageYjsDraft);
+  }), [mutateeCurrentPageYjsDraft]);
 
   useEffect(() => {
 
@@ -24,5 +24,5 @@ export const useYjsDraftEffect = (): void => {
       socket.off(SocketEventName.YjsUpdated, yjsDraftUpdateHandler);
     };
 
-  }, [mutateHasYjsDraft, socket, yjsDraftUpdateHandler]);
+  }, [mutateeCurrentPageYjsDraft, socket, yjsDraftUpdateHandler]);
 };

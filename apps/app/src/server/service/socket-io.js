@@ -1,12 +1,14 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
+import { CurrentPageYjsDraftData } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
 import { getYjsConnectionManager } from './yjs-connection-manager';
+
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -173,7 +175,7 @@ class SocketIoService {
         // Emit to the client in the room of the target pageId.
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsUpdated, true);
+          .emit(SocketEventName.YjsUpdated, CurrentPageYjsDraftData.hasYjsDraft);
 
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);

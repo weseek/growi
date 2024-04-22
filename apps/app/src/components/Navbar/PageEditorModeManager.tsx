@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
-import { useIsNotFound, useHasYjsDraft } from '~/stores/page';
+import { useIsNotFound, useCurrentPageYjsDraft } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
 
 import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
@@ -64,7 +64,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const { data: hasYjsDraft } = useHasYjsDraft();
+  const { data: currentPageYjsDraft } = useCurrentPageYjsDraft();
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
@@ -113,7 +113,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             onClick={editButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
-            { hasYjsDraft && <span className="position-absolute top-0 start-100 translate-middle p-1 bg-primary rounded-circle" />}
+            { currentPageYjsDraft?.hasYjsDraft && <span className="position-absolute top-0 start-100 translate-middle p-1 bg-primary rounded-circle" />}
           </PageEditorModeButton>
         )}
       </div>
