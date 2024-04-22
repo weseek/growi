@@ -1,7 +1,6 @@
 import React, { type ReactNode, useCallback } from 'react';
 
 import { Origin } from '@growi/core';
-import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
