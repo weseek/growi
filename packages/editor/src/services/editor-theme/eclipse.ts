@@ -1,5 +1,4 @@
-// Ref: @uiw/codemirror-theme-eclipse/esm/index.js
-
+// Ref: https://github.com/uiwjs/react-codemirror/blob/399d127f59a97a64974a65923d477d585d2abee5/themes/eclipse/src/index.ts
 import { tags as t } from '@lezer/highlight';
 import { createTheme } from '@uiw/codemirror-themes';
 
