@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -11,6 +10,8 @@ import { useIsEnabledMarp } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
 
 import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
+
+import { parseSlideFrontmatterInMarkdown } from './markdown-slide-util-for-view';
 
 
 import 'katex/dist/katex.min.css';
