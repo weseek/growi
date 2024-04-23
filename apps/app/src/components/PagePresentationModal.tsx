@@ -1,6 +1,5 @@
 import React, { useCallback } from 'react';
 
-import type { PresentationProps } from '@growi/presentation';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
@@ -15,11 +14,10 @@ import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';
 import { useNextThemes } from '~/stores/use-next-themes';
 
-
 import styles from './PagePresentationModal.module.scss';
 
 
-const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
+const Presentation = dynamic(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
     <LoadingSpinner className="text-muted fs-1" />
