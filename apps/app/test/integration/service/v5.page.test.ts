@@ -1,4 +1,4 @@
-import { addSeconds } from 'date-fns';
+import { addSeconds } from 'date-fns/addSeconds';
 import mongoose from 'mongoose';
 
 import { PageActionStage, PageActionType } from '../../../src/interfaces/page-operation';

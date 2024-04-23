@@ -244,6 +244,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
+    if (comment === '') {
+      return res.json(ApiResponse.error('Comment text is required'));
+    }
+
     let createdComment;
     try {
       createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
