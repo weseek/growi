@@ -40,10 +40,17 @@ export const SocketEventName = {
   // External user group sync
   externalUserGroup: generateGroupSyncEvents(),
 
+  // room per pageId
+  JoinPage: 'join:page',
+  LeavePage: 'leave:page',
+
   // Page Operation
   PageCreated: 'page:create',
   PageUpdated: 'page:update',
   PageDeleted: 'page:delete',
+
+  // Yjs
+  YjsUpdated: 'yjsDraft:update',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 

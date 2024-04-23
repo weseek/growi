@@ -42,12 +42,11 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId, useCurrentPageYjsDraft,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
-import { useSelectedGrant } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
 import loggerFactory from '~/utils/logger';
 
@@ -170,6 +169,8 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
+  hasYjsDraft: boolean,
+
   rendererConfig: RendererConfig,
 };
 
@@ -219,6 +220,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+
+  useCurrentPageYjsDraft({ hasYjsDraft: props.hasYjsDraft });
 
   const { pageWithMeta } = props;
 
@@ -483,6 +486,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
         props.currentPathname = `/${page._id}`;
       }
     }
+
+    props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
   }
 }
 

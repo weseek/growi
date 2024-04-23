@@ -40,6 +40,7 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
@@ -4435,6 +4436,12 @@ class PageService implements IPageService {
         page.processData = processData;
       }
     });
+  }
+
+  hasYjsDraft(pageId: string): boolean {
+    const yjsConnectionManager = getYjsConnectionManager();
+    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+    return currentYdoc != null;
   }
 
   async createTtlIndex(): Promise<void> {

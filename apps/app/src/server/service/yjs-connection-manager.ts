@@ -40,12 +40,15 @@ class YjsConnectionManager {
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
+    const currentYdoc = this.getCurrentYdoc(pageId);
+    if (currentYdoc == null) {
+      return;
+    }
+
     const persistedYdoc = await this.mdb.getYDoc(pageId);
     const persistedStateVector = Y.encodeStateVector(persistedYdoc);
 
     await this.mdb.flushDocument(pageId);
-
-    const currentYdoc = this.getCurrentYdoc(pageId);
 
     const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
     const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
@@ -77,17 +80,18 @@ class YjsConnectionManager {
     // TODO: https://redmine.weseek.co.jp/issues/132775
     // It's necessary to confirm that the user is not editing the target page in the Editor
     const currentYdoc = this.getCurrentYdoc(pageId);
+    if (currentYdoc == null) {
+      return;
+    }
+
     const currentMarkdownLength = currentYdoc.getText('codemirror').length;
     currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
     currentYdoc.getText('codemirror').insert(0, newValue);
     Y.encodeStateAsUpdate(currentYdoc);
   }
 
-  private getCurrentYdoc(pageId: string): Y.Doc {
+  public getCurrentYdoc(pageId: string): Y.Doc | undefined {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
-    if (currentYdoc == null) {
-      throw new Error(`currentYdoc for pageId ${pageId} is undefined.`);
-    }
     return currentYdoc;
   }
 
