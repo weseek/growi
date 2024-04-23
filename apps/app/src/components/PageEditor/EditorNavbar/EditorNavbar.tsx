@@ -12,7 +12,7 @@ export const EditorNavbar = (): JSX.Element => {
   const { data: editingUsers } = useEditingUsers();
 
   return (
-    <div className={`${moduleClass} d-flex justify-content-between px-4 py-1`}>
+    <div className={`${moduleClass} d-flex justify-content-between ps-3 ps-md-5 ps-xl-4 pe-4 py-1`}>
       <PageHeader />
       <EditingUserList
         userList={editingUsers?.userList ?? []}
