@@ -36,6 +36,8 @@ context('Comment', () => {
     cy.getByTestid('page-comment-button').click();
     cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
 
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled");
+
     // // Open comment editor
     // cy.waitUntil(() => {
     //   // do
@@ -44,7 +46,7 @@ context('Comment', () => {
     //   return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     // });
 
-    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
+    cy.get('.cm-content').type(commetText);
     cy.getByTestid("comment-submit-button",  { timeout: 20000 }).eq(0).should('be.visible').click();
 
     // Check update comment count
@@ -59,6 +61,8 @@ context('Comment', () => {
     cy.getByTestid('page-comment-button').click();
     cy.getByTestid('comment-reply-button', { timeout: 14000 }).click();
 
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled");
+
     // // Open reply comment editor
     // cy.waitUntil(() => {
     //   // do
@@ -67,7 +71,7 @@ context('Comment', () => {
     //   return cy.get('.cm-content').then($elem => $elem.is(':visible'));
     // });
 
-    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
+    cy.get('.cm-content').type(commetText);
     cy.getByTestid("comment-submit-button",  { timeout: 20000 }).eq(0).should('be.visible').click();
 
     // TODO : https://redmine.weseek.co.jp/issues/139431
