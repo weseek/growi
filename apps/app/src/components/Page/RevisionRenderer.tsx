@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { hasEnabledSlideTypes } from '@growi/presentation/src/services';
+import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 import type { FallbackProps } from 'react-error-boundary';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactMarkdown from 'react-markdown';
@@ -42,7 +42,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isEnabledMarp } = useIsEnabledMarp();
-  const [, marp, useSlide] = hasEnabledSlideTypes(markdown);
+  const [, marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
   const useMarp = !!isEnabledMarp && marp;
 
   return (
