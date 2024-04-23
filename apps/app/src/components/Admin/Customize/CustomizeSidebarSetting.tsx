@@ -42,14 +42,15 @@ const CustomizeSidebarsetting = (): JSX.Element => {
           </Card>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="row row-cols-2">
+            <div className="row row-cols-2">
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  className={`card border border-4 ${isSidebarCollapsedMode ? 'border-primary' : ''}`}
                   onClick={() => setIsSidebarCollapsedMode(true)}
                   role="button"
                 >
-                  <img src={drawerIconFileName} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={drawerIconFileName} alt="Drawer Mode" />
                   <div className="card-body text-center">
                     Drawer Mode
                   </div>
@@ -57,11 +58,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
               </div>
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${!isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  className={`card border border-4 ${!isSidebarCollapsedMode ? 'border-primary' : ''}`}
                   onClick={() => setIsSidebarCollapsedMode(false)}
                   role="button"
                 >
-                  <img src={dockIconFileName} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={dockIconFileName} alt="Dock Mode" />
                   <div className="card-body  text-center">
                     Dock Mode
                   </div>
