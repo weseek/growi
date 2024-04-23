@@ -34,17 +34,17 @@ context('Comment', () => {
     const commetText = 'add comment';
 
     cy.getByTestid('page-comment-button').click();
-    // cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
+    cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
 
-    // Open comment editor
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
-      // wait until
-      return cy.get('.cm-content').then($elem => $elem.is(':visible'));
-    });
+    // // Open comment editor
+    // cy.waitUntil(() => {
+    //   // do
+    //   cy.getByTestid('open-comment-editor-button', { timeout: 14000 }).click();
+    //   // wait until
+    //   return cy.get('.cm-content').then($elem => $elem.is(':visible'));
+    // });
 
-    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText, {force: true});
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
     cy.getByTestid("comment-submit-button",  { timeout: 20000 }).eq(0).should('be.visible').click();
 
     // Check update comment count
@@ -57,16 +57,17 @@ context('Comment', () => {
     const commetText = 'reply comment';
 
     cy.getByTestid('page-comment-button').click();
+    cy.getByTestid('comment-reply-button', { timeout: 14000 }).click();
 
-    // Open reply comment editor
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('comment-reply-button', { timeout: 14000 }).click();
-      // wait until
-      return cy.get('.cm-content').then($elem => $elem.is(':visible'));
-    });
+    // // Open reply comment editor
+    // cy.waitUntil(() => {
+    //   // do
+    //   cy.getByTestid('comment-reply-button', { timeout: 14000 }).click();
+    //   // wait until
+    //   return cy.get('.cm-content').then($elem => $elem.is(':visible'));
+    // });
 
-    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText, {force: true});
+    cy.get('.cm-content').should('be.visible').should("not.be.disabled").type(commetText);
     cy.getByTestid("comment-submit-button",  { timeout: 20000 }).eq(0).should('be.visible').click();
 
     // TODO : https://redmine.weseek.co.jp/issues/139431
