@@ -194,7 +194,7 @@ class MailService implements S2sMessageHandlable {
       throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
-    const renderFilePromisified = promisify<string, ejs.Data, unknown>(ejs.renderFile);
+    const renderFilePromisified = promisify<string, ejs.Data, string>(ejs.renderFile);
 
     const templateVars = config.vars || {};
     const output = await renderFilePromisified(
