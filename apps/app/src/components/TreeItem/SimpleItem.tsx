@@ -1,6 +1,7 @@
 import React, {
   useCallback, useState, useEffect,
   type FC, type RefObject, type RefCallback, type MouseEvent,
+  useRef,
 } from 'react';
 
 import nodePath from 'path';
@@ -112,6 +113,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
+  const activeTargetRef = useRef<HTMLDivElement>(null);
 
   const itemClickHandler = useCallback((e: MouseEvent) => {
     // DO NOT handle the event when e.currentTarget and e.target is different
@@ -166,6 +168,18 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     }
   }, [data, isOpen, targetPathOrId]);
 
+
+  // When open Sidebar, scroll into view active item.
+  useEffect(() => {
+    if (!isOpen || data == null) {
+      return;
+    }
+    const timeoutId = setTimeout(() => {
+      activeTargetRef.current?.scrollIntoView(true);
+    }, 4000);
+    return () => clearTimeout(timeoutId);
+  }, [data, isOpen]);
+
   const ItemClassFixed = itemClass ?? SimpleItem;
 
   const EndComponents = props.customEndComponents ?? [SimpleItemTool];
@@ -194,6 +208,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   return (
     <div
+      ref={page.isTarget ? activeTargetRef : null}
       id={`pagetree-item-${page._id}`}
       data-testid="grw-pagetree-item-container"
       className={`grw-pagetree-item-container ${mainClassName}`}
