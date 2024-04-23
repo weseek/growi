@@ -26,7 +26,7 @@ import { ReplyComments } from './PageComment/ReplyComments';
 import styles from './PageComment.module.scss';
 
 
-export type PageCommentProps = {
+type PageCommentProps = {
   rendererOptions?: RendererOptions,
   pageId: string,
   pagePath: string,
@@ -168,8 +168,11 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
 
             return (
               <div key={comment._id} className={commentThreadClasses}>
+                {/* Comment */}
                 {commentElement(comment)}
+                {/* Reply comments */}
                 {hasReply && replyCommentsElement(allReplies[comment._id])}
+
                 {(!isReadOnly && !showEditorIds.has(comment._id)) && (
                   <div className="d-flex flex-row-reverse">
                     <NotAvailableForGuest>
@@ -187,14 +190,16 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                     </NotAvailableForGuest>
                   </div>
                 )}
+
+                {/* Editor to reply */}
                 {(!isReadOnly && showEditorIds.has(comment._id)) && (
                   <CommentEditor
                     pageId={pageId}
                     replyTo={comment._id}
-                    onCancelButtonClicked={() => {
+                    onCanceled={() => {
                       removeShowEditorId(comment._id);
                     }}
-                    onCommentButtonClicked={() => onCommentButtonClickHandler(comment._id)}
+                    onCommented={() => onCommentButtonClickHandler(comment._id)}
                     revisionId={revisionId}
                   />
                 )}
