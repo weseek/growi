@@ -1,11 +1,10 @@
-import React, {
-  FC, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
 import { useKeywordManager } from '~/client/services/search-operation';
-import { IDataTagCount } from '~/interfaces/tag';
+import type { IDataTagCount } from '~/interfaces/tag';
 
 import PaginationWrapper from './PaginationWrapper';
 
@@ -42,7 +41,7 @@ const TagList: FC<TagListProps> = (props:(TagListProps & typeof defaultProps)) =
         <button
           key={tag._id}
           type="button"
-          className="list-group-item list-group-item-action d-flex justify-content-between"
+          className="list-group-item list-group-item-action d-flex justify-content-between rounded-1"
           onClick={() => pushState(`tag:${tag.name}`)}
         >
           <div className="text-truncate grw-tag badge">{tag.name}</div>
