@@ -232,43 +232,6 @@ $slack-work-space-name-card-border: #efc1f6;
     }
   }
 
-  // theme selector
-  #themeOptions {
-    // layout
-    .theme-option-container {
-      min-width: 100px;
-      a {
-        padding: 3px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-
-        svg {
-          display: block;
-        }
-      }
-    }
-
-    &.disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-
-    // style
-    .theme-option-container a {
-      background-color: $gray-100;
-      border: 1px solid $border-color;
-    }
-    .theme-option-name, .theme-option-badge {
-      opacity: 0.3;
-    }
-    // style (active)
-    .theme-option-container.active {
-      .theme-option-name, .theme-option-badge {
-        opacity: 1;
-      }
-    }
-  }
-
   .settings-table {
     table-layout: fixed;
 
