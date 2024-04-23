@@ -275,7 +275,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    codeMirrorEditor?.focus();
+    if (editorMode === EditorMode.Editor) {
+      codeMirrorEditor?.focus();
+    }
   }, [codeMirrorEditor, currentPage, editorMode]);
 
   // Detect indent size from contents (only when users are allowed to change it)
