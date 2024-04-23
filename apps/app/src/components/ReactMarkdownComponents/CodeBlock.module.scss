@@ -1,6 +1,25 @@
 @use '~/styles/variables' as var;
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+
+.code-highlighted {
+  // for word wrapping
+  // ref: https://qiita.com/spaceonly/items/9aa8599a082cb72740b7
+  %breaker {
+    word-break: break-all !important;
+    word-wrap: break-word !important;
+    overflow-wrap: break-word !important;
+    white-space: break-spaces !important;
+    line-break: anywhere !important;
+  };
+
+  @extend %breaker;
+
+  code {
+    @extend %breaker;
+  }
+}
+
 .code-highlighted-title {
   position: absolute;
   top: 0;
