@@ -1,5 +1,6 @@
 import type { IPage, IUserHasId } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { query } from 'express-validator';
@@ -44,10 +45,11 @@ export const checkPageExistenceHandlersFactory: CreatePageHandlersFactory = (cro
       const { path } = req.query;
 
       if (path == null || Array.isArray(path)) {
-        return res.apiv3Err(new ErrorV3('The param "path" must be an page id'));
+        return res.apiv3Err(new ErrorV3('The param "path" must be a string'));
       }
 
-      const count = await Page.countByPathAndViewer(path.toString(), req.user);
+      const normalizedPath = normalizePath(path.toString());
+      const count = await Page.countByPathAndViewer(normalizedPath, req.user);
       res.apiv3({ isExist: count > 0 });
     },
   ];
