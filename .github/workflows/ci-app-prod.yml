@@ -58,7 +58,7 @@ jobs:
 
 
   test-prod-node20:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@fix/138926-cypress-test
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 20.x
       skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
