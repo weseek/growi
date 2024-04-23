@@ -4,7 +4,7 @@ import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 
 
-export const parseSlideFrontmatter = (frontmatter: string): [boolean, boolean] => {
+const parseSlideFrontmatter = (frontmatter: string): [boolean, boolean] => {
 
   let marp = false;
   let slide = false;
