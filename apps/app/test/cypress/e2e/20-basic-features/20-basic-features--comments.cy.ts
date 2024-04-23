@@ -11,6 +11,7 @@ context('Comment', () => {
     // visit page
     cy.visit('/comment');
     cy.collapseSidebar(true, true);
+    cy.waitUntilSkeletonDisappear();
   })
 
   it('Create comment page', () => {
