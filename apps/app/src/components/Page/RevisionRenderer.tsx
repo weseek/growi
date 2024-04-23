@@ -42,7 +42,7 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
   } = props;
 
   const { data: isEnabledMarp } = useIsEnabledMarp();
-  const [, marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
+  const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
   const useMarp = !!isEnabledMarp && marp;
 
   return (
