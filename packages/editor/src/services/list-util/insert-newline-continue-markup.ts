@@ -1,8 +1,9 @@
 import type { ChangeSpec } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 
-// https://regex101.com/r/7BN2fR/5
-const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]))(\s*)/;
+// https://regex101.com/r/r9plEA/1
+const indentAndMarkRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]\s|[*+-]\s|(\d+)([.)]\s))(\s*)/;
+// https://regex101.com/r/HFYoFN/1
 const indentAndMarkOnlyRE = /^(\s*)(>[> ]*|[*+-] \[[x ]\]|[*+-]|(\d+)[.)])(\s*)$/;
 
 export const insertNewlineContinueMarkup = (editor: EditorView): void => {
