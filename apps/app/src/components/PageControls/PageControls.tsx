@@ -59,8 +59,13 @@ const Tags = (props: TagsProps): JSX.Element => {
         className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
+<<<<<<< HEAD
         <span className="material-symbols-outlined me-1">local_offer</span>
         {t('Tags')}
+=======
+        <span className="material-symbols-outlined me-2">local_offer</span>
+        <div className="mb-0">{t('Tags')}</div>
+>>>>>>> parent of 4643e75e35 (div-tag-delete)
       </button>
     </div>
   );
