@@ -2,7 +2,7 @@
 
 .editor-navbar :global {
   min-height: 72px;
-  @include bs.media-breakpoint-down(md) {
+  @include bs.media-breakpoint-down(sm) {
     min-height: 96px;
   }
 }

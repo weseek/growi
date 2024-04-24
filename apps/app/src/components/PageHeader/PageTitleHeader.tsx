@@ -108,7 +108,7 @@ export const PageTitleHeader: FC<Props> = (props) => {
           </div>
         ) }
         <h1
-          className={`mb-0 px-2 fs-4
+          className={`mb-0 mb-sm-1 px-2 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}

@@ -8,6 +8,9 @@
   @include bs.media-breakpoint-down(md) {
     max-width: calc(100vw - 264px);
   }
+  @include bs.media-breakpoint-down(sm) {
+    max-width: calc(100vw - 48px);
+  }
   input {
     min-width: 20px;
     min-height: unset;
