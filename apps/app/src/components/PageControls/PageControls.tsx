@@ -49,6 +49,7 @@ type TagsProps = {
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { onClickEditTagsButton } = props;
+  const { t } = useTranslation();
 
   return (
     <div className="grw-tag-labels-container d-flex align-items-center">
@@ -58,7 +59,7 @@ const Tags = (props: TagsProps): JSX.Element => {
         onClick={onClickEditTagsButton}
       >
         <span className="material-symbols-outlined me-1">local_offer</span>
-        Tags
+        {t('Tags')}
       </button>
     </div>
   );
