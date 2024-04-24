@@ -270,7 +270,7 @@ describe('Access to sidebar', () => {
 
         it('Succesfully click all tags button', () => {
           cy.getByTestid('grw-sidebar-content-tags').within(() => {
-            cy.get('.btn-primary').click();
+            cy.get('.btn-primary').should('be.visible').click({force: true});
           });
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
