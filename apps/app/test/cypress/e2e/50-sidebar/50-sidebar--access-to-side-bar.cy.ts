@@ -269,9 +269,7 @@ describe('Access to sidebar', () => {
         });
 
         it('Succesfully click all tags button', () => {
-          cy.getByTestid('grw-sidebar-content-tags').within(() => {
-            cy.get('.btn-primary').click();
-          });
+          cy.getByTestid('check-all-tags-button').should('be.visible').click()
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');
 

@@ -68,7 +68,7 @@ const Tag: FC = () => {
         )
       }
 
-      <div className="d-flex justify-content-center my-5">
+      <div className="d-flex justify-content-center my-5" data-testid="check-all-tags-button">
         <Link
           href="/tags"
           className="btn btn-primary rounded px-4"
