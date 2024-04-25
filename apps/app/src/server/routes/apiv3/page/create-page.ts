@@ -9,7 +9,6 @@ import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
-// import { i18n } from 'next-i18next';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
@@ -28,6 +27,7 @@ import loggerFactory from '~/utils/logger';
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import { excludeReadOnlyUser } from '../../../middlewares/exclude-read-only-user';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
+
 
 const logger = loggerFactory('growi:routes:apiv3:page:create-page');
 
@@ -214,7 +214,6 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let pathToCreate: string;
       try {
         const { path, parentPath, optionalParentPath } = req.body;
-
         pathToCreate = await determinePath(req.t, parentPath, path, optionalParentPath);
       }
       catch (err) {
