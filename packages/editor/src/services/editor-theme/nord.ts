@@ -72,6 +72,7 @@ export const nordTheme = EditorView.theme(
       color: base00,
     },
 
+    // Custom
     '.cm-activeLine': { backgroundColor: activeLineBackground },
     '.cm-selectionMatch': {
       backgroundColor: base05,
@@ -95,6 +96,7 @@ export const nordTheme = EditorView.theme(
       border: 'none',
     },
 
+    // Custom
     '.cm-activeLineGutter': {
       backgroundColor: activeLineBackground,
       color: base04,
