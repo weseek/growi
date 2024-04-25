@@ -1,7 +1,7 @@
 import type { IPage } from '@growi/core';
 import {
   type IGrantedGroup,
-  PageGrant, GroupType, getIdForRef, isPopulated,
+  PageGrant, GroupType, getIdForRef,
 } from '@growi/core';
 import {
   pagePathUtils, pathUtils, pageUtils,
@@ -771,10 +771,7 @@ class PageGrantService implements IPageGrantService {
   getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
     const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
     return page.grantedGroups?.filter((group) => {
-      if (isPopulated(group.item)) {
-        return userRelatedGroupIds.includes(group.item._id.toString());
-      }
-      return userRelatedGroupIds.includes(group.item);
+      return userRelatedGroupIds.includes(getIdForRef(group.item));
     }) || [];
   }
 
@@ -785,10 +782,7 @@ class PageGrantService implements IPageGrantService {
     const userRelatedGroups = (await this.getUserRelatedGroups(user));
     const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
     return page.grantedGroups?.filter((group) => {
-      if (isPopulated(group.item)) {
-        return !userRelatedGroupIds.includes(group.item._id.toString());
-      }
-      return !userRelatedGroupIds.includes(group.item);
+      return !userRelatedGroupIds.includes(getIdForRef(group.item));
     }) || [];
   }
 
