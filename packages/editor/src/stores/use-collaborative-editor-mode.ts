@@ -18,7 +18,7 @@ type UserLocalState = {
 }
 
 export const useCollaborativeEditorMode = (
-    isEditorMode: boolean,
+    isEnabled: boolean,
     user?: IUserHasId,
     pageId?: string,
     initialValue?: string,
@@ -32,7 +32,7 @@ export const useCollaborativeEditorMode = (
   const { data: socket } = useGlobalSocket();
 
   const cleanupYDoc = () => {
-    if (cPageId === pageId && isEditorMode) {
+    if (cPageId === pageId && isEnabled) {
       return;
     }
 
@@ -53,7 +53,7 @@ export const useCollaborativeEditorMode = (
   };
 
   const setupYDoc = () => {
-    if (ydoc != null || !isEditorMode) {
+    if (ydoc != null || !isEnabled) {
       return;
     }
 
@@ -130,8 +130,8 @@ export const useCollaborativeEditorMode = (
     };
   };
 
-  useEffect(cleanupYDoc, [cPageId, isEditorMode, onEditorsUpdated, pageId, provider, socket, ydoc]);
-  useEffect(setupYDoc, [isEditorMode, provider, ydoc]);
+  useEffect(cleanupYDoc, [cPageId, isEnabled, onEditorsUpdated, pageId, provider, socket, ydoc]);
+  useEffect(setupYDoc, [isEnabled, provider, ydoc]);
   useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
   useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
 };
