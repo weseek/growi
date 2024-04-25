@@ -7,7 +7,7 @@ import {
   Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,
 } from '@tsed/common';
 import axios from 'axios';
-import { addHours } from 'date-fns';
+import { addHours } from 'date-fns/addHours';
 import createError from 'http-errors';
 
 

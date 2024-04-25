@@ -7,7 +7,7 @@ import type { GrowiPluginPackageData } from '@growi/pluginkit';
 import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server/index.cjs';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import mongoose from 'mongoose';
+import type mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
@@ -28,13 +28,21 @@ const logger = loggerFactory('growi:plugins:plugin-utils');
 export type GrowiPluginResourceEntries = [installedPath: string, href: string][];
 
 function retrievePluginManifest(growiPlugin: IGrowiPlugin): ViteManifest | undefined {
-  const manifestPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath, 'dist/manifest.json');
+  // ref: https://vitejs.dev/guide/migration.html#manifest-files-are-now-generated-in-vite-directory-by-default
+  const manifestPathByVite4 = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath, 'dist/manifest.json');
+  const manifestPath = path.join(PLUGIN_STORING_PATH, growiPlugin.installedPath, 'dist/.vite/manifest.json');
 
-  if (!fs.existsSync(manifestPath)) {
+  const isManifestByVite4Exists = fs.existsSync(manifestPathByVite4);
+  const isManifestExists = fs.existsSync(manifestPath);
+
+  if (!isManifestByVite4Exists && !isManifestExists) {
     return;
   }
 
-  const manifestStr: string = readFileSync(manifestPath, 'utf-8');
+  const manifestStr: string = readFileSync(
+    isManifestExists ? manifestPath : manifestPathByVite4,
+    'utf-8',
+  );
   return JSON.parse(manifestStr);
 }
 

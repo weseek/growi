@@ -4,7 +4,7 @@ import React, {
 
 import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
