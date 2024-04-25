@@ -60,8 +60,8 @@ export const nordTheme = EditorView.theme(
       { backgroundColor: selection },
 
     '.cm-panels': { backgroundColor: darkBackground, color: base03 },
-    // '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-    // '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+    '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+    '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
 
     '.cm-searchMatch': {
       backgroundColor: 'transparent',

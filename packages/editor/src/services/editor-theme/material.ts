@@ -66,7 +66,7 @@ export const materialDarkTheme = EditorView.theme(
       backgroundColor: highlightBackground,
     },
 
-    // Custom
+    // Customize
     '.cm-activeLine': { backgroundColor: activeLineBackground },
     '.cm-selectionMatch': {
       backgroundColor: darkBackground,
@@ -88,7 +88,7 @@ export const materialDarkTheme = EditorView.theme(
       color: base02,
     },
 
-    // Custom
+    // Customize
     '.cm-activeLineGutter': {
       backgroundColor: activeLineBackground,
       color: base07,
