@@ -40,7 +40,7 @@ const tooltipBackground = base01;
 const selection = base03;
 // Customize
 const cursor = base06;
-// Create
+// Create New color
 const activeLineBackground = '#00000020';
 
 // / The editor theme styles for Nord.
