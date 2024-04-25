@@ -21,8 +21,6 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   const {
     userGroup, parentUserGroup, selectableParentUserGroups, submitButtonLabel, onSubmit, isExternalGroup = false,
   } = props;
-
-  console.log('selectableParentUserGroups', selectableParentUserGroups);
   /*
    * State
    */
@@ -51,8 +49,6 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
   }, [parentUserGroup]);
 
   const isSelectableParentUserGroups = selectableParentUserGroups != null && selectableParentUserGroups.length > 0;
-
-  console.log('isSelectableParentUserGroups', isSelectableParentUserGroups);
 
   const isChildUserGroup = parentUserGroup !== undefined;
   const messageAtReleaseParentGroup = isChildUserGroup ? t('user_group_management.release_parent_group') : t('user_group_management.select_parent_group');
