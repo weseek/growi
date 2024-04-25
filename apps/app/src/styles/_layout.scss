@@ -2,6 +2,10 @@
 
 @use './variables' as var;
 
+body {
+  min-height: 100vh;
+}
+
 .dynamic-layout-root {
   @extend .flex-expand-vert;
 }

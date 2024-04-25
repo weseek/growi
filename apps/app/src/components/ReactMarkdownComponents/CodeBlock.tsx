@@ -6,8 +6,6 @@ import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
 
-const codeHighlightedClass = styles['code-highlighted'];
-
 // remove font-family
 Object.entries<object>(oneDark).forEach(([key, value]) => {
   if ('fontFamily' in value) {
@@ -50,7 +48,7 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   const isSimpleString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
   if (!isSimpleString) {
     return (
-      <div className={codeHighlightedClass} style={oneDark['pre[class*="language-"]']}>
+      <div style={oneDark['pre[class*="language-"]']}>
         <code className={`language-${lang}`} style={oneDark['code[class*="language-"]']}>
           {children}
         </code>
@@ -60,7 +58,6 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
 
   return (
     <PrismAsyncLight
-      className={codeHighlightedClass}
       PreTag="div"
       style={oneDark}
       language={lang}
