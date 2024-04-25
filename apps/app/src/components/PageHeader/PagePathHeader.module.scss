@@ -1,16 +1,6 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
 .page-path-header :global {
   max-width: calc(100vw - 650px);
-  @include bs.media-breakpoint-down(lg) {
-    max-width: calc(100vw - 372px);
-  }
-  @include bs.media-breakpoint-down(md) {
-    max-width: calc(100vw - 264px);
-  }
-  @include bs.media-breakpoint-down(sm) {
-    max-width: calc(100vw - 48px);
-  }
+
   input {
     min-width: 20px;
     min-height: unset;
