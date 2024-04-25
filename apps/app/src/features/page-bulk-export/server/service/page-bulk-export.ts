@@ -9,6 +9,7 @@ import type { QueueObject } from 'async';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { IAwsMultipartUploader } from '~/server/service/file-uploader/aws/multipart-upload';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
@@ -29,6 +30,8 @@ class PageBulkExportService {
 
   crowi: any;
 
+  activityEvent: any;
+
   // multipart upload part size
   partSize = 5 * 1024 * 1024; // 5MB
 
@@ -36,6 +39,7 @@ class PageBulkExportService {
 
   constructor(crowi) {
     this.crowi = crowi;
+    this.activityEvent = crowi.event('activity');
   }
 
   async bulkExportWithBasePagePath(basePagePath: string, currentUser): Promise<void> {
@@ -76,7 +80,7 @@ class PageBulkExportService {
       format: PageBulkExportFormat.markdown,
     });
 
-    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob);
+    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob, currentUser);
 
     // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
     // Hence, execution of two pipelines is required.
@@ -162,7 +166,7 @@ class PageBulkExportService {
     return zipArchiver;
   }
 
-  private getMultipartUploadWritable(multipartUploader: IAwsMultipartUploader, pageBulkExportJob: PageBulkExportJobDocument): Writable {
+  private getMultipartUploadWritable(multipartUploader: IAwsMultipartUploader, pageBulkExportJob: PageBulkExportJobDocument, user): Writable {
     let partNumber = 1;
 
     return new Writable({
@@ -180,11 +184,22 @@ class PageBulkExportService {
         }
         callback();
       },
-      async final(callback) {
+      final: async(callback) => {
         try {
           await multipartUploader.completeUpload();
           pageBulkExportJob.completedAt = new Date();
           await pageBulkExportJob.save();
+
+          const activity = await this.crowi.activityService.createActivity({
+            action: SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED,
+            user,
+            targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
+            target: pageBulkExportJob,
+            snapshot: {
+              username: user.username,
+            },
+          });
+          this.activityEvent.emit('updated', activity, page, preNotify);
         }
         catch (err) {
           callback(err);

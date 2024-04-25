@@ -5,6 +5,7 @@ import { SubscriptionStatusType } from '@growi/core';
 import { subDays } from 'date-fns/subDays';
 import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
+import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { AllEssentialActions } from '~/interfaces/activity';
 import type { PaginateResult } from '~/interfaces/in-app-notification';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
@@ -198,7 +199,7 @@ export default class InAppNotificationService {
     return;
   };
 
-  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify): Promise<void> {
+  createInAppNotification = async function(activity: ActivityDocument, target: IUser | IPage | IPageBulkExportJob, preNotify: PreNotify): Promise<void> {
 
     const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
 

@@ -19,6 +19,7 @@ import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
+import PageBulkExportEvent from '../events/page-bulk-export';
 import UserEvent from '../events/user';
 import { modelsDependsOnCrowi } from '../models';
 import { aclService as aclServiceSingletonInstance } from '../service/acl';
@@ -119,6 +120,7 @@ class Crowi {
       bookmark: new (require('../events/bookmark'))(this),
       tag: new (require('../events/tag'))(this),
       admin: new (require('../events/admin'))(this),
+      pageBulkExport: new PageBulkExportEvent(),
     };
   }
 
