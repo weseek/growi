@@ -58,8 +58,8 @@ const Tags = (props: TagsProps): JSX.Element => {
         className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <span className="material-symbols-outlined me-1">local_offer</span>
-        {t('Tags')}
+        <span className="material-symbols-outlined">local_offer</span>
+        <span className="d-none d-sm-inline ms-1">{t('Tags')}</span>
       </button>
     </div>
   );
@@ -274,7 +274,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
-      { isDeviceLargerThanMd && (
+      { isViewMode && isDeviceLargerThanMd && (
         <SearchButton />
       )}
 
@@ -285,7 +285,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       )}
 
       { !hideSubControls && (
-        <div className="hstack gap-1">
+        <div className={`hstack gap-1 ${!isViewMode && 'd-none d-lg-flex'}`}>
           {revisionId != null && _isIPageInfoForOperation && (
             <SubscribeButton
               status={pageInfo.subscriptionStatus}
