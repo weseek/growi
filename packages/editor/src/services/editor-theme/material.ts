@@ -35,6 +35,8 @@ const tooltipBackground = base01;
 const selection = base01;
 // Change color
 const cursor = base05;
+// Create New color
+const activeLineBackground = '#00000020';
 
 // / The editor theme styles for Material Dark.
 export const materialDarkTheme = EditorView.theme(
@@ -64,7 +66,8 @@ export const materialDarkTheme = EditorView.theme(
       backgroundColor: highlightBackground,
     },
 
-    '.cm-activeLine': { backgroundColor: highlightBackground },
+    // Custom
+    '.cm-activeLine': { backgroundColor: activeLineBackground },
     '.cm-selectionMatch': {
       backgroundColor: darkBackground,
       outline: `1px solid ${base_teal}`,
@@ -85,8 +88,9 @@ export const materialDarkTheme = EditorView.theme(
       color: base02,
     },
 
+    // Custom
     '.cm-activeLineGutter': {
-      backgroundColor: highlightBackground,
+      backgroundColor: activeLineBackground,
       color: base07,
     },
 
