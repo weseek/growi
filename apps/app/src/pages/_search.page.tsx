@@ -123,6 +123,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {

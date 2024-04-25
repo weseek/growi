@@ -103,6 +103,7 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     growiCloudUri: configManager.getConfig('crowi', 'app:growiCloudUri'),
     sidebarConfig: {
       isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+      isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
     },
     userUISettings: userUISettings?.toObject?.() ?? userUISettings,
   };

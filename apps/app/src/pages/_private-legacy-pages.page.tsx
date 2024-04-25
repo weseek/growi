@@ -97,6 +97,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {

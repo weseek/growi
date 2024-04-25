@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
@@ -11,7 +12,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
 
   const {
-    update, isSidebarCollapsedMode, setIsSidebarCollapsedMode,
+    data, update, setIsSidebarCollapsedMode, setIsSidebarClosedAtDockMode,
   } = useSWRxSidebarConfig();
 
   const { resolvedTheme } = useNextThemes();
@@ -27,6 +28,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
       toastError(err);
     }
   }, [t, update]);
+
+  if (data == null) {
+    return <LoadingSpinner />;
+  }
+
+  const { isSidebarCollapsedMode, isSidebarClosedAtDockMode } = data;
 
   return (
     <React.Fragment>
@@ -84,9 +91,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 type="radio"
                 id="is-open"
                 className="form-check-input"
-                name="mailVisibility"
-                checked={isSidebarCollapsedMode === false}
-                onChange={() => setIsSidebarCollapsedMode(false)}
+                checked={isSidebarCollapsedMode === false && isSidebarClosedAtDockMode === false}
+                disabled={isSidebarCollapsedMode}
+                onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
               <label className="form-label form-check-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
@@ -97,9 +104,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 type="radio"
                 id="is-closed"
                 className="form-check-input"
-                name="mailVisibility"
-                checked={isSidebarCollapsedMode === true}
-                onChange={() => setIsSidebarCollapsedMode(true)}
+                checked={isSidebarCollapsedMode === false && isSidebarClosedAtDockMode === true}
+                disabled={isSidebarCollapsedMode}
+                onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
               <label className="form-label form-check-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}
