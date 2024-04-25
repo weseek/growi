@@ -1,5 +1,5 @@
 import type { ColorScheme, IUserHasId } from '@growi/core';
-import { AllLang } from '@growi/core';
+import { AllLang, Lang } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { isServer } from '@growi/core/dist/utils';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -8,6 +8,7 @@ import type { SSRConfig, UserConfig } from 'next-i18next';
 
 import * as nextI18NextConfig from '^/config/next-i18next.config';
 
+import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import { type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -17,7 +18,6 @@ import type { UserUISettingsDocument } from '~/server/models/user-ui-settings';
 import {
   useCurrentProductNavWidth, useCurrentSidebarContents, usePreferCollapsedMode,
 } from '~/stores/ui';
-import { determineLocale } from '~/utils/locale-utils';
 
 export type CommonProps = {
   namespacesRequired: string[], // i18next
@@ -120,9 +120,12 @@ export const getNextI18NextConfig = async(
 ): Promise<SSRConfig> => {
 
   const req: CrowiRequest = context.req as CrowiRequest;
-  const { user, headers } = req;
+  const { crowi, user, headers } = req;
+  const { configManager } = crowi;
 
-  const locale = determineLocale(headers, user);
+  // determine language
+  const locale = user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
+    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
 
   const namespaces = ['commons'];
   if (namespacesRequired != null) {
