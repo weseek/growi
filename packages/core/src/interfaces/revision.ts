@@ -1,3 +1,4 @@
+import type { Ref } from './common';
 import type { HasObjectId } from './has-object-id';
 import type { IUser } from './user';
 
@@ -12,7 +13,7 @@ export const allOrigin = Object.values(Origin);
 
 export type IRevision = {
   body: string,
-  author: IUser,
+  author: Ref<IUser>,
   hasDiffToPrev: boolean;
   createdAt: Date,
   updatedAt: Date,
