@@ -39,7 +39,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
   }, [tagsSearch?.tags]);
 
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === ' ') {
+    if (event.key === ' ' || event.key === '　') {
       event.preventDefault();
 
       // fix: https://redmine.weseek.co.jp/issues/140689
