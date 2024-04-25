@@ -33,13 +33,15 @@ const base0F = '#b48ead'; // purple
 
 const invalid = '#d30102';
 const darkBackground = '#252a33';
-// Cutomize
+// Customize
 const highlightBackground = base02;
 const background = base00;
 const tooltipBackground = base01;
 const selection = base03;
-// Cutomize
+// Customize
 const cursor = base06;
+// Create
+const activeLineBackground = '#00000020';
 
 // / The editor theme styles for Nord.
 export const nordTheme = EditorView.theme(
@@ -58,8 +60,8 @@ export const nordTheme = EditorView.theme(
       { backgroundColor: selection },
 
     '.cm-panels': { backgroundColor: darkBackground, color: base03 },
-    '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
-    '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+    // '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+    // '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
 
     '.cm-searchMatch': {
       backgroundColor: 'transparent',
@@ -70,7 +72,7 @@ export const nordTheme = EditorView.theme(
       color: base00,
     },
 
-    '.cm-activeLine': { backgroundColor: highlightBackground },
+    '.cm-activeLine': { backgroundColor: activeLineBackground },
     '.cm-selectionMatch': {
       backgroundColor: base05,
       color: base01,
@@ -82,7 +84,7 @@ export const nordTheme = EditorView.theme(
     },
 
     '&.cm-focused .cm-matchingBracket': {
-      // Cutomize
+      // Customize
       backgroundColor: base02,
       color: base02,
     },
@@ -94,7 +96,7 @@ export const nordTheme = EditorView.theme(
     },
 
     '.cm-activeLineGutter': {
-      backgroundColor: highlightBackground,
+      backgroundColor: activeLineBackground,
       color: base04,
     },
 
