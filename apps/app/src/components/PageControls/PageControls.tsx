@@ -58,8 +58,8 @@ const Tags = (props: TagsProps): JSX.Element => {
         className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <span className="material-symbols-outlined me-sm-1">local_offer</span>
-        <span className="d-none d-sm-inline">{t('Tags')}</span>
+        <span className="material-symbols-outlined">local_offer</span>
+        <span className="d-none d-sm-inline ms-1">{t('Tags')}</span>
       </button>
     </div>
   );
