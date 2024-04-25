@@ -84,11 +84,13 @@ export const PageTitleHeader: FC<Props> = (props) => {
     setRenameInputShown(true);
   }, [currentPagePath, isMovable]);
 
-  useEffect(() => {
-    if (isNewlyCreatedPage) {
-      setRenameInputShown(true);
-    }
-  }, [currentPage._id, isNewlyCreatedPage]);
+  // TODO: auto focus when create new page
+  // https://redmine.weseek.co.jp/issues/136128
+  // useEffect(() => {
+  //   if (isNewlyCreatedPage) {
+  //     setRenameInputShown(true);
+  //   }
+  // }, [currentPage._id, isNewlyCreatedPage]);
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>

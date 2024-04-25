@@ -1,13 +1,14 @@
 import { GroupType, PageGrant } from '@growi/core';
 import mongoose from 'mongoose';
 
-import { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
-import ExternalUserGroup from '~/features/external-user-group/server/models/external-user-group';
-import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
-import UserGroup from '~/server/models/user-group';
-
+import { ExternalGroupProviderType } from '../../../src/features/external-user-group/interfaces/external-user-group';
+import ExternalUserGroup from '../../../src/features/external-user-group/server/models/external-user-group';
+import ExternalUserGroupRelation from '../../../src/features/external-user-group/server/models/external-user-group-relation';
+import { UserGroupPageGrantStatus } from '../../../src/interfaces/page';
+import UserGroup from '../../../src/server/models/user-group';
+import UserGroupRelation from '../../../src/server/models/user-group-relation';
+import type { IPageGrantService } from '../../../src/server/service/page-grant';
 import { getInstance } from '../setup-crowi';
-
 
 /*
  * There are 3 grant types to test.
@@ -19,13 +20,12 @@ describe('PageGrantService', () => {
    */
   let User;
   let Page;
-  let UserGroupRelation;
 
   /*
    * global instances
    */
   let crowi;
-  let pageGrantService;
+  let pageGrantService: IPageGrantService;
   let xssSpy;
 
   let user1;
@@ -85,6 +85,14 @@ describe('PageGrantService', () => {
   const pageE3GroupParentPath = '/E3/GroupParent';
   const pageE3GroupChildPath = '/E3/GroupChild';
   const pageE3User1Path = '/E3/User1';
+
+  // getPageGroupGrantData test data
+  let user3;
+  let groupGrantDataTestChildPagePath;
+  let groupGrantDataTestParentUserGroupId;
+  let groupGrantDataTestChildUserGroupId;
+  let groupGrantDataTestExternalUserGroupId;
+  let groupGrantDataTestExternalUserGroupId2;
 
   const createDocumentsToTestIsGrantNormalized = async() => {
     // Users
@@ -375,6 +383,97 @@ describe('PageGrantService', () => {
     pageE3User1 = await Page.findOne({ path: pageE3User1Path });
   };
 
+  const createDocumentsToTestGetPageGroupGrantData = async() => {
+    await User.insertMany([
+      { name: 'User3', username: 'User3', email: 'user3@example.com' },
+    ]);
+    user3 = await User.findOne({ username: 'User3' });
+
+    groupGrantDataTestParentUserGroupId = new mongoose.Types.ObjectId();
+    groupGrantDataTestChildUserGroupId = new mongoose.Types.ObjectId();
+    await UserGroup.insertMany([
+      {
+        _id: groupGrantDataTestParentUserGroupId, // cannotGrant
+        name: 'groupGrantDataTestParentGroup',
+        parent: null,
+      },
+      {
+        _id: groupGrantDataTestChildUserGroupId, // isGranted
+        name: 'groupGrantDataTestChildGroup',
+        parent: groupGrantDataTestParentUserGroupId,
+      },
+    ]);
+
+    await UserGroupRelation.insertMany([
+      {
+        relatedGroup: groupGrantDataTestParentUserGroupId._id,
+        relatedUser: user3._id,
+      },
+      {
+        relatedGroup: groupGrantDataTestChildUserGroupId._id,
+        relatedUser: user3._id,
+      },
+    ]);
+
+    groupGrantDataTestExternalUserGroupId = new mongoose.Types.ObjectId();
+    groupGrantDataTestExternalUserGroupId2 = new mongoose.Types.ObjectId();
+    await ExternalUserGroup.insertMany([
+      {
+        _id: groupGrantDataTestExternalUserGroupId,
+        name: 'groupGrantDataTestExternalGroup',
+        externalId: 'groupGrantDataTestExternalGroup',
+        provider: ExternalGroupProviderType.ldap,
+        parent: null,
+      },
+      {
+        _id: groupGrantDataTestExternalUserGroupId2,
+        name: 'groupGrantDataTestExternalGroup2',
+        externalId: 'groupGrantDataTestExternalGroup2',
+        provider: ExternalGroupProviderType.ldap,
+        parent: null,
+      },
+    ]);
+
+    await ExternalUserGroupRelation.insertMany([
+      {
+        relatedGroup: groupGrantDataTestExternalUserGroupId._id,
+        relatedUser: user3._id,
+      },
+    ]);
+
+    const groupGrantDataTestParentPagePath = '/groupGrantDataTestParentPage';
+    const groupGrantDataTestParentPageId = new mongoose.Types.ObjectId();
+    groupGrantDataTestChildPagePath = '/groupGrantDataTestParentPage/groupGrantDataTestChildPagePath';
+    await Page.insertMany([
+      {
+        _id: groupGrantDataTestParentPageId,
+        path: groupGrantDataTestParentPagePath,
+        grant: Page.GRANT_USER_GROUP,
+        creator: user3._id,
+        lastUpdateUser: user3._id,
+        grantedUsers: null,
+        grantedGroups: [
+          { item: groupGrantDataTestChildUserGroupId._id, type: GroupType.userGroup },
+          { item: groupGrantDataTestExternalUserGroupId._id, type: GroupType.externalUserGroup },
+          { item: groupGrantDataTestExternalUserGroupId2._id, type: GroupType.externalUserGroup },
+        ],
+        parent: rootPage._id,
+      },
+      {
+        path: groupGrantDataTestChildPagePath,
+        grant: Page.GRANT_USER_GROUP,
+        creator: user3._id,
+        lastUpdateUser: user3._id,
+        grantedUsers: null,
+        grantedGroups: [
+          { item: groupGrantDataTestChildUserGroupId._id, type: GroupType.userGroup },
+          { item: groupGrantDataTestExternalUserGroupId2._id, type: GroupType.externalUserGroup },
+        ],
+        parent: groupGrantDataTestParentPageId,
+      },
+    ]);
+  };
+
   /*
    * prepare before all tests
    */
@@ -385,11 +484,11 @@ describe('PageGrantService', () => {
 
     User = mongoose.model('User');
     Page = mongoose.model('Page');
-    UserGroupRelation = mongoose.model('UserGroupRelation');
 
     rootPage = await Page.findOne({ path: '/' });
 
     await createDocumentsToTestIsGrantNormalized();
+    await createDocumentsToTestGetPageGroupGrantData();
 
     xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
   });
@@ -398,7 +497,7 @@ describe('PageGrantService', () => {
     test('Should return true when Ancestor: root, Target: public', async() => {
       const targetPath = '/NEW';
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
@@ -410,7 +509,7 @@ describe('PageGrantService', () => {
     test('Should return true when Ancestor: root, Target: GroupParent', async() => {
       const targetPath = '/NEW_GroupParent';
       const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
@@ -422,7 +521,7 @@ describe('PageGrantService', () => {
     test('Should return true when Ancestor: under-root public, Target: public', async() => {
       const targetPath = `${pageRootPublicPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
@@ -434,7 +533,7 @@ describe('PageGrantService', () => {
     test('Should return true when Ancestor: under-root GroupParent, Target: GroupParent', async() => {
       const targetPath = `${pageRootGroupParentPath}/NEW`;
       const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
@@ -446,7 +545,7 @@ describe('PageGrantService', () => {
     test('Should return true when Ancestor: public, Target: public', async() => {
       const targetPath = `${pageE1PublicPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
@@ -470,7 +569,7 @@ describe('PageGrantService', () => {
     test('Should return false when Ancestor: owned by GroupParent, Target: public', async() => {
       const targetPath = `${pageE3GroupParentPath}/NEW`;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [];
       const shouldCheckDescendants = false;
 
@@ -482,7 +581,7 @@ describe('PageGrantService', () => {
     test('Should return false when Ancestor: owned by GroupChild, Target: GroupParent', async() => {
       const targetPath = `${pageE3GroupChildPath}/NEW`;
       const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = false;
 
@@ -496,7 +595,7 @@ describe('PageGrantService', () => {
     test('Should return true when Target: public, Descendant: public', async() => {
       const targetPath = emptyPagePath1;
       const grant = Page.GRANT_PUBLIC;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [];
       const shouldCheckDescendants = true;
 
@@ -520,7 +619,7 @@ describe('PageGrantService', () => {
     test('Should return true when Target: owned by GroupParent, Descendant: GroupParent, GroupChild and User1', async() => {
       const targetPath = emptyPagePath3;
       const grant = Page.GRANT_USER_GROUP;
-      const grantedUserIds = null;
+      const grantedUserIds = undefined;
       const grantedGroupIds = [{ item: groupParent._id, type: GroupType.userGroup }, { item: externalGroupParent._id, type: GroupType.externalUserGroup }];
       const shouldCheckDescendants = true;
 
@@ -816,6 +915,53 @@ describe('PageGrantService', () => {
           [PageGrant.GRANT_USER_GROUP]: { applicableGroups },
         },
       );
+    });
+  });
+  describe('Test for getPageGroupGrantData', () => {
+    test('return expected group grant data', async() => {
+      const groupGrantDataTestChildPage = await Page.findOne({ path: groupGrantDataTestChildPagePath });
+      const result = await pageGrantService.getPageGroupGrantData(groupGrantDataTestChildPage, user3);
+      expect(result).toStrictEqual({
+        userRelatedGroups: [
+          {
+            id: groupGrantDataTestExternalUserGroupId.toString(),
+            name: 'groupGrantDataTestExternalGroup',
+            type: GroupType.externalUserGroup,
+            provider: ExternalGroupProviderType.ldap,
+            status: UserGroupPageGrantStatus.notGranted,
+          },
+          {
+            id: groupGrantDataTestChildUserGroupId.toString(),
+            name: 'groupGrantDataTestChildGroup',
+            type: GroupType.userGroup,
+            provider: undefined,
+            status: UserGroupPageGrantStatus.isGranted,
+          },
+          {
+            id: groupGrantDataTestParentUserGroupId.toString(),
+            name: 'groupGrantDataTestParentGroup',
+            type: GroupType.userGroup,
+            provider: undefined,
+            status: UserGroupPageGrantStatus.cannotGrant,
+          },
+        ],
+        nonUserRelatedGrantedGroups: [
+          {
+            id: groupGrantDataTestExternalUserGroupId2.toString(),
+            name: 'groupGrantDataTestExternalGroup2',
+            type: GroupType.externalUserGroup,
+            provider: ExternalGroupProviderType.ldap,
+          },
+        ],
+      });
+    });
+
+    test('return empty arrays when page is root', async() => {
+      const result = await pageGrantService.getPageGroupGrantData(rootPage, user1);
+      expect(result).toStrictEqual({
+        userRelatedGroups: [],
+        nonUserRelatedGrantedGroups: [],
+      });
     });
   });
 });

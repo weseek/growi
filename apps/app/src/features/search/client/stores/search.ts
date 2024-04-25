@@ -1,13 +1,16 @@
-import { SWRResponse } from 'swr';
+import { useCallback } from 'react';
+
+import type { SWRResponse } from 'swr';
 
 import { useStaticSWR } from '~/stores/use-static-swr';
 
 type SearchModalStatus = {
   isOpened: boolean,
+  searchKeyword?: string,
 }
 
 type SearchModalUtils = {
-  open(): void
+  open(keywordOnInit?: string): void
   close(): void
 }
 export const useSearchModal = (status?: SearchModalStatus): SWRResponse<SearchModalStatus, Error> & SearchModalUtils => {
@@ -16,7 +19,9 @@ export const useSearchModal = (status?: SearchModalStatus): SWRResponse<SearchMo
 
   return {
     ...swrResponse,
-    open: () => swrResponse.mutate({ isOpened: true }),
-    close: () => swrResponse.mutate({ isOpened: false }),
+    open: useCallback((keywordOnInit?: string) => {
+      swrResponse.mutate({ isOpened: true, searchKeyword: keywordOnInit });
+    }, [swrResponse]),
+    close: useCallback(() => swrResponse.mutate({ isOpened: false }), [swrResponse]),
   };
 };

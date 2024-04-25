@@ -36,7 +36,7 @@ import {
   useWaitingSaveProcessing,
 } from '~/stores/editor';
 import {
-  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData,
+  useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -66,6 +66,7 @@ declare global {
 }
 
 export type SaveOptions = {
+  wip: boolean,
   slackChannels: string,
   overwriteScopesOfDescendants?: boolean
 }
@@ -92,7 +93,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { data: currentPathname } = useCurrentPathname();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { data: grantData } = useSelectedGrant();
+  const { data: selectedGrant } = useSelectedGrant();
   const { data: editingMarkdown } = useEditingMarkdown();
   const { data: isEnabledAttachTitleHeader } = useIsEnabledAttachTitleHeader();
   const { data: templateBodyData } = useTemplateBodyData();
@@ -104,6 +105,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: defaultIndentSize } = useDefaultIndentSize();
   const { data: acceptedUploadFileType } = useAcceptedUploadFileType();
   const { data: editorSettings } = useEditorSettings();
+  const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
@@ -165,9 +167,9 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const scrollPreviewHandlerThrottle = useMemo(() => throttle(25, scrollPreviewHandler), [scrollPreviewHandler]);
 
   const save: Save = useCallback(async(revisionId, markdown, opts, onConflict) => {
-    if (pageId == null || grantData == null) {
+    if (pageId == null || selectedGrant == null) {
       logger.error('Some materials to save are invalid', {
-        pageId, grantData,
+        pageId, selectedGrant,
       });
       throw new Error('Some materials to save are invalid');
     }
@@ -178,17 +180,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       const { page } = await updatePage({
         pageId,
         revisionId,
+        wip: opts?.wip,
         body: markdown ?? '',
-        grant: grantData?.grant,
+        grant: selectedGrant?.grant,
         origin: Origin.Editor,
-        userRelatedGrantUserGroupIds: grantData?.userRelatedGrantedGroups?.map((group) => {
-          return { item: group.id, type: group.type };
-        }),
+        userRelatedGrantUserGroupIds: selectedGrant?.userRelatedGrantedGroups,
         ...(opts ?? {}),
       });
 
       // to sync revision id with page tree: https://github.com/weseek/growi/pull/7227
       mutatePageTree();
+      // sync current grant data after update
+      mutateIsGrantNormalized();
 
       return page;
     }
@@ -208,7 +211,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     finally {
       mutateWaitingSaveProcessing(false);
     }
-  }, [pageId, grantData, mutateWaitingSaveProcessing, t]);
+  }, [pageId, selectedGrant, mutateWaitingSaveProcessing, t, mutateIsGrantNormalized]);
 
   const saveAndReturnToViewHandler = useCallback(async(opts: SaveOptions) => {
     const markdown = codeMirrorEditor?.getDoc();
@@ -270,26 +273,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, [saveAndReturnToViewHandler]);
 
-
-  // TODO: https://redmine.weseek.co.jp/issues/142729
-  // https://regex101.com/r/Wg2Hh6/1
-  // initial caret line
-  useEffect(() => {
-    const untitledPageRegex = /^Untitled-\d+$/;
-    const isNewlyCreatedPage = (
-      currentPage?.wip && currentPage?.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPage?.path ?? ''))
-    ) ?? false;
-    if (!isNewlyCreatedPage) {
-      codeMirrorEditor?.setCaretLine();
-    }
-  }, [codeMirrorEditor, currentPage]);
-
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, editorMode]);
+  }, [codeMirrorEditor, currentPage, editorMode]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {

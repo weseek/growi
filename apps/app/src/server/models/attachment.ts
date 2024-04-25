@@ -1,7 +1,7 @@
 import path from 'path';
 
 import type { IAttachment } from '@growi/core';
-import { addSeconds } from 'date-fns';
+import { addSeconds } from 'date-fns/addSeconds';
 import {
   Schema, type Model, type Document, Types,
 } from 'mongoose';

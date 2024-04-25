@@ -76,6 +76,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
+    body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
 
 
@@ -158,8 +159,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       let updatedPage;
       try {
-        const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin };
+        const {
+          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+        } = req.body;
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;

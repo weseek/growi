@@ -3,7 +3,7 @@ import { getSupportedGrowiActionsRegExp } from '@growi/slack/dist/utils/get-supp
 import { permissionParser } from '@growi/slack/dist/utils/permission-parser';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
-import { addHours } from 'date-fns';
+import { addHours } from 'date-fns/addHours';
 
 import { Relation, PermissionSettingsInterface } from '~/entities/relation';
 import { RelationRepository } from '~/repositories/relation';

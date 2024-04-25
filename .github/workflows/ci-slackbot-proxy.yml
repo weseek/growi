@@ -24,7 +24,7 @@ concurrency:
 
 jobs:
 
-  lint:
+  ci-slackbot-proxy-lint:
     runs-on: ubuntu-latest
 
     strategy:
@@ -89,7 +89,7 @@ jobs:
         key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
-  launch-dev:
+  ci-slackbot-proxy-launch-dev:
     runs-on: ubuntu-latest
 
     strategy:
@@ -174,7 +174,7 @@ jobs:
         key: dist-slackbot-proxy-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
-  launch-prod:
+  ci-slackbot-proxy-launch-prod:
     runs-on: ubuntu-latest
 
     strategy:

@@ -35,14 +35,14 @@ export const PageListItemS = (props: PageListItemSProps): JSX.Element => {
       <UserPicture user={page.lastUpdateUser} noLink={noLink} />
       {isNarrowView ? (
         <Clamp lines={2}>
-          <div className={`mx-2 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
+          <div className={`mx-1 ${styles['page-title']} ${noLink ? 'text-break' : ''}`}>
             {pagePathElement}
           </div>
         </Clamp>
       ) : (
         pagePathElement
       )}
-      <span className="ms-2">
+      <span className="ms-1">
         <PageListMeta page={page} shouldSpaceOutIcon />
       </span>
     </>
