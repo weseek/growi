@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -75,8 +76,11 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
+      const res = await apiv3Get('/page/non-empty-closest-ancestor', { path });
       await createAndTransit(
-        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
+        {
+          path, parentPath: res.data.nonEmptyClosestAncestor?.path, wip: shouldCreateWipPage(path), origin: Origin.View,
+        },
         { shouldCheckPageExists: true },
       );
     }

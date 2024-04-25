@@ -771,7 +771,7 @@ class PageGrantService implements IPageGrantService {
   getUserRelatedGrantedGroupsSyncronously(userRelatedGroups: PopulatedGrantedGroup[], page: PageDocument): IGrantedGroup[] {
     const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
     return page.grantedGroups?.filter((group) => {
-      return userRelatedGroupIds.includes(getIdForRef(group.item));
+      return userRelatedGroupIds.includes(getIdForRef(group.item).toString());
     }) || [];
   }
 
@@ -782,7 +782,7 @@ class PageGrantService implements IPageGrantService {
     const userRelatedGroups = (await this.getUserRelatedGroups(user));
     const userRelatedGroupIds: string[] = userRelatedGroups.map(ug => ug.item._id.toString());
     return page.grantedGroups?.filter((group) => {
-      return !userRelatedGroupIds.includes(getIdForRef(group.item));
+      return !userRelatedGroupIds.includes(getIdForRef(group.item).toString());
     }) || [];
   }
 
