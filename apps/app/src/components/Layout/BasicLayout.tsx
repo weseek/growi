@@ -1,4 +1,5 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 import { DndProvider } from 'react-dnd';
@@ -42,7 +43,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
             <Sidebar />
           </div>
 
-          <div className="d-flex flex-grow-1 flex-column z-1">{/* neccessary for nested {children} make expanded */}
+          <div className="d-flex flex-grow-1 flex-column mw-0 z-1">{/* neccessary for nested {children} make expanded */}
             <AlertSiteUrlUndefined />
             {children}
           </div>
