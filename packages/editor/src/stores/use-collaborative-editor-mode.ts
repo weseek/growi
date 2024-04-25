@@ -31,7 +31,8 @@ export const useCollaborativeEditorMode = (
 
   const { data: socket } = useGlobalSocket();
 
-  const cleanupYDoc = () => {
+  // Cleanup Ydoc
+  useEffect(() => {
     if (cPageId === pageId && isEnabled) {
       return;
     }
@@ -50,9 +51,10 @@ export const useCollaborativeEditorMode = (
 
     // reset editors
     onEditorsUpdated?.([]);
-  };
+  }, [cPageId, isEnabled, onEditorsUpdated, pageId, provider?.awareness, socket, ydoc]);
 
-  const setupYDoc = () => {
+  // Setup Ydoc
+  useEffect(() => {
     if (ydoc != null || !isEnabled) {
       return;
     }
@@ -64,9 +66,10 @@ export const useCollaborativeEditorMode = (
 
     const _ydoc = new Y.Doc();
     setYdoc(_ydoc);
-  };
+  }, [isEnabled, provider, ydoc]);
 
-  const setupProvider = () => {
+  // Setup provider
+  useEffect(() => {
     if (provider != null || ydoc == null || socket == null || onEditorsUpdated == null) {
       return;
     }
@@ -105,9 +108,10 @@ export const useCollaborativeEditorMode = (
     });
 
     setProvider(socketIOProvider);
-  };
+  }, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
 
-  const setupYDocExtensions = () => {
+  // Setup Ydoc Extensions
+  useEffect(() => {
     if (ydoc == null || provider == null || codeMirrorEditor == null) {
       return;
     }
@@ -128,10 +132,5 @@ export const useCollaborativeEditorMode = (
       cleanupYUndoManagerKeymap?.();
       cleanupYCollab?.();
     };
-  };
-
-  useEffect(cleanupYDoc, [cPageId, isEnabled, onEditorsUpdated, pageId, provider, socket, ydoc]);
-  useEffect(setupYDoc, [isEnabled, provider, ydoc]);
-  useEffect(setupProvider, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
-  useEffect(setupYDocExtensions, [codeMirrorEditor, provider, ydoc]);
+  }, [codeMirrorEditor, provider, ydoc]);
 };
