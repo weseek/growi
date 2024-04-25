@@ -76,7 +76,7 @@ export const DeleteAttachmentModal: React.FC = () => {
           <span className="material-symbols-outlined">{iconByFormat(attachment.fileFormat)}</span> {attachment.originalName}
         </p>
         <p>
-          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator as IUser}></Username>
+          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
         </p>
         {content}
       </div>
