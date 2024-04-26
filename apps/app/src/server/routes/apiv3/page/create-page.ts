@@ -1,6 +1,6 @@
-import { allOrigin, Lang } from '@growi/core';
+import { allOrigin } from '@growi/core';
 import type {
-  IPage, IUser, IUserHasId,
+  IPage, IUser, IUserHasId, Lang,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
@@ -23,7 +23,6 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
-import { detectLocaleFromBrowserAcceptLanguage } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -44,13 +43,8 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
   return path;
 }
 
-async function determinePath(req: CreatePageRequest, _parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  const user = req.user;
-  const headers = req.headers;
-
-  // determine language
-  const locale = user == null ? detectLocaleFromBrowserAcceptLanguage(headers)
-    : (user.lang ?? configManager.getConfig('crowi', 'app:globalLang') as Lang ?? Lang.en_US);
+async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
+  const locale = configManager.getConfig('crowi', 'app:globalLang') as Lang;
 
   const t = i18n?.getFixedT(locale);
   const basePathname = t?.('create_page.untitled') || 'Untitled';
@@ -220,7 +214,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let pathToCreate: string;
       try {
         const { path, parentPath, optionalParentPath } = req.body;
-        pathToCreate = await determinePath(req, parentPath, path, optionalParentPath);
+        pathToCreate = await determinePath(parentPath, path, optionalParentPath);
       }
       catch (err) {
         return res.apiv3Err(new ErrorV3(err.toString(), 'could_not_create_page'));
