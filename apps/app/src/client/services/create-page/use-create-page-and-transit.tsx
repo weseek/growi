@@ -111,19 +111,11 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
     // If parent page is granted to non-user-related groups, let the user select whether or not to inherit them.
     if (params.parentPath != null) {
-      try {
-        const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
-        if (isNonUserRelatedGroupsGranted) {
-          // create and transit request will be made from modal
-          openGrantedGroupsInheritanceSelectModal(_createAndTransit);
-          return;
-        }
-      }
-      catch (err) {
-        // Do not throw error when the parent page is empty, since empty parent page could be created on create request
-        if (err[0]?.code !== 'page_unreachable_or_empty') {
-          throw err;
-        }
+      const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
+      if (isNonUserRelatedGroupsGranted) {
+        // create and transit request will be made from modal
+        openGrantedGroupsInheritanceSelectModal(_createAndTransit);
+        return;
       }
     }
 

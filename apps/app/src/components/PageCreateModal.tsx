@@ -14,6 +14,7 @@ import { debounce } from 'throttle-debounce';
 import { useCreateTemplatePage } from '~/client/services/create-page';
 import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
@@ -94,9 +95,11 @@ const PageCreateModal: React.FC = () => {
    */
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
+    const res = await apiv3Get('/page/non-empty-closest-ancestor', { path: joinedPath });
+    const parentPath = res.data.nonEmptyClosestAncestor?.path;
     return createAndTransit(
       {
-        path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
+        path: joinedPath, parentPath, wip: true, origin: Origin.View,
       },
       { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
