@@ -6,12 +6,7 @@ import ReactMarkdown from 'react-markdown';
 
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
-import { useIsEnabledMarp } from '~/stores/context';
 import loggerFactory from '~/utils/logger';
-
-import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
-
-import { parseSlideFrontmatterInMarkdown } from './markdown-slide-util-for-view';
 
 
 import 'katex/dist/katex.min.css';
@@ -42,30 +37,14 @@ const RevisionRenderer = React.memo((props: Props): JSX.Element => {
     rendererOptions, markdown, additionalClassName,
   } = props;
 
-  const { data: isEnabledMarp } = useIsEnabledMarp();
-  const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
-  const useMarp = !!isEnabledMarp && marp;
-
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
-      {
-        (useMarp || useSlide)
-          ? (
-            <SlideViewer
-              marp={useMarp}
-            >
-              {markdown}
-            </SlideViewer>
-          )
-          : (
-            <ReactMarkdown
-              {...rendererOptions}
-              className={`wiki ${additionalClassName ?? ''}`}
-            >
-              {markdown}
-            </ReactMarkdown>
-          )
-      }
+      <ReactMarkdown
+        {...rendererOptions}
+        className={`wiki ${additionalClassName ?? ''}`}
+      >
+        {markdown}
+      </ReactMarkdown>
     </ErrorBoundary>
   );
 
