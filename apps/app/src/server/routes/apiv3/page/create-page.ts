@@ -99,10 +99,6 @@ type ReqBody = IApiv3PageCreateParams
 
 interface CreatePageRequest extends Request<undefined, ApiV3Response, ReqBody> {
   user: IUserHasId,
-
-  // TODO: remove req.t
-  // https://redmine.weseek.co.jp/issues/125884
-  t: any
 }
 
 type CreatePageHandlersFactory = (crowi: Crowi) => RequestHandler[];
