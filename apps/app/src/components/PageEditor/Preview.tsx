@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
 import React from 'react';
 
+import { parseSlideFrontmatter } from '@growi/presentation';
+
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
