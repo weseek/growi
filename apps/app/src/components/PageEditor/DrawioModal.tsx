@@ -12,11 +12,11 @@ import {
   ModalBody,
 } from 'reactstrap';
 
+import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
-import { getDiagramsNetLangCode } from '~/utils/locale-utils';
 import loggerFactory from '~/utils/logger';
 
 
