@@ -44,7 +44,7 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
   return path;
 }
 
-async function determinePath(req: any, _parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
+async function determinePath(req: CreatePageRequest, _parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
   const user = req.user;
   const headers = req.headers;
 
