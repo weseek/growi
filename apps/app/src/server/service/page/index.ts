@@ -263,10 +263,14 @@ class PageService implements IPageService {
     if (page.isEmpty) {
       const Page = mongoose.model<IPage, PageModel>('Page');
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      return notEmptyClosestAncestor?.creator ?? null;
+      return notEmptyClosestAncestor?.creator == null
+        ? null
+        : getIdForRef(notEmptyClosestAncestor.creator);
     }
 
-    return page.creator ?? null;
+    return page.creator == null
+      ? null
+      : getIdForRef(page.creator);
   }
 
   // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
@@ -351,13 +355,19 @@ class PageService implements IPageService {
       user: IUserHasId,
       isRecursively: boolean,
       canDeleteFunction: (
-        page: PageDocument, creatorId: ObjectIdLike, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+        page: PageDocument, creatorId: ObjectIdLike | null, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
       ) => boolean,
   ): Promise<PageDocument[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
       if (p.isEmpty) return true;
-      const canDelete = canDeleteFunction(p, p.creator, user, isRecursively, userRelatedGroups);
+      const canDelete = canDeleteFunction(
+        p,
+        p.creator == null ? null : getIdForRef(p.creator),
+        user,
+        isRecursively,
+        userRelatedGroups,
+      );
       return canDelete;
     });
 

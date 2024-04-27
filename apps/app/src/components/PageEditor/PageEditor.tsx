@@ -273,26 +273,12 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     };
   }, [saveAndReturnToViewHandler]);
 
-
-  // TODO: https://redmine.weseek.co.jp/issues/142729
-  // https://regex101.com/r/Wg2Hh6/1
-  // initial caret line
-  useEffect(() => {
-    const untitledPageRegex = /^Untitled-\d+$/;
-    const isNewlyCreatedPage = (
-      currentPage?.wip && currentPage?.latestRevision == null && untitledPageRegex.test(nodePath.basename(currentPage?.path ?? ''))
-    ) ?? false;
-    if (!isNewlyCreatedPage) {
-      codeMirrorEditor?.setCaretLine();
-    }
-  }, [codeMirrorEditor, currentPage]);
-
   // set handler to focus
   useLayoutEffect(() => {
     if (editorMode === EditorMode.Editor) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, editorMode]);
+  }, [codeMirrorEditor, currentPage, editorMode]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
@@ -367,6 +353,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
+            isEditorMode={editorMode === EditorMode.Editor}
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
             onUpload={uploadHandler}
