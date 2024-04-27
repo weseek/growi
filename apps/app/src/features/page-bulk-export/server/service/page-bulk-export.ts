@@ -1,6 +1,7 @@
 import type { Readable } from 'stream';
 import { Writable, pipeline } from 'stream';
 
+import type { HasObjectId } from '@growi/core';
 import { type IPage, isPopulated, SubscriptionStatusType } from '@growi/core';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Archiver } from 'archiver';
@@ -54,8 +55,7 @@ class PageBulkExportService {
     const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
 
     if (basePage == null) {
-      this.handleExportError(new Error('Base page not found or not accessible'));
-      return;
+      throw new Error('Base page not found or not accessible');
     }
 
     const timeStamp = (new Date()).getTime();
@@ -65,45 +65,55 @@ class PageBulkExportService {
     const zipArchiver = this.setUpZipArchiver();
     const pagesWritable = this.getPageWritable(zipArchiver);
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.partSize);
-    let multipartUploadWritable: Writable;
 
     // init multipart upload
     // TODO: Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
     const multipartUploader: IAwsMultipartUploader | undefined = this.crowi?.fileUploadService?.createMultipartUploader(uploadKey);
+    let pageBulkExportJob: PageBulkExportJobDocument & HasObjectId;
+    if (multipartUploader == null) {
+      throw Error('Multipart upload not available for configured file upload type');
+    }
     try {
-      if (multipartUploader == null) {
-        throw Error('Multipart upload not available for configured file upload type');
-      }
       await multipartUploader.initUpload();
-
-      const pageBulkExportJob = await PageBulkExportJob.create({
+      pageBulkExportJob = await PageBulkExportJob.create({
         user: currentUser._id,
         page: basePage._id,
         uploadId: multipartUploader.uploadId,
         format: PageBulkExportFormat.markdown,
       });
       await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
-
-      multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob, currentUser, activityParameters);
     }
     catch (err) {
-      await this.handleExportError(err, multipartUploader);
-      return;
+      await multipartUploader.abortUpload();
+      throw err;
     }
+
+    const multipartUploadWritable = this.getMultipartUploadWritable(multipartUploader, pageBulkExportJob, currentUser, activityParameters);
 
     // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
     // Hence, execution of two pipelines is required.
-    pipeline(pagesReadable, pagesWritable, err => this.handleExportError(err, multipartUploader));
-    pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable, err => this.handleExportError(err, multipartUploader));
+    pipeline(pagesReadable, pagesWritable, err => this.handleExportError(err, activityParameters, currentUser, pageBulkExportJob, multipartUploader));
+    pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable,
+      err => this.handleExportError(err, activityParameters, currentUser, pageBulkExportJob, multipartUploader));
   }
 
-  async handleExportError(err: Error | null, multipartUploader?: IAwsMultipartUploader): Promise<void> {
+  private async handleExportError(
+      err: Error | null, activityParameters: ActivityParameters, user, pageBulkExportJob: PageBulkExportJobDocument, multipartUploader?: IAwsMultipartUploader,
+  ): Promise<void> {
     if (err != null) {
       logger.error(err);
       if (multipartUploader != null) {
         await multipartUploader.abortUpload();
       }
-      // TODO: notify failure to client: https://redmine.weseek.co.jp/issues/78037
+
+      const activity = await this.crowi.activityService.createActivity({
+        ...activityParameters,
+        action: SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED,
+        targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
+        target: pageBulkExportJob,
+      });
+      const preNotify = preNotifyService.generatePreNotify(activity);
+      this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
     }
   }
 
@@ -204,12 +214,8 @@ class PageBulkExportService {
           const activity = await this.crowi.activityService.createActivity({
             ...activityParameters,
             action: SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED,
-            user,
             targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
             target: pageBulkExportJob,
-            snapshot: {
-              username: user.username,
-            },
           });
           const preNotify = preNotifyService.generatePreNotify(activity);
           this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);

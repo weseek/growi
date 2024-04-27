@@ -1,13 +1,17 @@
 import type { Ref, IPage } from '@growi/core';
-import {
-  Types, Document, Model, Schema, SortOrder,
+import type {
+  Types, Document, Model, SortOrder,
 } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
+import type {
+  IActivity, ISnapshot, SupportedActionType, SupportedTargetModelType, SupportedEventModelType,
+} from '~/interfaces/activity';
 import {
-  IActivity, ISnapshot, AllSupportedActions, SupportedActionType,
-  AllSupportedTargetModels, SupportedTargetModelType,
-  AllSupportedEventModels, SupportedEventModelType,
+  AllSupportedActions,
+  AllSupportedTargetModels,
+  AllSupportedEventModels,
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -21,7 +25,7 @@ const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
-  user: Types.ObjectId
+  user?: Types.ObjectId
   ip: string
   endpoint: string
   targetModel: SupportedTargetModelType
@@ -29,7 +33,7 @@ export interface ActivityDocument extends Document {
   eventModel: SupportedEventModelType
   event: Types.ObjectId
   action: SupportedActionType
-  snapshot: ISnapshot
+  snapshot?: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
 }
