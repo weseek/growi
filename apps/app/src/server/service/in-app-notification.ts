@@ -51,7 +51,7 @@ export default class InAppNotificationService {
   }
 
   initActivityEventListeners(): void {
-    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage, preNotify: PreNotify) => {
+    this.activityEvent.on('updated', async(activity: ActivityDocument, target: IUser | IPage | IPageBulkExportJob, preNotify: PreNotify) => {
       try {
         const shouldNotification = activity != null && target != null && (AllEssentialActions as ReadonlyArray<string>).includes(activity.action);
         if (shouldNotification) {
