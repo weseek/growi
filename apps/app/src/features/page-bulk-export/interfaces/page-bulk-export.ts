@@ -16,7 +16,7 @@ export interface IPageBulkExportJob {
   uploadId: string, // upload ID of multipart upload of S3/GCS
   format: PageBulkExportFormat,
   completedAt: Date | null, // the date at which job was completed
-  attachment: Ref<IAttachment>,
+  attachment?: Ref<IAttachment>,
 }
 
 // snapshot of page info to upload
