@@ -1,5 +1,6 @@
 import {
   CreateMultipartUploadCommand, UploadPartCommand, type S3Client, CompleteMultipartUploadCommand, AbortMultipartUploadCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 
 import loggerFactory from '~/utils/logger';
@@ -20,6 +21,7 @@ export interface IAwsMultipartUploader {
   completeUpload(): Promise<void>;
   abortUpload(): Promise<void>;
   uploadId: string | undefined;
+  getUploadedFileSize(): Promise<number>;
 }
 
 /**
@@ -41,6 +43,8 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
   private parts: { PartNumber: number; ETag: string | undefined; }[] = [];
 
   private currentStatus: UploadStatus = UploadStatus.BEFORE_INIT;
+
+  private _uploadedFileSize: number | undefined;
 
   constructor(s3Client: S3Client, bucket: string, uploadKey: string) {
     this.s3Client = s3Client;
@@ -106,6 +110,18 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     }));
     this.currentStatus = UploadStatus.ABORTED;
     logger.info(`Multipart upload aborted. Upload key: ${this.uploadKey}`);
+  }
+
+  async getUploadedFileSize(): Promise<number> {
+    if (this._uploadedFileSize != null) return this._uploadedFileSize;
+
+    this.validateUploadStatus(UploadStatus.COMPLETED);
+    const headData = await this.s3Client.send(new HeadObjectCommand({
+      Bucket: this.bucket,
+      Key: this.uploadKey,
+    }));
+    this._uploadedFileSize = headData.ContentLength;
+    return this._uploadedFileSize ?? 0;
   }
 
   private validateUploadStatus(desiredStatus: UploadStatus): void {

@@ -1,5 +1,3 @@
-import { Writable } from 'stream';
-
 import {
   S3Client,
   HeadObjectCommand,
@@ -10,14 +8,11 @@ import {
   ListObjectsCommand,
   type GetObjectCommandInput,
   ObjectCannedACL,
-  CreateMultipartUploadCommand,
-  UploadPartCommand,
-  CompleteMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -90,8 +85,8 @@ const getFilePathOnStorage = (attachment) => {
   }
 
   const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+    ? FilePathOnStoragePrefix.attachment
+    : FilePathOnStoragePrefix.user;
   const filePath = urljoin(dirName, attachment.fileName);
 
   return filePath;
