@@ -99,7 +99,7 @@ module.exports = function(crowi) {
 
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
-  function getFilePathOnStorage(attachment) {
+  function getFilePathOnStorage(attachment: IAttachmentDocument) {
     const dirName = (attachment.page != null)
       ? FilePathOnStoragePrefix.attachment
       : FilePathOnStoragePrefix.user;

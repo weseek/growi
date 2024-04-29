@@ -62,7 +62,7 @@ async function getContainerClient(): Promise<ContainerClient> {
   return blobServiceClient.getContainerClient(containerName);
 }
 
-function getFilePathOnStorage(attachment) {
+function getFilePathOnStorage(attachment: IAttachmentDocument) {
   const dirName = (attachment.page != null) ? FilePathOnStoragePrefix.attachment : FilePathOnStoragePrefix.user;
   return urljoin(dirName, attachment.fileName);
 }

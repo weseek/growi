@@ -12,7 +12,9 @@ import {
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
-import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -79,14 +81,21 @@ const S3Factory = (): S3Client => {
   return new S3Client(config);
 };
 
-const getFilePathOnStorage = (attachment) => {
+const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
   if (attachment.filePath != null) { // DEPRECATED: remains for backward compatibility for v3.3.x or below
     return attachment.filePath;
   }
 
-  const dirName = (attachment.page != null)
-    ? FilePathOnStoragePrefix.attachment
-    : FilePathOnStoragePrefix.user;
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(dirName, attachment.fileName);
 
   return filePath;
