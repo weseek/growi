@@ -2,6 +2,8 @@ import type {
   IPage, IUser, Ref,
 } from '@growi/core';
 
+import { SupportedTargetModel } from '~/interfaces/activity';
+
 import type { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
 import { getModelSafely } from '../util/mongoose-utils';
@@ -38,7 +40,9 @@ class PreNotifyService implements IPreNotifyService {
       const actionUser = activity.user;
       const target = activity.target;
       const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-      const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser?._id.toString()));
+      // If target model is PageBulkExportJob, notify the user who started the job. Otherwise, exclude the activity user from the notification.
+      const notificationUsers = activity.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB ? subscribedUsers
+        : subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
       const activeNotificationUsers = await User.find({
         _id: { $in: notificationUsers },
         status: User.STATUS_ACTIVE,

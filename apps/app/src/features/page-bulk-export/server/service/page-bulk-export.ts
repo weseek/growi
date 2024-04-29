@@ -99,20 +99,17 @@ class PageBulkExportService {
 
     // Cannot directly pipe from pagesWritable to zipArchiver due to how the 'append' method works.
     // Hence, execution of two pipelines is required.
-    pipeline(pagesReadable, pagesWritable, err => this.handleExportError(err, activityParameters, pageBulkExportJob, multipartUploader));
+    pipeline(pagesReadable, pagesWritable, err => this.handleExportErrorInStream(err, activityParameters, pageBulkExportJob, multipartUploader));
     pipeline(zipArchiver, bufferToPartSizeTransform, multipartUploadWritable,
-      err => this.handleExportError(err, activityParameters, pageBulkExportJob, multipartUploader));
+      err => this.handleExportErrorInStream(err, activityParameters, pageBulkExportJob, multipartUploader));
   }
 
-  private async handleExportError(
-      err: Error | null, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, multipartUploader?: IAwsMultipartUploader,
+  private async handleExportErrorInStream(
+      err: Error | null, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, multipartUploader: IAwsMultipartUploader,
   ): Promise<void> {
     if (err != null) {
       logger.error(err);
-      if (multipartUploader != null) {
-        await multipartUploader.abortUpload();
-      }
-
+      await multipartUploader.abortUpload();
       await this.notifyExportResult(activityParameters, pageBulkExportJob, SupportedAction.ACTION_PAGE_BULK_EXPORT_FAILED);
     }
   }
@@ -239,6 +236,10 @@ class PageBulkExportService {
       action,
       targetModel: SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB,
       target: pageBulkExportJob,
+      user: pageBulkExportJob.user,
+      snapshot: {
+        username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
+      },
     });
     const preNotify = preNotifyService.generatePreNotify(activity);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);

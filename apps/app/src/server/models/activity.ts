@@ -25,7 +25,7 @@ const logger = loggerFactory('growi:models:activity');
 
 export interface ActivityDocument extends Document {
   _id: Types.ObjectId
-  user?: Types.ObjectId
+  user: Types.ObjectId
   ip: string
   endpoint: string
   targetModel: SupportedTargetModelType
@@ -33,7 +33,7 @@ export interface ActivityDocument extends Document {
   eventModel: SupportedEventModelType
   event: Types.ObjectId
   action: SupportedActionType
-  snapshot?: ISnapshot
+  snapshot: ISnapshot
 
   getNotificationTargetUsers(): Promise<any[]>
 }
