@@ -2,6 +2,10 @@ import React from 'react';
 
 import type { GrowiThemeMetadata } from '@growi/core';
 
+import styles from './ThemeColorBox.module.scss';
+
+const themeOptionClass = styles['theme-option-container'];
+
 
 type Props = {
   isSelected: boolean,
@@ -19,13 +23,19 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
   } = metadata;
 
   return (
-    // TODO: Display a primary color border when icon is selected
     <div
       id={`theme-option-${name}`}
-      className={`theme-option-container d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}
+      className={`${themeOptionClass} d-flex flex-column align-items-center ${isSelected ? 'active' : ''}`}
       onClick={onSelected}
     >
-      <a id={name} role="button" className={`m-0 rounded ${name} theme-button`}>
+      <a
+        id={name}
+        role="button"
+        className={`
+          m-0 rounded rounded-3
+          border border-4 border-primary ${isSelected ? '' : 'border-opacity-10'}`
+        }
+      >
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" className="rounded">
           <path d="M32.5,0V36.364L64,20.437V0Z" fill={lightBg} />
           <path d="M32.5,36.364V64H64V20.438Z" fill={darkBg} />
@@ -45,8 +55,8 @@ export const ThemeColorBox = (props: Props): JSX.Element => {
           <rect width="19.629" height="2.062" transform="translate(6.436 53.439)" fill={darkIcon} />
         </svg>
       </a>
-      <span className="theme-option-name mt-2"><b>{ name }</b></span>
-      { !isPresetTheme && <span className="theme-option-badge badge bg-primary mt-1">Plugin</span> }
+      <span className={`mt-2 ${isSelected ? '' : 'opacity-25'}`}><b>{ name }</b></span>
+      { !isPresetTheme && <span className={`badge bg-primary mt-1 ${isSelected ? '' : 'opacity-25'}`}>Plugin</span> }
     </div>
   );
 
