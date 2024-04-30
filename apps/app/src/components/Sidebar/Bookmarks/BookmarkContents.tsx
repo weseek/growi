@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
@@ -26,12 +26,12 @@ export const BookmarkContents = (): JSX.Element => {
   }, []);
 
   const create = useCallback(async(folderName: string) => {
-    if (folderName === '') {
+    if (folderName.trim() === '') {
       return cancel();
     }
 
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
+      await addNewFolder(folderName.trim(), null);
       await mutateBookmarkFolders();
       setIsCreateAction(false);
     }

@@ -66,7 +66,15 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     setRenameInputShown(true);
   }, []);
 
+  const cancel = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
+
   const rename = useCallback(async(inputText) => {
+    if (inputText.trim() === '') {
+      return cancel();
+    }
+
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -91,11 +99,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [onRenamed, page._id, page.path, page.revision, t]);
-
-  const cancel = useCallback(() => {
-    setRenameInputShown(false);
-  }, []);
+  }, [cancel, onRenamed, page._id, page.path, page.revision, t]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {

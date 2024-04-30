@@ -31,7 +31,15 @@ export const NewPageInput: FC<Props> = (props) => {
     onCanceled,
   } = props;
 
+  const cancel = useCallback(() => {
+    onCanceled?.();
+  }, [onCanceled]);
+
   const create = useCallback(async(inputText) => {
+    if (inputText.trim() === '') {
+      return cancel();
+    }
+
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
@@ -51,11 +59,7 @@ export const NewPageInput: FC<Props> = (props) => {
     finally {
       onSubmittionFailed?.();
     }
-  }, [onSubmit, onSubmittionFailed, page.path, t]);
-
-  const cancel = useCallback(() => {
-    onCanceled?.();
-  }, [onCanceled]);
+  }, [cancel, onSubmit, onSubmittionFailed, page.path, t]);
 
   return (
     <>

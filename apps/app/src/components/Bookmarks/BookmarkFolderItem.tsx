@@ -66,13 +66,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   // Rename for bookmark folder handler
   const rename = useCallback(async(folderName: string) => {
-    if (folderName === '') {
+    if (folderName.trim() === '') {
       return cancel();
     }
 
     try {
       // TODO: do not use any type
-      await updateBookmarkFolder(folderId, folderName, parent as any, childFolder);
+      await updateBookmarkFolder(folderId, folderName.trim(), parent as any, childFolder);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
@@ -83,12 +83,12 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
 
   // Create new folder / subfolder handler
   const create = useCallback(async(folderName: string) => {
-    if (folderName === '') {
+    if (folderName.trim() === '') {
       return cancel();
     }
 
     try {
-      await addNewFolder(folderName, targetFolder);
+      await addNewFolder(folderName.trim(), targetFolder);
       setIsOpen(true);
       setIsCreateAction(false);
       bookmarkFolderTreeMutation();

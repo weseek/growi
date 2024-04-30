@@ -91,12 +91,12 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   }, []);
 
   const rename = useCallback(async(inputText: string) => {
-    if (inputText === '') {
+    if (inputText.trim() === '') {
       return cancel();
     }
 
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+    const newPagePath = nodePath.resolve(parentPath, inputText.trim());
     if (newPagePath === bookmarkedPage.path) {
       setRenameInputShown(false);
       return;
