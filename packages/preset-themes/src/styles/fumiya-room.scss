@@ -5,6 +5,7 @@
 
   $primary: #00FF00;
   $highlight: #FF0000;
+  $secondary: #ff00ff;
 
   @include generate-color-palette('primary', $primary, #0000FF, #FF0000, 12.5%, 12.5%);
   @include generate-color-palette('highlight', $highlight,#00FFFF, #FFFF00, 25%, 25%);
@@ -31,6 +32,7 @@
 
   --grw-sidebar-nav-btn-color: var(--grw-highlight-500);
 
+
   &, body {
     background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff,#ff00ff,#ff0000)0 / 200%;
     animation: bggradient 12s linear infinite;
@@ -39,8 +41,10 @@
     100% { background-position: 200%; }
   }
   h1, h2, h3, h4, h5 {
+    color: #ff0000;
     animation:blink 1s step-end infinite alternate;
   }
+
   @keyframes blink{
     0% { opacity: 1; }
     40% { opacity: 0; }
