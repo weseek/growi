@@ -25,11 +25,14 @@ type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
   maxWidth?: number,
+  onRenameTerminated?: () => void,
 }
 
 export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage, className, maxWidth } = props;
+  const {
+    currentPage, className, maxWidth, onRenameTerminated,
+  } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -49,7 +52,8 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
-  }, []);
+    onRenameTerminated?.();
+  }, [onRenameTerminated]);
 
   const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);

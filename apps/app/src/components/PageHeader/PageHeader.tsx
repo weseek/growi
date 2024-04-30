@@ -1,4 +1,6 @@
-import { useMemo, useRef } from 'react';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePageControlsX } from '~/stores/ui';
@@ -11,18 +13,27 @@ import styles from './PageHeader.module.scss';
 const moduleClass = styles['page-header'] ?? '';
 
 export const PageHeader = (): JSX.Element => {
+
   const { data: currentPage } = useSWRxCurrentPage();
   const { data: pageControlsX } = usePageControlsX();
   const pageHeaderRef = useRef<HTMLDivElement>(null);
 
-  const maxWidth = useMemo(() => {
+  const [maxWidth, setMaxWidth] = useState<number>();
+
+  const calcMaxWidth = useCallback(() => {
     if (pageControlsX == null || pageHeaderRef.current == null) {
       // Length that allows users to use PageHeader functionality.
-      return 300;
+      setMaxWidth(300);
+      return;
     }
     // At least 10px space between PageHeader and PageControls
-    return pageControlsX - pageHeaderRef.current.getBoundingClientRect().x - 10;
+    const maxWidth = pageControlsX - pageHeaderRef.current.getBoundingClientRect().x - 10;
+    setMaxWidth(maxWidth);
   }, [pageControlsX]);
+
+  useEffect(() => {
+    calcMaxWidth();
+  }, [calcMaxWidth]);
 
   if (currentPage == null) {
     return <></>;
@@ -33,11 +44,13 @@ export const PageHeader = (): JSX.Element => {
       <PagePathHeader
         currentPage={currentPage}
         maxWidth={maxWidth}
+        onRenameTerminated={calcMaxWidth}
       />
       <div className="mt-0 mt-md-1">
         <PageTitleHeader
           currentPage={currentPage}
           maxWidth={maxWidth}
+          onMoveTerminated={calcMaxWidth}
         />
       </div>
     </div>
