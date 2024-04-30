@@ -8,6 +8,7 @@ import type { LabelType } from '~/interfaces/template';
 
 type DropendMenuProps = {
   onClickCreateNewPage: () => Promise<void>
+  onClickOpenPageCreateModal: () => void
   onClickCreateTodaysMemo: () => Promise<void>
   onClickCreateTemplate?: (label: LabelType) => Promise<void>
   todaysPath: string | null,
@@ -16,6 +17,7 @@ type DropendMenuProps = {
 export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => {
   const {
     onClickCreateNewPage,
+    onClickOpenPageCreateModal,
     onClickCreateTodaysMemo,
     onClickCreateTemplate,
     todaysPath,
@@ -33,6 +35,13 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       >
         {t('create_page_dropdown.new_page')}
       </DropdownItem>
+
+      <DropdownItem
+        onClick={onClickOpenPageCreateModal}
+      >
+        新規ページ作成モーダルの表示
+      </DropdownItem>
+
 
       { todaysPath != null && (
         <>
