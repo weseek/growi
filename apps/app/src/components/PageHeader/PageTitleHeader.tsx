@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
@@ -24,11 +24,12 @@ type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
   maxWidth?: number,
+  onMoveTerminated?: () => void,
 };
 
 export const PageTitleHeader = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage, maxWidth } = props;
+  const { currentPage, maxWidth, onMoveTerminated } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -52,7 +53,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
-  }, []);
+    onMoveTerminated?.();
+  }, [onMoveTerminated]);
 
   const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);
