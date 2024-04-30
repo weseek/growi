@@ -116,7 +116,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             <button
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               className="btn btn-outline-secondary dropdown-toggle mb-3"
               disabled={isExternalGroup || !isSelectableParentUserGroups}
             >
