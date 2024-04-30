@@ -1,0 +1,6 @@
+@use '@growi/core/scss/bootstrap/init' as bs;
+
+// layout
+.theme-option-container :global {
+  min-width: 100px;
+}
