@@ -232,7 +232,7 @@ class AwsFileUploader extends AbstractFileUploader {
 }
 
 module.exports = (crowi) => {
-  const lib          = new AwsFileUploader(crowi);
+  const lib = new AwsFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
