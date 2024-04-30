@@ -7,11 +7,9 @@
     transform: translateX(0.05rem) translateY(0.05rem);
   }
 
+  // Make Truncated elements horizontally scrollable and hide the scroll bar
   .page-title-header-input {
     scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 }
 

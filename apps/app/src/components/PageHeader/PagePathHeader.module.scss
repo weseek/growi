@@ -17,10 +17,8 @@
     }
   }
 
+  // Make Truncated elements horizontally scrollable and hide the scroll bar
   .page-path-header-input {
     scrollbar-width: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
   }
 }
