@@ -8,8 +8,8 @@ import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
+import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 import type { IUserRegistrationOrder } from '~/server/models/user-registration-order';
-import type { CrowiReq } from '~/server/routes/user-activation';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -58,7 +58,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
-  const req: CrowiReq & CrowiRequest = context.req as CrowiReq & CrowiRequest;
+  const req = context.req as ReqWithUserRegistrationOrder & CrowiRequest;
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
