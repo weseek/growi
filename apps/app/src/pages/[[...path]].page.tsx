@@ -169,7 +169,7 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  hasYjsDraft: boolean,
+  yjsDraft?: string
 
   rendererConfig: RendererConfig,
 };
@@ -221,7 +221,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
-  useCurrentPageYjsDraft({ hasYjsDraft: props.hasYjsDraft });
+  useCurrentPageYjsDraft({ hasYjsDraft: props.yjsDraft != null });
 
   const { pageWithMeta } = props;
 
@@ -257,14 +257,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     if (currentPageId != null && !props.isNotFound) {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
-        mutateEditingMarkdown(pageData?.revision?.body);
+        mutateEditingMarkdown(props.yjsDraft ?? pageData?.revision?.body);
       };
 
       // If skipSSR is true, use the API to retrieve page data.
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR, props.yjsDraft]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -279,9 +279,9 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   // need to include useCurrentPathname not useCurrentPagePath
   useEffect(() => {
     if (props.currentPathname != null) {
-      mutateEditingMarkdown(revisionBody);
+      mutateEditingMarkdown(props.yjsDraft ?? revisionBody);
     }
-  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname, props.yjsDraft]);
 
   useEffect(() => {
     mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
@@ -487,7 +487,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       }
     }
 
-    props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
+    props.yjsDraft = crowi.pageService.getYjsDraft(page._id);
   }
 }
 
