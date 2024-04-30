@@ -166,7 +166,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     }
   }, [data, isOpen, targetPathOrId]);
 
-
   const ItemClassFixed = itemClass ?? SimpleItem;
 
   const EndComponents = props.customEndComponents ?? [SimpleItemTool];
