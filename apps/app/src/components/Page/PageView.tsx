@@ -136,7 +136,7 @@ export const PageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
+    const [marp, useSlide] = viewOptions ? parseSlideFrontmatterInMarkdown(markdown) : [false, false];
     const useMarp = (enabledMarp ?? false) && marp;
 
     return (
@@ -145,7 +145,7 @@ export const PageView = (props: Props): JSX.Element => {
 
         <div className="flex-expand-vert justify-content-between">
           {
-            (viewOptions && (useMarp || useSlide))
+            (useMarp || useSlide)
               ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
               : (<RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />)
           }
