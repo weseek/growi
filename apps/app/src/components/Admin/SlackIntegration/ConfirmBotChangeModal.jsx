@@ -25,7 +25,7 @@ const ConfirmBotChangeModal = (props) => {
     <Modal isOpen={props.isOpen} centered>
       <ModalHeader
         toggle={handleCancelButton}
-        className="bg-danger"
+        className="text-danger"
       >
         {t('slack_integration.modal.warning')}
       </ModalHeader>
