@@ -4448,10 +4448,15 @@ class PageService implements IPageService {
     });
   }
 
-  hasYjsDraft(pageId: string): boolean {
+  getYjsDraft(pageId: string): string | undefined {
     const yjsConnectionManager = getYjsConnectionManager();
     const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-    return currentYdoc != null;
+
+    if (currentYdoc == null) {
+      return;
+    }
+
+    return currentYdoc.getText('codemirror').toString();
   }
 
   async createTtlIndex(): Promise<void> {
