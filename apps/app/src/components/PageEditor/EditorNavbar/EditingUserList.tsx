@@ -27,8 +27,8 @@ export const EditingUserList: FC<Props> = ({ userList }) => {
   }
 
   return (
-    <div className="d-flex flex-column justify-content-end">
-      <div className="d-flex justify-content-end">
+    <div className="d-flex flex-column justify-content-start justify-content-sm-end">
+      <div className="d-flex justify-content-start justify-content-sm-end">
         {firstFourUsers.map(user => (
           <div className="ms-1">
             <UserPicture

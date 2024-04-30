@@ -8,6 +8,7 @@ export const originalDark = createTheme({
   settings: {
     background: '#323132',
     foreground: '#EFEEED',
+    caret: '#A2A9B5',
     selection: '#4C5964',
     selectionMatch: '#3A546E',
     gutterBackground: '#393939',

@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
-import { S2sMessageHandlable } from './s2s-messaging/handlable';
+import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 
 const logger = loggerFactory('growi:service:mail');
 
@@ -194,13 +194,11 @@ class MailService implements S2sMessageHandlable {
       throw new Error('Mailer is not completed to set up. Please set up SMTP or AWS setting.');
     }
 
-    const renderFilePromisified = promisify(ejs.renderFile);
+    const renderFilePromisified = promisify<string, ejs.Data, string>(ejs.renderFile);
 
     const templateVars = config.vars || {};
     const output = await renderFilePromisified(
       config.template,
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
       templateVars,
     );
 

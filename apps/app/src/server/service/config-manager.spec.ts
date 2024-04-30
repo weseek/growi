@@ -17,7 +17,7 @@ describe('ConfigManager test', () => {
 
   describe('updateConfigsInTheSameNamespace()', () => {
 
-    test.concurrent('invoke publishUpdateMessage()', async() => {
+    test('invoke publishUpdateMessage()', async() => {
       // setup
       ConfigModel.bulkWrite = vi.fn();
       configManager.loadConfigs = vi.fn();
@@ -33,7 +33,7 @@ describe('ConfigManager test', () => {
       expect(configManager.publishUpdateMessage).toHaveBeenCalledTimes(1);
     });
 
-    test.concurrent('does not invoke publishUpdateMessage()', async() => {
+    test('does not invoke publishUpdateMessage()', async() => {
       // setup
       ConfigModel.bulkWrite = vi.fn();
       configManager.loadConfigs = vi.fn();

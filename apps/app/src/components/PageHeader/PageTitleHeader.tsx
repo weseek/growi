@@ -84,11 +84,13 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, [currentPagePath, isMovable]);
 
-  useEffect(() => {
-    if (isNewlyCreatedPage) {
-      setRenameInputShown(true);
-    }
-  }, [currentPage._id, isNewlyCreatedPage]);
+  // TODO: auto focus when create new page
+  // https://redmine.weseek.co.jp/issues/136128
+  // useEffect(() => {
+  //   if (isNewlyCreatedPage) {
+  //     setRenameInputShown(true);
+  //   }
+  // }, [currentPage._id, isNewlyCreatedPage]);
 
   return (
     <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`} style={{ maxWidth }}>
@@ -111,7 +113,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
           </div>
         ) }
         <h1
-          className={`mb-0 px-2 fs-4
+          className={`mb-0 mb-sm-1 px-2 fs-4
             ${isRenameInputShown ? 'invisible' : ''} text-truncate
             ${isMovable ? 'border border-2 rounded-2' : ''} ${borderColorClass}
           `}

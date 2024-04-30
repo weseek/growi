@@ -34,7 +34,7 @@ export const PageHeader = (): JSX.Element => {
         currentPage={currentPage}
         maxWidth={maxWidth}
       />
-      <div className="mt-1">
+      <div className="mt-0 mt-md-1">
         <PageTitleHeader
           currentPage={currentPage}
           maxWidth={maxWidth}

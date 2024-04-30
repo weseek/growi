@@ -1,6 +1,6 @@
 import path from 'path';
 
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import mustache from 'mustache';
 
 import { useCurrentPagePath } from '~/stores/page';
