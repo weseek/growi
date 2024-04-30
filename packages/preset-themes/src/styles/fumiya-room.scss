@@ -1,0 +1,49 @@
+:root[data-bs-theme] {
+  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core/scss/bootstrap/theming/variables';
+  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+
+  $primary: #00FF00;
+  $highlight: #FF0000;
+
+  @include generate-color-palette('primary', $primary, #0000FF, #FF0000, 12.5%, 12.5%);
+  @include generate-color-palette('highlight', $highlight,#00FFFF, #FFFF00, 25%, 25%);
+
+  $body-color:                black;
+  $body-bg:                   #FF0000;
+
+  $body-secondary-color:      rgba($body-color, .75);
+  $body-secondary-bg:         #FF00FF;
+
+  $body-tertiary-color:       rgba($body-color, .5);
+  $body-tertiary-bg:          #00FFFF;
+
+  $border-color:              var(--grw-highlight-200);
+
+  $link-color:                rgba(0, 0, 255, 1);
+
+  @import 'bootstrap/scss/variables';
+  @import 'bootstrap/scss/variables-dark';
+
+  @import '@growi/core/scss/bootstrap/init-stage-2';
+
+  @import '@growi/core/scss/bootstrap/theming/apply-light';
+
+  --grw-sidebar-nav-btn-color: var(--grw-highlight-500);
+
+  &, body {
+    background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff,#ff00ff,#ff0000)0 / 200%;
+    animation: bggradient 12s linear infinite;
+  }
+  @keyframes bggradient{
+    100% { background-position: 200%; }
+  }
+  h1, h2, h3, h4, h5 {
+    animation:blink 1s step-end infinite alternate;
+  }
+  @keyframes blink{
+    0% { opacity: 1; }
+    40% { opacity: 0; }
+    80% { opacity: 1; }
+  }
+}
