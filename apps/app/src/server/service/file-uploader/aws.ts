@@ -45,6 +45,7 @@ type AwsConfig = {
   endpoint: string,
   bucket: string,
   forcePathStyle?: boolean
+  putObjectAcl: ObjectCannedACL,
 }
 
 const isFileExists = async(s3: S3Client, params) => {
@@ -60,6 +61,17 @@ const isFileExists = async(s3: S3Client, params) => {
   return true;
 };
 
+const getConfigS3PutObjectAcl = (): ObjectCannedACL => {
+  switch (configManager.getConfig('crowi', 's3PutObjectAcl')){
+    case 'private':
+      return ObjectCannedACL.private;
+    case 'public-read':
+      return ObjectCannedACL.public_read;
+  }
+  // default
+  return ObjectCannedACL.public_read;
+};
+
 const getAwsConfig = (): AwsConfig => {
   return {
     credentials: {
@@ -70,6 +82,7 @@ const getAwsConfig = (): AwsConfig => {
     endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
     bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
     forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
+    putObjectAcl: getConfigS3PutObjectAcl(),
   };
 };
 
@@ -219,7 +232,7 @@ class AwsFileUploader extends AbstractFileUploader {
 }
 
 module.exports = (crowi) => {
-  const lib = new AwsFileUploader(crowi);
+  const lib          = new AwsFileUploader(crowi);
 
   lib.isValidUploadSettings = function() {
     return configManager.getConfig('crowi', 'aws:s3AccessKeyId') != null
@@ -293,7 +306,7 @@ module.exports = (crowi) => {
       Bucket: awsConfig.bucket,
       Key: filePath,
       Body: fileStream,
-      ACL: ObjectCannedACL.public_read,
+      ACL: awsConfig.putObjectAcl,
       // put type and the file name for reference information when uploading
       ContentType: contentHeaders.contentType?.value.toString(),
       ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
@@ -309,7 +322,7 @@ module.exports = (crowi) => {
       ContentType: contentType,
       Key: filePath,
       Body: data,
-      ACL: ObjectCannedACL.public_read,
+      ACL: awsConfig.putObjectAcl,
     }));
   };
 
