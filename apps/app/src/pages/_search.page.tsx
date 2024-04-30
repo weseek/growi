@@ -11,6 +11,7 @@ import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
@@ -42,6 +43,7 @@ type Props = CommonProps & {
 
   isContainerFluid: boolean,
 
+  sidebarConfig: ISidebarConfig,
 };
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
@@ -88,7 +90,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  children?: ReactNode
+  sidebarConfig: ISidebarConfig,
+  children?: ReactNode,
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
