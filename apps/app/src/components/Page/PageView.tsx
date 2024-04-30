@@ -4,14 +4,12 @@ import React, {
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
-  useIsEnabledMarp,
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
 } from '~/stores/context';
 import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
@@ -25,11 +23,8 @@ import { PageViewLayout } from '../Common/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
 import type { PageSideContentsProps } from '../PageSideContents';
-import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
-
-import RevisionRenderer from './RevisionRenderer';
 
 import styles from './PageView.module.scss';
 
@@ -43,6 +38,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const ViewRenderer = dynamic(() => import('./ViewRenderer').then(mod => mod.ViewRenderer), { ssr: false });
 
 
 type Props = {
@@ -75,8 +71,6 @@ export const PageView = (props: Props): JSX.Element => {
   const isUsersHomepagePath = isUsersHomepage(pagePath);
 
   const shouldExpandContent = useShouldExpandContent(page);
-
-  const { data: enabledMarp } = useIsEnabledMarp();
 
 
   // ***************************  Auto Scroll  ***************************
@@ -136,19 +130,13 @@ export const PageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    const [marp, useSlide] = viewOptions ? parseSlideFrontmatterInMarkdown(markdown) : [false, false];
-    const useMarp = (enabledMarp ?? false) && marp;
-
     return (
       <>
         <PageContentsUtilities />
 
         <div className="flex-expand-vert justify-content-between">
-          {
-            (useMarp || useSlide)
-              ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-              : (<RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />)
-          }
+
+          <ViewRenderer rendererOptions={rendererOptions} markdown={markdown}></ViewRenderer>
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>

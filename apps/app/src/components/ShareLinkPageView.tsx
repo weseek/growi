@@ -1,24 +1,20 @@
 import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 import dynamic from 'next/dynamic';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useIsEnabledMarp } from '~/stores/context';
 import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
 import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Common/PageViewLayout';
-import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
 import type { PageSideContentsProps } from './PageSideContents';
-import { SlideViewer } from './ReactMarkdownComponents/SlideViewer';
 
 
 const logger = loggerFactory('growi:Page');
@@ -26,7 +22,7 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-
+const ViewRenderer = dynamic(() => import('./Page/ViewRenderer').then(mod => mod.ViewRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -47,7 +43,6 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   const { data: isNotFoundMeta } = useIsNotFound();
 
   const { data: viewOptions } = useViewOptions();
-  const { data: enabledMarp } = useIsEnabledMarp();
 
   const shouldExpandContent = useShouldExpandContent(page);
 
@@ -89,16 +84,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    const [marp, useSlide] = viewOptions ? parseSlideFrontmatterInMarkdown(markdown) : [false, false];
-    const useMarp = (enabledMarp ?? false) && marp;
-
     return (
       <>
-        {
-          (useMarp || useSlide)
-            ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-            : (<RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />)
-        }
+        <ViewRenderer rendererOptions={rendererOptions} markdown={markdown}></ViewRenderer>
       </>
     );
   };
