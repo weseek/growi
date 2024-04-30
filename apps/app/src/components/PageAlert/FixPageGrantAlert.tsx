@@ -235,7 +235,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   return (
     <>
       <Modal size="lg" isOpen={isOpen} toggle={close}>
-        <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+        <ModalHeader tag="h4" toggle={close}>
           { t('fix_page_grant.modal.title') }
         </ModalHeader>
         {renderModalBodyAndFooter()}
@@ -245,7 +245,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
           isOpen={isGroupSelectModalShown}
           toggle={() => setIsGroupSelectModalShown(false)}
         >
-          <ModalHeader tag="h4" toggle={() => setIsGroupSelectModalShown(false)} className="bg-purple text-light">
+          <ModalHeader tag="h4" toggle={() => setIsGroupSelectModalShown(false)}>
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>

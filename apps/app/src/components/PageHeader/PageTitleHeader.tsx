@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
@@ -24,11 +23,12 @@ const borderColorClass = styles['page-title-header-border-color'] ?? '';
 type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
+  maxWidth?: number,
 };
 
-export const PageTitleHeader: FC<Props> = (props) => {
+export const PageTitleHeader = (props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage } = props;
+  const { currentPage, maxWidth } = props;
 
   const currentPagePath = currentPage.path;
 
@@ -93,20 +93,23 @@ export const PageTitleHeader: FC<Props> = (props) => {
   // }, [currentPage._id, isNewlyCreatedPage]);
 
   return (
-    <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
-      <div className="me-1 d-inline-block overflow-hidden">
+    <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`} style={{ maxWidth }}>
+      <div className="page-title-header-input me-1 d-inline-block overflow-x-scroll">
         { isRenameInputShown && (
-          <div className="position-absolute w-100">
-            <ClosableTextInput
-              value={isNewlyCreatedPage ? '' : editedPageTitle}
-              placeholder={t('Input page name')}
-              inputClassName="fs-4"
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              validationTarget={ValidationTarget.PAGE}
-            />
+          <div className="position-relative">
+            <div className="position-absolute w-100">
+              <ClosableTextInput
+                value={isNewlyCreatedPage ? '' : editedPageTitle}
+                placeholder={t('Input page name')}
+                inputClassName="fs-4"
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                onChange={onInputChange}
+                onClickOutside={() => { setRenameInputShown(false) }}
+                validationTarget={ValidationTarget.PAGE}
+                useAutosizeInput
+              />
+            </div>
           </div>
         ) }
         <h1

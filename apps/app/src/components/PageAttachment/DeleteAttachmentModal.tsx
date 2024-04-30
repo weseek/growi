@@ -101,7 +101,7 @@ export const DeleteAttachmentModal: React.FC = () => {
       aria-labelledby="contained-modal-title-lg"
       fade={false}
     >
-      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggleHandler} className="text-danger">
         <span id="contained-modal-title-lg">{t('delete_attachment_modal.confirm_delete_attachment')}</span>
       </ModalHeader>
       <ModalBody>

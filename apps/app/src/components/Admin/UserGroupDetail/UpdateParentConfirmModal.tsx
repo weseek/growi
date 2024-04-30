@@ -27,7 +27,7 @@ export const UpdateParentConfirmModal: FC = () => {
 
   return (
     <Modal className="modal-md" isOpen={isOpened} toggle={closeModal}>
-      <ModalHeader tag="h4" toggle={closeModal} className="bg-warning text-light">
+      <ModalHeader tag="h4" toggle={closeModal} className="text-warning">
         <span className="material-symbols-outlined">warning</span> {t('admin:user_group_management.update_parent_confirm_modal.header')}
       </ModalHeader>
       {
