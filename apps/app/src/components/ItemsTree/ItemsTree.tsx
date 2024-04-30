@@ -32,6 +32,7 @@ import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
+const moduleClass = styles['grw-pagetree'] ?? '';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -210,7 +211,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
     logger.debug('scrollOnInit has invoked');
 
-    const scrollElement = sidebarScrollerRef.current.getScrollElement();
+    const scrollElement = sidebarScrollerRef.current;
 
     // NOTE: could not use scrollIntoView
     //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
@@ -275,7 +276,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-4`} ref={rootElemRef}>
+      <ul className={`grw-pagetree ${moduleClass} list-group py-4`} ref={rootElemRef}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
