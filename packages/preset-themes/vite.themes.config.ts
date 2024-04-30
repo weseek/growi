@@ -26,6 +26,7 @@ export default defineConfig(({ mode }) => {
           '/src/styles/spring.scss',
           '/src/styles/wood.scss',
           '/src/styles/classic.scss',
+          '/src/styles/fumiya-room.scss',
         ],
         output: {
           assetFileNames: isProd

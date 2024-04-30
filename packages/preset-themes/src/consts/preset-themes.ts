@@ -19,6 +19,7 @@ export const PresetThemes = {
   SPRING: 'spring',
   WOOD: 'wood',
   CLASSIC: 'classic',
+  FUMIYA_ROOM: 'fumiya-room',
 } as const;
 export type PresetThemes = typeof PresetThemes[keyof typeof PresetThemes];
 
@@ -193,6 +194,16 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
   }, {
     name: PresetThemes.BLACKBOARD,
     schemeType: DARK,
+    lightBg: '#223323',
+    darkBg: '#213E23',
+    lightSidebar: '#1B431C',
+    darkSidebar: '#29652B',
+    lightIcon: '#C89D3B',
+    darkIcon: '#E3CE9D',
+    createBtn: '#BA840A',
+  }, {
+    name: PresetThemes.FUMIYA_ROOM,
+    schemeType: LIGHT,
     lightBg: '#223323',
     darkBg: '#213E23',
     lightSidebar: '#1B431C',
