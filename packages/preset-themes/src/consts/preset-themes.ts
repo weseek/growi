@@ -19,7 +19,7 @@ export const PresetThemes = {
   SPRING: 'spring',
   WOOD: 'wood',
   CLASSIC: 'classic',
-  FUMIYA_ROOM: 'fumiya-room',
+  VIVID_INTERNET: 'vivid-internet',
 } as const;
 export type PresetThemes = typeof PresetThemes[keyof typeof PresetThemes];
 
@@ -202,15 +202,15 @@ export const PresetThemesMetadatas: GrowiThemeMetadata[] = [
     darkIcon: '#E3CE9D',
     createBtn: '#BA840A',
   }, {
-    name: PresetThemes.FUMIYA_ROOM,
+    name: PresetThemes.VIVID_INTERNET,
     schemeType: LIGHT,
-    lightBg: '#223323',
-    darkBg: '#213E23',
-    lightSidebar: '#1B431C',
-    darkSidebar: '#29652B',
-    lightIcon: '#C89D3B',
-    darkIcon: '#E3CE9D',
-    createBtn: '#BA840A',
+    lightBg: '#ff0000',
+    darkBg: '#0000ff',
+    lightSidebar: '#ffff00',
+    darkSidebar: '#ff8800',
+    lightIcon: '#ff0000',
+    darkIcon: '#000000',
+    createBtn: '#00ff00',
   },
 ]
   // fill in missing information
