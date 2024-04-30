@@ -51,16 +51,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
-  const onRenameFinish = useCallback(() => {
-    setRenameInputShown(false);
-    onMoveTerminated?.();
-  }, [onMoveTerminated]);
-
-  const onRenameFailure = useCallback(() => {
-    setRenameInputShown(true);
-  }, []);
-
-  const onInputChange = useCallback((inputText: string) => {
+  const inputChangeHandler = useCallback((inputText: string) => {
     const newPageTitle = pathUtils.removeHeadingSlash(inputText);
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
     const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
@@ -68,11 +59,18 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     setEditedPagePath(newPagePath);
   }, [currentPage?.path, setEditedPagePath]);
 
-  const onPressEnter = useCallback(() => {
-    pagePathRenameHandler(editedPagePath, onRenameFinish, onRenameFailure);
-  }, [editedPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler]);
+  const rename = useCallback(() => {
+    pagePathRenameHandler(editedPagePath,
+      () => {
+        setRenameInputShown(false);
+        onMoveTerminated?.();
+      },
+      () => {
+        setRenameInputShown(true);
+      });
+  }, [editedPagePath, onMoveTerminated, pagePathRenameHandler]);
 
-  const onPressEscape = useCallback(() => {
+  const cancel = useCallback(() => {
     setEditedPagePath(currentPagePath);
     setRenameInputShown(false);
   }, [currentPagePath]);
@@ -104,10 +102,10 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
                 value={isNewlyCreatedPage ? '' : editedPageTitle}
                 placeholder={t('Input page name')}
                 inputClassName="fs-4"
-                onPressEnter={onPressEnter}
-                onPressEscape={onPressEscape}
-                onChange={onInputChange}
-                onClickOutside={() => { setRenameInputShown(false) }}
+                onPressEnter={rename}
+                onPressEscape={cancel}
+                onChange={inputChangeHandler}
+                onBlur={rename}
                 validationTarget={ValidationTarget.PAGE}
                 useAutosizeInput
               />

@@ -1,4 +1,6 @@
-import React, { type FC, useCallback, useEffect } from 'react';
+import React, {
+  type FC, useCallback,
+} from 'react';
 
 import nodePath from 'path';
 
@@ -29,7 +31,7 @@ export const NewPageInput: FC<Props> = (props) => {
     onCanceled,
   } = props;
 
-  const onPressEnterForCreateHandler = async(inputText: string) => {
+  const create = useCallback(async(inputText) => {
     const parentPath = pathUtils.addTrailingSlash(page.path as string);
     const newPagePath = nodePath.resolve(parentPath, inputText);
     const isCreatable = pagePathUtils.isCreatablePage(newPagePath);
@@ -49,20 +51,11 @@ export const NewPageInput: FC<Props> = (props) => {
     finally {
       onSubmittionFailed?.();
     }
-  };
+  }, [onSubmit, onSubmittionFailed, page.path, t]);
 
-  const onPressEscHandler = useCallback((event) => {
-    if (event.keyCode === 27) {
-      onCanceled?.();
-    }
+  const cancel = useCallback(() => {
+    onCanceled?.();
   }, [onCanceled]);
-
-  useEffect(() => {
-    document.addEventListener('keydown', onPressEscHandler, false);
-    return () => {
-      document.removeEventListener('keydown', onPressEscHandler, false);
-    };
-  }, [onPressEscHandler]);
 
   return (
     <>
@@ -70,8 +63,9 @@ export const NewPageInput: FC<Props> = (props) => {
         <NotDraggableForClosableTextInput>
           <ClosableTextInput
             placeholder={t('Input page name')}
-            onClickOutside={onCanceled}
-            onPressEnter={onPressEnterForCreateHandler}
+            onPressEnter={create}
+            onPressEscape={cancel}
+            onBlur={create}
             validationTarget={ValidationTarget.PAGE}
           />
         </NotDraggableForClosableTextInput>

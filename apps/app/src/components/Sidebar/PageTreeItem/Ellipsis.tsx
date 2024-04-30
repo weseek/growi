@@ -66,7 +66,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     setRenameInputShown(true);
   }, []);
 
-  const onPressEnterForRenameHandler = async(inputText: string) => {
+  const rename = useCallback(async(inputText) => {
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
     const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -83,9 +83,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
         newPagePath,
       });
 
-      if (onRenamed != null) {
-        onRenamed(page.path, newPagePath);
-      }
+      onRenamed?.(page.path, newPagePath);
 
       toastSuccess(t('renamed_pages', { path: page.path }));
     }
@@ -93,7 +91,11 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
       setRenameInputShown(true);
       toastError(err);
     }
-  };
+  }, [onRenamed, page._id, page.path, page.revision, t]);
+
+  const cancel = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
@@ -136,8 +138,9 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
             <ClosableTextInput
               value={nodePath.basename(page.path ?? '')}
               placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
+              onPressEnter={rename}
+              onBlur={rename}
+              onPressEscape={cancel}
               validationTarget={ValidationTarget.PAGE}
             />
           </NotDraggableForClosableTextInput>
