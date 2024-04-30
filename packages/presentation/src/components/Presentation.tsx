@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import Reveal from 'reveal.js';
 
 import type { PresentationOptions } from '../consts';
+import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
 import { Slides } from './Slides';
 
@@ -33,13 +34,16 @@ const removeAllHiddenElements = () => {
 
 export type PresentationProps = {
   options: PresentationOptions,
-  hasMarpFlag: boolean,
+  isEnabledMarp: boolean,
   children?: string,
 }
 
 export const Presentation = (props: PresentationProps): JSX.Element => {
-  const { options, hasMarpFlag, children } = props;
+  const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
+
+  const [marp] = parseSlideFrontmatterInMarkdown(children);
+  const hasMarpFlag = isEnabledMarp && marp;
 
   useEffect(() => {
     if (children == null) {
