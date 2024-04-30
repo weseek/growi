@@ -59,8 +59,17 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     setTargetFolder(folderId);
   }, [folderId, isOpen]);
 
+  const cancel = useCallback(() => {
+    setIsRenameAction(false);
+    setIsCreateAction(false);
+  }, []);
+
   // Rename for bookmark folder handler
-  const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
+  const rename = useCallback(async(folderName: string) => {
+    if (folderName === '') {
+      return cancel();
+    }
+
     try {
       // TODO: do not use any type
       await updateBookmarkFolder(folderId, folderName, parent as any, childFolder);
@@ -70,10 +79,14 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, childFolder, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, cancel, childFolder, folderId, parent]);
 
   // Create new folder / subfolder handler
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const create = useCallback(async(folderName: string) => {
+    if (folderName === '') {
+      return cancel();
+    }
+
     try {
       await addNewFolder(folderName, targetFolder);
       setIsOpen(true);
@@ -83,7 +96,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, targetFolder]);
+  }, [bookmarkFolderTreeMutation, cancel, targetFolder]);
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
@@ -245,8 +258,9 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
           </div>
           {isRenameAction ? (
             <BookmarkFolderNameInput
-              onClickOutside={() => setIsRenameAction(false)}
-              onPressEnter={onPressEnterHandlerForRename}
+              onPressEnter={rename}
+              onBlur={rename}
+              onPressEscape={cancel}
               value={name}
             />
           ) : (
@@ -290,8 +304,9 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
       {isCreateAction && (
         <div className="flex-fill">
           <BookmarkFolderNameInput
-            onClickOutside={() => setIsCreateAction(false)}
-            onPressEnter={onPressEnterHandlerForCreate}
+            onPressEnter={create}
+            onBlur={create}
+            onPressEscape={cancel}
           />
         </div>
       )}

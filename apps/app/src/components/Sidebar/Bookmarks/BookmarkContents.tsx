@@ -21,11 +21,15 @@ export const BookmarkContents = (): JSX.Element => {
     setIsCreateAction(true);
   }, []);
 
-  const onClickonClickOutsideHandler = useCallback(() => {
+  const cancel = useCallback(() => {
     setIsCreateAction(false);
   }, []);
 
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const create = useCallback(async(folderName: string) => {
+    if (folderName === '') {
+      return cancel();
+    }
+
     try {
       await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
       await mutateBookmarkFolders();
@@ -34,7 +38,7 @@ export const BookmarkContents = (): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders]);
+  }, [cancel, mutateBookmarkFolders]);
 
   return (
     <div>
@@ -54,8 +58,9 @@ export const BookmarkContents = (): JSX.Element => {
       {isCreateAction && (
         <div className="col-12 mb-2 ">
           <BookmarkFolderNameInput
-            onClickOutside={onClickonClickOutsideHandler}
-            onPressEnter={onPressEnterHandlerForCreate}
+            onPressEnter={create}
+            onBlur={create}
+            onPressEscape={cancel}
           />
         </div>
       )}
