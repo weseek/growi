@@ -35,7 +35,7 @@ const Preview = (props: Props): JSX.Element => {
 
   const { data: enabledMarp } = useIsEnabledMarp();
   const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
-  const useMarp = enabledMarp && marp;
+  const useMarp = (enabledMarp ?? false) && marp;
 
   return (
     <div

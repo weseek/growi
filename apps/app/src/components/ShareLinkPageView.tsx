@@ -90,7 +90,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const markdown = page.revision.body;
 
     const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
-    const useMarp = enabledMarp && marp;
+    const useMarp = (enabledMarp ?? false) && marp;
 
     return (
       <>
