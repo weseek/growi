@@ -1,7 +1,6 @@
 import {
   useState, useCallback, memo,
 } from 'react';
-import type { FC } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -25,11 +24,15 @@ const moduleClass = styles['page-path-header'];
 type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
+  maxWidth?: number,
+  onRenameTerminated?: () => void,
 }
 
-export const PagePathHeader: FC<Props> = memo((props: Props) => {
+export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage, className } = props;
+  const {
+    currentPage, className, maxWidth, onRenameTerminated,
+  } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -49,7 +52,8 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
 
   const onRenameFinish = useCallback(() => {
     setRenameInputShown(false);
-  }, []);
+    onRenameTerminated?.();
+  }, [onRenameTerminated]);
 
   const onRenameFailure = useCallback(() => {
     setRenameInputShown(true);
@@ -104,25 +108,28 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
     <div
       id="page-path-header"
       className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
+      style={{ maxWidth }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <div
-        id="grw-page-path-header-container"
-        className="me-2 d-inline-block overflow-hidden"
+        className="page-path-header-input d-inline-block overflow-x-scroll"
       >
         { isRenameInputShown && (
-          <div className="position-absolute w-100">
-            <ClosableTextInput
-              value={editingParentPagePath}
-              placeholder={t('Input parent page path')}
-              inputClassName="form-control-sm"
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              validationTarget={ValidationTarget.PAGE}
-              onClickOutside={onPressEscape}
-            />
+          <div className="position-relative">
+            <div className="position-absolute w-100">
+              <ClosableTextInput
+                value={editingParentPagePath}
+                placeholder={t('Input parent page path')}
+                inputClassName="form-control-sm"
+                onPressEnter={onPressEnter}
+                onPressEscape={onPressEscape}
+                onChange={onInputChange}
+                validationTarget={ValidationTarget.PAGE}
+                onClickOutside={onPressEscape}
+                useAutosizeInput
+              />
+            </div>
           </div>
         ) }
         <div
@@ -136,7 +143,9 @@ export const PagePathHeader: FC<Props> = memo((props: Props) => {
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+      <div
+        className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
+      >
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"

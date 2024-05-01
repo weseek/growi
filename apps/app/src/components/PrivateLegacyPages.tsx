@@ -151,7 +151,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
-      <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={props.close}>
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
       <ModalBody>

@@ -113,6 +113,7 @@ module.exports = (crowi) => {
     ],
     sidebar: [
       body('isSidebarCollapsedMode').isBoolean(),
+      body('isSidebarClosedAtDockMode').optional().isBoolean(),
     ],
     function: [
       body('isEnabledTimeline').isBoolean(),
@@ -342,7 +343,8 @@ module.exports = (crowi) => {
 
     try {
       const isSidebarCollapsedMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode');
-      return res.apiv3({ isSidebarCollapsedMode });
+      const isSidebarClosedAtDockMode = await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode');
+      return res.apiv3({ isSidebarCollapsedMode, isSidebarClosedAtDockMode });
     }
     catch (err) {
       const msg = 'Error occurred in getting sidebar';
@@ -354,12 +356,14 @@ module.exports = (crowi) => {
   router.put('/sidebar', loginRequiredStrictly, adminRequired, validator.sidebar, apiV3FormValidator, addActivity, async(req, res) => {
     const requestParams = {
       'customize:isSidebarCollapsedMode': req.body.isSidebarCollapsedMode,
+      'customize:isSidebarClosedAtDockMode': req.body.isSidebarClosedAtDockMode,
     };
 
     try {
       await crowi.configManager.updateConfigsInTheSameNamespace('crowi', requestParams);
       const customizedParams = {
         isSidebarCollapsedMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+        isSidebarClosedAtDockMode: await crowi.configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
       };
 
       activityEvent.emit('update', res.locals.activity._id, { action: SupportedAction.ACTION_ADMIN_SIDEBAR_UPDATE });
