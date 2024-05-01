@@ -2,7 +2,7 @@ import type { IncomingHttpHeaders } from 'http';
 
 import { Lang } from '@growi/core';
 
-import * as nextI18NextConfig from '^/config/next-i18next.config';
+import { defaultLang } from '^/config/i18next.config';
 
 // https://docs.google.com/spreadsheets/d/1FoYdyEraEQuWofzbYCDPKN7EdKgS_2ZrsDrOA8scgwQ
 const DIAGRAMS_NET_LANG_MAP = {
@@ -31,7 +31,7 @@ const getPreferredLanguage = (sortedAcceptLanguagesArray: string[]): Lang => {
     const matchingLang = Object.keys(ACCEPT_LANG_MAP).find(key => lang.includes(key));
     if (matchingLang) return ACCEPT_LANG_MAP[matchingLang];
   }
-  return nextI18NextConfig.defaultLang;
+  return defaultLang;
 };
 
 /**
@@ -44,7 +44,7 @@ export const detectLocaleFromBrowserAcceptLanguage = (headers: IncomingHttpHeade
   const acceptLanguages = headers['accept-language'];
 
   if (acceptLanguages == null) {
-    return nextI18NextConfig.defaultLang;
+    return defaultLang;
   }
 
   // 1. trim blank spaces.
