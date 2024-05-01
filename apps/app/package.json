@@ -125,6 +125,7 @@
     "helmet": "^4.6.0",
     "http-errors": "^2.0.0",
     "i18next": "^23.10.1",
+    "i18next-resources-to-backend": "^1.2.1",
     "is-absolute-url": "^4.0.1",
     "is-iso-date": "^0.0.1",
     "ldapjs": "^3.0.2",
