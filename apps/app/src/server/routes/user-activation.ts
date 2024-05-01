@@ -8,7 +8,7 @@ type Crowi = {
   nextApp: any,
 }
 
-export type CrowiReq = ReqWithUserRegistrationOrder & {
+type CrowiReq = ReqWithUserRegistrationOrder & {
   crowi: Crowi,
 }
 
