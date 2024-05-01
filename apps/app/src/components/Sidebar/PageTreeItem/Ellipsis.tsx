@@ -26,13 +26,13 @@ import {
   SimpleItemContent,
 } from '../../TreeItem';
 
-export const Ellipsis: FC<TreeItemToolProps> = (props) => {
-  const [isRenameInputShown, setRenameInputShown] = useState(false);
+export const Ellipsis: FC<TreeItemToolProps & { renameMenuItemClickHandler: () => void }> = (props) => {
+
   const { t } = useTranslation();
 
   const {
     itemNode, onRenamed, onClickDuplicateMenuItem,
-    onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
+    onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, renameMenuItemClickHandler,
   } = props;
 
   const { page } = itemNode;
@@ -63,38 +63,38 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
-  const renameMenuItemClickHandler = useCallback(() => {
-    setRenameInputShown(true);
-  }, []);
+  // const renameMenuItemClickHandler = useCallback(() => {
+  //   setRenameInputShown(true);
+  // }, []);
 
-  const onPressEnterForRenameHandler = async(inputText: string) => {
-    const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+  // const onPressEnterForRenameHandler = async(inputText: string) => {
+  //   const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
+  //   const newPagePath = nodePath.resolve(parentPath, inputText);
 
-    if (newPagePath === page.path) {
-      setRenameInputShown(false);
-      return;
-    }
+  //   if (newPagePath === page.path) {
+  //     setRenameInputShown(false);
+  //     return;
+  //   }
 
-    try {
-      setRenameInputShown(false);
-      await apiv3Put('/pages/rename', {
-        pageId: page._id,
-        revisionId: page.revision,
-        newPagePath,
-      });
+  //   try {
+  //     setRenameInputShown(false);
+  //     await apiv3Put('/pages/rename', {
+  //       pageId: page._id,
+  //       revisionId: page.revision,
+  //       newPagePath,
+  //     });
 
-      if (onRenamed != null) {
-        onRenamed(page.path, newPagePath);
-      }
+  //     if (onRenamed != null) {
+  //       onRenamed(page.path, newPagePath);
+  //     }
 
-      toastSuccess(t('renamed_pages', { path: page.path }));
-    }
-    catch (err) {
-      setRenameInputShown(true);
-      toastError(err);
-    }
-  };
+  //     toastSuccess(t('renamed_pages', { path: page.path }));
+  //   }
+  //   catch (err) {
+  //     setRenameInputShown(true);
+  //     toastError(err);
+  //   }
+  // };
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
@@ -130,47 +130,27 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
 
   return (
-    <>
-      {isRenameInputShown ? (
-        <div className={`position-absolute ${hasChildren ? 'ms-5' : 'ms-4'}`}>
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={onPressEnterForRenameHandler}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
-      ) : (
-        <>
-          <SimpleItemContent itemNode={itemNode} />
-          <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
-        </>
-      )}
-      <NotAvailableForGuest>
-        <div className="grw-pagetree-control d-flex">
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions={isEnableActions}
-            isReadOnlyUser={isReadOnlyUser}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-            isInstantRename
-            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-            operationProcessData={page.processData}
-          >
-            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
-            </DropdownToggle>
-          </PageItemControl>
-        </div>
-      </NotAvailableForGuest>
-    </>
+    <NotAvailableForGuest>
+      <div className="grw-pagetree-control d-flex">
+        <PageItemControl
+          pageId={page._id}
+          isEnableActions={isEnableActions}
+          isReadOnlyUser={isReadOnlyUser}
+          onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+          onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+          onClickRenameMenuItem={renameMenuItemClickHandler}
+          onClickDeleteMenuItem={deleteMenuItemClickHandler}
+          onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+          isInstantRename
+          // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+          operationProcessData={page.processData}
+        >
+          {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+          <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
+            <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
+          </DropdownToggle>
+        </PageItemControl>
+      </div>
+    </NotAvailableForGuest>
   );
 };

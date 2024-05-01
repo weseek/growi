@@ -23,6 +23,7 @@ import {
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
+import { generateEndComponentForPageTreeItem } from './EndComponentForPageTreeItem';
 
 import styles from './PageTreeItem.module.scss';
 
@@ -171,6 +172,8 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
+  const EndComponentForPageTreeItem = generateEndComponentForPageTreeItem([NewPageCreateButton]);
+
   return (
     <SimpleItem
       targetPathOrId={props.targetPathOrId}
@@ -186,7 +189,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
-      customEndComponents={[Ellipsis, NewPageCreateButton]}
+      customEndComponents={[EndComponentForPageTreeItem]}
       customNextComponents={[NewPageInput]}
     />
   );
