@@ -48,8 +48,8 @@ const isFileExists = async(s3: S3Client, params: HeadObjectCommandInput) => {
   return true;
 };
 
-const getS3Bucket = (): string => {
-  return configManager.getConfig('crowi', 'aws:s3Bucket');
+const getS3Bucket = (): string | undefined => {
+  return configManager.getConfig('crowi', 'aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
 };
 
 const S3Factory = (): S3Client => {
