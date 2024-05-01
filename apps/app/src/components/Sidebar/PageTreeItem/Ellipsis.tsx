@@ -1,37 +1,25 @@
 import type { FC } from 'react';
-import React, {
-  useCallback, useState,
-} from 'react';
-
-import nodePath from 'path';
-
+import React, { useCallback } from 'react';
 
 import type { IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
-import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
-import {
-  type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
-  SimpleItemContent,
-} from '../../TreeItem';
+import { type TreeItemToolProps } from '../../TreeItem';
 
 export const Ellipsis: FC<TreeItemToolProps & { renameMenuItemClickHandler: () => void }> = (props) => {
 
   const { t } = useTranslation();
 
   const {
-    itemNode, onRenamed, onClickDuplicateMenuItem,
+    itemNode, onClickDuplicateMenuItem,
     onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, renameMenuItemClickHandler,
   } = props;
 
@@ -63,39 +51,6 @@ export const Ellipsis: FC<TreeItemToolProps & { renameMenuItemClickHandler: () =
     onClickDuplicateMenuItem(pageToDuplicate);
   }, [onClickDuplicateMenuItem, page]);
 
-  // const renameMenuItemClickHandler = useCallback(() => {
-  //   setRenameInputShown(true);
-  // }, []);
-
-  // const onPressEnterForRenameHandler = async(inputText: string) => {
-  //   const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
-  //   const newPagePath = nodePath.resolve(parentPath, inputText);
-
-  //   if (newPagePath === page.path) {
-  //     setRenameInputShown(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     setRenameInputShown(false);
-  //     await apiv3Put('/pages/rename', {
-  //       pageId: page._id,
-  //       revisionId: page.revision,
-  //       newPagePath,
-  //     });
-
-  //     if (onRenamed != null) {
-  //       onRenamed(page.path, newPagePath);
-  //     }
-
-  //     toastSuccess(t('renamed_pages', { path: page.path }));
-  //   }
-  //   catch (err) {
-  //     setRenameInputShown(true);
-  //     toastError(err);
-  //   }
-  // };
-
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (onClickDeleteMenuItem == null) {
       return;
@@ -126,8 +81,6 @@ export const Ellipsis: FC<TreeItemToolProps & { renameMenuItemClickHandler: () =
       toastError(t('page_operation.path_recovery_failed'));
     }
   };
-
-  const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
 
   return (
     <NotAvailableForGuest>

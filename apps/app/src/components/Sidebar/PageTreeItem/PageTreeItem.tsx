@@ -22,10 +22,7 @@ import {
   SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
-import { Ellipsis } from './Ellipsis';
 import { generateEndComponentForPageTreeItem } from './EndComponentForPageTreeItem';
-
-import styles from './PageTreeItem.module.scss';
 
 const logger = loggerFactory('growi:cli:Item');
 

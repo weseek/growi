@@ -5,31 +5,24 @@ import React, {
 
 import nodePath from 'path';
 
-
-import type { IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
-import { DropdownToggle } from 'reactstrap';
 
-import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
-import { useSWRMUTxPageInfo } from '~/stores/page';
 
 import ClosableTextInput from '../../Common/ClosableTextInput';
-import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
+import type { TreeItemToolProps } from '../../TreeItem';
 import {
-  type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  NotDraggableForClosableTextInput, SimpleItemTool,
   SimpleItemContent,
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
 
 export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
-  return (props) => {
+  return (props: TreeItemToolProps): React.JSX.Element => {
 
     const [isRenameInputShown, setRenameInputShown] = useState(false);
     const { t } = useTranslation();
@@ -40,32 +33,6 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
     } = props;
 
     const { page } = itemNode;
-
-    const { trigger: mutateCurrentUserBookmarks } = useSWRMUTxCurrentUserBookmarks();
-    const { trigger: mutatePageInfo } = useSWRMUTxPageInfo(page._id ?? null);
-
-    const bookmarkMenuItemClickHandler = async(_pageId: string, _newValue: boolean): Promise<void> => {
-      const bookmarkOperation = _newValue ? bookmark : unbookmark;
-      await bookmarkOperation(_pageId);
-      mutateCurrentUserBookmarks();
-      mutatePageInfo();
-    };
-
-    const duplicateMenuItemClickHandler = useCallback((): void => {
-      if (onClickDuplicateMenuItem == null) {
-        return;
-      }
-
-      const { _id: pageId, path } = page;
-
-      if (pageId == null || path == null) {
-        throw Error('Any of _id and path must not be null.');
-      }
-
-      const pageToDuplicate = { pageId, path };
-
-      onClickDuplicateMenuItem(pageToDuplicate);
-    }, [onClickDuplicateMenuItem, page]);
 
     const renameMenuItemClickHandler = useCallback(() => {
       setRenameInputShown(true);
@@ -97,37 +64,6 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
       catch (err) {
         setRenameInputShown(true);
         toastError(err);
-      }
-    };
-
-    const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
-      if (onClickDeleteMenuItem == null) {
-        return;
-      }
-
-      if (page._id == null || page.path == null) {
-        throw Error('_id and path must not be null.');
-      }
-
-      const pageToDelete: IPageToDeleteWithMeta = {
-        data: {
-          _id: page._id,
-          revision: page.revision as string,
-          path: page.path,
-        },
-        meta: pageInfo,
-      };
-
-      onClickDeleteMenuItem(pageToDelete);
-    }, [onClickDeleteMenuItem, page]);
-
-    const pathRecoveryMenuItemClickHandler = async(pageId: string): Promise<void> => {
-      try {
-        await resumeRenameOperation(pageId);
-        toastSuccess(t('page_operation.paths_recovered'));
-      }
-      catch {
-        toastError(t('page_operation.path_recovery_failed'));
       }
     };
 
