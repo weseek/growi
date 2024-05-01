@@ -1,6 +1,6 @@
 import { allOrigin } from '@growi/core';
 import type {
-  IPage, IUser, IUserHasId, Lang,
+  IPage, IUser, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
@@ -9,7 +9,6 @@ import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { body } from 'express-validator';
 import mongoose from 'mongoose';
-import { i18n } from 'next-i18next';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
@@ -23,6 +22,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -44,9 +44,8 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  const locale = configManager.getConfig('crowi', 'app:globalLang') as Lang;
+  const { t } = await getTranslation();
 
-  const t = i18n?.getFixedT(locale);
   const basePathname = t?.('create_page.untitled') || 'Untitled';
 
   if (_path != null) {
