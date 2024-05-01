@@ -1,5 +1,6 @@
 import { PresetThemes } from '@growi/preset-themes';
-import { Types, Schema } from 'mongoose';
+import type { Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
 import { RehypeSanitizeOption } from '../../interfaces/rehype';
@@ -137,6 +138,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isSearchScopeChildrenAsDefault': false,
   'customize:isEnabledMarp': false,
   'customize:isSidebarCollapsedMode': false,
+  'customize:isSidebarClosedAtDockMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,

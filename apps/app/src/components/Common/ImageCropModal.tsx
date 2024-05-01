@@ -1,6 +1,5 @@
-import React, {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import canvasToBlob from 'async-canvas-to-blob';
 import { useTranslation } from 'react-i18next';
@@ -137,7 +136,7 @@ const ImageCropModal: FC<Props> = (props: Props) => {
 
   return (
     <Modal isOpen={isShow} toggle={onModalCloseHandler}>
-      <ModalHeader tag="h4" toggle={onModalCloseHandler} className="bg-info text-light">
+      <ModalHeader tag="h4" toggle={onModalCloseHandler} className="text-info">
         {t('crop_image_modal.image_crop')}
       </ModalHeader>
       <ModalBody className="my-4">
