@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import {
-  SimpleItem, useNewPageInput, type TreeItemProps,
+  SimpleItem, SimpleItemContent, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
 
 
@@ -28,7 +28,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
-      customEndComponents={[NewPageCreateButton]}
+      customEndComponents={[SimpleItemContent, NewPageCreateButton]}
       onClick={onClick}
     />
   );

@@ -23,6 +23,7 @@ import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import {
   type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  SimpleItemContent,
 } from '../../TreeItem';
 
 export const Ellipsis: FC<TreeItemToolProps> = (props) => {
@@ -143,7 +144,10 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
           </NotDraggableForClosableTextInput>
         </div>
       ) : (
-        <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
+        <>
+          <SimpleItemContent itemNode={itemNode} />
+          <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
+        </>
       )}
       <NotAvailableForGuest>
         <div className="grw-pagetree-control d-flex">

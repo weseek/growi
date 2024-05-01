@@ -40,8 +40,10 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 };
 
 
-const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
+export const SimpleItemContent = ({ itemNode }: { itemNode: ItemNode }): React.JSX.Element => {
   const { t } = useTranslation();
+
+  const { page } = itemNode;
 
   const pageName = nodePath.basename(page.path ?? '') || '/';
 
@@ -168,9 +170,10 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const EndComponents = props.customEndComponents ?? [SimpleItemTool];
+  const EndComponents = props.customEndComponents ?? [SimpleItemContent, SimpleItemTool];
 
-  const baseProps: Omit<TreeItemProps, 'itemNode'> = {
+  const baseProps = {
+    itemNode,
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
@@ -219,8 +222,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
             </button>
           )}
         </div>
-
-        <SimpleItemContent page={page} />
 
         {EndComponents.map((EndComponent, index) => (
           // eslint-disable-next-line react/no-array-index-key
