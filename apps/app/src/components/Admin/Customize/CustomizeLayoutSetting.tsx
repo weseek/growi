@@ -30,7 +30,6 @@ const CustomizeLayoutSetting = (): JSX.Element => {
   const { resolvedTheme } = useNextThemes();
 
   const { isContainerFluid, setIsContainerFluid, updateLayoutSetting } = useIsContainerFluid();
-  const [retrieveError, setRetrieveError] = useState<any>();
 
   const onClickSubmit = useCallback(async() => {
     if (isContainerFluid == null) { return }
@@ -58,14 +57,19 @@ const CustomizeLayoutSetting = (): JSX.Element => {
           <h2 className="admin-setting-header">{t('customize_settings.layout')}</h2>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="row row-cols-2">
+            <div className="row row-cols-2">
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${!isContainerFluid ? 'border-active' : ''}`}
+                  className={`card border border-4 ${!isContainerFluid ? 'border-primary' : ''}`}
                   onClick={() => setIsContainerFluid(false)}
                   role="button"
                 >
-                  <img src={`/images/customize-settings/default-${resolvedTheme}.svg`} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="card-img-top"
+                    src={`/images/customize-settings/default-${resolvedTheme}.svg`}
+                    alt={t('customize_settings.layout_options.default')}
+                  />
                   <div className="card-body text-center">
                     {t('customize_settings.layout_options.default')}
                   </div>
@@ -73,12 +77,17 @@ const CustomizeLayoutSetting = (): JSX.Element => {
               </div>
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${isContainerFluid ? 'border-active' : ''}`}
+                  className={`card border border-4 ${isContainerFluid ? 'border-primary' : ''}`}
                   onClick={() => setIsContainerFluid(true)}
                   role="button"
                 >
-                  <img src={`/images/customize-settings/fluid-${resolvedTheme}.svg`} />
-                  <div className="card-body  text-center">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    className="card-img-top"
+                    src={`/images/customize-settings/fluid-${resolvedTheme}.svg`}
+                    alt={t('customize_settings.layout_options.expanded')}
+                  />
+                  <div className="card-body text-center">
                     {t('customize_settings.layout_options.expanded')}
                   </div>
                 </div>
@@ -88,7 +97,7 @@ const CustomizeLayoutSetting = (): JSX.Element => {
 
           <div className="row my-3">
             <div className="mx-auto">
-              <button type="button" className="btn btn-primary" onClick={onClickSubmit} disabled={retrieveError != null}>{ t('Update') }</button>
+              <button type="button" className="btn btn-primary" onClick={onClickSubmit}>{ t('Update') }</button>
             </div>
           </div>
         </div>

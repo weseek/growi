@@ -201,7 +201,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center text-muted ${page.isTarget ? 'active' : 'list-group-item-action'}`}
+        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center text-muted rounded-1 ${page.isTarget ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >

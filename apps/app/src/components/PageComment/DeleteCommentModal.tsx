@@ -2,8 +2,7 @@ import React from 'react';
 
 import { isPopulated } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
-import { t } from 'i18next';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -86,7 +85,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
-      <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={cancelToDelete} className="text-danger">
         {headerContent()}
       </ModalHeader>
       <ModalBody>

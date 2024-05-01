@@ -1,11 +1,11 @@
 import type {
   IPageInfoForListing, IPageInfo,
 } from '@growi/core';
-import { isIPageInfoForEntity } from '@growi/core';
+import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
-import { query, oneOf, validationResult } from 'express-validator';
+import { query, oneOf } from 'express-validator';
 import mongoose from 'mongoose';
 
 
@@ -157,7 +157,13 @@ const routerFactory = (crowi: Crowi): Router => {
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
         // TODO: use pageService.getCreatorIdForCanDelete to get creatorId (https://redmine.weseek.co.jp/issues/140574)
-        const canDeleteCompletely = pageService.canDeleteCompletely(page, page.creator, req.user, false, userRelatedGroups); // use normal delete config
+        const canDeleteCompletely = pageService.canDeleteCompletely(
+          page,
+          page.creator == null ? null : getIdForRef(page.creator),
+          req.user,
+          false,
+          userRelatedGroups,
+        ); // use normal delete config
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

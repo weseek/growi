@@ -1,5 +1,4 @@
 .page-path-header :global {
-  max-width: calc(100vw - 650px);
   input {
     min-width: 20px;
     min-height: unset;
@@ -16,5 +15,10 @@
       height: 24px;
       transform: translateY(12px);
     }
+  }
+
+  // Make Truncated elements horizontally scrollable and hide the scroll bar
+  .page-path-header-input {
+    scrollbar-width: none;
   }
 }

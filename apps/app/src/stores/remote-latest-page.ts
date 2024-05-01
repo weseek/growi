@@ -1,6 +1,6 @@
 import { useMemo, useCallback } from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
@@ -13,8 +13,8 @@ export const useRemoteRevisionBody = (initialData?: string): SWRResponse<string,
   return useSWRStatic<string, Error>('remoteRevisionBody', initialData);
 };
 
-export const useRemoteRevisionLastUpdateUser = (initialData?: IUser): SWRResponse<IUser, Error> => {
-  return useSWRStatic<IUser, Error>('remoteRevisionLastUpdateUser', initialData);
+export const useRemoteRevisionLastUpdateUser = (initialData?: IUserHasId): SWRResponse<IUserHasId, Error> => {
+  return useSWRStatic<IUserHasId, Error>('remoteRevisionLastUpdateUser', initialData);
 };
 
 export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<Date, Error> => {
@@ -24,7 +24,7 @@ export const useRemoteRevisionLastUpdatedAt = (initialData?: Date): SWRResponse<
 export type RemoteRevisionData = {
   remoteRevisionId: string,
   remoteRevisionBody: string,
-  remoteRevisionLastUpdateUser: IUser,
+  remoteRevisionLastUpdateUser?: IUserHasId,
   remoteRevisionLastUpdatedAt: Date,
 }
 

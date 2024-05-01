@@ -86,7 +86,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} toggle={onClose} data-testid="page-template-modal">
-      <ModalHeader tag="h4" toggle={onClose} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={onClose}>
         {t('template.modal_label.Create/Edit Template Page')}
       </ModalHeader>
       <ModalBody>
