@@ -9,7 +9,6 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
-import type { IUserRegistrationOrder } from '~/server/models/user-registration-order';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -68,7 +67,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   if (req.userRegistrationOrder != null) {
-    const userRegistrationOrder = req.userRegistrationOrder as unknown as IUserRegistrationOrder;
+    const userRegistrationOrder = req.userRegistrationOrder;
     props.email = userRegistrationOrder.email;
     props.token = userRegistrationOrder.token;
   }
