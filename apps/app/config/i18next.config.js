@@ -1,11 +1,16 @@
 const { Lang, AllLang } = require('@growi/core');
 
 /** @type {Lang} */
-export const defaultLang = Lang.en_US;
+const defaultLang = Lang.en_US;
 
 /** @type {import('i18next').InitOptions} */
-export const initOptions = {
+const initOptions = {
   fallbackLng: defaultLang.toString(),
   supportedLngs: AllLang,
   defaultNS: 'translation',
+};
+
+module.exports = {
+  defaultLang,
+  initOptions,
 };
