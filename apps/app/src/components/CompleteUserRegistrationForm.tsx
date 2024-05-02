@@ -182,7 +182,7 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
               <div className="input-group justify-content-center mt-4">
                 <button
-                  type="button"
+                  type="submit"
                   disabled={forceDisableForm || disableForm}
                   className="btn btn-secondary btn-register col-6 mx-auto d-flex"
                 >

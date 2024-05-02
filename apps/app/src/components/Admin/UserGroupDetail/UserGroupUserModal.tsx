@@ -45,7 +45,7 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
 
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
+      <ModalHeader tag="h4" toggle={onClose} className="text-info">
         {t('admin:user_group_management.add_modal.add_user') }
       </ModalHeader>
       <ModalBody>

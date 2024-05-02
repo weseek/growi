@@ -191,7 +191,7 @@ class GridEditModal extends React.Component {
     const { t } = this.props;
     return (
       <Modal isOpen={this.state.show} toggle={this.cancel} size="xl" className={`grw-grid-edit-modal ${styles['grw-grid-edit-modal']}`}>
-        <ModalHeader tag="h4" toggle={this.cancel} className="bg-primary text-light">
+        <ModalHeader tag="h4" toggle={this.cancel}>
           {t('grid_edit.create_bootstrap_4_grid')}
         </ModalHeader>
         <ModalBody className="container">
