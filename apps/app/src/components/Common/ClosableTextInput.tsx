@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { CSSProperties, FC } from 'react';
 import React, {
   memo, useCallback, useEffect, useRef, useState,
 } from 'react';
@@ -9,12 +9,17 @@ import AutosizeInput from 'react-input-autosize';
 import type { AlertInfo } from '~/client/util/input-validator';
 import { AlertType, inputValidator } from '~/client/util/input-validator';
 
+
+// for react-input-autosize
+type InputRefCallback = (instance: HTMLInputElement | null) => void;
+
 export type ClosableTextInputProps = {
   value?: string
   placeholder?: string
   validationTarget?: string,
   useAutosizeInput?: boolean
   inputClassName?: string,
+  inputStyle?: CSSProperties,
   onPressEnter?(inputText: string): void
   onPressEscape?(inputText: string): void
   onBlur?(inputText: string): void
@@ -24,10 +29,12 @@ export type ClosableTextInputProps = {
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
   const { t } = useTranslation();
   const {
-    validationTarget, onPressEnter, onPressEscape, onBlur, onChange,
+    validationTarget,
+    onPressEnter, onPressEscape, onBlur, onChange,
   } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
+
   const [inputText, setInputText] = useState(props.value ?? '');
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
   const [isAbleToShowAlert, setIsAbleToShowAlert] = useState(false);
@@ -116,7 +123,6 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const inputProps = {
     'data-testid': 'closable-text-input',
     value: inputText || '',
-    ref: inputRef,
     type: 'text',
     placeholder: props.placeholder,
     name: 'input',
@@ -129,12 +135,13 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   };
 
   const inputClassName = `form-control ${props.inputClassName ?? ''}`;
+  const inputStyle = props.inputStyle;
 
   return (
     <div>
       { props.useAutosizeInput
-        ? <AutosizeInput inputClassName={inputClassName} {...inputProps} />
-        : <input className={inputClassName} {...inputProps} />
+        ? <AutosizeInput inputRef={inputRef as unknown as InputRefCallback} inputClassName={inputClassName} inputStyle={inputStyle} {...inputProps} />
+        : <input ref={inputRef} className={inputClassName} style={inputStyle} {...inputProps} />
       }
       {isAbleToShowAlert && <AlertInfo />}
     </div>
