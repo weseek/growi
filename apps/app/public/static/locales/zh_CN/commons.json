@@ -80,6 +80,7 @@
 
   "create_page_dropdown": {
     "new_page": "新页面",
+    "open_page_create_modal": "显示新页面创建模式",
     "todays": {
       "desc": "Create today's memo",
       "memo": "memo"

@@ -39,7 +39,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
       <DropdownItem
         onClick={onClickOpenPageCreateModal}
       >
-        新規ページ作成モーダルの表示
+        {t('create_page_dropdown.open_page_create_modal')}
       </DropdownItem>
 
 
