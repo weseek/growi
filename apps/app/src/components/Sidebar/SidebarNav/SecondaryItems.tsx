@@ -3,6 +3,7 @@ import { memo } from 'react';
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
+import { boolean } from 'yargs';
 
 import { useIsGuestUser, useGrowiCloudUri, useIsAdmin } from '~/stores/context';
 
@@ -47,7 +48,7 @@ export const SecondaryItems: FC = memo(() => {
 
   return (
     <div className={styles['grw-secondary-items']}>
-      {isGuestUser && <PersonalDropdown />}
+      {!isGuestUser && <PersonalDropdown />}
       <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
       {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       <SecondaryItem label="Trash" href="/trash" iconName="delete" />
