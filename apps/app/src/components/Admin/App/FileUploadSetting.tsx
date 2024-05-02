@@ -1,4 +1,5 @@
-import React, { ChangeEvent, useCallback } from 'react';
+import type { ChangeEvent } from 'react';
+import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -30,11 +31,9 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
 
   return (
     <>
-      <p className="card custom-card my-3">
+      <p className="card custom-card bg-body-tertiary my-3">
         {t('admin:app_setting.file_upload')}
-        <br />
-        <br />
-        <span className="text-danger">
+        <span className="text-danger mt-1">
           <span className="material-symbols-outlined">link_off</span>
           {t('admin:app_setting.change_setting')}
         </span>
