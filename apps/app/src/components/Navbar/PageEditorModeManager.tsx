@@ -76,7 +76,8 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      const parentPath = path?.split('/').slice(0, -1).join('/'); // does not have to exist
+      let parentPath = path?.split('/').slice(0, -1).join('/'); // does not have to exist
+      parentPath = parentPath === '' ? '/' : parentPath;
       await createAndTransit(
         {
           path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,

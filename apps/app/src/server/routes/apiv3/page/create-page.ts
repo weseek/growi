@@ -105,11 +105,11 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('path').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'path'"),
+      .withMessage("Empty value is not allowed for 'path'"),
     body('parentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'parentPath'"),
+      .withMessage("Empty value is not allowed for 'parentPath'"),
     body('optionalParentPath').optional().not().isEmpty({ ignore_whitespace: true })
-      .withMessage("The empty value is not allowd for the 'optionalParentPath'"),
+      .withMessage("Empty value is not allowed for 'optionalParentPath'"),
     body('body').optional().isString()
       .withMessage('body must be string or undefined'),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
