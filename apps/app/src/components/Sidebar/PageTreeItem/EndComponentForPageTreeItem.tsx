@@ -38,7 +38,15 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
       setRenameInputShown(true);
     }, []);
 
-    const onPressEnterForRenameHandler = async(inputText: string) => {
+    const cancel = useCallback(() => {
+      setRenameInputShown(false);
+    }, []);
+
+    const rename = useCallback(async(inputText) => {
+      if (inputText.trim() === '') {
+        return cancel();
+      }
+
       const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(page.path ?? ''));
       const newPagePath = nodePath.resolve(parentPath, inputText);
 
@@ -55,9 +63,7 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
           newPagePath,
         });
 
-        if (onRenamed != null) {
-          onRenamed(page.path, newPagePath);
-        }
+        onRenamed?.(page.path, newPagePath);
 
         toastSuccess(t('renamed_pages', { path: page.path }));
       }
@@ -65,7 +71,7 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
         setRenameInputShown(true);
         toastError(err);
       }
-    };
+    }, [cancel, onRenamed, page._id, page.path, page.revision, t]);
 
     const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
 
@@ -77,8 +83,9 @@ export const generateEndComponentForPageTreeItem = (EndComponents?: FC[]) => {
               <ClosableTextInput
                 value={nodePath.basename(page.path ?? '')}
                 placeholder={t('Input page name')}
-                onClickOutside={() => { setRenameInputShown(false) }}
-                onPressEnter={onPressEnterForRenameHandler}
+                onPressEnter={rename}
+                onBlur={rename}
+                onPressEscape={cancel}
                 validationTarget={ValidationTarget.PAGE}
               />
             </NotDraggableForClosableTextInput>
