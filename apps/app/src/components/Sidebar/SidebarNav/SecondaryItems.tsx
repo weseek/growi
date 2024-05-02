@@ -45,14 +45,9 @@ export const SecondaryItems: FC = memo(() => {
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: isGuestUser } = useIsGuestUser();
 
-  if (isGuestUser) {
-    return <></>;
-  }
-
-
   return (
     <div className={styles['grw-secondary-items']}>
-      <PersonalDropdown />
+      {isGuestUser && <PersonalDropdown />}
       <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
       {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       <SecondaryItem label="Trash" href="/trash" iconName="delete" />
