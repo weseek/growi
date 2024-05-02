@@ -1,8 +1,103 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.1...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
+
+### 🚀 Improvement
+
+* imprv: Rename on blur (#8777) @yuki-takei
+* imprv: Re-calculate max-width for page tile on editor (#8775) @yuki-takei
+* imprv: Truncate page path title in editor (#8726) @reiji-h
+* imprv: FootstrampIcon uses material symbols (#8699) @kazutoweseek
+* imprv: behaviour when pressing enter after numerical input (ex: 2.3.4.) (#8754) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: An error occurred during user activation via email (#8767) @maeshinshin
+* fix: Admin customize screen (#8765) @yuki-takei
+* fix: Editor theme active line (material, nord) (#8762) @satof3
+* fix: 500 error occur when pressing the button for opening PageSelectModal (#8761) @WNomunomu
+* fix: Admin screen min-height for body (#8764) @yuki-takei
+* fix: Behaviour of table operation by enter key in editor (#8756) @WNomunomu
+* fix: EditingUserList shows user icons even when the user is not opening the editor (#8752) @miya
+* fix: Tags are not created when space key is entered (Firefox) (#8758) @miya
+* fix: Parent group selection dropdown does not work (#8759) @miya
+* fix: Codeblock overflow (#8753) @yuki-takei
+* fix:  Nord and Original-dark theme in editor (#8748) @satof3
+* fix: Material and Eclipse colors (#8749) @satof3
+* fix: Always autofocus when moving to the Editor (#8730) @reiji-h
+* fix: CopyDropdown protrudes from the screen issue (#8734) @WNomunomu
+* fix: Error on today's memo create from hotkey when memo exists (#8746) @arafubeatbox
+* fix: Editor styles (#8742) @yuki-takei
+* fix: Close the comment editor after the post (#8741) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump typeorm from 0.3.0 to 0.3.20 (#8745) @dependabot
+* support: Make AwsFileUploader type safe (#8780) @yuki-takei
+* support: Update modal header design (#8766) @satof3
+* support: Improve types in IPage and IRevision (#8763) @yuki-takei
+* support: Editor mobile appearance (#8760) @satof3
+* support: Localize in app tags language en change ja ch revision (#8757) @kazutoweseek
+* support: Upgrade vite and vitest (#8743) @yuki-takei
+* support: Adjust design details (#8738) @satof3
+* ci(deps): bump typeorm from 0.2.32 to 0.3.0 (#8602) @dependabot
+* support: Upgrade date-fns (#8744) @yuki-takei
+
+## [v7.0.2](https://github.com/weseek/growi/compare/v7.0.1...v7.0.2) - 2024-04-17
+
+### 💎 Features
+
+* feat: fr_FR locale
+
+### 🚀 Improvement
+
+* imprv: Hide title of untitled page when creating newly (#8536) @WNomunomu
+* imprv: Comment editor performance (#8731) @yuki-takei
+* imprv: Truncate page path title in view (#8707) @reiji-h
+* imprv: Show unrelated groups and disable ungrantable groups in grant select (#8695) @arafubeatbox
+* imprv: Bookmark sidebar layout (#8703) @satof3
+* imprv: Responsive layout (#8710) @yuki-takei
+* imprv: Sm size dropdown menu (#8711) @satof3
+* imprv: search results form improvements (#8705) @maeshinshin
+* imprv: WIP Page behavior (#8700) @miya
+* imprv: Disable groups not assignable to page due to parent grant (#8570) @arafubeatbox
+* imprv: Border delete in search modal (#8629) @kazutoweseek
+* imprv: Border in search modal (#8629) @kazutoweseek
+* imprv: New Comment style (#8631) @satof3
+* imprv: Hide title of untitled page when creating newly (#8536) @WNomunomu
+* imprv: Render lightbox above the sidebar (#8673) @yuki-takei
+* imprv: Add border to the page title header when editing (#8671) @yuki-takei
+* imprv: Set font-display to icon fonts (#8670) @yuki-takei
+* imprv: Enable box-shadow (#8668) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Login layout when external auth only (#8717) @satof3
+* fix: Initialize grant correctly after when page transition (#8633) @yukendev
+* fix: lsx icon layout and color (#8691) @satof3
+* fix: Tags are unintentionally created when a conversion is finalized (#8682) @miya
+* fix: Footnotes making page scrollable. (#8678) @reiji-h
+* fix: Automatic installation failure (#8685) @miya
+* fix: Page content preview not shown in duplicate alert page (#8645) @arafubeatbox
+* fix: react-toastify colors (#8672) @yuki-takei
+* fix: Add filePath to the schema of attachement for backward compatibility for v3.3 or earlier (#8679) @shield-9
+* fix: Questionnaire modal styles in dark mode (#8669) @yuki-takei
+* fix: Cannot display error when page path is duplicated (#8664) @TatsuyaIse
+
+### 🧰 Maintenance
+
+* ci(deps): bump express from 4.17.1 to 4.19.2 (#8617) @dependabot
+* support: Localize in app (#8716) @satof3
+* ci(deps): bump tar from 6.2.0 to 6.2.1 (#8712) @dependabot
+* support: Localize comment components (#8694) @satof3
+* support: Upgrade actions from v3 to v4 (2) (#8688) @yuki-takei
+* support: Upgrade actions from v3 to v4 (#8684) @yuki-takei
+* ci(deps): bump undici from 5.21.2 to 5.28.4 (#8686) @dependabot
+* ci(deps-dev): bump vite from 4.5.2 to 4.5.3 (#8675) @dependabot
 
 ## [v7.0.1](https://github.com/weseek/growi/compare/v7.0.0...v7.0.1) - 2024-04-02
 

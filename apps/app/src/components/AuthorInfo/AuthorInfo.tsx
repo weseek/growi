@@ -1,19 +1,32 @@
 import React from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
+import { isPopulated, type IUser, type Ref } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 
 import styles from './AuthorInfo.module.scss';
 
+const UserLabel = ({ user }: { user: IUserHasId | Ref<IUser> }): JSX.Element => {
+  if (isPopulated(user)) {
+    return (
+      <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
+        {user.name}
+      </Link>
+    );
+  }
 
-export type AuthorInfoProps = {
+  return <i>(anyone)</i>;
+};
+
+
+type AuthorInfoProps = {
   date: Date,
-  user: IUser,
+  user?: IUserHasId | Ref<IUser>,
   mode: 'create' | 'update',
   locate: 'subnav' | 'footer',
 }
@@ -37,9 +50,7 @@ export const AuthorInfo = (props: AuthorInfoProps): JSX.Element => {
     : t('author_info.last_revision_posted_at');
   const userLabel = user != null
     ? (
-      <Link href={pagePathUtils.userHomepagePath(user)} prefetch={false}>
-        {user.name}
-      </Link>
+      <UserLabel user={user} />
     )
     : <i>Unknown</i>;
 

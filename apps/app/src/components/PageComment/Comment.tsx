@@ -138,10 +138,10 @@ export const Comment = (props: CommentProps): JSX.Element => {
           replyTo={undefined}
           currentCommentId={commentId}
           commentBody={comment.comment}
-          onCancelButtonClicked={() => setIsReEdit(false)}
-          onCommentButtonClicked={() => {
+          onCanceled={() => setIsReEdit(false)}
+          onCommented={() => {
             setIsReEdit(false);
-            if (onComment != null) onComment();
+            onComment();
           }}
           revisionId={revisionId}
         />

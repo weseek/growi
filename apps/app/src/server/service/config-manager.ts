@@ -1,11 +1,12 @@
-import parseISO from 'date-fns/parseISO';
+import { parseISO } from 'date-fns/parseISO';
 
 import loggerFactory from '~/utils/logger';
 
 import ConfigModel from '../models/config';
 import S2sMessage from '../models/vo/s2s-message';
 
-import ConfigLoader, { ConfigObject } from './config-loader';
+import type { ConfigObject } from './config-loader';
+import ConfigLoader from './config-loader';
 import type { S2sMessagingService } from './s2s-messaging/base';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
 

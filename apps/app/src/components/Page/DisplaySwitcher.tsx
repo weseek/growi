@@ -27,11 +27,11 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
   usePageUpdatedEffect();
   useHashChangedEffect();
 
-  const isViewMode = editorMode === EditorMode.View;
-
   return (
     <>
-      { isViewMode && pageView }
+      <div className="d-edit-none">
+        {pageView}
+      </div>
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
         { isLatestRevision

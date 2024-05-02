@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useState, useCallback, useRef } from 'react';
 
 import { LoadingSpinner } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
 
 import type { IClearable } from '~/client/interfaces/clearable';

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import type { IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user-group-response';

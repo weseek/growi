@@ -177,7 +177,7 @@ export const UserGroupDeleteModal: FC<Props> = (props: Props) => {
 
   return (
     <Modal className="modal-md" isOpen={props.isShow} toggle={toggleHandler}>
-      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggleHandler}>
         <span className="material-symbols-outlined">delete_forever</span> {t('admin:user_group_management.delete_modal.header')}
       </ModalHeader>
       <ModalBody>
