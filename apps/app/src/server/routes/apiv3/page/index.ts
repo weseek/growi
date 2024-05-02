@@ -649,7 +649,9 @@ module.exports = (crowi) => {
       try {
         const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
         if (page == null) {
-          return res.apiv3Err(new ErrorV3('Page and ancestor does not exist.', 'page_does_not_exist'), 400);
+          // 'page' should always be non empty, since every page stems back to root page.
+          // If it is empty, there is a problem with the server logic.
+          return res.apiv3Err(new ErrorV3('No page on the page tree could be retrived.', 'page_could_not_be_retrieved'), 500);
         }
 
         const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
@@ -666,7 +668,7 @@ module.exports = (crowi) => {
         return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
       }
       catch (err) {
-        logger.error('get-page-failed', err);
+        logger.error(err);
         return res.apiv3Err(err, 500);
       }
     });
