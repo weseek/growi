@@ -45,6 +45,11 @@ export const SecondaryItems: FC = memo(() => {
   const { data: growiCloudUri } = useGrowiCloudUri();
   const { data: isGuestUser } = useIsGuestUser();
 
+  if (isGuestUser) {
+    return <></>;
+  }
+
+
   return (
     <div className={styles['grw-secondary-items']}>
       <PersonalDropdown />
