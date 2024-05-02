@@ -77,7 +77,7 @@
 
   "create_page_dropdown": {
     "new_page": "Créer nouvelle page",
-    "open_page_create_modal": "Afficher la modalité de création d'une nouvelle page",
+    "open_page_create_modal": "Ouvrir une nouvelle page créer une fenêtre modale",
     "todays": {
       "desc": "Créer le mémo du jour",
       "memo": "mémo"
