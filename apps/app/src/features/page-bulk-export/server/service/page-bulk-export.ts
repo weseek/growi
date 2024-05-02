@@ -15,6 +15,7 @@ import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { AttachmentType, FilePathOnStoragePrefix } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import { Attachment } from '~/server/models';
+import type { ActivityDocument } from '~/server/models/activity';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import type { IAwsMultipartUploader } from '~/server/service/file-uploader/aws/multipart-upload';
@@ -82,8 +83,8 @@ class PageBulkExportService {
     try {
       await multipartUploader.initUpload();
       pageBulkExportJob = await PageBulkExportJob.create({
-        user: currentUser._id,
-        page: basePage._id,
+        user: currentUser,
+        page: basePage,
         uploadId: multipartUploader.uploadId,
         format: PageBulkExportFormat.markdown,
       });
@@ -241,7 +242,8 @@ class PageBulkExportService {
         username: isPopulated(pageBulkExportJob.user) ? pageBulkExportJob.user.username : '',
       },
     });
-    const preNotify = preNotifyService.generatePreNotify(activity);
+    const getAdditionalTargetUsers = (activity: ActivityDocument) => [activity.user];
+    const preNotify = preNotifyService.generatePreNotify(activity, getAdditionalTargetUsers);
     this.activityEvent.emit('updated', activity, pageBulkExportJob, preNotify);
   }
 
