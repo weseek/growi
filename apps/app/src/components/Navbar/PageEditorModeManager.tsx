@@ -76,10 +76,10 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      const res = await apiv3Get('/page/non-empty-closest-ancestor', { path });
+      const parentPath = path?.split('/').slice(0, -1).join('/'); // does not have to exist
       await createAndTransit(
         {
-          path, parentPath: res.data.nonEmptyClosestAncestor?.path, wip: shouldCreateWipPage(path), origin: Origin.View,
+          path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,
         },
         { shouldCheckPageExists: true },
       );

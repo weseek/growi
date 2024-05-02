@@ -246,9 +246,6 @@ module.exports = (crowi) => {
     contentWidth: [
       body('expandContentWidth').isBoolean(),
     ],
-    nonEmptyClosestAncestor: [
-      query('path').isString(),
-    ],
   };
 
   /**
@@ -642,17 +639,23 @@ module.exports = (crowi) => {
     return res.apiv3({ isGrantNormalized, grantData });
   });
 
-  // Check if non user related groups are granted page access
+  // Check if non user related groups are granted page access.
+  // If specified page does not exist, check the closest ancestor.
   router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
     async(req, res: ApiV3Response) => {
       const { user } = req;
       const { path } = req.query;
       const pageGrantService = crowi.pageGrantService as IPageGrantService;
       try {
-        const page = await Page.findByPathAndViewer(path, user, null, true);
-
+        const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
         if (page == null) {
-          return res.apiv3Err(new ErrorV3('Page is unreachable or empty.', 'page_unreachable_or_empty'), 400);
+          return res.apiv3Err(new ErrorV3('Page and ancestor does not exist.', 'page_does_not_exist'), 400);
+        }
+
+        const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups);
+        if (!isUserGrantedPageAccess) {
+          return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
         }
 
         if (page.grant !== PageGrant.GRANT_USER_GROUP) {
@@ -941,22 +944,6 @@ module.exports = (crowi) => {
   router.put('/:pageId/publish', publishPageHandlersFactory(crowi));
 
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
-
-  router.get(
-    '/non-empty-closest-ancestor', accessTokenParser, loginRequiredStrictly, validator.nonEmptyClosestAncestor, apiV3FormValidator, async(req, res) => {
-      const { path } = req.query;
-      console.log('ここ', path);
-
-      try {
-        const nonEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(path);
-        return res.apiv3({ nonEmptyClosestAncestor });
-      }
-      catch (err) {
-        logger.error('Failed to get non-empty closest ancestor', err);
-        return res.apiv3Err(err, 500);
-      }
-    },
-  );
 
   return router;
 };

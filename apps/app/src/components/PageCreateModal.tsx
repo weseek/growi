@@ -95,11 +95,9 @@ const PageCreateModal: React.FC = () => {
    */
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
-    const res = await apiv3Get('/page/non-empty-closest-ancestor', { path: joinedPath });
-    const parentPath = res.data.nonEmptyClosestAncestor?.path;
     return createAndTransit(
       {
-        path: joinedPath, parentPath, wip: true, origin: Origin.View,
+        path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
       },
       { shouldCheckPageExists: true, onTerminated: closeCreateModal },
     );
