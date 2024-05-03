@@ -48,14 +48,11 @@ const isFileExists = async(s3: S3Client, params: HeadObjectCommandInput) => {
   return true;
 };
 
-const getConfigS3PutObjectAcl = (): ObjectCannedACL => {
-  switch (configManager.getConfig('crowi', 's3PutObjectAcl')){
-    case 'private':
+const getS3PutObjectCannedAcl = (): ObjectCannedACL => {
+  // NOTE: When ACLs are disabled in an S3 bucket, use the Canned ACL "private"
+  if (configManager.getConfig('crowi', 'aws:s3BucketAclsDisable')){
       return ObjectCannedACL.private;
-    case 'public-read':
-      return ObjectCannedACL.public_read;
   }
-  // default
   return ObjectCannedACL.public_read;
 };
 
@@ -223,7 +220,8 @@ module.exports = (crowi) => {
         configManager.getConfig('crowi', 'aws:s3Region') != null
           || configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null
       )
-      && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
+      && configManager.getConfig('crowi', 'aws:s3Bucket') != null
+      && configManager.getConfig('crowi', 'aws:s3BucketAclsDisable') != null;
   };
 
   (lib as any).deleteFile = async function(attachment) {
@@ -285,7 +283,7 @@ module.exports = (crowi) => {
       Bucket: getS3Bucket(),
       Key: filePath,
       Body: fileStream,
-      ACL: getConfigS3PutObjectAcl(),
+      ACL: getS3PutObjectCannedAcl(),
       // put type and the file name for reference information when uploading
       ContentType: contentHeaders.contentType?.value.toString(),
       ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
@@ -300,7 +298,7 @@ module.exports = (crowi) => {
       ContentType: contentType,
       Key: filePath,
       Body: data,
-      ACL: getConfigS3PutObjectAcl(),
+      ACL: getS3PutObjectCannedAcl(),
     }));
   };
 

@@ -110,7 +110,6 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'aws:s3AccessKeyId'     : undefined,
   'aws:s3SecretAccessKey' : undefined,
   'aws:s3CustomEndpoint'  : undefined,
-  'aws:s3PutObjectAcl'    : 'public-read',
 
   'mail:from'         : undefined,
   'mail:smtpHost'     : undefined,
