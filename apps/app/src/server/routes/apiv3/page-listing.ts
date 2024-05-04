@@ -1,7 +1,7 @@
 import type {
   IPageInfoForListing, IPageInfo,
 } from '@growi/core';
-import { isIPageInfoForEntity } from '@growi/core';
+import { getIdForRef, isIPageInfoForEntity } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, Router } from 'express';
 import express from 'express';
@@ -38,10 +38,16 @@ const validator = {
     query('id').isMongoId(),
     query('path').isString(),
   ], 'id or path is required'),
-  pageIdsOrPathRequired: oneOf([
-    query('pageIds').isArray(),
-    query('path').isString(),
-  ], 'pageIds or path is required'),
+  pageIdsOrPathRequired: [
+    // type check independent of existence check
+    query('pageIds').isArray().optional(),
+    query('path').isString().optional(),
+    // existence check
+    oneOf([
+      query('pageIds').exists(),
+      query('path').exists(),
+    ], 'pageIds or path is required'),
+  ],
   infoParams: [
     query('attachBookmarkCount').isBoolean().optional(),
     query('attachShortBody').isBoolean().optional(),
@@ -151,7 +157,13 @@ const routerFactory = (crowi: Crowi): Router => {
         const basicPageInfo = pageService.constructBasicPageInfo(page, isGuestUser);
 
         // TODO: use pageService.getCreatorIdForCanDelete to get creatorId (https://redmine.weseek.co.jp/issues/140574)
-        const canDeleteCompletely = pageService.canDeleteCompletely(page, page.creator, req.user, false, userRelatedGroups); // use normal delete config
+        const canDeleteCompletely = pageService.canDeleteCompletely(
+          page,
+          page.creator == null ? null : getIdForRef(page.creator),
+          req.user,
+          false,
+          userRelatedGroups,
+        ); // use normal delete config
 
         const pageInfo = (!isIPageInfoForEntity(basicPageInfo))
           ? basicPageInfo

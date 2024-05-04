@@ -2,6 +2,10 @@
 
 @use './variables' as var;
 
+body {
+  min-height: 100vh;
+}
+
 .dynamic-layout-root {
   @extend .flex-expand-vert;
 }
@@ -15,10 +19,6 @@
     object-fit: cover;
     object-position: bottom;
   }
-}
-
-.grw-modal-head {
-  border-bottom: 1px solid transparent;
 }
 
 .grw-scrollable-modal-body {

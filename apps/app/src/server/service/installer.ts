@@ -3,7 +3,7 @@ import path from 'path';
 import type {
   Lang, IPage, IUser,
 } from '@growi/core';
-import { addSeconds } from 'date-fns';
+import { addSeconds } from 'date-fns/addSeconds';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';

@@ -1,6 +1,6 @@
 import type { IGrantedGroup } from '@growi/core';
 import { GroupType } from '@growi/core';
-import { addSeconds } from 'date-fns';
+import { addSeconds } from 'date-fns/addSeconds';
 import type {
   Model, Document, QueryOptions, FilterQuery,
 } from 'mongoose';

@@ -2,7 +2,7 @@ import type {
   HasObjectId, IUser, IPage,
 } from '@growi/core';
 import { SubscriptionStatusType } from '@growi/core';
-import { subDays } from 'date-fns';
+import { subDays } from 'date-fns/subDays';
 import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
 
 import { AllEssentialActions } from '~/interfaces/activity';

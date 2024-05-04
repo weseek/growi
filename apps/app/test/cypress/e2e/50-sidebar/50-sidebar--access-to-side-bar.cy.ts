@@ -22,7 +22,7 @@ describe('Access to sidebar', () => {
         cy.visit('/');
 
         // Since this is a sidebar test, call collapseSidebar in beforeEach.
-        cy.collapseSidebar(false);
+        cy.collapseSidebar(false, true);
       });
 
       describe('Test show/collapse button', () => {
@@ -197,7 +197,7 @@ describe('Access to sidebar', () => {
 
         it('Successfully access to custom sidebar', () => {
           cy.getByTestid('grw-sidebar-contents').within(() => {
-            cy.get('.grw-sidebar-content-header > h3').find('a');
+            cy.get('.grw-sidebar-content-header > h4').find('a');
 
             cy.waitUntilSkeletonDisappear();
             cy.screenshot(`${ssPrefix}custom-sidebar-1-access-to-custom-sidebar`, { blackout: blackoutOverride });
@@ -270,7 +270,9 @@ describe('Access to sidebar', () => {
 
         it('Succesfully click all tags button', () => {
           cy.getByTestid('grw-sidebar-content-tags').within(() => {
-            cy.get('.btn-primary').click({force: true});
+            cy.get('.btn-primary').as('check-all-tags-button');
+            cy.get('@check-all-tags-button').should('be.visible');
+            cy.get('@check-all-tags-button').click({force: true});
           });
           cy.collapseSidebar(true);
           cy.getByTestid('grw-tags-list').should('be.visible');

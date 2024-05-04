@@ -2,6 +2,7 @@ import React, {
   useState, useEffect, useCallback,
 } from 'react';
 
+import type { IExternalAuthProviderType } from '@growi/core';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -14,11 +15,14 @@ import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 import { RegistrationMode } from '~/interfaces/registration-mode';
 import { toArrayIfNot } from '~/utils/array-utils';
 
-import { CompleteUserRegistration } from './CompleteUserRegistration';
+import { CompleteUserRegistration } from '../CompleteUserRegistration';
+
+import { ExternalAuthButton } from './ExternalAuthButton';
 
 import styles from './LoginForm.module.scss';
 
 const moduleClass = styles['login-form'];
+
 
 type LoginFormProps = {
   username?: string,
@@ -31,7 +35,7 @@ type LoginFormProps = {
   isLocalStrategySetup: boolean,
   isLdapStrategySetup: boolean,
   isLdapSetupFailed: boolean,
-  objOfIsExternalAuthEnableds?: any,
+  enabledExternalAuthType?: IExternalAuthProviderType[],
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
 }
@@ -42,10 +46,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, objOfIsExternalAuthEnableds,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType,
   } = props;
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
-  const isSomeExternalAuthEnabled = Object.values(objOfIsExternalAuthEnableds).some(elem => elem);
+  const isSomeExternalAuthEnabled = enabledExternalAuthType != null && enabledExternalAuthType.length > 0;
 
   // states
   const [isRegistering, setIsRegistering] = useState(false);
@@ -80,12 +84,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     }
     return t(key);
   }, [t]);
-
-  const handleLoginWithExternalAuth = useCallback((e) => {
-    const auth = e.currentTarget.id;
-
-    window.location.href = `/passport/${auth}`;
-  }, []);
 
   const resetLoginErrors = useCallback(() => {
     if (loginErrors.length === 0) return;
@@ -265,55 +263,21 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
   ]);
 
 
-  const renderExternalAuthInput = useCallback((auth) => {
-    const authIcon = {
-      google: <span className="growi-custom-icons align-bottom">google</span>,
-      github: <span className="growi-custom-icons align-bottom">github</span>,
-      facebook: <span className="growi-custom-icons align-bottom">facebook</span>,
-      oidc: <span className="growi-custom-icons align-bottom">openid</span>,
-      saml: <span className="material-symbols-outlined align-bottom">key</span>,
-    };
-    const authBtn = `btn-auth-${auth}`;
-    const signin = {
-      google: 'Google',
-      github: 'GitHub',
-      facebook: 'Facebook',
-      oidc: 'OIDC',
-      saml: 'SAML',
-    };
-
-    return (
-      <button
-        key={`btn-auth-${auth}`}
-        type="button"
-        className={`btn btn-secondary ${authBtn} my-2 col-10 col-sm-7 mx-auto d-flex`}
-        onClick={handleLoginWithExternalAuth}
-      >
-        <span>{authIcon[auth]}</span>
-        <span className="flex-grow-1">{t('Sign in with External auth', { signin: signin[auth] })}</span>
-      </button>
-    );
-  }, [handleLoginWithExternalAuth, t]);
-
   const renderExternalAuthLoginForm = useCallback(() => {
-    const { objOfIsExternalAuthEnableds } = props;
+    const { enabledExternalAuthType } = props;
+
+    if (enabledExternalAuthType == null) {
+      return <></>;
+    }
 
     return (
       <>
-        <div className="text-center text-line d-flex align-items-center mb-3">
-          <p className="text-white mb-0">{t('or')}</p>
-        </div>
         <div className="mt-2">
-          {Object.keys(objOfIsExternalAuthEnableds).map((auth) => {
-            if (!objOfIsExternalAuthEnableds[auth]) {
-              return;
-            }
-            return renderExternalAuthInput(auth);
-          })}
+          { enabledExternalAuthType.map(authType => <ExternalAuthButton authType={authType} />) }
         </div>
       </>
     );
-  }, [props, t, renderExternalAuthInput]);
+  }, [props]);
 
   const resetRegisterErrors = useCallback(() => {
     if (registerErrors.length === 0) return;
@@ -547,10 +511,15 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     <div className={moduleClass}>
       <div className="nologin-dialog mx-auto rounded-4 rounded-top-0" id="nologin-dialog" data-testid="login-form">
         <div className="row mx-0">
-          <div className="col-12 px-md-4">
+          <div className="col-12 px-md-4 pb-5">
             <ReactCardFlip isFlipped={isRegistering} flipDirection="horizontal" cardZIndex="3">
               <div className="front">
                 {isLocalOrLdapStrategiesEnabled && renderLocalOrLdapLoginForm()}
+                {isLocalOrLdapStrategiesEnabled && isSomeExternalAuthEnabled && (
+                  <div className="text-center text-line d-flex align-items-center mb-3">
+                    <p className="text-white mb-0">{t('or')}</p>
+                  </div>
+                )}
                 {isSomeExternalAuthEnabled && renderExternalAuthLoginForm()}
                 {isLocalOrLdapStrategiesEnabled && isPasswordResetEnabled && (
                   <div className="mt-4">
@@ -566,7 +535,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 )}
                 {/* Sign up link */}
                 {isRegistrationEnabled && (
-                  <div className="mt-2 mb-5">
+                  <div className="mt-2">
                     <a
                       href="#register"
                       className="btn btn-sm btn-secondary btn-function col-10 col-sm-9 mx-auto py-1 d-flex"

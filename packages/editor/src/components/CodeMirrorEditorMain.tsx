@@ -8,7 +8,7 @@ import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -21,18 +21,19 @@ type Props = CodeMirrorEditorProps & {
   user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
+  isEditorMode: boolean,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, initialValue,
+    user, pageId, initialValue, isEditorMode,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {

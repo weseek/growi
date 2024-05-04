@@ -9,10 +9,10 @@ export const FolderIcon = (props: Props): JSX.Element => {
   return (
     <>
       {!isOpen ? (
-        <span className="material-symbols-outlined">folder_open</span>
+        <span className="material-symbols-outlined">folder</span>
 
       ) : (
-        <span className="material-symbols-outlined">folder</span>
+        <span className="material-symbols-outlined">folder_open</span>
       )
       }
     </>

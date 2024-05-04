@@ -178,8 +178,6 @@ Crowi.prototype.init = async function() {
     this.setupExternalUserGroupSyncService(),
   ]);
 
-  await this.autoInstall();
-
   await normalizeData();
 };
 
@@ -416,7 +414,7 @@ Crowi.prototype.setupMailer = async function() {
   }
 };
 
-Crowi.prototype.autoInstall = function() {
+Crowi.prototype.autoInstall = async function() {
   const isInstalled = this.configManager.getConfig('crowi', 'app:installed');
   const username = this.configManager.getConfig('crowi', 'autoInstall:adminUsername');
 
@@ -440,7 +438,7 @@ Crowi.prototype.autoInstall = function() {
   const installerService = new InstallerService(this);
 
   try {
-    installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
+    await installerService.install(firstAdminUserToSave, globalLang ?? 'en_US', {
       allowGuestMode,
       serverDate,
     });
@@ -486,6 +484,8 @@ Crowi.prototype.start = async function() {
   // Initialization YjsConnectionManager
   instantiateYjsConnectionManager(this.socketIoService.io);
   this.socketIoService.setupYjsConnection();
+
+  await this.autoInstall();
 
   // listen
   const serverListening = httpServer.listen(this.port, () => {
