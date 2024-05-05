@@ -32,7 +32,7 @@ export interface IAwsMultipartUploader {
  */
 export class AwsMultipartUploader implements IAwsMultipartUploader {
 
-  private bucket: string;
+  private bucket: string | undefined;
 
   private uploadKey: string;
 
@@ -46,7 +46,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   private _uploadedFileSize: number | undefined;
 
-  constructor(s3Client: S3Client, bucket: string, uploadKey: string) {
+  constructor(s3Client: S3Client, bucket: string | undefined, uploadKey: string) {
     this.s3Client = s3Client;
     this.bucket = bucket;
     this.uploadKey = uploadKey;
