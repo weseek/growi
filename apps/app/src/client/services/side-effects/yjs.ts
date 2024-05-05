@@ -32,6 +32,7 @@ export const useYjsAwarenessStateEffect = (): void => {
   const { mutate: mutateCurrentPageYjsAwarenessStateSize } = useCurrentPageYjsAwarenessStateSize();
 
   const yjsAwarenessStateUpdateHandler = useCallback(((awarenessStateSize: number) => {
+    console.log('更新きた');
     mutateCurrentPageYjsAwarenessStateSize(awarenessStateSize);
   }), [mutateCurrentPageYjsAwarenessStateSize]);
 
