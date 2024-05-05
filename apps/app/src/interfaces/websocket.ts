@@ -51,6 +51,7 @@ export const SocketEventName = {
 
   // Yjs
   YjsUpdated: 'yjsDraft:update',
+  YjsAwarenessStateUpdated: 'yjs:awareness-state-update',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
 
