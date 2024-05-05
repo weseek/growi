@@ -179,7 +179,7 @@ class SocketIoService {
 
         yjsConnectionManager.ysocketio.on('awareness-update', async(update) => {
           const awarenessStateSize = update.awareness.states.size;
-          this.io
+          this.getDefaultSocket()
             .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
             .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
         });
