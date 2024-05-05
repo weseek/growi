@@ -92,6 +92,8 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     if (currentPageYjsAwarenessStateSize != null && currentPageYjsAwarenessStateSize > 0) {
       return 'bg-primary';
     }
+
+    // TODO: https://redmine.weseek.co.jp/issues/145652
   }, [currentPageYjsAwarenessStateSize]);
 
   return (
