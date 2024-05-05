@@ -215,8 +215,7 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
   createMultipartUploader(uploadKey: string) {
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
-    return new AwsMultipartUploader(s3, awsConfig.bucket, uploadKey);
+    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey);
   }
 
 }
