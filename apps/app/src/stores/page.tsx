@@ -58,6 +58,10 @@ export const useCurrentPageYjsDraft = (initialData?: CurrentPageYjsDraft): SWRRe
   return useSWRStatic<CurrentPageYjsDraft, Error>('currentPageYjsDraft', initialData);
 };
 
+export const useCurrentPageYjsAwarenessStateSize = (initialData?: number): SWRResponse<number, Error> => {
+  return useSWRStatic<number, Error>('currentPageYjsAwarenessStateSize', initialData);
+};
+
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */
 export const useSWRxCurrentPage = (initialData?: IPagePopulatedToShowRevision|null): SWRResponse<IPagePopulatedToShowRevision|null> => {
   const key = 'currentPage';
