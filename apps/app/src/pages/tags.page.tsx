@@ -12,6 +12,7 @@ import Head from 'next/head';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IDataTagCount } from '~/interfaces/tag';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxTagsList } from '~/stores/tag';
@@ -38,6 +39,8 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
 
   rendererConfig: RendererConfig,
+
+  sidebarConfig: ISidebarConfig,
 };
 
 const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
@@ -153,6 +156,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
 }

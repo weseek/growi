@@ -139,7 +139,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
-  const { mutateAndSave: mutatePageControlsX } = usePageControlsX();
+  const { mutate: mutatePageControlsX } = usePageControlsX();
 
   const pageControlsRef = useRef<HTMLDivElement>(null);
   const [pageControlsRect] = useRect(pageControlsRef);

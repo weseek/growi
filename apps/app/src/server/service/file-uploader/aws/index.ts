@@ -1,3 +1,4 @@
+import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
   S3Client,
   HeadObjectCommand,
@@ -6,7 +7,6 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsCommand,
-  type GetObjectCommandInput,
   ObjectCannedACL,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
@@ -38,19 +38,7 @@ interface FileMeta {
   size: number;
 }
 
-type AwsCredential = {
-  accessKeyId: string,
-  secretAccessKey: string
-}
-type AwsConfig = {
-  credentials: AwsCredential,
-  region: string,
-  endpoint: string,
-  bucket: string,
-  forcePathStyle?: boolean
-}
-
-const isFileExists = async(s3: S3Client, params) => {
+const isFileExists = async(s3: S3Client, params: HeadObjectCommandInput) => {
   try {
     await s3.send(new HeadObjectCommand(params));
   }
@@ -63,22 +51,20 @@ const isFileExists = async(s3: S3Client, params) => {
   return true;
 };
 
-const getAwsConfig = (): AwsConfig => {
-  return {
+const getS3Bucket = (): string | undefined => {
+  return configManager.getConfig('crowi', 'aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
+};
+
+const S3Factory = (): S3Client => {
+  return new S3Client({
     credentials: {
       accessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
     },
     region: configManager.getConfig('crowi', 'aws:s3Region'),
     endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
-    bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
     forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
-  };
-};
-
-const S3Factory = (): S3Client => {
-  const config = getAwsConfig();
-  return new S3Client(config);
+  });
 };
 
 const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
@@ -161,11 +147,10 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     }
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
     };
 
@@ -204,7 +189,6 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     }
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
     const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'aws:lifetimeSecForTemporaryUrl');
 
@@ -213,7 +197,7 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     const isDownload = opts?.download ?? false;
     const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     const params: GetObjectCommandInput = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
       ResponseContentType: contentHeaders.contentType?.value.toString(),
       ResponseContentDisposition: contentHeaders.contentDisposition?.value.toString(),
@@ -260,14 +244,13 @@ module.exports = (crowi) => {
       throw new Error('AWS is not configured.');
     }
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const filePaths = attachments.map((attachment) => {
       return { Key: getFilePathOnStorage(attachment) };
     });
 
     const totalParams = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Delete: { Objects: filePaths },
     };
     return s3.send(new DeleteObjectsCommand(totalParams));
@@ -278,10 +261,9 @@ module.exports = (crowi) => {
       throw new Error('AWS is not configured.');
     }
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
     };
 
@@ -303,13 +285,12 @@ module.exports = (crowi) => {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
     const contentHeaders = new ContentHeaders(attachment);
 
     return s3.send(new PutObjectCommand({
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
       Body: fileStream,
       ACL: ObjectCannedACL.public_read,
@@ -321,10 +302,9 @@ module.exports = (crowi) => {
 
   lib.saveFile = async function({ filePath, contentType, data }) {
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     return s3.send(new PutObjectCommand({
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       ContentType: contentType,
       Key: filePath,
       Body: data,
@@ -348,9 +328,8 @@ module.exports = (crowi) => {
 
     const files: FileMeta[] = [];
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
     };
     let shouldContinue = true;
     let nextMarker: string | undefined;
