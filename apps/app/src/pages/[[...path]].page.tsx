@@ -43,7 +43,7 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId, useCurrentPageYjsDraft,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId, useCurrentPageYjsDraft, useCurrentPageYjsAwarenessStateSize,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
@@ -173,6 +173,7 @@ type Props = CommonProps & {
   ssrMaxRevisionBodyLength: number,
 
   hasYjsDraft: boolean,
+  yjsAwarenessStateSize: number,
 
   rendererConfig: RendererConfig,
 };
@@ -225,6 +226,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadEnabled(props.isUploadEnabled);
 
   useCurrentPageYjsDraft({ hasYjsDraft: props.hasYjsDraft });
+  useCurrentPageYjsAwarenessStateSize(props.yjsAwarenessStateSize);
 
   const { pageWithMeta } = props;
 
@@ -491,6 +493,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     }
 
     props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
+    props.yjsAwarenessStateSize = crowi.pageService.getYjsAwarenessStateSize(page._id);
   }
 }
 

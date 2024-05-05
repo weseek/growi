@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
-import { useYjsDraftEffect } from '~/client/services/side-effects/yjs-draft';
+import { useYjsDraftEffect, useYjsAwarenessStateEffect } from '~/client/services/side-effects/yjs-draft';
 import { useIsEditable } from '~/stores/context';
 import { useIsLatestRevision } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -28,6 +28,7 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
   usePageUpdatedEffect();
   useHashChangedEffect();
   useYjsDraftEffect();
+  useYjsAwarenessStateEffect();
 
   return (
     <>
