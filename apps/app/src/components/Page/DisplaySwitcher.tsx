@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
-import { useYjsDraftEffect, useYjsAwarenessStateEffect } from '~/client/services/side-effects/yjs-draft';
+import { useYjsDraftEffect, useYjsAwarenessStateEffect } from '~/client/services/side-effects/yjs';
 import { useIsEditable } from '~/stores/context';
 import { useIsLatestRevision } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
