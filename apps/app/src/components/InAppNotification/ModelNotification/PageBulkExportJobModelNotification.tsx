@@ -12,18 +12,18 @@ import type { ModelNotificationUtils } from './PageModelNotification';
 import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
 
-export const usePageBulkExportResultModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
+export const usePageBulkExportJobModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
   const router = useRouter();
 
-  const isPageBulkExportResultModelNotification = (
+  const isPageBulkExportJobModelNotification = (
       notification: IInAppNotification & HasObjectId,
   ): notification is IInAppNotification<IPageBulkExportJob> & HasObjectId => {
     return notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB;
   };
 
-  if (!isPageBulkExportResultModelNotification(notification)) {
+  if (!isPageBulkExportJobModelNotification(notification)) {
     return null;
   }
 
