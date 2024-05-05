@@ -177,6 +177,13 @@ class SocketIoService {
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
           .emit(SocketEventName.YjsUpdated, CurrentPageYjsDraftData.hasYjsDraft);
 
+        yjsConnectionManager.ysocketio.on('awareness-update', async(update) => {
+          const awarenessStateSize = update.awareness.states.size;
+          this.io
+            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+            .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
+        });
+
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }

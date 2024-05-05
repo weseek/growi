@@ -12,7 +12,7 @@ class YjsConnectionManager {
 
   private static instance: YjsConnectionManager;
 
-  private ysocketio: YSocketIO;
+  public ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
