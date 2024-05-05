@@ -1,6 +1,6 @@
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
-import { YSocketIO } from 'y-socket.io/dist/server';
+import { YSocketIO, type Document } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
@@ -90,7 +90,7 @@ class YjsConnectionManager {
     Y.encodeStateAsUpdate(currentYdoc);
   }
 
-  public getCurrentYdoc(pageId: string): Y.Doc | undefined {
+  public getCurrentYdoc(pageId: string): Document | undefined {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     return currentYdoc;
   }
