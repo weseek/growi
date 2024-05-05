@@ -4454,6 +4454,12 @@ class PageService implements IPageService {
     return currentYdoc != null;
   }
 
+  getYjsAwarenessStateSize(pageId: string): number {
+    const yjsConnectionManager = getYjsConnectionManager();
+    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+    return currentYdoc?.awareness.states.size ?? 0;
+  }
+
   async createTtlIndex(): Promise<void> {
     const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
     const collection = mongoose.connection.collection('pages');
