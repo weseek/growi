@@ -27,7 +27,7 @@
   "Description": "描述",
   "Admin": "管理",
   "administrator": "管理员",
-  "Tags": "Tags",
+  "Tags": "标签",
   "Close": "Close",
   "Shortcuts": "快捷方式",
   "CustomSidebar": "Custom Sidebar",
@@ -871,5 +871,8 @@
     "show_wip_page": "显示 WIP",
     "size_s": "尺寸: S",
     "size_l": "尺寸: L"
+  },
+  "create_page": {
+    "untitled": "Untitled"
   }
 }

@@ -9,6 +9,11 @@
 
   .dropdown-menu {
     min-width: 310px;
+    max-width: 375px;
+
+    @include bs.media-breakpoint-up(md) {
+      max-width: 600px;
+    }
 
     .dropdown-header {
       margin-bottom: 0.5em;

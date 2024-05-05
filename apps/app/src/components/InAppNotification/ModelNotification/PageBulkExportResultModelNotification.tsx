@@ -3,7 +3,7 @@ import React from 'react';
 import type { HasObjectId } from '@growi/core';
 import { useRouter } from 'next/router';
 
-import type { IPageBulkExportResult } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
@@ -19,8 +19,8 @@ export const usePageBulkExportResultModelNotification = (notification: IInAppNot
 
   const isPageBulkExportResultModelNotification = (
       notification: IInAppNotification & HasObjectId,
-  ): notification is IInAppNotification<IPageBulkExportResult> & HasObjectId => {
-    return notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_RESULT;
+  ): notification is IInAppNotification<IPageBulkExportJob> & HasObjectId => {
+    return notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB;
   };
 
   if (!isPageBulkExportResultModelNotification(notification)) {

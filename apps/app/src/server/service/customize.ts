@@ -1,7 +1,9 @@
-import { ColorScheme } from '@growi/core';
+import path from 'path';
+
+import type { ColorScheme } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { getForcedColorScheme } from '@growi/core/dist/utils';
-import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
+import { DefaultThemeMetadata, PresetThemesMetadatas, manifestPath } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 
 import { growiPluginService } from '~/features/growi-plugin/server/services';
@@ -162,7 +164,7 @@ class CustomizeService implements S2sMessageHandlable {
     // retrieve preset theme
     else {
       // import preset-themes manifest
-      const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
+      const presetThemesManifest = await import(path.join('@growi/preset-themes', manifestPath)).then(imported => imported.default);
 
       const themeMetadata = PresetThemesMetadatas.find(p => p.name === theme);
       this.forcedColorScheme = getForcedColorScheme(themeMetadata?.schemeType);

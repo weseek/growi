@@ -1,5 +1,6 @@
 import {
   CreateMultipartUploadCommand, UploadPartCommand, type S3Client, CompleteMultipartUploadCommand, AbortMultipartUploadCommand,
+  HeadObjectCommand,
 } from '@aws-sdk/client-s3';
 
 import loggerFactory from '~/utils/logger';
@@ -19,6 +20,8 @@ export interface IAwsMultipartUploader {
   uploadPart(body: Buffer, partNumber: number): Promise<void>;
   completeUpload(): Promise<void>;
   abortUpload(): Promise<void>;
+  uploadId: string | undefined;
+  getUploadedFileSize(): Promise<number>;
 }
 
 /**
@@ -33,7 +36,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   private uploadKey: string;
 
-  private uploadId: string | undefined;
+  private _uploadId: string | undefined;
 
   private s3Client: S3Client;
 
@@ -41,10 +44,16 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   private currentStatus: UploadStatus = UploadStatus.BEFORE_INIT;
 
+  private _uploadedFileSize: number | undefined;
+
   constructor(s3Client: S3Client, bucket: string, uploadKey: string) {
     this.s3Client = s3Client;
     this.bucket = bucket;
     this.uploadKey = uploadKey;
+  }
+
+  get uploadId(): string | undefined {
+    return this._uploadId;
   }
 
   async initUpload(): Promise<void> {
@@ -54,7 +63,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       Bucket: this.bucket,
       Key: this.uploadKey,
     }));
-    this.uploadId = response.UploadId;
+    this._uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
     logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
   }
@@ -101,6 +110,18 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     }));
     this.currentStatus = UploadStatus.ABORTED;
     logger.info(`Multipart upload aborted. Upload key: ${this.uploadKey}`);
+  }
+
+  async getUploadedFileSize(): Promise<number> {
+    if (this._uploadedFileSize != null) return this._uploadedFileSize;
+
+    this.validateUploadStatus(UploadStatus.COMPLETED);
+    const headData = await this.s3Client.send(new HeadObjectCommand({
+      Bucket: this.bucket,
+      Key: this.uploadKey,
+    }));
+    this._uploadedFileSize = headData.ContentLength;
+    return this._uploadedFileSize ?? 0;
   }
 
   private validateUploadStatus(desiredStatus: UploadStatus): void {

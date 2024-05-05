@@ -2,7 +2,9 @@ import { Storage } from '@google-cloud/storage';
 import urljoin from 'url-join';
 
 import type Crowi from '~/server/crowi';
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -32,12 +34,19 @@ function getGcsInstance() {
   return storage;
 }
 
-function getFilePathOnStorage(attachment) {
+function getFilePathOnStorage(attachment: IAttachmentDocument) {
   const namespace = configManager.getConfig('crowi', 'gcs:uploadNamespace');
   // const namespace = null;
-  const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(namespace || '', dirName, attachment.fileName);
 
   return filePath;
