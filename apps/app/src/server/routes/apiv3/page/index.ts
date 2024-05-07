@@ -2,7 +2,7 @@ import path from 'path';
 
 import type { IPage } from '@growi/core';
 import {
-  AllSubscriptionStatusType, SubscriptionStatusType,
+  AllSubscriptionStatusType, PageGrant, SubscriptionStatusType,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
@@ -21,6 +21,8 @@ import { configManager } from '~/server/service/config-manager';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
+
+import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
@@ -183,7 +185,7 @@ module.exports = (crowi) => {
   const addActivity = generateAddActivityMiddleware(crowi);
 
   const globalNotificationService = crowi.getGlobalNotificationService();
-  const { Page } = crowi.models;
+  const Page = mongoose.model<IPage, PageModel>('Page');
   const { pageService, exportService } = crowi;
 
   const activityEvent = crowi.event('activity');
@@ -201,8 +203,11 @@ module.exports = (crowi) => {
     info: [
       query('pageId').isMongoId().withMessage('pageId is required'),
     ],
-    isGrantNormalized: [
+    getGrantData: [
       query('pageId').isMongoId().withMessage('pageId is required'),
+    ],
+    nonUserRelatedGroupsGranted: [
+      query('path').isString(),
     ],
     applicableGrant: [
       query('pageId').isMongoId().withMessage('pageId is required'),
@@ -566,7 +571,7 @@ module.exports = (crowi) => {
    *          500:
    *            description: Internal server error.
    */
-  router.get('/grant-data', loginRequiredStrictly, validator.isGrantNormalized, apiV3FormValidator, async(req, res) => {
+  router.get('/grant-data', loginRequiredStrictly, validator.getGrantData, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;
 
     const Page = mongoose.model<IPage, PageModel>('Page');
@@ -633,6 +638,40 @@ module.exports = (crowi) => {
 
     return res.apiv3({ isGrantNormalized, grantData });
   });
+
+  // Check if non user related groups are granted page access.
+  // If specified page does not exist, check the closest ancestor.
+  router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
+    async(req, res: ApiV3Response) => {
+      const { user } = req;
+      const { path } = req.query;
+      const pageGrantService = crowi.pageGrantService as IPageGrantService;
+      try {
+        const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);
+        if (page == null) {
+          // 'page' should always be non empty, since every page stems back to root page.
+          // If it is empty, there is a problem with the server logic.
+          return res.apiv3Err(new ErrorV3('No page on the page tree could be retrived.', 'page_could_not_be_retrieved'), 500);
+        }
+
+        const userRelatedGroups = await pageGrantService.getUserRelatedGroups(user);
+        const isUserGrantedPageAccess = await pageGrantService.isUserGrantedPageAccess(page, user, userRelatedGroups);
+        if (!isUserGrantedPageAccess) {
+          return res.apiv3Err(new ErrorV3('Cannot access page or ancestor.', 'cannot_access_page'), 403);
+        }
+
+        if (page.grant !== PageGrant.GRANT_USER_GROUP) {
+          return res.apiv3({ isNonUserRelatedGroupsGranted: false });
+        }
+
+        const nonUserRelatedGrantedGroups = await pageGrantService.getNonUserRelatedGrantedGroups(page, user);
+        return res.apiv3({ isNonUserRelatedGroupsGranted: nonUserRelatedGrantedGroups.length > 0 });
+      }
+      catch (err) {
+        logger.error(err);
+        return res.apiv3Err(err, 500);
+      }
+    });
 
   router.get('/applicable-grant', loginRequiredStrictly, validator.applicableGrant, apiV3FormValidator, async(req, res) => {
     const { pageId } = req.query;

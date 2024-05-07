@@ -8,6 +8,8 @@ import type { SWRResponse } from 'swr';
 
 
 import MarkdownTable from '~/client/models/MarkdownTable';
+import type { CreatePageAndTransitOpts } from '~/client/services/create-page';
+import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
@@ -39,6 +41,38 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
     ...swrResponse,
     open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
     close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* GrantedGroupsInheritanceSelectModal
+*/
+type GrantedGroupsInheritanceSelectModalStatus = {
+  isOpened: boolean,
+  onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>,
+}
+
+type GrantedGroupsInheritanceSelectModalStatusUtils = {
+  open(onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+  close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+}
+
+export const useGrantedGroupsInheritanceSelectModal = (
+    status?: GrantedGroupsInheritanceSelectModalStatus,
+): SWRResponse<GrantedGroupsInheritanceSelectModalStatus, Error> & GrantedGroupsInheritanceSelectModalStatusUtils => {
+  const initialData: GrantedGroupsInheritanceSelectModalStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<GrantedGroupsInheritanceSelectModalStatus, Error>(
+    'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
+  );
+
+  const { mutate } = swrResponse;
+
+  return {
+    ...swrResponse,
+    open: useCallback(
+      (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
+    ),
+    close: useCallback(() => mutate({ isOpened: false }), [mutate]),
   };
 };
 

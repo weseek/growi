@@ -5,6 +5,7 @@ import { useTranslation } from 'next-i18next';
 
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -75,8 +76,12 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
+      let parentPath = path?.split('/').slice(0, -1).join('/'); // does not have to exist
+      parentPath = parentPath === '' ? '/' : parentPath;
       await createAndTransit(
-        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
+        {
+          path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,
+        },
         { shouldCheckPageExists: true },
       );
     }

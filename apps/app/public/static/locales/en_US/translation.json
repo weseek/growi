@@ -421,6 +421,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} has been duplicated",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "Select groups that can access page",
+    "inherit_all_granted_groups_from_parent": "Inherit all groups that can access page from parent",
+    "only_inherit_related_groups": "Only inherit groups that you belong to from parent",
+    "create_page": "Create Page"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",
