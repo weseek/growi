@@ -97,7 +97,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
       <div className="page-title-header-input me-1 d-inline-block overflow-x-scroll">
         { isRenameInputShown && (
           <div className="position-relative">
-            <div className="position-absolute w-100">
+            <div className="position-absolute">
               <ClosableTextInput
                 value={isNewlyCreatedPage ? '' : editedPageTitle}
                 placeholder={t('Input page name')}

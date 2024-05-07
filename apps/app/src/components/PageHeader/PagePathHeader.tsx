@@ -109,7 +109,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
       >
         { isRenameInputShown && (
           <div className="position-relative">
-            <div className="position-absolute w-100">
+            <div className="position-absolute">
               <ClosableTextInput
                 value={parentPagePath}
                 placeholder={t('Input parent page path')}
