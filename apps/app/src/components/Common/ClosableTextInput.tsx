@@ -5,6 +5,7 @@ import React, {
 
 import { useTranslation } from 'next-i18next';
 import AutosizeInput from 'react-input-autosize';
+import { UncontrolledTooltip } from 'reactstrap';
 
 import type { AlertInfo } from '~/client/util/input-validator';
 import { AlertType, inputValidator } from '~/client/util/input-validator';
@@ -33,6 +34,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const [isAbleToShowAlert, setIsAbleToShowAlert] = useState(false);
   const [isComposing, setComposing] = useState(false);
 
+  const id = `closable-text-input-${Math.random().toString(32).substring(3)}`;
 
   const createValidation = useCallback(async(inputText: string) => {
     const alertInfo = await inputValidator(inputText, validationTarget);
@@ -109,7 +111,12 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     const alertTextStyle = alertType === AlertType.ERROR ? 'text-danger' : 'text-warning';
     const translation = alertType === AlertType.ERROR ? 'Error' : 'Warning';
     return (
-      <p className={`${alertTextStyle} text-center mt-1`}>{t(translation)}: {alertMessage}</p>
+      <UncontrolledTooltip
+        target={id}
+        autohide={false}
+        className={`${alertTextStyle} text-center mt-1`}
+      >{t(translation)}: {alertMessage}
+      </UncontrolledTooltip>
     );
   };
 
@@ -131,7 +138,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
   const inputClassName = `form-control ${props.inputClassName ?? ''}`;
 
   return (
-    <div>
+    <div id={id}>
       { props.useAutosizeInput
         ? <AutosizeInput inputClassName={inputClassName} {...inputProps} />
         : <input className={inputClassName} {...inputProps} />
