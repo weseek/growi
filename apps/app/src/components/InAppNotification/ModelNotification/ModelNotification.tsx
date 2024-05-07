@@ -24,7 +24,7 @@ export const ModelNotification: FC<Props> = (props) => {
     <div className="p-2 overflow-hidden">
       <div className="text-truncate">
         <b>{actionUsers}</b>
-        {actionMsg}
+        {` ${actionMsg}`}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
       <span className="material-symbols-outlined me-2">{actionIcon}</span>

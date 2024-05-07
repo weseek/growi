@@ -205,7 +205,7 @@ export default class InAppNotificationService {
 
     const targetModel = activity.targetModel;
 
-    const snapshot = generateSnapshot(targetModel, target);
+    const snapshot = await generateSnapshot(targetModel, target);
 
     if (shouldNotification) {
       const props = preNotifyService.generateInitialPreNotifyProps();
