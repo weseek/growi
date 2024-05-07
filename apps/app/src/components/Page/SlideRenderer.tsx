@@ -1,20 +1,17 @@
 import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 
-import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useIsEnabledMarp } from '~/stores/context';
 
 import { SlideViewer } from '../SlideViewer';
 
-import RevisionRenderer from './RevisionRenderer';
-
-type ViewRendererProps = {
-  rendererOptions: RendererOptions,
+type SlideRendererProps = {
   markdown: string
+  children: JSX.Element
 };
 
-export const ViewRenderer = (props: ViewRendererProps): JSX.Element => {
+export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
 
-  const { rendererOptions, markdown } = props;
+  const { markdown, children } = props;
 
   const { data: enabledMarp } = useIsEnabledMarp();
 
@@ -24,6 +21,6 @@ export const ViewRenderer = (props: ViewRendererProps): JSX.Element => {
   return (
     (useMarp || useSlide)
       ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-      : (<RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />)
+      : (children)
   );
 };
