@@ -12,9 +12,13 @@ class YjsConnectionManager {
 
   private static instance: YjsConnectionManager;
 
-  public ysocketio: YSocketIO;
+  private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
+
+  get ysocketioInstance(): YSocketIO {
+    return this.ysocketio;
+  }
 
   private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
