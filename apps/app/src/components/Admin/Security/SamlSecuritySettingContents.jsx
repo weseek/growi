@@ -64,7 +64,7 @@ class SamlSecurityManagementContents extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
+        <div className="row mt-3 mb-5">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
               <input
@@ -80,7 +80,7 @@ class SamlSecurityManagementContents extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge bg-warning text-dark">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge rounded-pill text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 
@@ -112,7 +112,7 @@ class SamlSecurityManagementContents extends React.Component {
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
               <div className="alert alert-danger">
                 {t('security_settings.missing mandatory configs')}
-                <ul>
+                <ul className="mb-0">
                   {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
                     const key = configKey.replace('security:passport-saml:', '');
                     return <li key={configKey}>{t(`security_settings.form_item_name.${key}`)}</li>;
@@ -122,7 +122,7 @@ class SamlSecurityManagementContents extends React.Component {
             )}
 
 
-            <h3 className="alert-anchor border-bottom">
+            <h3 className="alert-anchor border-bottom mb-3">
               Basic Settings
             </h3>
 
@@ -232,7 +232,7 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </tbody>
             </table>
 
-            <h3 className="alert-anchor border-bottom">
+            <h3 className="alert-anchor border-bottom mt-5 mb-3">
               Attribute Mapping
             </h3>
 
@@ -386,55 +386,51 @@ pWVdnzS1VCO8fKsJ7YYIr+JmHvseph3kFUOI5RqkCcMZlKUv83aUThsTHw==
               </tbody>
             </table>
 
-            <h3 className="alert-anchor border-bottom">
+            <h3 className="alert-anchor border-bottom mt-5 mb-4">
               Attribute Mapping Options
             </h3>
 
-            <div className="row mb-5">
-              <div className="offset-md-3 col-md-6 text-start">
-                <div className="form-check form-check-success">
-                  <input
-                    id="bindByUserName-SAML"
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
-                    onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
-                  />
-                  <label
-                    className="form-label form-check-label"
-                    htmlFor="bindByUserName-SAML"
-                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
-                  />
-                </div>
-                <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical_warn') }} />
-                </p>
+            <div className="row ms-3">
+              <div className="form-check form-check-success">
+                <input
+                  id="bindByUserName-SAML"
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={adminSamlSecurityContainer.state.isSameUsernameTreatedAsIdenticalUser || false}
+                  onChange={() => { adminSamlSecurityContainer.switchIsSameUsernameTreatedAsIdenticalUser() }}
+                />
+                <label
+                  className="form-label form-check-label"
+                  htmlFor="bindByUserName-SAML"
+                  dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical') }}
+                />
               </div>
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat username matching as identical_warn') }} />
+              </p>
             </div>
 
-            <div className="row mb-5">
-              <div className="offset-md-3 col-md-6 text-start">
-                <div className="form-check form-check-success">
-                  <input
-                    id="bindByEmail-SAML"
-                    className="form-check-input"
-                    type="checkbox"
-                    checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
-                    onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
-                  />
-                  <label
-                    className="form-label form-check-label"
-                    htmlFor="bindByEmail-SAML"
-                    dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
-                  />
-                </div>
-                <p className="form-text text-muted">
-                  <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical_warn') }} />
-                </p>
+            <div className="row mb-5 ms-3">
+              <div className="form-check form-check-success">
+                <input
+                  id="bindByEmail-SAML"
+                  className="form-check-input"
+                  type="checkbox"
+                  checked={adminSamlSecurityContainer.state.isSameEmailTreatedAsIdenticalUser || false}
+                  onChange={() => { adminSamlSecurityContainer.switchIsSameEmailTreatedAsIdenticalUser() }}
+                />
+                <label
+                  className="form-label form-check-label"
+                  htmlFor="bindByEmail-SAML"
+                  dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical') }}
+                />
               </div>
+              <p className="form-text text-muted">
+                <small dangerouslySetInnerHTML={{ __html: t('security_settings.Treat email matching as identical_warn') }} />
+              </p>
             </div>
 
-            <h3 className="alert-anchor border-bottom">
+            <h3 className="alert-anchor border-bottom mb-4">
               Attribute-based Login Control
             </h3>
 

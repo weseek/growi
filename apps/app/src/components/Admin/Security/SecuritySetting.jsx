@@ -292,7 +292,7 @@ class SecuritySetting extends React.Component {
                 <>
                   <button
                     type="button"
-                    className="btn btn-link p-0 mb-4"
+                    className="btn btn-link p-0 mb-2"
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
@@ -301,7 +301,7 @@ class SecuritySetting extends React.Component {
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
-                      <p className="card custom-card">
+                      <p className="card custom-card bg-body-tertiary">
                         <span className="text-warning">
                           <span className="material-symbols-outlined">info</span>
                           {/* eslint-disable-next-line react/no-danger */}
@@ -412,7 +412,7 @@ class SecuritySetting extends React.Component {
           </table>
         </div>
 
-        <h4>{t('security_settings.page_access_rights')}</h4>
+        <h4 className="mb-3">{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
           <div className="col-md-3 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
@@ -457,7 +457,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4>{t('security_settings.page_delete_rights')}</h4>
+        <h4 className="mb-3">{t('security_settings.page_delete_rights')}</h4>
         {/* Render PageDeletePermission */}
         {
           [
@@ -474,7 +474,7 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
-        <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
+        <h4 className="mb-3">{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
@@ -524,7 +524,7 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
-            <p className="card custom-card">
+            <p className="card custom-card bg-body-tertiary">
               <span className="text-warning">
                 <span className="material-symbols-outlined">info</span> {t('security_settings.max_age_caution')}
               </span>
