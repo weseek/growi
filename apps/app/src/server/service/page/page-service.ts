@@ -8,6 +8,7 @@ import type { ObjectId } from 'mongoose';
 
 import type { IOptionsForCreate, IOptionsForUpdate } from '~/interfaces/page';
 import type { PopulatedGrantedGroup } from '~/interfaces/page-grant';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
 import type { PageDocument } from '~/server/models/page';
 
@@ -30,4 +31,5 @@ export interface IPageService {
   canDeleteCompletelyAsMultiGroupGrantedPage(
     page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]
   ): boolean,
+  getYjsData(pageId: string, revisionBody?: string): CurrentPageYjsData,
 }
