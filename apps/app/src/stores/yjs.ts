@@ -6,17 +6,12 @@ import type { SWRResponse } from 'swr';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 
 type CurrentPageYjsDataUtils = {
-  updateHasDraft(hasYjsDraft: boolean): void
   updateHasRevisionBodyDiff(hasRevisionBodyDiff: boolean): void
   updateAwarenessStateSize(awarenessStateSize: number): void
 }
 
 export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> & CurrentPageYjsDataUtils => {
   const swrResponse = useSWRStatic<CurrentPageYjsData, Error>('currentPageYjsData', undefined);
-
-  const updateHasDraft = useCallback((hasDraft: boolean) => {
-    swrResponse.mutate({ ...swrResponse.data, hasDraft });
-  }, [swrResponse]);
 
   const updateHasRevisionBodyDiff = useCallback((hasRevisionBodyDiff: boolean) => {
     swrResponse.mutate({ ...swrResponse.data, hasRevisionBodyDiff });
@@ -27,6 +22,6 @@ export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> 
   }, [swrResponse]);
 
   return {
-    ...swrResponse, updateHasDraft, updateHasRevisionBodyDiff, updateAwarenessStateSize,
+    ...swrResponse, updateHasRevisionBodyDiff, updateAwarenessStateSize,
   };
 };

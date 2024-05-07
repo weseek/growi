@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { CurrentPageYjsDraftData } from '~/interfaces/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -171,6 +170,7 @@ class SocketIoService {
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
     const Page = mongoose.model('Page');
+
     this.io.on('connection', (socket) => {
 
       yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
@@ -198,12 +198,6 @@ class SocketIoService {
       });
 
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-
-        // Emit to the client in the room of the target pageId.
-        this.io
-          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsDraftUpdated, CurrentPageYjsDraftData);
-
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }

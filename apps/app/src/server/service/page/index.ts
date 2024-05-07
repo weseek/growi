@@ -4455,7 +4455,6 @@ class PageService implements IPageService {
     const yjsDraft = currentYdoc?.getText('codemirror').toString();
 
     return {
-      hasDraft: currentYdoc != null,
       hasRevisionBodyDiff: yjsDraft != null && revisionBody != null && yjsDraft !== revisionBody,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
