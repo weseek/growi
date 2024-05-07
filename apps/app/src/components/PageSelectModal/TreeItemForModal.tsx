@@ -1,7 +1,7 @@
 import type { FC } from 'react';
 
 import {
-  SimpleItem, useNewPageInput, type TreeItemProps,
+  TreeItemLayout, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
 
 
@@ -16,7 +16,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
-    <SimpleItem
+    <TreeItemLayout
       key={props.key}
       targetPathOrId={props.targetPathOrId}
       itemNode={props.itemNode}

@@ -19,7 +19,9 @@ type TreeItemBaseProps = {
   },
 }
 
-export type TreeItemToolProps = TreeItemBaseProps;
+export type TreeItemToolProps = TreeItemBaseProps & {
+  onSwitchToAlternativeContent?(): void,
+};
 
 export type TreeItemProps = TreeItemBaseProps & {
   targetPathOrId?: Nullable<string>,

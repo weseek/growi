@@ -3,24 +3,19 @@ import React, {
   type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
 
-import nodePath from 'path';
-
 import type { Nullable } from '@growi/core';
-import { useTranslation } from 'next-i18next';
-import { UncontrolledTooltip } from 'reactstrap';
 
-import type { IPageForItem } from '~/interfaces/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
-import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import { ItemNode } from './ItemNode';
+import { SimpleItemContent } from './SimpleItemContent';
 import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
-import styles from './SimpleItem.module.scss';
+import styles from './TreeItemLayout.module.scss';
 
-const moduleClass = styles['simple-item'] ?? '';
+const moduleClass = styles['tree-item-layout'] ?? '';
 
 
 // Utility to mark target
@@ -41,46 +36,11 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 };
 
 
-const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
-  const { t } = useTranslation();
-
-  const pageName = nodePath.basename(page.path ?? '') || '/';
-
-  const shouldShowAttentionIcon = page.processData != null ? shouldRecoverPagePaths(page.processData) : false;
-
-  return (
-    <div
-      className="flex-grow-1 d-flex align-items-center pe-none"
-      style={{ minWidth: 0 }}
-    >
-      {shouldShowAttentionIcon && (
-        <>
-          <span id="path-recovery" className="material-symbols-outlined mr-2 text-warning">warning</span>
-          <UncontrolledTooltip placement="top" target="path-recovery" fade={false}>
-            {t('tooltip.operation.attention.rename')}
-          </UncontrolledTooltip>
-        </>
-      )}
-      {page != null && page.path != null && page._id != null && (
-        <div className="grw-pagetree-title-anchor flex-grow-1">
-          <div className="d-flex align-items-center">
-            <span className={`text-truncate me-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
-            { page.wip && (
-              <span className="wip-page-badge badge rounded-pill me-1 text-bg-secondary">WIP</span>
-            )}
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-
-type SimpleItemProps = TreeItemProps & {
+type TreeItemLayoutProps = TreeItemProps & {
   itemRef?: RefObject<any> | RefCallback<any>,
 }
 
-export const SimpleItem: FC<SimpleItemProps> = (props) => {
+export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
@@ -91,6 +51,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
+  const [showAlternativeContent, setShowAlternativeContent] = useState(false);
 
   const { data } = useSWRxPageChildren(isOpen ? page._id : null);
 
@@ -122,6 +83,10 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     setIsOpen(!isOpen);
   }, [isOpen]);
 
+  const onSwitchToAlternativeContent = useCallback(() => {
+    setShowAlternativeContent(!showAlternativeContent);
+  }, [showAlternativeContent]);
+
   // didMount
   useEffect(() => {
     if (hasChildren()) setIsOpen(true);
@@ -148,7 +113,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     }
   }, [data, isOpen, targetPathOrId]);
 
-  const ItemClassFixed = itemClass ?? SimpleItem;
+  const ItemClassFixed = itemClass ?? TreeItemLayout;
 
   const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
@@ -164,6 +129,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const toolProps: TreeItemToolProps = {
     ...baseProps,
     itemNode,
+    onSwitchToAlternativeContent,
   };
 
   const EndComponents = props.customEndComponents;
@@ -204,7 +170,15 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           )}
         </div>
 
-        <SimpleItemContent page={page} />
+        { showAlternativeContent && AlternativeComponents != null
+          ? (
+            AlternativeComponents.map((AlternativeContent, index) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <AlternativeContent key={index} {...toolProps} />
+            ))
+          )
+          : <SimpleItemContent page={page} />
+        }
 
         <div className="d-hover-none">
           {EndComponents?.map((EndComponent, index) => (

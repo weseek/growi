@@ -19,7 +19,7 @@ import loggerFactory from '~/utils/logger';
 
 import type { ItemNode } from '../../TreeItem';
 import {
-  SimpleItem, useNewPageInput, type TreeItemProps,
+  TreeItemLayout, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
 import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
@@ -174,7 +174,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const { isProcessingSubmission, Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
-    <SimpleItem
+    <TreeItemLayout
       targetPathOrId={props.targetPathOrId}
       itemNode={props.itemNode}
       isOpen={isOpen}
