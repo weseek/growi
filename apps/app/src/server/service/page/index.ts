@@ -4460,6 +4460,24 @@ class PageService implements IPageService {
     };
   }
 
+  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
+    if (comparisonTarget == null) {
+      return false;
+    }
+
+    const Page = mongoose.model('Page');
+    const page = await Page.findOne({ _id: pageId });
+
+    if (page == null) {
+      return false;
+    }
+
+    const populatedPage = await page.populateDataToShowRevision();
+    const revisionBody = populatedPage.revision.body;
+
+    return revisionBody != null && revisionBody !== comparisonTarget;
+  }
+
   async createTtlIndex(): Promise<void> {
     const wipPageExpirationSeconds = configManager.getConfig('crowi', 'app:wipPageExpirationSeconds') ?? 172800;
     const collection = mongoose.connection.collection('pages');

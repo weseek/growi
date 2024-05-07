@@ -1,5 +1,4 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
-import mongoose from 'mongoose';
 import { Server } from 'socket.io';
 
 import { SocketEventName } from '~/interfaces/websocket';
@@ -169,7 +168,6 @@ class SocketIoService {
 
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
-    const Page = mongoose.model('Page');
 
     this.io.on('connection', (socket) => {
 
@@ -183,17 +181,12 @@ class SocketIoService {
 
         // Executed when the last user leaves the Editor
         if (awarenessStateSize === 0) {
-          const page = await Page.findOne({ _id: pageId });
-          if (page != null) {
-            const populatedPage = await page.populateDataToShowRevision();
-            const revisionBody = populatedPage.revision.body;
-            const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-            const yjsDraft = currentYdoc?.getText('codemirror').toString();
-            const hasRevisionBodyDiff = revisionBody != null && yjsDraft != null && yjsDraft !== revisionBody;
-            this.io
-              .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-              .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
-          }
+          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+          const yjsDraft = currentYdoc?.getText('codemirror').toString();
+          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
+          this.io
+            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
         }
       });
 
