@@ -1,0 +1,14 @@
+@use '~/styles/mixins';
+
+@use './items-tree-variables';
+
+
+.text-skeleton-level1 {
+  @include mixins.grw-skeleton-text($font-size:16px, $line-height: items-tree-variables.$list-item-height);
+  padding-left: 12px;
+}
+
+.text-skeleton-level2 {
+  @extend .text-skeleton-level1;
+  padding-left: 12px + items-tree-variables.$list-item-padding-left * 2;
+}
