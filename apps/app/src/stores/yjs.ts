@@ -2,8 +2,12 @@ import { useCallback } from 'react';
 
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
+import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
+import { apiv3Get } from '~/client/util/apiv3-client';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
+
+import { useCurrentPageId } from './page';
 
 type CurrentPageYjsDataUtils = {
   updateHasRevisionBodyDiff(hasRevisionBodyDiff: boolean): void
@@ -24,4 +28,15 @@ export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> 
   return {
     ...swrResponse, updateHasRevisionBodyDiff, updateAwarenessStateSize,
   };
+};
+
+export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageYjsData|null> => {
+  const key = 'currentPageYjsData';
+  const { data: currentPageId } = useCurrentPageId();
+
+  return useSWRMutation(
+    currentPageId == null ? null : key,
+    () => apiv3Get<{ yjsData: CurrentPageYjsData }>(`/page/${currentPageId}/yjs-data`).then(result => result.data.yjsData),
+    { populateCache: true, revalidate: false },
+  );
 };
