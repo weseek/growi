@@ -28,6 +28,9 @@ export type TreeItemProps = TreeItemBaseProps & {
   itemClass?: React.FunctionComponent<TreeItemProps>,
   mainClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customHoveredEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customNextComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customNextToChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customAlternativeComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   onClick?(page: IPageForItem): void,
 };

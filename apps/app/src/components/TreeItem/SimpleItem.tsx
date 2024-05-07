@@ -6,7 +6,6 @@ import React, {
 import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
-import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip } from 'reactstrap';
 
@@ -16,7 +15,6 @@ import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
 import { ItemNode } from './ItemNode';
-import { useNewPageInput } from './NewPageInput';
 import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
@@ -91,8 +89,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const { page, children } = itemNode;
 
-  const { isProcessingSubmission } = useNewPageInput();
-
   const [currentChildren, setCurrentChildren] = useState(children);
   const [isOpen, setIsOpen] = useState(_isOpen);
 
@@ -154,8 +150,6 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const EndComponents = props.customEndComponents;
-
   const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
     isReadOnlyUser,
@@ -172,7 +166,11 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     itemNode,
   };
 
-  const CustomNextComponents = props.customNextComponents;
+  const EndComponents = props.customEndComponents;
+  const HoveredEndComponents = props.customHoveredEndComponents;
+  const NextComponents = props.customNextComponents;
+  const NextToChildrenComponents = props.customNextToChildrenComponents;
+  const AlternativeComponents = props.customAlternativeComponents;
 
   if (!isWipPageShown && page.wip) {
     return <></>;
@@ -208,16 +206,25 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent page={page} />
 
-        {EndComponents?.map((EndComponent, index) => (
-          // eslint-disable-next-line react/no-array-index-key
-          <EndComponent key={index} {...toolProps} />
-        ))}
+        <div className="d-hover-none">
+          {EndComponents?.map((EndComponent, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <EndComponent key={index} {...toolProps} />
+          ))}
+        </div>
+
+        <div className="d-none d-hover-flex">
+          {HoveredEndComponents?.map((HoveredEndContent, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <HoveredEndContent key={index} {...toolProps} />
+          ))}
+        </div>
 
       </li>
 
-      {CustomNextComponents?.map((UnderItemContent, index) => (
+      {NextComponents?.map((NextContent, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <UnderItemContent key={index} {...toolProps} />
+        <NextContent key={index} {...toolProps} />
       ))}
 
       {
@@ -233,11 +240,12 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
           return (
             <div key={node.page._id} className="grw-pagetree-item-children">
               <ItemClassFixed {...itemProps} />
-              {isProcessingSubmission && (currentChildren.length - 1 === index) && (
-                <div className="text-muted text-center">
-                  <LoadingSpinner className="mr-1" />
-                </div>
-              )}
+
+              {NextToChildrenComponents?.map((NextToChildrenContent, index) => (
+                // eslint-disable-next-line react/no-array-index-key
+                <NextToChildrenContent key={index} {...toolProps} />
+              ))}
+
             </div>
           );
         })

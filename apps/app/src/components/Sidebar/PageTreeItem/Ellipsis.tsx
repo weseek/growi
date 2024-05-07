@@ -181,7 +181,7 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
               operationProcessData={page.processData}
             >
               {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-none d-hover-block p-0 mr-1">
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 mr-1">
                 <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
               </DropdownToggle>
             </PageItemControl>

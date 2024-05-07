@@ -23,6 +23,7 @@ import {
 } from '../../TreeItem';
 
 import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
+import { CreatingNewPageSpinner } from './CreatingNewPageSpinner';
 import { Ellipsis } from './Ellipsis';
 
 import styles from './PageTreeItem.module.scss';
@@ -170,7 +171,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
-  const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
+  const { isProcessingSubmission, Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   return (
     <SimpleItem
@@ -187,8 +188,10 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       itemRef={itemRef}
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
-      customEndComponents={[CountBadgeForPageTreeItem, Ellipsis, NewPageCreateButton]}
+      customEndComponents={[CountBadgeForPageTreeItem]}
+      customHoveredEndComponents={[Ellipsis, NewPageCreateButton]}
       customNextComponents={[NewPageInput]}
+      customNextToChildrenComponents={[() => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
     />
   );
 };

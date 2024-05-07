@@ -12,9 +12,7 @@ export const CountBadgeForPageTreeItem = (props: TreeItemToolProps): JSX.Element
   return (
     <>
       {descendantCount > 0 && (
-        <div className="d-hover-none">
-          <CountBadge count={descendantCount} />
-        </div>
+        <CountBadge count={descendantCount} />
       )}
     </>
   );
