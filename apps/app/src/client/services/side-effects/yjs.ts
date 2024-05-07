@@ -3,14 +3,15 @@ import { useCallback, useEffect } from 'react';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import { type CurrentPageYjsDraft } from '~/interfaces/yjs';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
 export const useYjsDraftEffect = (): void => {
   const { data: socket } = useGlobalSocket();
   const { updateHasDraft } = useCurrentPageYjsData();
 
-  const yjsDraftUpdateHandler = useCallback(((hasDraft: boolean) => {
-    updateHasDraft(hasDraft);
+  const yjsDraftUpdateHandler = useCallback(((currentPageYjsDraft: CurrentPageYjsDraft) => {
+    updateHasDraft(currentPageYjsDraft.hasYjsDraft);
   }), [updateHasDraft]);
 
   useEffect(() => {

@@ -1,8 +1,8 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
-// import { CurrentPageYjsDraftData } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
+import { CurrentPageYjsDraftData } from '~/interfaces/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -175,7 +175,7 @@ class SocketIoService {
         // Emit to the client in the room of the target pageId.
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsDraftUpdated, true);
+          .emit(SocketEventName.YjsDraftUpdated, CurrentPageYjsDraftData);
 
         yjsConnectionManager.ysocketio.on('awareness-update', async(update) => {
           const awarenessStateSize = update.awareness.states.size;
