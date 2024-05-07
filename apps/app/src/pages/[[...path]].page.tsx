@@ -27,6 +27,7 @@ import { SupportedAction, type SupportedActionType } from '~/interfaces/activity
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
@@ -49,7 +50,7 @@ import {
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
-import { useCurrentPageYjsData, type CurrentPageYjsDataStates } from '~/stores/yjs';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -173,7 +174,7 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  yjsData: CurrentPageYjsDataStates,
+  yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
 };
@@ -495,10 +496,9 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       }
     }
 
-    props.yjsData = {
-      hasDraft: crowi.pageService.hasYjsDraft(page._id),
-      awarenessStateSize: crowi.pageService.getYjsAwarenessStateSize(page._id),
-    };
+    if (!props.skipSSR) {
+      props.yjsData = crowi.pageService.getYjsData(page._id, props.pageWithMeta?.data.revision?.body);
+    }
   }
 }
 
