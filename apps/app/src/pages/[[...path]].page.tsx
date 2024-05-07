@@ -43,12 +43,13 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId, useCurrentPageYjsDraft,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import { useCurrentPageYjsData, type CurrentPageYjsDataStates } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -172,7 +173,7 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  hasYjsDraft: boolean,
+  yjsData: CurrentPageYjsDataStates,
 
   rendererConfig: RendererConfig,
 };
@@ -224,8 +225,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
-  useCurrentPageYjsDraft({ hasYjsDraft: props.hasYjsDraft });
-
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
@@ -247,6 +246,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
+
+  const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -309,6 +310,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  useEffect(() => {
+    mutateCurrentPageYjsData(props.yjsData);
+  }, [mutateCurrentPageYjsData, props.yjsData]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
@@ -490,7 +495,10 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       }
     }
 
-    props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
+    props.yjsData = {
+      hasDraft: crowi.pageService.hasYjsDraft(page._id),
+      awarenessStateSize: crowi.pageService.getYjsAwarenessStateSize(page._id),
+    };
   }
 }
 

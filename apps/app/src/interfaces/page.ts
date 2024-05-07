@@ -75,11 +75,3 @@ export type IOptionsForCreate = {
   origin?: Origin
   wip?: boolean,
 };
-
-export type CurrentPageYjsDraft = {
-  hasYjsDraft: boolean,
-}
-
-export const CurrentPageYjsDraftData = {
-  hasYjsDraft: { hasYjsDraft: true },
-};

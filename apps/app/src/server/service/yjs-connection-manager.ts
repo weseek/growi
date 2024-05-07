@@ -1,12 +1,17 @@
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
-import { YSocketIO } from 'y-socket.io/dist/server';
+import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+
+export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
+  const result = ydocId.match(/yjs\/(.*)/);
+  return result?.[1];
+};
 
 class YjsConnectionManager {
 
@@ -15,6 +20,10 @@ class YjsConnectionManager {
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
+
+  get ysocketioInstance(): YSocketIO {
+    return this.ysocketio;
+  }
 
   private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
@@ -90,7 +99,7 @@ class YjsConnectionManager {
     Y.encodeStateAsUpdate(currentYdoc);
   }
 
-  public getCurrentYdoc(pageId: string): Y.Doc | undefined {
+  public getCurrentYdoc(pageId: string): Ydoc | undefined {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     return currentYdoc;
   }

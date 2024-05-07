@@ -1,13 +1,13 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
-import { CurrentPageYjsDraftData } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
+import { CurrentPageYjsDraftData } from '~/interfaces/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import { getYjsConnectionManager } from './yjs-connection-manager';
+import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
 
 
 const expressSession = require('express-session');
@@ -170,12 +170,21 @@ class SocketIoService {
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
     this.io.on('connection', (socket) => {
+
+      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
+        const pageId = extractPageIdFromYdocId(update.name);
+        const awarenessStateSize = update.awareness.states.size;
+        this.io
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
+      });
+
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
 
         // Emit to the client in the room of the target pageId.
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsUpdated, CurrentPageYjsDraftData.hasYjsDraft);
+          .emit(SocketEventName.YjsDraftUpdated, CurrentPageYjsDraftData);
 
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
