@@ -9,24 +9,19 @@ import type { IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
-import type { AutosizeInputProps } from 'react-input-autosize';
 import { DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
-import { ValidationTarget } from '~/client/util/input-validator';
+// import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { AutosizeSubmittableInput } from '~/components/Common/SubmittableInput';
-import type { SubmittableInputProps } from '~/components/Common/SubmittableInput/types';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
-import Page from '~/pages/[[...path]].page';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
-import {
-  type TreeItemToolProps, NotDraggableForClosableTextInput,
-} from '../../TreeItem';
+import type { TreeItemToolProps } from '../../TreeItem';
 
 
 import renameInputStyles from './RenameInput.module.scss';
@@ -188,22 +183,18 @@ export const usePageItemControl = (): UsePageItemControl => {
     const maxWidth = (parentRect?.width ?? 0) - 12 * 2; // calculate the max-width minus the padding (12px * 2) because AutosizeInput has "box-sizing: content-box;"
 
     return (
-      <>
-        {/* <NotDraggableForClosableTextInput> */}
-        <div ref={parentRef} className={`${renameInputContainerClass}`}>
-          <AutosizeSubmittableInput
-            value={nodePath.basename(page.path ?? '')}
-            inputClassName="form-control"
-            inputStyle={{ maxWidth }}
-            placeholder={t('Input page name')}
-            onSubmit={rename}
-            onCancel={cancel}
-            // validationTarget={ValidationTarget.PAGE}
-            autoFocus
-          />
-        </div>
-        {/* </NotDraggableForClosableTextInput> */}
-      </>
+      <div ref={parentRef} className={`${renameInputContainerClass}`}>
+        <AutosizeSubmittableInput
+          value={nodePath.basename(page.path ?? '')}
+          inputClassName="form-control"
+          inputStyle={{ maxWidth }}
+          placeholder={t('Input page name')}
+          onSubmit={rename}
+          onCancel={cancel}
+          // validationTarget={ValidationTarget.PAGE}
+          autoFocus
+        />
+      </div>
     );
   };
 

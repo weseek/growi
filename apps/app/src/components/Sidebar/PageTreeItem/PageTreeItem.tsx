@@ -168,7 +168,13 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     [page],
   );
 
-  const itemRef = (c) => { drag(c); drop(c) };
+  const itemRef = (c) => {
+    // do not apply when RenameInput is shown
+    if (showRenameInput) return;
+
+    drag(c);
+    drop(c);
+  };
 
   const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
