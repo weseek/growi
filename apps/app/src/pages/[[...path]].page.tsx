@@ -43,12 +43,13 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId, useCurrentPageYjsDraft, useCurrentPageYjsAwarenessStateSize,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import { useCurrentPageYjsData, type CurrentPageYjsDataStates } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -172,8 +173,7 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  hasYjsDraft: boolean,
-  yjsAwarenessStateSize: number,
+  yjsData: CurrentPageYjsDataStates,
 
   rendererConfig: RendererConfig,
 };
@@ -225,8 +225,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
-  useCurrentPageYjsDraft({ hasYjsDraft: props.hasYjsDraft });
-  useCurrentPageYjsAwarenessStateSize(props.yjsAwarenessStateSize);
+  useCurrentPageYjsData(props.yjsData);
 
   const { pageWithMeta } = props;
 
@@ -492,8 +491,10 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       }
     }
 
-    props.hasYjsDraft = crowi.pageService.hasYjsDraft(page._id);
-    props.yjsAwarenessStateSize = crowi.pageService.getYjsAwarenessStateSize(page._id);
+    props.yjsData = {
+      hasDraft: crowi.pageService.hasYjsDraft(page._id),
+      awarenessStateSize: crowi.pageService.getYjsAwarenessStateSize(page._id),
+    };
   }
 }
 

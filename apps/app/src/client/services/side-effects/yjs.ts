@@ -2,38 +2,37 @@ import { useCallback, useEffect } from 'react';
 
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
-import type { CurrentPageYjsDraft } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
-import { useCurrentPageYjsDraft, useCurrentPageYjsAwarenessStateSize } from '~/stores/page';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 export const useYjsDraftEffect = (): void => {
   const { data: socket } = useGlobalSocket();
-  const { mutate: mutateCurrentPageYjsDraft } = useCurrentPageYjsDraft();
+  const { updateHasDraft } = useCurrentPageYjsData();
 
-  const yjsDraftUpdateHandler = useCallback(((currentPageYjsDraft: CurrentPageYjsDraft) => {
-    mutateCurrentPageYjsDraft(currentPageYjsDraft);
-  }), [mutateCurrentPageYjsDraft]);
+  const yjsDraftUpdateHandler = useCallback(((hasDraft: boolean) => {
+    updateHasDraft(hasDraft);
+  }), [updateHasDraft]);
 
   useEffect(() => {
 
     if (socket == null) { return }
 
-    socket.on(SocketEventName.YjsUpdated, yjsDraftUpdateHandler);
+    socket.on(SocketEventName.YjsDraftUpdated, yjsDraftUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.YjsUpdated, yjsDraftUpdateHandler);
+      socket.off(SocketEventName.YjsDraftUpdated, yjsDraftUpdateHandler);
     };
 
-  }, [mutateCurrentPageYjsDraft, socket, yjsDraftUpdateHandler]);
+  }, [socket, yjsDraftUpdateHandler]);
 };
 
 export const useYjsAwarenessStateEffect = (): void => {
   const { data: socket } = useGlobalSocket();
-  const { mutate: mutateCurrentPageYjsAwarenessStateSize } = useCurrentPageYjsAwarenessStateSize();
+  const { updateAwarenessStateSize } = useCurrentPageYjsData();
 
   const yjsAwarenessStateUpdateHandler = useCallback(((awarenessStateSize: number) => {
-    mutateCurrentPageYjsAwarenessStateSize(awarenessStateSize);
-  }), [mutateCurrentPageYjsAwarenessStateSize]);
+    updateAwarenessStateSize(awarenessStateSize);
+  }), [updateAwarenessStateSize]);
 
   useEffect(() => {
 

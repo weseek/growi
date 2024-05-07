@@ -5,8 +5,9 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
-import { useIsNotFound, useCurrentPageYjsDraft, useCurrentPageYjsAwarenessStateSize } from '~/stores/page';
+import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
 
@@ -64,8 +65,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
-  const { data: currentPageYjsDraft } = useCurrentPageYjsDraft();
-  const { data: currentPageYjsAwarenessStateSize } = useCurrentPageYjsAwarenessStateSize();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const { isCreating, createAndTransit } = useCreatePageAndTransit();
 
@@ -89,12 +89,12 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const _isBtnDisabled = isCreating || isBtnDisabled;
 
   const circleColor = useMemo(() => {
-    if (currentPageYjsAwarenessStateSize != null && currentPageYjsAwarenessStateSize > 0) {
+    if (currentPageYjsData?.awarenessStateSize != null && currentPageYjsData.awarenessStateSize > 0) {
       return 'bg-primary';
     }
 
     // TODO: https://redmine.weseek.co.jp/issues/145652
-  }, [currentPageYjsAwarenessStateSize]);
+  }, [currentPageYjsData]);
 
   return (
     <>
