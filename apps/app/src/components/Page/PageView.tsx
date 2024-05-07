@@ -26,6 +26,8 @@ import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
+import RevisionRenderer from './RevisionRenderer';
+
 import styles from './PageView.module.scss';
 
 
@@ -38,7 +40,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-const ViewRenderer = dynamic(() => import('./ViewRenderer').then(mod => mod.ViewRenderer), { ssr: false });
+const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
@@ -136,7 +138,9 @@ export const PageView = (props: Props): JSX.Element => {
 
         <div className="flex-expand-vert justify-content-between">
 
-          <ViewRenderer rendererOptions={rendererOptions} markdown={markdown}></ViewRenderer>
+          <SlideRenderer markdown={markdown}>
+            <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+          </SlideRenderer>
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>

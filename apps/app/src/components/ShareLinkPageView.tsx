@@ -13,6 +13,7 @@ import loggerFactory from '~/utils/logger';
 
 import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Common/PageViewLayout';
+import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
 import type { PageSideContentsProps } from './PageSideContents';
 
@@ -22,7 +23,7 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-const ViewRenderer = dynamic(() => import('./Page/ViewRenderer').then(mod => mod.ViewRenderer), { ssr: false });
+const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -86,7 +87,12 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
     return (
       <>
-        <ViewRenderer rendererOptions={rendererOptions} markdown={markdown}></ViewRenderer>
+        <SlideRenderer markdown={markdown}>
+          <RevisionRenderer
+            rendererOptions={rendererOptions}
+            markdown={markdown}
+          />
+        </SlideRenderer>
       </>
     );
   };
