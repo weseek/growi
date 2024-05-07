@@ -225,8 +225,6 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
 
-  useCurrentPageYjsData(props.yjsData);
-
   const { pageWithMeta } = props;
 
   const pageId = pageWithMeta?.data._id;
@@ -248,6 +246,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
+
+  const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -310,6 +310,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  useEffect(() => {
+    mutateCurrentPageYjsData(props.yjsData);
+  }, [mutateCurrentPageYjsData, props.yjsData]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
@@ -495,6 +499,8 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       hasDraft: crowi.pageService.hasYjsDraft(page._id),
       awarenessStateSize: crowi.pageService.getYjsAwarenessStateSize(page._id),
     };
+
+    console.log('yjsData', props.yjsData);
   }
 }
 

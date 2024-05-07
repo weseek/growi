@@ -13,8 +13,8 @@ type CurrentPageYjsDataUtils = {
   updateAwarenessStateSize(awarenessStateSize: number): void
 }
 
-export const useCurrentPageYjsData = (initialValue?: CurrentPageYjsDataStates): SWRResponse<CurrentPageYjsDataStates, Error> & CurrentPageYjsDataUtils => {
-  const swrResponse = useSWRStatic<CurrentPageYjsDataStates, Error>('currentPageYjsData', undefined, { fallbackData: initialValue });
+export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsDataStates, Error> & CurrentPageYjsDataUtils => {
+  const swrResponse = useSWRStatic<CurrentPageYjsDataStates, Error>('currentPageYjsData', undefined);
 
   const updateHasDraft = useCallback((hasDraft: boolean) => {
     swrResponse.mutate({ ...swrResponse.data, hasDraft });
