@@ -22,6 +22,11 @@ import { useNewPageInput } from './NewPageInput';
 import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
+import styles from './SimpleItem.module.scss';
+
+const moduleClass = styles['simple-item'] ?? '';
+
+
 // Utility to mark target
 const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
@@ -84,7 +89,7 @@ export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
   return (
     <>
       {descendantCount > 0 && (
-        <div className="grw-pagetree-count-wrapper">
+        <div className="d-hover-none">
           <CountBadge count={descendantCount} />
         </div>
       )}
@@ -196,7 +201,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
     <div
       id={`pagetree-item-${page._id}`}
       data-testid="grw-pagetree-item-container"
-      className={`grw-pagetree-item-container ${mainClassName}`}
+      className={`grw-pagetree-item-container ${moduleClass} ${mainClassName}`}
     >
       <li
         ref={itemRef}

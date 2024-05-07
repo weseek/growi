@@ -4,7 +4,7 @@ $grw-sidebar-content-footer-height: 50px;
 $grw-pagetree-item-padding-left: 10px;
 $grw-pagetree-item-container-height: 40px;
 
-.grw-pagetree {
+.grw-items-tree {
 
   .grw-pagetree-item-skeleton-text {
     @include grw-skeleton-text($font-size:16px, $line-height:$grw-pagetree-item-container-height);
@@ -19,20 +19,6 @@ $grw-pagetree-item-container-height: 40px;
   :global {
 
     .list-group-item {
-      .grw-visible-on-hover {
-        display: none;
-      }
-
-      &:hover {
-        .grw-visible-on-hover {
-          display: block;
-        }
-
-        .grw-count-badge {
-          display: none;
-        }
-      }
-
       .grw-pagetree-triangle-btn {
         border: 0;
         transition: all 0.2s ease-out;
@@ -49,13 +35,6 @@ $grw-pagetree-item-container-height: 40px;
         text-decoration: none;
       }
 
-      .grw-pagetree-count-wrapper {
-        display: inline-block;
-
-        &:hover {
-          display: none;
-        }
-      }
     }
 
     .grw-pagetree-item-container {

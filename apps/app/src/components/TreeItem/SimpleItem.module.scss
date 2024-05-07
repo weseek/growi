@@ -1,0 +1,15 @@
+// show / hide on hover
+.simple-item {
+  :global {
+    .list-group-item {
+      &:hover {
+        .d-hover-none {
+          display: none !important;
+        }
+        .d-hover-block {
+          display: block !important;
+        }
+      }
+    }
+  }
+}
