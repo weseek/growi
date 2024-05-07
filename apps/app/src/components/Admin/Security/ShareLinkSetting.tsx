@@ -104,7 +104,7 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
     <>
       <h2 className="alert-anchor border-bottom mb-4">{t('security_settings.share_link_management')}</h2>
       <h4>{t('security_settings.share_link_rights')}</h4>
-      <div className="row mb-5">
+      <div className="row mt-4 mb-5">
         <div className="col-6 offset-3">
           <div className="form-check form-switch form-check-success">
             <input

@@ -64,7 +64,7 @@ class SamlSecurityManagementContents extends React.Component {
           />
         )}
 
-        <div className="row mt-3 mb-5">
+        <div className="row mt-4 mb-5">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
               <input
@@ -80,7 +80,7 @@ class SamlSecurityManagementContents extends React.Component {
               </label>
             </div>
             {(!adminGeneralSecurityContainer.state.setupStrategies.includes('saml') && isSamlEnabled)
-              && <div className="badge rounded-pill text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
+              && <div className="badge text-bg-warning">{t('security_settings.setup_is_not_yet_complete')}</div>}
           </div>
         </div>
 

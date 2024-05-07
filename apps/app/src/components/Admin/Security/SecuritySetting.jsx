@@ -252,7 +252,7 @@ class SecuritySetting extends React.Component {
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
-        <div className="col-md-3 text-md-end">
+        <div className="col-md-4 text-md-end">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>{t('security_settings.page_delete')}</strong>
           )}
@@ -261,7 +261,7 @@ class SecuritySetting extends React.Component {
           )}
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-8">
           {
             !isRecursiveDeletion(deletionType)
               ? (
@@ -292,7 +292,7 @@ class SecuritySetting extends React.Component {
                 <>
                   <button
                     type="button"
-                    className="btn btn-link p-0 mb-2"
+                    className="btn btn-link p-0 mb-4"
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
@@ -414,10 +414,10 @@ class SecuritySetting extends React.Component {
 
         <h4 className="mb-3">{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
-          <div className="col-md-3 text-md-end py-2">
+          <div className="col-md-4 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
-          <div className="col-md-9">
+          <div className="col-md-8">
             <div className="dropdown">
               <button
                 className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -476,7 +476,7 @@ class SecuritySetting extends React.Component {
 
         <h4 className="mb-3">{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
-          <div className="col-6 offset-3">
+          <div className="col-md-10 offset-md-2">
             <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
@@ -512,9 +512,9 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.session')}</h4>
         <div className="row">
           <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.max_age')}</label>
-          <div className="col-md-6">
+          <div className="col-md-8">
             <input
-              className="form-control col-md-3"
+              className="form-control col-md-4"
               type="text"
               defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
               onChange={(e) => {
