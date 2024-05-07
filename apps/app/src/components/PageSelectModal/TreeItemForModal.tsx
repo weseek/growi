@@ -28,7 +28,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       customNextComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
-      customEndComponents={[NewPageCreateButton]}
+      customHoveredEndComponents={[NewPageCreateButton]}
       onClick={onClick}
     />
   );
