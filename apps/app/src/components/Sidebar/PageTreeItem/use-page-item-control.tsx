@@ -29,7 +29,7 @@ import {
 } from '../../TreeItem';
 
 
-import styles from './Ellipsis.module.scss';
+import renameInputStyles from './RenameInput.module.scss';
 
 
 type UsePageItemControl = {
@@ -184,8 +184,8 @@ export const usePageItemControl = (): UsePageItemControl => {
     }, [cancel, onRenamed, page._id, page.path, page.revision]);
 
 
-    const renameInputContainerClass = styles['rename-input-container'] ?? '';
-    const maxWidth = parentRect?.width;
+    const renameInputContainerClass = renameInputStyles['rename-input-container'] ?? '';
+    const maxWidth = (parentRect?.width ?? 0) - 12 * 2; // calculate the max-width minus the padding (12px * 2) because AutosizeInput has "box-sizing: content-box;"
 
     return (
       <>

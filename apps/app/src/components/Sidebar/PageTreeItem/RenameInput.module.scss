@@ -1,0 +1,5 @@
+@use '../../TreeItem/tree-item-variables';
+
+.rename-input-container {
+  width: calc(100% - tree-item-variables.$btn-triangle-min-width)
+}

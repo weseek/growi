@@ -1,4 +1,4 @@
-@use '../ItemsTree/items-tree-variables';
+@use './tree-item-variables';
 
 // show / hide on hover
 .tree-item-layout {
@@ -19,7 +19,7 @@
 // btn-triangle
 .tree-item-layout :global {
   .btn-triangle-container {
-    min-width: 35px;
+    min-width: tree-item-variables.$btn-triangle-min-width;
   }
 
   .btn-triangle {
