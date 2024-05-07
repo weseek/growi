@@ -15,8 +15,6 @@ import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
-import CountBadge from '../Common/CountBadge';
-
 import { ItemNode } from './ItemNode';
 import { useNewPageInput } from './NewPageInput';
 import type { TreeItemProps, TreeItemToolProps } from './interfaces';
@@ -79,23 +77,6 @@ const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
   );
 };
 
-export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
-  const { getDescCount } = usePageTreeDescCountMap();
-
-  const { page } = props.itemNode;
-
-  const descendantCount = getDescCount(page._id) || page.descendantCount || 0;
-
-  return (
-    <>
-      {descendantCount > 0 && (
-        <div className="d-hover-none">
-          <CountBadge count={descendantCount} />
-        </div>
-      )}
-    </>
-  );
-};
 
 type SimpleItemProps = TreeItemProps & {
   itemRef?: RefObject<any> | RefCallback<any>,
@@ -173,7 +154,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
-  const EndComponents = props.customEndComponents ?? [SimpleItemTool];
+  const EndComponents = props.customEndComponents;
 
   const baseProps: Omit<TreeItemProps, 'itemNode'> = {
     isEnableActions,
@@ -227,7 +208,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
 
         <SimpleItemContent page={page} />
 
-        {EndComponents.map((EndComponent, index) => (
+        {EndComponents?.map((EndComponent, index) => (
           // eslint-disable-next-line react/no-array-index-key
           <EndComponent key={index} {...toolProps} />
         ))}

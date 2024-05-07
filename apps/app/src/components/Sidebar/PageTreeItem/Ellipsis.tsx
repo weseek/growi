@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React, {
-  useCallback, useState,
+  useCallback, useRef, useState,
 } from 'react';
 
 import nodePath from 'path';
@@ -8,6 +8,7 @@ import nodePath from 'path';
 
 import type { IPageInfoAll, IPageToDeleteWithMeta } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
 
@@ -15,15 +16,21 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { AutosizeSubmittableInput } from '~/components/Common/SubmittableInput';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../../Common/ClosableTextInput';
 import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import {
-  type TreeItemToolProps, NotDraggableForClosableTextInput, SimpleItemTool,
+  type TreeItemToolProps, NotDraggableForClosableTextInput,
 } from '../../TreeItem';
+
+
+import styles from './Ellipsis.module.scss';
+
+const renameInputContainerClass = styles['rename-input-container'] ?? '';
+
 
 export const Ellipsis: FC<TreeItemToolProps> = (props) => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
@@ -33,6 +40,9 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     itemNode, onRenamed, onClickDuplicateMenuItem,
     onClickDeleteMenuItem, isEnableActions, isReadOnlyUser,
   } = props;
+
+  const parentRef = useRef<HTMLDivElement>(null);
+  const parentRect = useRect(parentRef);
 
   const { page } = itemNode;
 
@@ -132,48 +142,52 @@ export const Ellipsis: FC<TreeItemToolProps> = (props) => {
     }
   };
 
-  const hasChildren = page.descendantCount ? page.descendantCount > 0 : false;
+  const maxWidth = parentRect[0]?.width;
+  console.log({ parentRef });
+  console.log('maxWidth:', maxWidth);
 
   return (
     <>
-      {isRenameInputShown ? (
-        <div className={`position-absolute ${hasChildren ? 'ms-5' : 'ms-4'}`}>
-          <NotDraggableForClosableTextInput>
-            <ClosableTextInput
-              value={nodePath.basename(page.path ?? '')}
-              placeholder={t('Input page name')}
-              onPressEnter={rename}
-              onBlur={rename}
-              onPressEscape={cancel}
-              validationTarget={ValidationTarget.PAGE}
-            />
-          </NotDraggableForClosableTextInput>
-        </div>
-      ) : (
-        <SimpleItemTool itemNode={itemNode} isEnableActions={false} isReadOnlyUser={false} />
-      )}
-      <NotAvailableForGuest>
-        <div className="grw-pagetree-control d-flex">
-          <PageItemControl
-            pageId={page._id}
-            isEnableActions={isEnableActions}
-            isReadOnlyUser={isReadOnlyUser}
-            onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
-            onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-            onClickRenameMenuItem={renameMenuItemClickHandler}
-            onClickDeleteMenuItem={deleteMenuItemClickHandler}
-            onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
-            isInstantRename
-            // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
-            operationProcessData={page.processData}
-          >
-            {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
-            <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover mr-1">
-              <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
-            </DropdownToggle>
-          </PageItemControl>
-        </div>
-      </NotAvailableForGuest>
+      {/* {isRenameInputShown || page._id === '6630d957b26dc26e85ee21a8' ? ( */}
+      {/* <NotDraggableForClosableTextInput> */}
+      <div ref={parentRef} className={`position-absolute ${renameInputContainerClass} ${isRenameInputShown || page._id === '6630d957b26dc26e85ee21a8' ? '' : 'd-none'}`}>
+        <AutosizeSubmittableInput
+          value={nodePath.basename(page.path ?? '')}
+          inputClassName="form-control"
+          inputStyle={{ maxWidth }}
+          placeholder={t('Input page name')}
+          onSubmit={rename}
+          onCancel={cancel}
+          // validationTarget={ValidationTarget.PAGE}
+          autoFocus
+        />
+      </div>
+      {/* </NotDraggableForClosableTextInput> */}
+
+      { !isRenameInputShown && (
+        <NotAvailableForGuest>
+          <div className="grw-pagetree-control d-flex">
+            <PageItemControl
+              pageId={page._id}
+              isEnableActions={isEnableActions}
+              isReadOnlyUser={isReadOnlyUser}
+              onClickBookmarkMenuItem={bookmarkMenuItemClickHandler}
+              onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
+              onClickRenameMenuItem={renameMenuItemClickHandler}
+              onClickDeleteMenuItem={deleteMenuItemClickHandler}
+              onClickPathRecoveryMenuItem={pathRecoveryMenuItemClickHandler}
+              isInstantRename
+              // Todo: It is wanted to find a better way to pass operationProcessData to PageItemControl
+              operationProcessData={page.processData}
+            >
+              {/* pass the color property to reactstrap dropdownToggle props. https://6-4-0--reactstrap.netlify.app/components/dropdowns/  */}
+              <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control d-none d-hover-block p-0 mr-1">
+                <span id="option-button-in-page-tree" className="material-symbols-outlined p-1">more_vert</span>
+              </DropdownToggle>
+            </PageItemControl>
+          </div>
+        </NotAvailableForGuest>
+      ) }
     </>
   );
 };
