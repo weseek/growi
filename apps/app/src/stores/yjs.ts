@@ -30,7 +30,7 @@ export const useCurrentPageYjsData = (): SWRResponse<CurrentPageYjsData, Error> 
   };
 };
 
-export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageYjsData|null> => {
+export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageYjsData, Error> => {
   const key = 'currentPageYjsData';
   const { data: currentPageId } = useCurrentPageId();
 
