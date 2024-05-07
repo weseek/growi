@@ -32,7 +32,7 @@ import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
-const moduleClass = styles['grw-items-tree'] ?? '';
+const moduleClass = styles['items-tree'] ?? '';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 

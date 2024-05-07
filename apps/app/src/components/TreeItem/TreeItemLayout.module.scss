@@ -1,3 +1,5 @@
+@use '../ItemsTree/items-tree-variables';
+
 // show / hide on hover
 .tree-item-layout {
   :global {
@@ -10,6 +12,25 @@
           display: flex !important;
         }
       }
+    }
+  }
+}
+
+// btn-triangle
+.tree-item-layout :global {
+  .btn-triangle-container {
+    min-width: 35px;
+  }
+
+  .btn-triangle {
+    --bs-btn-color: var(--bs-tertiary-color);
+
+    border: 0;
+    transition: all 0.2s ease-out;
+    transform: rotate(0deg);
+
+    &.open {
+      transform: rotate(90deg);
     }
   }
 }

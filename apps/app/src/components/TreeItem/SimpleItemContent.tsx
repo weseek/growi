@@ -6,6 +6,10 @@ import { UncontrolledTooltip } from 'reactstrap';
 import type { IPageForItem } from '~/interfaces/page';
 import { shouldRecoverPagePaths } from '~/utils/page-operation';
 
+import styles from './SimpleItemContent.module.scss';
+
+const moduleClass = styles['simple-item-content'] ?? '';
+
 
 export const SimpleItemContent = ({ page }: { page: IPageForItem }): JSX.Element => {
   const { t } = useTranslation();
@@ -16,7 +20,7 @@ export const SimpleItemContent = ({ page }: { page: IPageForItem }): JSX.Element
 
   return (
     <div
-      className="flex-grow-1 d-flex align-items-center pe-none"
+      className={`${moduleClass} flex-grow-1 d-flex align-items-center pe-none`}
       style={{ minWidth: 0 }}
     >
       {shouldShowAttentionIcon && (
@@ -28,9 +32,9 @@ export const SimpleItemContent = ({ page }: { page: IPageForItem }): JSX.Element
         </>
       )}
       {page != null && page.path != null && page._id != null && (
-        <div className="grw-pagetree-title-anchor flex-grow-1">
+        <div className="grw-page-title-anchor flex-grow-1">
           <div className="d-flex align-items-center">
-            <span className={`text-truncate me-1 ${page.isEmpty && 'grw-sidebar-text-muted'}`}>{pageName}</span>
+            <span className={`text-truncate me-1 ${page.isEmpty && 'opacity-75'}`}>{pageName}</span>
             { page.wip && (
               <span className="wip-page-badge badge rounded-pill me-1 text-bg-secondary">WIP</span>
             )}

@@ -1,104 +1,71 @@
-@use '~/styles/mixins' as *;
-$grw-sidebar-content-header-height: 58px;
-$grw-sidebar-content-footer-height: 50px;
-$grw-pagetree-item-padding-left: 10px;
-$grw-pagetree-item-container-height: 40px;
+@use './items-tree-variables';
 
-.grw-items-tree {
-
-  .grw-pagetree-item-skeleton-text {
-    @include grw-skeleton-text($font-size:16px, $line-height:$grw-pagetree-item-container-height);
-    padding-left: 12px;
+// fix height
+.items-tree :global {
+  li {
+    height: items-tree-variables.$list-item-height;
   }
+}
 
-  .grw-pagetree-item-skeleton-text-child {
-    @extend .grw-pagetree-item-skeleton-text;
-    padding-left: 12px + $grw-pagetree-item-padding-left;
-  }
 
-  :global {
+// fix padding-left
+.items-tree {
 
-    .list-group-item {
-      .grw-pagetree-triangle-btn {
-        border: 0;
-        transition: all 0.2s ease-out;
-        transform: rotate(0deg);
-
-        &.grw-pagetree-open {
-          transform: rotate(90deg);
-        }
-      }
-
-      .grw-pagetree-title-anchor {
-        width: 100%;
-        overflow: hidden;
-        text-decoration: none;
-      }
-
-    }
-
-    .grw-pagetree-item-container {
-      .grw-triangle-container {
-        min-width: 35px;
-        height: $grw-pagetree-item-container-height;
-      }
-    }
-  }
   &:global{
     // To realize a hierarchical structure, set multiplied padding-left to each pagetree-item
-    > .grw-pagetree-item-container {
+    > .tree-item-layout {
       > .list-group-item {
         padding-left: 0;
       }
-      > .grw-pagetree-item-children {
-        > .grw-pagetree-item-container {
+      > .tree-item-layout-children {
+        > .tree-item-layout {
           > .list-group-item {
-            padding-left: $grw-pagetree-item-padding-left;
+            padding-left: items-tree-variables.$list-item-padding-left;
           }
-          > .grw-pagetree-item-children {
-            > .grw-pagetree-item-container {
+          > .tree-item-layout-children {
+            > .tree-item-layout {
               > .list-group-item {
-                padding-left: $grw-pagetree-item-padding-left * 2;
+                padding-left: items-tree-variables.$list-item-padding-left * 2;
               }
-              > .grw-pagetree-item-children {
-                > .grw-pagetree-item-container {
+              > .tree-item-layout-children {
+                > .tree-item-layout {
                   > .list-group-item {
-                    padding-left: $grw-pagetree-item-padding-left * 3;
+                    padding-left: items-tree-variables.$list-item-padding-left * 3;
                   }
-                  > .grw-pagetree-item-children {
-                    > .grw-pagetree-item-container {
+                  > .tree-item-layout-children {
+                    > .tree-item-layout {
                       > .list-group-item {
-                        padding-left: $grw-pagetree-item-padding-left * 4;
+                        padding-left: items-tree-variables.$list-item-padding-left * 4;
                       }
-                      > .grw-pagetree-item-children {
-                        > .grw-pagetree-item-container {
+                      > .tree-item-layout-children {
+                        > .tree-item-layout {
                           > .list-group-item {
-                            padding-left: $grw-pagetree-item-padding-left * 5;
+                            padding-left: items-tree-variables.$list-item-padding-left * 5;
                           }
-                          > .grw-pagetree-item-children {
-                            > .grw-pagetree-item-container {
+                          > .tree-item-layout-children {
+                            > .tree-item-layout {
                               > .list-group-item {
-                                padding-left: $grw-pagetree-item-padding-left * 6;
+                                padding-left: items-tree-variables.$list-item-padding-left * 6;
                               }
-                              > .grw-pagetree-item-children {
-                                > .grw-pagetree-item-container {
+                              > .tree-item-layout-children {
+                                > .tree-item-layout {
                                   > .list-group-item {
-                                    padding-left: $grw-pagetree-item-padding-left * 7;
+                                    padding-left: items-tree-variables.$list-item-padding-left * 7;
                                   }
-                                  > .grw-pagetree-item-children {
-                                    > .grw-pagetree-item-container {
+                                  > .tree-item-layout-children {
+                                    > .tree-item-layout {
                                       > .list-group-item {
-                                        padding-left: $grw-pagetree-item-padding-left * 8;
+                                        padding-left: items-tree-variables.$list-item-padding-left * 8;
                                       }
-                                      > .grw-pagetree-item-children {
-                                        > .grw-pagetree-item-container {
+                                      > .tree-item-layout-children {
+                                        > .tree-item-layout {
                                           > .list-group-item {
-                                            padding-left: $grw-pagetree-item-padding-left * 9;
+                                            padding-left: items-tree-variables.$list-item-padding-left * 9;
                                           }
-                                          .grw-pagetree-item-children {
-                                            > .grw-pagetree-item-container {
+                                          .tree-item-layout-children {
+                                            > .tree-item-layout {
                                               > .list-group-item {
-                                                padding-left: $grw-pagetree-item-padding-left * 10;
+                                                padding-left: items-tree-variables.$list-item-padding-left * 10;
                                               }
                                             }
                                           }
@@ -121,12 +88,5 @@ $grw-pagetree-item-container-height: 40px;
         }
       }
     }
-  }
-}
-
-
-.grw-pagetree :global {
-  .grw-pagetree-triangle-btn {
-    --btn-color: var(--bs-tertiary-color);
   }
 }

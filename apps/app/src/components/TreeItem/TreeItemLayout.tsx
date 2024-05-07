@@ -144,23 +144,23 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   return (
     <div
-      id={`pagetree-item-${page._id}`}
+      id={`tree-item-layout-${page._id}`}
       data-testid="grw-pagetree-item-container"
-      className={`grw-pagetree-item-container ${moduleClass} ${mainClassName}`}
+      className={`tree-item-layout ${moduleClass} ${mainClassName}`}
     >
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center text-muted rounded-1 ${page.isTarget ? 'active' : 'list-group-item-action'}`}
+        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center rounded-1 ${page.isTarget ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
 
-        <div className="grw-triangle-container d-flex justify-content-center">
+        <div className="btn-triangle-container d-flex justify-content-center">
           {hasDescendants && (
             <button
               type="button"
-              className={`grw-pagetree-triangle-btn btn p-0 ${isOpen ? 'grw-pagetree-open' : ''}`}
+              className={`btn btn-triangle p-0 ${isOpen ? 'open' : ''}`}
               onClick={onClickLoadChildren}
             >
               <div className="d-flex justify-content-center">
@@ -212,7 +212,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
           };
 
           return (
-            <div key={node.page._id} className="grw-pagetree-item-children">
+            <div key={node.page._id} className="tree-item-layout-children">
               <ItemClassFixed {...itemProps} />
 
               {NextToChildrenComponents?.map((NextToChildrenContent, index) => (
