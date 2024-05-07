@@ -7,7 +7,7 @@ import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import { getYjsConnectionManager } from './yjs-connection-manager';
+import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
 
 
 const expressSession = require('express-session');
@@ -170,19 +170,21 @@ class SocketIoService {
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
     this.io.on('connection', (socket) => {
+
+      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
+        const pageId = extractPageIdFromYdocId(update.name);
+        const awarenessStateSize = update.awareness.states.size;
+        this.io
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
+      });
+
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
 
         // Emit to the client in the room of the target pageId.
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
           .emit(SocketEventName.YjsDraftUpdated, CurrentPageYjsDraftData);
-
-        yjsConnectionManager.ysocketio.on('awareness-update', async(update) => {
-          const awarenessStateSize = update.awareness.states.size;
-          this.getDefaultSocket()
-            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-            .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
-        });
 
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);

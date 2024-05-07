@@ -8,6 +8,11 @@ import { getMongoUri } from '../util/mongoose-utils';
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
 
+export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
+  const result = ydocId.match(/yjs\/(.*)/);
+  return result?.[1];
+};
+
 class YjsConnectionManager {
 
   private static instance: YjsConnectionManager;
