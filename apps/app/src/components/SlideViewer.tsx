@@ -5,7 +5,7 @@ import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
 import { usePresentationViewOptions } from '~/stores/renderer';
 
-const Slides = dynamic(() => import('../Presentation/Slides').then(mod => mod.Slides), { ssr: false });
+const Slides = dynamic(() => import('./Presentation/Slides').then(mod => mod.Slides), { ssr: false });
 
 type SlideViewerProps = {
   marp: boolean,

@@ -7,7 +7,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
-import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
+import { SlideViewer } from '../SlideViewer';
 
 import styles from './Preview.module.scss';
 

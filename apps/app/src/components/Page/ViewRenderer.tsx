@@ -3,7 +3,7 @@ import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useIsEnabledMarp } from '~/stores/context';
 
-import { SlideViewer } from '../ReactMarkdownComponents/SlideViewer';
+import { SlideViewer } from '../SlideViewer';
 
 import RevisionRenderer from './RevisionRenderer';
 
