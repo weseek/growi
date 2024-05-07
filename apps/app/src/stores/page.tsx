@@ -18,7 +18,6 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { CurrentPageYjsDraft } from '~/interfaces/page';
 import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
 import type { AxiosResponse } from '~/utils/axios';
 
@@ -52,14 +51,6 @@ export const useTemplateTagData = (initialData?: string[]): SWRResponse<string[]
 
 export const useTemplateBodyData = (initialData?: string): SWRResponse<string, Error> => {
   return useSWRStatic<string, Error>('templateBodyData', initialData);
-};
-
-export const useCurrentPageYjsDraft = (initialData?: CurrentPageYjsDraft): SWRResponse<CurrentPageYjsDraft, Error> => {
-  return useSWRStatic<CurrentPageYjsDraft, Error>('currentPageYjsDraft', initialData);
-};
-
-export const useCurrentPageYjsAwarenessStateSize = (initialData?: number): SWRResponse<number, Error> => {
-  return useSWRStatic<number, Error>('currentPageYjsAwarenessStateSize', initialData);
 };
 
 /** "useSWRxCurrentPage" is intended for initial data retrieval only. Use "useSWRMUTxCurrentPage" for revalidation */

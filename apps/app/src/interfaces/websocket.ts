@@ -50,7 +50,7 @@ export const SocketEventName = {
   PageDeleted: 'page:delete',
 
   // Yjs
-  YjsUpdated: 'yjsDraft:update',
+  YjsDraftUpdated: 'yjs:draft-update',
   YjsAwarenessStateUpdated: 'yjs:awareness-state-update',
 } as const;
 export type SocketEventName = typeof SocketEventName[keyof typeof SocketEventName];
