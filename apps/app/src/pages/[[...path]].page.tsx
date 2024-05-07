@@ -499,8 +499,6 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       hasDraft: crowi.pageService.hasYjsDraft(page._id),
       awarenessStateSize: crowi.pageService.getYjsAwarenessStateSize(page._id),
     };
-
-    console.log('yjsData', props.yjsData);
   }
 }
 
