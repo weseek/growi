@@ -19,9 +19,7 @@ type TreeItemBaseProps = {
   },
 }
 
-export type TreeItemToolProps = TreeItemBaseProps & {
-  onSwitchToAlternativeContent?(): void,
-};
+export type TreeItemToolProps = TreeItemBaseProps;
 
 export type TreeItemProps = TreeItemBaseProps & {
   targetPathOrId?: Nullable<string>,
@@ -33,6 +31,7 @@ export type TreeItemProps = TreeItemBaseProps & {
   customHoveredEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customNextComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customNextToChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  showAlternativeContent?: boolean,
   customAlternativeComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   onClick?(page: IPageForItem): void,
 };

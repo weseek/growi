@@ -24,7 +24,7 @@ import {
 
 import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
 import { CreatingNewPageSpinner } from './CreatingNewPageSpinner';
-import { Ellipsis } from './Ellipsis';
+import { usePageItemControl } from './use-page-item-control';
 
 import styles from './PageTreeItem.module.scss';
 
@@ -60,6 +60,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const [isOpen, setIsOpen] = useState(_isOpen);
   const [shouldHide, setShouldHide] = useState(false);
 
+  const { showRenameInput, Control, RenameInput } = usePageItemControl();
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const itemSelectedHandler = useCallback((page: IPageForItem) => {
@@ -189,9 +190,11 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       itemClass={PageTreeItem}
       mainClassName={mainClassName}
       customEndComponents={[CountBadgeForPageTreeItem]}
-      customHoveredEndComponents={[Ellipsis, NewPageCreateButton]}
+      customHoveredEndComponents={[Control, NewPageCreateButton]}
       customNextComponents={[NewPageInput]}
       customNextToChildrenComponents={[() => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
+      showAlternativeContent={showRenameInput}
+      customAlternativeComponents={[RenameInput]}
     />
   );
 };

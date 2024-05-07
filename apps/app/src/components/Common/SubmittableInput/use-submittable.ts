@@ -63,12 +63,13 @@ export const useSubmittable = (props: SubmittableInputProps): Partial<React.Inpu
 
   const {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    onSubmit: _onSubmit, onCancel: _onCancel,
+    value: _value, onSubmit: _onSubmit, onCancel: _onCancel,
     ...cleanedProps
   } = props;
 
   return {
     ...cleanedProps,
+    value: inputText,
     onChange: changeHandler,
     onKeyDown: keyDownHandler,
     onBlur: blurHandler,
