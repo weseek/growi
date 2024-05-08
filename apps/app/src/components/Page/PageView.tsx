@@ -138,10 +138,9 @@ export const PageView = (props: Props): JSX.Element => {
 
         <div className="flex-expand-vert justify-content-between">
 
-          (
-          <SlideRenderer markdown={markdown} /> ??
-          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-          )
+          <SlideRenderer markdown={markdown}>
+            <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+          </SlideRenderer>
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>
