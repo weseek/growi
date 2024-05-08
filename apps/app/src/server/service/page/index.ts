@@ -4466,7 +4466,7 @@ class PageService implements IPageService {
       return false;
     }
 
-    const Revision = mongoose.model('Revision');
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
     const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
 
     if (revision == null) {
