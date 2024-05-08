@@ -8,7 +8,6 @@ import {
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'reactstrap';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
@@ -181,17 +180,16 @@ export const RecentChangesHeader = ({
       <SidebarHeaderReloadButton onClick={() => mutate()} />
 
       <div className="me-1">
-        <Button
+        <button
           color="transparent"
-          className="btn p-0 border-0 dropdown-toggle"
+          className="btn p-0 border-0"
           type="button"
           data-bs-toggle="dropdown"
           data-bs-auto-close="outside"
           aria-expanded="false"
-          caret={false}
         >
           <span className="material-symbols-outlined">more_horiz</span>
-        </Button>
+        </button>
 
         <ul className="dropdown-menu">
           <li className="dropdown-item" onClick={changeSizeHandler}>
