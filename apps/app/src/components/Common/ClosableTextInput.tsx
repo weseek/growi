@@ -6,8 +6,8 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import AutosizeInput from 'react-input-autosize';
 
-import type { AlertInfo } from '~/client/util/input-validator';
-import { AlertType, inputValidator } from '~/client/util/input-validator';
+import type { AlertInfo } from '~/client/util/use-input-validator';
+import { AlertType, inputValidator } from '~/client/util/use-input-validator';
 
 
 // for react-input-autosize

@@ -7,7 +7,7 @@ import nodePath from 'path';
 import { pathUtils, pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import { ValidationTarget } from '~/client/util/use-input-validator';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import ClosableTextInput from '~/components/Common/ClosableTextInput';
 import type { IPageForItem } from '~/interfaces/page';

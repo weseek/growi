@@ -7,7 +7,7 @@ import { DevidedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import { ValidationTarget } from '~/client/util/use-input-validator';
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 

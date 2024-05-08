@@ -1,4 +1,4 @@
-import type { FC } from 'react';
+import type { ChangeEvent, FC } from 'react';
 import React, {
   useCallback, useRef, useState,
 } from 'react';
@@ -10,11 +10,12 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownToggle } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/page-operation';
 import { apiv3Put } from '~/client/util/apiv3-client';
-// import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
+import { ValidationTarget, useInputValidator, type InputValidationResult } from '~/client/util/use-input-validator';
 import { AutosizeSubmittableInput } from '~/components/Common/SubmittableInput';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
@@ -31,12 +32,14 @@ type UsePageItemControl = {
   Control: FC<TreeItemToolProps>,
   RenameInput: FC<TreeItemToolProps>,
   showRenameInput: boolean,
+  validationResult?: InputValidationResult,
 }
 
 export const usePageItemControl = (): UsePageItemControl => {
   const { t } = useTranslation();
 
   const [showRenameInput, setShowRenameInput] = useState(false);
+  const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
 
   const Control: FC<TreeItemToolProps> = (props) => {
@@ -143,7 +146,16 @@ export const usePageItemControl = (): UsePageItemControl => {
     const parentRef = useRef<HTMLDivElement>(null);
     const [parentRect] = useRect(parentRef);
 
+    const inputValidator = useInputValidator(ValidationTarget.PAGE);
+
+    const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+      const validationResult = inputValidator(e.target.value);
+      setValidationResult(validationResult ?? undefined);
+    }, [inputValidator]);
+    const changeHandlerDebounced = debounce(300, changeHandler);
+
     const cancel = useCallback(() => {
+      setValidationResult(undefined);
       setShowRenameInput(false);
     }, []);
 
@@ -156,6 +168,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       const newPagePath = nodePath.resolve(parentPath, inputText);
 
       if (newPagePath === page.path) {
+        setValidationResult(undefined);
         setShowRenameInput(false);
         return;
       }
@@ -173,9 +186,12 @@ export const usePageItemControl = (): UsePageItemControl => {
         toastSuccess(t('renamed_pages', { path: page.path }));
       }
       catch (err) {
-        setShowRenameInput(true);
         toastError(err);
       }
+      finally {
+        setValidationResult(undefined);
+      }
+
     }, [cancel, onRenamed, page._id, page.path, page.revision]);
 
 
@@ -189,9 +205,9 @@ export const usePageItemControl = (): UsePageItemControl => {
           inputClassName="form-control"
           inputStyle={{ maxWidth }}
           placeholder={t('Input page name')}
+          onChange={changeHandlerDebounced}
           onSubmit={rename}
           onCancel={cancel}
-          // validationTarget={ValidationTarget.PAGE}
           autoFocus
         />
       </div>
@@ -203,6 +219,7 @@ export const usePageItemControl = (): UsePageItemControl => {
     Control,
     RenameInput,
     showRenameInput,
+    validationResult,
   };
 
 };

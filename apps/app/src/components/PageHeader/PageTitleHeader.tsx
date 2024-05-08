@@ -8,7 +8,7 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { isMovablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import { ValidationTarget } from '~/client/util/use-input-validator';
 
 import ClosableTextInput from '../Common/ClosableTextInput';
 import { CopyDropdown } from '../Common/CopyDropdown';
