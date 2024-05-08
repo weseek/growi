@@ -175,11 +175,12 @@ class SocketIoService {
         const pageId = extractPageIdFromYdocId(update.name);
         const awarenessStateSize = update.awareness.states.size;
 
+        // Triggered when awareness changes
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
           .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
 
-        // Executed when the last user leaves the Editor
+        // Triggered when the last user leaves the editor
         if (awarenessStateSize === 0) {
           const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
           const yjsDraft = currentYdoc?.getText('codemirror').toString();

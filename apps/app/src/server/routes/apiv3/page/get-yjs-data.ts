@@ -23,7 +23,7 @@ export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
-  // define validators for req.body
+  // define validators for req.params
   const validator: ValidationChain[] = [
     param('pageId').isMongoId().withMessage('The param "pageId" must be specified'),
   ];
