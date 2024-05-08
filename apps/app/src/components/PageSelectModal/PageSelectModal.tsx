@@ -105,17 +105,21 @@ export const PageSelectModal: FC = () => {
       size="sm"
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
-      <ModalBody>
+      <ModalBody className="p-0">
         <Suspense fallback={<ItemsTreeContentSkeleton />}>
-          <ItemsTree
-            CustomTreeItem={TreeItemForModal}
-            isEnableActions={!isGuestUser}
-            isReadOnlyUser={!!isReadOnlyUser}
-            targetPath={path}
-            targetPathOrId={targetPathOrId}
-            targetAndAncestorsData={targetAndAncestorsData}
-            onClickTreeItem={onClickTreeItem}
-          />
+          <TreeForModalWrapper>
+            <div className="p-3">
+              <ItemsTree
+                CustomTreeItem={TreeItemForModal}
+                isEnableActions={!isGuestUser}
+                isReadOnlyUser={!!isReadOnlyUser}
+                targetPath={path}
+                targetPathOrId={targetPathOrId}
+                targetAndAncestorsData={targetAndAncestorsData}
+                onClickTreeItem={onClickTreeItem}
+              />
+            </div>
+          </TreeForModalWrapper>
         </Suspense>
       </ModalBody>
       <ModalFooter>
