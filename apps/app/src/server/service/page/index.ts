@@ -4449,13 +4449,14 @@ class PageService implements IPageService {
     });
   }
 
-  getYjsData(pageId: string, revisionBody?: string): CurrentPageYjsData {
+  async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
     const yjsConnectionManager = getYjsConnectionManager();
     const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
     const yjsDraft = currentYdoc?.getText('codemirror').toString();
+    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
 
     return {
-      hasRevisionBodyDiff: yjsDraft != null && revisionBody != null && yjsDraft !== revisionBody,
+      hasRevisionBodyDiff,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
   }
@@ -4465,7 +4466,7 @@ class PageService implements IPageService {
       return false;
     }
 
-    const Revision = mongoose.model('Revision') as any;
+    const Revision = mongoose.model('Revision');
     const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
 
     if (revision == null) {

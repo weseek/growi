@@ -31,5 +31,5 @@ export interface IPageService {
   canDeleteCompletelyAsMultiGroupGrantedPage(
     page: PageDocument, creatorId: ObjectIdLike | null, operator: any | null, userRelatedGroups: PopulatedGrantedGroup[]
   ): boolean,
-  getYjsData(pageId: string, revisionBody?: string): CurrentPageYjsData,
+  getYjsData(pageId: string, revisionBody?: string): Promise<CurrentPageYjsData>,
 }

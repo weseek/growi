@@ -500,7 +500,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     }
 
     if (!props.skipSSR) {
-      props.yjsData = crowi.pageService.getYjsData(page._id, props.pageWithMeta?.data.revision?.body);
+      props.yjsData = await crowi.pageService.getYjsData(page._id);
     }
   }
 }
