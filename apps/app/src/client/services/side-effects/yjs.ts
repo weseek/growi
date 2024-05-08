@@ -9,11 +9,11 @@ export const useCurrentPageYjsDataEffect = (): void => {
   const { data: socket } = useGlobalSocket();
   const { updateHasRevisionBodyDiff, updateAwarenessStateSize } = useCurrentPageYjsData();
 
-  const yjsHasRevisionBodyDiffUpdateHandler = useCallback((hasRevisionBodyDiff: boolean) => {
+  const hasRevisionBodyDiffUpdateHandler = useCallback((hasRevisionBodyDiff: boolean) => {
     updateHasRevisionBodyDiff(hasRevisionBodyDiff);
   }, [updateHasRevisionBodyDiff]);
 
-  const yjsAwarenessStateUpdateHandler = useCallback(((awarenessStateSize: number) => {
+  const awarenessStateSizeUpdateHandler = useCallback(((awarenessStateSize: number) => {
     updateAwarenessStateSize(awarenessStateSize);
   }), [updateAwarenessStateSize]);
 
@@ -21,13 +21,13 @@ export const useCurrentPageYjsDataEffect = (): void => {
 
     if (socket == null) { return }
 
-    socket.on(SocketEventName.YjsHasRevisionBodyDiffUpdated, yjsHasRevisionBodyDiffUpdateHandler);
-    socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, yjsAwarenessStateUpdateHandler);
+    socket.on(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
+    socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, yjsHasRevisionBodyDiffUpdateHandler);
-      socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, yjsAwarenessStateUpdateHandler);
+      socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
+      socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
     };
 
-  }, [socket, yjsAwarenessStateUpdateHandler, yjsHasRevisionBodyDiffUpdateHandler]);
+  }, [socket, awarenessStateSizeUpdateHandler, hasRevisionBodyDiffUpdateHandler]);
 };
