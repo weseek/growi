@@ -45,7 +45,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
 
   return (
     <Modal isOpen={props.isOpen} toggle={props.onClose}>
-      <ModalHeader className="bg-info text-light" toggle={props.onClose}>
+      <ModalHeader className="text-info" toggle={props.onClose}>
         {t('personal_settings.disassociate_external_account')}
       </ModalHeader>
       <ModalBody>
@@ -57,7 +57,7 @@ const DisassociateModal = (props: Props): JSX.Element => {
           { t('Cancel') }
         </button>
         <button type="button" className="btn btn-sm btn-danger" onClick={disassociateAccountHandler}>
-          <i className="ti ti-unlink"></i>
+          <span className="material-symbols-outlined">link_off</span>
           { t('Disassociate') }
         </button>
       </ModalFooter>

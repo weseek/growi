@@ -1,11 +1,12 @@
+import { useCallback } from 'react';
+
 import type { Nullable } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 
 import { apiGet, apiPost } from '~/client/util/apiv1-client';
 
-import { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
-
-import { useStaticSWR } from './use-static-swr';
+import type { ICommentHasIdList, ICommentPostArgs } from '../interfaces/comment';
 
 type IResponseComment = {
   comments: ICommentHasIdList,
@@ -25,8 +26,9 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
     ([endpoint, pageId]) => apiGet(endpoint, { page_id: pageId }).then((response:IResponseComment) => response.comments),
   );
 
-  const update = async(comment: string, revisionId: string, commentId: string) => {
-    const { mutate } = swrResponse;
+  const { mutate } = swrResponse;
+
+  const update = useCallback(async(comment: string, revisionId: string, commentId: string) => {
     await apiPost('/comments.update', {
       commentForm: {
         comment,
@@ -35,10 +37,9 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
       },
     });
     mutate();
-  };
+  }, [mutate]);
 
-  const post = async(args: ICommentPostArgs) => {
-    const { mutate } = swrResponse;
+  const post = useCallback(async(args: ICommentPostArgs) => {
     const { commentForm, slackNotificationForm } = args;
     const { comment, revisionId, replyTo } = commentForm;
     const { isSlackEnabled, slackChannels } = slackNotificationForm;
@@ -56,29 +57,11 @@ export const useSWRxPageComment = (pageId: Nullable<string>): SWRResponse<IComme
       },
     });
     mutate();
-  };
+  }, [mutate, pageId]);
 
   return {
     ...swrResponse,
     update,
     post,
-  };
-};
-
-type EditingCommentsNumOperation = {
-  increment(): Promise<number | undefined>,
-  decrement(): Promise<number | undefined>,
-}
-
-export const useSWRxEditingCommentsNum = (): SWRResponse<number, Error> & EditingCommentsNumOperation => {
-  const swrResponse = useStaticSWR<number, Error>('editingCommentsNum', undefined, { fallbackData: 0 });
-
-  return {
-    ...swrResponse,
-    increment: () => swrResponse.mutate((swrResponse.data ?? 0) + 1),
-    decrement: () => {
-      const newValue = (swrResponse.data ?? 0) - 1;
-      return swrResponse.mutate(Math.max(0, newValue));
-    },
   };
 };

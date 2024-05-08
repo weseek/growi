@@ -2,12 +2,13 @@ import React from 'react';
 
 import { isPopulated } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
+import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { ICommentHasId } from '../../interfaces/comment';
+import type { ICommentHasId } from '../../interfaces/comment';
 import { Username } from '../User/Username';
 
 import styles from './DeleteCommentModal.module.scss';
@@ -26,6 +27,8 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     isShown, comment, errorMessage, cancelToDelete, confirmToDelete,
   } = props;
 
+  const { t } = useTranslation();
+
   const headerContent = () => {
     if (comment == null || isShown === false) {
       return <></>;
@@ -33,7 +36,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     return (
       <span>
         <span className="material-symbols-outlined">delete_forever</span>
-        Delete comment?
+        {t('page_comment.delete_comment')}
       </span>
     );
   };
@@ -58,7 +61,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
     return (
       <>
-        <UserPicture user={creator} size="xs" /> <strong><Username user={creator}></Username></strong> wrote on {commentDate}:
+        <UserPicture user={creator} size="xs" /> <strong className="me-2"><Username user={creator}></Username></strong>{commentDate}:
         <p className="card custom-card comment-body mt-2 p-2">{commentBodyElement}</p>
       </>
     );
@@ -71,10 +74,10 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
     return (
       <>
         <span className="text-danger">{errorMessage}</span>&nbsp;
-        <Button onClick={cancelToDelete}>Cancel</Button>
+        <Button onClick={cancelToDelete}>{t('Cancel')}</Button>
         <Button color="danger" onClick={confirmToDelete}>
           <span className="material-symbols-outlined">delete_forever</span>
-          Delete
+          {t('Delete')}
         </Button>
       </>
     );
@@ -82,7 +85,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
-      <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={cancelToDelete} className="text-danger">
         {headerContent()}
       </ModalHeader>
       <ModalBody>

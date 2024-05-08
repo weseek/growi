@@ -7,7 +7,7 @@ import {
   type IPage,
   GroupType, type HasObjectId,
 } from '@growi/core';
-import { isPopulated } from '@growi/core/dist/interfaces';
+import { getIdForRef, isPopulated } from '@growi/core/dist/interfaces';
 import { isTopPage, hasSlash } from '@growi/core/dist/utils/page-path-utils';
 import { addTrailingSlash, normalizePath } from '@growi/core/dist/utils/path-utils';
 import escapeStringRegexp from 'escape-string-regexp';
@@ -18,6 +18,7 @@ import mongoose, {
 import mongoosePaginate from 'mongoose-paginate-v2';
 import uniqueValidator from 'mongoose-unique-validator';
 
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
 import ExternalUserGroupRelation from '~/features/external-user-group/server/models/external-user-group-relation';
 import type { IOptionsForCreate } from '~/interfaces/page';
 import type { ObjectIdLike } from '~/server/interfaces/mongoose-utils';
@@ -27,6 +28,7 @@ import { collectAncestorPaths } from '../util/collect-ancestor-paths';
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 import { getPageSchema, extractToAncestorsPaths, populateDataToShowRevision } from './obsolete-page';
+import type { UserGroupDocument } from './user-group';
 import UserGroupRelation from './user-group-relation';
 
 const logger = loggerFactory('growi:models:page');
@@ -73,7 +75,7 @@ export interface PageModel extends Model<PageDocument> {
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
-    user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+    user, userGroups: string[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
   findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
   findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
@@ -82,6 +84,7 @@ export interface PageModel extends Model<PageDocument> {
     templateBody?: string,
     templateTags?: string[],
   }>
+  removeGroupsToDeleteFromPages(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]): Promise<void>
 
   PageQueryBuilder: typeof PageQueryBuilder
 
@@ -141,7 +144,7 @@ const schema = new Schema<PageDocument, PageModel>({
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
   wip: { type: Boolean },
-  ttlTimestamp: { type: Date, index: true },
+  ttlTimestamp: { type: Date },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -414,7 +417,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(
-      user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+      user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
@@ -959,7 +962,7 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
@@ -1036,6 +1039,39 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
     .exec();
 
   return ancestors[0];
+};
+
+schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]) {
+  const groupsToDeleteIds = groupsToDelete.map(group => group._id.toString());
+  const pageGroups = pages.reduce((acc: { canPublicize: PageDocument[], cannotPublicize: PageDocument[] }, page) => {
+    const canPublicize = page.grantedGroups.every(group => groupsToDeleteIds.includes(getIdForRef(group.item).toString()));
+    acc[canPublicize ? 'canPublicize' : 'cannotPublicize'].push(page);
+    return acc;
+  }, { canPublicize: [], cannotPublicize: [] });
+
+  // Only publicize pages that can only be accessed by the groups to be deleted
+  const publicizeQueries = pageGroups.canPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: {
+          grantedGroups: [],
+          grant: this.GRANT_PUBLIC,
+        },
+      },
+    };
+  });
+  // Remove the groups to be deleted from the grantedGroups of the pages that can be accessed by other groups
+  const removeFromGrantedGroupsQueries = pageGroups.cannotPublicize.map((page) => {
+    return {
+      updateOne: {
+        filter: { _id: page._id },
+        update: { $set: { grantedGroups: page.grantedGroups.filter(group => !groupsToDeleteIds.includes(getIdForRef(group.item).toString())) } },
+      },
+    };
+  });
+
+  await this.bulkWrite([...publicizeQueries, ...removeFromGrantedGroupsQueries]);
 };
 
 /*

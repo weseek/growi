@@ -45,7 +45,7 @@ export const PageTags:FC<Props> = (props: Props) => {
           <NotAvailableForReadOnlyUser>
             <button
               type="button"
-              className={`btn btn-sm btn-outline-secondary rounded-pill ${styles['grw-tag-icon-button']}`}
+              className={`btn btn-edit-tags btn-outline-neutral-secondary rounded-pill ${styles['grw-tag-icon-button']}`}
               onClick={onClickEditTagsButton}
             >
               <span className="material-symbols-outlined">local_offer</span>
@@ -58,7 +58,7 @@ export const PageTags:FC<Props> = (props: Props) => {
           <button
             id="edit-tags-btn-wrapper-for-tooltip"
             type="button"
-            className="btn btn-link text-secondary p-0 border-0"
+            className="btn btn-link btn-edit-tags text-secondary p-0 border-0"
             onMouseEnter={onMouseEnterHandler}
             onMouseLeave={onMouseLeaveHandler}
             onClick={onClickEditTagsButton}

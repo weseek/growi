@@ -1,6 +1,6 @@
 {
   "name": "@growi/slack",
-  "version": "7.0.0-RC.0",
+  "version": "7.0.4-RC.0",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.cjs",
@@ -57,7 +57,7 @@
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "crypto": "^1.0.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^3.6.0",
     "extensible-custom-error": "^0.0.7",
     "http-errors": "^2.0.0",
     "qs": "^6.10.2",

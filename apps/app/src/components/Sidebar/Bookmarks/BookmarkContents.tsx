@@ -2,11 +2,10 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
-import { FolderPlusIcon } from '~/components/Icons/FolderPlusIcon';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
 import { useCurrentUser } from '~/stores/context';
 
@@ -22,24 +21,28 @@ export const BookmarkContents = (): JSX.Element => {
     setIsCreateAction(true);
   }, []);
 
-  const onClickonClickOutsideHandler = useCallback(() => {
+  const cancel = useCallback(() => {
     setIsCreateAction(false);
   }, []);
 
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const create = useCallback(async(folderName: string) => {
+    if (folderName.trim() === '') {
+      return cancel();
+    }
+
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
+      await addNewFolder(folderName.trim(), null);
       await mutateBookmarkFolders();
       setIsCreateAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders]);
+  }, [cancel, mutateBookmarkFolders]);
 
   return (
-    <div className="ms-3">
-      <div className="col-8 mb-2">
+    <div>
+      <div className="mb-2">
         <button
           type="button"
           className="btn btn-outline-secondary rounded-pill d-flex justify-content-start align-middle"
@@ -47,7 +50,7 @@ export const BookmarkContents = (): JSX.Element => {
         >
 
           <div className="d-flex align-items-center">
-            <FolderPlusIcon />
+            <span className="material-symbols-outlined">create_new_folder</span>
             <span className="ms-2">{t('bookmark_folder.new_folder')}</span>
           </div>
         </button>
@@ -55,8 +58,9 @@ export const BookmarkContents = (): JSX.Element => {
       {isCreateAction && (
         <div className="col-12 mb-2 ">
           <BookmarkFolderNameInput
-            onClickOutside={onClickonClickOutsideHandler}
-            onPressEnter={onPressEnterHandlerForCreate}
+            onPressEnter={create}
+            onBlur={create}
+            onPressEscape={cancel}
           />
         </div>
       )}

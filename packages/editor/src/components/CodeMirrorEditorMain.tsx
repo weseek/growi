@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
 import { setDataLine } from '../services/extensions/setDataLine';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -17,23 +18,22 @@ const additionalExtensions: Extension[] = [
 ];
 
 type Props = CodeMirrorEditorProps & {
-  userName?: string,
+  user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  onOpenEditor?: (markdown: string) => void,
+  isEditorMode: boolean,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    acceptedUploadFileType,
-    indentSize, userName, pageId, initialValue,
-    editorTheme, editorKeymap,
-    onSave, onChange, onUpload, onScroll, onOpenEditor,
+    user, pageId, initialValue, isEditorMode,
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(userName, pageId, initialValue, onOpenEditor, codeMirrorEditor);
+  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
@@ -65,18 +65,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
       onSave={onSave}
-      onUpload={onUpload}
-      onScroll={onScroll}
-      acceptedUploadFileType={acceptedUploadFileType}
-      indentSize={indentSize}
-      editorTheme={editorTheme}
-      editorKeymap={editorKeymap}
+      {...otherProps}
     />
   );
 };

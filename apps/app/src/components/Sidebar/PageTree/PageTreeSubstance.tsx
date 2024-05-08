@@ -50,7 +50,7 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
                 checked={isWipPageShown}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>

@@ -13,6 +13,7 @@ type PagePathHierarchicalLinkProps = {
   linkedPagePathByHtml?: LinkedPagePath,
   basePath?: string,
   isInTrash?: boolean,
+  isIconHidden?: boolean,
 
   // !!INTERNAL USE ONLY!!
   isInnerElem?: boolean,
@@ -23,16 +24,18 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
     linkedPagePath, linkedPagePathByHtml, basePath, isInTrash, isInnerElem,
   } = props;
 
+  const isIconHidden = props.isIconHidden ?? false;
+
   // eslint-disable-next-line react/prop-types
   const RootElm = useCallback(({ children }) => {
     return isInnerElem
       ? <>{children}</>
-      : <span className="text-break">{children}</span>;
+      : <span className="text-break" id="grw-page-path-hierarchical-link">{children}</span>;
   }, [isInnerElem]);
 
   // render root element
   if (linkedPagePath.isRoot) {
-    if (basePath != null) {
+    if (basePath != null || isIconHidden) {
       return <></>;
     }
 
@@ -41,7 +44,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/trash" prefetch={false}>
-              <span className="material-symbols-outlined">delete</span>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>delete</span>
             </Link>
           </span>
           <span className={`separator ${styles.separator}`}><a href="/">/</a></span>
@@ -51,8 +54,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
         <RootElm>
           <span className="path-segment">
             <Link href="/" prefetch={false}>
-              {/* TODO: Size adjust */}
-              <span className="material-symbols-outlined">home</span>
+              <span className={`material-symbols-outlined ${styles['material-symbols-outlined']}`}>home</span>
               <span className={`separator ${styles.separator}`}>/</span>
             </Link>
           </span>
@@ -77,6 +79,7 @@ export const PagePathHierarchicalLink = memo((props: PagePathHierarchicalLinkPro
           basePath={basePath}
           isInTrash={isInTrash || linkedPagePath.isInTrash}
           isInnerElem
+          isIconHidden={isIconHidden}
         />
       ) }
       { isSeparatorRequired && (

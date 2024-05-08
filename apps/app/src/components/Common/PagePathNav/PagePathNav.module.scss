@@ -2,10 +2,6 @@
 
 @use '@growi/ui/scss/atoms/btn-muted';
 
-.grw-mr-02em {
-  margin-right: 0.2em;
-}
-
 .grw-mx-02em {
   margin-right: 0.2em;
   margin-left: 0.2em;
@@ -18,6 +14,7 @@
     z-index: bs.$zindex-sticky;
   }
 
+  // TODO:Responsive font size
   // set smaller font-size when sticky
   .sticky-inner-wrapper.active {
     h1 {
@@ -29,5 +26,22 @@
 .grw-page-path-nav :global {
   .btn-copy {
     @include btn-muted.colorize(bs.$orange);
+  }
+}
+
+// == Colors
+.grw-former-link :global {
+  .separator {
+    opacity: 0.75;
+  }
+}
+
+.grw-former-link a {
+  --bs-link-opacity: 0.75;
+
+  &:global {
+    &:hover {
+      --bs-link-opacity: 1;
+    }
   }
 }

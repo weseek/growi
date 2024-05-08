@@ -1,5 +1,6 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FC } from 'react';
+import {
+  useState, useCallback, memo,
+} from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
@@ -21,12 +22,17 @@ const moduleClass = styles['page-path-header'];
 
 
 type Props = {
-  currentPage: IPagePopulatedToShowRevision
+  currentPage: IPagePopulatedToShowRevision,
+  className?: string,
+  maxWidth?: number,
+  onRenameTerminated?: () => void,
 }
 
-export const PagePathHeader: FC<Props> = (props) => {
+export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage } = props;
+  const {
+    currentPage, className, maxWidth, onRenameTerminated,
+  } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -35,58 +41,56 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
-  const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
+
+  // const [isIconHidden, setIsIconHidden] = useState(false);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const onRenameFinish = useCallback(() => {
-    setRenameInputShown(false);
-  }, []);
 
-  const onRenameFailure = useCallback(() => {
-    setRenameInputShown(true);
-  }, []);
+  const rename = useCallback((inputText) => {
+    const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
+    pagePathRenameHandler(pathToRename,
+      () => {
+        setRenameInputShown(false);
+        onRenameTerminated?.();
+      },
+      () => {
+        setRenameInputShown(true);
+      });
+  }, [dPagePath.latter, pagePathRenameHandler, onRenameTerminated]);
 
-  const onInputChange = useCallback((inputText: string) => {
-    setEditingParentPagePath(inputText);
-  }, []);
-
-  const onPressEnter = useCallback(() => {
-    const pathToRename = normalizePath(`${editingParentPagePath}/${dPagePath.latter}`);
-    pagePathRenameHandler(pathToRename, onRenameFinish, onRenameFailure);
-  }, [editingParentPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler, dPagePath.latter]);
-
-  const onPressEscape = useCallback(() => {
+  const cancel = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
     setRenameInputShown(false);
-  }, [parentPagePath]);
+  }, []);
 
   const onClickEditButton = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
     setRenameInputShown(true);
-  }, [parentPagePath]);
-
-  const clickOutSideHandler = useCallback((e) => {
-    const container = document.getElementById('page-path-header');
-
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
   }, []);
 
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
+  // TODO: https://redmine.weseek.co.jp/issues/141062
+  // Truncate left side and don't use getElementById
+  //
+  // useEffect(() => {
+  //   const areaElem = document.getElementById('grw-page-path-header-container');
+  //   const linkElem = document.getElementById('grw-page-path-hierarchical-link');
 
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, [clickOutSideHandler]);
+  //   const areaElemWidth = areaElem?.offsetWidth;
+  //   const linkElemWidth = linkElem?.offsetWidth;
 
+  //   if (areaElemWidth && linkElemWidth) {
+  //     setIsIconHidden(linkElemWidth > areaElemWidth);
+  //   }
+  //   else {
+  //     setIsIconHidden(false);
+  //   }
+  // }, [currentPage]);
+  //
+  // const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
 
   if (dPagePath.isRoot) {
     return <></>;
@@ -95,31 +99,44 @@ export const PagePathHeader: FC<Props> = (props) => {
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small`}
+      className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
+      style={{ maxWidth }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="me-2">
+      <div
+        className="page-path-header-input d-inline-block overflow-x-scroll"
+      >
         { isRenameInputShown && (
-          <div className="position-absolute">
-            <ClosableTextInput
-              useAutosizeInput
-              value={editingParentPagePath}
-              placeholder={t('Input page name')}
-              inputClassName="form-control-sm"
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              validationTarget={ValidationTarget.PAGE}
-            />
+          <div className="position-relative">
+            <div className="position-absolute w-100">
+              <ClosableTextInput
+                value={parentPagePath}
+                placeholder={t('Input parent page path')}
+                inputClassName="form-control-sm"
+                onPressEnter={rename}
+                onPressEscape={cancel}
+                onBlur={rename}
+                validationTarget={ValidationTarget.PAGE}
+                useAutosizeInput
+              />
+            </div>
           </div>
         ) }
-        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
-          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+        <div
+          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
+          // style={styles}
+        >
+          <PagePathHierarchicalLink
+            linkedPagePath={linkedPagePath}
+            // isIconHidden={isIconHidden}
+          />
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+      <div
+        className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
+      >
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
@@ -140,4 +157,4 @@ export const PagePathHeader: FC<Props> = (props) => {
       {isOpened && <PageSelectModal />}
     </div>
   );
-};
+});

@@ -4,25 +4,28 @@ import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import SearchResultLayout from '~/components/Layout/SearchResultLayout';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
 } from '~/stores/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
-import { SearchPage } from '../components/SearchPage';
-
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
+
+
+const SearchPage = dynamic(() => import('../components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -40,6 +43,7 @@ type Props = CommonProps & {
 
   isContainerFluid: boolean,
 
+  sidebarConfig: ISidebarConfig,
 };
 
 const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
@@ -52,8 +56,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
   useCurrentPageId(null);
   useCurrentPathname('/_search');
 
@@ -86,7 +90,8 @@ const SearchResultPage: NextPageWithLayout<Props> = (props: Props) => {
 };
 
 type LayoutProps = Props & {
-  children?: ReactNode
+  sidebarConfig: ISidebarConfig,
+  children?: ReactNode,
 }
 
 const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
@@ -121,6 +126,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {

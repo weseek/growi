@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { toastSuccess } from '~/client/util/toastr';
-import { OnDeletedFunction } from '~/interfaces/ui';
+import type { OnDeletedFunction } from '~/interfaces/ui';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
 } from '~/stores/bookmark';
@@ -103,7 +103,7 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
 
   return (
     <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`}>
-      <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group px-2 py-2`}>
+      <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group py-2`}>
         {bookmarkFolders?.map((bookmarkFolder) => {
           return (
             <BookmarkFolderItem

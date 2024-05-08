@@ -1,32 +1,30 @@
 @import '@growi/core/scss/flex-expand';
+@import '@growi/core/scss/rotate';
 
 @import 'mixins';
 
 // atoms
-@import 'atoms/buttons';
-@import 'atoms/spinners';
 @import 'atoms/custom_control';
 @import 'atoms/code';
 @import 'atoms/tag';
+@import 'atoms/tooltip';
 
 // molecules
 @import 'molecules/toastr';
 @import 'molecules/list-group-item';
-// @import 'molecules/slack-notification';
 // @import 'molecules/duplicated-paths-table.scss';
 
 // organisms
 @import 'organisms/wiki';
 
 // // growi component
-// @import 'draft';
 @import 'editor';
 @import 'fonts';
+@import 'installer';
 @import 'layout';
 @import 'mirror_mode';
 @import 'modal';
 @import 'share-link';
-@import 'installer';
 
 
 /*
@@ -82,13 +80,6 @@
     width: 14px;
     height: 14px;
   }
-}
-
-// transplant from FontAwesome
-.icon-fw {
-  display: inline-block;
-  width: 1.4em;
-  text-align: left;
 }
 
 .cmd-key.mac {

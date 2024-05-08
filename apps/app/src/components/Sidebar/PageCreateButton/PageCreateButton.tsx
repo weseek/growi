@@ -1,29 +1,14 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 
-import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'reactstrap';
 
 import { useCreateTemplatePage } from '~/client/services/create-page';
-import { toastError } from '~/client/util/toastr';
+import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 
 import { CreateButton } from './CreateButton';
 import { DropendMenu } from './DropendMenu';
 import { DropendToggle } from './DropendToggle';
 import { useCreateNewPage, useCreateTodaysMemo } from './hooks';
-
-
-const useToastrOnError = <P, R>(method?: (param?: P) => Promise<R|undefined>): (param?: P) => Promise<R|undefined> => {
-  const { t } = useTranslation('commons');
-
-  return useCallback(async(param) => {
-    try {
-      return await method?.(param);
-    }
-    catch (err) {
-      toastError(t('toaster.create_failed', { target: 'a page' }));
-    }
-  }, [method, t]);
-};
 
 
 export const PageCreateButton = React.memo((): JSX.Element => {
@@ -60,6 +45,7 @@ export const PageCreateButton = React.memo((): JSX.Element => {
       className="d-flex flex-row mt-2"
       onMouseEnter={onMouseEnterHandler}
       onMouseLeave={onMouseLeaveHandler}
+      data-testid="grw-page-create-button"
     >
       <div className="btn-group flex-grow-1">
         <CreateButton

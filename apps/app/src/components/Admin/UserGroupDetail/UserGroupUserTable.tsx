@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import type { IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user-group-response';
@@ -77,7 +77,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={props.onClickPlusBtn}>
-                <i className="ti ti-plus"></i>
+                <span className="material-symbols-outlined">add</span>
               </button>
             </td>
             <td></td>

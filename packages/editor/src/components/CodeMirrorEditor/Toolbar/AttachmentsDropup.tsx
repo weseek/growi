@@ -13,6 +13,11 @@ import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 import { AttachmentsDropdownItem } from './AttachmentsDropdownItem';
 import { LinkEditButton } from './LinkEditButton';
 
+import styles from './AttachmentsDropup.module.scss';
+
+const btnAttachmentToggleClass = styles['btn-attachment-toggle'];
+
+
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
   acceptedUploadFileType: AcceptedUploadFileType,
@@ -27,7 +32,7 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
   return (
     <>
       <Dropdown isOpen={isOpen} toggle={() => setOpen(!isOpen)} direction="up" className="lh-1">
-        <DropdownToggle className="btn-toolbar-button rounded-circle">
+        <DropdownToggle className={`${btnAttachmentToggleClass} btn-toolbar-button rounded-circle`} color="unset">
           <span className="material-symbols-outlined fs-6">add</span>
         </DropdownToggle>
         <DropdownMenu>
@@ -38,14 +43,14 @@ export const AttachmentsDropup = (props: Props): JSX.Element => {
           <DropdownItem divider />
 
           { acceptedUploadFileType === AcceptedUploadFileType.ALL && (
-            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload}>
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.ALL} onUpload={onUpload} onClose={() => setOpen(false)}>
               <span className="material-symbols-outlined fs-5">attach_file</span>
               Files
             </AttachmentsDropdownItem>
           ) }
 
           { acceptedUploadFileType !== AcceptedUploadFileType.NONE && (
-            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload}>
+            <AttachmentsDropdownItem acceptedUploadFileType={AcceptedUploadFileType.IMAGE} onUpload={onUpload} onClose={() => setOpen(false)}>
               <span className="material-symbols-outlined fs-5">image</span>
               Images
             </AttachmentsDropdownItem>

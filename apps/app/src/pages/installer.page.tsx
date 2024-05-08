@@ -42,12 +42,13 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   const navTabMapping = useMemo(() => {
     return {
       user_infomation: {
-        Icon: () => <span className="material-symbols-outlined me-1">person</span>,
+        Icon: () => <span className="material-symbols-outlined me-2">person</span>,
         Content: InstallerForm,
         i18n: t('installer.tab'),
       },
       external_accounts: {
-        Icon: () => <i className="icon-fw icon-share-alt"></i>,
+        // TODO: chack and fix font-size. see: https://redmine.weseek.co.jp/issues/143015
+        Icon: () => <span className="growi-custom-icons me-2">external_link</span>,
         Content: DataTransferForm,
         i18n: tCommons('g2g_data_transfer.tab'),
       },
@@ -68,7 +69,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
       <Head>
         <title>{title}</title>
       </Head>
-      <div id="installer-form-container" className="nologin-dialog mx-auto">
+      <div id="installer-form-container" className="nologin-dialog mx-auto rounded-4 rounded-top-0">
         <CustomNavAndContents navTabMapping={navTabMapping} tabContentClasses={['p-0']} />
       </div>
     </NoLoginLayout>

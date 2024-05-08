@@ -3,7 +3,7 @@ import path from 'path';
 import type {
   Lang, IPage, IUser,
 } from '@growi/core';
-import { addSeconds } from 'date-fns';
+import { addSeconds } from 'date-fns/addSeconds';
 import ExtensibleCustomError from 'extensible-custom-error';
 import fs from 'graceful-fs';
 import mongoose from 'mongoose';
@@ -69,7 +69,7 @@ export class InstallerService {
      *   2. avoid difference for order in VRT
      */
     await this.createPage(path.join(localeDir, lang, 'sandbox.md'), '/Sandbox');
-    await this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap4.md'), '/Sandbox/Bootstrap4');
+    await this.createPage(path.join(localeDir, lang, 'sandbox-bootstrap5.md'), '/Sandbox/Bootstrap5');
     await this.createPage(path.join(localeDir, lang, 'sandbox-diagrams.md'), '/Sandbox/Diagrams');
     await this.createPage(path.join(localeDir, lang, 'sandbox-math.md'), '/Sandbox/Math');
 

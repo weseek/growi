@@ -115,7 +115,7 @@ const ProfileImageSettings = (): JSX.Element => {
           <img src={generateGravatarSrc(currentUser.email)} className="rounded-pill" width="64" data-vrt-blackout-profile />
         </div>
 
-        <div className="col-md-7 mt-5">
+        <div className="col-md-7 mt-5 mt-md-0">
           <h5>
             <div className="form-check radio-primary">
               <input
@@ -138,7 +138,7 @@ const ProfileImageSettings = (): JSX.Element => {
             </label>
             <div className="col-md-6 col-lg-8">
               <p className="mb-0"><img src={uploadedPictureSrc ?? DEFAULT_IMAGE} className="picture picture-lg rounded-circle" id="settingUserPicture" /></p>
-              {uploadedPictureSrc && <button type="button" className="btn btn-danger" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
+              {uploadedPictureSrc && <button type="button" className="btn btn-danger mt-2" onClick={deleteImageHandler}>{ t('Delete Image') }</button>}
             </div>
           </div>
           <div className="row align-items-center mt-3 mt-md-5">

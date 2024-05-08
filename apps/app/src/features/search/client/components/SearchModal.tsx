@@ -50,13 +50,19 @@ const SearchModal = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
+      return;
+    }
+    if (searchModalData?.searchKeyword == null) {
       setSearchKeyword('');
     }
-  }, [searchModalData?.isOpened]);
+    else {
+      setSearchKeyword(searchModalData.searchKeyword);
+    }
+  }, [searchModalData?.isOpened, searchModalData?.searchKeyword]);
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
-      <ModalBody>
+      <ModalBody className="pb-2">
         <Downshift
           onSelect={selectSearchMenuItemHandler}
           stateReducer={stateReducer}
@@ -83,23 +89,23 @@ const SearchModal = (): JSX.Element => {
                   className="btn border-0 d-flex justify-content-center p-0"
                   onClick={closeSearchModal}
                 >
-                  <span className="material-symbols-outlined fs-4 ms-3">close</span>
+                  <span className="material-symbols-outlined fs-4 ms-3 py-0">close</span>
                 </button>
               </div>
 
-              <ul {...getMenuProps()} className="list-unstyled">
-                <div className="border-top mt-3 mb-2" />
+              <ul {...getMenuProps()} className="list-unstyled m-0">
+                <div className="border-top mt-2 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
-                <div className="border-top mt-2 mb-2" />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
+                <div className="border-top mt-2 mb-2" />
               </ul>
             </div>
           )}

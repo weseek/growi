@@ -3,9 +3,11 @@ import React, { useRef, useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import type { TypeaheadRef } from 'react-bootstrap-typeahead';
-import { AsyncTypeahead } from 'react-bootstrap-typeahead';
+import { AsyncTypeahead, Token } from 'react-bootstrap-typeahead';
 
 import { useSWRxTagsSearch } from '~/stores/tag';
+
+import styles from './TagsInput.module.scss';
 
 type Props = {
   tags: string[],
@@ -37,8 +39,14 @@ export const TagsInput: FC<Props> = (props: Props) => {
   }, [tagsSearch?.tags]);
 
   const keyDownHandler = useCallback((event: KeyboardEvent<HTMLElement>) => {
-    if (event.key === ' ') {
+    if (event.code === 'Space') {
       event.preventDefault();
+
+      // fix: https://redmine.weseek.co.jp/issues/140689
+      const isComposing = event.nativeEvent.isComposing;
+      if (isComposing) {
+        return;
+      }
 
       const initialItem = tagsInputRef?.current?.state?.initialItem;
       const handleMenuItemSelect = tagsInputRef?.current?._handleMenuItemSelect;
@@ -50,7 +58,7 @@ export const TagsInput: FC<Props> = (props: Props) => {
   }, []);
 
   return (
-    <div className="tag-typeahead">
+    <div className={`${styles['tags-input']}`}>
       <AsyncTypeahead
         id="tag-typeahead-asynctypeahead"
         ref={tagsInputRef}
@@ -64,6 +72,14 @@ export const TagsInput: FC<Props> = (props: Props) => {
         options={resultTags} // Search result (Some tag names)
         placeholder={t('tag_edit_modal.tags_input.tag_name')}
         autoFocus={autoFocus}
+        // option is tag name
+        renderToken={(option: string, { onRemove }, idx) => {
+          return (
+            <Token key={idx} className="grw-tag badge mw-100 d-inline-flex p-0" option={option} onRemove={onRemove}>
+              {option}
+            </Token>
+          );
+        }}
       />
     </div>
   );

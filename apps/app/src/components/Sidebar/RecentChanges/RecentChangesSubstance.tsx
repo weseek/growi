@@ -95,14 +95,14 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate' : ''} small`}>
+    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate small' : ''}`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className="material-symbols-outlined ms-2">lock</span>;
+    locked = <span className="material-symbols-outlined ms-2 fs-6">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -114,7 +114,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
 
         <div className="flex-grow-1 ms-2">
-          <div className={`row ${isSmall ? 'gy-0' : 'gy-2'}`}>
+          <div className={`row ${isSmall ? 'gy-0' : 'gy-1'}`}>
 
             <div className="col-12">
               { !dPagePath.isRoot && <FormerLink /> }
@@ -189,7 +189,7 @@ export const RecentChangesHeader = ({
 
         <DropdownMenu container="body">
           <DropdownItem onClick={changeSizeHandler}>
-            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch`}>
+            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
               <input
                 id="recentChangesResize"
                 className="form-check-input"
@@ -197,12 +197,14 @@ export const RecentChangesHeader = ({
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="recentChangesResize" />
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+                {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
+              </label>
             </div>
           </DropdownItem>
 
           <DropdownItem onClick={onWipPageShownChange}>
-            <div className="form-check form-switch">
+            <div className="form-check form-switch mb-0">
               <input
                 id="wipPageVisibility"
                 className="form-check-input"
@@ -210,7 +212,7 @@ export const RecentChangesHeader = ({
                 checked={isWipPageShown}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>

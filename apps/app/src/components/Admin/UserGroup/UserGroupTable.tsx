@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
@@ -162,7 +162,14 @@ export const UserGroupTable: FC<Props> = ({
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
-                    <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>
+                    <td>
+                      <Link
+                        className="link-opacity-75-hover"
+                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
+                      >
+                        {group.name}
+                      </Link>
+                    </td>
                   )
                   : (
                     <td>{group.name}</td>
@@ -214,7 +221,7 @@ export const UserGroupTable: FC<Props> = ({
                           {onRemove != null
                           && (
                             <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
-                              <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
+                              <span className="material-symbols-outlined me-1">group_remove</span> {t('admin:user_group_management.remove_child_group')}
                             </button>
                           )}
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>

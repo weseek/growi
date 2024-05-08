@@ -1,6 +1,6 @@
 {
   "name": "@growi/editor",
-  "version": "6.2.0-RC.0",
+  "version": "7.0.4-RC.0",
   "license": "MIT",
   "type": "module",
   "module": "dist/index.js",
@@ -17,13 +17,19 @@
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
+    "markdown-table": "^3.0.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
+  },
+  "// comments for devDependencies": {
+    "string-width": "5.0.0 or above exports only ESM.",
+    "@codemirror/merge": "Fixed version at 6.0.0 due to errors caused by dependent packages"
   },
   "devDependencies": {
     "@codemirror/lang-markdown": "^6.2.0",
     "@codemirror/language": "^6.8.0",
     "@codemirror/language-data": "^6.3.1",
+    "@codemirror/merge": "6.0.0",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.15.3",
     "@popperjs/core": "^2.11.8",
@@ -41,16 +47,19 @@
     "cm6-theme-material-dark": "^0.2.0",
     "cm6-theme-nord": "^0.2.0",
     "codemirror": "^6.0.1",
+    "csv-to-markdown-table": "^1.4.1",
     "emoji-mart": "npm:panta82-emoji-mart@^3.0.1",
     "eslint-plugin-react-refresh": "^0.4.1",
+    "markdown-table": "^3.0.3",
     "react-dropzone": "^14.2.3",
     "react-hook-form": "^7.45.4",
     "react-toastify": "^9.1.3",
     "reactstrap": "^9.2.0",
+    "string-width": "=4.2.2",
     "swr": "^2.2.2",
     "ts-deepmerge": "^6.2.0",
     "y-codemirror.next": "^0.3.2",
     "y-socket.io": "^1.1.0",
-    "yjs": "^13.6.7"
+    "yjs": "^13.6.12"
   }
 }

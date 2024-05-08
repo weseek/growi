@@ -1,5 +1,8 @@
-import type { FC } from 'react';
-import React from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
@@ -7,6 +10,9 @@ import dynamic from 'next/dynamic';
 import Sticky from 'react-stickynode';
 
 import { useIsNotFound } from '~/stores/page';
+import {
+  usePageControlsX, useCurrentProductNavWidth, useSidebarMode,
+} from '~/stores/ui';
 
 import LinkedPagePath from '../../../models/linked-page-path';
 import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
@@ -25,21 +31,19 @@ type Props = {
   isCollapseParents?: boolean,
   formerLinkClassName?: string,
   latterLinkClassName?: string,
+  maxWidth?: number,
 }
 
 const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
-const RootSlash = (): JSX.Element => {
-  return <span className={styles['grw-mr-02em']}>/</span>;
-};
-const Separator = (): JSX.Element => {
-  return <span className={styles['grw-mx-02em']}>/</span>;
+const Separator = ({ className }: {className?: string}): JSX.Element => {
+  return <span className={`separator ${className ?? ''} ${styles['grw-mx-02em']}`}>/</span>;
 };
 
-export const PagePathNav: FC<Props> = (props: Props) => {
+export const PagePathNav = (props: Props): JSX.Element => {
   const {
     pageId, pagePath, isWipPage, isSingleLineMode, isCollapseParents,
-    formerLinkClassName, latterLinkClassName,
+    formerLinkClassName, latterLinkClassName, maxWidth,
   } = props;
   const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -78,20 +82,17 @@ export const PagePathNav: FC<Props> = (props: Props) => {
       </>
     );
     latterLink = (
-      <>
-        <RootSlash />
-        <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
-      </>
+      <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
     );
   }
 
   const copyDropdownId = `copydropdown-${pageId}`;
 
   return (
-    <div>
-      <span className={formerLinkClassName}>{formerLink}</span>
+    <div style={{ maxWidth }}>
+      <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
-        <h1 className={`m-0 text-truncate ${latterLinkClassName}`}>
+        <h1 className={`m-0 ${latterLinkClassName}`}>
           {latterLink}
         </h1>
         { pageId != null && !isNotFound && (
@@ -100,7 +101,7 @@ export const PagePathNav: FC<Props> = (props: Props) => {
               <span className="badge rounded-pill text-bg-secondary ms-1 me-1">WIP</span>
             )}
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
-              <i className="ti ti-clipboard"></i>
+              <span className="material-symbols-outlined">content_paste</span>
             </CopyDropdown>
           </div>
         ) }
@@ -109,25 +110,65 @@ export const PagePathNav: FC<Props> = (props: Props) => {
   );
 };
 
+PagePathNav.displayName = 'PagePathNav';
+
 
 type PagePathNavStickyProps = Omit<Props, 'isCollapseParents'>;
 
 export const PagePathNavSticky = (props: PagePathNavStickyProps): JSX.Element => {
+
+  const { data: pageControlsX } = usePageControlsX();
+  const { data: sidebarWidth } = useCurrentProductNavWidth();
+  const { data: sidebarMode } = useSidebarMode();
+  const pagePathNavRef = useRef<HTMLDivElement>(null);
+
+  const [navMaxWidth, setNavMaxWidth] = useState<number | undefined>();
+
+  useEffect(() => {
+    if (pageControlsX == null || pagePathNavRef.current == null || sidebarWidth == null) {
+      return;
+    }
+    setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
+  }, [pageControlsX, pagePathNavRef, sidebarWidth]);
+
+  useEffect(() => {
+    // wait for the end of the animation of the opening and closing of the sidebar
+    const timeout = setTimeout(() => {
+      if (pageControlsX == null || pagePathNavRef.current == null || sidebarMode == null) {
+        return;
+      }
+      setNavMaxWidth(pageControlsX - pagePathNavRef.current.getBoundingClientRect().x - 10);
+    }, 200);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [pageControlsX, pagePathNavRef, sidebarMode]);
+
   return (
     // Controlling pointer-events
     //  1. disable pointer-events with 'pe-none'
-    <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
-      {({ status }: { status: boolean }) => {
-        const isCollapseParents = status === Sticky.STATUS_FIXED;
-        return (
+    <div ref={pagePathNavRef}>
+      <Sticky className={`${styles['grw-page-path-nav-sticky']} mb-4`} innerClass="mt-1 pe-none" innerActiveClass="active">
+        {({ status }) => {
+          const isCollapseParents = status === Sticky.STATUS_FIXED;
+          return (
           // Controlling pointer-events
           //  2. enable pointer-events with 'pe-auto' only against the children
           //      which width is minimized by 'd-inline-block'
-          <div className="d-inline-block pe-auto">
-            <PagePathNav {...props} isCollapseParents={isCollapseParents} latterLinkClassName={isCollapseParents ? 'fs-3' : 'fs-2'} />
-          </div>
-        );
-      }}
-    </Sticky>
+          //
+            <div className="d-inline-block pe-auto">
+              <PagePathNav
+                {...props}
+                isCollapseParents={isCollapseParents}
+                latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : 'fs-2'}
+                maxWidth={isCollapseParents ? navMaxWidth : undefined}
+              />
+            </div>
+          );
+        }}
+      </Sticky>
+    </div>
   );
 };
+
+PagePathNavSticky.displayName = 'PagePathNavSticky';

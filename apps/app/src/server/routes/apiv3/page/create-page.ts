@@ -1,8 +1,9 @@
+import { allOrigin } from '@growi/core';
 import type {
   IPage, IUser, IUserHasId,
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
-import { isCreatablePage, isUserPage } from '@growi/core/dist/utils/page-path-utils';
+import { isCreatablePage, isUserPage, isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { attachTitleHeader, normalizePath } from '@growi/core/dist/utils/path-utils';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
@@ -21,6 +22,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -42,8 +44,9 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
-  const basePathname = 'Untitled';
+  const { t } = await getTranslation();
+
+  const basePathname = t?.('create_page.untitled') || 'Untitled';
 
   if (_path != null) {
     const path = normalizePath(_path);
@@ -62,6 +65,11 @@ async function determinePath(_parentPath?: string, _path?: string, optionalParen
 
   if (_parentPath != null) {
     const parentPath = normalizePath(_parentPath);
+
+    // when parentPath is user's homepage
+    if (isUsersHomepage(parentPath)) {
+      return generateUntitledPath(parentPath, basePathname);
+    }
 
     // when parentPath is valid
     if (isCreatablePage(parentPath)) {
@@ -112,6 +120,7 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('wip').optional().isBoolean().withMessage('wip must be boolean'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
   ];
 
 
@@ -222,10 +231,10 @@ export const createPageHandlersFactory: CreatePageHandlersFactory = (crowi) => {
       let createdPage;
       try {
         const {
-          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip,
+          grant, grantUserGroupIds, overwriteScopesOfDescendants, wip, origin,
         } = req.body;
 
-        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip };
+        const options: IOptionsForCreate = { overwriteScopesOfDescendants, wip, origin };
         if (grant != null) {
           options.grant = grant;
           options.grantUserGroupIds = grantUserGroupIds;

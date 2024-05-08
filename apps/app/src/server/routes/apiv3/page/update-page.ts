@@ -1,3 +1,4 @@
+import { Origin, allOrigin, getIdForRef } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -8,7 +9,7 @@ import { body } from 'express-validator';
 import mongoose from 'mongoose';
 
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
-import type { IApiv3PageUpdateParams } from '~/interfaces/apiv3';
+import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
 import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
@@ -19,6 +20,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import Xss from '~/services/xss';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
@@ -63,7 +65,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
       .withMessage("'pageId' must be specified"),
-    body('revisionId').exists().not().isEmpty({ ignore_whitespace: true })
+    body('revisionId').optional().exists().not()
+      .isEmpty({ ignore_whitespace: true })
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
       .withMessage("The empty value is not allowd for the 'body'"),
@@ -72,11 +75,21 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
+    body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
+    body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
 
 
   async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument) {
+    // Reflect the updates in ydoc
+    const origin = req.body.origin;
+    if (origin === Origin.View || origin === undefined) {
+      const yjsConnectionManager = getYjsConnectionManager();
+      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+    }
+
     // persist activity
+    const creator = updatedPage.creator != null ? getIdForRef(updatedPage.creator) : undefined;
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: updatedPage,
@@ -85,7 +98,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const activityEvent = crowi.event('activity');
     activityEvent.emit(
       'update', res.locals.activity._id, parameters,
-      { path: updatedPage.path, creator: updatedPage.creator._id.toString() },
+      { path: updatedPage.path, creator },
       preNotifyService.generatePreNotify,
     );
 
@@ -101,7 +114,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const { revisionId, isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', { previousRevision: revisionId });
+        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
             logger.error('Create user notification failed', result.reason);
@@ -120,7 +134,9 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     accessTokenParser, loginRequiredStrictly, excludeReadOnlyUser, addActivity,
     validator, apiV3FormValidator,
     async(req: UpdatePageRequest, res: ApiV3Response) => {
-      const { pageId, revisionId, body } = req.body;
+      const {
+        pageId, revisionId, body, origin,
+      } = req.body;
 
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
@@ -130,7 +146,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
-      if (currentPage != null && !currentPage.isUpdatable(revisionId)) {
+
+      if (currentPage != null && !await currentPage.isUpdatable(revisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -138,15 +155,15 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };
-        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', 'conflict'), 409, {
-          returnLatestRevision,
-        });
+        return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage;
+      let updatedPage: PageDocument;
       try {
-        const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants };
+        const {
+          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+        } = req.body;
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;

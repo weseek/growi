@@ -1,6 +1,7 @@
 import type { Ref, IUser } from '@growi/core';
+import type { Model, Document } from 'mongoose';
 import {
-  Schema, Model, Document,
+  Schema,
 } from 'mongoose';
 
 

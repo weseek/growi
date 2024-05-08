@@ -1,4 +1,4 @@
-import React, { Suspense, useCallback } from 'react';
+import React, { Suspense, useCallback, useRef } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { getIdForRef, type IPageInfoForOperation } from '@growi/core';
@@ -82,6 +82,8 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
 
   const { page, isSharedUser } = props;
 
+  const tagsRef = useRef<HTMLDivElement>(null);
+
   const { data: pageInfo } = useSWRxPageInfo(page._id);
 
   const pagePath = page.path;
@@ -93,9 +95,11 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
     <>
       {/* Tags */}
       { page.revision != null && (
-        <Suspense fallback={<PageTagsSkeleton />}>
-          <Tags pageId={page._id} revisionId={page.revision._id} />
-        </Suspense>
+        <div ref={tagsRef}>
+          <Suspense fallback={<PageTagsSkeleton />}>
+            <Tags pageId={page._id} revisionId={page.revision._id} />
+          </Suspense>
+        </div>
       ) }
 
       <div className={`${styles['grw-page-accessories-controls']} d-flex flex-column gap-2`}>
@@ -118,7 +122,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
           <div className="d-flex" data-testid="page-comment-button">
             <PageAccessoriesControl
               icon={<span className="material-symbols-outlined">chat</span>}
-              label="Comments"
+              label={t('comments')}
               count={pageInfo != null ? (pageInfo as IPageInfoForOperation).commentCount : undefined}
               onClick={() => scroller.scrollTo('comments-container', { smooth: false, offset: -120 })}
             />
@@ -127,7 +131,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
       </div>
 
       <div className="d-none d-xl-block">
-        <TableOfContents />
+        <TableOfContents tagsElementHeight={tagsRef.current?.clientHeight} />
         {isUsersHomepagePath && <ContentLinkButtons author={page?.creator} />}
       </div>
     </>

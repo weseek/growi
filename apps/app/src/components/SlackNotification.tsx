@@ -1,8 +1,11 @@
 /* eslint-disable react/prop-types */
-import React, { FC } from 'react';
+import type { FC } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { PopoverBody, PopoverHeader, UncontrolledPopover } from 'reactstrap';
+import {
+  FormGroup, Input, InputGroup, InputGroupText,
+  PopoverBody, PopoverHeader, UncontrolledPopover,
+} from 'reactstrap';
 
 import styles from './SlackNotification.module.scss';
 
@@ -18,6 +21,7 @@ type SlackNotificationProps = {
 export const SlackNotification: FC<SlackNotificationProps> = ({
   id, isSlackEnabled, slackChannels, onEnabledFlagChange, onChannelChange,
 }) => {
+
   const { t } = useTranslation();
   const idForSlackPopover = `${id}ForSlackPopover`;
 
@@ -37,34 +41,31 @@ export const SlackNotification: FC<SlackNotificationProps> = ({
 
 
   return (
-    <div className={`grw-slack-notification ${styles['grw-slack-notification']} w-100`}>
-      <div className="grw-input-group-slack-notification input-group extended-setting">
-        <label className="form-label input-group-addon">
-          <div className="form-check form-switch form-switch-lg form-switch-slack">
-            <input
-              type="checkbox"
-              className="form-check-input border-0"
-              id={id}
-              checked={isSlackEnabled}
-              onChange={updateCheckboxHandler}
-            />
-            <label className="form-label form-check-label align-center" htmlFor={id}></label>
-          </div>
-        </label>
-        <input
-          className="grw-form-control-slack-notification form-control align-top ps-0"
-          id={idForSlackPopover}
-          type="text"
-          value={slackChannels}
-          placeholder="Input channels"
-          onChange={updateSlackChannelsHandler}
-        />
-        <UncontrolledPopover trigger="focus" placement="top" target={idForSlackPopover}>
-          <PopoverHeader>{t('slack_notification.popover_title')}</PopoverHeader>
-          <PopoverBody>{t('slack_notification.popover_desc')}</PopoverBody>
-        </UncontrolledPopover>
-      </div>
-    </div>
-
+    <InputGroup className={`d-flex align-items-center ${styles['grw-slack-switch']}`}>
+      <InputGroupText className="rounded-pill rounded-end border-end-0 p-0 pe-1 grw-slack-switch">
+        <FormGroup switch className="position-relative pe-4 py-3 m-0 me-2">
+          <Input
+            className="position-absolute bottom-0 start-0 p-0 m-0 w-100 h-100 border-0"
+            type="switch"
+            role="switch"
+            id={id}
+            checked={isSlackEnabled}
+            onChange={updateCheckboxHandler}
+          />
+        </FormGroup>
+      </InputGroupText>
+      <Input
+        className="rounded-pill rounded-start border-start-0 py-1"
+        id={idForSlackPopover}
+        type="text"
+        value={slackChannels}
+        placeholder={`${t('slack_notification.input_channels')}`}
+        onChange={updateSlackChannelsHandler}
+      />
+      <UncontrolledPopover trigger="focus" placement="top" target={idForSlackPopover}>
+        <PopoverHeader>{t('slack_notification.popover_title')}</PopoverHeader>
+        <PopoverBody>{t('slack_notification.popover_desc')}</PopoverBody>
+      </UncontrolledPopover>
+    </InputGroup>
   );
 };

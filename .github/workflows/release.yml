@@ -18,13 +18,13 @@ jobs:
       RELEASED_VERSION: ${{ steps.package-json.outputs.packageVersion }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -82,10 +82,9 @@ jobs:
 
     outputs:
       TAGS: ${{ steps.meta.outputs.tags }}
-      TAGS_GHCR: ${{ steps.meta-ghcr.outputs.tags }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
@@ -96,18 +95,6 @@ jobs:
       id: meta
       with:
         images: docker.io/weseek/growi
-        sep-tags: ','
-        tags: |
-          type=raw,value=latest
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}
-          type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
-
-    - name: Docker meta for ghcr.io
-      uses: docker/metadata-action@v4
-      id: meta-ghcr
-      with:
-        images: ghcr.io/weseek/growi
         sep-tags: ','
         tags: |
           type=raw,value=latest
@@ -140,25 +127,13 @@ jobs:
     secrets:
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
 
-  publish-image-ghcr:
-    needs: [determine-tags, build-image]
-
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
-    with:
-      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
-      registry: ghcr.io
-      image-name: weseek/growi
-      tag-temporary: latest
-    secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
-
 
   post-publish:
-    needs: [create-github-release, publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
@@ -179,17 +154,17 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image, publish-image-ghcr]
+    needs: [create-github-release, publish-image]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
-        node-version: '18'
+        node-version: '20'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 

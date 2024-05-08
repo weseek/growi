@@ -1,28 +1,29 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
-import { keymap, scrollPastEnd } from '@codemirror/view';
+import { keymap } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor, CodeMirrorEditorProps } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
+
+import type { GlobalCodeMirrorEditorKey } from 'src/consts';
 
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
 ];
 
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
+}
 
-type Props = CodeMirrorEditorProps & object
-
-export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
+export const CodeMirrorEditorComment = memo((props: Props): JSX.Element => {
   const {
-    acceptedUploadFileType,
-    onSave, onChange, onUpload,
+    editorKey,
+    onSave, ...rest
   } = props;
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   // setup additional extensions
   useEffect(() => {
@@ -56,10 +57,9 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   return (
     <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.COMMENT}
-      acceptedUploadFileType={acceptedUploadFileType}
-      onChange={onChange}
-      onUpload={onUpload}
+      editorKey={editorKey}
+      onSave={onSave}
+      {...rest}
     />
   );
-};
+});

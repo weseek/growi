@@ -12,6 +12,7 @@ import { useSWRMUTxPageInfo } from '~/stores/page';
 
 import { BookmarkFolderMenuItem } from './BookmarkFolderMenuItem';
 
+import styles from './BookmarkFolderMenu.module.scss';
 
 type BookmarkFolderMenuProps = {
   isOpen: boolean,
@@ -116,9 +117,9 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
         <DropdownItem
           toggle={false}
           onClick={onUnbookmarkHandler}
-          className="grw-bookmark-folder-menu-item text-danger"
+          className="grw-bookmark-folder-menu-item text-danger text-truncate"
         >
-          <i className="fa fa-bookmark"></i>{' '}
+          <span className="material-symbols-outlined">bookmark</span>{' '}
           <span className="mx-2">
             {t('bookmark_folder.cancel_bookmark')}
           </span>
@@ -129,7 +130,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
             <DropdownItem divider />
             <div key="root">
               <div
-                className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
+                className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action px-4"
                 tabIndex={0}
                 role="menuitem"
                 onClick={e => onMenuItemClickHandler(e, 'root')}
@@ -144,8 +145,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
             {bookmarkFolders?.map(folder => (
               <React.Fragment key={`bookmark-folders-${folder._id}`}>
                 <div
-                  className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
-                  style={{ paddingLeft: '40px' }}
+                  className="dropdown-item grw-bookmark-folder-menu-item grw-bookmark-folder-menu-item-folder-first list-group-item list-group-item-action"
                   tabIndex={0}
                   role="menuitem"
                   onClick={e => onMenuItemClickHandler(e, folder._id)}
@@ -156,11 +156,10 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
                     isSelected={selectedItem === folder._id}
                   />
                 </div>
-                {folder.children?.map(child => (
+                {folder.childFolder?.map(child => (
                   <div key={child._id}>
                     <div
-                      className="dropdown-item grw-bookmark-folder-menu-item list-group-item list-group-item-action border-0 py-0"
-                      style={{ paddingLeft: '60px' }}
+                      className="dropdown-item grw-bookmark-folder-menu-item grw-bookmark-folder-menu-item-folder-second list-group-item list-group-item-action"
                       tabIndex={0}
                       role="menuitem"
                       onClick={e => onMenuItemClickHandler(e, child._id)}
@@ -185,15 +184,14 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     <UncontrolledDropdown
       isOpen={isOpen}
       onToggle={toggleHandler}
-      direction={isBookmarkFolderExists ? 'up' : 'down'}
-      className="grw-bookmark-folder-dropdown"
     >
       {children}
       <DropdownMenu
         end
         persist
         strategy="fixed"
-        className="grw-bookmark-folder-menu"
+        container="body"
+        className={`grw-bookmark-folder-menu ${styles['grw-bookmark-folder-menu']}`}
       >
         { renderBookmarkMenuItem() }
       </DropdownMenu>

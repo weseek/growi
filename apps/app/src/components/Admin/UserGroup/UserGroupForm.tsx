@@ -1,9 +1,8 @@
-import React, {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import type { IUserGroupHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -117,7 +116,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
             <button
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               className="btn btn-outline-secondary dropdown-toggle mb-3"
               disabled={isExternalGroup || !isSelectableParentUserGroups}
             >

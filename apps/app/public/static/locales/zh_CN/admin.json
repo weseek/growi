@@ -843,9 +843,10 @@
       "dropdown_desc": "为私人页选择操作",
       "select_group": "选择组",
       "no_groups": "没有可选择的组",
-      "publish_pages": "全部发布",
+      "publish_pages": "发布可以发布的页面",
       "delete_pages": "全部删除",
-      "transfer_pages": "转移到另一组"
+      "transfer_pages": "转移到另一组",
+      "option_explanation": "\"可发布页面\"是指仅对您要删除的群组可见的页面。其他群组可以查看的页面将不会被发布。"
     },
     "update_parent_confirm_modal": {
       "header": "该组的父组被改变",

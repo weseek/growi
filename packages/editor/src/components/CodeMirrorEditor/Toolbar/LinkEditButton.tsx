@@ -32,7 +32,7 @@ export const LinkEditButton = (props: Props): JSX.Element => {
   }, [codeMirrorEditor?.view, openLinkEditModal]);
 
   return (
-    <DropdownItem className="d-flex gap-1 align-items-center" onClick={onClickOpenLinkEditModal}>
+    <DropdownItem className="d-flex gap-2 align-items-center" onClick={onClickOpenLinkEditModal}>
       <span className="material-symbols-outlined fs-5">link</span>Link
     </DropdownItem>
   );

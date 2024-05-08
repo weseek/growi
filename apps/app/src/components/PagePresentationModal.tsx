@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
 import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
@@ -21,7 +22,7 @@ import styles from './PagePresentationModal.module.scss';
 const Presentation = dynamic<PresentationProps>(() => import('./Presentation/Presentation').then(mod => mod.Presentation), {
   ssr: false,
   loading: () => (
-    <i className="fa fa-4x fa-spinner fa-pulse text-muted"></i>
+    <LoadingSpinner className="text-muted fs-1" />
   ),
 });
 

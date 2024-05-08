@@ -5,7 +5,6 @@ import assert from 'assert';
 import type { IPageHasId } from '@growi/core';
 import { templateChecker, pagePathUtils } from '@growi/core/dist/utils';
 
-import { FootstampIcon } from '../FootstampIcon';
 
 const { isTopPage } = pagePathUtils;
 const { checkTemplatePath } = templateChecker;
@@ -47,7 +46,7 @@ const SeenUsersCount = (props: SeenUsersCountProps): JSX.Element => {
 
   return (
     <span className={`seen-users-count ${shouldSpaceOutIcon ? 'me-2' : ''} ${strengthClass}`}>
-      <i className="footstamp-icon"><FootstampIcon /></i>
+      <span className="material-symbols-outlined">footprint</span>
       {count}
     </span>
   );
@@ -86,7 +85,7 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let likerCount;
   if (props.likerCount != null && props.likerCount > 0) {
-    likerCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-heart-o" />{props.likerCount}</span>;
+    likerCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><span className="material-symbols-outlined">favorite</span>{props.likerCount}</span>;
   }
 
   let locked;
@@ -96,7 +95,12 @@ export const PageListMeta: FC<PageListMetaProps> = (props: PageListMetaProps) =>
 
   let bookmarkCount;
   if (props.bookmarkCount != null && props.bookmarkCount > 0) {
-    bookmarkCount = <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}><i className="fa fa-bookmark-o" />{props.bookmarkCount}</span>;
+    bookmarkCount = (
+      <span className={`${shouldSpaceOutIcon ? 'me-2' : ''}`}>
+        <span className="material-symbols-outlined">bookmark</span>
+        {props.bookmarkCount}
+      </span>
+    );
   }
 
   return (

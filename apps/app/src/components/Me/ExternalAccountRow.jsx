@@ -1,7 +1,7 @@
 
 import React from 'react';
 
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 
@@ -22,7 +22,7 @@ const ExternalAccountRow = (props) => {
           className="btn btn-sm btn-danger"
           onClick={() => props.openDisassociateModal(account)}
         >
-          <i className="ti ti-unlink"></i>
+          <span className="material-symbols-outlined">link_off</span>
           { t('Disassociate') }
         </button>
       </td>
