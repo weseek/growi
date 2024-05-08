@@ -19,6 +19,9 @@ import { StickyStretchableScroller } from '../StickyStretchableScroller';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
+import 'simplebar';
+import 'simplebar/dist/simplebar.css';
+
 const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   const { children } = props;
@@ -29,12 +32,9 @@ const TreeForModalWrapper = memo((props: { children: JSX.Element }) => {
 
   return (
     <div className="grw-page-select-modal-wrapper">
-      <StickyStretchableScroller
-        stickyElemSelector=".modal-body"
-        calcViewHeight={calcViewHeight}
-      >
+      <div data-simplebar>
         { children }
-      </StickyStretchableScroller>
+      </div>
     </div>
   );
 });
