@@ -1,5 +1,5 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import { Suspense, useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
@@ -14,6 +14,7 @@ import { usePageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { ItemsTree } from '../ItemsTree';
+import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import { TreeItemForModal } from './TreeItemForModal';
@@ -83,15 +84,17 @@ export const PageSelectModal: FC = () => {
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody>
-        <ItemsTree
-          CustomTreeItem={TreeItemForModal}
-          isEnableActions={!isGuestUser}
-          isReadOnlyUser={!!isReadOnlyUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-          onClickTreeItem={onClickTreeItem}
-        />
+        <Suspense fallback={<ItemsTreeContentSkeleton />}>
+          <ItemsTree
+            CustomTreeItem={TreeItemForModal}
+            isEnableActions={!isGuestUser}
+            isReadOnlyUser={!!isReadOnlyUser}
+            targetPath={path}
+            targetPathOrId={targetPathOrId}
+            targetAndAncestorsData={targetAndAncestorsData}
+            onClickTreeItem={onClickTreeItem}
+          />
+        </Suspense>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>

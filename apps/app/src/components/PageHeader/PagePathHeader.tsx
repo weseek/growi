@@ -25,11 +25,14 @@ type Props = {
   currentPage: IPagePopulatedToShowRevision,
   className?: string,
   maxWidth?: number,
+  onRenameTerminated?: () => void,
 }
 
 export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage, className, maxWidth } = props;
+  const {
+    currentPage, className, maxWidth, onRenameTerminated,
+  } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -38,7 +41,6 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
-  const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
   // const [isIconHidden, setIsIconHidden] = useState(false);
 
@@ -47,34 +49,28 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const onRenameFinish = useCallback(() => {
-    setRenameInputShown(false);
-  }, []);
 
-  const onRenameFailure = useCallback(() => {
-    setRenameInputShown(true);
-  }, []);
+  const rename = useCallback((inputText) => {
+    const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
+    pagePathRenameHandler(pathToRename,
+      () => {
+        setRenameInputShown(false);
+        onRenameTerminated?.();
+      },
+      () => {
+        setRenameInputShown(true);
+      });
+  }, [dPagePath.latter, pagePathRenameHandler, onRenameTerminated]);
 
-  const onInputChange = useCallback((inputText: string) => {
-    setEditingParentPagePath(inputText);
-  }, []);
-
-  const onPressEnter = useCallback(() => {
-    const pathToRename = normalizePath(`${editingParentPagePath}/${dPagePath.latter}`);
-    pagePathRenameHandler(pathToRename, onRenameFinish, onRenameFailure);
-  }, [editingParentPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler, dPagePath.latter]);
-
-  const onPressEscape = useCallback(() => {
+  const cancel = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
     setRenameInputShown(false);
-  }, [parentPagePath]);
+  }, []);
 
   const onClickEditButton = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
     setRenameInputShown(true);
-  }, [parentPagePath]);
+  }, []);
 
   // TODO: https://redmine.weseek.co.jp/issues/141062
   // Truncate left side and don't use getElementById
@@ -115,14 +111,13 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
           <div className="position-relative">
             <div className="position-absolute w-100">
               <ClosableTextInput
-                value={editingParentPagePath}
+                value={parentPagePath}
                 placeholder={t('Input parent page path')}
                 inputClassName="form-control-sm"
-                onPressEnter={onPressEnter}
-                onPressEscape={onPressEscape}
-                onChange={onInputChange}
+                onPressEnter={rename}
+                onPressEscape={cancel}
+                onBlur={rename}
                 validationTarget={ValidationTarget.PAGE}
-                onClickOutside={onPressEscape}
                 useAutosizeInput
               />
             </div>

@@ -338,7 +338,7 @@ export const LinkEditModal = (): JSX.Element => {
 
   return (
     <Modal className="link-edit-modal" isOpen={linkEditModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={close}>
         {t('link_edit.edit_link')}
       </ModalHeader>
 

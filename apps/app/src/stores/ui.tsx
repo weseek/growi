@@ -52,10 +52,6 @@ export type EditorMode = typeof EditorMode[keyof typeof EditorMode];
  *                     Storing objects to ref
  *********************************************************** */
 
-export const useSidebarScrollerRef = (initialData?: RefObject<SimpleBar>): SWRResponse<RefObject<SimpleBar>, Error> => {
-  return useStaticSWR<RefObject<SimpleBar>, Error>('sidebarScrollerRef', initialData);
-};
-
 export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
   const { data: currentPagePath } = useCurrentPagePath();
 
@@ -66,6 +62,10 @@ export const useCurrentPageTocNode = (): SWRResponse<HtmlElementNode, any> => {
  *                          SWR Hooks
  *                      for switching UI
  *********************************************************** */
+
+export const useSidebarScrollerRef = (initialData?: RefObject<HTMLDivElement>): SWRResponse<RefObject<HTMLDivElement>, Error> => {
+  return useSWRStatic<RefObject<HTMLDivElement>, Error>('sidebarScrollerRef', initialData);
+};
 
 export const useIsMobile = (): SWRResponse<boolean, Error> => {
   const key = isClient() ? 'isMobile' : null;
@@ -272,19 +272,8 @@ export const useCurrentSidebarContents = (
   return withUtils(swrResponse, { mutateAndSave });
 };
 
-export const usePageControlsX = (
-    initialData?: number,
-): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
-  const swrResponse = useSWRStatic('pageControlsX', initialData, { fallbackData: 1000 });
-
-  const { mutate } = swrResponse;
-
-  const mutateAndSave: MutateAndSaveUserUISettings<number> = useCallback((data, opt?) => {
-    scheduleToPut({ currentPageControlsX: data });
-    return mutate(data, opt);
-  }, [mutate]);
-
-  return withUtils(swrResponse, { mutateAndSave });
+export const usePageControlsX = (initialData?: number): SWRResponse<number> => {
+  return useSWRStatic('pageControlsX', initialData);
 };
 
 export const useCurrentProductNavWidth = (initialData?: number): SWRResponseWithUtils<MutateAndSaveUserUISettingsUtils<number>, number> => {
