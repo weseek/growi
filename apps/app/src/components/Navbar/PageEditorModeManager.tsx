@@ -93,7 +93,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
       return 'bg-primary';
     }
 
-    // TODO: https://redmine.weseek.co.jp/issues/145652
+    if (currentPageYjsData?.hasRevisionBodyDiff != null && currentPageYjsData.hasRevisionBodyDiff) {
+      return 'bg-secondary';
+    }
   }, [currentPageYjsData]);
 
   return (

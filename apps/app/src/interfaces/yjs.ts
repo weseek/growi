@@ -1,5 +1,4 @@
-export type CurrentPageYjsDraft = {
-  hasYjsDraft: boolean,
+export type CurrentPageYjsData = {
+  hasRevisionBodyDiff?: boolean,
+  awarenessStateSize?: number,
 }
-
-export const CurrentPageYjsDraftData = { hasYjsDraft: true };

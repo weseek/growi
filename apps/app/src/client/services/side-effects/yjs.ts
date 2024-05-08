@@ -3,35 +3,17 @@ import { useCallback, useEffect } from 'react';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { type CurrentPageYjsDraft } from '~/interfaces/yjs';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
-export const useYjsDraftEffect = (): void => {
+export const useCurrentPageYjsDataEffect = (): void => {
   const { data: socket } = useGlobalSocket();
-  const { updateHasDraft } = useCurrentPageYjsData();
+  const { updateHasRevisionBodyDiff, updateAwarenessStateSize } = useCurrentPageYjsData();
 
-  const yjsDraftUpdateHandler = useCallback(((currentPageYjsDraft: CurrentPageYjsDraft) => {
-    updateHasDraft(currentPageYjsDraft.hasYjsDraft);
-  }), [updateHasDraft]);
+  const hasRevisionBodyDiffUpdateHandler = useCallback((hasRevisionBodyDiff: boolean) => {
+    updateHasRevisionBodyDiff(hasRevisionBodyDiff);
+  }, [updateHasRevisionBodyDiff]);
 
-  useEffect(() => {
-
-    if (socket == null) { return }
-
-    socket.on(SocketEventName.YjsDraftUpdated, yjsDraftUpdateHandler);
-
-    return () => {
-      socket.off(SocketEventName.YjsDraftUpdated, yjsDraftUpdateHandler);
-    };
-
-  }, [socket, yjsDraftUpdateHandler]);
-};
-
-export const useYjsAwarenessStateEffect = (): void => {
-  const { data: socket } = useGlobalSocket();
-  const { updateAwarenessStateSize } = useCurrentPageYjsData();
-
-  const yjsAwarenessStateUpdateHandler = useCallback(((awarenessStateSize: number) => {
+  const awarenessStateSizeUpdateHandler = useCallback(((awarenessStateSize: number) => {
     updateAwarenessStateSize(awarenessStateSize);
   }), [updateAwarenessStateSize]);
 
@@ -39,12 +21,13 @@ export const useYjsAwarenessStateEffect = (): void => {
 
     if (socket == null) { return }
 
-    socket.on(SocketEventName.YjsAwarenessStateUpdated, yjsAwarenessStateUpdateHandler);
+    socket.on(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
+    socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.YjsAwarenessStateUpdated, yjsAwarenessStateUpdateHandler);
+      socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
+      socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
     };
 
-  }, [socket, yjsAwarenessStateUpdateHandler]);
-
+  }, [socket, awarenessStateSizeUpdateHandler, hasRevisionBodyDiffUpdateHandler]);
 };

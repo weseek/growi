@@ -2,7 +2,6 @@ import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
 import { SocketEventName } from '~/interfaces/websocket';
-import { CurrentPageYjsDraftData } from '~/interfaces/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
@@ -169,23 +168,30 @@ class SocketIoService {
 
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
+
     this.io.on('connection', (socket) => {
 
       yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
         const pageId = extractPageIdFromYdocId(update.name);
         const awarenessStateSize = update.awareness.states.size;
+
+        // Triggered when awareness changes
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
+          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
+
+        // Triggered when the last user leaves the editor
+        if (awarenessStateSize === 0) {
+          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+          const yjsDraft = currentYdoc?.getText('codemirror').toString();
+          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
+          this.io
+            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
+        }
       });
 
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
-
-        // Emit to the client in the room of the target pageId.
-        this.io
-          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsDraftUpdated, CurrentPageYjsDraftData);
-
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }
