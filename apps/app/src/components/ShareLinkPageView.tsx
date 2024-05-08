@@ -87,12 +87,13 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
 
     return (
       <>
-        <SlideRenderer markdown={markdown}>
-          <RevisionRenderer
-            rendererOptions={rendererOptions}
-            markdown={markdown}
-          />
-        </SlideRenderer>
+        (
+        <SlideRenderer markdown={markdown} /> ??
+        <RevisionRenderer
+          rendererOptions={rendererOptions}
+          markdown={markdown}
+        />
+        )
       </>
     );
   };

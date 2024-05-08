@@ -6,12 +6,11 @@ import { SlideViewer } from '../SlideViewer';
 
 type SlideRendererProps = {
   markdown: string
-  children: JSX.Element
 };
 
 export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
 
-  const { markdown, children } = props;
+  const { markdown } = props;
 
   const { data: enabledMarp } = useIsEnabledMarp();
 
@@ -21,6 +20,6 @@ export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
   return (
     (useMarp || useSlide)
       ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-      : (children)
+      : <></>
   );
 };
