@@ -24,6 +24,7 @@ interface Req extends Request<ReqParams, ApiV3Response> {
   user: IUserHasId,
 }
 export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
+  const Page = mongoose.model<IPage, PageModel>('Page');
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
@@ -39,7 +40,6 @@ export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
       const { pageId } = req.params;
 
       // check whether accessible
-      const Page = mongoose.model<IPage, PageModel>('Page');
       if (!(await Page.isAccessiblePageByViewer(pageId, req.user))) {
         return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
       }
