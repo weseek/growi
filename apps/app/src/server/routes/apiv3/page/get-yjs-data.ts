@@ -1,8 +1,12 @@
+import type { IPage, IUserHasId } from '@growi/core';
+import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request, RequestHandler } from 'express';
 import type { ValidationChain } from 'express-validator';
 import { param } from 'express-validator';
+import mongoose from 'mongoose';
 
 import type Crowi from '~/server/crowi';
+import type { PageModel } from '~/server/models/page';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -13,6 +17,12 @@ const logger = loggerFactory('growi:routes:apiv3:page:get-yjs-data');
 
 type GetYjsDataHandlerFactory = (crowi: Crowi) => RequestHandler[];
 
+type ReqParams = {
+  pageId: string,
+}
+interface Req extends Request<ReqParams, ApiV3Response> {
+  user: IUserHasId,
+}
 export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
@@ -25,8 +35,14 @@ export const getYjsDataHandlerFactory: GetYjsDataHandlerFactory = (crowi) => {
   return [
     accessTokenParser, loginRequiredStrictly,
     validator, apiV3FormValidator,
-    async(req: Request, res: ApiV3Response) => {
+    async(req: Req, res: ApiV3Response) => {
       const { pageId } = req.params;
+
+      // check whether accessible
+      const Page = mongoose.model<IPage, PageModel>('Page');
+      if (!(await Page.isAccessiblePageByViewer(pageId, req.user))) {
+        return res.apiv3Err(new ErrorV3('Current user is not accessible to this page.', 'forbidden-page'), 403);
+      }
 
       try {
         const yjsData = await crowi.pageService.getYjsData(pageId);
