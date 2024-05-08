@@ -29,7 +29,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
 
       {/* Light and Dark Themes */}
       <div>
-        <h3>{t('customize_settings.theme_desc.light_and_dark')}</h3>
+        <h3 className="mb-3">{t('customize_settings.theme_desc.light_and_dark')}</h3>
         <div className="hstack gap-3">
           {lightNDarkThemes.map((theme) => {
             return (
@@ -46,7 +46,7 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
 
       {/* Only one mode Theme */}
       <div className="mt-3">
-        <h3>{t('customize_settings.theme_desc.unique')}</h3>
+        <h3 className="mb-3">{t('customize_settings.theme_desc.unique')}</h3>
         <div className="hstack gap-3">
           {oneModeThemes.map((theme) => {
             return (

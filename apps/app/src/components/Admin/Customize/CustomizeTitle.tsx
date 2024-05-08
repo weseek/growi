@@ -1,4 +1,5 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
@@ -37,11 +38,11 @@ export const CustomizeTitle: FC = () => {
         </div>
 
         <div className="col-12">
-          <Card className="card custom-card">
+          <Card className="card custom-card bg-body-tertiary mb-3">
             <CardBody className="px-0 py-2">
               {/* eslint-disable react/no-danger */}
               <p dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_title_detail') }} />
-              <ul>
+              <ul className="mb-0">
                 <li>
                   <span dangerouslySetInnerHTML={{ __html: t('admin:customize_settings.custom_title_detail_placeholder1') }} />
                 </li>
@@ -58,7 +59,7 @@ export const CustomizeTitle: FC = () => {
         </div>
 
         {/* TODO i18n */}
-        <div className="form-text text-muted col-12">
+        <div className="form-text text-muted col-12 mb-3">
           Default Value: <code>&#123;&#123;pagename&#125;&#125; - &#123;&#123;sitename&#125;&#125;</code>
           <br />
           Default Output Example: <code className="xml">&lt;title&gt;Page name - My GROWI&lt;&#047;title&gt;</code>
