@@ -178,7 +178,7 @@ class SocketIoService {
         // Triggered when awareness changes
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsAwarenessStateUpdated, awarenessStateSize);
+          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
 
         // Triggered when the last user leaves the editor
         if (awarenessStateSize === 0) {

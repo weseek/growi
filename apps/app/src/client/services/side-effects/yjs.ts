@@ -22,11 +22,11 @@ export const useCurrentPageYjsDataEffect = (): void => {
     if (socket == null) { return }
 
     socket.on(SocketEventName.YjsHasRevisionBodyDiffUpdated, yjsHasRevisionBodyDiffUpdateHandler);
-    socket.on(SocketEventName.YjsAwarenessStateUpdated, yjsAwarenessStateUpdateHandler);
+    socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, yjsAwarenessStateUpdateHandler);
 
     return () => {
       socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, yjsHasRevisionBodyDiffUpdateHandler);
-      socket.off(SocketEventName.YjsAwarenessStateUpdated, yjsAwarenessStateUpdateHandler);
+      socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, yjsAwarenessStateUpdateHandler);
     };
 
   }, [socket, yjsAwarenessStateUpdateHandler, yjsHasRevisionBodyDiffUpdateHandler]);
