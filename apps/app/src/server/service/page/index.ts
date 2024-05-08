@@ -4465,17 +4465,14 @@ class PageService implements IPageService {
       return false;
     }
 
-    const Page = mongoose.model('Page');
-    const page = await Page.findOne({ _id: pageId });
+    const Revision = mongoose.model('Revision') as any;
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
 
-    if (page == null) {
+    if (revision == null) {
       return false;
     }
 
-    const populatedPage = await page.populateDataToShowRevision();
-    const revisionBody = populatedPage.revision.body;
-
-    return revisionBody != null && revisionBody !== comparisonTarget;
+    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {
