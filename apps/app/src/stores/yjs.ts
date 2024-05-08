@@ -35,7 +35,7 @@ export const useSWRMUTxCurrentPageYjsData = (): SWRMutationResponse<CurrentPageY
   const { data: currentPageId } = useCurrentPageId();
 
   return useSWRMutation(
-    currentPageId == null ? null : key,
+    key,
     () => apiv3Get<{ yjsData: CurrentPageYjsData }>(`/page/${currentPageId}/yjs-data`).then(result => result.data.yjsData),
     { populateCache: true, revalidate: false },
   );
