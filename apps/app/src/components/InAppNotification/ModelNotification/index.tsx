@@ -13,6 +13,9 @@ export interface ModelNotificationUtils {
   Notification: FC
   publishOpen?: () => void
   clickLink?: string
+  // Whether actions from clicking notification is disabled or not.
+  // User can still open the notification when true.
+  isDisabled?: boolean
 }
 
 export const useModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {

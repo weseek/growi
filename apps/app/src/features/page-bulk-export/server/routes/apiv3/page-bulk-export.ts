@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import type { Request } from 'express';
 import { Router } from 'express';
-import { body, param, validationResult } from 'express-validator';
+import { body, validationResult } from 'express-validator';
 
 import type Crowi from '~/server/crowi';
 import type { ApiV3Response } from '~/server/routes/apiv3/interfaces/apiv3-response';
@@ -25,7 +25,6 @@ module.exports = (crowi: Crowi): Router => {
       body('path').exists({ checkFalsy: true }).isString(),
       body('format').exists({ checkFalsy: true }).isString(),
     ],
-    downloadResult: param('jobId').isMongoId(),
   };
 
   router.post('/', loginRequiredStrictly, validators.pageBulkExport, async(req: AuthorizedRequest, res: ApiV3Response) => {

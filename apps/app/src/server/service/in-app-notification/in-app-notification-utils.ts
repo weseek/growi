@@ -13,7 +13,7 @@ const isIPageBulkExportJob = (targetModel: string, target: IUser | IPage | IPage
   return targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB;
 };
 
-// snapshots are infos about the target that are displayed in the notification, which should not change on target update
+// snapshots are infos about the target that are displayed in the notification, which should not change on target update/deletion
 export const generateSnapshot = async(targetModel: string, target: IUser | IPage | IPageBulkExportJob): Promise<string | undefined> => {
 
   let snapshot: string | undefined;

@@ -628,7 +628,8 @@
     "bulk_export_notice": "下载链接准备好后，将发送通知。如果页数较多，则可能需要一段时间准备。",
     "markdown": "Markdown",
     "choose_export_format": "选择导出格式",
-    "bulk_export_started": "目前我们正在准备..."
+    "bulk_export_started": "目前我们正在准备...",
+    "bulk_export_download_expired": "下载期限已过"
   },
   "message": {
     "successfully_connected": "连接成功！",

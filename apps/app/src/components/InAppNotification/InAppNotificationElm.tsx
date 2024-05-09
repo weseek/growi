@@ -24,6 +24,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   const Notification = modelNotificationUtils?.Notification;
   const publishOpen = modelNotificationUtils?.publishOpen;
   const clickLink = modelNotificationUtils?.clickLink;
+  const isDisabled = modelNotificationUtils?.isDisabled;
 
   if (Notification == null) {
     return <></>;
@@ -35,6 +36,8 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       await apiv3Post('/in-app-notification/open', { id: notification._id });
       onUnopenedNotificationOpend?.();
     }
+
+    if (isDisabled) return;
 
     publishOpen?.();
   };
@@ -59,27 +62,27 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   return (
-    <a
-      className="list-group-item list-group-item-action"
-      href={clickLink}
-      onClick={() => clickHandler(notification)}
-      style={{ cursor: 'pointer' }}
-    >
-      <div className="d-flex align-items-center">
-        <span
-          className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
-            ? 'grw-unopend-notification'
-            : 'ms-2'
-          } rounded-circle me-3`}
-        >
-        </span>
+    <div className="list-group-item list-group-item-action" style={{ cursor: 'pointer' }}>
+      <a
+        href={isDisabled ? undefined : clickLink}
+        onClick={() => clickHandler(notification)}
+      >
+        <div className="d-flex align-items-center">
+          <span
+            className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
+              ? 'grw-unopend-notification'
+              : 'ms-2'
+            } rounded-circle me-3`}
+          >
+          </span>
 
-        {renderActionUserPictures()}
+          {renderActionUserPictures()}
 
-        <Notification />
+          <Notification />
 
-      </div>
-    </a>
+        </div>
+      </a>
+    </div>
   );
 };
 

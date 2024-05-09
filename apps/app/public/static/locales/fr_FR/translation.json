@@ -616,11 +616,17 @@
     "discription_heading": "Créer un compte",
     "discription": "Créer un compte avec votre adresse courriel invitée"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Échec de l'export",
     "failed_to_count_pages": "Échec du compte des pages",
     "export_page_markdown": "Exporter la page en Markdown",
-    "export_page_pdf": "Exporter la page en PDF"
+    "export_page_pdf": "Exporter la page en PDF",
+    "bulk_export": "Exporter la page et toutes les pages enfants",
+    "bulk_export_notice": "Une fois qu'un lien de téléchargement est prêt, une notification sera envoyée. Si le nombre de pages est important, la préparation peut prendre un certain temps.",
+    "markdown": "Markdown",
+    "choose_export_format": "Sélectionnez le format d'exportation",
+    "bulk_export_started": "Patientez s'il-vous-plait...",
+    "bulk_export_download_expired": "La période de téléchargement a expiré"
   },
   "message": {
     "successfully_connected": "Connecté!",

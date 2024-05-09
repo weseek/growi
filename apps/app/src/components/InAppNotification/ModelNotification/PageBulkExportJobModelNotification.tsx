@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { isPopulated, type HasObjectId } from '@growi/core';
-import { useTranslation } from 'react-i18next';
 
 import type { IPageBulkExportJobHasId } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedTargetModel } from '~/interfaces/activity';
@@ -17,7 +16,6 @@ import type { ModelNotificationUtils } from '.';
 export const usePageBulkExportJobModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
-  const { t } = useTranslation();
 
   const isPageBulkExportJobModelNotification = (
       notification: IInAppNotification & HasObjectId,
@@ -50,6 +48,7 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
   return {
     Notification,
     clickLink,
+    isDisabled: notification.target == null,
   };
 
 };
