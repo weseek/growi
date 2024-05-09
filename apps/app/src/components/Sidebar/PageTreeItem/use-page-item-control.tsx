@@ -208,7 +208,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       : undefined;
 
     return (
-      <div ref={parentRef} className={`${renameInputContainerClass}`}>
+      <div ref={parentRef} className={renameInputContainerClass}>
         <AutosizeSubmittableInput
           value={nodePath.basename(page.path ?? '')}
           inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
