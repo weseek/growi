@@ -1,6 +1,27 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
 
+// fix height
+.page-tree-item :global {
+  li {
+    min-height: 40px;
+  }
+}
+
+// fix padding-left size
+.page-tree-item {
+  $padding-size: 10px;
+
+  &:global {
+    @for $i from 1 through 10 {
+      &.level-#{$i} li {
+        padding-left: $padding-size * ($i - 1);
+      }
+    }
+  }
+}
+
+
 // == Colors
 
 // drag over
