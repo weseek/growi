@@ -222,7 +222,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`${moduleClass} list-group py-4`}>
+      <ul className={`${moduleClass} list-group`}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
