@@ -1,4 +1,3 @@
-import type { FC } from 'react';
 import React, { useCallback } from 'react';
 
 import type { IPage, HasObjectId } from '@growi/core';
@@ -11,11 +10,7 @@ import * as pageSerializers from '~/models/serializers/in-app-notification-snaps
 import { ModelNotification } from './ModelNotification';
 import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
 
-
-export interface ModelNotificationUtils {
-  Notification: FC
-  publishOpen: () => void
-}
+import type { ModelNotificationUtils } from '.';
 
 export const usePageModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 

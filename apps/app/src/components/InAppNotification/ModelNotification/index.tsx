@@ -1,12 +1,19 @@
+import type { FC } from 'react';
+
 import type { HasObjectId } from '@growi/core';
 
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 
 import { usePageBulkExportJobModelNotification } from './PageBulkExportJobModelNotification';
-import { usePageModelNotification, type ModelNotificationUtils } from './PageModelNotification';
+import { usePageModelNotification } from './PageModelNotification';
 import { useUserModelNotification } from './UserModelNotification';
 
+export interface ModelNotificationUtils {
+  Notification: FC
+  publishOpen?: () => void
+  clickLink?: string
+}
 
 export const useModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 

@@ -1,4 +1,5 @@
 import type {
+  HasObjectId,
   IAttachment, IPage, IRevision, IUser, Ref,
 } from '@growi/core';
 
@@ -18,6 +19,8 @@ export interface IPageBulkExportJob {
   completedAt: Date | null, // the date at which job was completed
   attachment?: Ref<IAttachment>,
 }
+
+export interface IPageBulkExportJobHasId extends IPageBulkExportJob, HasObjectId {}
 
 // snapshot of page info to upload
 export interface IPageBulkExportPageInfo {

@@ -1,26 +1,27 @@
 import React from 'react';
 
-import type { HasObjectId } from '@growi/core';
-import { useRouter } from 'next/router';
+import { isPopulated, type HasObjectId } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 
-import type { IPageBulkExportJob } from '~/features/page-bulk-export/interfaces/page-bulk-export';
+import type { IPageBulkExportJobHasId } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 import * as pageBulkExportJobSerializers from '~/models/serializers/in-app-notification-snapshot/page-bulk-export-job';
 
 import { ModelNotification } from './ModelNotification';
-import type { ModelNotificationUtils } from './PageModelNotification';
 import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
+
+import type { ModelNotificationUtils } from '.';
 
 
 export const usePageBulkExportJobModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
-  const router = useRouter();
+  const { t } = useTranslation();
 
   const isPageBulkExportJobModelNotification = (
       notification: IInAppNotification & HasObjectId,
-  ): notification is IInAppNotification<IPageBulkExportJob> & HasObjectId => {
+  ): notification is IInAppNotification<IPageBulkExportJobHasId> & HasObjectId => {
     return notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB;
   };
 
@@ -43,13 +44,12 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
     );
   };
 
-  const publishOpen = () => {
-    router.push('/admin/users');
-  };
+  const clickLink = notification.target?.attachment != null && isPopulated(notification.target?.attachment)
+    ? notification.target.attachment.downloadPathProxied : undefined;
 
   return {
     Notification,
-    publishOpen,
+    clickLink,
   };
 
 };

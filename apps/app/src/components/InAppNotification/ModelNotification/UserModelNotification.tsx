@@ -7,8 +7,9 @@ import { SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import { ModelNotification } from './ModelNotification';
-import type { ModelNotificationUtils } from './PageModelNotification';
 import { useActionMsgAndIconForModelNotification } from './useActionAndMsg';
+
+import type { ModelNotificationUtils } from '.';
 
 
 export const useUserModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {

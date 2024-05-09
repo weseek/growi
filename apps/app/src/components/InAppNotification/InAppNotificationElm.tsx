@@ -23,8 +23,9 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const Notification = modelNotificationUtils?.Notification;
   const publishOpen = modelNotificationUtils?.publishOpen;
+  const clickLink = modelNotificationUtils?.clickLink;
 
-  if (Notification == null || publishOpen == null) {
+  if (Notification == null) {
     return <></>;
   }
 
@@ -35,7 +36,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       onUnopenedNotificationOpend?.();
     }
 
-    publishOpen();
+    publishOpen?.();
   };
 
   const renderActionUserPictures = (): JSX.Element => {
@@ -58,7 +59,12 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
+    <a
+      className="list-group-item list-group-item-action"
+      href={clickLink}
+      onClick={() => clickHandler(notification)}
+      style={{ cursor: 'pointer' }}
+    >
       <div className="d-flex align-items-center">
         <span
           className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
@@ -73,7 +79,7 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
         <Notification />
 
       </div>
-    </div>
+    </a>
   );
 };
 
