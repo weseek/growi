@@ -13,7 +13,6 @@ import { useDrag, useDrop } from 'react-dnd';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastWarning, toastError } from '~/client/util/toastr';
-import { AlertType } from '~/client/util/use-input-validator';
 import type { IPageForItem } from '~/interfaces/page';
 import { mutatePageTree, useSWRxPageChildren } from '~/stores/page-listing';
 import loggerFactory from '~/utils/logger';
@@ -64,7 +63,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
 
   const {
-    showRenameInput, validationResult, Control, RenameInput,
+    showRenameInput, Control, RenameInput,
   } = usePageItemControl();
   const { isProcessingSubmission, Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
@@ -183,23 +182,6 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
   const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
 
-  const ValidationResult = useCallback(() => {
-    if (validationResult == null) return <></>;
-
-    const {
-      type, typeLabel, message,
-    } = validationResult;
-
-    return (
-      <div
-        className={`mt-1 alert ${type === AlertType.ERROR ? 'text-danger' : 'text-warning'}`}
-        role="alert"
-      >
-        {typeLabel}: {message}
-      </div>
-    );
-  }, [validationResult]);
-
   return (
     <TreeItemLayout
       targetPathOrId={props.targetPathOrId}
@@ -217,7 +199,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       mainClassName={mainClassName}
       customEndComponents={[CountBadgeForPageTreeItem]}
       customHoveredEndComponents={[Control, NewPageCreateButton]}
-      customNextComponents={[ValidationResult, NewPageInput]}
+      customNextComponents={[NewPageInput]}
       customNextToChildrenComponents={[() => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
       showAlternativeContent={showRenameInput}
       customAlternativeComponents={[RenameInput]}

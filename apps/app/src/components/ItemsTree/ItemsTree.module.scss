@@ -3,7 +3,7 @@
 // fix height
 .items-tree :global {
   li {
-    height: items-tree-variables.$list-item-height;
+    min-height: items-tree-variables.$list-item-height;
   }
 }
 

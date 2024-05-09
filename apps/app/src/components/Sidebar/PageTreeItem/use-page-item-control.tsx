@@ -32,14 +32,12 @@ type UsePageItemControl = {
   Control: FC<TreeItemToolProps>,
   RenameInput: FC<TreeItemToolProps>,
   showRenameInput: boolean,
-  validationResult?: InputValidationResult,
 }
 
 export const usePageItemControl = (): UsePageItemControl => {
   const { t } = useTranslation();
 
   const [showRenameInput, setShowRenameInput] = useState(false);
-  const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
 
   const Control: FC<TreeItemToolProps> = (props) => {
@@ -146,6 +144,9 @@ export const usePageItemControl = (): UsePageItemControl => {
     const parentRef = useRef<HTMLDivElement>(null);
     const [parentRect] = useRect(parentRef);
 
+    const [validationResult, setValidationResult] = useState<InputValidationResult>();
+
+
     const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
     const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
@@ -195,21 +196,36 @@ export const usePageItemControl = (): UsePageItemControl => {
     }, [cancel, onRenamed, page._id, page.path, page.revision]);
 
 
+    if (!showRenameInput) {
+      return <></>;
+    }
+
     const renameInputContainerClass = renameInputStyles['rename-input-container'] ?? '';
-    const maxWidth = (parentRect?.width ?? 0) - 12 * 2; // calculate the max-width minus the padding (12px * 2) because AutosizeInput has "box-sizing: content-box;"
+    const isInvalid = validationResult != null;
+
+    const maxWidth = (parentRect?.width ?? 0)
+      - 12 * 2 // minus the padding (12px * 2) because AutosizeInput has "box-sizing: content-box;"
+      - (isInvalid ? 24 : 0); // minus the width for the exclamation icon
+
 
     return (
       <div ref={parentRef} className={`${renameInputContainerClass}`}>
         <AutosizeSubmittableInput
           value={nodePath.basename(page.path ?? '')}
-          inputClassName="form-control"
+          inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
           inputStyle={{ maxWidth }}
           placeholder={t('Input page name')}
+          aria-describedby={isInvalid ? 'rename-feedback' : undefined}
           onChange={changeHandlerDebounced}
           onSubmit={rename}
           onCancel={cancel}
           autoFocus
         />
+        { isInvalid && (
+          <div id="rename-feedback" className="invalid-feedback d-block my-1">
+            {validationResult.message}
+          </div>
+        ) }
       </div>
     );
   };
@@ -219,7 +235,6 @@ export const usePageItemControl = (): UsePageItemControl => {
     Control,
     RenameInput,
     showRenameInput,
-    validationResult,
   };
 
 };
