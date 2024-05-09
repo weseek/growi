@@ -3,7 +3,7 @@ import React from 'react';
 import { isPopulated, type HasObjectId } from '@growi/core';
 
 import type { IPageBulkExportJobHasId } from '~/features/page-bulk-export/interfaces/page-bulk-export';
-import { SupportedTargetModel } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 import * as pageBulkExportJobSerializers from '~/models/serializers/in-app-notification-snapshot/page-bulk-export-job';
 
@@ -42,7 +42,8 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
     );
   };
 
-  const clickLink = notification.target?.attachment != null && isPopulated(notification.target?.attachment)
+  const clickLink = (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED
+    && notification.target?.attachment != null && isPopulated(notification.target?.attachment))
     ? notification.target.attachment.downloadPathProxied : undefined;
 
   return {

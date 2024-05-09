@@ -5,7 +5,7 @@ import type { HasObjectId } from '@growi/core';
 import { PagePathLabel } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
-import { SupportedTargetModel } from '~/interfaces/activity';
+import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import type { IInAppNotification } from '~/interfaces/in-app-notification';
 
 import FormattedDistanceDate from '../../FormattedDistanceDate';
@@ -31,7 +31,7 @@ export const ModelNotification: FC<Props> = (props) => {
         {` ${actionMsg}`}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
-      { (notification.targetModel === SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB && notification.target == null)
+      { (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED && notification.target == null)
         ? <div className="text-danger"><small>{t('page_export.bulk_export_download_expired')}</small></div> : <></> }
       <span className="material-symbols-outlined me-2">{actionIcon}</span>
       <FormattedDistanceDate
