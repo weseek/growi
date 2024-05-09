@@ -156,7 +156,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
   }, [isAllChecked, checkAll]);
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose}>
+    <Modal size="lg" isOpen={isOpen} toggle={onClose}>
       <ModalHeader tag="h4" toggle={onClose} className="text-info">
         {t('admin:export_management.export_collections')}
       </ModalHeader>
