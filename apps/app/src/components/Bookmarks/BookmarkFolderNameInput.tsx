@@ -1,6 +1,7 @@
 import type { ChangeEvent } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import type { AutosizeInputProps } from 'react-input-autosize';
 import { debounce } from 'throttle-debounce';
@@ -8,7 +9,7 @@ import { debounce } from 'throttle-debounce';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
 
-import { AutosizeSubmittableInput } from '../Common/SubmittableInput';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import type { SubmittableInputProps } from '../Common/SubmittableInput/types';
 
 
@@ -18,6 +19,9 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { value, onSubmit, onCancel } = props;
+
+  const parentRef = useRef<HTMLDivElement>(null);
+  const [parentRect] = useRect(parentRef);
 
   const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
@@ -37,11 +41,16 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
 
   const isInvalid = validationResult != null;
 
+  const maxWidth = parentRect != null
+    ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'md', validationResult != null ? false : undefined)
+    : undefined;
+
   return (
-    <div>
+    <div ref={parentRef}>
       <AutosizeSubmittableInput
         value={value}
         inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
+        inputStyle={{ maxWidth }}
         placeholder={t('bookmark_folder.input_placeholder')}
         aria-describedby={isInvalid ? 'bookmark-folder-name-input-feedback' : undefined}
         autoFocus
