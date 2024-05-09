@@ -5,7 +5,7 @@ import React, {
 
 import nodePath from 'path';
 
-import type { IPageHasId } from '@growi/core';
+import type { IPageHasId, Nullable } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
@@ -23,6 +23,7 @@ import {
 } from '../../TreeItem';
 
 import { Ellipsis } from './Ellipsis';
+
 
 import styles from './PageTreeItem.module.scss';
 
@@ -188,6 +189,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       mainClassName={mainClassName}
       customEndComponents={[Ellipsis, NewPageCreateButton]}
       customNextComponents={[NewPageInput]}
+      markTarget={markTarget}
     />
   );
 };

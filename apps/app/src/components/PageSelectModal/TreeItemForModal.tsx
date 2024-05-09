@@ -1,5 +1,8 @@
 import type { FC } from 'react';
 
+import type { Nullable } from '@growi/core';
+
+import type { ItemNode } from '../TreeItem';
 import {
   SimpleItem, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
@@ -30,6 +33,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       itemClass={TreeItemForModal}
       customEndComponents={[NewPageCreateButton]}
       onClick={onClick}
+      markTarget={markTarget}
     />
   );
 };

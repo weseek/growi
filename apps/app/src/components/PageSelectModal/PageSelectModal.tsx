@@ -3,6 +3,7 @@ import { Suspense, useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
+import type { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -16,6 +17,7 @@ import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stor
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
+import type { ItemNode } from '../TreeItem';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
@@ -74,6 +76,22 @@ export const PageSelectModal: FC = () => {
   if (isGuestUser == null) {
     return null;
   }
+
+  const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+    if (targetPathOrId == null) {
+      return;
+    }
+
+    children.forEach((node) => {
+      if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
+        node.page.isTarget = true;
+      }
+      else {
+        node.page.isTarget = false;
+      }
+      return node;
+    });
+  };
 
   return (
     <Modal

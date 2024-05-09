@@ -23,21 +23,21 @@ import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-  if (targetPathOrId == null) {
-    return;
-  }
+// const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+//   if (targetPathOrId == null) {
+//     return;
+//   }
 
-  children.forEach((node) => {
-    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-      node.page.isTarget = true;
-    }
-    else {
-      node.page.isTarget = false;
-    }
-    return node;
-  });
-};
+//   children.forEach((node) => {
+//     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
+//       node.page.isTarget = true;
+//     }
+//     else {
+//       node.page.isTarget = false;
+//     }
+//     return node;
+//   });
+// };
 
 
 const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
@@ -94,13 +94,14 @@ export const SimpleItemTool: FC<TreeItemToolProps> = (props) => {
 
 type SimpleItemProps = TreeItemProps & {
   itemRef?: RefObject<any> | RefCallback<any>,
+  // markTarget: (children: ItemNode[], targetPathOrId?: Nullable<string>) => void;
 }
 
 export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass, mainClassName,
+    itemRef, itemClass, mainClassName, markTarget,
   } = props;
 
   const { page, children } = itemNode;
@@ -153,7 +154,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
       markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, [children, currentChildren.length, targetPathOrId]);
+  }, [children, currentChildren.length, markTarget, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -164,7 +165,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
       markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen, targetPathOrId]);
+  }, [data, isOpen, markTarget, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 
