@@ -2,7 +2,6 @@ import type { FC } from 'react';
 import { useCallback, useState } from 'react';
 
 import type { IPageToDeleteWithMeta } from '@growi/core';
-import { useTranslation } from 'react-i18next';
 import { DropdownToggle } from 'reactstrap';
 
 import {
@@ -33,7 +32,6 @@ type BookmarkFolderItemProps = {
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
-  const { t } = useTranslation();
 
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
@@ -306,12 +304,10 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         </li>
       </DragAndDropWrapper>
       {isCreateAction && (
-        <div className="flex-fill">
-          <BookmarkFolderNameInput
-            onSubmit={create}
-            onCancel={cancel}
-          />
-        </div>
+        <BookmarkFolderNameInput
+          onSubmit={create}
+          onCancel={cancel}
+        />
       )}
       {
         renderChildFolder()
