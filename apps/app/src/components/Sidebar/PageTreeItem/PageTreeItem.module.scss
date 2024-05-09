@@ -1,8 +1,18 @@
 @use '@growi/core/scss/bootstrap/init' as bs;
 
+
 // == Colors
+
+// drag over
+.page-tree-item :global {
+  .drag-over {
+    background-color: var(--bs-list-group-action-active-bg);
+  }
+}
+
 @include bs.color-mode(light) {
-  .pagetree-item :global {
+  // button
+  .page-tree-item :global {
     .list-group-item-action {
       .btn-page-item-control {
         --bs-btn-bg: transparent;
@@ -14,7 +24,8 @@
 }
 
 @include bs.color-mode(dark) {
-  .pagetree-item :global {
+  // button
+  .page-tree-item :global {
     .list-group-item-action {
       .btn-page-item-control {
         --bs-btn-bg: transparent;

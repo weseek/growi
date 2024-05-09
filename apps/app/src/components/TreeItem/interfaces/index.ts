@@ -7,6 +7,7 @@ import type { IPageForPageDuplicateModal } from '~/stores/modal';
 import type { ItemNode } from '../ItemNode';
 
 type TreeItemBaseProps = {
+  itemLevel?: number,
   itemNode: ItemNode,
   isEnableActions: boolean,
   isReadOnlyUser: boolean,
@@ -26,7 +27,7 @@ export type TreeItemProps = TreeItemBaseProps & {
   isOpen?: boolean,
   isWipPageShown?: boolean,
   itemClass?: React.FunctionComponent<TreeItemProps>,
-  mainClassName?: string,
+  itemClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customHoveredEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customHeadOfChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,

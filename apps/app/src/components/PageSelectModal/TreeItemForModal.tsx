@@ -19,6 +19,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
     <TreeItemLayout
       key={props.key}
       targetPathOrId={props.targetPathOrId}
+      itemLevel={props.itemLevel}
       itemNode={props.itemNode}
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
@@ -26,7 +27,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
       onClickDeleteMenuItem={props.onClickDeleteMenuItem}
       onRenamed={props.onRenamed}
-      customNextComponents={[NewPageInput]}
+      customHeadOfChildrenComponents={[NewPageInput]}
       itemClass={TreeItemForModal}
       customHoveredEndComponents={[NewPageCreateButton]}
       onClick={onClick}

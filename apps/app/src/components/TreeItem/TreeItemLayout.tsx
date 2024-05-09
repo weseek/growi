@@ -37,14 +37,17 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 
 
 type TreeItemLayoutProps = TreeItemProps & {
+  className?: string,
   itemRef?: RefObject<any> | RefCallback<any>,
 }
 
 export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   const {
+    className, itemClassName,
+    itemLevel: baseItemLevel = 1,
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass, mainClassName,
+    itemRef, itemClass,
     showAlternativeContent,
   } = props;
 
@@ -111,7 +114,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const ItemClassFixed = itemClass ?? TreeItemLayout;
 
-  const baseProps: Omit<TreeItemProps, 'itemNode'> = {
+  const baseProps: Omit<TreeItemProps, 'itemLevel' | 'itemNode'> = {
     isEnableActions,
     isReadOnlyUser,
     isOpen: false,
@@ -124,6 +127,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const toolProps: TreeItemToolProps = {
     ...baseProps,
+    itemLevel: baseItemLevel,
     itemNode,
     stateHandlers: {
       setIsOpen,
@@ -143,12 +147,14 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     <div
       id={`tree-item-layout-${page._id}`}
       data-testid="grw-pagetree-item-container"
-      className={`tree-item-layout ${moduleClass} ${mainClassName}`}
+      className={`${moduleClass} ${className} level-${baseItemLevel}`}
     >
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item border-0 py-0 pr-3 d-flex align-items-center rounded-1 ${page.isTarget ? 'active' : 'list-group-item-action'}`}
+        className={`list-group-item ${itemClassName}
+          border-0 py-0 pr-3 d-flex align-items-center rounded-1
+          ${page.isTarget ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
@@ -195,28 +201,32 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
       </li>
 
-      { isOpen && HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <HeadObChildrenContents key={index} {...toolProps} />
-      ))}
+      { isOpen && (
+        <div className={`tree-item-layout-children level-${baseItemLevel + 1}`}>
 
-      {
-        isOpen && hasChildren() && currentChildren.map((node, index) => {
-          const itemProps = {
-            ...baseProps,
-            itemNode: node,
-            itemClass,
-            mainClassName,
-            onClick,
-          };
+          {HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <HeadObChildrenContents key={index} {...toolProps} itemLevel={baseItemLevel + 1} />
+          ))}
 
-          return (
-            <div key={node.page._id} className="tree-item-layout-children">
+          { hasChildren() && currentChildren.map((node) => {
+            const itemProps = {
+              ...baseProps,
+              className,
+              itemLevel: baseItemLevel + 1,
+              itemNode: node,
+              itemClass,
+              itemClassName,
+              onClick,
+            };
+
+            return (
               <ItemClassFixed {...itemProps} />
-            </div>
-          );
-        })
-      }
+            );
+          }) }
+
+        </div>
+      ) }
     </div>
   );
 };
