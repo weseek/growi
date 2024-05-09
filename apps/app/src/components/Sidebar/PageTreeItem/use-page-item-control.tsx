@@ -16,7 +16,7 @@ import { bookmark, unbookmark, resumeRenameOperation } from '~/client/services/p
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { ValidationTarget, useInputValidator, type InputValidationResult } from '~/client/util/use-input-validator';
-import { AutosizeSubmittableInput } from '~/components/Common/SubmittableInput';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '~/components/Common/SubmittableInput';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import { useSWRMUTxCurrentUserBookmarks } from '~/stores/bookmark';
 import { useSWRMUTxPageInfo } from '~/stores/page';
@@ -203,10 +203,9 @@ export const usePageItemControl = (): UsePageItemControl => {
     const renameInputContainerClass = renameInputStyles['rename-input-container'] ?? '';
     const isInvalid = validationResult != null;
 
-    const maxWidth = (parentRect?.width ?? 0)
-      - 12 * 2 // minus the padding (12px * 2) because AutosizeInput has "box-sizing: content-box;"
-      - (isInvalid ? 24 : 0); // minus the width for the exclamation icon
-
+    const maxWidth = parentRect != null
+      ? getAdjustedMaxWidthForAutosizeInput(parentRect.width, 'sm', validationResult != null ? false : undefined)
+      : undefined;
 
     return (
       <div ref={parentRef} className={`${renameInputContainerClass}`}>
