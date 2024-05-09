@@ -39,11 +39,13 @@ const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): vo
 type TreeItemLayoutProps = TreeItemProps & {
   className?: string,
   itemRef?: RefObject<any> | RefCallback<any>,
+  indentSize?: number,
 }
 
 export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   const {
     className, itemClassName,
+    indentSize = 10,
     itemLevel: baseItemLevel = 1,
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
@@ -148,12 +150,13 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
       id={`tree-item-layout-${page._id}`}
       data-testid="grw-pagetree-item-container"
       className={`${moduleClass} ${className} level-${baseItemLevel}`}
+      style={{ paddingLeft: `${baseItemLevel > 1 ? indentSize : 0}px` }}
     >
       <li
         ref={itemRef}
         role="button"
         className={`list-group-item ${itemClassName}
-          border-0 py-0 pr-3 d-flex align-items-center rounded-1
+          border-0 py-0 ps-0 d-flex align-items-center rounded-1
           ${page.isTarget ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
