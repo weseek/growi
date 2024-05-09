@@ -5,6 +5,11 @@ import {
 } from '../TreeItem';
 
 
+import styles from './TreeItemForModal.module.scss';
+
+const moduleClass = styles['tree-item-for-modal'];
+
+
 type PageTreeItemProps = TreeItemProps & {
   key?: React.Key | null,
 };
@@ -18,6 +23,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
   return (
     <TreeItemLayout
       key={props.key}
+      className={moduleClass}
       targetPathOrId={props.targetPathOrId}
       itemLevel={props.itemLevel}
       itemNode={props.itemNode}
