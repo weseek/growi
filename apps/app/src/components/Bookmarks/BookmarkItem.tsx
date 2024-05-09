@@ -12,15 +12,14 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
-import { ValidationTarget } from '~/client/util/use-input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
 import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
+import { AutosizeSubmittableInput } from '../Common/SubmittableInput';
 import { PageListItemS } from '../PageList/PageListItemS';
 
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
@@ -163,13 +162,14 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       >
         { isRenameInputShown
           ? (
-            <ClosableTextInput
+            <AutosizeSubmittableInput
               value={nodePath.basename(bookmarkedPage.path ?? '')}
+              inputClassName="form-control"
               placeholder={t('Input page name')}
-              onPressEnter={rename}
-              onBlur={rename}
-              onPressEscape={() => { setRenameInputShown(false) }}
-              validationTarget={ValidationTarget.PAGE}
+              onSubmit={rename}
+              onCancel={() => { setRenameInputShown(false) }}
+              autoFocus
+              // validationTarget={ValidationTarget.PAGE}
             />
           )
           : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
