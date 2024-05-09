@@ -33,7 +33,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       itemClass={TreeItemForModal}
       customEndComponents={[NewPageCreateButton]}
       onClick={onClick}
-      markTarget={markTarget}
+      // markTarget={markTarget}
     />
   );
 };

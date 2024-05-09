@@ -5,6 +5,7 @@ import nodePath from 'path';
 
 import type { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
+import dynamic from 'next/dynamic';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
@@ -14,13 +15,17 @@ import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stor
 import { usePageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
-import { ItemsTree } from '../ItemsTree';
+// import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import type { ItemNode } from '../TreeItem';
 
 import { TreeItemForModal } from './TreeItemForModal';
 
+const ItemsTree = dynamic(
+  () => import('../ItemsTree').then(mod => mod.ItemsTree),
+  { ssr: false, loading: ItemsTreeContentSkeleton },
+);
 
 export const PageSelectModal: FC = () => {
   const {
@@ -69,29 +74,29 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
-  const targetPathOrId = targetId || currentPath;
+  const targetPathOrId = clickedParentPagePath;
 
-  const path = currentPath || '/';
+  const targetPath = clickedParentPagePath || '/';
 
   if (isGuestUser == null) {
     return null;
   }
 
-  const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-    if (targetPathOrId == null) {
-      return;
-    }
+  // const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+  //   if (targetPathOrId == null) {
+  //     return;
+  //   }
 
-    children.forEach((node) => {
-      if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-        node.page.isTarget = true;
-      }
-      else {
-        node.page.isTarget = false;
-      }
-      return node;
-    });
-  };
+  //   children.forEach((node) => {
+  //     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
+  //       node.page.isTarget = true;
+  //     }
+  //     else {
+  //       node.page.isTarget = false;
+  //     }
+  //     return node;
+  //   });
+  // };
 
   return (
     <Modal
@@ -107,7 +112,7 @@ export const PageSelectModal: FC = () => {
             CustomTreeItem={TreeItemForModal}
             isEnableActions={!isGuestUser}
             isReadOnlyUser={!!isReadOnlyUser}
-            targetPath={path}
+            targetPath={targetPath}
             targetPathOrId={targetPathOrId}
             targetAndAncestorsData={targetAndAncestorsData}
             onClickTreeItem={onClickTreeItem}

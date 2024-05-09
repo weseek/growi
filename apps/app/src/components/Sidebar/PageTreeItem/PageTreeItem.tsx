@@ -189,7 +189,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       mainClassName={mainClassName}
       customEndComponents={[Ellipsis, NewPageCreateButton]}
       customNextComponents={[NewPageInput]}
-      markTarget={markTarget}
+      // markTarget={markTarget}
     />
   );
 };

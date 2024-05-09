@@ -23,21 +23,24 @@ import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 
 
 // Utility to mark target
-// const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-//   if (targetPathOrId == null) {
-//     return;
-//   }
+const markTarget = (page: IPageForItem, children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
 
-//   children.forEach((node) => {
-//     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-//       node.page.isTarget = true;
-//     }
-//     else {
-//       node.page.isTarget = false;
-//     }
-//     return node;
-//   });
-// };
+  if (targetPathOrId == null) {
+    return;
+  }
+
+  page.isTarget = page.path === targetPathOrId;
+
+  children.forEach((node) => {
+    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
+      node.page.isTarget = true;
+    }
+    else {
+      node.page.isTarget = false;
+    }
+    return node;
+  });
+};
 
 
 const SimpleItemContent = ({ page }: { page: IPageForItem }) => {
@@ -101,7 +104,7 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
   const {
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass, mainClassName, markTarget,
+    itemRef, itemClass, mainClassName,
   } = props;
 
   const { page, children } = itemNode;
@@ -151,10 +154,10 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(children, targetPathOrId);
+      markTarget(page, children, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, [children, currentChildren.length, markTarget, targetPathOrId]);
+  }, [children, currentChildren.length, page, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -162,10 +165,10 @@ export const SimpleItem: FC<SimpleItemProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(newChildren, targetPathOrId);
+      markTarget(page, newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen, markTarget, targetPathOrId]);
+  }, [data, isOpen, page, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? SimpleItem;
 

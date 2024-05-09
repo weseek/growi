@@ -171,7 +171,6 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
     return null;
   }
 
-
   return (
     <div ref={rootElemRef}>
       <ItemsTree
