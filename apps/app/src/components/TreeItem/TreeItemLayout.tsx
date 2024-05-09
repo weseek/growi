@@ -125,12 +125,14 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   const toolProps: TreeItemToolProps = {
     ...baseProps,
     itemNode,
+    stateHandlers: {
+      setIsOpen,
+    },
   };
 
   const EndComponents = props.customEndComponents;
   const HoveredEndComponents = props.customHoveredEndComponents;
-  const NextComponents = props.customNextComponents;
-  const NextToChildrenComponents = props.customNextToChildrenComponents;
+  const HeadObChildrenComponents = props.customHeadOfChildrenComponents;
   const AlternativeComponents = props.customAlternativeComponents;
 
   if (!isWipPageShown && page.wip) {
@@ -193,9 +195,9 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
       </li>
 
-      {NextComponents?.map((NextContent, index) => (
+      { isOpen && HeadObChildrenComponents?.map((HeadObChildrenContents, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <NextContent key={index} {...toolProps} />
+        <HeadObChildrenContents key={index} {...toolProps} />
       ))}
 
       {
@@ -211,12 +213,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
           return (
             <div key={node.page._id} className="tree-item-layout-children">
               <ItemClassFixed {...itemProps} />
-
-              {NextToChildrenComponents?.map((NextToChildrenContent, index) => (
-                // eslint-disable-next-line react/no-array-index-key
-                <NextToChildrenContent key={index} {...toolProps} />
-              ))}
-
             </div>
           );
         })

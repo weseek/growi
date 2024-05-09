@@ -13,13 +13,13 @@ type TreeItemBaseProps = {
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void,
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void,
   onRenamed?(fromPath: string | undefined, toPath: string): void,
-  stateHandlers?: {
-    isOpen: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  },
 }
 
-export type TreeItemToolProps = TreeItemBaseProps;
+export type TreeItemToolProps = TreeItemBaseProps & {
+  stateHandlers?: {
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  },
+};
 
 export type TreeItemProps = TreeItemBaseProps & {
   targetPathOrId?: Nullable<string>,
@@ -29,8 +29,7 @@ export type TreeItemProps = TreeItemBaseProps & {
   mainClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   customHoveredEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
-  customNextComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
-  customNextToChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customHeadOfChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   showAlternativeContent?: boolean,
   customAlternativeComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   onClick?(page: IPageForItem): void,

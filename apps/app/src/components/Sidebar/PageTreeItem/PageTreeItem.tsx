@@ -199,8 +199,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       mainClassName={mainClassName}
       customEndComponents={[CountBadgeForPageTreeItem]}
       customHoveredEndComponents={[Control, NewPageCreateButton]}
-      customNextComponents={[NewPageInput]}
-      customNextToChildrenComponents={[() => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
+      customHeadOfChildrenComponents={[NewPageInput, () => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
       showAlternativeContent={showRenameInput}
       customAlternativeComponents={[RenameInput]}
     />
