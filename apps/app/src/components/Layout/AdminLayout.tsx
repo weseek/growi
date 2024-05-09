@@ -45,7 +45,7 @@ const AdminLayout = ({
               <div className="col-lg-3">
                 <AdminNavigation />
               </div>
-              <div className="col-lg-9">
+              <div className="col-lg-9 mb-5">
                 {children}
               </div>
             </div>
