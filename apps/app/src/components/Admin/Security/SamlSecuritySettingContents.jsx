@@ -112,7 +112,7 @@ class SamlSecurityManagementContents extends React.Component {
             {(adminSamlSecurityContainer.state.missingMandatoryConfigKeys.length !== 0) && (
               <div className="alert alert-danger">
                 {t('security_settings.missing mandatory configs')}
-                <ul className="mb-0">
+                <ul>
                   {adminSamlSecurityContainer.state.missingMandatoryConfigKeys.map((configKey) => {
                     const key = configKey.replace('security:passport-saml:', '');
                     return <li key={configKey}>{t(`security_settings.form_item_name.${key}`)}</li>;
