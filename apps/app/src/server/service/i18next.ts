@@ -1,3 +1,5 @@
+import path from 'path';
+
 import type { Lang } from '@growi/core';
 import type { TFunction, i18n } from 'i18next';
 import { createInstance } from 'i18next';
@@ -5,8 +7,12 @@ import resourcesToBackend from 'i18next-resources-to-backend';
 
 import { defaultLang, initOptions } from '^/config/i18next.config';
 
+import { resolveFromRoot } from '~/utils/project-dir-utils';
+
 import { configManager } from './config-manager';
 
+
+const relativePathToLocalesRoot = path.relative(__dirname, resolveFromRoot('public/static/locales'));
 
 const initI18next = async(lang: Lang = defaultLang) => {
   const i18nInstance = createInstance();
@@ -14,7 +20,7 @@ const initI18next = async(lang: Lang = defaultLang) => {
     .use(
       resourcesToBackend(
         (language: string, namespace: string) => {
-          return import(`^/public/static/locales/${language}/${namespace}.json`);
+          return import(path.join(relativePathToLocalesRoot, language, `${namespace}.json`));
         },
       ),
     )

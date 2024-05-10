@@ -79,6 +79,7 @@
 
   "create_page_dropdown": {
     "new_page": "新規ページ作成",
+    "open_page_create_modal": "新規ページ作成モーダルを表示",
     "todays": {
       "desc": "今日のメモを作成",
       "memo": "メモ"

@@ -27,6 +27,7 @@ import { SupportedAction, type SupportedActionType } from '~/interfaces/activity
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
@@ -49,6 +50,7 @@ import {
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -172,6 +174,8 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
+  yjsData: CurrentPageYjsData,
+
   rendererConfig: RendererConfig,
 };
 
@@ -232,6 +236,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
+
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
@@ -243,6 +249,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
+
+  const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -257,13 +265,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
+        mutateCurrentPageYjsDataFromApi();
       };
 
       // If skipSSR is true, use the API to retrieve page data.
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
+  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -305,6 +314,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   useEffect(() => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
+
+  useEffect(() => {
+    mutateCurrentPageYjsData(props.yjsData);
+  }, [mutateCurrentPageYjsData, props.yjsData]);
 
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
@@ -484,6 +497,10 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       if (!isToppage) {
         props.currentPathname = `/${page._id}`;
       }
+    }
+
+    if (!props.skipSSR) {
+      props.yjsData = await crowi.pageService.getYjsData(page._id);
     }
   }
 }
