@@ -3,9 +3,6 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem,
-} from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
@@ -44,13 +41,20 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
 
-      <UncontrolledButtonDropdown className="me-1">
-        <DropdownToggle color="transparent" className="p-0 border-0">
+      <div className="me-1">
+        <button
+          color="transparent"
+          className="btn p-0 border-0"
+          type="button"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+        >
           <span className="material-symbols-outlined">more_horiz</span>
-        </DropdownToggle>
+        </button>
 
-        <DropdownMenu container="body">
-          <DropdownItem onClick={onWipPageShownChange} className="">
+        <ul className="dropdown-menu">
+          <li className="dropdown-item" onClick={onWipPageShownChange}>
             <div className="form-check form-switch">
               <input
                 id="wipPageVisibility"
@@ -63,9 +67,9 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledButtonDropdown>
+          </li>
+        </ul>
+      </div>
     </>
   );
 });
