@@ -79,10 +79,10 @@ describe('Access to sidebar', () => {
               });
             });
             // wait until
-            return cy.getByTestid('page-item-control-menu').filter('.show').then($elem => $elem.is(':visible'));
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').filter('.show').should('be.visible').within(() => {
+          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
             // take a screenshot for dropdown menu
             cy.screenshot(`${ssPrefix}page-tree-2-before-adding-bookmark`)
             // click add remove bookmark btn
@@ -99,10 +99,10 @@ describe('Access to sidebar', () => {
               });
             });
             // wait until
-            return cy.getByTestid('page-item-control-menu').filter('.show').then($elem => $elem.is(':visible'));
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').filter('.show').should('be.visible').within(() => {
+          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
             // expect to be visible
             cy.getByTestid('remove-bookmark-btn').should('be.visible');
             // take a screenshot for dropdown menu
@@ -120,10 +120,10 @@ describe('Access to sidebar', () => {
               });
             });
             // wait until
-            return cy.getByTestid('page-item-control-menu').filter('.show').then($elem => $elem.is(':visible'));
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').filter('.show').should('be.visible').within(() => {
+          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
             cy.getByTestid('open-page-duplicate-modal-btn').click();
           })
 
@@ -146,10 +146,10 @@ describe('Access to sidebar', () => {
               });
             });
             // wait until
-            return cy.getByTestid('page-item-control-menu').filter('.show').then($elem => $elem.is(':visible'));
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').filter('.show').should('be.visible').within(() => {
+          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
             cy.getByTestid('rename-page-btn').click();
           })
 
@@ -170,10 +170,10 @@ describe('Access to sidebar', () => {
               });
             });
             // wait until
-            return cy.getByTestid('page-item-control-menu').filter('.show').then($elem => $elem.is(':visible'));
+            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.getByTestid('page-item-control-menu').filter('.show').should('be.visible').within(() => {
+          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
             cy.getByTestid('open-page-delete-modal-btn').click();
           })
 
