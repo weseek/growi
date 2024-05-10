@@ -328,7 +328,7 @@ context('Search and use', () => {
   it('Successfully add bookmark', () => {
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
       // Add bookmark
-      cy.getByTestid('add-remove-bookmark-btn').click({force: true});
+      cy.getByTestid('add-bookmark-btn').click({force: true});
     });
     cy.getByTestid('search-result-content').within(() => {
       cy.get('.btn-bookmark.active').should('be.visible');
