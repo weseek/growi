@@ -85,7 +85,7 @@ describe('Access to sidebar', () => {
           cy.screenshot(`${ssPrefix}page-tree-3-before-click-button`, { blackout: blackoutOverride });
 
           // click add remove bookmark btn
-          cy.getByTestid('page-item-control-menu').should('have.class', 'show')
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
           cy.getByTestid('add-remove-bookmark-btn').click();
 
           // show dropdown again
@@ -117,9 +117,8 @@ describe('Access to sidebar', () => {
             return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.get('.dropdown-menu.show').within(() => {
-            cy.getByTestid('open-page-duplicate-modal-btn').should('be.visible').click();
-          });
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
+          cy.getByTestid('open-page-duplicate-modal-btn').click();
 
           cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
             cy.get('.form-control').type('_test');
@@ -166,9 +165,8 @@ describe('Access to sidebar', () => {
             return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.get('.dropdown-menu.show').within(() => {
-            cy.getByTestid('open-page-delete-modal-btn').should('be.visible').click();
-          });
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show');
+          cy.getByTestid('open-page-delete-modal-btn').click();
 
           cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
             cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`, { blackout: blackoutOverride });
