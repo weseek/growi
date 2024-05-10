@@ -140,7 +140,7 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').eq(1).as('pagetreeItem').within(() => { // against the second element
+              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
                 cy.get('li').realHover();
                 cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
@@ -153,7 +153,7 @@ describe('Access to sidebar', () => {
             cy.getByTestid('rename-page-btn').click();
           })
 
-          cy.get('@pagetreeItem').within(() => {
+          cy.getByTestid('grw-sidebar-contents').within(() => {
             cy.getByTestid('autosize-submittable-input').type('_newname');
           })
 
