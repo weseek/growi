@@ -292,7 +292,7 @@ const PageCreateModal: React.FC = () => {
       className={`grw-create-page ${styles['grw-create-page']}`}
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={() => closeCreateModal()} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => closeCreateModal()}>
         {t('New Page')}
       </ModalHeader>
       <ModalBody>

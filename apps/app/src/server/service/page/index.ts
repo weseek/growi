@@ -33,6 +33,7 @@ import {
 } from '~/interfaces/page-operation';
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { CreateMethod } from '~/server/models/page';
 import {
   type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
@@ -4448,15 +4449,31 @@ class PageService implements IPageService {
     });
   }
 
-  getYjsDraft(pageId: string): string | undefined {
+  async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
     const yjsConnectionManager = getYjsConnectionManager();
     const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+    const yjsDraft = currentYdoc?.getText('codemirror').toString();
+    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
 
-    if (currentYdoc == null) {
-      return;
+    return {
+      hasRevisionBodyDiff,
+      awarenessStateSize: currentYdoc?.awareness.states.size,
+    };
+  }
+
+  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
+    if (comparisonTarget == null) {
+      return false;
     }
 
-    return currentYdoc.getText('codemirror').toString();
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
+
+    if (revision == null) {
+      return false;
+    }
+
+    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {

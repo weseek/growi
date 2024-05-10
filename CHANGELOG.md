@@ -1,8 +1,51 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.3...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
+
+### 🚀 Improvement
+
+* imprv: Rename on blur (#8777) @yuki-takei
+* imprv: Re-calculate max-width for page tile on editor (#8775) @yuki-takei
+* imprv: Truncate page path title in editor (#8726) @reiji-h
+* imprv: FootstrampIcon uses material symbols (#8699) @kazutoweseek
+* imprv: behaviour when pressing enter after numerical input (ex: 2.3.4.) (#8754) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: An error occurred during user activation via email (#8767) @maeshinshin
+* fix: Admin customize screen (#8765) @yuki-takei
+* fix: Editor theme active line (material, nord) (#8762) @satof3
+* fix: 500 error occur when pressing the button for opening PageSelectModal (#8761) @WNomunomu
+* fix: Admin screen min-height for body (#8764) @yuki-takei
+* fix: Behaviour of table operation by enter key in editor (#8756) @WNomunomu
+* fix: EditingUserList shows user icons even when the user is not opening the editor (#8752) @miya
+* fix: Tags are not created when space key is entered (Firefox) (#8758) @miya
+* fix: Parent group selection dropdown does not work (#8759) @miya
+* fix: Codeblock overflow (#8753) @yuki-takei
+* fix:  Nord and Original-dark theme in editor (#8748) @satof3
+* fix: Material and Eclipse colors (#8749) @satof3
+* fix: Always autofocus when moving to the Editor (#8730) @reiji-h
+* fix: CopyDropdown protrudes from the screen issue (#8734) @WNomunomu
+* fix: Error on today's memo create from hotkey when memo exists (#8746) @arafubeatbox
+* fix: Editor styles (#8742) @yuki-takei
+* fix: Close the comment editor after the post (#8741) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump typeorm from 0.3.0 to 0.3.20 (#8745) @dependabot
+* support: Make AwsFileUploader type safe (#8780) @yuki-takei
+* support: Update modal header design (#8766) @satof3
+* support: Improve types in IPage and IRevision (#8763) @yuki-takei
+* support: Editor mobile appearance (#8760) @satof3
+* support: Localize in app tags language en change ja ch revision (#8757) @kazutoweseek
+* support: Upgrade vite and vitest (#8743) @yuki-takei
+* support: Adjust design details (#8738) @satof3
+* ci(deps): bump typeorm from 0.2.32 to 0.3.0 (#8602) @dependabot
+* support: Upgrade date-fns (#8744) @yuki-takei
 
 ## [v7.0.2](https://github.com/weseek/growi/compare/v7.0.1...v7.0.2) - 2024-04-17
 

@@ -1,13 +1,12 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
-import { CurrentPageYjsDraftData } from '~/interfaces/page';
 import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import { getYjsConnectionManager } from './yjs-connection-manager';
+import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
 
 
 const expressSession = require('express-session');
@@ -169,14 +168,30 @@ class SocketIoService {
 
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
-    this.io.on('connection', (socket) => {
-      socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
 
-        // Emit to the client in the room of the target pageId.
+    this.io.on('connection', (socket) => {
+
+      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
+        const pageId = extractPageIdFromYdocId(update.name);
+        const awarenessStateSize = update.awareness.states.size;
+
+        // Triggered when awareness changes
         this.io
           .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
-          .emit(SocketEventName.YjsUpdated, CurrentPageYjsDraftData.hasYjsDraft);
+          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
 
+        // Triggered when the last user leaves the editor
+        if (awarenessStateSize === 0) {
+          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+          const yjsDraft = currentYdoc?.getText('codemirror').toString();
+          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
+          this.io
+            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
+        }
+      });
+
+      socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }

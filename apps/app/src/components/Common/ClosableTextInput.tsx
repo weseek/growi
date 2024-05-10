@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import React, {
-  memo, useEffect, useRef, useState,
+  memo, useCallback, useEffect, useRef, useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -9,90 +9,85 @@ import AutosizeInput from 'react-input-autosize';
 import type { AlertInfo } from '~/client/util/input-validator';
 import { AlertType, inputValidator } from '~/client/util/input-validator';
 
-type ClosableTextInputProps = {
+export type ClosableTextInputProps = {
   value?: string
   placeholder?: string
   validationTarget?: string,
   useAutosizeInput?: boolean
   inputClassName?: string,
-  onPressEnter?(inputText: string | null): void
-  onPressEscape?: () => void
-  onClickOutside?(): void
+  onPressEnter?(inputText: string): void
+  onPressEscape?(inputText: string): void
+  onBlur?(inputText: string): void
   onChange?(inputText: string): void
 }
 
 const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextInputProps) => {
   const { t } = useTranslation();
-  const { validationTarget } = props;
+  const {
+    validationTarget, onPressEnter, onPressEscape, onBlur, onChange,
+  } = props;
 
   const inputRef = useRef<HTMLInputElement>(null);
-  const [inputText, setInputText] = useState(props.value);
+  const [inputText, setInputText] = useState(props.value ?? '');
   const [currentAlertInfo, setAlertInfo] = useState<AlertInfo | null>(null);
   const [isAbleToShowAlert, setIsAbleToShowAlert] = useState(false);
   const [isComposing, setComposing] = useState(false);
 
 
-  const createValidation = async(inputText: string) => {
+  const createValidation = useCallback(async(inputText: string) => {
     const alertInfo = await inputValidator(inputText, validationTarget);
     if (alertInfo && alertInfo.message != null && alertInfo.target != null) {
       alertInfo.message = t(alertInfo.message, { target: t(alertInfo.target) });
     }
     setAlertInfo(alertInfo);
-  };
+  }, [t, validationTarget]);
 
-  const onChangeHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
+  const changeHandler = useCallback(async(e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
     createValidation(inputText);
     setInputText(inputText);
     setIsAbleToShowAlert(true);
 
-    props.onChange?.(inputText);
-  };
+    onChange?.(inputText);
+  }, [createValidation, onChange]);
 
-  const onFocusHandler = async(e: React.ChangeEvent<HTMLInputElement>) => {
+  const onFocusHandler = useCallback(async(e: React.ChangeEvent<HTMLInputElement>) => {
     const inputText = e.target.value;
     await createValidation(inputText);
-  };
+  }, [createValidation]);
 
-  const onPressEnter = () => {
-    if (props.onPressEnter != null) {
-      const text = inputText != null ? inputText.trim() : null;
-      if (currentAlertInfo == null) {
-        props.onPressEnter(text);
-      }
+  const pressEnterHandler = useCallback(() => {
+    if (currentAlertInfo == null) {
+      onPressEnter?.(inputText.trim());
     }
-  };
+  }, [currentAlertInfo, inputText, onPressEnter]);
 
-  const onKeyDownHandler = (e) => {
+  const onKeyDownHandler = useCallback((e) => {
     switch (e.key) {
       case 'Enter':
         // Do nothing when composing
         if (isComposing) {
           return;
         }
-        onPressEnter();
+        pressEnterHandler();
         break;
       case 'Escape':
         if (isComposing) {
           return;
         }
-        props.onPressEscape?.();
+        onPressEscape?.(inputText.trim());
         break;
       default:
         break;
     }
-  };
+  }, [inputText, isComposing, pressEnterHandler, onPressEscape]);
 
   /*
    * Hide when click outside the ref
    */
-  const onBlurHandler = () => {
-    if (props.onClickOutside == null) {
-      return;
-    }
-
-    props.onClickOutside();
-  };
+  const onBlurHandler = useCallback(() => {
+    onBlur?.(inputText.trim());
+  }, [inputText, onBlur]);
 
   // didMount
   useEffect(() => {
@@ -126,7 +121,7 @@ const ClosableTextInput: FC<ClosableTextInputProps> = memo((props: ClosableTextI
     placeholder: props.placeholder,
     name: 'input',
     onFocus: onFocusHandler,
-    onChange: onChangeHandler,
+    onChange: changeHandler,
     onKeyDown: onKeyDownHandler,
     onCompositionStart: () => setComposing(true),
     onCompositionEnd: () => setComposing(false),
