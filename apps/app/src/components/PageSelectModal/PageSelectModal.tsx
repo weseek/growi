@@ -16,9 +16,12 @@ import { usePageSelectModal } from '~/stores/modal';
 import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 // import { ItemsTree } from '../ItemsTree';
+import { useSWRxPageChildren } from '~/stores/page-listing';
+
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import type { ItemNode } from '../TreeItem';
+
 
 import { TreeItemForModal } from './TreeItemForModal';
 
@@ -36,6 +39,7 @@ export const PageSelectModal: FC = () => {
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const [clickedParentPagePath, setClickedParentPagePath] = useState<string | null>(null);
+  const [clickedParentPageId, setClickedParentPageId] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -45,17 +49,20 @@ export const PageSelectModal: FC = () => {
   const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
+  const { mutate: mutateChildren } = useSWRxPageChildren(clickedParentPageId);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
   const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
+    const parentPageId = page._id;
 
-    if (parentPagePath == null) {
+    if (parentPagePath == null || parentPageId == null) {
       return;
     }
 
     setClickedParentPagePath(parentPagePath);
+    setClickedParentPageId(parentPageId);
   }, []);
 
   const onClickCancel = useCallback(() => {
@@ -63,16 +70,17 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [closeModal]);
 
-  const onClickDone = useCallback(() => {
+  const onClickDone = useCallback(async() => {
     if (clickedParentPagePath != null) {
       const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
       const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
 
       pagePathRenameHandler(newPagePath);
+      await mutateChildren();
     }
 
     closeModal();
-  }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
+  }, [clickedParentPagePath, closeModal, currentPage?.path, mutateChildren, pagePathRenameHandler]);
 
   const targetPathOrId = clickedParentPagePath;
 
