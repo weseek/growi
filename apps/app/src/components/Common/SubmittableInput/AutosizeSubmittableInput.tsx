@@ -25,6 +25,6 @@ export const AutosizeSubmittableInput = (props: SubmittableInputProps<AutosizeIn
   const submittableProps = useSubmittable(props);
 
   return (
-    <AutosizeInput {...submittableProps} />
+    <AutosizeInput {...submittableProps} data-testid="autosize-submittable-input" />
   );
 };

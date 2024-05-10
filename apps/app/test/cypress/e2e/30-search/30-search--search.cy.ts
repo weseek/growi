@@ -349,7 +349,7 @@ context('Search and use', () => {
 
   it('Successfully open move/rename modal', () => {
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-      cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
+      cy.getByTestid('rename-page-btn').click({force: true});
     });
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}4-move-rename-page`);

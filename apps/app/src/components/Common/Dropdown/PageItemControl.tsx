@@ -180,7 +180,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
           <DropdownItem
             onClick={renameItemClickedHandler}
-            data-testid="open-page-move-rename-modal-btn"
+            data-testid="rename-page-btn"
             className="grw-page-control-dropdown-item"
           >
             <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>

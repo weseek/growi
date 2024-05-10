@@ -69,12 +69,12 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it.only('Successfully click Add to Bookmarks button', () => {
+        it('Successfully click Add to Bookmarks button', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').first().within(() => {
-                cy.get('li').first().realHover();
+              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+                cy.get('li').realHover();
                 cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
@@ -92,8 +92,8 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').first().within(() => {
-                cy.get('li').first().realHover();
+              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+                cy.get('li').realHover();
                 cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
@@ -108,8 +108,9 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+                cy.get('li').realHover();
+                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
             // wait until
@@ -133,20 +134,20 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              cy.getByTestid('grw-pagetree-item-container').eq(1).as('pagetreeItem').within(() => { // against the second element
+                cy.get('li').realHover();
+                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
             // wait until
             return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
           });
 
-          cy.get('.dropdown-menu.show').within(() => {
-            cy.getByTestid('open-page-move-rename-modal-btn').should('be.visible').click();
-          });
+          cy.getByTestid('page-item-control-menu').should('have.class', 'show')
+          cy.getByTestid('rename-page-btn').click();
 
           cy.get('@pagetreeItem').within(() => {
-            cy.getByTestid('closable-text-input').type('_newname');
+            cy.getByTestid('autosize-submittable-input').type('_newname');
           })
 
           cy.screenshot(`${ssPrefix}page-tree-6-rename-page`, { blackout: blackoutOverride });
@@ -156,8 +157,9 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+                cy.get('li').realHover();
+                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
             // wait until
