@@ -25,9 +25,6 @@ import { PageItemControl } from '../../Common/Dropdown/PageItemControl';
 import type { TreeItemToolProps } from '../../TreeItem';
 
 
-import renameInputStyles from './RenameInput.module.scss';
-
-
 type UsePageItemControl = {
   Control: FC<TreeItemToolProps>,
   RenameInput: FC<TreeItemToolProps>,
@@ -200,7 +197,6 @@ export const usePageItemControl = (): UsePageItemControl => {
       return <></>;
     }
 
-    const renameInputContainerClass = renameInputStyles['rename-input-container'] ?? '';
     const isInvalid = validationResult != null;
 
     const maxWidth = parentRect != null
@@ -208,7 +204,7 @@ export const usePageItemControl = (): UsePageItemControl => {
       : undefined;
 
     return (
-      <div ref={parentRef} className={renameInputContainerClass}>
+      <div ref={parentRef} className="flex-fill">
         <AutosizeSubmittableInput
           value={nodePath.basename(page.path ?? '')}
           inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
