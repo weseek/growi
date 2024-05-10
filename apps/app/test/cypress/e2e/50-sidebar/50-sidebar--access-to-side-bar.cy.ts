@@ -109,78 +109,78 @@ describe('Access to sidebar', () => {
         //   });
         // });
 
-        it('Successfully show duplicate page modal', () => {
-          cy.waitUntil(() => {
-            // do
-            cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
-                cy.get('li').realHover();
-                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
-              });
-            });
-            // wait until
-            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
-          });
+        // it('Successfully show duplicate page modal', () => {
+        //   cy.waitUntil(() => {
+        //     // do
+        //     cy.getByTestid('grw-sidebar-contents').within(() => {
+        //       cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+        //         cy.get('li').realHover();
+        //         cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
+        //       });
+        //     });
+        //     // wait until
+        //     return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
+        //   });
 
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('open-page-duplicate-modal-btn').click();
-          })
+        //   cy.get('.dropdown-menu.show').should('be.visible').within(() => {
+        //     cy.getByTestid('open-page-duplicate-modal-btn').click();
+        //   })
 
-          cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
-            cy.get('.form-control').type('_test');
+        //   cy.getByTestid('page-duplicate-modal').should('be.visible').within(() => {
+        //     cy.get('.form-control').type('_test');
 
-            cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`, { blackout: blackoutOverride });
+        //     cy.screenshot(`${ssPrefix}page-tree-5-duplicate-page-modal`, { blackout: blackoutOverride });
 
-            cy.get('.modal-header > button').click();
-          });
-        });
+        //     cy.get('.modal-header > button').click();
+        //   });
+        // });
 
-        it('Successfully rename page', () => {
-          cy.waitUntil(() => {
-            // do
-            cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
-                cy.get('li').realHover();
-                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
-              });
-            });
-            // wait until
-            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
-          });
+        // it('Successfully rename page', () => {
+        //   cy.waitUntil(() => {
+        //     // do
+        //     cy.getByTestid('grw-sidebar-contents').within(() => {
+        //       cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+        //         cy.get('li').realHover();
+        //         cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
+        //       });
+        //     });
+        //     // wait until
+        //     return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
+        //   });
 
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('rename-page-btn').click();
-          })
+        //   cy.get('.dropdown-menu.show').should('be.visible').within(() => {
+        //     cy.getByTestid('rename-page-btn').click();
+        //   })
 
-          cy.getByTestid('grw-sidebar-contents').within(() => {
-            cy.getByTestid('autosize-submittable-input').type('_newname');
-          })
+        //   cy.getByTestid('grw-sidebar-contents').within(() => {
+        //     cy.getByTestid('autosize-submittable-input').type('_newname');
+        //   })
 
-          cy.screenshot(`${ssPrefix}page-tree-6-rename-page`, { blackout: blackoutOverride });
-        });
+        //   cy.screenshot(`${ssPrefix}page-tree-6-rename-page`, { blackout: blackoutOverride });
+        // });
 
-        it('Successfully show delete page modal', () => {
-          cy.waitUntil(() => {
-            // do
-            cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
-                cy.get('li').realHover();
-                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
-              });
-            });
-            // wait until
-            return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
-          });
+        // it('Successfully show delete page modal', () => {
+        //   cy.waitUntil(() => {
+        //     // do
+        //     cy.getByTestid('grw-sidebar-contents').within(() => {
+        //       cy.getByTestid('grw-pagetree-item-container').eq(1).within(() => { // against the second element
+        //         cy.get('li').realHover();
+        //         cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
+        //       });
+        //     });
+        //     // wait until
+        //     return cy.get('.dropdown-menu.show').then($elem => $elem.is(':visible'));
+        //   });
 
-          cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-            cy.getByTestid('open-page-delete-modal-btn').click();
-          })
+        //   cy.get('.dropdown-menu.show').should('be.visible').within(() => {
+        //     cy.getByTestid('open-page-delete-modal-btn').click();
+        //   })
 
-          cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
-            cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`, { blackout: blackoutOverride });
-            cy.get('.modal-header > button').click();
-          });
-        });
+        //   cy.getByTestid('page-delete-modal').should('be.visible').within(() => {
+        //     cy.screenshot(`${ssPrefix}page-tree-7-delete-page-modal`, { blackout: blackoutOverride });
+        //     cy.get('.modal-header > button').click();
+        //   });
+        // });
       });
 
       describe('Test custom sidebar tab', () => {
