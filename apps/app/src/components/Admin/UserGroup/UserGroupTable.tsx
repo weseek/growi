@@ -179,7 +179,7 @@ export const UserGroupTable: FC<Props> = ({
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge text-bg-warning text-dark">{user.username}</li>;
+                      return <li key={user._id} className="list-inline-item badge text-bg-warning">{user.username}</li>;
                     })}
                   </ul>
                 </td>
