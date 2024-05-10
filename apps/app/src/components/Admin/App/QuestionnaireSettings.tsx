@@ -50,7 +50,7 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <div id="questionnaire-settings" className="mb-5">
-      <p className="card custom-card bg-body-tertiary">
+      <p className="card custom-card bg-info-subtle">
         <div className="mb-3">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">

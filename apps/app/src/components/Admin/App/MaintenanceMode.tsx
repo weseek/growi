@@ -55,7 +55,7 @@ export const MaintenanceMode: FC = () => {
         onConfirm={onConfirmHandler}
         onCancel={() => closeModal()}
       />
-      <p className="card custom-card bg-body-tertiary">
+      <p className="card custom-card bg-warning-subtle">
         {t('admin:maintenance_mode.description')}
         <span className="text-warning mt-1">
           <span className="material-symbols-outlined">error</span>

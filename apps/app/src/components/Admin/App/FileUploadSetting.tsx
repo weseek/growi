@@ -31,7 +31,7 @@ export const FileUploadSettingMolecule = React.memo((props: FileUploadSettingMol
 
   return (
     <>
-      <p className="card custom-card bg-body-tertiary my-3">
+      <p className="card custom-card bg-warning-subtle my-3">
         {t('admin:app_setting.file_upload')}
         <span className="text-danger mt-1">
           <span className="material-symbols-outlined">link_off</span>

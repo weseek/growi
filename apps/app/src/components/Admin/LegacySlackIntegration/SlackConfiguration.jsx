@@ -144,8 +144,8 @@ class SlackConfiguration extends React.Component {
           <a href="#collapseHelpForIwh" data-bs-toggle="collapse">{t('notification_settings.how_to.header')}</a>
         </h3>
 
-        <ol id="collapseHelpForIwh" className="collapse">
-          <li>
+        <ol id="collapseHelpForIwh" className="collapse card custom-card bg-body-tertiary">
+          <li className="ms-3">
             {t('notification_settings.how_to.workspace')}
             <ol>
               {/* eslint-disable-next-line react/no-danger */}
@@ -154,7 +154,7 @@ class SlackConfiguration extends React.Component {
               <li>{t('notification_settings.how_to.workspace_desc3')}</li>
             </ol>
           </li>
-          <li>
+          <li className="ms-3">
             {t('notification_settings.how_to.at_growi')}
             <ol>
               {/* eslint-disable-next-line react/no-danger */}
