@@ -32,6 +32,7 @@ type BookmarkFolderItemProps = {
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
+
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
@@ -257,12 +258,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             <FolderIcon isOpen={isOpen} />
           </div>
           {isRenameAction ? (
-            <BookmarkFolderNameInput
-              onPressEnter={rename}
-              onBlur={rename}
-              onPressEscape={cancel}
-              value={name}
-            />
+            <div className="flex-fill">
+              <BookmarkFolderNameInput
+                value={name}
+                onSubmit={rename}
+                onCancel={cancel}
+              />
+            </div>
           ) : (
             <>
               <div className="grw-foldertree-title-anchor ps-1">
@@ -302,13 +304,10 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         </li>
       </DragAndDropWrapper>
       {isCreateAction && (
-        <div className="flex-fill">
-          <BookmarkFolderNameInput
-            onPressEnter={create}
-            onBlur={create}
-            onPressEscape={cancel}
-          />
-        </div>
+        <BookmarkFolderNameInput
+          onSubmit={create}
+          onCancel={cancel}
+        />
       )}
       {
         renderChildFolder()

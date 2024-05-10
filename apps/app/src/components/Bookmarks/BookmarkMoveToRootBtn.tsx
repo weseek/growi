@@ -13,7 +13,6 @@ export const BookmarkMoveToRootBtn: React.FC<{
     <DropdownItem
       onClick={() => onClickMoveToRootHandler(pageId)}
       className="grw-page-control-dropdown-item"
-      data-testid="add-remove-bookmark-btn"
     >
       <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
       {t('bookmark_folder.move_to_root')}

@@ -15,7 +15,7 @@ import type { SubmittableInputProps } from '../Common/SubmittableInput/types';
 
 type Props = Pick<SubmittableInputProps<AutosizeInputProps>, 'value' | 'onSubmit' | 'onCancel'>;
 
-export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
+export const BookmarkItemRenameInput = (props: Props): JSX.Element => {
   const { t } = useTranslation();
 
   const { value, onSubmit, onCancel } = props;
@@ -26,7 +26,7 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
   const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
 
-  const inputValidator = useInputValidator(ValidationTarget.FOLDER);
+  const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const validationResult = inputValidator(e.target.value);
@@ -46,20 +46,20 @@ export const BookmarkFolderNameInput = (props: Props): JSX.Element => {
     : undefined;
 
   return (
-    <div ref={parentRef}>
+    <div className="flex-fill" ref={parentRef}>
       <AutosizeSubmittableInput
         value={value}
         inputClassName={`form-control ${isInvalid ? 'is-invalid' : ''}`}
         inputStyle={{ maxWidth }}
-        placeholder={t('bookmark_folder.input_placeholder')}
-        aria-describedby={isInvalid ? 'bookmark-folder-name-input-feedback' : undefined}
+        placeholder={t('Input page name')}
+        aria-describedby={isInvalid ? 'bookmark-item-rename-input-feedback' : undefined}
         autoFocus
         onChange={changeHandlerDebounced}
         onSubmit={onSubmit}
         onCancel={cancelHandler}
       />
       { isInvalid && (
-        <div id="bookmark-folder-name-input-feedback" className="invalid-feedback d-block my-1">
+        <div id="bookmark-item-rename-input-feedback" className="invalid-feedback d-block my-1">
           {validationResult.message}
         </div>
       ) }
