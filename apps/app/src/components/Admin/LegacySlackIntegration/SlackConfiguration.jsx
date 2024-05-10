@@ -99,9 +99,9 @@ class SlackConfiguration extends React.Component {
         )
           : (
             <React.Fragment>
-              <h2 className="border-bottom mb-5">{t('notification_settings.slack_app_configuration')}</h2>
+              <h2 className="border-bottom mb-3">{t('notification_settings.slack_app_configuration')}</h2>
 
-              <div className="card custom-card">
+              <div className="card custom-card bg-danger-subtle">
                 <span className="text-danger"><span className="material-symbols-outlined">error</span>NOT RECOMMENDED</span>
                 <br />
                 {/* eslint-disable-next-line react/no-danger */}
@@ -116,7 +116,7 @@ class SlackConfiguration extends React.Component {
                 </a>
               </div>
 
-              <div className="row mb-5">
+              <div className="row mb-5 mt-4">
                 <label className="form-label col-md-3 text-start text-md-end">OAuth access token</label>
                 <div className="col-md-6">
                   <input
