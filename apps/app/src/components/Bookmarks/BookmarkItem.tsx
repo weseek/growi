@@ -19,9 +19,9 @@ import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
-import { AutosizeSubmittableInput } from '../Common/SubmittableInput';
 import { PageListItemS } from '../PageList/PageListItemS';
 
+import { BookmarkItemRenameInput } from './BookmarkItemRenameInput';
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
@@ -162,14 +162,10 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       >
         { isRenameInputShown
           ? (
-            <AutosizeSubmittableInput
+            <BookmarkItemRenameInput
               value={nodePath.basename(bookmarkedPage.path ?? '')}
-              inputClassName="form-control"
-              placeholder={t('Input page name')}
               onSubmit={rename}
               onCancel={() => { setRenameInputShown(false) }}
-              autoFocus
-              // validationTarget={ValidationTarget.PAGE}
             />
           )
           : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
