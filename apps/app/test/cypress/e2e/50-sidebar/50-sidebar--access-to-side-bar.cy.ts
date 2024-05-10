@@ -51,13 +51,7 @@ describe('Access to sidebar', () => {
 
       describe('Test page tree tab', () => {
         beforeEach(() => {
-          cy.getByTestid('grw-sidebar-nav-primary-page-tree').should('be.visible')
-            .then($elem => {
-              // open if inactive
-              if (!$elem.hasClass('active')) {
-                cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
-              }
-            });
+          cy.getByTestid('grw-sidebar-nav-primary-page-tree').click();
         });
 
         it('Successfully access to page tree', () => {
@@ -186,13 +180,7 @@ describe('Access to sidebar', () => {
 
       describe('Test custom sidebar tab', () => {
         beforeEach(() => {
-          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').should('be.visible')
-            .then($elem => {
-              // open if inactive
-              if (!$elem.hasClass('active')) {
-                cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
-              }
-            });
+          cy.getByTestid('grw-sidebar-nav-primary-custom-sidebar').click();
         });
 
         it('Successfully access to custom sidebar', () => {
@@ -230,13 +218,7 @@ describe('Access to sidebar', () => {
 
       describe('Test recent changes tab', () => {
         beforeEach(() => {
-          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').should('be.visible')
-            .then($elem => {
-              // open if inactive
-              if (!$elem.hasClass('active')) {
-                cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
-              }
-            });
+          cy.getByTestid('grw-sidebar-nav-primary-recent-changes').click();
         });
 
         it('Successfully access to recent changes', () => {
@@ -251,13 +233,7 @@ describe('Access to sidebar', () => {
 
       describe('Test tags tab', () => {
         beforeEach(() => {
-          cy.getByTestid('grw-sidebar-nav-primary-tags').should('be.visible')
-            .then($elem => {
-              // open if inactive
-              if (!$elem.hasClass('active')) {
-                cy.getByTestid('grw-sidebar-nav-primary-tags').click();
-              }
-            });
+          cy.getByTestid('grw-sidebar-nav-primary-tags').click();
         });
 
         it('Successfully access to tags', () => {
