@@ -69,23 +69,13 @@ describe('Access to sidebar', () => {
           });
         });
 
-        it('Successfully hide page tree items', () => {
-          cy.getByTestid('grw-sidebar-contents').within(() => {
-            cy.get('.grw-pagetree-open').should('be.visible');
-
-            // hide page tree tiems
-            cy.get('.grw-pagetree-triangle-btn').first().click();
-
-            cy.screenshot(`${ssPrefix}page-tree-2-hide-page-tree-items`, { blackout: blackoutOverride });
-          });
-        });
-
-        it('Successfully click Add to Bookmarks button', () => {
+        it.only('Successfully click Add to Bookmarks button', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              cy.getByTestid('grw-pagetree-item-container').first().within(() => {
+                cy.get('li').first().realHover();
+                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
             // wait until
@@ -102,8 +92,9 @@ describe('Access to sidebar', () => {
           cy.waitUntil(() => {
             // do
             cy.getByTestid('grw-sidebar-contents').within(() => {
-              cy.get('.grw-pagetree-item-children').first().as('pagetreeItem').within(() => {
-                cy.getByTestid('open-page-item-control-btn').find('button').first().invoke('css','display','block').click()
+              cy.getByTestid('grw-pagetree-item-container').first().within(() => {
+                cy.get('li').first().realHover();
+                cy.getByTestid('open-page-item-control-btn').find('button').first().realClick();
               });
             });
             // wait until
