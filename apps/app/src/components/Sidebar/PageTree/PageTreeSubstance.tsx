@@ -1,19 +1,28 @@
-import React, { memo, useCallback } from 'react';
+import React, {
+  memo, useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
-import { mutatePageTree, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import {
+  mutatePageTree, useSWRxPageAncestorsChildren, useSWRxRootPage, useSWRxV5MigrationStatus,
+} from '~/stores/page-listing';
+import { useSidebarScrollerRef } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import { ItemsTree } from '../../ItemsTree/ItemsTree';
 import { PageTreeItem } from '../PageTreeItem';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
+
+const logger = loggerFactory('growi:cli:PageTreeSubstance');
 
 type HeaderProps = {
   isWipPageShown: boolean,
@@ -91,6 +100,65 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
   const { data: migrationStatus } = useSWRxV5MigrationStatus({ suspense: true });
 
   const targetPathOrId = targetId || currentPath;
+  const path = currentPath || '/';
+
+  const { data: ancestorsChildrenResult } = useSWRxPageAncestorsChildren(path, { suspense: true });
+  const { data: rootPageResult } = useSWRxRootPage({ suspense: true });
+  const { data: sidebarScrollerRef } = useSidebarScrollerRef();
+  const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
+
+  const rootElemRef = useRef(null);
+
+  // ***************************  Scroll on init ***************************
+  const scrollOnInit = useCallback(() => {
+    const scrollTargetElement = document.getElementById('grw-pagetree-current-page-item');
+
+    if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
+      return;
+    }
+
+    logger.debug('scrollOnInit has invoked');
+
+    const scrollElement = sidebarScrollerRef.current;
+
+    // NOTE: could not use scrollIntoView
+    //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
+
+    // calculate the center point
+    const scrollTop = scrollTargetElement.offsetTop - scrollElement.getBoundingClientRect().height / 2;
+    scrollElement.scrollTo({ top: scrollTop });
+
+    setIsInitialScrollCompleted(true);
+  }, [sidebarScrollerRef]);
+
+  const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
+
+  useEffect(() => {
+    if (isInitialScrollCompleted || ancestorsChildrenResult == null || rootPageResult == null) {
+      return;
+    }
+
+    const rootElement = rootElemRef.current as HTMLElement | null;
+    if (rootElement == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach(() => scrollOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(rootElement, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    scrollOnInitDebounced();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isInitialScrollCompleted, scrollOnInitDebounced, ancestorsChildrenResult, rootPageResult]);
+  // *******************************  end  *******************************
+
 
   if (!migrationStatus?.isV5Compatible) {
     return <PageTreeUnavailable />;
@@ -103,10 +171,9 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
     return null;
   }
 
-  const path = currentPath || '/';
 
   return (
-    <>
+    <div ref={rootElemRef} className="pt-4">
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
@@ -117,14 +184,14 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
         CustomTreeItem={PageTreeItem}
       />
 
-      {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
-        <div className="grw-pagetree-footer border-top py-3 w-100">
-          <div className="private-legacy-pages-link px-3 py-2">
-            <PrivateLegacyPagesLink />
-          </div>
+      {/* {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && ( */}
+      <div className="grw-pagetree-footer border-top mt-4 py-2 w-100">
+        <div className="private-legacy-pages-link px-3 py-2">
+          <PrivateLegacyPagesLink />
         </div>
-      )}
-    </>
+      </div>
+      {/* )} */}
+    </div>
   );
 });
 

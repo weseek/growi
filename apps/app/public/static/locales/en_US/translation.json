@@ -160,16 +160,20 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
-  "form_validation": {
-    "error_message": "Some values ​​are incorrect",
-    "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required.",
-    "field_required": "{{target}} is required"
+  "input_validation": {
+    "target": {
+      "page_name": "Page name",
+      "folder_name": "Folder name",
+      "field": "field"
+    },
+    "message": {
+      "error_message": "Some values ​​are incorrect",
+      "required": "%s is required",
+      "invalid_syntax": "The syntax of %s is invalid.",
+      "title_required": "Title is required.",
+      "field_required": "{{target}} is required"
+    }
   },
-  "page_name": "Page name",
-  "folder_name": "Folder name",
-  "field": "field",
   "not_creatable_page": {
     "message": "Page contents cannot be created in this path."
   },
