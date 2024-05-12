@@ -12,17 +12,16 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
-import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
 import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
+import { BookmarkItemRenameInput } from './BookmarkItemRenameInput';
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
@@ -86,9 +85,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, []);
 
-  const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
+  const cancel = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
+
+  const rename = useCallback(async(inputText: string) => {
+    if (inputText.trim() === '') {
+      return cancel();
+    }
+
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+    const newPagePath = nodePath.resolve(parentPath, inputText.trim());
     if (newPagePath === bookmarkedPage.path) {
       setRenameInputShown(false);
       return;
@@ -104,7 +111,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage.path, bookmarkedPage._id, bookmarkedPage.revision, bookmarkFolderTreeMutation, mutatePageInfo]);
+  }, [bookmarkedPage.path, bookmarkedPage._id, bookmarkedPage.revision, cancel, bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
@@ -155,12 +162,10 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       >
         { isRenameInputShown
           ? (
-            <ClosableTextInput
+            <BookmarkItemRenameInput
               value={nodePath.basename(bookmarkedPage.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={pressEnterForRenameHandler}
-              validationTarget={ValidationTarget.PAGE}
+              onSubmit={rename}
+              onCancel={() => { setRenameInputShown(false) }}
             />
           )
           : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}

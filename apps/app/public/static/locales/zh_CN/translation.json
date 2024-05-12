@@ -27,7 +27,7 @@
   "Description": "描述",
   "Admin": "管理",
   "administrator": "管理员",
-  "Tags": "Tags",
+  "Tags": "标签",
   "Close": "Close",
   "Shortcuts": "快捷方式",
   "CustomSidebar": "Custom Sidebar",
@@ -167,16 +167,20 @@
   "Confirm": "确定",
   "Successfully requested": "进程成功接受",
   "copied_to_clipboard": "它已复制到剪贴板。",
-  "form_validation": {
-    "error_message": "有些值不正确",
-    "required": "%s 是必需的",
-    "invalid_syntax": "%s的语法无效。",
-    "title_required": "标题是必需的。",
-    "field_required": "{{target}} 是必需的"
+  "input_validation": {
+    "target": {
+      "page_name": "页面名称",
+      "folder_name": "文件夹名称",
+      "field": "字段"
+    },
+    "message": {
+      "error_message": "有些值不正确",
+      "required": "%s 是必需的",
+      "invalid_syntax": "%s的语法无效。",
+      "title_required": "标题是必需的。",
+      "field_required": "{{target}} 是必需的"
+    }
   },
-  "page_name": "页面名称",
-  "folder_name": "文件夹名称",
-  "field": "字段",
   "not_creatable_page": {
     "message": "无法在此路径中创建页面内容。"
   },
@@ -866,5 +870,8 @@
     "show_wip_page": "显示 WIP",
     "size_s": "尺寸: S",
     "size_l": "尺寸: L"
+  },
+  "create_page": {
+    "untitled": "Untitled"
   }
 }

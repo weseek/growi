@@ -21,7 +21,7 @@ const ErrorViewer = (props: ErrorViewerProps): JSX.Element => {
 
   return (
     <Modal isOpen={props.isOpen} toggle={props.onClose} size="lg">
-      <ModalHeader tag="h4" toggle={props.onClose} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={props.onClose} className="text-danger">
         Errors
       </ModalHeader>
       <ModalBody>

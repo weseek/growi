@@ -49,6 +49,7 @@ type TagsProps = {
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { onClickEditTagsButton } = props;
+  const { t } = useTranslation();
 
   return (
     <div className="grw-tag-labels-container d-flex align-items-center">
@@ -57,8 +58,8 @@ const Tags = (props: TagsProps): JSX.Element => {
         className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <span className="material-symbols-outlined me-1">local_offer</span>
-        Tags
+        <span className="material-symbols-outlined">local_offer</span>
+        <span className="d-none d-sm-inline ms-1">{t('Tags')}</span>
       </button>
     </div>
   );
@@ -138,7 +139,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
 
-  const { mutateAndSave: mutatePageControlsX } = usePageControlsX();
+  const { mutate: mutatePageControlsX } = usePageControlsX();
 
   const pageControlsRef = useRef<HTMLDivElement>(null);
   const [pageControlsRect] = useRect(pageControlsRef);
@@ -273,7 +274,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
-      { isDeviceLargerThanMd && (
+      { isViewMode && isDeviceLargerThanMd && (
         <SearchButton />
       )}
 
@@ -284,7 +285,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
       )}
 
       { !hideSubControls && (
-        <div className="hstack gap-1">
+        <div className={`hstack gap-1 ${!isViewMode && 'd-none d-lg-flex'}`}>
           {revisionId != null && _isIPageInfoForOperation && (
             <SubscribeButton
               status={pageInfo.subscriptionStatus}

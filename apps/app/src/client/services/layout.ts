@@ -1,4 +1,4 @@
-import type { IPage } from '@growi/core';
+import type { IPage, IPagePopulatedToShowRevision } from '@growi/core';
 
 import { useIsContainerFluid } from '~/stores/context';
 import { useEditorMode } from '~/stores/ui';
@@ -16,7 +16,7 @@ const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean
   return expandContentWidth ?? isContainerFluidDefault ?? false;
 };
 
-export const useShouldExpandContent = (data?: IPage | boolean | null): boolean => {
+export const useShouldExpandContent = (data?: IPage | IPagePopulatedToShowRevision | boolean | null): boolean => {
   const expandContentWidth = (() => {
     // when data is null
     if (data == null) {

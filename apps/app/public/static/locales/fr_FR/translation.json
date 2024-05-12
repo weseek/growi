@@ -160,16 +160,20 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
-  "form_validation": {
-    "error_message": "Des champs sont invalides",
-    "required": "%s est requis",
-    "invalid_syntax": "La syntaxe de %s est invalide.",
-    "title_required": "Titre requis.",
-    "field_required": "{{target}} est requis"
+  "input_validation": {
+    "target": {
+      "page_name": "Nom de la page",
+      "folder_name": "Nom du dossier",
+      "field": "champ"
+    },
+    "message": {
+      "error_message": "Des champs sont invalides",
+      "required": "%s est requis",
+      "invalid_syntax": "La syntaxe de %s est invalide.",
+      "title_required": "Titre requis.",
+      "field_required": "{{target}} est requis"
+    }
   },
-  "page_name": "Nom de la page",
-  "folder_name": "Nom du dossier",
-  "field": "champ",
   "not_creatable_page": {
     "message": "Vous ne pouvez pas créer cette page dans ce chemin."
   },
