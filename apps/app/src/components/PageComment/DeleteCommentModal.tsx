@@ -85,7 +85,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
 
   return (
     <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
-      <ModalHeader tag="h4" toggle={cancelToDelete} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={cancelToDelete} className="text-danger">
         {headerContent()}
       </ModalHeader>
       <ModalBody>

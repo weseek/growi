@@ -130,14 +130,14 @@ const removeRow = (editor: EditorView) => {
   const bolPos = editor.state.doc.line(curLine).from;
   const eolPos = editor.state.doc.line(curLine).to;
 
-  const nextCurPos = editor.state.doc.lineAt(getCurPos(editor)).to + 1;
-
   editor.dispatch({
     changes: {
       from: bolPos,
       to: eolPos,
     },
   });
+
+  const nextCurPos = editor.state.doc.lineAt(getCurPos(editor)).to + 1;
 
   editor.dispatch({
     selection: { anchor: nextCurPos },

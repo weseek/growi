@@ -32,6 +32,7 @@ type BookmarkFolderItemProps = {
 }
 
 export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkFolderItemProps) => {
+
   const BASE_FOLDER_PADDING = 15;
   const acceptedTypes: DragItemType[] = [DRAG_ITEM_TYPE.FOLDER, DRAG_ITEM_TYPE.BOOKMARK];
   const {
@@ -59,23 +60,36 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     setTargetFolder(folderId);
   }, [folderId, isOpen]);
 
+  const cancel = useCallback(() => {
+    setIsRenameAction(false);
+    setIsCreateAction(false);
+  }, []);
+
   // Rename for bookmark folder handler
-  const onPressEnterHandlerForRename = useCallback(async(folderName: string) => {
+  const rename = useCallback(async(folderName: string) => {
+    if (folderName.trim() === '') {
+      return cancel();
+    }
+
     try {
       // TODO: do not use any type
-      await updateBookmarkFolder(folderId, folderName, parent as any, childFolder);
+      await updateBookmarkFolder(folderId, folderName.trim(), parent as any, childFolder);
       bookmarkFolderTreeMutation();
       setIsRenameAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, childFolder, folderId, parent]);
+  }, [bookmarkFolderTreeMutation, cancel, childFolder, folderId, parent]);
 
   // Create new folder / subfolder handler
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const create = useCallback(async(folderName: string) => {
+    if (folderName.trim() === '') {
+      return cancel();
+    }
+
     try {
-      await addNewFolder(folderName, targetFolder);
+      await addNewFolder(folderName.trim(), targetFolder);
       setIsOpen(true);
       setIsCreateAction(false);
       bookmarkFolderTreeMutation();
@@ -83,7 +97,7 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, targetFolder]);
+  }, [bookmarkFolderTreeMutation, cancel, targetFolder]);
 
   const onClickPlusButton = useCallback(async(e) => {
     e.stopPropagation();
@@ -244,11 +258,13 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
             <FolderIcon isOpen={isOpen} />
           </div>
           {isRenameAction ? (
-            <BookmarkFolderNameInput
-              onClickOutside={() => setIsRenameAction(false)}
-              onPressEnter={onPressEnterHandlerForRename}
-              value={name}
-            />
+            <div className="flex-fill">
+              <BookmarkFolderNameInput
+                value={name}
+                onSubmit={rename}
+                onCancel={cancel}
+              />
+            </div>
           ) : (
             <>
               <div className="grw-foldertree-title-anchor ps-1">
@@ -288,12 +304,10 @@ export const BookmarkFolderItem: FC<BookmarkFolderItemProps> = (props: BookmarkF
         </li>
       </DragAndDropWrapper>
       {isCreateAction && (
-        <div className="flex-fill">
-          <BookmarkFolderNameInput
-            onClickOutside={() => setIsCreateAction(false)}
-            onPressEnter={onPressEnterHandlerForCreate}
-          />
-        </div>
+        <BookmarkFolderNameInput
+          onSubmit={create}
+          onCancel={cancel}
+        />
       )}
       {
         renderChildFolder()

@@ -1,4 +1,4 @@
-import { Origin, allOrigin } from '@growi/core';
+import { Origin, allOrigin, getIdForRef } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -89,6 +89,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // persist activity
+    const creator = updatedPage.creator != null ? getIdForRef(updatedPage.creator) : undefined;
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: updatedPage,
@@ -97,7 +98,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const activityEvent = crowi.event('activity');
     activityEvent.emit(
       'update', res.locals.activity._id, parameters,
-      { path: updatedPage.path, creator: updatedPage.creator._id.toString() },
+      { path: updatedPage.path, creator },
       preNotifyService.generatePreNotify,
     );
 
@@ -157,7 +158,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage;
+      let updatedPage: PageDocument;
       try {
         const {
           grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,

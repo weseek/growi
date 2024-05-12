@@ -25,7 +25,8 @@
     "editorconfig.editorconfig",
     "esbenp.prettier-vscode",
     "shinnn.stylelint",
-    "stylelint.vscode-stylelint"
+    "stylelint.vscode-stylelint",
+    "vitest.explorer"
   ],
 
   // Uncomment the next line if you want start specific services in your Docker Compose config.

@@ -163,7 +163,7 @@ const ShortcutsModal = (): JSX.Element => {
     <>
       { status != null && (
         <Modal id="shortcuts-modal" size="lg" isOpen={status.isOpened} toggle={close} className={`shortcuts-modal ${styles['shortcuts-modal']}`}>
-          <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+          <ModalHeader tag="h4" toggle={close}>
             {t('Shortcuts')}
           </ModalHeader>
           <ModalBody>

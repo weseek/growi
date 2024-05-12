@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
+import { addNewFolder } from '~/client/util/bookmark-utils';
 import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/components/Bookmarks/BookmarkFolderTree';
@@ -21,20 +21,24 @@ export const BookmarkContents = (): JSX.Element => {
     setIsCreateAction(true);
   }, []);
 
-  const onClickonClickOutsideHandler = useCallback(() => {
+  const cancel = useCallback(() => {
     setIsCreateAction(false);
   }, []);
 
-  const onPressEnterHandlerForCreate = useCallback(async(folderName: string) => {
+  const create = useCallback(async(folderName: string) => {
+    if (folderName.trim() === '') {
+      return cancel();
+    }
+
     try {
-      await apiv3Post('/bookmark-folder', { name: folderName, parent: null });
+      await addNewFolder(folderName.trim(), null);
       await mutateBookmarkFolders();
       setIsCreateAction(false);
     }
     catch (err) {
       toastError(err);
     }
-  }, [mutateBookmarkFolders]);
+  }, [cancel, mutateBookmarkFolders]);
 
   return (
     <div>
@@ -54,8 +58,8 @@ export const BookmarkContents = (): JSX.Element => {
       {isCreateAction && (
         <div className="col-12 mb-2 ">
           <BookmarkFolderNameInput
-            onClickOutside={onClickonClickOutsideHandler}
-            onPressEnter={onPressEnterHandlerForCreate}
+            onSubmit={create}
+            onCancel={cancel}
           />
         </div>
       )}

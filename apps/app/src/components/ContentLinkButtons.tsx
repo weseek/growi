@@ -40,7 +40,7 @@ RecentlyCreatedLinkButton.displayName = 'RecentlyCreatedLinkButton';
 
 
 export type ContentLinkButtonsProps = {
-  author: IUserHasId | null,
+  author?: IUserHasId,
 }
 
 export const ContentLinkButtons = (props: ContentLinkButtonsProps): JSX.Element => {

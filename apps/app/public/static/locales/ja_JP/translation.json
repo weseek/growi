@@ -161,16 +161,20 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "form_validation": {
-    "error_message": "いくつかの値が設定されていません",
-    "required": "%sに値を入力してください",
-    "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "field_required": "{{target}}に値を入力してください"
+  "input_validation": {
+    "target": {
+      "page_name": "ページ名",
+      "folder_name": "フォルダ名",
+      "field": "フィールド"
+    },
+    "message": {
+      "error_message": "いくつかの値が設定されていません",
+      "required": "%sに値を入力してください",
+      "invalid_syntax": "%sの構文が不正です",
+      "title_required": "タイトルを入力してください",
+      "field_required": "{{target}}に値を入力してください"
+    }
   },
-  "page_name": "ページ名",
-  "folder_name": "フォルダ名",
-  "field": "フィールド",
   "not_creatable_page": {
     "message": "このパスではページ コンテンツを作成できません。"
   },
@@ -902,5 +906,8 @@
     "show_wip_page": "WIP を表示",
     "size_s": "サイズ: S",
     "size_l": "サイズ: L"
+  },
+  "create_page": {
+    "untitled": "無題のページ"
   }
 }

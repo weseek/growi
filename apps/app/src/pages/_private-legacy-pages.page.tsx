@@ -10,6 +10,7 @@ import Head from 'next/head';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
@@ -34,6 +35,7 @@ type Props = CommonProps & {
   // Render config
   rendererConfig: RendererConfig,
 
+  sidebarConfig: ISidebarConfig,
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
@@ -97,6 +99,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {
