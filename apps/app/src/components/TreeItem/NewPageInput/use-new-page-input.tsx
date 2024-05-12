@@ -11,7 +11,7 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { createPage } from '~/client/services/create-page';
+import { useCreatePageAndTransit } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
@@ -60,6 +60,7 @@ export const useNewPageInput = (): UseNewPageInput => {
   const Input: FC<TreeItemToolProps> = (props) => {
 
     const { t } = useTranslation();
+    const { createAndTransit } = useCreatePageAndTransit();
 
     const { itemNode, stateHandlers, isEnableActions } = props;
     const { page, children } = itemNode;
@@ -107,23 +108,31 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(false);
 
       try {
-        await createPage({
-          path: newPagePath,
-          body: undefined,
-          // keep grant info undefined to inherit from parent
-          grant: undefined,
-          grantUserGroupIds: undefined,
-          origin: Origin.View,
-          wip: shouldCreateWipPage(newPagePath),
-        });
+        await createAndTransit(
+          {
+            path: newPagePath,
+            parentPath,
+            body: undefined,
+            // keep grant info undefined to inherit from parent
+            grant: undefined,
+            grantUserGroupIds: undefined,
+            origin: Origin.View,
+            wip: shouldCreateWipPage(newPagePath),
+          },
+          {
+            shouldCheckPageExists: true,
+            shouldTransit: false,
+            onCreated: () => {
+              mutatePageTree();
 
-        mutatePageTree();
+              if (!hasDescendants) {
+                stateHandlers?.setIsOpen(true);
+              }
 
-        if (!hasDescendants) {
-          stateHandlers?.setIsOpen(true);
-        }
-
-        toastSuccess(t('successfully_saved_the_page'));
+              toastSuccess(t('successfully_saved_the_page'));
+            },
+          },
+        );
       }
       catch (err) {
         toastError(err);
@@ -131,7 +140,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       finally {
         setProcessingSubmission(false);
       }
-    }, [cancel, hasDescendants, page.path, stateHandlers, t]);
+    }, [cancel, hasDescendants, page.path, stateHandlers, t, createAndTransit]);
 
     const inputContainerClass = newPageInputStyles['new-page-input-container'] ?? '';
     const isInvalid = validationResult != null;

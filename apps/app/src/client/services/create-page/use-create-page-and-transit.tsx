@@ -28,6 +28,7 @@ type OnTerminated = () => void;
 
 export type CreatePageAndTransitOpts = {
   shouldCheckPageExists?: boolean,
+  shouldTransit?: boolean,
   onCreationStart?: OnCreated,
   onCreated?: OnCreated,
   onAborted?: OnAborted,
@@ -59,6 +60,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       shouldCheckPageExists,
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
+    const shouldTransit = opts.shouldTransit ?? true;
 
     // check the page existence
     if (shouldCheckPageExists && params.path != null) {
@@ -68,11 +70,13 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
         const { isExist } = await exist(pagePath);
 
         if (isExist) {
-          // routing
-          if (pagePath !== currentPagePath) {
-            await router.push(`${pagePath}#edit`);
+          if (shouldTransit) {
+            // routing
+            if (pagePath !== currentPagePath) {
+              await router.push(`${pagePath}#edit`);
+            }
+            mutateEditorMode(EditorMode.Editor);
           }
-          mutateEditorMode(EditorMode.Editor);
           onAborted?.();
           return;
         }
@@ -95,8 +99,10 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
         closeGrantedGroupsInheritanceSelectModal();
 
-        await router.push(`/${response.page._id}#edit`);
-        mutateEditorMode(EditorMode.Editor);
+        if (shouldTransit) {
+          await router.push(`/${response.page._id}#edit`);
+          mutateEditorMode(EditorMode.Editor);
+        }
 
         onCreated?.();
       }

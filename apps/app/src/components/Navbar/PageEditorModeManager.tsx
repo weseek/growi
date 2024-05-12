@@ -1,10 +1,10 @@
 import React, { type ReactNode, useCallback, useMemo } from 'react';
 
 import { Origin } from '@growi/core';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -77,8 +77,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      let parentPath = path?.split('/').slice(0, -1).join('/'); // does not have to exist
-      parentPath = parentPath === '' ? '/' : parentPath;
+      const parentPath = path != null ? normalizePath(path.split('/').slice(0, -1).join('/')) : undefined; // does not have to exist
       await createAndTransit(
         {
           path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,

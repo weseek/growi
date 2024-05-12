@@ -6,7 +6,6 @@ import { format } from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
 
 import { useCreatePageAndTransit } from '~/client/services/create-page';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '~/stores/context';
 
 
