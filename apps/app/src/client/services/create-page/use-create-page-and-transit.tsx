@@ -1,17 +1,16 @@
 import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 
 import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-operation';
+import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
-import loggerFactory from '~/utils/logger';
 
 import { createPage } from './create-page';
-
-const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 
 /**
  * Invoked when creation and transition has finished
@@ -48,6 +47,7 @@ type UseCreatePageAndTransit = () => {
 export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
@@ -76,6 +76,9 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
               await router.push(`${pagePath}#edit`);
             }
             mutateEditorMode(EditorMode.Editor);
+          }
+          else {
+            toastWarning(t('duplicated_page_alert.same_page_name_exists', { pageName: pagePath }));
           }
           onAborted?.();
           return;
@@ -126,7 +129,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
     }
 
     await _createAndTransit();
-  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal]);
+  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal, t]);
 
   return {
     isCreating,
