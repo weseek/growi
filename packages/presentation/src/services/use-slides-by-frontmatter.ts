@@ -1,10 +1,6 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import remarkFrontmatter from 'remark-frontmatter';
-import remarkParse from 'remark-parse';
-import remarkStringify from 'remark-stringify';
-import { unified } from 'unified';
-
+import type { Processor } from 'unified';
 
 type ParseResult = {
   marp: boolean | undefined,
@@ -31,6 +27,33 @@ const parseSlideFrontmatter = (frontmatter: string): ParseResult => {
 };
 
 
+type ProcessorOpts = {
+  onParsed?: (result: ParseResult) => void,
+  onSkipped?: () => void,
+};
+
+const generateFrontmatterProcessor = async(opts?: ProcessorOpts) => {
+
+  const remarkFrontmatter = (await import('remark-frontmatter')).default;
+  const remarkParse = (await import('remark-parse')).default;
+  const remarkStringify = (await import('remark-stringify')).default;
+  const unified = (await import('unified')).unified;
+
+  return unified()
+    .use(remarkParse)
+    .use(remarkStringify)
+    .use(remarkFrontmatter, ['yaml'])
+    .use(() => ((obj) => {
+      if (obj.children[0]?.type === 'yaml') {
+        const result = parseSlideFrontmatter(obj.children[0]?.value);
+        opts?.onParsed?.(result);
+      }
+      else {
+        opts?.onSkipped?.();
+      }
+    }));
+};
+
 export type UseSlide = {
   marp?: boolean,
 }
@@ -42,32 +65,30 @@ export type UseSlide = {
  */
 export const useSlidesByFrontmatter = (markdown?: string, isEnabledMarp?: boolean): UseSlide | undefined => {
 
+  const [processor, setProcessor] = useState<Processor|undefined>();
   const [parseResult, setParseResult] = useState<UseSlide|undefined>();
 
-  const processor = useMemo(() => {
-    return unified()
-      .use(remarkParse)
-      .use(remarkStringify)
-      .use(remarkFrontmatter, ['yaml'])
-      .use(() => ((obj) => {
-        if (obj.children[0]?.type === 'yaml') {
-          const result = parseSlideFrontmatter(obj.children[0]?.value);
-          setParseResult(result.marp || result.slide ? result : undefined);
-        }
-        else {
-          setParseResult(undefined);
-        }
-      }));
-  }, []);
+  useEffect(() => {
+    if (processor != null) {
+      return;
+    }
+
+    (async() => {
+      const p = await generateFrontmatterProcessor({
+        onParsed: result => setParseResult(result.marp || result.slide ? result : undefined),
+        onSkipped: () => setParseResult(undefined),
+      });
+      setProcessor(p);
+    })();
+  }, [processor]);
 
   useEffect(() => {
-    if (markdown == null) {
+    if (markdown == null || processor == null) {
       return;
     }
 
     processor.process(markdown);
   }, [markdown, processor]);
-
 
   return parseResult != null
     ? { marp: isEnabledMarp && parseResult?.marp }
