@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useState, useMemo, useCallback,
+  useEffect, useMemo, useCallback,
 } from 'react';
 
 import path from 'path';
@@ -31,7 +31,7 @@ import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
 
-const moduleClass = styles['grw-pagetree'] ?? '';
+const moduleClass = styles['items-tree'] ?? '';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -223,7 +223,7 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${moduleClass} list-group py-4`}>
+      <ul className={`${moduleClass} list-group`}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}

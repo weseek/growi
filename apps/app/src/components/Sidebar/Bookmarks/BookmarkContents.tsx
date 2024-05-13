@@ -58,9 +58,8 @@ export const BookmarkContents = (): JSX.Element => {
       {isCreateAction && (
         <div className="col-12 mb-2 ">
           <BookmarkFolderNameInput
-            onPressEnter={create}
-            onBlur={create}
-            onPressEscape={cancel}
+            onSubmit={create}
+            onCancel={cancel}
           />
         </div>
       )}
