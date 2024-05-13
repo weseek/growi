@@ -5,6 +5,7 @@ import React, {
 
 import type { Nullable } from '@growi/core';
 
+import type { IPageForItem } from '~/interfaces/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
@@ -19,10 +20,12 @@ const moduleClass = styles['tree-item-layout'] ?? '';
 
 
 // Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+const markTarget = (page: IPageForItem, children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
+
+  page.isTarget = page.path === targetPathOrId;
 
   children.forEach((node) => {
     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
@@ -98,10 +101,10 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(children, targetPathOrId);
+      markTarget(page, children, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, [children, currentChildren.length, targetPathOrId]);
+  }, [children, currentChildren.length, page, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -109,10 +112,10 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(newChildren, targetPathOrId);
+      markTarget(page, newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen, targetPathOrId]);
+  }, [data, isOpen, page, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? TreeItemLayout;
 
