@@ -12,7 +12,6 @@ import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { usePageSelectModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
-import { useSWRxPageChildren } from '~/stores/page-listing';
 
 import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
@@ -29,7 +28,6 @@ export const PageSelectModal: FC = () => {
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
   const [clickedParentPagePath, setClickedParentPagePath] = useState<string | null>(null);
-  const [clickedParentPageId, setClickedParentPageId] = useState<string | null>(null);
 
   const { t } = useTranslation();
 
@@ -49,7 +47,6 @@ export const PageSelectModal: FC = () => {
     }
 
     setClickedParentPagePath(parentPagePath);
-    setClickedParentPageId(parentPageId);
   }, []);
 
   const onClickCancel = useCallback(() => {
