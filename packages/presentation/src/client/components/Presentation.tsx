@@ -1,9 +1,8 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 
 import Reveal from 'reveal.js';
 
 import type { PresentationOptions } from '../consts';
-import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
 import { Slides } from './Slides';
 
@@ -34,37 +33,34 @@ const removeAllHiddenElements = () => {
 
 export type PresentationProps = {
   options: PresentationOptions,
-  isEnabledMarp: boolean,
+  marp?: boolean,
   children?: string,
 }
 
 export const Presentation = (props: PresentationProps): JSX.Element => {
-  const { options, isEnabledMarp, children } = props;
+  const { options, marp, children } = props;
   const { revealOptions } = options;
 
-  const [marp] = parseSlideFrontmatterInMarkdown(children);
-  const hasMarpFlag = isEnabledMarp && marp;
-
   useEffect(() => {
-    let deck: Reveal.Api;
-    if (children != null) {
-      deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
-      deck.initialize()
-        .then(() => deck.slide(0)); // navigate to the first slide
-
-      deck.on('ready', removeAllHiddenElements);
-      deck.on('slidechanged', removeAllHiddenElements);
+    if (children == null) {
+      return;
     }
+    const deck = new Reveal({ ...baseRevealOptions, ...revealOptions });
+    deck.initialize()
+      .then(() => deck.slide(0)); // navigate to the first slide
+
+    deck.on('ready', removeAllHiddenElements);
+    deck.on('slidechanged', removeAllHiddenElements);
 
     return function cleanup() {
-      deck?.off('ready', removeAllHiddenElements);
-      deck?.off('slidechanged', removeAllHiddenElements);
+      deck.off('ready', removeAllHiddenElements);
+      deck.off('slidechanged', removeAllHiddenElements);
     };
   }, [children, revealOptions]);
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
-      <Slides options={options} hasMarpFlag={hasMarpFlag} presentation>{children}</Slides>
+      <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
     </div>
   );
 };

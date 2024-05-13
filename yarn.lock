@@ -2554,18 +2554,18 @@
     google-libphonenumber ">=3.2.10"
     lodash ">=4.17.15"
 
-"@marp-team/marp-core@^3.6.0":
-  version "3.6.0"
-  resolved "https://registry.yarnpkg.com/@marp-team/marp-core/-/marp-core-3.6.0.tgz#858958b96208370fe51f4df98642e2bfe2d090c7"
-  integrity sha512-V2tA5nLR4HR+hTGrMTaSLB7bDKi+xz1FrhytOyHV/U2ztRRjAKtlQnul+xPZ7LpRxVsLNwbmO/Alw1AwUx7eXQ==
+"@marp-team/marp-core@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@marp-team/marp-core/-/marp-core-3.9.0.tgz#c554443bdcf84db635221b3a4085d1a656dd8bfc"
+  integrity sha512-gi6nq0rsB1oMA8ReppW4XxmS4fisQiAsD0ZoUgLeG4h6SWatveCAA7fZyxnXfwA2UC8pNb7ktPqYdRsxvuwntA==
   dependencies:
-    "@marp-team/marpit" "^2.4.2"
+    "@marp-team/marpit" "^2.6.1"
     "@marp-team/marpit-svg-polyfill" "^2.1.0"
-    highlight.js "^11.7.0"
-    katex "^0.16.4"
+    highlight.js "11.8.0"
+    katex "^0.16.9"
     mathjax-full "^3.2.2"
-    postcss "^8.4.21"
-    postcss-selector-parser "^6.0.11"
+    postcss "^8.4.31"
+    postcss-selector-parser "^6.0.13"
     xss "^1.0.14"
 
 "@marp-team/marpit-svg-polyfill@^2.1.0":
@@ -2573,18 +2573,18 @@
   resolved "https://registry.yarnpkg.com/@marp-team/marpit-svg-polyfill/-/marpit-svg-polyfill-2.1.0.tgz#40e7ce3a2aa7496748541cc7053e6779d2f866ac"
   integrity sha512-VqCoAKwv1HJdzZp36dDPxznz2JZgRjkVSSPHpCzk72G2N753F0HPKXjevdjxmzN6gir9bUGBgMD1SguWJIi11A==
 
-"@marp-team/marpit@^2.4.2":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@marp-team/marpit/-/marpit-2.4.2.tgz#f74240f14c15a4c5f0bd6b51afabc674750799be"
-  integrity sha512-MBCMaSjkeDzF+Exq8CmhmwsMTzU7fK4NyzA7zl+hreBGppAPvOq5NCnIR2O6nOm9F0QJ9Vmxhs7ZP/BXZ+lWBw==
+"@marp-team/marpit@^2.6.1":
+  version "2.6.1"
+  resolved "https://registry.yarnpkg.com/@marp-team/marpit/-/marpit-2.6.1.tgz#6937e6bc6b1b0cc9efc6c1e0948fc165df038edc"
+  integrity sha512-Hg7fZ8SqXwLjxeIFzSnlXkXEmt0ZXPeMJneEn9n1M495a34C4xtkgEgL8R1MW2IRCh4Yibn0xmGKcaf+GuqR2A==
   dependencies:
     color-string "^1.9.1"
     cssesc "^3.0.0"
     js-yaml "^4.1.0"
     lodash.kebabcase "^4.1.1"
-    markdown-it "^13.0.1"
+    markdown-it "^13.0.2"
     markdown-it-front-matter "^0.2.3"
-    postcss "^8.4.19"
+    postcss "^8.4.29"
 
 "@microsoft/api-extractor-model@7.28.13":
   version "7.28.13"
@@ -6451,7 +6451,7 @@ commander@^6.2.1:
   resolved "https://registry.yarnpkg.com/commander/-/commander-6.2.1.tgz#0792eb682dfbc325999bb2b84fddddba110ac73c"
   integrity sha512-U7VdrJFnJgo4xjrHpTzu0yrHPGImdsmD95ZlgYSEajAn2JKzDhDTPG9kBTefmObL2w/ngeZnilk+OV9CG3d7UA==
 
-commander@^8.0.0, commander@^8.1.0:
+commander@^8.0.0, commander@^8.1.0, commander@^8.3.0:
   version "8.3.0"
   resolved "https://registry.yarnpkg.com/commander/-/commander-8.3.0.tgz#4837ea1b2da67b9c616a67afbb0fafee567bca66"
   integrity sha512-OkTL9umf+He2DZkUq8f8J9of7yL6RJKI24dVITBmNfZBmri9zYZQrKkuXiKhyfPSu8tUhnVBB1iKXevvnlR4Ww==
@@ -9851,7 +9851,12 @@ helmet@^4.6.0:
   resolved "https://registry.yarnpkg.com/helmet/-/helmet-4.6.0.tgz#579971196ba93c5978eb019e4e8ec0e50076b4df"
   integrity sha512-HVqALKZlR95ROkrnesdhbbZJFi/rIVSoNq6f3jA/9u6MIbTsPh3xZwihjeI5+DO/2sOV6HMHooXcEOuwskHpTg==
 
-highlight.js@11.9.0, highlight.js@^11.7.0:
+highlight.js@11.8.0:
+  version "11.8.0"
+  resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.8.0.tgz#966518ea83257bae2e7c9a48596231856555bb65"
+  integrity sha512-MedQhoqVdr0U6SSnWPzfiadUcDHfN/Wzq25AkXiQv9oiOO/sG0S7XkvpFIqWBl9Yq1UYyYOOVORs5UW2XlPyzg==
+
+highlight.js@11.9.0:
   version "11.9.0"
   resolved "https://registry.yarnpkg.com/highlight.js/-/highlight.js-11.9.0.tgz#04ab9ee43b52a41a047432c8103e2158a1b8b5b0"
   integrity sha512-fJ7cW7fQGCYAkgv4CPfwFHrfd/cLS4Hau96JuJ+ZTOWhjnhoeN1ub1tFmALm/+lW5z4WCAuAV9bm05AP0mS6Gw==
@@ -11451,12 +11456,12 @@ katex@^0.15.0:
   dependencies:
     commander "^8.0.0"
 
-katex@^0.16.4:
-  version "0.16.4"
-  resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.4.tgz#87021bc3bbd80586ef715aeb476794cba6a49ad4"
-  integrity sha512-WudRKUj8yyBeVDI4aYMNxhx5Vhh2PjpzQw1GRu/LVGqL4m1AxwD1GcUp0IMbdJaf5zsjtj8ghP0DOQRYhroNkw==
+katex@^0.16.9:
+  version "0.16.10"
+  resolved "https://registry.yarnpkg.com/katex/-/katex-0.16.10.tgz#6f81b71ac37ff4ec7556861160f53bc5f058b185"
+  integrity sha512-ZiqaC04tp2O5utMsl2TEZTXxa6WSC4yo0fv5ML++D3QZv/vx2Mct0mTlRx3O+uUkjfuAgOkzsCmq5MiUEsDDdA==
   dependencies:
-    commander "^8.0.0"
+    commander "^8.3.0"
 
 keycloak-js@^17.0.1:
   version "17.0.1"
@@ -12116,10 +12121,10 @@ markdown-it-front-matter@^0.2.3:
   resolved "https://registry.yarnpkg.com/markdown-it-front-matter/-/markdown-it-front-matter-0.2.3.tgz#d6fa0f4b362e02086dd4ce8219fadf3f4c9cfa37"
   integrity sha512-s9+rcClLmZsZc3YL8Awjg/YO/VdphlE20LJ9Bx5a8RAFLI5a1vq6Mll8kOzG6w/wy8yhFLBupaa6Mfd60GATkA==
 
-markdown-it@^13.0.1:
-  version "13.0.1"
-  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-13.0.1.tgz#c6ecc431cacf1a5da531423fc6a42807814af430"
-  integrity sha512-lTlxriVoy2criHP0JKRhO2VDG9c2ypWCsT237eDiLqi09rmbKoUetyGHq2uOIRoRS//kfoJckS0eUzzkDR+k2Q==
+markdown-it@^13.0.2:
+  version "13.0.2"
+  resolved "https://registry.yarnpkg.com/markdown-it/-/markdown-it-13.0.2.tgz#1bc22e23379a6952e5d56217fbed881e0c94d536"
+  integrity sha512-FtwnEuuK+2yVU7goGn/MJ0WBZMM9ZPgU9spqlFs7/A/pDIUNSOQZhUgOqYCficIuR2QaFnrt8LHqBWsbTAoI5w==
   dependencies:
     argparse "^2.0.1"
     entities "~3.0.1"
@@ -14460,7 +14465,15 @@ postcss-scss@^4.0.3:
   resolved "https://registry.yarnpkg.com/postcss-scss/-/postcss-scss-4.0.3.tgz#36c23c19a804274e722e83a54d20b838ab4767ac"
   integrity sha512-j4KxzWovfdHsyxwl1BxkUal/O4uirvHgdzMKS1aWJBAV0qh2qj5qAZqpeBfVUYGWv+4iK9Az7SPyZ4fyNju1uA==
 
-postcss-selector-parser@^6.0.11, postcss-selector-parser@^6.0.7:
+postcss-selector-parser@^6.0.13:
+  version "6.0.16"
+  resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.0.16.tgz#3b88b9f5c5abd989ef4e2fc9ec8eedd34b20fb04"
+  integrity sha512-A0RVJrX+IUkVZbW3ClroRWurercFhieevHB38sr2+l9eUClMqome3LmEmnhlNy+5Mr2EYN6B2Kaw9wYdd+VHiw==
+  dependencies:
+    cssesc "^3.0.0"
+    util-deprecate "^1.0.2"
+
+postcss-selector-parser@^6.0.7:
   version "6.0.11"
   resolved "https://registry.yarnpkg.com/postcss-selector-parser/-/postcss-selector-parser-6.0.11.tgz#2e41dc39b7ad74046e1615185185cd0b17d0c8dc"
   integrity sha512-zbARubNdogI9j7WY4nQJBiNqQf3sLS3wCP4WfOidu+p28LofJqDH1tcXypGrcmMHhDk2t9wGhCsYe/+szLTy1g==
@@ -14500,7 +14513,7 @@ postcss@^7.0.0:
     picocolors "^0.2.1"
     source-map "^0.6.1"
 
-postcss@^8.3.11, postcss@^8.4.19, postcss@^8.4.21, postcss@^8.4.31, postcss@^8.4.38:
+postcss@^8.3.11, postcss@^8.4.29, postcss@^8.4.31, postcss@^8.4.38:
   version "8.4.38"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.4.38.tgz#b387d533baf2054288e337066d81c6bee9db9e0e"
   integrity sha512-Wglpdk03BSfXkHoQa3b/oulrotAkwrlLDRSOb9D0bN86FdRyE9lppSp33aHNPgBa0JKCoB+drFLZkQoRRYae5A==
