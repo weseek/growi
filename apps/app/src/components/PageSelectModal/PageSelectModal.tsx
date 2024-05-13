@@ -37,7 +37,6 @@ export const PageSelectModal: FC = () => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
-  const { mutate: mutateChildren } = useSWRxPageChildren(clickedParentPageId);
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
@@ -64,11 +63,10 @@ export const PageSelectModal: FC = () => {
       const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
 
       pagePathRenameHandler(newPagePath);
-      await mutateChildren();
     }
 
     closeModal();
-  }, [clickedParentPagePath, closeModal, currentPage?.path, mutateChildren, pagePathRenameHandler]);
+  }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
   const targetPathOrId = clickedParentPagePath;
 
