@@ -1,8 +1,33 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.4...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.4](https://github.com/weseek/growi/compare/v7.0.3...v7.0.4) - 2024-05-13
+
+### 💎 Features
+
+* feat: Add a button to open PageCreateModal in the new page creation lead (#8774) @miya
+* feat: Show Yjs status indicator in SubNavigation (#8709) @miya
+* feat: Apply locale to defualt page title (#8600) @jam411
+
+### 🚀 Improvement
+
+* imprv: Behavior when creating first user fails (#8801) @miya
+* imprv: Add indexes for performance (#8800) @yuki-takei
+* imprv: Autosize Input for rename (#8795) @yuki-takei
+* imprv: behavior of dropdown toggle in 'Recent Changes' sidebar (#8782) @maeshinshin
+* imprv: Hide  personal drop down when guest user (#8786) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: Drawio not available with GROWI slides (#8725) @reiji-h
+* fix: Auto-scroll to the active page in the page tree (#8772) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump ejs from 3.1.9 to 3.1.10 (#8784) @dependabot
 
 ## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
 
