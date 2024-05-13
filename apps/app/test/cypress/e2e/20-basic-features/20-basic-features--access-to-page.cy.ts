@@ -227,7 +227,7 @@ context('Access to Template Editing Mode', () => {
       });
     });
     cy.get('@pagetreeItem').within(() => {
-      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
+      cy.getByTestid('autosize-submittable-input').type(newPagePath).type('{enter}');
     })
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);
