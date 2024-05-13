@@ -15,6 +15,7 @@ import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Common/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
+import { SlideRenderer } from './Page/SlideRenderer';
 import type { PageSideContentsProps } from './PageSideContents';
 
 
@@ -23,7 +24,6 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,

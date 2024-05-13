@@ -27,6 +27,7 @@ import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
+import { SlideRenderer } from './SlideRenderer';
 
 import styles from './PageView.module.scss';
 
@@ -40,7 +41,6 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {

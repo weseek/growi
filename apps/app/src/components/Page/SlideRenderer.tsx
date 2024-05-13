@@ -1,3 +1,4 @@
+import { isServer } from '@growi/core/dist/utils';
 import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
 
 import { useIsEnabledMarp } from '~/stores/context';
@@ -12,8 +13,11 @@ type SlideRendererProps = {
 export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
 
   const { markdown, children } = props;
-
   const { data: enabledMarp } = useIsEnabledMarp();
+
+  if (isServer()) {
+    return children;
+  }
 
   const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
   const useMarp = (enabledMarp ?? false) && marp;
