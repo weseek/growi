@@ -1,13 +1,17 @@
 import type { Ref, IPage } from '@growi/core';
-import {
-  Types, Document, Model, Schema, SortOrder,
+import type {
+  Types, Document, Model, SortOrder,
 } from 'mongoose';
+import { Schema } from 'mongoose';
 import mongoosePaginate from 'mongoose-paginate-v2';
 
+import type {
+  IActivity, ISnapshot, SupportedActionType, SupportedTargetModelType, SupportedEventModelType,
+} from '~/interfaces/activity';
 import {
-  IActivity, ISnapshot, AllSupportedActions, SupportedActionType,
-  AllSupportedTargetModels, SupportedTargetModelType,
-  AllSupportedEventModels, SupportedEventModelType,
+  AllSupportedActions,
+  AllSupportedTargetModels,
+  AllSupportedEventModels,
 } from '~/interfaces/activity';
 
 import loggerFactory from '../../utils/logger';
@@ -83,6 +87,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     updatedAt: false,
   },
 });
+activitySchema.index({ createdAt: 1 });
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,
