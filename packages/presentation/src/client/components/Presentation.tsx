@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 
 import Reveal from 'reveal.js';
 
+import { parseSlideFrontmatterInMarkdown } from '../../services';
 import type { PresentationOptions } from '../consts';
-import { parseSlideFrontmatterInMarkdown } from '../services/parse-slide-frontmatter';
 
 import { Slides } from './Slides';
 
@@ -42,8 +42,8 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
   const { options, isEnabledMarp, children } = props;
   const { revealOptions } = options;
 
-  const [marp] = parseSlideFrontmatterInMarkdown(children);
-  const hasMarpFlag = isEnabledMarp && marp;
+  const parseFrontmatterResult = parseSlideFrontmatterInMarkdown(children);
+  const hasMarpFlag = isEnabledMarp && parseFrontmatterResult?.marp;
 
   useEffect(() => {
     if (children == null) {

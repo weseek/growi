@@ -4,10 +4,15 @@ import remarkStringify from 'remark-stringify';
 import { unified } from 'unified';
 
 
-const parseSlideFrontmatter = (frontmatter: string): [boolean, boolean] => {
+type ParseResult = {
+  marp: boolean | undefined,
+  slide: boolean | undefined,
+}
 
-  let marp = false;
-  let slide = false;
+const parseSlideFrontmatter = (frontmatter: string): ParseResult => {
+
+  let marp;
+  let slide;
 
   const lines = frontmatter.split('\n');
   lines.forEach((line) => {
@@ -20,24 +25,44 @@ const parseSlideFrontmatter = (frontmatter: string): [boolean, boolean] => {
     }
   });
 
-  return [marp, slide];
+  return { marp, slide };
 };
 
-export const parseSlideFrontmatterInMarkdown = (markdown?: string): [boolean, boolean] => {
 
-  let marp = false;
-  let slide = false;
+export type UseSlide = {
+  marp?: boolean,
+}
 
-  unified()
+/**
+ * Frontmatter parser for slide
+ * @param markdown Markdwon document
+ * @returns An UseSlide instance. If the markdown does not contain neither "marp" or "slide" attribute in frontmatter, it returns undefined.
+ */
+export const parseSlideFrontmatterInMarkdown = async(markdown?: string): Promise<UseSlide | undefined> => {
+
+  let result: ParseResult | undefined;
+
+  await unified()
     .use(remarkParse)
     .use(remarkStringify)
     .use(remarkFrontmatter, ['yaml'])
     .use(() => ((obj) => {
       if (obj.children[0]?.type === 'yaml') {
-        [marp, slide] = parseSlideFrontmatter(obj.children[0]?.value as string);
+        result = parseSlideFrontmatter(obj.children[0]?.value as string);
       }
     }))
     .process(markdown as string);
 
-  return [marp, slide];
+  if (result == null) {
+    return;
+  }
+
+  const { marp, slide } = result;
+
+  if (!marp && !slide) {
+    return;
+  }
+
+  return { marp };
+
 };
