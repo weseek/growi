@@ -1,13 +1,14 @@
 import type { CSSProperties } from 'react';
-import React from 'react';
+import React, { useState } from 'react';
 
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
+import type { UseSlide } from '@growi/presentation/dist/services';
+import { parseSlideFrontmatterInMarkdown } from '@growi/presentation/dist/services';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
-import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
-import { SlideViewer } from '../SlideViewer';
+import { SlideRenderer } from '../Page/SlideRenderer';
 
 import styles from './Preview.module.scss';
 
@@ -31,11 +32,21 @@ const Preview = (props: Props): JSX.Element => {
     expandContentWidth,
   } = props;
 
+  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
+
   const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';
 
-  const { data: enabledMarp } = useIsEnabledMarp();
-  const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
-  const useMarp = (enabledMarp ?? false) && marp;
+  useIsomorphicLayoutEffect(() => {
+    if (markdown == null) return;
+
+    (async() => {
+      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(markdown);
+
+      if (parseFrontmatterResult != null) {
+        setParseFrontmatterResult(parseFrontmatterResult);
+      }
+    })();
+  }, []);
 
   return (
     <div
@@ -45,9 +56,9 @@ const Preview = (props: Props): JSX.Element => {
     >
       { markdown != null
         && (
-          (useMarp || useSlide)
-            ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-            : (<RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>)
+          parseFrontmatterResult != null
+            ? <SlideRenderer marp={parseFrontmatterResult.marp} markdown={markdown} />
+            : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
         )
       }
     </div>

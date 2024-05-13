@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 
-import type { PresentationProps } from '@growi/presentation';
+import type { PresentationProps } from '@growi/presentation/dist/client';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';

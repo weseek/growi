@@ -4,7 +4,10 @@ import React, {
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
+import type { UseSlide } from '@growi/presentation/dist/services';
+import { parseSlideFrontmatterInMarkdown } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -27,7 +30,6 @@ import { UserInfo } from '../User/UserInfo';
 import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
 import RevisionRenderer from './RevisionRenderer';
-import { SlideRenderer } from './SlideRenderer';
 
 import styles from './PageView.module.scss';
 
@@ -41,6 +43,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
@@ -54,6 +57,7 @@ export const PageView = (props: Props): JSX.Element => {
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
+  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
 
   const {
     pagePath, initialPage, rendererConfig,
@@ -90,6 +94,23 @@ export const PageView = (props: Props): JSX.Element => {
 
   }, [isCommentsLoaded]);
   // *******************************  end  *******************************
+
+
+  useIsomorphicLayoutEffect(() => {
+    if (isNotFound || page?.revision == null) {
+      return;
+    }
+
+    const markdown = page.revision.body;
+
+    (async() => {
+      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(markdown);
+
+      if (parseFrontmatterResult != null) {
+        setParseFrontmatterResult(parseFrontmatterResult);
+      }
+    })();
+  }, []);
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -138,9 +159,10 @@ export const PageView = (props: Props): JSX.Element => {
 
         <div className="flex-expand-vert justify-content-between">
 
-          <SlideRenderer markdown={markdown}>
-            <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-          </SlideRenderer>
+          { parseFrontmatterResult != null
+            ? <SlideRenderer marp={parseFrontmatterResult.marp} markdown={markdown} />
+            : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+          }
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>

@@ -1,30 +1,28 @@
-import { isServer } from '@growi/core/dist/utils';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation';
+import type { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown';
 
 import { useIsEnabledMarp } from '~/stores/context';
+import { usePresentationViewOptions } from '~/stores/renderer';
 
-import { SlideViewer } from '../SlideViewer';
+import { Slides } from '../Presentation/Slides';
 
 type SlideRendererProps = {
-  markdown: string
-  children: JSX.Element
+  markdown: string,
+  marp?: boolean,
 };
 
 export const SlideRenderer = (props: SlideRendererProps): JSX.Element => {
 
-  const { markdown, children } = props;
-  const { data: enabledMarp } = useIsEnabledMarp();
+  const { markdown, marp = false } = props;
+  const { data: enabledMarp = false } = useIsEnabledMarp();
 
-  if (isServer()) {
-    return children;
-  }
-
-  const [marp, useSlide] = parseSlideFrontmatterInMarkdown(markdown);
-  const useMarp = (enabledMarp ?? false) && marp;
+  const { data: rendererOptions } = usePresentationViewOptions();
 
   return (
-    (useMarp || useSlide)
-      ? (<SlideViewer marp={useMarp}>{markdown}</SlideViewer>)
-      : (children)
+    <Slides
+      hasMarpFlag={enabledMarp && marp}
+      options={{ rendererOptions: rendererOptions as ReactMarkdownOptions }}
+    >
+      {markdown}
+    </Slides>
   );
 };
