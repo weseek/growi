@@ -285,11 +285,11 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   // initialize mutateEditingMarkdown only once per page
   // need to include useCurrentPathname not useCurrentPagePath
-  // useEffect(() => {
-  //   if (props.currentPathname != null) {
-  //     mutateEditingMarkdown(props.yjsDraft ?? revisionBody);
-  //   }
-  // }, [mutateEditingMarkdown, revisionBody, props.currentPathname, props.yjsDraft]);
+  useEffect(() => {
+    if (props.currentPathname != null) {
+      mutateEditingMarkdown(revisionBody);
+    }
+  }, [mutateEditingMarkdown, revisionBody, props.currentPathname]);
 
   useEffect(() => {
     mutateRemoteRevisionId(pageWithMeta?.data.revision?._id);
