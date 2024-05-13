@@ -1,15 +1,14 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import type { UseSlide } from '@growi/presentation/dist/services';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation/dist/services';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
+import { useIsEnabledMarp } from '~/stores/context';
 import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -44,13 +43,15 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     isExpired, disableLinkSharing,
   } = props;
 
-  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
-
   const { data: isNotFoundMeta } = useIsNotFound();
 
   const { data: viewOptions } = useViewOptions();
 
   const shouldExpandContent = useShouldExpandContent(page);
+
+  const markdown = page?.revision?.body;
+
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
@@ -59,22 +60,6 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       return <ForbiddenPage isLinkSharingDisabled={props.disableLinkSharing} />;
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
-
-  useIsomorphicLayoutEffect(() => {
-    if (isNotFound || page?.revision == null) {
-      return;
-    }
-
-    const markdown = page.revision.body;
-
-    (async() => {
-      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(markdown);
-
-      if (parseFrontmatterResult != null) {
-        setParseFrontmatterResult(parseFrontmatterResult);
-      }
-    })();
-  }, []);
 
   const headerContents = (
     <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
@@ -106,8 +91,8 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    return parseFrontmatterResult != null
-      ? <SlideRenderer marp={parseFrontmatterResult.marp} markdown={markdown} />
+    return isSlide != null
+      ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
       : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
   };
 

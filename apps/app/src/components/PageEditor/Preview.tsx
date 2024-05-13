@@ -1,11 +1,9 @@
 import type { CSSProperties } from 'react';
-import React, { useState } from 'react';
 
-import type { UseSlide } from '@growi/presentation/dist/services';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation/dist/services';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
 import { SlideRenderer } from '../Page/SlideRenderer';
@@ -32,21 +30,11 @@ const Preview = (props: Props): JSX.Element => {
     expandContentWidth,
   } = props;
 
-  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
+  const { data: isEnabledMarp } = useIsEnabledMarp();
+  const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
 
   const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';
 
-  useIsomorphicLayoutEffect(() => {
-    if (markdown == null) return;
-
-    (async() => {
-      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(markdown);
-
-      if (parseFrontmatterResult != null) {
-        setParseFrontmatterResult(parseFrontmatterResult);
-      }
-    })();
-  }, []);
 
   return (
     <div
@@ -56,8 +44,8 @@ const Preview = (props: Props): JSX.Element => {
     >
       { markdown != null
         && (
-          parseFrontmatterResult != null
-            ? <SlideRenderer marp={parseFrontmatterResult.marp} markdown={markdown} />
+          isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
             : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
         )
       }

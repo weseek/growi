@@ -4,10 +4,8 @@ import React, {
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
-import type { UseSlide } from '@growi/presentation/dist/services';
-import { parseSlideFrontmatterInMarkdown } from '@growi/presentation/dist/services';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
-import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -57,7 +55,6 @@ export const PageView = (props: Props): JSX.Element => {
   const commentsContainerRef = useRef<HTMLDivElement>(null);
 
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
-  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
 
   const {
     pagePath, initialPage, rendererConfig,
@@ -79,6 +76,10 @@ export const PageView = (props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(page);
 
 
+  const markdown = page?.revision?.body;
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
+
+
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     // do nothing if hash is empty
@@ -95,22 +96,6 @@ export const PageView = (props: Props): JSX.Element => {
   }, [isCommentsLoaded]);
   // *******************************  end  *******************************
 
-
-  useIsomorphicLayoutEffect(() => {
-    if (isNotFound || page?.revision == null) {
-      return;
-    }
-
-    const markdown = page.revision.body;
-
-    (async() => {
-      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(markdown);
-
-      if (parseFrontmatterResult != null) {
-        setParseFrontmatterResult(parseFrontmatterResult);
-      }
-    })();
-  }, []);
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -150,8 +135,8 @@ export const PageView = (props: Props): JSX.Element => {
       return <NotFoundPage path={pagePath} />;
     }
 
-    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
+    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
 
     return (
       <>
@@ -159,8 +144,8 @@ export const PageView = (props: Props): JSX.Element => {
 
         <div className="flex-expand-vert justify-content-between">
 
-          { parseFrontmatterResult != null
-            ? <SlideRenderer marp={parseFrontmatterResult.marp} markdown={markdown} />
+          { isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
             : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
           }
 

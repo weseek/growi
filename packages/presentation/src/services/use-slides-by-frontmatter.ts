@@ -1,3 +1,5 @@
+import { useEffect, useMemo, useState } from 'react';
+
 import remarkFrontmatter from 'remark-frontmatter';
 import remarkParse from 'remark-parse';
 import remarkStringify from 'remark-stringify';
@@ -38,31 +40,37 @@ export type UseSlide = {
  * @param markdown Markdwon document
  * @returns An UseSlide instance. If the markdown does not contain neither "marp" or "slide" attribute in frontmatter, it returns undefined.
  */
-export const parseSlideFrontmatterInMarkdown = async(markdown?: string): Promise<UseSlide | undefined> => {
+export const useSlidesByFrontmatter = (markdown?: string, isEnabledMarp?: boolean): UseSlide | undefined => {
 
-  let result: ParseResult | undefined;
+  const [parseResult, setParseResult] = useState<UseSlide|undefined>();
 
-  await unified()
-    .use(remarkParse)
-    .use(remarkStringify)
-    .use(remarkFrontmatter, ['yaml'])
-    .use(() => ((obj) => {
-      if (obj.children[0]?.type === 'yaml') {
-        result = parseSlideFrontmatter(obj.children[0]?.value as string);
-      }
-    }))
-    .process(markdown as string);
+  const processor = useMemo(() => {
+    return unified()
+      .use(remarkParse)
+      .use(remarkStringify)
+      .use(remarkFrontmatter, ['yaml'])
+      .use(() => ((obj) => {
+        if (obj.children[0]?.type === 'yaml') {
+          const result = parseSlideFrontmatter(obj.children[0]?.value);
+          setParseResult(result.marp || result.slide ? result : undefined);
+        }
+        else {
+          setParseResult(undefined);
+        }
+      }));
+  }, []);
 
-  if (result == null) {
-    return;
-  }
+  useEffect(() => {
+    if (markdown == null) {
+      return;
+    }
 
-  const { marp, slide } = result;
+    processor.process(markdown);
+  }, [markdown, processor]);
 
-  if (!marp && !slide) {
-    return;
-  }
 
-  return { marp };
+  return parseResult != null
+    ? { marp: isEnabledMarp && parseResult?.marp }
+    : undefined;
 
 };

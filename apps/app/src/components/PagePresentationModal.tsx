@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
 
 import type { PresentationProps } from '@growi/presentation/dist/client';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useFullScreen } from '@growi/ui/dist/utils';
 import dynamic from 'next/dynamic';
@@ -39,6 +40,10 @@ const PagePresentationModal = (): JSX.Element => {
 
   const { data: isEnabledMarp } = useIsEnabledMarp();
 
+  const markdown = currentPage?.revision?.body;
+
+  const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
+
   const toggleFullscreenHandler = useCallback(() => {
     if (fullscreen.active) {
       fullscreen.exit();
@@ -60,8 +65,6 @@ const PagePresentationModal = (): JSX.Element => {
   if (!isOpen) {
     return <></>;
   }
-
-  const markdown = currentPage?.revision?.body;
 
   return (
     <Modal
@@ -92,7 +95,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
-            isEnabledMarp={isEnabledMarp}
+            marp={isSlide?.marp}
           >
             {markdown}
           </Presentation>

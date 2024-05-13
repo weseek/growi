@@ -1,1 +1,1 @@
-export * from './parse-slide-frontmatter';
+export * from './use-slides-by-frontmatter';

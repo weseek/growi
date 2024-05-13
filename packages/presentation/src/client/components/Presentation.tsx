@@ -1,8 +1,7 @@
-import { useEffect, useLayoutEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import Reveal from 'reveal.js';
 
-import { UseSlide, parseSlideFrontmatterInMarkdown } from '../../services';
 import type { PresentationOptions } from '../consts';
 
 import { Slides } from './Slides';
@@ -34,29 +33,13 @@ const removeAllHiddenElements = () => {
 
 export type PresentationProps = {
   options: PresentationOptions,
-  isEnabledMarp: boolean,
+  marp?: boolean,
   children?: string,
 }
 
 export const Presentation = (props: PresentationProps): JSX.Element => {
-  const { options, isEnabledMarp, children } = props;
+  const { options, marp, children } = props;
   const { revealOptions } = options;
-
-  const [parseFrontmatterResult, setParseFrontmatterResult] = useState<UseSlide|undefined>();
-
-  useLayoutEffect(() => {
-    if (children == null) {
-      return;
-    }
-
-    (async() => {
-      const parseFrontmatterResult = await parseSlideFrontmatterInMarkdown(children);
-
-      if (parseFrontmatterResult != null) {
-        setParseFrontmatterResult(parseFrontmatterResult);
-      }
-    })();
-  }, [children]);
 
   useEffect(() => {
     if (children == null) {
@@ -77,7 +60,7 @@ export const Presentation = (props: PresentationProps): JSX.Element => {
 
   return (
     <div className={`grw-presentation ${styles['grw-presentation']} reveal`}>
-      <Slides options={options} hasMarpFlag={isEnabledMarp && parseFrontmatterResult?.marp} presentation>{children}</Slides>
+      <Slides options={options} hasMarpFlag={marp} presentation>{children}</Slides>
     </div>
   );
 };
