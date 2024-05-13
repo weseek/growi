@@ -5,7 +5,7 @@ import React, {
 
 import nodePath from 'path';
 
-import type { IPageHasId, Nullable } from '@growi/core';
+import type { IPageHasId } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
