@@ -40,9 +40,8 @@ export const PageSelectModal: FC = () => {
 
   const onClickTreeItem = useCallback((page: IPageForItem) => {
     const parentPagePath = page.path;
-    const parentPageId = page._id;
 
-    if (parentPagePath == null || parentPageId == null) {
+    if (parentPagePath == null) {
       return;
     }
 
