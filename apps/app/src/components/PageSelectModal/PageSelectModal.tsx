@@ -3,9 +3,7 @@ import { Suspense, useState, useCallback } from 'react';
 
 import nodePath from 'path';
 
-import type { Nullable } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
 } from 'reactstrap';
@@ -13,22 +11,14 @@ import {
 import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { usePageSelectModal } from '~/stores/modal';
-import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
-
-// import { ItemsTree } from '../ItemsTree';
+import { useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 
+import { ItemsTree } from '../ItemsTree';
 import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
-import type { ItemNode } from '../TreeItem';
-
 
 import { TreeItemForModal } from './TreeItemForModal';
-
-const ItemsTree = dynamic(
-  () => import('../ItemsTree').then(mod => mod.ItemsTree),
-  { ssr: false, loading: ItemsTreeContentSkeleton },
-);
 
 export const PageSelectModal: FC = () => {
   const {
@@ -45,8 +35,6 @@ export const PageSelectModal: FC = () => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: currentPath } = useCurrentPagePath();
-  const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
   const { mutate: mutateChildren } = useSWRxPageChildren(clickedParentPageId);
@@ -89,22 +77,6 @@ export const PageSelectModal: FC = () => {
   if (isGuestUser == null) {
     return null;
   }
-
-  // const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-  //   if (targetPathOrId == null) {
-  //     return;
-  //   }
-
-  //   children.forEach((node) => {
-  //     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-  //       node.page.isTarget = true;
-  //     }
-  //     else {
-  //       node.page.isTarget = false;
-  //     }
-  //     return node;
-  //   });
-  // };
 
   return (
     <Modal

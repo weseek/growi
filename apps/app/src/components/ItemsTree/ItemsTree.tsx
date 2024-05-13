@@ -97,7 +97,6 @@ type ItemsTreeProps = {
   targetAndAncestorsData?: TargetAndAncestors
   CustomTreeItem: React.FunctionComponent<TreeItemProps>
   onClickTreeItem?: (page: IPageForItem) => void;
-  // markTarget: (children: ItemNode[], targetPathOrId?: Nullable<string>) => void;
 }
 
 /*
