@@ -26,6 +26,9 @@ export const useCreateNewPage: UseCreateNewPage = () => {
         wip: true,
         origin: Origin.View,
       },
+      {
+        skipPageExistenceCheck: true,
+      },
     );
   }, [create, currentPagePath, isLoadingPagePath]);
 
