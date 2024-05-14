@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -51,7 +51,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   // TODO: https://redmine.weseek.co.jp/issues/142729
   // https://regex101.com/r/Wg2Hh6/1
-  const untitledPageRegex = /^Untitled-\d+$/;
+  const untitledPageTitle = t('create_page.untitled');
+  const untitledPageRegex = new RegExp(`^${untitledPageTitle}-\\d+$`);
 
   const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
@@ -97,11 +98,17 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   // TODO: auto focus when create new page
   // https://redmine.weseek.co.jp/issues/136128
-  // useEffect(() => {
-  //   if (isNewlyCreatedPage) {
-  //     setRenameInputShown(true);
-  //   }
-  // }, [currentPage._id, isNewlyCreatedPage]);
+  useEffect(() => {
+    setEditedPagePath(currentPagePath);
+    console.log(currentPage.wip);
+    console.log(currentPage.latestRevision == null);
+    console.log(untitledPageRegex.test(editedPageTitle));
+    console.log(isNewlyCreatedPage);
+    console.log(editedPageTitle);
+    if (isNewlyCreatedPage) {
+      setRenameInputShown(true);
+    }
+  }, [currentPage._id, isNewlyCreatedPage]);
 
   const isInvalid = validationResult != null;
 
