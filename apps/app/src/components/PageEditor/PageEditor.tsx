@@ -112,8 +112,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
 
-  console.log('yjsData', yjsData);
-
   const { data: rendererOptions } = usePreviewOptions();
 
   const { mutate: mutateResolvedTheme } = useResolvedThemeForEditor();
