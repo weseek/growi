@@ -57,9 +57,9 @@ export const useCreatePage: UseCreatePage = () => {
 
   const create: CreatePage = useCallback(async(params, opts = {}) => {
     const {
-      skipPageExistenceCheck,
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
+    const skipPageExistenceCheck = opts.skipPageExistenceCheck ?? false;
     const skipTransition = opts.skipTransition ?? false;
 
     // check the page existence
