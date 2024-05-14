@@ -97,7 +97,7 @@ const ElasticsearchManagement = () => {
       socket.off(SocketEventName.FinishAddPage);
       socket.off(SocketEventName.RebuildingFailed);
     };
-  }, [socket]);
+  }, [retrieveIndicesStatus, socket]);
 
 
   const reconnect = async() => {
