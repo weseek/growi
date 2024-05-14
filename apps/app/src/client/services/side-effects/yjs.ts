@@ -7,7 +7,11 @@ import { useCurrentPageYjsData } from '~/stores/yjs';
 
 export const useCurrentPageYjsDataEffect = (): void => {
   const { data: socket } = useGlobalSocket();
-  const { updateHasRevisionBodyDiff, updateAwarenessStateSize } = useCurrentPageYjsData();
+  const { updateHasDraft, updateHasRevisionBodyDiff, updateAwarenessStateSize } = useCurrentPageYjsData();
+
+  const hasDraftUpdateHandler = useCallback((hasDraft: boolean) => {
+    updateHasDraft(hasDraft);
+  }, [updateHasDraft]);
 
   const hasRevisionBodyDiffUpdateHandler = useCallback((hasRevisionBodyDiff: boolean) => {
     updateHasRevisionBodyDiff(hasRevisionBodyDiff);
@@ -21,13 +25,15 @@ export const useCurrentPageYjsDataEffect = (): void => {
 
     if (socket == null) { return }
 
+    socket.on(SocketEventName.YjsHasDraftUpdated, hasDraftUpdateHandler);
     socket.on(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
     socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
 
     return () => {
+      socket.off(SocketEventName.YjsHasDraftUpdated);
       socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
       socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
     };
 
-  }, [socket, awarenessStateSizeUpdateHandler, hasRevisionBodyDiffUpdateHandler]);
+  }, [socket, awarenessStateSizeUpdateHandler, hasRevisionBodyDiffUpdateHandler, hasDraftUpdateHandler]);
 };

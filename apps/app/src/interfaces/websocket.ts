@@ -50,6 +50,7 @@ export const SocketEventName = {
   PageDeleted: 'page:delete',
 
   // Yjs
+  YjsHasDraftUpdated: 'yjs:has-draft-update',
   YjsAwarenessStateSizeUpdated: 'yjs:awareness-state-size-update',
   YjsHasRevisionBodyDiffUpdated: 'yjs:has-revision-body-diff-update',
 } as const;

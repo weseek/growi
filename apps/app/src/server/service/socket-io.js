@@ -192,6 +192,10 @@ class SocketIoService {
       });
 
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
+        this.io
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit('hasYjsDraft', true);
+
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);
         }
