@@ -12,9 +12,8 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import { useCreateTemplatePage } from '~/client/services/create-page';
-import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
+import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
-import { apiv3Get } from '~/client/util/apiv3-client';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 
@@ -37,7 +36,7 @@ const PageCreateModal: React.FC = () => {
   const path = pageCreateModalData?.path;
   const isOpened = pageCreateModalData?.isOpened ?? false;
 
-  const { createAndTransit } = useCreatePageAndTransit();
+  const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
@@ -95,28 +94,28 @@ const PageCreateModal: React.FC = () => {
    */
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
-    return createAndTransit(
+    return create(
       {
         path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+      { onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
+  }, [closeCreateModal, create, todayInput, todaysParentPath]);
 
   /**
    * access input page
    */
   const createInputPage = useCallback(async() => {
-    return createAndTransit(
+    return create(
       {
         path: pageNameInput,
         parentPath: pathname,
         wip: true,
         origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+      { onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, pageNameInput, pathname]);
+  }, [closeCreateModal, create, pageNameInput, pathname]);
 
   /**
    * access template page

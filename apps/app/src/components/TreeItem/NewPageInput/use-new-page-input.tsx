@@ -11,7 +11,7 @@ import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCreatePage } from '~/client/services/create-page';
 import { toastWarning, toastError, toastSuccess } from '~/client/util/toastr';
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
@@ -60,7 +60,7 @@ export const useNewPageInput = (): UseNewPageInput => {
   const Input: FC<TreeItemToolProps> = (props) => {
 
     const { t } = useTranslation();
-    const { createAndTransit } = useCreatePageAndTransit();
+    const { create: createPage } = useCreatePage();
 
     const { itemNode, stateHandlers, isEnableActions } = props;
     const { page, children } = itemNode;
@@ -108,7 +108,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       setShowInput(false);
 
       try {
-        await createAndTransit(
+        await createPage(
           {
             path: newPagePath,
             parentPath,
@@ -120,8 +120,7 @@ export const useNewPageInput = (): UseNewPageInput => {
             wip: shouldCreateWipPage(newPagePath),
           },
           {
-            shouldCheckPageExists: true,
-            shouldTransit: false,
+            skipTransition: true,
             onCreated: () => {
               mutatePageTree();
 
@@ -140,7 +139,7 @@ export const useNewPageInput = (): UseNewPageInput => {
       finally {
         setProcessingSubmission(false);
       }
-    }, [cancel, hasDescendants, page.path, stateHandlers, t, createAndTransit]);
+    }, [cancel, hasDescendants, page.path, stateHandlers, t, createPage]);
 
     const inputContainerClass = newPageInputStyles['new-page-input-container'] ?? '';
     const isInvalid = validationResult != null;

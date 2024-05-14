@@ -26,8 +26,8 @@ type OnAborted = () => void;
 type OnTerminated = () => void;
 
 export type CreatePageAndTransitOpts = {
-  shouldCheckPageExists?: boolean,
-  shouldTransit?: boolean,
+  skipPageExistenceCheck?: boolean,
+  skipTransition?: boolean,
   onCreationStart?: OnCreated,
   onCreated?: OnCreated,
   onAborted?: OnAborted,
@@ -41,10 +41,10 @@ type CreatePageAndTransit = (
 
 type UseCreatePageAndTransit = () => {
   isCreating: boolean,
-  createAndTransit: CreatePageAndTransit,
+  create: CreatePageAndTransit,
 };
 
-export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
+export const useCreatePage: UseCreatePageAndTransit = () => {
 
   const router = useRouter();
   const { t } = useTranslation();
@@ -55,22 +55,22 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const [isCreating, setCreating] = useState(false);
 
-  const createAndTransit: CreatePageAndTransit = useCallback(async(params, opts = {}) => {
+  const create: CreatePageAndTransit = useCallback(async(params, opts = {}) => {
     const {
-      shouldCheckPageExists,
+      skipPageExistenceCheck,
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
-    const shouldTransit = opts.shouldTransit ?? true;
+    const skipTransition = opts.skipTransition ?? false;
 
     // check the page existence
-    if (shouldCheckPageExists && params.path != null) {
+    if (!skipPageExistenceCheck && params.path != null) {
       const pagePath = params.path;
 
       try {
         const { isExist } = await exist(pagePath);
 
         if (isExist) {
-          if (shouldTransit) {
+          if (!skipTransition) {
             // routing
             if (pagePath !== currentPagePath) {
               await router.push(`${pagePath}#edit`);
@@ -92,7 +92,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       }
     }
 
-    const _createAndTransit = async(onlyInheritUserRelatedGrantedGroups?: boolean) => {
+    const _create = async(onlyInheritUserRelatedGrantedGroups?: boolean) => {
       try {
         setCreating(true);
         onCreationStart?.();
@@ -102,7 +102,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
         closeGrantedGroupsInheritanceSelectModal();
 
-        if (shouldTransit) {
+        if (!skipTransition) {
           await router.push(`/${response.page._id}#edit`);
           mutateEditorMode(EditorMode.Editor);
         }
@@ -123,16 +123,16 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
       if (isNonUserRelatedGroupsGranted) {
         // create and transit request will be made from modal
-        openGrantedGroupsInheritanceSelectModal(_createAndTransit);
+        openGrantedGroupsInheritanceSelectModal(_create);
         return;
       }
     }
 
-    await _createAndTransit();
+    await _create();
   }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal, t]);
 
   return {
     isCreating,
-    createAndTransit,
+    create,
   };
 };
