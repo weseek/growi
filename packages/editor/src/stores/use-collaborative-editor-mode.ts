@@ -19,6 +19,7 @@ type UserLocalState = {
 
 export const useCollaborativeEditorMode = (
     isEnabled: boolean,
+    hasDraft: boolean,
     user?: IUserHasId,
     pageId?: string,
     initialValue?: string,
@@ -92,7 +93,9 @@ export const useCollaborativeEditorMode = (
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
-        socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
+        // If no draft exists, insert initial value
+        socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue: hasDraft ? undefined : initialValue });
+
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
         onEditorsUpdated(userList);
       }
@@ -108,7 +111,7 @@ export const useCollaborativeEditorMode = (
     });
 
     setProvider(socketIOProvider);
-  }, [initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
+  }, [hasDraft, initialValue, onEditorsUpdated, pageId, provider, socket, user, ydoc]);
 
   // Setup Ydoc Extensions
   useEffect(() => {

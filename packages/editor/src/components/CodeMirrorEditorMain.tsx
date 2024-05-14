@@ -22,18 +22,19 @@ type Props = CodeMirrorEditorProps & {
   pageId?: string,
   initialValue?: string,
   isEditorMode: boolean,
+  hasYjsDraft: boolean,
   onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    user, pageId, initialValue, isEditorMode,
+    user, pageId, initialValue, isEditorMode, hasYjsDraft,
     onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
+  useCollaborativeEditorMode(isEditorMode, hasYjsDraft, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
