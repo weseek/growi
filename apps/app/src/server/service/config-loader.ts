@@ -471,6 +471,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 120,
   },
+  S3_BUCKET_ACLS_DISABLE: {
+    ns:      'crowi',
+    key:     'aws:s3BucketAclsDisable',
+    type:    ValueType.BOOLEAN,
+    default: false,
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
