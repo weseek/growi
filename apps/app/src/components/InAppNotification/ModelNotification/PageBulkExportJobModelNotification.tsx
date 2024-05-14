@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { isPopulated, type HasObjectId } from '@growi/core';
+import { useTranslation } from 'react-i18next';
 
 import type { IPageBulkExportJobHasId } from '~/features/page-bulk-export/interfaces/page-bulk-export';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -15,6 +16,7 @@ import type { ModelNotificationUtils } from '.';
 
 export const usePageBulkExportJobModelNotification = (notification: IInAppNotification & HasObjectId): ModelNotificationUtils | null => {
 
+  const { t } = useTranslation();
   const { actionMsg, actionIcon } = useActionMsgAndIconForModelNotification(notification);
 
   const isPageBulkExportJobModelNotification = (
@@ -31,6 +33,9 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
 
   notification.parsedSnapshot = pageBulkExportJobSerializers.parseSnapshot(notification.snapshot);
 
+  const subMsg = (notification.action === SupportedAction.ACTION_PAGE_BULK_EXPORT_COMPLETED && notification.target == null)
+    ? <div className="text-danger"><small>{t('page_export.bulk_export_download_expired')}</small></div> : <></>;
+
   const Notification = () => {
     return (
       <ModelNotification
@@ -38,6 +43,8 @@ export const usePageBulkExportJobModelNotification = (notification: IInAppNotifi
         actionMsg={actionMsg}
         actionIcon={actionIcon}
         actionUsers={actionUsers}
+        hideActionUsers
+        subMsg={subMsg}
       />
     );
   };
