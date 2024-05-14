@@ -25,7 +25,7 @@ type OnAborted = () => void;
  */
 type OnTerminated = () => void;
 
-export type CreatePageAndTransitOpts = {
+export type CreatePageOpts = {
   skipPageExistenceCheck?: boolean,
   skipTransition?: boolean,
   onCreationStart?: OnCreated,
@@ -34,17 +34,17 @@ export type CreatePageAndTransitOpts = {
   onTerminated?: OnTerminated,
 }
 
-type CreatePageAndTransit = (
+type CreatePage = (
   params: IApiv3PageCreateParams,
-  opts?: CreatePageAndTransitOpts,
+  opts?: CreatePageOpts,
 ) => Promise<void>;
 
-type UseCreatePageAndTransit = () => {
+type UseCreatePage = () => {
   isCreating: boolean,
-  create: CreatePageAndTransit,
+  create: CreatePage,
 };
 
-export const useCreatePage: UseCreatePageAndTransit = () => {
+export const useCreatePage: UseCreatePage = () => {
 
   const router = useRouter();
   const { t } = useTranslation();
@@ -55,7 +55,7 @@ export const useCreatePage: UseCreatePageAndTransit = () => {
 
   const [isCreating, setCreating] = useState(false);
 
-  const create: CreatePageAndTransit = useCallback(async(params, opts = {}) => {
+  const create: CreatePage = useCallback(async(params, opts = {}) => {
     const {
       skipPageExistenceCheck,
       onCreationStart, onCreated, onAborted, onTerminated,
