@@ -1,12 +1,14 @@
 import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
+import { useIsEnabledMarp } from '~/stores/context';
 import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -23,7 +25,7 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-
+const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -46,6 +48,10 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   const { data: viewOptions } = useViewOptions();
 
   const shouldExpandContent = useShouldExpandContent(page);
+
+  const markdown = page?.revision?.body;
+
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
@@ -85,11 +91,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    return (
-      <>
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-      </>
-    );
+    return isSlide != null
+      ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+      : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
   };
 
   return (

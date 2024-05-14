@@ -4,6 +4,7 @@ import React, {
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
 import { useShouldExpandContent } from '~/client/services/layout';
@@ -40,6 +41,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
@@ -74,6 +76,10 @@ export const PageView = (props: Props): JSX.Element => {
   const shouldExpandContent = useShouldExpandContent(page);
 
 
+  const markdown = page?.revision?.body;
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
+
+
   // ***************************  Auto Scroll  ***************************
   useEffect(() => {
     // do nothing if hash is empty
@@ -89,6 +95,7 @@ export const PageView = (props: Props): JSX.Element => {
 
   }, [isCommentsLoaded]);
   // *******************************  end  *******************************
+
 
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
@@ -128,15 +135,19 @@ export const PageView = (props: Props): JSX.Element => {
       return <NotFoundPage path={pagePath} />;
     }
 
-    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
+    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
 
     return (
       <>
         <PageContentsUtilities />
 
         <div className="flex-expand-vert justify-content-between">
-          <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+
+          { isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+            : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+          }
 
           { !isIdenticalPathPage && !isNotFound && (
             <div id="comments-container" ref={commentsContainerRef}>

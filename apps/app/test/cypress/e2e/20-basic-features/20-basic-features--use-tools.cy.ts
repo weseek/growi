@@ -73,7 +73,7 @@ context('Modal for page operation', () => {
       return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
-    cy.getByTestid('open-page-move-rename-modal-btn').filter(':visible').click({force: true});
+    cy.getByTestid('rename-page-btn').filter(':visible').click({force: true});
     cy.getByTestid('grw-page-rename-button').should('be.disabled');
 
     cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap5`);
