@@ -4,8 +4,9 @@ import {
 } from 'react';
 
 import dynamic from 'next/dynamic';
-import SimpleBar from 'simplebar';
-import SimpleBarReact from 'simplebar-react';
+// import 'simplebar';
+// import SimpleBar from 'simplebar';
+import SimpleBar from 'simplebar-react';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores/context';
@@ -216,13 +217,9 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   return (
     <div id="grw-sidebar-contents-wrapper">
-      <div
-        data-simplebar
-        data-simplebar-auto-hide="false"
-        data-simplebar-click-on-track="false"
-      >
+      <SimpleBar>
         <SidebarContents />
-      </div>
+      </SimpleBar>
     </div>
   );
 });
