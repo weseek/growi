@@ -49,7 +49,7 @@ module.exports = function(crowi) {
     isGravatarEnabled: { type: Boolean, default: false },
     isEmailPublished: { type: Boolean, default: true },
     googleId: String,
-    name: { type: String },
+    name: { type: String, index: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, unique: true, sparse: true },
     slackMemberId: { type: String, unique: true, sparse: true },
@@ -69,7 +69,7 @@ module.exports = function(crowi) {
     status: {
       type: Number, required: true, default: STATUS_ACTIVE, index: true,
     },
-    lastLoginAt: { type: Date },
+    lastLoginAt: { type: Date, index: true },
     admin: { type: Boolean, default: 0, index: true },
     readOnly: { type: Boolean, default: 0 },
     isInvitationEmailSended: { type: Boolean, default: false },
