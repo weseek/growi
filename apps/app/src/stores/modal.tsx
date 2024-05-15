@@ -8,8 +8,6 @@ import type { SWRResponse } from 'swr';
 
 
 import MarkdownTable from '~/client/models/MarkdownTable';
-import type { CreatePageAndTransitOpts } from '~/client/services/create-page';
-import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,

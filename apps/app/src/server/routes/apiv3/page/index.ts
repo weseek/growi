@@ -6,6 +6,7 @@ import {
 } from '@growi/core';
 import { ErrorV3 } from '@growi/core/dist/models';
 import { convertToNewAffiliationPath } from '@growi/core/dist/utils/page-path-utils';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import mongoose from 'mongoose';
 import sanitize from 'sanitize-filename';
 
@@ -645,7 +646,7 @@ module.exports = (crowi) => {
   router.get('/non-user-related-groups-granted', loginRequiredStrictly, validator.nonUserRelatedGroupsGranted, apiV3FormValidator,
     async(req, res: ApiV3Response) => {
       const { user } = req;
-      const { path } = req.query;
+      const path = normalizePath(req.query.path);
       const pageGrantService = crowi.pageGrantService as IPageGrantService;
       try {
         const page = await Page.findByPath(path, true) ?? await Page.findNonEmptyClosestAncestor(path);

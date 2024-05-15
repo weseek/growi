@@ -1,17 +1,16 @@
 import { useCallback, useState } from 'react';
 
 import { useRouter } from 'next/router';
+import { useTranslation } from 'react-i18next';
 
 import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-operation';
+import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
-import loggerFactory from '~/utils/logger';
 
 import { createPage } from './create-page';
-
-const logger = loggerFactory('growi:Navbar:GrowiContextualSubNavigation');
 
 /**
  * Invoked when creation and transition has finished
@@ -26,27 +25,29 @@ type OnAborted = () => void;
  */
 type OnTerminated = () => void;
 
-export type CreatePageAndTransitOpts = {
-  shouldCheckPageExists?: boolean,
+export type CreatePageOpts = {
+  skipPageExistenceCheck?: boolean,
+  skipTransition?: boolean,
   onCreationStart?: OnCreated,
   onCreated?: OnCreated,
   onAborted?: OnAborted,
   onTerminated?: OnTerminated,
 }
 
-type CreatePageAndTransit = (
+type CreatePage = (
   params: IApiv3PageCreateParams,
-  opts?: CreatePageAndTransitOpts,
+  opts?: CreatePageOpts,
 ) => Promise<void>;
 
-type UseCreatePageAndTransit = () => {
+type UseCreatePage = () => {
   isCreating: boolean,
-  createAndTransit: CreatePageAndTransit,
+  create: CreatePage,
 };
 
-export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
+export const useCreatePage: UseCreatePage = () => {
 
   const router = useRouter();
+  const { t } = useTranslation();
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
@@ -54,25 +55,31 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
   const [isCreating, setCreating] = useState(false);
 
-  const createAndTransit: CreatePageAndTransit = useCallback(async(params, opts = {}) => {
+  const create: CreatePage = useCallback(async(params, opts = {}) => {
     const {
-      shouldCheckPageExists,
       onCreationStart, onCreated, onAborted, onTerminated,
     } = opts;
+    const skipPageExistenceCheck = opts.skipPageExistenceCheck ?? false;
+    const skipTransition = opts.skipTransition ?? false;
 
     // check the page existence
-    if (shouldCheckPageExists && params.path != null) {
+    if (!skipPageExistenceCheck && params.path != null) {
       const pagePath = params.path;
 
       try {
         const { isExist } = await exist(pagePath);
 
         if (isExist) {
-          // routing
-          if (pagePath !== currentPagePath) {
-            await router.push(`${pagePath}#edit`);
+          if (!skipTransition) {
+            // routing
+            if (pagePath !== currentPagePath) {
+              await router.push(`${pagePath}#edit`);
+            }
+            mutateEditorMode(EditorMode.Editor);
           }
-          mutateEditorMode(EditorMode.Editor);
+          else {
+            toastWarning(t('duplicated_page_alert.same_page_name_exists', { pageName: pagePath }));
+          }
           onAborted?.();
           return;
         }
@@ -85,7 +92,7 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       }
     }
 
-    const _createAndTransit = async(onlyInheritUserRelatedGrantedGroups?: boolean) => {
+    const _create = async(onlyInheritUserRelatedGrantedGroups?: boolean) => {
       try {
         setCreating(true);
         onCreationStart?.();
@@ -95,8 +102,10 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
 
         closeGrantedGroupsInheritanceSelectModal();
 
-        await router.push(`/${response.page._id}#edit`);
-        mutateEditorMode(EditorMode.Editor);
+        if (!skipTransition) {
+          await router.push(`/${response.page._id}#edit`);
+          mutateEditorMode(EditorMode.Editor);
+        }
 
         onCreated?.();
       }
@@ -114,16 +123,16 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       const { isNonUserRelatedGroupsGranted } = await getIsNonUserRelatedGroupsGranted(params.parentPath);
       if (isNonUserRelatedGroupsGranted) {
         // create and transit request will be made from modal
-        openGrantedGroupsInheritanceSelectModal(_createAndTransit);
+        openGrantedGroupsInheritanceSelectModal(_create);
         return;
       }
     }
 
-    await _createAndTransit();
-  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal]);
+    await _create();
+  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal, t]);
 
   return {
     isCreating,
-    createAndTransit,
+    create,
   };
 };
