@@ -1,6 +1,7 @@
 import React, { memo } from 'react';
 
 import type { SidebarContentsType } from '~/interfaces/ui';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 
 import { PageCreateButton } from '../PageCreateButton';
 
@@ -16,9 +17,12 @@ export type SidebarNavProps = {
 export const SidebarNav = memo((props: SidebarNavProps) => {
   const { onPrimaryItemHover } = props;
 
+  const { data: isGuestUser } = useIsGuestUser();
+  const { data: isReadOnlyUser } = useIsReadOnlyUser();
+
   return (
     <div className={`grw-sidebar-nav ${styles['grw-sidebar-nav']}`}>
-      <PageCreateButton />
+      {!(isGuestUser || isReadOnlyUser) && <PageCreateButton />}
 
       <div className="grw-sidebar-nav-primary-container" data-vrt-blackout-sidebar-nav>
         <PrimaryItems onItemHover={onPrimaryItemHover} />
