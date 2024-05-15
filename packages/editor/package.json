@@ -42,7 +42,7 @@
     "@uiw/codemirror-theme-kimbie": "^4.21.21",
     "@uiw/codemirror-themes": "^4.21.21",
     "@uiw/react-codemirror": "^4.21.8",
-    "bootstrap": "^5.3.1",
+    "bootstrap": "^5.3.3",
     "cm6-theme-basic-light": "^0.2.0",
     "cm6-theme-material-dark": "^0.2.0",
     "cm6-theme-nord": "^0.2.0",
