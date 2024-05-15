@@ -184,13 +184,13 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
         CustomTreeItem={PageTreeItem}
       />
 
-      {/* {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && ( */}
-      <div className="grw-pagetree-footer border-top mt-4 py-2 w-100">
-        <div className="private-legacy-pages-link px-3 py-2">
-          <PrivateLegacyPagesLink />
+      {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
+        <div className="grw-pagetree-footer border-top mt-4 py-2 w-100">
+          <div className="private-legacy-pages-link px-3 py-2">
+            <PrivateLegacyPagesLink />
+          </div>
         </div>
-      </div>
-      {/* )} */}
+      )}
     </div>
   );
 });

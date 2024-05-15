@@ -153,6 +153,9 @@ const schema = new Schema<PageDocument, PageModel>({
   toJSON: { getters: true },
   toObject: { getters: true },
 });
+// indexes
+schema.index({ createdAt: 1 });
+schema.index({ updatedAt: 1 });
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);

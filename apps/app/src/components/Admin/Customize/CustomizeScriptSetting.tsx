@@ -35,7 +35,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
       <div className="row">
         <div className="col-12">
           <h2 className="admin-setting-header">{t('admin:customize_settings.custom_script')}</h2>
-          <Card className="card custom-card">
+          <Card className="card custom-card bg-body-tertiary mb-3">
             <CardBody className="px-0 py-2">
               {t('admin:customize_settings.write_java')}<br />
               {t('admin:customize_settings.reflect_change')}
@@ -44,7 +44,7 @@ const CustomizeScriptSetting = (props: Props): JSX.Element => {
 
           <div>
             <textarea
-              className="form-control"
+              className="form-control mb-2"
               name="customizeScript"
               rows={8}
               defaultValue={adminCustomizeContainer.state.currentCustomizeScript || ''}
