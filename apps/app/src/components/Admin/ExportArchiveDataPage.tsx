@@ -151,7 +151,7 @@ const ExportArchiveDataPage = (): JSX.Element => {
       ) }
 
       <div className="mt-5">
-        <h3>{t('export_management.exported_data_list')}</h3>
+        <h3 className="mb-3">{t('export_management.exported_data_list')}</h3>
         <ArchiveFilesTable
           zipFileStats={zipFileStats}
           onZipFileStatRemove={onZipFileStatRemove}

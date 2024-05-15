@@ -17,7 +17,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   return (
-    <table className="table table-bordered table-user-list">
+    <table className="table table-bordered table-user-list mb-5">
       <thead>
         <tr>
           <th style={{ width: '100px' }}>#</th>

@@ -41,7 +41,7 @@ class WhitelistInput extends React.Component {
         <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('markdown_settings.xss_options.tag_names')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendTagButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary" onClick={this.onClickRecommendTagButton}>
               {t('markdown_settings.xss_options.import_recommended', { target: 'Tags' })}
             </p>
           </div>
@@ -58,7 +58,7 @@ class WhitelistInput extends React.Component {
         <div className="mt-4">
           <div className="d-flex justify-content-between">
             {t('markdown_settings.xss_options.tag_attributes')}
-            <p id="btn-import-tags" className="btn btn-sm btn-primary mb-0" onClick={this.onClickRecommendAttrButton}>
+            <p id="btn-import-tags" className="btn btn-sm btn-primary" onClick={this.onClickRecommendAttrButton}>
               {t('markdown_settings.xss_options.import_recommended', { target: 'Attrs' })}
             </p>
           </div>

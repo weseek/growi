@@ -147,7 +147,7 @@ export const ExternalGroupManagement: FC = () => {
 
   return (
     <>
-      <h2 className="border-bottom">{t('external_user_group.management')}</h2>
+      <h2 className="border-bottom mb-4">{t('external_user_group.management')}</h2>
       <UserGroupTable
         headerLabel={t('admin:user_group_management.group_list')}
         userGroups={externalUserGroups}

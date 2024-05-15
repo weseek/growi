@@ -34,7 +34,15 @@ $slack-work-space-name-card-border: #efc1f6;
   }
 
   .admin-setting-header {
+    margin-bottom: 20px;
     border-bottom: 1px solid transparent;
+  }
+
+  .custom-card {
+    padding: 8px 16px;
+    ul {
+      margin-bottom: 0;
+    }
   }
 
   .admin-security {

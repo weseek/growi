@@ -102,19 +102,9 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
 
   return (
     <>
-      <div className="mb-3">
-        <button
-          className="pull-right btn btn-danger"
-          disabled={shareLinks.length === 0}
-          type="button"
-          onClick={() => setIsDeleteConfirmModalShown(true)}
-        >
-          {t('security_settings.delete_all_share_links')}
-        </button>
-        <h2 className="alert-anchor border-bottom">{t('security_settings.share_link_management')}</h2>
-      </div>
+      <h2 className="alert-anchor border-bottom mb-4">{t('security_settings.share_link_management')}</h2>
       <h4>{t('security_settings.share_link_rights')}</h4>
-      <div className="row mb-5">
+      <div className="row mt-4 mb-5">
         <div className="col-6 offset-3">
           <div className="form-check form-switch form-check-success">
             <input
@@ -153,6 +143,15 @@ const ShareLinkSetting = (props: ShareLinkSettingProps) => {
         : (<p className="text-center">{t('security_settings.No_share_links')}</p>
         )
       }
+
+      <button
+        className="pull-right btn btn-danger mt-2"
+        disabled={shareLinks.length === 0}
+        type="button"
+        onClick={() => setIsDeleteConfirmModalShown(true)}
+      >
+        {t('security_settings.delete_all_share_links')}
+      </button>
 
       <DeleteAllShareLinksModal
         isOpen={isDeleteConfirmModalShown}
