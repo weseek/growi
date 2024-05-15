@@ -1,5 +1,5 @@
 // @mixin page-editor-mode-manager($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
 .grw-page-editor-mode-manager :global {

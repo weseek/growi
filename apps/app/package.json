@@ -71,7 +71,6 @@
     "@godaddy/terminus": "^4.9.0",
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "link:../../packages/core",
-    "@growi/custom-icons": "link:../../packages/custom-icons",
     "@growi/pluginkit": "link:../../packages/pluginkit",
     "@growi/preset-templates": "link:../../packages/preset-templates",
     "@growi/preset-themes": "link:../../packages/preset-themes",
@@ -220,6 +219,8 @@
     "handsontable": "v7.0.0 or above is no loger MIT lisence."
   },
   "devDependencies": {
+    "@growi/core-styles": "link:../../packages/core-styles",
+    "@growi/custom-icons": "link:../../packages/custom-icons",
     "@growi/editor": "link:../../packages/editor",
     "@growi/presentation": "link:../../packages/presentation",
     "@growi/ui": "link:../../packages/ui",

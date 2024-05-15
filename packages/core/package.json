@@ -7,8 +7,7 @@
     "growi"
   ],
   "files": [
-    "dist",
-    "scss"
+    "dist"
   ],
   "type": "module",
   "main": "dist/index.cjs",
@@ -50,8 +49,7 @@
     "./dist/utils/*": {
       "import": "./dist/utils/*.js",
       "require": "./dist/utils/*.cjs"
-    },
-    "./scss/*": "./scss/*.scss"
+    }
   },
   "scripts": {
     "build": "vite build",

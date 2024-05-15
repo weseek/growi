@@ -37,9 +37,10 @@
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {
-    "@growi/core": "link:../core"
   },
   "devDependencies": {
+    "@growi/core": "link:../core",
+    "@growi/core-styles": "link:../../packages/core-styles",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.0"
   },

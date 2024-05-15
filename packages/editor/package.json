@@ -32,6 +32,8 @@
     "@codemirror/merge": "6.0.0",
     "@codemirror/state": "^6.2.1",
     "@codemirror/view": "^6.15.3",
+    "@growi/core": "link:../core",
+    "@growi/core-styles": "link:../core-styles",
     "@popperjs/core": "^2.11.8",
     "@replit/codemirror-emacs": "^6.0.1",
     "@replit/codemirror-vim": "6.0.14",

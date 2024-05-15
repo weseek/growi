@@ -29,6 +29,7 @@
   },
   "dependencies": {},
   "devDependencies": {
+    "@growi/core-styles": "link:../../packages/core-styles",
     "bootstrap": "^5.3.3",
     "sass": "^1.55.0"
   },

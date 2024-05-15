@@ -1858,6 +1858,9 @@
     stream-events "^1.0.1"
     xdg-basedir "^4.0.0"
 
+"@growi/core-styles@link:packages/core-styles":
+  version "7.0.5-RC.0"
+
 "@growi/core@link:packages/core":
   version "7.0.5-RC.0"
   dependencies:
@@ -1957,8 +1960,6 @@
 
 "@growi/ui@link:packages/ui":
   version "7.0.5-RC.0"
-  dependencies:
-    "@growi/core" "link:packages/core"
 
 "@handsontable/react@=2.1.0":
   version "2.1.0"

@@ -1,0 +1,27 @@
+{
+  "name": "@growi/core-styles",
+  "version": "7.0.5-RC.0",
+  "description": "GROWI Core Style Files",
+  "license": "MIT",
+  "keywords": [
+    "growi"
+  ],
+  "files": [
+    "scss"
+  ],
+  "exports": {
+    "./scss/*": "./scss/*.scss"
+  },
+  "scripts": {
+    "lint:styles": "stylelint ./scss/**/*",
+    "lint": "npm-run-all -p lint:*",
+    "version": "yarn version --no-git-tag-version --preid=RC"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "bootstrap": "^5.3.3"
+  },
+  "peerDependencies": {
+    "@popperjs/core": "^2.11.8"
+  }
+}
