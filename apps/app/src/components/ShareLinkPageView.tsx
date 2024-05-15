@@ -15,6 +15,7 @@ import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Common/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
+import { PageContentFooter } from './PageContentFooter';
 import type { PageSideContentsProps } from './PageSideContents';
 
 
@@ -66,6 +67,12 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     : null;
 
 
+  const footerContents = !isNotFound
+    ? (
+      <PageContentFooter page={page} />
+    )
+    : null;
+
   const Contents = () => {
     if (isNotFound || page.revision == null) {
       return <></>;
@@ -97,6 +104,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
       headerContents={headerContents}
       sideContents={sideContents}
       expandContentWidth={shouldExpandContent}
+      footerContents={footerContents}
     >
       { specialContents }
       { specialContents == null && (
