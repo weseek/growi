@@ -31,7 +31,7 @@ export class OpenTelemetry {
     return {
       resource: new Resource({
         [SEMRESATTRS_SERVICE_NAME]: this.name,
-        [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'instrumentation:serviceInstanceId'),
+        [SEMRESATTRS_SERVICE_INSTANCE_ID]: configManager.getConfig('crowi', 'otel:serviceInstanceId'),
         [SEMRESATTRS_SERVICE_VERSION]: this.version,
       }),
       traceExporter: new OTLPTraceExporter(),
@@ -54,9 +54,9 @@ export class OpenTelemetry {
    * Since otel library sees it.
    */
   private overwriteSdkDisabled(): void {
-    const instrumentationEnabled = configManager.getConfig('crowi', 'instrumentation:enabled');
-    if (instrumentationEnabled != null && instrumentationEnabled === false) {
-      logger.warn("OTEL_SDK_DISABLED is set 'true' since GROWI's 'instrumentation:enabled' config is false.");
+    const instrumentationEnabled = configManager.getConfig('crowi', 'otel:enabled');
+    if (instrumentationEnabled === false) {
+      logger.warn("OTEL_SDK_DISABLED will be set 'true' since GROWI's 'otel:enabled' config is false.");
       process.env.OTEL_SDK_DISABLED = 'true';
     }
   }
