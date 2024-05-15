@@ -119,21 +119,26 @@ export default class InAppNotificationService {
     const { limit, offset, status } = queryOptions;
 
     try {
-      const pagenateOptions = { user: userId };
+      const paginateOptions = { user: userId };
       if (status != null) {
-        Object.assign(pagenateOptions, { status });
+        Object.assign(paginateOptions, { status });
       }
       // TODO: import @types/mongoose-paginate-v2 and use PaginateResult as a type after upgrading mongoose v6.0.0
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const paginationResult = await (InAppNotification as any).paginate(
-        pagenateOptions,
+        paginateOptions,
         {
           sort: { createdAt: -1 },
           limit,
           offset,
           populate: [
             { path: 'user' },
-            { path: 'target' },
+            {
+              path: 'target',
+              populate: [
+                { path: 'attachment', strictPopulate: false },
+              ],
+            },
             { path: 'activities', populate: { path: 'user' } },
           ],
         },
@@ -205,7 +210,7 @@ export default class InAppNotificationService {
 
     const targetModel = activity.targetModel;
 
-    const snapshot = generateSnapshot(targetModel, target);
+    const snapshot = await generateSnapshot(targetModel, target);
 
     if (shouldNotification) {
       const props = preNotifyService.generateInitialPreNotifyProps();

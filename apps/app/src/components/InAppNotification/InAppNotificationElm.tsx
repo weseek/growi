@@ -1,12 +1,14 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import type { HasObjectId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-import { IInAppNotification, InAppNotificationStatuses } from '~/interfaces/in-app-notification';
+import type { IInAppNotification } from '~/interfaces/in-app-notification';
+import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
 
-import { useModelNotification } from './PageNotification';
+import { useModelNotification } from './ModelNotification';
 
 interface Props {
   notification: IInAppNotification & HasObjectId
@@ -21,8 +23,10 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
 
   const Notification = modelNotificationUtils?.Notification;
   const publishOpen = modelNotificationUtils?.publishOpen;
+  const clickLink = modelNotificationUtils?.clickLink;
+  const isDisabled = modelNotificationUtils?.isDisabled;
 
-  if (Notification == null || publishOpen == null) {
+  if (Notification == null) {
     return <></>;
   }
 
@@ -33,7 +37,9 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
       onUnopenedNotificationOpend?.();
     }
 
-    publishOpen();
+    if (isDisabled) return;
+
+    publishOpen?.();
   };
 
   const renderActionUserPictures = (): JSX.Element => {
@@ -56,21 +62,26 @@ const InAppNotificationElm: FC<Props> = (props: Props) => {
   };
 
   return (
-    <div className="list-group-item list-group-item-action" onClick={() => clickHandler(notification)} style={{ cursor: 'pointer' }}>
-      <div className="d-flex align-items-center">
-        <span
-          className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
-            ? 'grw-unopend-notification'
-            : 'ms-2'
-          } rounded-circle me-3`}
-        >
-        </span>
+    <div className="list-group-item list-group-item-action" style={{ cursor: 'pointer' }}>
+      <a
+        href={isDisabled ? undefined : clickLink}
+        onClick={() => clickHandler(notification)}
+      >
+        <div className="d-flex align-items-center">
+          <span
+            className={`${notification.status === InAppNotificationStatuses.STATUS_UNOPENED
+              ? 'grw-unopend-notification'
+              : 'ms-2'
+            } rounded-circle me-3`}
+          >
+          </span>
 
-        {renderActionUserPictures()}
+          {renderActionUserPictures()}
 
-        <Notification />
+          <Notification />
 
-      </div>
+        </div>
+      </a>
     </div>
   );
 };

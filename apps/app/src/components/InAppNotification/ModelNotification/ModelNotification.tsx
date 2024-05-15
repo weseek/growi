@@ -13,20 +13,27 @@ type Props = {
   actionMsg: string
   actionIcon: string
   actionUsers: string
+  hideActionUsers?: boolean
+  subMsg?: JSX.Element
 };
 
-export const ModelNotification: FC<Props> = (props) => {
-  const {
-    notification, actionMsg, actionIcon, actionUsers,
-  } = props;
+export const ModelNotification: FC<Props> = ({
+  notification,
+  actionMsg,
+  actionIcon,
+  actionUsers,
+  hideActionUsers = false,
+  subMsg,
+}: Props) => {
 
   return (
     <div className="p-2 overflow-hidden">
       <div className="text-truncate">
-        <b>{actionUsers}</b>
-        {actionMsg}
+        {hideActionUsers ? <></> : <b>{actionUsers}</b>}
+        {` ${actionMsg}`}
         <PagePathLabel path={notification.parsedSnapshot?.path ?? ''} />
       </div>
+      { subMsg }
       <span className="material-symbols-outlined me-2">{actionIcon}</span>
       <FormattedDistanceDate
         id={notification._id}
