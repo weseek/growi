@@ -48,6 +48,8 @@ import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
+import { useIsUntitledPage } from '../PageHeader/untitled-page-utils';
+
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
@@ -125,6 +127,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const currentRevisionId = currentPage?.revision?._id;
   const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
+
+  const currentPageTitle = currentPagePath != null ? nodePath.basename(currentPagePath) : undefined;
+
+  const isNewlyCreatedPage = useIsUntitledPage(currentPage, currentPageTitle);
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -275,10 +281,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (editorMode === EditorMode.Editor) {
+    if (editorMode === EditorMode.Editor && !isNewlyCreatedPage) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, currentPage, editorMode]);
+  }, [codeMirrorEditor, editorMode, isNewlyCreatedPage]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {

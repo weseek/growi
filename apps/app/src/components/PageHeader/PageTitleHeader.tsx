@@ -17,6 +17,8 @@ import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '.
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 
+import { useIsUntitledPage } from './untitled-page-utils';
+
 import styles from './PageTitleHeader.module.scss';
 
 const moduleClass = styles['page-title-header'] ?? '';
@@ -49,13 +51,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
-  // TODO: https://redmine.weseek.co.jp/issues/142729
-  // https://regex101.com/r/Wg2Hh6/1
-  const untitledPageTitle = t('create_page.untitled');
-  const untitledPageRegex = new RegExp(`^${untitledPageTitle}-\\d+$`);
-
-  const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
-
+  const isNewlyCreatedPage = useIsUntitledPage(currentPage, editedPageTitle);
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
@@ -100,15 +96,10 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
   // https://redmine.weseek.co.jp/issues/136128
   useEffect(() => {
     setEditedPagePath(currentPagePath);
-    console.log(currentPage.wip);
-    console.log(currentPage.latestRevision == null);
-    console.log(untitledPageRegex.test(editedPageTitle));
-    console.log(isNewlyCreatedPage);
-    console.log(editedPageTitle);
     if (isNewlyCreatedPage) {
       setRenameInputShown(true);
     }
-  }, [currentPage._id, isNewlyCreatedPage]);
+  }, [currentPage._id, currentPagePath, isNewlyCreatedPage]);
 
   const isInvalid = validationResult != null;
 
