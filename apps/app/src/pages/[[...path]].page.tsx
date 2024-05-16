@@ -41,6 +41,7 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
+  useIsRegistrationEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -225,6 +226,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
+  useIsRegistrationEnabled(props.isRegistrationEnabled);
 
   const { pageWithMeta } = props;
 
