@@ -92,8 +92,6 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, [currentPagePath, isMovable]);
 
-  // TODO: auto focus when create new page
-  // https://redmine.weseek.co.jp/issues/136128
   useEffect(() => {
     setEditedPagePath(currentPagePath);
     if (isNewlyCreatedPage) {
