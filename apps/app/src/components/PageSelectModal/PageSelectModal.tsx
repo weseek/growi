@@ -53,7 +53,7 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [closeModal]);
 
-  const onClickDone = useCallback(async() => {
+  const onClickDone = useCallback(() => {
     if (clickedParentPagePath != null) {
       const currentPageTitle = nodePath.basename(currentPage?.path ?? '') || '/';
       const newPagePath = nodePath.resolve(clickedParentPagePath, currentPageTitle);
