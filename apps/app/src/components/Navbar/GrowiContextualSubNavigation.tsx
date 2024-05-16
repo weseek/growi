@@ -19,7 +19,7 @@ import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-ope
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
-  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
+  useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsRegistrationEnabled, useIsSharedUser, useShareLinkId,
 } from '~/stores/context';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
@@ -192,6 +192,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
+  const { data: isRegistrationEnabled } = useIsRegistrationEnabled();
 
   const shouldExpandContent = useShouldExpandContent(currentPage);
 
@@ -345,9 +346,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
 
             { isGuestUser && (
               <div className="mt-2">
-                <Link href="/login#register" className="btn me-2" prefetch={false}>
-                  <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-                </Link>
+                {/* Sign up link */}
+                {isRegistrationEnabled && (
+                  <Link href="/login#register" className="btn me-2" prefetch={false}>
+                    <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                  </Link>
+                )}
                 <Link href="/login#login" className="btn btn-primary" prefetch={false}>
                   <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
                 </Link>
