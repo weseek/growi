@@ -103,7 +103,29 @@ jobs:
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
 
-  build-image:
+  publish-core-styles:
+    needs: create-github-release
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
+
+    - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+    - name: npm publish
+      working-directory: ./packages/core-styles
+      run: |
+        npm publish --provenance --access public
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN_PUBLISH_CORE_STYLES }}
+
+
+  build-app-image:
     needs: create-github-release
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
@@ -115,8 +137,8 @@ jobs:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
 
-  publish-image:
-    needs: [determine-tags, build-image]
+  publish-app-image:
+    needs: [determine-tags, build-app-image]
 
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
     with:
@@ -129,7 +151,7 @@ jobs:
 
 
   post-publish:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
@@ -154,7 +176,7 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
