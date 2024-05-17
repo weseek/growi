@@ -28,7 +28,7 @@ import { DragAndDropWrapper } from './DragAndDropWrapper';
 type Props = {
   isReadOnlyUser: boolean
   isOperable: boolean,
-  bookmarkedPage: IPageHasId,
+  bookmarkedPage: IPageHasId | null,
   level: number,
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
@@ -50,17 +50,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage?._id);
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
-  const { latter: pageTitle, former: formerPagePath } = dPagePath;
-  const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
+
   const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level));
   const dragItem: Partial<DragItemDataType> = {
     ...bookmarkedPage, parentFolder,
   };
 
   const onClickMoveToRootHandler = useCallback(async() => {
+    if (bookmarkedPage == null) return;
+
     try {
       await addBookmarkToFolder(bookmarkedPage._id, null);
       bookmarkFolderTreeMutation();
@@ -68,7 +68,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, bookmarkedPage._id]);
+  }, [bookmarkFolderTreeMutation, bookmarkedPage]);
 
   const bookmarkMenuItemClickHandler = useCallback(async(pageId: string, shouldBookmark: boolean) => {
     if (shouldBookmark) {
@@ -90,6 +90,9 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   }, []);
 
   const rename = useCallback(async(inputText: string) => {
+    if (bookmarkedPage == null) return;
+
+
     if (inputText.trim() === '') {
       return cancel();
     }
@@ -111,9 +114,11 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage.path, bookmarkedPage._id, bookmarkedPage.revision, cancel, bookmarkFolderTreeMutation, mutatePageInfo]);
+  }, [bookmarkedPage, cancel, bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (bookmarkedPage == null) return;
+
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
       throw Error('_id and path must not be null.');
     }
@@ -128,9 +133,11 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     };
 
     onClickDeleteMenuItemHandler(pageToDelete);
-  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
+  }, [bookmarkedPage, onClickDeleteMenuItemHandler]);
 
   const putBackClickHandler = useCallback(() => {
+    if (bookmarkedPage == null) return;
+
     const { _id: pageId, path } = bookmarkedPage;
     const putBackedHandler = async() => {
       try {
@@ -147,6 +154,15 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     };
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, mutateCurrentPage, t]);
+
+  if (bookmarkedPage == null) {
+    return <></>;
+  }
+
+  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
+  const { latter: pageTitle, former: formerPagePath } = dPagePath;
+
+  const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
 
   return (
     <DragAndDropWrapper
