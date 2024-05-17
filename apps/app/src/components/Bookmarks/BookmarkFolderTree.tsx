@@ -121,9 +121,8 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
           );
         })}
         {userBookmarks?.map(userBookmark => (
-          <div key={userBookmark._id} className="grw-foldertree-item-container grw-root-bookmarks">
+          <div key={userBookmark?._id} className="grw-foldertree-item-container grw-root-bookmarks">
             <BookmarkItem
-              key={userBookmark._id}
               isReadOnlyUser={!!isReadOnlyUser}
               isOperable={props.isOperable}
               bookmarkedPage={userBookmark}

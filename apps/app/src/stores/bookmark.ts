@@ -1,11 +1,12 @@
 import type { IUser, IPageHasId } from '@growi/core';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
+import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 
 import { apiv3Get } from '../client/util/apiv3-client';
-import { IBookmarkInfo } from '../interfaces/bookmark-info';
+import type { IBookmarkInfo } from '../interfaces/bookmark-info';
 
 import { useCurrentUser } from './context';
 
@@ -16,32 +17,24 @@ export const useSWRxBookmarkedUsers = (pageId: string | null): SWRResponse<IUser
   );
 };
 
-export const useSWRxUserBookmarks = (userId: string | null): SWRResponse<IPageHasId[], Error> => {
+export const useSWRxUserBookmarks = (userId: string | null): SWRResponse<(IPageHasId | null)[], Error> => {
   return useSWRImmutable(
     userId != null ? `/bookmarks/${userId}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       const { userRootBookmarks } = response.data;
-      return userRootBookmarks.map((item) => {
-        return {
-          ...item.page,
-        };
-      });
+      return userRootBookmarks.map(item => item.page); // page will be null if the page is deleted
     }),
   );
 };
 
-export const useSWRMUTxCurrentUserBookmarks = (): SWRMutationResponse<IPageHasId[], Error> => {
+export const useSWRMUTxCurrentUserBookmarks = (): SWRMutationResponse<(IPageHasId | null)[], Error> => {
   const { data: currentUser } = useCurrentUser();
 
   return useSWRMutation(
     currentUser != null ? `/bookmarks/${currentUser?._id}` : null,
     endpoint => apiv3Get(endpoint).then((response) => {
       const { userRootBookmarks } = response.data;
-      return userRootBookmarks.map((item) => {
-        return {
-          ...item.page,
-        };
-      });
+      return userRootBookmarks.map(item => item.page); // page will be null if the page is deleted
     }),
   );
 };
