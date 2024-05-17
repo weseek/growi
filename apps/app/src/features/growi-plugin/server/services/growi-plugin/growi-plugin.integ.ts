@@ -79,7 +79,7 @@ describe('Installing a GROWI theme plugin', () => {
     expect(count).toBe(1);
 
     // when
-    const results = await growiPluginService.findThemePlugin('welcome-to-fumiya-room');
+    const results = await growiPluginService.findThemePlugin('vivid-internet');
 
     // expect
     expect(results).not.toBeNull();
