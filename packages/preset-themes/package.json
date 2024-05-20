@@ -1,8 +1,9 @@
 {
   "name": "@growi/preset-themes",
+  "version": "1.0.0",
   "description": "GROWI preset themes",
-  "version": "7.0.5-RC.0",
   "license": "MIT",
+  "private": "true",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
   "types": "dist/libs/index.d.ts",
@@ -24,8 +25,7 @@
     "lint:styles": "stylelint src/**/*.scss",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "preview": "vite preview",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "preview": "vite preview"
   },
   "dependencies": {},
   "devDependencies": {

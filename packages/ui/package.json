@@ -1,8 +1,9 @@
 {
   "name": "@growi/ui",
-  "version": "7.0.5-RC.0",
+  "version": "1.0.0",
   "description": "GROWI UI Libraries",
   "license": "MIT",
+  "private": "true",
   "keywords": [
     "growi"
   ],
@@ -33,8 +34,7 @@
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
-    "lint": "npm-run-all -p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
   },
