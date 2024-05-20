@@ -45,10 +45,10 @@ class XssForm extends React.Component {
     const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
 
     return (
-      <div className="col-12 my-3">
+      <div className="col-12 mt-3">
         <div className="row">
 
-          <div className="col-md-6 col-sm-12 align-self-start mb-4">
+          <div className="col-md-6 col-sm-12 align-self-start">
             <div className="form-check">
               <input
                 type="radio"
@@ -90,7 +90,7 @@ class XssForm extends React.Component {
             </div>
           </div>
 
-          <div className="col-md-6 col-sm-12 align-self-start mb-4">
+          <div className="col-md-6 col-sm-12 align-self-start">
             <div className="form-check">
               <input
                 type="radio"
@@ -119,7 +119,7 @@ class XssForm extends React.Component {
       <React.Fragment>
         <fieldset className="col-12">
           <div>
-            <div className="col-8 offset-4 my-3">
+            <div className="col-8 offset-4 mt-3">
               <div className="form-check form-switch form-check-success">
                 <input
                   type="checkbox"

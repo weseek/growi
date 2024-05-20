@@ -18,7 +18,7 @@ const PagingSizeUncontrolledDropdown = (props) => {
   return (
     <React.Fragment>
       <div className="row">
-        <div className="offset-md-3 col-md-6 text-start">
+        <div className="offset-md-2 col-md-7 text-start">
           <div className="my-0 w-100">
             <label className="form-label">{props.label}</label>
           </div>

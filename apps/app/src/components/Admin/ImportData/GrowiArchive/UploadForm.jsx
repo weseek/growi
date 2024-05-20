@@ -75,7 +75,7 @@ class UploadForm extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="mx-auto">
+            <div className="mx-auto mt-3">
               <button type="submit" className="btn btn-primary" disabled={!this.validateForm()}>
                 {t('admin:importer_management.growi_settings.upload')}
               </button>

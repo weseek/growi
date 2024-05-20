@@ -1,6 +1,6 @@
 {
   "name": "@growi/editor",
-  "version": "7.0.4",
+  "version": "7.0.5-RC.0",
   "license": "MIT",
   "type": "module",
   "module": "dist/index.js",
