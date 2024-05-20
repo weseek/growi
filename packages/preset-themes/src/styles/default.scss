@@ -1,7 +1,7 @@
 :root[data-bs-theme='light'] {
-  @import '@growi/core/scss/bootstrap/init-stage-1';
-  @import '@growi/core/scss/bootstrap/theming/variables';
-  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-1';
+  @import '@growi/core-styles/scss/bootstrap/theming/variables';
+  @import '@growi/core-styles/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #007eb0;
   $highlight: #c4c2bd;
@@ -25,9 +25,9 @@
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
 
-  @import '@growi/core/scss/bootstrap/init-stage-2';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-2';
 
-  @import '@growi/core/scss/bootstrap/theming/apply-light';
+  @import '@growi/core-styles/scss/bootstrap/theming/apply-light';
 
   --grw-wiki-link-color-rgb: var(--grw-highlight-700-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-highlight-600-rgb);
@@ -35,9 +35,9 @@
 }
 
 :root[data-bs-theme='dark'] {
-  @import '@growi/core/scss/bootstrap/init-stage-1';
-  @import '@growi/core/scss/bootstrap/theming/variables';
-  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-1';
+  @import '@growi/core-styles/scss/bootstrap/theming/variables';
+  @import '@growi/core-styles/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #007eb0;
   $highlight: #c4c2bd;
@@ -61,9 +61,9 @@
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
 
-  @import '@growi/core/scss/bootstrap/init-stage-2';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-2';
 
-  @import '@growi/core/scss/bootstrap/theming/apply-dark';
+  @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-highlight-600-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-highlight-400-rgb);
