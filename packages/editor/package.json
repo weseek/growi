@@ -1,7 +1,9 @@
 {
   "name": "@growi/editor",
-  "version": "7.0.6-RC.0",
+  "version": "1.0.0",
+  "description": "A markdown editor for GROWI",
   "license": "MIT",
+  "private": "true",
   "type": "module",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -13,8 +15,7 @@
     "serve": "vite",
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
-    "lint": "npm-run-all -p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {
     "markdown-table": "^3.0.3",
