@@ -22,6 +22,7 @@ import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
+  useIsRegistrationEnabled,
 } from '~/stores/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -96,6 +97,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   useIsContainerFluid(props.isContainerFluid);
+  useIsRegistrationEnabled(props.isRegistrationEnabled);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
 
