@@ -1,6 +1,6 @@
 {
   "name": "@growi/core-styles",
-  "version": "7.0.5-RC.0",
+  "version": "0.9.0",
   "description": "GROWI Core Style Files",
   "license": "MIT",
   "keywords": [
@@ -14,8 +14,7 @@
   },
   "scripts": {
     "lint:styles": "stylelint ./scss/**/*",
-    "lint": "npm-run-all -p lint:*",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {},
   "devDependencies": {
