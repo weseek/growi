@@ -26,6 +26,10 @@ services:
       - ../../growi-docker-compose:/workspace/growi-docker-compose:delegated
 
     tty: true
+    networks:
+    - default
+    # https://redmine.weseek.co.jp/issues/144306 で整備予定
+    # - opentelemetry-collector-dev-setup_default
 
   mongo:
     image: mongo:6.0
@@ -63,3 +67,9 @@ volumes:
   node_modules_app:
   node_modules_slackbot-proxy:
   buildcache_app:
+
+networks:
+  default:
+  # https://redmine.weseek.co.jp/issues/144306 で整備予定
+  # opentelemetry-collector-dev-setup_default:
+  #   external: true
