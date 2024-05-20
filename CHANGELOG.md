@@ -1,8 +1,18 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
 
 ## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
 
