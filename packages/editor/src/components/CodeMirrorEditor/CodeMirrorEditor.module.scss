@@ -39,6 +39,37 @@
       font-size: 1.2em;
     }
 
+    .cm-cursor {
+      &:after {
+        position: relative;
+        top: 0em;
+        left: 0.3em;
+        display: block;
+        width: 1em;
+        height: 1em;
+        content: ' ';
+
+        background-repeat: no-repeat;
+        background-size: 1em;
+      }
+    }
+
+    // .cm-cursor.cm-cursor-primary {
+    //   background-image: url(../../../svg/table.svg);
+    // }
+
+    .cm-cursor.cm-cursor-primary {
+      &:after {
+        background-image: url(../../../svg/table.svg);
+      }
+    }
+
+
+
+    // .cm-cursor.cm-cursor-primary {
+    //   border-color: aqua;
+    // }
+
   }
 
 }
