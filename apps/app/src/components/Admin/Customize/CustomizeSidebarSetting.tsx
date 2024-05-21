@@ -42,7 +42,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <h2 className="admin-setting-header">{t('customize_settings.default_sidebar_mode.title')}</h2>
 
-          <Card className="card custom-card my-3">
+          <Card className="card custom-card bg-body-tertiary my-3">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.desc')}
             </CardBody>
@@ -79,7 +79,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </div>
           </div>
 
-          <Card className="card custom-card my-5">
+          <Card className="card custom-card bg-body-tertiary my-5">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}
             </CardBody>
