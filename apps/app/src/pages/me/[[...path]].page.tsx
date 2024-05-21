@@ -19,6 +19,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
+  useIsContainerFluid,
 } from '~/stores/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -39,6 +40,7 @@ type Props = CommonProps & {
   isEnabledMarp: boolean,
   rendererConfig: RendererConfig,
   showPageLimitationXL: number,
+  isContainerFluid: boolean,
 
   // config
   registrationWhitelist: string[],
@@ -101,6 +103,8 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useGrowiCloudUri(props.growiCloudUri);
 
   useCurrentUser(props.currentUser ?? null);
+
+  useIsContainerFluid(props.isContainerFluid);
 
   // clear the cache for the current page
   //  in order to fix https://redmine.weseek.co.jp/issues/135811
@@ -178,6 +182,8 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
 
   props.showPageLimitationXL = crowi.configManager.getConfig('crowi', 'customize:showPageLimitationXL');
+
+  props.isContainerFluid = configManager.getConfig('crowi', 'customize:isContainerFluid');
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
