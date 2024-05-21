@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { useSlideByFrontmatter } from '@growi/presentation/dist/services';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -47,7 +47,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   const { data: viewOptions } = useViewOptions();
 
   const markdown = page?.revision?.body;
-  const isSlide = useSlideByFrontmatter(markdown, rendererConfig.isEnabledMarp);
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
