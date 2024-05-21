@@ -172,20 +172,34 @@ export const SearchPage = (): JSX.Element => {
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
-          <OperateAllControl
-            ref={selectAllControlRef}
-            isCheckboxDisabled={isDisabled}
-            onCheckboxChanged={selectAllCheckboxChangedHandler}
-          >
+          <div className="dropdown">
             <button
               type="button"
-              className="btn border-0 text-danger"
-              disabled={isDisabled}
-              onClick={deleteAllButtonClickedHandler}
+              className="btn dropdown-toggle text-danger"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
             >
-              {t('search_result.delete_all_selected_page')}
+              <span className="material-symbols-outlined">delete</span>
             </button>
-          </OperateAllControl>
+            <ul className="dropdown-menu">
+              <li className="dropdown-item p-0">
+                <OperateAllControl
+                  ref={selectAllControlRef}
+                  isCheckboxDisabled={isDisabled}
+                  onCheckboxChanged={selectAllCheckboxChangedHandler}
+                >
+                  <button
+                    type="button"
+                    className="btn border-0 text-danger"
+                    disabled={isDisabled}
+                    onClick={deleteAllButtonClickedHandler}
+                  >
+                    {t('search_result.delete_all_selected_page')}
+                  </button>
+                </OperateAllControl>
+              </li>
+            </ul>
+          </div>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
