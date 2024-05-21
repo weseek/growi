@@ -1,5 +1,5 @@
 import {
-  forwardRef, useMemo, useRef, useEffect,
+  forwardRef, useMemo, useRef, useEffect, useState,
   DetailedHTMLProps,
 } from 'react';
 
@@ -17,6 +17,7 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
+import { isInTable } from '../../services/table-util/insert-new-row-to-table-markdown';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -70,6 +71,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     };
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
+
+  const [editorClass, setEditorClass] = useState('');
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
@@ -159,6 +162,37 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
+  useEffect(() => {
+
+    const markdownTableActivatedClass = 'markdown-table-activated';
+
+    const handleMousedown = (event: Event) => {
+      // event.preventDefault();
+
+      const editor = codeMirrorEditor?.view;
+
+      if (editor == null) {
+        return;
+      }
+
+      if (isInTable(editor)) {
+        // set class
+        setEditorClass(markdownTableActivatedClass);
+      }
+      else {
+        setEditorClass('');
+      }
+    };
+
+    const extension = EditorView.domEventHandlers({
+      mousedown: handleMousedown,
+    });
+
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+
+    return cleanupFunction;
+
+  }, [codeMirrorEditor]);
 
   const {
     getRootProps,
@@ -210,7 +244,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
+    <div className={`${style['codemirror-editor']} ${editorClass} flex-expand-vert overflow-y-hidden`}>
       <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
