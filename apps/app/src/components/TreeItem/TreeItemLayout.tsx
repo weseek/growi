@@ -25,11 +25,16 @@ const markTarget = (page: IPageForItem, children: ItemNode[], targetPathOrId?: N
     return;
   }
 
+  // console.log(targetPathOrId);
+
   page.isTarget = page.path === targetPathOrId;
+
+  // console.log(page.path);
 
   children.forEach((node) => {
     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
       node.page.isTarget = true;
+      console.log(node.page);
     }
     else {
       node.page.isTarget = false;

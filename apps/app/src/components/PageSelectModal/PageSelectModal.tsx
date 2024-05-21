@@ -1,8 +1,11 @@
 import type { FC } from 'react';
-import { Suspense, useState, useCallback } from 'react';
+import {
+  Suspense, useState, useCallback, useEffect,
+} from 'react';
 
 import nodePath from 'path';
 
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -64,9 +67,18 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
-  const targetPathOrId = clickedParentPagePath;
+  if (currentPage == null) {
+    return;
+  }
 
-  const targetPath = clickedParentPagePath || '/';
+  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
+
+  const targetPathOrId = clickedParentPagePath || parentPagePath;
+
+  const targetPath = clickedParentPagePath || parentPagePath;
+
+  // console.log(clickedParentPagePath);
+  // console.log(targetPathOrId);
 
   if (isGuestUser == null) {
     return null;
