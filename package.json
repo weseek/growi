@@ -1,7 +1,9 @@
 {
   "name": "growi",
-  "version": "7.0.5-RC.0",
+  "version": "7.0.7-RC.0",
   "description": "Team collaboration software using markdown",
+  "license": "MIT",
+  "private": "true",
   "tags": [
     "wiki",
     "communication",
@@ -10,7 +12,6 @@
   ],
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "contributors": [],
-  "license": "MIT",
   "homepage": "https://growi.org",
   "repository": {
     "type": "git",
@@ -19,7 +20,6 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
-  "private": true,
   "workspaces": {
     "packages": [
       "packages/*",

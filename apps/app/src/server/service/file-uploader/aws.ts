@@ -236,8 +236,7 @@ module.exports = (crowi) => {
         configManager.getConfig('crowi', 'aws:s3Region') != null
           || configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null
       )
-      && configManager.getConfig('crowi', 'aws:s3Bucket') != null
-      && configManager.getConfig('crowi', 'aws:s3BucketAclsDisable') != null;
+      && configManager.getConfig('crowi', 'aws:s3Bucket') != null;
   };
 
   (lib as any).deleteFile = async function(attachment) {

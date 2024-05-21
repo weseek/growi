@@ -1,5 +1,5 @@
 :root[data-bs-theme] {
-  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-1';
   $gray-100: #F2ECF0;
   $gray-200: #E6DAE2;
   $gray-300: #DAC7D3;
@@ -9,8 +9,8 @@
   $gray-700: #7C656D;
   $gray-800: #594749;
   $gray-900: #362824;
-  @import '@growi/core/scss/bootstrap/theming/variables';
-  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+  @import '@growi/core-styles/scss/bootstrap/theming/variables';
+  @import '@growi/core-styles/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #AA4A04;
   $highlight: #51199B;
@@ -34,9 +34,9 @@
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
 
-  @import '@growi/core/scss/bootstrap/init-stage-2';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-2';
 
-  @import '@growi/core/scss/bootstrap/theming/apply-dark';
+  @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-400-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-primary-300-rgb);
