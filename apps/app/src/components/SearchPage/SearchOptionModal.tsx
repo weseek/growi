@@ -47,7 +47,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={onCloseModal} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={onCloseModal} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={onCloseModal}>
         Search Option
       </ModalHeader>
       <ModalBody>

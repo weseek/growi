@@ -1,5 +1,5 @@
-@import '@growi/core/scss/flex-expand';
-@import '@growi/core/scss/rotate';
+@import '@growi/core-styles/scss/helpers/flex-expand';
+@import '@growi/core-styles/scss/helpers/rotate';
 
 @import 'mixins';
 
@@ -7,6 +7,7 @@
 @import 'atoms/custom_control';
 @import 'atoms/code';
 @import 'atoms/tag';
+@import 'atoms/tooltip';
 
 // molecules
 @import 'molecules/toastr';

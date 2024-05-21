@@ -54,7 +54,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         <span className={`material-symbols-outlined ${isLiked ? 'fill' : ''}`}>favorite</span>
       </button>
 
-      <UncontrolledTooltip data-testid="like-button-tooltip" placement="top" target="like-button" autohide={false} fade={false}>
+      <UncontrolledTooltip data-testid="like-button-tooltip" target="like-button" autohide={false} fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

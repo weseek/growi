@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 @use '~/styles/variables' as var;
 @use '~/styles/mixins';
@@ -44,6 +44,7 @@
         left: var.$grw-sidebar-nav-width;
         min-height: 50vh;
         max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
+        border-radius: 0 4px 4px 0 ;
       }
     }
   }

@@ -5,6 +5,8 @@ import RevisionRenderer from '../Page/RevisionRenderer';
 
 import styles from './CommentPreview.module.scss';
 
+const moduleClass = styles['grw-comment-preview'] ?? '';
+
 
 type CommentPreviewPorps = {
   markdown: string,
@@ -21,7 +23,7 @@ export const CommentPreview = (props: CommentPreviewPorps): JSX.Element => {
   }
 
   return (
-    <div className={`grw-comment-preview ${styles['grw-comment-preview']}`}>
+    <div className={moduleClass}>
       <RevisionRenderer
         rendererOptions={rendererOptions}
         markdown={markdown}

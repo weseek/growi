@@ -56,7 +56,7 @@ const AssociateModal = (props: Props): JSX.Element => {
 
   return (
     <Modal isOpen={isOpen} toggle={closeModalHandler} size="lg" data-testid="grw-associate-modal">
-      <ModalHeader className="bg-primary text-light" toggle={onClose}>
+      <ModalHeader toggle={onClose}>
         { t('admin:user_management.create_external_account') }
       </ModalHeader>
       <ModalBody>

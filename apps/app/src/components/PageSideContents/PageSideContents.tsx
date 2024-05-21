@@ -122,7 +122,7 @@ export const PageSideContents = (props: PageSideContentsProps): JSX.Element => {
           <div className="d-flex" data-testid="page-comment-button">
             <PageAccessoriesControl
               icon={<span className="material-symbols-outlined">chat</span>}
-              label="Comments"
+              label={t('comments')}
               count={pageInfo != null ? (pageInfo as IPageInfoForOperation).commentCount : undefined}
               onClick={() => scroller.scrollTo('comments-container', { smooth: false, offset: -120 })}
             />

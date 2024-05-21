@@ -64,7 +64,8 @@
     "no_notification": "您没有任何通知",
     "all": "全部",
     "unopend": "未读",
-    "mark_all_as_read" : "标记为已读"
+    "mark_all_as_read" : "标记为已读",
+    "only_unread": "Only unread"
   },
 
   "personal_dropdown": {
@@ -79,6 +80,7 @@
 
   "create_page_dropdown": {
     "new_page": "新页面",
+    "open_page_create_modal": "打开新页面创建模式",
     "todays": {
       "desc": "Create today's memo",
       "memo": "memo"
@@ -96,7 +98,8 @@
 		"Page URL": "页面Url",
 		"Parmanent link": "参数化链接",
 		"Page path and parmanent link": "页面路径及参数化链接",
-		"Markdown link": "Markdown链接"
+		"Markdown link": "Markdown链接",
+    "Append params": "Append params"
 	},
 
   "crop_image_modal": {

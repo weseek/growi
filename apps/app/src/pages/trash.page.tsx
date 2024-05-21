@@ -11,6 +11,7 @@ import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -38,6 +39,8 @@ type Props = CommonProps & {
   showPageLimitationXL: number,
 
   rendererConfig: RendererConfig,
+
+  sidebarConfig: ISidebarConfig,
 };
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
@@ -119,6 +122,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
 }

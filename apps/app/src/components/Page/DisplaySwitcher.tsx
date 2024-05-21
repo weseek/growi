@@ -4,6 +4,7 @@ import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
 import { usePageUpdatedEffect } from '~/client/services/side-effects/page-updated';
+import { useCurrentPageYjsDataEffect } from '~/client/services/side-effects/yjs';
 import { useIsEditable } from '~/stores/context';
 import { useIsLatestRevision } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
@@ -26,12 +27,13 @@ export const DisplaySwitcher = (props: Props): JSX.Element => {
 
   usePageUpdatedEffect();
   useHashChangedEffect();
-
-  const isViewMode = editorMode === EditorMode.View;
+  useCurrentPageYjsDataEffect();
 
   return (
     <>
-      { isViewMode && pageView }
+      <div className="d-edit-none">
+        {pageView}
+      </div>
 
       <LazyRenderer shouldRender={isEditable === true && editorMode === EditorMode.Editor}>
         { isLatestRevision

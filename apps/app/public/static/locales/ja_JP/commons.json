@@ -63,7 +63,8 @@
     "no_notification": "通知はありません",
     "all": "全て",
     "unopend": "未読",
-    "mark_all_as_read": "全て既読にする"
+    "mark_all_as_read": "全て既読にする",
+    "only_unread": "未読のみ"
   },
 
   "personal_dropdown": {
@@ -78,6 +79,7 @@
 
   "create_page_dropdown": {
     "new_page": "新規ページ作成",
+    "open_page_create_modal": "新規ページ作成モーダルを表示",
     "todays": {
       "desc": "今日のメモを作成",
       "memo": "メモ"
@@ -95,7 +97,8 @@
     "Page URL": "ページURL",
     "Permanent link": "パーマリンク",
     "Page path and permanent link": "ページ名とパーマリンク",
-    "Markdown link": "マークダウン形式のリンク"
+    "Markdown link": "マークダウン形式のリンク",
+    "Append params": "パラメータの追加"
   },
 
   "crop_image_modal": {

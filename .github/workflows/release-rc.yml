@@ -18,10 +18,9 @@ jobs:
 
     outputs:
       TAGS: ${{ steps.meta.outputs.tags }}
-      TAGS_GHCR: ${{ steps.meta-ghcr.outputs.tags }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
@@ -32,16 +31,6 @@ jobs:
       id: meta
       with:
         images: docker.io/weseek/growi
-        sep-tags: ','
-        tags: |
-          type=raw,value=${{ steps.package-json.outputs.packageVersion }}
-          type=raw,value=${{ steps.package-json.outputs.packageVersion }}.{{sha}}
-
-    - name: Docker meta for ghcr.io
-      uses: docker/metadata-action@v4
-      id: meta-ghcr
-      with:
-        images: ghcr.io/weseek/growi
         sep-tags: ','
         tags: |
           type=raw,value=${{ steps.package-json.outputs.packageVersion }}
@@ -68,16 +57,4 @@ jobs:
       tag-temporary: latest-rc
     secrets:
       DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_PASSWORD }}
-
-  publish-image-rc-ghcr:
-    needs: [determine-tags, build-image-rc]
-
-    uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
-    with:
-      tags: ${{ needs.determine-tags.outputs.TAGS_GHCR }}
-      registry: ghcr.io
-      image-name: weseek/growi
-      tag-temporary: latest-rc
-    secrets:
-      DOCKER_REGISTRY_PASSWORD: ${{ secrets.DOCKER_REGISTRY_ON_GITHUB_PASSWORD }}
 

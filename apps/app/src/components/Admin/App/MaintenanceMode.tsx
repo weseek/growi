@@ -1,4 +1,5 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -54,21 +55,17 @@ export const MaintenanceMode: FC = () => {
         onConfirm={onConfirmHandler}
         onCancel={() => closeModal()}
       />
-      <p className="card custom-card">
+      <p className="card custom-card bg-warning-subtle">
         {t('admin:maintenance_mode.description')}
-        <br />
-        <br />
-        <span className="text-warning">
+        <span className="text-warning mt-1">
           <span className="material-symbols-outlined">error</span>
           {t('admin:maintenance_mode.supplymentary_message_to_start')}
         </span>
       </p>
-      <div className="row my-3">
-        <div className="mx-auto">
-          <button type="button" className="btn btn-success" onClick={() => openModal()}>
-            {isMaintenanceMode ? t('admin:maintenance_mode.end_maintenance_mode') : t('admin:maintenance_mode.start_maintenance_mode')}
-          </button>
-        </div>
+      <div className="mx-auto my-3">
+        <button type="button" className="btn btn-success" onClick={() => openModal()}>
+          {isMaintenanceMode ? t('admin:maintenance_mode.end_maintenance_mode') : t('admin:maintenance_mode.start_maintenance_mode')}
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 @use '@growi/ui/scss/atoms/btn-muted';
 
@@ -9,6 +9,11 @@
 
   .dropdown-menu {
     min-width: 310px;
+    max-width: 375px;
+
+    @include bs.media-breakpoint-up(md) {
+      max-width: 600px;
+    }
 
     .dropdown-header {
       margin-bottom: 0.5em;

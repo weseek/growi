@@ -1,6 +1,7 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 @use '~/styles/variables' as var;
+@use '~/styles/mixins';
 
 @use '../button-styles';
 
@@ -22,6 +23,14 @@
     }
   }
 }
+
+// Hide when editing
+@include mixins.editing() {
+  .btn-toggle-collapse {
+    visibility: hidden;
+  }
+}
+
 
 // == Colors
 .btn-toggle-collapse {

@@ -1,6 +1,6 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
-@use '@growi/core/scss/growi-official-colors';
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 
 @use '~/styles/variables' as var;
 
@@ -46,7 +46,10 @@
   $grw-page-editor-mode-manager-width: 90px;
   $grw-contextual-subnavigation-padding-right: 12px;
   $gap: 8px;
-  width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+
+  @include bs.media-breakpoint-up(sm) {
+    width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+  }
 
   @include bs.media-breakpoint-up(md) {
     $grw-page-editor-mode-manager-width: 140px;

@@ -23,6 +23,7 @@ import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
+
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
@@ -214,12 +215,15 @@ export const useSWRMUTxPageInfo = (
     shareLinkId?: string | null,
 ): SWRMutationResponse<IPageInfo | IPageInfoForOperation> => {
 
+  // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
+  const { data: isGuestUser } = useIsGuestUser();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const key = useMemo(() => {
-    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
-  }, [fixedShareLinkId, pageId]);
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId, isGuestUser] : null;
+  }, [fixedShareLinkId, isGuestUser, pageId]);
 
   return useSWRMutation(
     key,
@@ -262,9 +266,9 @@ export const useSWRxInfinitePageRevisions = (
 };
 
 /*
- * Grant normalization fetching hooks
+ * Grant data fetching hooks
  */
-export const useSWRxIsGrantNormalized = (
+export const useSWRxCurrentGrantData = (
     pageId: string | null | undefined,
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
@@ -273,7 +277,7 @@ export const useSWRxIsGrantNormalized = (
   const { data: isNotFound } = useIsNotFound();
 
   const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null
-    ? ['/page/is-grant-normalized', pageId]
+    ? ['/page/grant-data', pageId]
     : null;
 
   return useSWRImmutable(

@@ -5,6 +5,6 @@
     "public/static",
 
     "// ignore watching preset theme updates",
-    "packages/preset-themes/dist/themes/manifest.json"
+    "packages/preset-themes/dist/themes/.vite/manifest.json"
   ]
 }

@@ -22,7 +22,7 @@ export const TemplateButton = (props: Props): JSX.Element => {
   }, [codeMirrorEditor?.view, openTemplateModal]);
 
   return (
-    <button type="button" className="btn btn-toolbar-button" onClick={onClickTempleteButton}>
+    <button type="button" className="btn btn-toolbar-button" onClick={onClickTempleteButton} data-testid="open-template-button">
       <span className="material-symbols-outlined fs-5">file_copy</span>
     </button>
   );

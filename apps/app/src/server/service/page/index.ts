@@ -33,6 +33,7 @@ import {
 } from '~/interfaces/page-operation';
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { CreateMethod } from '~/server/models/page';
 import {
   type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
@@ -40,6 +41,7 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
@@ -264,10 +266,14 @@ class PageService implements IPageService {
     if (page.isEmpty) {
       const Page = mongoose.model<IPage, PageModel>('Page');
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      return notEmptyClosestAncestor?.creator ?? null;
+      return notEmptyClosestAncestor?.creator == null
+        ? null
+        : getIdForRef(notEmptyClosestAncestor.creator);
     }
 
-    return page.creator ?? null;
+    return page.creator == null
+      ? null
+      : getIdForRef(page.creator);
   }
 
   // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
@@ -352,13 +358,19 @@ class PageService implements IPageService {
       user: IUserHasId,
       isRecursively: boolean,
       canDeleteFunction: (
-        page: PageDocument, creatorId: ObjectIdLike, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+        page: PageDocument, creatorId: ObjectIdLike | null, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
       ) => boolean,
   ): Promise<PageDocument[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
       if (p.isEmpty) return true;
-      const canDelete = canDeleteFunction(p, p.creator, user, isRecursively, userRelatedGroups);
+      const canDelete = canDeleteFunction(
+        p,
+        p.creator == null ? null : getIdForRef(p.creator),
+        user,
+        isRecursively,
+        userRelatedGroups,
+      );
       return canDelete;
     });
 
@@ -1858,8 +1870,7 @@ class PageService implements IPageService {
   }
 
   async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
+    // Delete Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -1867,7 +1878,6 @@ class PageService implements IPageService {
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
     await Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1876,6 +1886,7 @@ class PageService implements IPageService {
       PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
       Workflow.deleteMany({ pageId: { $in: pageIds } }),
+      // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
   }
 
@@ -4148,9 +4159,16 @@ class PageService implements IPageService {
     const clonedPageData = Page.hydrate(pageData.toObject());
     const newPageData = pageData;
 
-    // If updated at least once, publish
-    pageData.publish();
-
+    // Once updated it's exempt from automatic deletion
+    if (options.wip == null) {
+      newPageData.ttlTimestamp = undefined;
+    }
+    else if (options.wip) {
+      newPageData.unpublish();
+    }
+    else {
+      newPageData.publish();
+    }
 
     // use the previous data if absent
     const grant = options.grant ?? clonedPageData.grant;
@@ -4430,6 +4448,33 @@ class PageService implements IPageService {
         page.processData = processData;
       }
     });
+  }
+
+  async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
+    const yjsConnectionManager = getYjsConnectionManager();
+    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+    const yjsDraft = currentYdoc?.getText('codemirror').toString();
+    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
+
+    return {
+      hasRevisionBodyDiff,
+      awarenessStateSize: currentYdoc?.awareness.states.size,
+    };
+  }
+
+  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
+    if (comparisonTarget == null) {
+      return false;
+    }
+
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
+
+    if (revision == null) {
+      return false;
+    }
+
+    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {

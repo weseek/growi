@@ -8,9 +8,6 @@ import {
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
-import {
-  DropdownItem, DropdownMenu, DropdownToggle, UncontrolledButtonDropdown,
-} from 'reactstrap';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
@@ -95,14 +92,14 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate' : ''} small`}>
+    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate small' : ''}`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span className="material-symbols-outlined ms-2">lock</span>;
+    locked = <span className="material-symbols-outlined ms-2 fs-6">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -114,7 +111,7 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
 
         <div className="flex-grow-1 ms-2">
-          <div className={`row ${isSmall ? 'gy-0' : 'gy-2'}`}>
+          <div className={`row ${isSmall ? 'gy-0' : 'gy-1'}`}>
 
             <div className="col-12">
               { !dPagePath.isRoot && <FormerLink /> }
@@ -182,13 +179,20 @@ export const RecentChangesHeader = ({
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
 
-      <UncontrolledButtonDropdown className="me-1">
-        <DropdownToggle color="transparent" className="p-0 border-0">
+      <div className="me-1">
+        <button
+          color="transparent"
+          className="btn p-0 border-0"
+          type="button"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+        >
           <span className="material-symbols-outlined">more_horiz</span>
-        </DropdownToggle>
+        </button>
 
-        <DropdownMenu container="body">
-          <DropdownItem onClick={changeSizeHandler}>
+        <ul className="dropdown-menu">
+          <li className="dropdown-item" onClick={changeSizeHandler}>
             <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
               <input
                 id="recentChangesResize"
@@ -201,9 +205,9 @@ export const RecentChangesHeader = ({
                 {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
               </label>
             </div>
-          </DropdownItem>
+          </li>
 
-          <DropdownItem onClick={onWipPageShownChange}>
+          <li className="dropdown-item" onClick={onWipPageShownChange}>
             <div className="form-check form-switch mb-0">
               <input
                 id="wipPageVisibility"
@@ -216,9 +220,9 @@ export const RecentChangesHeader = ({
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledButtonDropdown>
+          </li>
+        </ul>
+      </div>
     </>
   );
 };

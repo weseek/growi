@@ -81,7 +81,7 @@ export const BookmarkButtons: FC<Props> = (props: Props) => {
           </span>
         </DropdownToggle>
       </BookmarkFolderMenu>
-      <UncontrolledTooltip placement="top" data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
+      <UncontrolledTooltip data-testid="bookmark-button-tooltip" target="bookmark-dropdown-btn" fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 

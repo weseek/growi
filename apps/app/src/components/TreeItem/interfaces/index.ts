@@ -7,27 +7,31 @@ import type { IPageForPageDuplicateModal } from '~/stores/modal';
 import type { ItemNode } from '../ItemNode';
 
 type TreeItemBaseProps = {
+  itemLevel?: number,
   itemNode: ItemNode,
   isEnableActions: boolean,
   isReadOnlyUser: boolean,
   onClickDuplicateMenuItem?(pageToDuplicate: IPageForPageDuplicateModal): void,
   onClickDeleteMenuItem?(pageToDelete: IPageToDeleteWithMeta): void,
   onRenamed?(fromPath: string | undefined, toPath: string): void,
-  stateHandlers?: {
-    isOpen: boolean,
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
-  },
 }
 
-export type TreeItemToolProps = TreeItemBaseProps;
+export type TreeItemToolProps = TreeItemBaseProps & {
+  stateHandlers?: {
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>,
+  },
+};
 
 export type TreeItemProps = TreeItemBaseProps & {
   targetPathOrId?: Nullable<string>,
   isOpen?: boolean,
   isWipPageShown?: boolean,
   itemClass?: React.FunctionComponent<TreeItemProps>,
-  mainClassName?: string,
+  itemClassName?: string,
   customEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
-  customNextComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customHoveredEndComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  customHeadOfChildrenComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
+  showAlternativeContent?: boolean,
+  customAlternativeComponents?: Array<React.FunctionComponent<TreeItemToolProps>>,
   onClick?(page: IPageForItem): void,
 };

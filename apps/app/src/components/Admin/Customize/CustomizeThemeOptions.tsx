@@ -25,11 +25,12 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
   }, [availableThemes]);
 
   return (
-    <div id="themeOptions">
+    <>
+
       {/* Light and Dark Themes */}
       <div>
-        <h3>{t('customize_settings.theme_desc.light_and_dark')}</h3>
-        <div className="d-flex flex-wrap">
+        <h3 className="mb-3">{t('customize_settings.theme_desc.light_and_dark')}</h3>
+        <div className="hstack gap-3 flex-wrap">
           {lightNDarkThemes.map((theme) => {
             return (
               <ThemeColorBox
@@ -42,10 +43,11 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
           })}
         </div>
       </div>
+
       {/* Only one mode Theme */}
       <div className="mt-3">
-        <h3>{t('customize_settings.theme_desc.unique')}</h3>
-        <div className="d-flex flex-wrap">
+        <h3 className="mb-3">{t('customize_settings.theme_desc.unique')}</h3>
+        <div className="hstack gap-3 align-items-start flex-wrap">
           {oneModeThemes.map((theme) => {
             return (
               <ThemeColorBox
@@ -58,7 +60,8 @@ const CustomizeThemeOptions = (props: Props): JSX.Element => {
           })}
         </div>
       </div>
-    </div>
+
+    </>
   );
 
 };

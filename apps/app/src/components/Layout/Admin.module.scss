@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as *;
+@use '@growi/core-styles/scss/bootstrap/init' as *;
 @use '~/styles/mixins';
 
 $slack-work-space-name-card-background: #fff5ff;
@@ -34,7 +34,15 @@ $slack-work-space-name-card-border: #efc1f6;
   }
 
   .admin-setting-header {
+    margin-bottom: 20px;
     border-bottom: 1px solid transparent;
+  }
+
+  .custom-card {
+    padding: 8px 16px;
+    ul {
+      margin-bottom: 0;
+    }
   }
 
   .admin-security {
@@ -226,49 +234,6 @@ $slack-work-space-name-card-border: #efc1f6;
     }
   }
 
-  #layoutOptions {
-    .customize-layout-card {
-      border: 4px solid $border-color;
-    }
-  }
-
-  // theme selector
-  #themeOptions {
-    // layout
-    .theme-option-container {
-      min-width: 100px;
-      a {
-        padding: 3px;
-        margin-right: 10px;
-        margin-bottom: 10px;
-
-        svg {
-          display: block;
-        }
-      }
-    }
-
-    &.disabled {
-      cursor: not-allowed;
-      opacity: 0.5;
-    }
-
-    // style
-    .theme-option-container a {
-      background-color: $gray-100;
-      border: 1px solid $border-color;
-    }
-    .theme-option-name, .theme-option-badge {
-      opacity: 0.3;
-    }
-    // style (active)
-    .theme-option-container.active {
-      .theme-option-name, .theme-option-badge {
-        opacity: 1;
-      }
-    }
-  }
-
   .settings-table {
     table-layout: fixed;
 
@@ -285,14 +250,6 @@ $slack-work-space-name-card-border: #efc1f6;
     }
   }
 
-  .admin-navigation {
-    & > a + a {
-      margin-top: 2px;
-    }
-    &.sticky-top {
-      top: 30px;
-    }
-  }
 }
 
 
