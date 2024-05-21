@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { useSlideByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
+import { useIsEnabledMarp } from '~/stores/context';
 import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
@@ -21,6 +23,7 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
+const SlideRenderer = dynamic(() => import('./Page/SlideRenderer'), { ssr: false });
 
 
 type Props = {
@@ -42,6 +45,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
   const { data: isNotFoundMeta } = useIsNotFound();
 
   const { data: viewOptions } = useViewOptions();
+
+  const markdown = page?.revision?.body;
+  const isSlide = useSlideByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
   const isNotFound = isNotFoundMeta || page == null || shareLink == null;
 
@@ -77,11 +83,9 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
 
-    return (
-      <>
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
-      </>
-    );
+    return isSlide != null
+      ? <SlideRenderer></SlideRenderer>
+      : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
   };
 
   return (
