@@ -25,6 +25,7 @@ import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
@@ -151,6 +152,8 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
+
+  isRegistrationEnabled: boolean,
 
   sidebarConfig: ISidebarConfig,
 
@@ -545,6 +548,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.disableLinkSharing = configManager.getConfig('crowi', 'security:disableLinkSharing');
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
+
+  props.isRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');

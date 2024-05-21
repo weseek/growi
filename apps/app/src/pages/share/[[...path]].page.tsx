@@ -15,6 +15,7 @@ import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import type { PageDocument } from '~/server/models/page';
@@ -46,6 +47,7 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
+  isRegistrationEnabled: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
@@ -161,6 +163,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isSearchScopeChildrenAsDefault = configManager.getConfig('crowi', 'customize:isSearchScopeChildrenAsDefault');
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
+
+  props.isRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {
     isSharedPage: true,

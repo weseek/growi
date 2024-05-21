@@ -11,7 +11,6 @@ import * as nextI18NextConfig from '^/config/next-i18next.config';
 import { detectLocaleFromBrowserAcceptLanguage } from '~/client/util/locale-utils';
 import { type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { IUserUISettings } from '~/interfaces/user-ui-settings';
 import type { PageDocument } from '~/server/models/page';
@@ -35,7 +34,6 @@ export type CommonProps = {
   isDefaultLogo: boolean,
   growiCloudUri: string,
   isAccessDeniedForNonAdminUser?: boolean,
-  isRegistrationEnabled?: boolean,
   currentUser?: IUserHasId,
   forcedColorScheme?: ColorScheme,
   userUISettings?: IUserUISettings
@@ -79,8 +77,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
   const isCustomizedLogoUploaded = await attachmentService.isBrandLogoExist();
   const isDefaultLogo = crowi.configManager.getConfig('crowi', 'customize:isDefaultLogo') || !isCustomizedLogoUploaded;
   const forcedColorScheme = crowi.customizeService.forcedColorScheme;
-  const isRegistrationEnabled = crowi.passportService.isLocalStrategySetup
-    && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   // retrieve UserUISett ings
   const UserUISettings = getModelSafely<UserUISettingsDocument>('UserUISettings');
@@ -102,7 +98,6 @@ export const getServerSideCommonProps: GetServerSideProps<CommonProps> = async(c
     redirectDestination,
     currentUser,
     isDefaultLogo,
-    isRegistrationEnabled,
     forcedColorScheme,
     growiCloudUri: configManager.getConfig('crowi', 'app:growiCloudUri'),
     userUISettings: userUISettings?.toObject?.() ?? userUISettings,
