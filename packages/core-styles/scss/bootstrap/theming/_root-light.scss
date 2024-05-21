@@ -25,8 +25,14 @@
   --#{$prefix}link-hover-color-rgb: #{to-rgb($link-hover-color)};
 
   --#{$prefix}code-color: #{$code-color};
+  --#{$prefix}highlight-color: #{$mark-color};
   --#{$prefix}highlight-bg: #{$mark-bg};
 
   --#{$prefix}border-color: #{$border-color};
   --#{$prefix}border-color-translucent: #{$border-color-translucent};
+
+  --#{$prefix}form-valid-color: #{$form-valid-color};
+  --#{$prefix}form-valid-border-color: #{$form-valid-border-color};
+  --#{$prefix}form-invalid-color: #{$form-invalid-color};
+  --#{$prefix}form-invalid-border-color: #{$form-invalid-border-color};
 }

@@ -1869,8 +1869,7 @@ class PageService implements IPageService {
   }
 
   async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
+    // Delete Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -1878,7 +1877,6 @@ class PageService implements IPageService {
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
     await Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1886,6 +1884,8 @@ class PageService implements IPageService {
       Page.deleteMany({ _id: { $in: pageIds } }),
       PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
+
+      // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
   }
 

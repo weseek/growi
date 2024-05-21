@@ -1,6 +1,6 @@
 {
   "name": "@growi/slackbot-proxy",
-  "version": "7.0.5-slackbot-proxy.0",
+  "version": "7.0.7-slackbot-proxy.0",
   "license": "MIT",
   "scripts": {
     "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
@@ -54,11 +54,12 @@
     "universal-bunyan": "^0.9.2"
   },
   "devDependencies": {
+    "@popperjs/core": "^2.11.8",
     "@tsed/core": "^6.43.0",
     "@tsed/exceptions": "^6.43.0",
     "@tsed/json-mapper": "^6.43.0",
     "@tsed/schema": "^6.43.0",
-    "bootstrap": "^5.3.1",
+    "bootstrap": "^5.3.3",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
     "morgan": "^1.10.0",

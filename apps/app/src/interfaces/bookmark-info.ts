@@ -9,7 +9,7 @@ export interface IBookmarkInfo {
 
 export interface BookmarkedPage {
   _id: string,
-  page: IPageHasId,
+  page: IPageHasId | null,
   user: Ref<IUser>,
   createdAt: Date,
 }
