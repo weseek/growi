@@ -84,7 +84,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     const markdown = page.revision.body;
 
     return isSlide != null
-      ? <SlideRenderer></SlideRenderer>
+      ? <SlideRenderer marp={isSlide.marp} markdown={markdown}></SlideRenderer>
       : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />;
   };
 
