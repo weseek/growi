@@ -64,8 +64,6 @@ const PagePresentationModal = (): JSX.Element => {
     return <></>;
   }
 
-  const markdown = currentPage?.revision.body;
-
   return (
     <Modal
       isOpen={isOpen}
@@ -92,7 +90,7 @@ const PagePresentationModal = (): JSX.Element => {
               },
               isDarkMode,
             }}
-            isEnabledMarp={isSlide?.marp}
+            marp={isSlide?.marp}
           >
             {markdown}
           </Presentation>
