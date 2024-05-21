@@ -98,4 +98,39 @@ describe('WorkflowApproverGroupService', () => {
       expect(caller).toThrow('Cannot set approver.status to anything other than "NONE" during creation');
     });
   });
+
+  describe('.createApproverGroup', () => {
+    it('Should fail when trying to add an approverGroup before an approved approverGroup', () => {
+      // setup
+      const validateApproverGroupsSpy = vi.spyOn(WorkflowApproverGroupService, 'validateApproverGroups');
+      const targetWorkflowMock = {
+        approverGroups: [
+          {
+            approvers: [new mongoose.Types.ObjectId().toString()],
+            isApproved: false,
+          },
+          {
+            approvers: [new mongoose.Types.ObjectId().toString(), new mongoose.Types.ObjectId().toString()],
+            isApproved: true,
+          },
+        ],
+        creator: { _id: new mongoose.Types.ObjectId().toString() },
+        getLatestApprovedApproverGroupIndex: vi.fn(() => 1),
+      } as any;
+
+      const createApproverGroupData = {
+        groupIndex: 1,
+        approvalType: WorkflowApprovalType.AND,
+        userIdsToAdd: [new mongoose.Types.ObjectId().toString(), new mongoose.Types.ObjectId().toString()],
+      };
+
+      // when
+      const caller = () => WorkflowApproverGroupService.createApproverGroup(targetWorkflowMock, [createApproverGroupData]);
+
+      // then
+      expect(caller).toThrow('Cannot edit approverGroups prior to the approved approverGroup');
+      expect(targetWorkflowMock.getLatestApprovedApproverGroupIndex).toBeCalledTimes(1);
+      expect(validateApproverGroupsSpy).not.toHaveBeenCalled();
+    });
+  });
 });
