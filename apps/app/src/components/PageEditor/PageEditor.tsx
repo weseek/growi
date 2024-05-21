@@ -300,9 +300,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // set handler to set caret line
   useEffect(() => {
     const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber);
-
-      // TODO: scroll to the caret line
+      codeMirrorEditor?.setCaretLineInit(lineNumber);
     };
     globalEmitter.on('setCaretLine', handler);
 
