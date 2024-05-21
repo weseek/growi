@@ -23,7 +23,7 @@ const logger = loggerFactory('growi:Page');
 
 const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
 const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('./Page/SlideRenderer'), { ssr: false });
+const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
