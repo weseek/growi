@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 :root[data-bs-theme] {
   @import '@growi/core-styles/scss/bootstrap/init-stage-1';
   @import '@growi/core-styles/scss/bootstrap/theming/variables';

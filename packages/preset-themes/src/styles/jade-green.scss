@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $min-contrast-ratio: 2;
 
 :root[data-bs-theme='light'] {
