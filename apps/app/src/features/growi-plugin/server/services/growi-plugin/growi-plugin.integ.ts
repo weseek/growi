@@ -59,7 +59,7 @@ describe('Installing a GROWI theme plugin', () => {
   it('install() should success', async() => {
     // when
     const result = await growiPluginService.install({
-      url: 'https://github.com/weseek/growi-plugin-theme-vivid-internet/tree/v6',
+      url: 'https://github.com/weseek/growi-plugin-theme-vivid-internet',
     });
     const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-vivid-internet' });
 
