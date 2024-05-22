@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .list-group-item.active {
   --bs-list-group-active-color: var(--bs-list-group-color);
