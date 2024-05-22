@@ -4,9 +4,20 @@
     "stylelint-config-recess-order"
   ],
   "rules": {
+    "no-duplicate-selectors": null,
+    "scss/at-extend-no-missing-placeholder": null,
     "rule-empty-line-before": [ "always-multi-line", {
       "except": ["after-single-line-comment", "first-nested"],
       "ignore": ["after-comment", "inside-block"]
-    } ]
+    } ],
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "global",
+          "local"
+        ]
+      }
+    ]
   }
 }

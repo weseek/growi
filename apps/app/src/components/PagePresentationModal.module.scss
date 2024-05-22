@@ -1,7 +1,8 @@
-@use '~/styles/_modal';
+@use '~/styles/modal';
 
 .grw-presentation-modal :global {
-  @include modal.expand-modal-fullscreen(false, false, 0);
+  /* stylelint-disable-next-line length-zero-no-unit */
+  @include modal.expand-modal-fullscreen(false, false, 0px);
 
   .modal-content {
     background-color: transparent;
