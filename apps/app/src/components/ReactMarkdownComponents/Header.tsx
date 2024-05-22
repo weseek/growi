@@ -114,10 +114,10 @@ export const Header = (props: HeaderProps): JSX.Element => {
 
   return (
     <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''}`}>
-      {children}
-      <NextLink href={`#${id}`} className="revision-head-link">
-        <span className="material-symbols-outlined">link</span>
+      <NextLink href={`#${id}`} className="d-none d-md-inline revision-head-link">
+        #
       </NextLink>
+      {children}
       {showEditButton && (
         <EditLink line={node.position?.start.line} />
       )}

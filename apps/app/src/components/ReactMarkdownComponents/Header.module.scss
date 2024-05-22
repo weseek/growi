@@ -3,12 +3,19 @@
     text-decoration: none;
   }
 
-  .revision-head-link,
-  .revision-head-edit-button {
-    margin-left: 0.5em;
-    font-size: 0.6em;
+  .revision-head-link {
+    margin-right: 0.5em;
     user-select: none;
-    opacity: 0;
+    opacity: 0.5;
+  }
+  .revision-head-edit-button{
+    margin-left: 0.5em;
+    font-size: 16px;
+    user-select: none;
+    opacity: 0.5;
+    .material-symbols-outlined{
+      vertical-align: middle;
+    }
   }
 }
 
