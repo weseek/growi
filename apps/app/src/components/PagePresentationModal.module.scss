@@ -1,8 +1,7 @@
 @use '~/styles/_modal';
 
 .grw-presentation-modal :global {
-
-  @include modal.expand-modal-fullscreen(false, false, 0px);
+  @include modal.expand-modal-fullscreen(false, false, 0);
 
   .modal-content {
     background-color: transparent;

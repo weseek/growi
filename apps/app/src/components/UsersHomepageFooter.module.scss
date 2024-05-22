@@ -1,4 +1,5 @@
 @use '@growi/ui/scss/molecules/page_list';
+
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 
@@ -28,8 +29,9 @@ $grw-sidebar-content-footer-height: 50px;
           width: 20px;
           height: 20px;
         }
+
         min-height: 40px;
-        border-radius: 0px;
+        border-radius: 0;
 
         &.grw-bookmark-item-list {
           .picture {
