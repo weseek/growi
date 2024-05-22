@@ -1,3 +1,5 @@
+/* stylelint-disable color-function-notation */
+
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
 @use './theme/mixins/page-editor-mode-manager';

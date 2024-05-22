@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 $success-text-emphasis-dark: color.mix(#fff, $success, 20%) !default;
 $info-text-emphasis-dark: color.mix(#fff, $info, 20%) !default;
 $warning-text-emphasis-dark: color.mix(#fff, $warning, 20%) !default;

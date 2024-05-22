@@ -10,6 +10,7 @@
       "except": ["after-single-line-comment", "first-nested"],
       "ignore": ["after-comment", "inside-block"]
     } ],
+    "color-function-notation": "legacy",
     "selector-pseudo-class-no-unknown": [
       true,
       {

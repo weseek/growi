@@ -1,3 +1,6 @@
+@use 'sass:color';
+@use '../init' as *;
+
 @mixin button-outline-variant-light(
   $color,
   $background: color.mix(#fff, $color, 90%),

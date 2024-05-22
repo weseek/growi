@@ -1,5 +1,7 @@
 /* stylelint-disable scss/comment-no-empty */
 
+@use 'sass:color';
+
 // Variables
 //
 // Variables should follow the `$component-state-property-size` formula for
@@ -29,7 +31,7 @@ $danger-border-subtle: color.mix(#fff, $danger, 70%) !default;
 // Quickly modify global styling by enabling or disabling optional features.
 
 $enable-shadows: true;
-$box-shadow-inset: inset 0 0 rgb(black 0); // set invisible value for inset
+$box-shadow-inset: inset 0 0 rgba(black, 0); // set invisible value for inset
 
 
 // Buttons

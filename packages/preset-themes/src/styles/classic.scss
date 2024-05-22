@@ -18,7 +18,7 @@
   $body-tertiary-color: rgba($body-color, .5);
   $body-tertiary-bg: $gray-100;
   $border-color: var(--grw-highlight-200);
-  $link-color: rgb(25 56 186 / 100%);
+  $link-color: rgba(25, 56, 186, 100%);
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
@@ -53,5 +53,5 @@
   @import '@growi/core-styles/scss/bootstrap/init-stage-2';
   @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
-  --grw-sidebar-nav-btn-color: rgb(var(--grw-highlight-400-rgb) 0.8);
+  --grw-sidebar-nav-btn-color: rgba(var(--grw-highlight-400-rgb), 0.8);
 }
