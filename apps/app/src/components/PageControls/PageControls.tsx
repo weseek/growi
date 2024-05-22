@@ -66,7 +66,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (newValue: boolean) => void,
+  onClickMenuItem: (e:any) => void,
   expandContentWidth?: boolean,
 }
 
@@ -78,23 +78,22 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   } = props;
 
   return (
-    <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth))}
-      className="grw-page-control-dropdown-item"
+    <div
+      className="grw-page-control-dropdown-item dropdown-item"
+      onClick={onClickMenuItem}
     >
       <div className="form-check form-switch ms-1">
         <input
-          id="switchContentWidth"
           className="form-check-input"
           type="checkbox"
           checked={expandContentWidth}
-          onChange={() => {}}
+          onChange={onClickMenuItem}
         />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
+        <label className="form-label form-check-label">
           { t('wide_view') }
         </label>
       </div>
-    </DropdownItem>
+    </div>
   );
 };
 
@@ -224,7 +223,10 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+  const switchContentWidthClickHandler = useCallback(async(e:any) => {
+    e.preventDefault();
+
+    const newValue = !expandContentWidth;
     if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       logger.warn('Could not switch content width', {
         onClickSwitchContentWidth: onClickSwitchContentWidth == null ? 'null' : 'not null',
@@ -242,7 +244,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
+  }, [expandContentWidth, isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
