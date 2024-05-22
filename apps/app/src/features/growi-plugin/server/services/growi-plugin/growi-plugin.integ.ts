@@ -59,27 +59,27 @@ describe('Installing a GROWI theme plugin', () => {
   it('install() should success', async() => {
     // when
     const result = await growiPluginService.install({
-      url: 'https://github.com/weseek/growi-plugin-theme-welcome-to-fumiya-room',
+      url: 'https://github.com/weseek/growi-plugin-theme-vivid-internet/tree/v6',
     });
-    const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-welcome-to-fumiya-room' });
+    const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-vivid-internet' });
 
     // expect
-    expect(result).toEqual('growi-plugin-theme-welcome-to-fumiya-room');
+    expect(result).toEqual('growi-plugin-theme-vivid-internet');
     expect(count).toBe(1);
     expect(fs.existsSync(path.join(
       PLUGIN_STORING_PATH,
       'weseek',
-      'growi-plugin-theme-welcome-to-fumiya-room',
+      'growi-plugin-theme-vivid-internet',
     ))).toBeTruthy();
   });
 
   it('findThemePlugin() should return data with metadata and manifest', async() => {
     // confirm
-    const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-welcome-to-fumiya-room' });
+    const count = await GrowiPlugin.count({ 'meta.name': 'growi-plugin-theme-vivid-internet' });
     expect(count).toBe(1);
 
     // when
-    const results = await growiPluginService.findThemePlugin('welcome-to-fumiya-room');
+    const results = await growiPluginService.findThemePlugin('vivid-internet');
 
     // expect
     expect(results).not.toBeNull();
@@ -88,7 +88,7 @@ describe('Installing a GROWI theme plugin', () => {
     expect(results.themeMetadata).not.toBeNull();
     expect(results.themeHref).not.toBeNull();
     expect(results.themeHref
-      .startsWith('/static/plugins/weseek/growi-plugin-theme-welcome-to-fumiya-room/dist/assets/style.')).toBeTruthy();
+      .startsWith('/static/plugins/weseek/growi-plugin-theme-vivid-internet/dist/assets/style-')).toBeTruthy();
   });
 
 });
