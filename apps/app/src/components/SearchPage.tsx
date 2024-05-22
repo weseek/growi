@@ -17,6 +17,7 @@ import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 import { type IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
+import styles from './SearchPage.module.scss';
 
 // TODO: replace with "customize:showPageLimitationS"
 const INITIAL_PAGIONG_SIZE = 20;
@@ -175,7 +176,7 @@ export const SearchPage = (): JSX.Element => {
           <div className="dropdown">
             <button
               type="button"
-              className="btn dropdown-toggle text-danger"
+              className="btn dropdown-toggle border-0"
               data-bs-toggle="dropdown"
               aria-expanded="false"
             >
@@ -254,15 +255,17 @@ export const SearchPage = (): JSX.Element => {
   }, [conditions, data, pagingNumberChangedHandler]);
 
   return (
-    <SearchPageBase
-      ref={searchPageBaseRef}
-      pages={data?.data}
-      searchingKeyword={keyword}
-      onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-      // Components
-      searchControl={searchControl}
-      searchResultListHead={searchResultListHead}
-      searchPager={searchPager}
-    />
+    <div className={`${styles['search-page']}`}>
+      <SearchPageBase
+        ref={searchPageBaseRef}
+        pages={data?.data}
+        searchingKeyword={keyword}
+        onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
+        // Components
+        searchControl={searchControl}
+        searchResultListHead={searchResultListHead}
+        searchPager={searchPager}
+      />
+    </div>
   );
 };

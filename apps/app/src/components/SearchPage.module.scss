@@ -1,0 +1,17 @@
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+
+.search-page :global {
+  .danger-style {
+    color:bs.$danger;
+    background-color: rgba(bs.$danger, .1);
+  }
+
+  .dropdown-toggle {
+    &:hover {
+      @extend .danger-style;
+    }
+  }
+  .dropdown-toggle.show {
+    @extend .danger-style;
+  }
+}
