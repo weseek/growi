@@ -3,5 +3,16 @@
   "ignoreFiles": [
     "src/styles/prebuilt/*.css",
     "src/linter-checker/test.scss"
-  ]
+  ],
+  "rules": {
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": [
+          "global",
+          "local"
+        ]
+      }
+    ]
+  }
 }
