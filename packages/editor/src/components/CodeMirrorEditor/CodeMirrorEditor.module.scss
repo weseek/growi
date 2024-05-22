@@ -38,9 +38,6 @@
     .cm-header-6 {
       font-size: 1.2em;
     }
-    // .cm-cursor.cm-cursor-primary {
-    //   border-color: aqua;
-    // }
 
   }
 
@@ -154,9 +151,7 @@
       background-size: 1em;
     }
   }
-  // .cm-cursor.cm-cursor-primary {
-  //   background-image: url(../../../svg/table.svg);
-  // }
+
   .markdown-table-activated .cm-cursor.cm-cursor-primary {
     &:after {
       background-image: url(../../../svg/table.svg);

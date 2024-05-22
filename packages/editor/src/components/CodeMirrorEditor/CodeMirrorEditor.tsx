@@ -164,46 +164,10 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-  // useEffect(() => {
-
-  //   const markdownTableActivatedClass = 'markdown-table-activated';
-
-  //   const editor = codeMirrorEditor?.view;
-
-  //   const handleFocusChanged = () => {
-
-  //     if (editor == null) {
-  //       return;
-  //     }
-
-  //     if (isInTable(editor)) {
-  //       // set class
-  //       setEditorClass(markdownTableActivatedClass);
-  //     }
-  //     else {
-  //       setEditorClass('');
-  //     }
-
-  //   };
-
-  //   const extension = EditorView.domEventHandlers({
-  //     cursorActivity: handleFocusChanged,
-  //   });
-
-  //   EditorView.updateListener.of((v: ViewUpdate) => {
-  //     if (v.transactions.some(tr => tr.selection)) {
-  //       handleFocusChanged();
-  //     }
-  //   });
-
-  //   const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
-
-  //   return cleanupFunction;
-
-  // }, [codeMirrorEditor]);
 
   const markdownTableActivatedClass = 'markdown-table-activated';
   const editor = codeMirrorEditor?.view;
+
   const handleFocusChanged = () => {
     if (editor == null) {
       return;
@@ -226,7 +190,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     effects: StateEffect.appendConfig.of(cursorPositionListener),
   });
 
-  // EditorView.;
 
   const {
     getRootProps,
