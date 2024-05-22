@@ -1,3 +1,5 @@
+/* stylelint-disable scss/comment-no-empty */
+
 // Variables
 //
 // Variables should follow the `$component-state-property-size` formula for
@@ -45,20 +47,20 @@ $btn-active-box-shadow: 0;
 $link-decoration: none;
 
 
-//== Typography
+// == Typography
 //
-//## Font, line-height, and color for body text, headings, and more.
+// ## Font, line-height, and color for body text, headings, and more.
 $font-family-sans-serif: var(--font-family-sans-serif);
 $font-family-serif: var(--font-family-serif);
 $font-family-monospace: var(--font-family-monospace);
 $font-family-base: $font-family-sans-serif;
 
 
-//== Dropdowns
+// == Dropdowns
 $dropdown-header-padding-y: 0 !default;
 
-//== Modals
+// == Modals
 $modal-footer-border-width: 0;
 
-//== Custom Checkbox
+// == Custom Checkbox
 $form-check-indicator-size: 1.2rem;
