@@ -4,8 +4,10 @@ import {
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
+import { StateEffect } from '@codemirror/state';
 import {
   EditorView,
+  ViewUpdate,
 } from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
@@ -162,37 +164,69 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const markdownTableActivatedClass = 'markdown-table-activated';
+  //   const markdownTableActivatedClass = 'markdown-table-activated';
 
-    const handleMousedown = (event: Event) => {
-      // event.preventDefault();
+  //   const editor = codeMirrorEditor?.view;
 
-      const editor = codeMirrorEditor?.view;
+  //   const handleFocusChanged = () => {
 
-      if (editor == null) {
-        return;
-      }
+  //     if (editor == null) {
+  //       return;
+  //     }
 
-      if (isInTable(editor)) {
-        // set class
-        setEditorClass(markdownTableActivatedClass);
-      }
-      else {
-        setEditorClass('');
-      }
-    };
+  //     if (isInTable(editor)) {
+  //       // set class
+  //       setEditorClass(markdownTableActivatedClass);
+  //     }
+  //     else {
+  //       setEditorClass('');
+  //     }
 
-    const extension = EditorView.domEventHandlers({
-      mousedown: handleMousedown,
-    });
+  //   };
 
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+  //   const extension = EditorView.domEventHandlers({
+  //     cursorActivity: handleFocusChanged,
+  //   });
 
-    return cleanupFunction;
+  //   EditorView.updateListener.of((v: ViewUpdate) => {
+  //     if (v.transactions.some(tr => tr.selection)) {
+  //       handleFocusChanged();
+  //     }
+  //   });
 
-  }, [codeMirrorEditor]);
+  //   const cleanupFunction = codeMirrorEditor?.appendExtensions(extension);
+
+  //   return cleanupFunction;
+
+  // }, [codeMirrorEditor]);
+
+  const markdownTableActivatedClass = 'markdown-table-activated';
+  const editor = codeMirrorEditor?.view;
+  const handleFocusChanged = () => {
+    if (editor == null) {
+      return;
+    }
+    if (isInTable(editor)) {
+      setEditorClass(markdownTableActivatedClass);
+    }
+    else {
+      setEditorClass('');
+    }
+  };
+
+  const cursorPositionListener = EditorView.updateListener.of((v: ViewUpdate) => {
+    if (v.transactions.some(tr => tr.selection || tr.docChanged)) {
+      handleFocusChanged();
+    }
+  });
+
+  editor?.dispatch({
+    effects: StateEffect.appendConfig.of(cursorPositionListener),
+  });
+
+  // EditorView.;
 
   const {
     getRootProps,
@@ -244,8 +278,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} ${editorClass} flex-expand-vert overflow-y-hidden`}>
-      <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
+      <div {...getRootProps()} className={`dropzone  ${editorClass}  ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
