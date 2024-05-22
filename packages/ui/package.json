@@ -33,6 +33,7 @@
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:styles": "stylelint \"./scss/**/*\"",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*"
   },

@@ -29,7 +29,7 @@
     "dev:ci": "yarn cross-env NODE_ENV=development yarn ts-node src/server/app.ts --ci",
     "lint:typecheck": "npx -y tsc",
     "lint:eslint": "yarn eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
-    "lint:styles": "stylelint src/**/*.scss",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:swagger2openapi": "node node_modules/.bin/oas-validate tmp/swagger.json",
     "lint": "run-p lint:*",
     "prelint:swagger2openapi": "yarn openapi:v3",

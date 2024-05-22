@@ -22,7 +22,7 @@
     "watch:libs": "yarn dev:libs -w --emptyOutDir=false",
     "watch:themes": "yarn dev:themes -w --emptyOutDir=false",
     "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
-    "lint:styles": "stylelint src/**/*.scss",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "preview": "vite preview"

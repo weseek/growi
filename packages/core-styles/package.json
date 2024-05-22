@@ -13,7 +13,7 @@
     "./scss/*": "./scss/*.scss"
   },
   "scripts": {
-    "lint:styles": "stylelint ./scss/**/*",
+    "lint:styles": "stylelint \"./scss/**/*\"",
     "lint": "npm-run-all -p lint:*"
   },
   "dependencies": {},

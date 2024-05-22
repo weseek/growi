@@ -18,7 +18,7 @@
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
     "predev": "yarn cp:bootstrap:dev",
     "lint:js": "yarn eslint src/**/*.{js,ts}",
-    "lint:styles": "stylelint --allow-empty-input src/**/*.scss src/**/*.css",
+    "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
     "version": "yarn version --no-git-tag-version --preid=slackbot-proxy"
