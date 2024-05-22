@@ -9,24 +9,18 @@
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color-dark:                   mix(#406C65, white, 20%);
-  $body-bg-dark:                      mix(#15A3A7, black, 20%);
-
-  $body-secondary-color-dark:         rgba($body-color-dark, .75);
-  $body-secondary-bg-dark:            $gray-800;
-
-  $body-tertiary-color-dark:          rgba($body-color-dark, .5);
-  $body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%);
-
-  $border-color-dark:                 $gray-700;
-
-  $link-color-dark:                   $gray-400;
+  $body-color-dark: color.mix(#406C65, white, 20%);
+  $body-bg-dark: color.mix(#15A3A7, black, 20%);
+  $body-secondary-color-dark: rgba($body-color-dark, .75);
+  $body-secondary-bg-dark: $gray-800;
+  $body-tertiary-color-dark: rgba($body-color-dark, .5);
+  $body-tertiary-bg-dark: color.mix($gray-800, $gray-900, 50%);
+  $border-color-dark: $gray-700;
+  $link-color-dark: $gray-400;
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
-
   @import '@growi/core-styles/scss/bootstrap/init-stage-2';
-
   @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-400-rgb);

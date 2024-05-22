@@ -9,24 +9,18 @@
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color:                mix(#00A2B7, black, 40%);
-  $body-bg:                   white;
-
-  $body-secondary-color:      rgba($body-color, .75);
-  $body-secondary-bg:         $gray-200;
-
-  $body-tertiary-color:       rgba($body-color, .5);
-  $body-tertiary-bg:          $gray-100;
-
-  $border-color:              $gray-300;
-
-  $link-color:                $gray-800;
+  $body-color: color.mix(#00A2B7, black, 40%);
+  $body-bg: white;
+  $body-secondary-color: rgba($body-color, .75);
+  $body-secondary-bg: $gray-200;
+  $body-tertiary-color: rgba($body-color, .5);
+  $body-tertiary-bg: $gray-100;
+  $border-color: $gray-300;
+  $link-color: $gray-800;
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
-
   @import '@growi/core-styles/scss/bootstrap/init-stage-2';
-
   @import '@growi/core-styles/scss/bootstrap/theming/apply-light';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-600-rgb);
