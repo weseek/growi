@@ -1,5 +1,4 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
-
 @use '../button-styles';
 
 
@@ -22,6 +21,7 @@
     @extend %btn-primary-color-vars;
   }
 }
+
 @include bs.color-mode(light) {
   .grw-secondary-items :global {
     .btn-primary {
@@ -30,6 +30,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-secondary-items :global {
     .btn-primary {
