@@ -1,10 +1,11 @@
 {
   "extends": [
-    "stylelint-config-standard-scss",
+    "stylelint-config-recommended-scss",
     "stylelint-config-recess-order"
   ],
   "rules": {
     "no-duplicate-selectors": null,
+    "scss/comment-no-empty": null,
     "scss/at-extend-no-missing-placeholder": null,
     "rule-empty-line-before": [ "always-multi-line", {
       "except": ["after-single-line-comment", "first-nested"],

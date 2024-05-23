@@ -83,7 +83,7 @@
     "rollup-plugin-node-externals": "^6.1.1",
     "shx": "^0.3.4",
     "stylelint": "^16.5.0",
-    "stylelint-config-standard-scss": "^13.1.0",
+    "stylelint-config-recommended-scss": "^14.0.0",
     "stylelint-config-recess-order": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^3.9.0",
