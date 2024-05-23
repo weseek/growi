@@ -10,7 +10,7 @@ import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-
+import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 
 import styles from './InstallerForm.module.scss';
 
@@ -27,6 +27,8 @@ const InstallerForm = memo((): JSX.Element => {
   const [isValidUserName, setValidUserName] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
+
+  const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
 
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({
@@ -70,6 +72,7 @@ const InstallerForm = memo((): JSX.Element => {
     };
 
     try {
+      setRegisterErrors([]);
       await apiv3Post('/installer', data);
       router.push('/');
     }
@@ -77,6 +80,7 @@ const InstallerForm = memo((): JSX.Element => {
       const err = errs[0];
       const code = err.code;
       setIsLoading(false);
+      setRegisterErrors(errs);
 
       if (code === 'failed_to_login_after_install') {
         toastError(t('installer.failed_to_login_after_install'));
@@ -103,6 +107,19 @@ const InstallerForm = memo((): JSX.Element => {
         </div>
       </div>
       <div className="row mt-2">
+
+        {
+          registerErrors != null && registerErrors.length > 0 && (
+            <p className="alert alert-danger text-center">
+              {registerErrors.map(err => (
+                <span>
+                  {t(err.message)}<br />
+                </span>
+              ))}
+            </p>
+          )
+        }
+
         <form role="form" id="register-form" className="ps-1" onSubmit={submitHandler}>
           <div className="dropdown mb-3">
             <div className="input-group dropdown-with-icon">

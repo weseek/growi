@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import { useState, useCallback } from 'react';
 
 import nodePath from 'path';
@@ -8,10 +9,11 @@ import { pathUtils } from '@growi/core/dist/utils';
 import { isMovablePage } from '@growi/core/dist/utils/page-path-utils';
 import { useTranslation } from 'next-i18next';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import type { InputValidationResult } from '~/client/util/use-input-validator';
+import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { CopyDropdown } from '../Common/CopyDropdown';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 
@@ -40,8 +42,10 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [editedPagePath, setEditedPagePath] = useState(currentPagePath);
+  const [validationResult, setValidationResult] = useState<InputValidationResult>();
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
+  const inputValidator = useInputValidator(ValidationTarget.PAGE);
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
@@ -51,18 +55,24 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
 
-  const inputChangeHandler = useCallback((inputText: string) => {
-    const newPageTitle = pathUtils.removeHeadingSlash(inputText);
+
+  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+    const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
     const newPagePath = nodePath.resolve(parentPagePath, newPageTitle);
 
     setEditedPagePath(newPagePath);
-  }, [currentPage?.path, setEditedPagePath]);
+
+    // validation
+    const validationResult = inputValidator(e.target.value);
+    setValidationResult(validationResult ?? undefined);
+  }, [currentPage.path, inputValidator]);
 
   const rename = useCallback(() => {
     pagePathRenameHandler(editedPagePath,
       () => {
         setRenameInputShown(false);
+        setValidationResult(undefined);
         onMoveTerminated?.();
       },
       () => {
@@ -72,6 +82,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const cancel = useCallback(() => {
     setEditedPagePath(currentPagePath);
+    setValidationResult(undefined);
     setRenameInputShown(false);
   }, [currentPagePath]);
 
@@ -92,22 +103,27 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
   //   }
   // }, [currentPage._id, isNewlyCreatedPage]);
 
+  const isInvalid = validationResult != null;
+
+  const inputMaxWidth = maxWidth != null
+    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'md', validationResult != null ? false : undefined) - 16
+    : undefined;
+
   return (
-    <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`} style={{ maxWidth }}>
-      <div className="page-title-header-input me-1 d-inline-block overflow-x-scroll">
+    <div className={`d-flex ${moduleClass} ${props.className ?? ''} position-relative`}>
+      <div className="page-title-header-input me-1 d-inline-block">
         { isRenameInputShown && (
           <div className="position-relative">
             <div className="position-absolute w-100">
-              <ClosableTextInput
+              <AutosizeSubmittableInput
                 value={isNewlyCreatedPage ? '' : editedPageTitle}
+                inputClassName={`form-control fs-4 ${isInvalid ? 'is-invalid' : ''}`}
+                inputStyle={{ maxWidth: inputMaxWidth }}
                 placeholder={t('Input page name')}
-                inputClassName="fs-4"
-                onPressEnter={rename}
-                onPressEscape={cancel}
-                onChange={inputChangeHandler}
-                onBlur={rename}
-                validationTarget={ValidationTarget.PAGE}
-                useAutosizeInput
+                onChange={changeHandler}
+                onSubmit={rename}
+                onCancel={cancel}
+                autoFocus
               />
             </div>
           </div>

@@ -75,8 +75,8 @@ const SecurityManagementContents = () => {
 
       {/* XSS configuration link */}
       <div className="mb-5">
-        <h2 className="border-bottom">{t('security_settings.xss_prevent_setting')}</h2>
-        <div className="text-center">
+        <h2 className="border-bottom pb-2">{t('security_settings.xss_prevent_setting')}</h2>
+        <div className="mt-4">
           <Link
             href="/admin/markdown/#preventXSS"
             style={{ fontSize: 'large' }}
@@ -87,7 +87,7 @@ const SecurityManagementContents = () => {
       </div>
 
       <div className="auth-mechanism-configurations">
-        <h2 className="border-bottom">{t('security_settings.Authentication mechanism settings')}</h2>
+        <h2 className="border-bottom pb-2">{t('security_settings.Authentication mechanism settings')}</h2>
         <CustomNav
           activeTab={activeTab}
           navTabMapping={navTabMapping}

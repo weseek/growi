@@ -1,3 +1,4 @@
+import type { ChangeEvent } from 'react';
 import {
   useState, useCallback, memo,
 } from 'react';
@@ -6,13 +7,15 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
+import { debounce } from 'throttle-debounce';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import type { InputValidationResult } from '~/client/util/use-input-validator';
+import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
@@ -42,10 +45,19 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
 
-  // const [isIconHidden, setIsIconHidden] = useState(false);
-
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
+
+  const [validationResult, setValidationResult] = useState<InputValidationResult>();
+
+  const inputValidator = useInputValidator(ValidationTarget.PAGE);
+
+  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+    const validationResult = inputValidator(e.target.value);
+    setValidationResult(validationResult ?? undefined);
+  }, [inputValidator]);
+  const changeHandlerDebounced = debounce(300, changeHandler);
+
 
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
@@ -55,6 +67,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     pagePathRenameHandler(pathToRename,
       () => {
         setRenameInputShown(false);
+        setValidationResult(undefined);
         onRenameTerminated?.();
       },
       () => {
@@ -64,6 +77,7 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
 
   const cancel = useCallback(() => {
     // reset
+    setValidationResult(undefined);
     setRenameInputShown(false);
   }, []);
 
@@ -72,70 +86,52 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, []);
 
-  // TODO: https://redmine.weseek.co.jp/issues/141062
-  // Truncate left side and don't use getElementById
-  //
-  // useEffect(() => {
-  //   const areaElem = document.getElementById('grw-page-path-header-container');
-  //   const linkElem = document.getElementById('grw-page-path-hierarchical-link');
-
-  //   const areaElemWidth = areaElem?.offsetWidth;
-  //   const linkElemWidth = linkElem?.offsetWidth;
-
-  //   if (areaElemWidth && linkElemWidth) {
-  //     setIsIconHidden(linkElemWidth > areaElemWidth);
-  //   }
-  //   else {
-  //     setIsIconHidden(false);
-  //   }
-  // }, [currentPage]);
-  //
-  // const styles: CSSProperties | undefined = isIconHidden ? { direction: 'rtl' } : undefined;
-
   if (dPagePath.isRoot) {
     return <></>;
   }
+
+
+  const isInvalid = validationResult != null;
+
+  const inputMaxWidth = maxWidth != null
+    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'sm', validationResult != null ? false : undefined) - 16
+    : undefined;
 
   return (
     <div
       id="page-path-header"
       className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
-      style={{ maxWidth }}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
       <div
-        className="page-path-header-input d-inline-block overflow-x-scroll"
+        className="page-path-header-input d-inline-block"
       >
         { isRenameInputShown && (
           <div className="position-relative">
             <div className="position-absolute w-100">
-              <ClosableTextInput
+              <AutosizeSubmittableInput
                 value={parentPagePath}
+                inputClassName={`form-control form-control-sm ${isInvalid ? 'is-invalid' : ''}`}
+                inputStyle={{ maxWidth: inputMaxWidth }}
                 placeholder={t('Input parent page path')}
-                inputClassName="form-control-sm"
-                onPressEnter={rename}
-                onPressEscape={cancel}
-                onBlur={rename}
-                validationTarget={ValidationTarget.PAGE}
-                useAutosizeInput
+                onChange={changeHandlerDebounced}
+                onSubmit={rename}
+                onCancel={cancel}
+                autoFocus
               />
             </div>
           </div>
         ) }
-        <div
-          className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}
-          // style={styles}
-        >
+        <div className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}>
           <PagePathHierarchicalLink
             linkedPagePath={linkedPagePath}
-            // isIconHidden={isIconHidden}
           />
         </div>
       </div>
 
       <div
-        className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
+        className={`page-path-header-buttons d-flex align-items-center ms-2 ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
       >
         <button
           type="button"

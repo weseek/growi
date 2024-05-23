@@ -1,12 +1,17 @@
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
-import { YSocketIO } from 'y-socket.io/dist/server';
+import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
 const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
 const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+
+export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
+  const result = ydocId.match(/yjs\/(.*)/);
+  return result?.[1];
+};
 
 class YjsConnectionManager {
 
@@ -15,6 +20,10 @@ class YjsConnectionManager {
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
+
+  get ysocketioInstance(): YSocketIO {
+    return this.ysocketio;
+  }
 
   private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
@@ -40,12 +49,15 @@ class YjsConnectionManager {
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
+    const currentYdoc = this.getCurrentYdoc(pageId);
+    if (currentYdoc == null) {
+      return;
+    }
+
     const persistedYdoc = await this.mdb.getYDoc(pageId);
     const persistedStateVector = Y.encodeStateVector(persistedYdoc);
 
     await this.mdb.flushDocument(pageId);
-
-    const currentYdoc = this.getCurrentYdoc(pageId);
 
     const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
     const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
@@ -77,17 +89,18 @@ class YjsConnectionManager {
     // TODO: https://redmine.weseek.co.jp/issues/132775
     // It's necessary to confirm that the user is not editing the target page in the Editor
     const currentYdoc = this.getCurrentYdoc(pageId);
+    if (currentYdoc == null) {
+      return;
+    }
+
     const currentMarkdownLength = currentYdoc.getText('codemirror').length;
     currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
     currentYdoc.getText('codemirror').insert(0, newValue);
     Y.encodeStateAsUpdate(currentYdoc);
   }
 
-  private getCurrentYdoc(pageId: string): Y.Doc {
+  public getCurrentYdoc(pageId: string): Ydoc | undefined {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
-    if (currentYdoc == null) {
-      throw new Error(`currentYdoc for pageId ${pageId} is undefined.`);
-    }
     return currentYdoc;
   }
 

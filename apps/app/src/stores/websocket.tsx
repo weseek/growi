@@ -2,8 +2,9 @@ import { useEffect } from 'react';
 
 import { useGlobalSocket, GLOBAL_SOCKET_KEY, GLOBAL_SOCKET_NS } from '@growi/core/dist/swr';
 import type { Socket } from 'socket.io-client';
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { useStaticSWR } from './use-static-swr';
@@ -67,6 +68,10 @@ export const useSetupGlobalSocketForPage = (pageId: string | undefined): void =>
   useEffect(() => {
     if (socket == null || pageId == null) { return }
 
-    socket.emit('join:page', { socketId: socket.id, pageId });
+    socket.emit(SocketEventName.JoinPage, { pageId });
+
+    return () => {
+      socket.emit(SocketEventName.LeavePage, { pageId });
+    };
   }, [pageId, socket]);
 };

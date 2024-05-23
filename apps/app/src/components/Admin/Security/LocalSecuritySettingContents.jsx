@@ -62,7 +62,7 @@ class LocalSecuritySettingContents extends React.Component {
           />
         )}
 
-        <div className="row mb-5">
+        <div className="row mt-4 mb-5">
           <div className="col-6 offset-3">
             <div className="form-check form-switch form-check-success">
               <input
@@ -88,10 +88,10 @@ class LocalSecuritySettingContents extends React.Component {
             <h3 className="border-bottom">{t('security_settings.configuration')}</h3>
 
             <div className="row">
-              <div className="col-12 col-md-3 text-start text-md-end py-2">
+              <div className="col-12 col-md-4 text-start text-md-end py-2">
                 <strong>{t('security_settings.register_limitation')}</strong>
               </div>
-              <div className="col-12 col-md-6">
+              <div className="col-12 col-md-8">
                 <div className="dropdown">
                   <button
                     className="btn btn-outline-secondary dropdown-toggle"
@@ -139,10 +139,10 @@ class LocalSecuritySettingContents extends React.Component {
               </div>
             </div>
             <div className="row">
-              <div className="col-12 col-md-3 text-start text-md-end">
+              <div className="col-12 col-md-4 text-start text-md-end">
                 <strong dangerouslySetInnerHTML={{ __html: t('security_settings.The whitelist of registration permission E-mail address') }} />
               </div>
-              <div className="col-12 col-md-6">
+              <div className="col-12 col-md-8">
                 <textarea
                   className="form-control"
                   type="textarea"
@@ -163,8 +163,8 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
-              <div className="col-12 col-md-6">
+              <label className="col-12 col-md-4 text-start text-md-end  col-form-label">{t('security_settings.Local.password_reset_by_users')}</label>
+              <div className="col-12 col-md-8">
                 <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
@@ -178,7 +178,7 @@ class LocalSecuritySettingContents extends React.Component {
                   </label>
                 </div>
                 {!isMailerSetup && (
-                  <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                  <div className="alert alert-warning p-2 my-1 small d-inline-block">
                     <span>{t('commons:alert.password_reset_please_enable_mailer')}</span>
                     <Link href="/admin/app#mail-settings">
                       <span className="material-symbols-outlined">link</span> {t('app_setting.mail_settings')}
@@ -192,8 +192,8 @@ class LocalSecuritySettingContents extends React.Component {
             </div>
 
             <div className="row">
-              <label className="col-12 col-md-3 text-start text-md-end  col-form-label">{t('security_settings.Local.email_authentication')}</label>
-              <div className="col-12 col-md-6">
+              <label className="col-12 col-md-4 text-start text-md-end  col-form-label">{t('security_settings.Local.email_authentication')}</label>
+              <div className="col-12 col-md-8">
                 <div className="form-check form-switch form-check-success">
                   <input
                     type="checkbox"
@@ -207,7 +207,7 @@ class LocalSecuritySettingContents extends React.Component {
                   </label>
                 </div>
                 {!isMailerSetup && (
-                  <div className="alert alert-warning p-1 my-1 small d-inline-block">
+                  <div className="alert alert-warning p-2 my-1 small d-inline-block">
                     <span>{t('commons:alert.please_enable_mailer')}</span>
                     <Link href="/admin/app#mail-settings">
                       <span className="material-symbols-outlined">link</span> {t('app_setting.mail_settings')}

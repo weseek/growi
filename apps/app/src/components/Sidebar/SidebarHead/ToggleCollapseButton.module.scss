@@ -1,14 +1,13 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '~/styles/variables' as var;
 @use '~/styles/mixins';
-
 @use '../button-styles';
 
 .btn-toggle-collapse :global {
   @extend %btn-basis;
 
   $height: var.$grw-sidebar-nav-width; // declare $height with the same value as the sidebar nav width
+
   height: $height;
 }
 
@@ -25,7 +24,7 @@
 }
 
 // Hide when editing
-@include mixins.editing() {
+@include mixins.editing {
   .btn-toggle-collapse {
     visibility: hidden;
   }
@@ -48,6 +47,7 @@
     }
   }
 }
+
 @include bs.color-mode(light) {
   .btn-toggle-collapse {
     &:global {
@@ -58,6 +58,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .btn-toggle-collapse {
     &:global {

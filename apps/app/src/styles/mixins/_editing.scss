@@ -1,10 +1,9 @@
 @mixin editing($global: false) {
   :global {
     .layout-root.editing {
-      @if ($global) {
+      @if $global {
         @content;
-      }
-      @else {
+      } @else {
         :local {
           @content;
         }
