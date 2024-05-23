@@ -4456,7 +4456,6 @@ class PageService implements IPageService {
     const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
 
     return {
-      hasYjsDraft: yjsDraft != null,
       hasRevisionBodyDiff,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };

@@ -48,7 +48,7 @@ class YjsConnectionManager {
     return this.instance;
   }
 
-  public async handleYDocSync(pageId: string, initialValue?: string): Promise<void> {
+  public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
     const currentYdoc = this.getCurrentYdoc(pageId);
     if (currentYdoc == null) {
       return;
@@ -62,7 +62,7 @@ class YjsConnectionManager {
     const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
     const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
 
-    if (persistedCodeMirrorText === '' && currentCodeMirrorText === '' && initialValue != null) {
+    if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 

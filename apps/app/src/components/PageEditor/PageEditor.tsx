@@ -46,7 +46,6 @@ import {
 } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
-import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -108,7 +107,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { data: yjsData } = useCurrentPageYjsData();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
 
@@ -152,9 +150,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     initialValueRef.current = initialValue;
   }, [initialValue]);
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
-
-  const [markdownToPreview, setMarkdownToPreview] = useState<string>(codeMirrorEditor?.getDoc() ?? '');
+  const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
   })), []);
@@ -163,6 +159,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     setMarkdownPreviewWithDebounce(value);
   }, [setMarkdownPreviewWithDebounce]);
 
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
   const { scrollEditorHandler, scrollPreviewHandler } = useScrollSync(GlobalCodeMirrorEditorKey.MAIN, previewRef);
 
@@ -356,7 +353,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       <div className={`flex-expand-horiz ${props.visibility ? '' : 'd-none'}`}>
         <div className="page-editor-editor-container flex-expand-vert border-end">
           <CodeMirrorEditorMain
-            hasYjsDraft={yjsData?.hasYjsDraft ?? false}
             isEditorMode={editorMode === EditorMode.Editor}
             onChange={markdownChangedHandler}
             onSave={saveWithShortcut}
