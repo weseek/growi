@@ -1,3 +1,5 @@
+/* stylelint-disable selector-class-pattern */
+
 // TODO: Rewrite according to guidelines
 .plugin_card :global {
 
@@ -14,7 +16,7 @@
     cursor: pointer;
     border-radius: 30px;
   }
-  .switch__content:before {
+  .switch__content::before {
     position: absolute;
     top: 0;
     left: 0;
@@ -26,7 +28,7 @@
     border: 1.5px solid #E5E5EA;
     border-radius: 30px;
   }
-  .switch__content:after {
+  .switch__content::after {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -58,7 +60,7 @@
     left: 21px;
   }
 
-  .switch__input:checked ~ .switch__content:after {
+  .switch__input:checked ~ .switch__content::after {
     top: 0;
     left: 0;
     width: 100%;

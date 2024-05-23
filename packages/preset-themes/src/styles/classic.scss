@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 :root[data-bs-theme='light'] {
   @import '@growi/core-styles/scss/bootstrap/init-stage-1';
   @import '@growi/core-styles/scss/bootstrap/theming/variables';
@@ -9,24 +11,18 @@
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight,black, white);
 
-  $body-color:                #112744;
-  $body-bg:                   white;
-
-  $body-secondary-color:      rgba($body-color, .75);
-  $body-secondary-bg:         $gray-200;
-
-  $body-tertiary-color:       rgba($body-color, .5);
-  $body-tertiary-bg:          $gray-100;
-
-  $border-color:              var(--grw-highlight-200);
-
-  $link-color:                rgba(25, 56, 186, 1);
+  $body-color: #112744;
+  $body-bg: white;
+  $body-secondary-color: rgba($body-color, .75);
+  $body-secondary-bg: $gray-200;
+  $body-tertiary-color: rgba($body-color, .5);
+  $body-tertiary-bg: $gray-100;
+  $border-color: var(--grw-highlight-200);
+  $link-color: rgba(25, 56, 186, 100%);
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
-
   @import '@growi/core-styles/scss/bootstrap/init-stage-2';
-
   @import '@growi/core-styles/scss/bootstrap/theming/apply-light';
 
   --grw-sidebar-nav-btn-color: var(--grw-highlight-600);
@@ -43,24 +39,18 @@
   @include generate-color-palette('primary', $primary, black, white);
   @include generate-color-palette('highlight', $highlight, black, white);
 
-  $body-color-dark:                   $gray-300;
-  $body-bg-dark:                      #1c1a1a;
-
-  $body-secondary-color-dark:         rgba($body-color-dark, .75);
-  $body-secondary-bg-dark:            $gray-800;
-
-  $body-tertiary-color-dark:          rgba($body-color-dark, .5);
-  $body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%);
-
-  $border-color-dark:                 var(--grw-highlight-200);
-
-  $link-color-dark:                   mix(#68829D, white, 80%);
+  $body-color-dark: $gray-300;
+  $body-bg-dark: #1c1a1a;
+  $body-secondary-color-dark: rgba($body-color-dark, .75);
+  $body-secondary-bg-dark: $gray-800;
+  $body-tertiary-color-dark: rgba($body-color-dark, .5);
+  $body-tertiary-bg-dark: color.mix($gray-800, $gray-900, 50%);
+  $border-color-dark: var(--grw-highlight-200);
+  $link-color-dark: color.mix(#68829D, white, 80%);
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
-
   @import '@growi/core-styles/scss/bootstrap/init-stage-2';
-
   @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
   --grw-sidebar-nav-btn-color: rgba(var(--grw-highlight-400-rgb), 0.8);
