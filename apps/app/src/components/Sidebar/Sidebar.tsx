@@ -5,8 +5,6 @@ import {
 } from 'react';
 
 import dynamic from 'next/dynamic';
-// import 'simplebar';
-// import SimpleBar from 'simplebar';
 import SimpleBar from 'simplebar-react';
 
 import { SidebarMode } from '~/interfaces/ui';
@@ -22,7 +20,6 @@ import {
 
 import { DrawerToggler } from '../Common/DrawerToggler';
 
-
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
 import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
@@ -32,7 +29,6 @@ import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 import styles from './Sidebar.module.scss';
 
 import 'simplebar-react/dist/simplebar.min.css';
-
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
@@ -192,39 +188,11 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
-// const determineScrollbarMaxHeight = (sidebarMode: SidebarMode, elem: HTMLElement | null): number => {
-
-//   let maxHeight: number;
-
-//   switch (sidebarMode) {
-//     case SidebarMode.DOCK:
-//     case SidebarMode.DRAWER:
-//       maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top : window.innerHeight;
-//       break;
-//     case SidebarMode.COLLAPSED:
-//       maxHeight = elem != null ? window.innerHeight - elem?.getBoundingClientRect().top * 2 : window.innerHeight;
-//       break;
-//   }
-
-//   return maxHeight;
-// };
-
 const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
-
-  // const { sidebarMode } = props;
-
-  // const [simplebarMaxHeight, setSimplebarMaxHeight] = useState(0);
-
-  // useEffect(() => {
-  //   const elem = document.getElementById('grw-sidebar-contents-wrapper');
-  //   const maxHeight = determineScrollbarMaxHeight(sidebarMode, elem);
-
-  //   setSimplebarMaxHeight(maxHeight);
-  // }, [sidebarMode]);
 
   return (
     <div id="grw-sidebar-contents-wrapper">
-      <SimpleBar>
+      <SimpleBar forceVisible="y" autoHide={false}>
         <SidebarContents />
       </SimpleBar>
     </div>
