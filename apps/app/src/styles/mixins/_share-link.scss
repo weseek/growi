@@ -7,10 +7,9 @@
 @mixin share-link-for-module($isContentGlobal: false) {
   :global {
     .layout-root.share-link {
-      @if ($isContentGlobal) {
+      @if $isContentGlobal {
         @content;
-      }
-      @else {
+      } @else {
         :local {
           @content;
         }

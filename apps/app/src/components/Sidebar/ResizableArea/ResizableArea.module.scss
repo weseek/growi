@@ -9,8 +9,8 @@
 
 .grw-navigation-draggable :global {
   position: absolute;
-  top: 0px;
-  bottom: 0px;
+  top: 0;
+  bottom: 0;
   left: 100%;
 
   .grw-navigation-draggable-hitarea {

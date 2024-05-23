@@ -1,7 +1,5 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
-
 @use '../button-styles';
-
 @use '../variables' as sidebarVar;
 
 .grw-primary-items :global {
@@ -29,7 +27,7 @@
       position: relative;
 
       // indicator
-      &:after {
+      &::after {
         position: absolute;
         top: 0;
         left: 0;
@@ -55,6 +53,7 @@
     @extend %btn-primary-color-vars;
   }
 }
+
 @include bs.color-mode(light) {
   .grw-primary-items :global {
     .btn-primary {
@@ -63,6 +62,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-primary-items :global {
     .btn-primary {
