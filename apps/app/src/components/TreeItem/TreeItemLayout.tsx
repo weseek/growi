@@ -20,16 +20,19 @@ const moduleClass = styles['tree-item-layout'] ?? '';
 
 
 // Utility to mark target
-const markTarget = (page: IPageForItem, children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+const markTarget = (itemNode: ItemNode, targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
+
+  const { page, children } = itemNode;
 
   page.isTarget = page.path === targetPathOrId;
 
   children.forEach((node) => {
     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
       node.page.isTarget = true;
+      console.log(node.page.path);
     }
     else {
       node.page.isTarget = false;
@@ -101,10 +104,10 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(page, children, targetPathOrId);
+      markTarget(itemNode, targetPathOrId);
       setCurrentChildren(children);
     }
-  }, [children, currentChildren.length, page, targetPathOrId]);
+  }, [children, currentChildren.length, itemNode, page, targetPathOrId]);
 
   /*
    * When swr fetch succeeded
@@ -112,10 +115,10 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(page, newChildren, targetPathOrId);
+      markTarget(itemNode, targetPathOrId);
       setCurrentChildren(newChildren);
     }
-  }, [data, isOpen, page, targetPathOrId]);
+  }, [data, isOpen, itemNode, page, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? TreeItemLayout;
 
