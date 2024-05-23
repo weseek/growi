@@ -53,6 +53,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const isNewlyCreatedPage = useIsUntitledPage(currentPage, editedPageTitle);
 
+  console.log(isNewlyCreatedPage);
+
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
     const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
