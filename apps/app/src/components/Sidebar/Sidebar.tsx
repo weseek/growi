@@ -143,16 +143,20 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';
   const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
+  // TODO: fix scroll bar
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div
-        ref={sidebarScrollerRef}
-        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
-        style={{ width: collapsibleContentsWidth }}
-      >
-        {children}
-      </div>
+      <SimpleBar>
+        <div
+          ref={sidebarScrollerRef}
+          className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
+          style={{ width: collapsibleContentsWidth }}
+        >
+          {children}
+          aaaaaaaaaaaaaaaaaaa
+        </div>
+      </SimpleBar>
     </div>
   );
 
@@ -192,9 +196,7 @@ const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
 
   return (
     <div id="grw-sidebar-contents-wrapper">
-      <SimpleBar forceVisible="y" autoHide={false}>
-        <SidebarContents />
-      </SimpleBar>
+      <SidebarContents />
     </div>
   );
 });
