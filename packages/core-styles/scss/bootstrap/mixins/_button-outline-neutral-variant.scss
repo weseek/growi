@@ -1,18 +1,19 @@
+@use 'sass:color';
+
 @mixin button-outline-neutral-variant-light(
   $color,
-  $background: mix(#fff, $color, 100%),
-  $border: mix(#fff, $color, 70%),
-  $hover-background: mix(#fff, $color, 95%),
+  $background: color.mix(#fff, $color, 100%),
+  $border: color.mix(#fff, $color, 70%),
+  $hover-background: color.mix(#fff, $color, 95%),
   $hover-border: $border,
   $hover-color: $color,
-  $active-background: mix(#fff, $color, 85%),
+  $active-background: color.mix(#fff, $color, 85%),
   $active-border: $border,
   $active-color: $color,
   $disabled-background: $background,
   $disabled-border: $border,
   $disabled-color: $color
 ) {
-
   --#{$prefix}btn-color: #{$color};
   --#{$prefix}btn-bg: #{$background};
   --#{$prefix}btn-border-color: #{$border};
@@ -30,19 +31,18 @@
 
 @mixin button-outline-neutral-variant-dark(
   $color,
-  $background: mix($gray-900, $color, 100%),
-  $border: mix($gray-900, $color, 70%),
-  $hover-background: mix($gray-900, $color, 95%),
+  $background: color.mix($gray-900, $color, 100%),
+  $border: color.mix($gray-900, $color, 70%),
+  $hover-background: color.mix($gray-900, $color, 95%),
   $hover-border: $border,
   $hover-color: $color,
-  $active-background: mix($gray-900, $color, 85%),
+  $active-background: color.mix($gray-900, $color, 85%),
   $active-border: $border,
   $active-color: $color,
   $disabled-background: $background,
   $disabled-border: $border,
   $disabled-color: $color
 ) {
-
   --#{$prefix}btn-color: #{$color};
   --#{$prefix}btn-bg: #{$background};
   --#{$prefix}btn-border-color: #{$border};

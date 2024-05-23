@@ -1,6 +1,5 @@
 @import '@growi/core-styles/scss/helpers/flex-expand';
 @import '@growi/core-styles/scss/helpers/rotate';
-
 @import 'mixins';
 
 // atoms
@@ -12,6 +11,7 @@
 // molecules
 @import 'molecules/toastr';
 @import 'molecules/list-group-item';
+
 // @import 'molecules/duplicated-paths-table.scss';
 
 // organisms
@@ -83,13 +83,13 @@
 }
 
 .cmd-key.mac {
-  &:after {
+  &::after {
     content: '⌘';
   }
 }
 
 .cmd-key.win {
-  &:after {
+  &::after {
     content: 'Ctrl';
   }
 }
