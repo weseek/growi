@@ -5,7 +5,7 @@
   // apply transition
   transition-property: bottom;
 
-  @include mixins.apply-navigation-transition;
+  @include mixins.apply-navigation-transition();
 
   .navbar {
     height: var.$grw-navbar-bottom-height;

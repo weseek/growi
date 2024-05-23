@@ -60,7 +60,7 @@
       // apply transition
       transition-property: transform;
 
-      @include mixins.apply-navigation-transition;
+      @include mixins.apply-navigation-transition();
 
       &:not(.open) {
         transform: translateX(-100%);
