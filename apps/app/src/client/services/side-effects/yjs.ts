@@ -25,7 +25,6 @@ export const useCurrentPageYjsDataEffect = (): void => {
     socket.on(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
 
     return () => {
-      socket.off(SocketEventName.YjsHasDraftUpdated);
       socket.off(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiffUpdateHandler);
       socket.off(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSizeUpdateHandler);
     };

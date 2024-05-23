@@ -92,9 +92,7 @@ export const useCollaborativeEditorMode = (
 
     socketIOProvider.on('sync', (isSync: boolean) => {
       if (isSync) {
-        // If no draft exists, insert initial value
         socket.emit(GlobalSocketEventName.YDocSync, { pageId, initialValue });
-
         const userList: IUserHasId[] = Array.from(socketIOProvider.awareness.states.values(), value => value.user.user && value.user.user);
         onEditorsUpdated(userList);
       }

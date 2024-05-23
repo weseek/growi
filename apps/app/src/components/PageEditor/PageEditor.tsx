@@ -149,7 +149,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
     // set to ref
     initialValueRef.current = initialValue;
   }, [initialValue]);
-
   const [markdownToPreview, setMarkdownToPreview] = useState<string>(initialValue);
   const setMarkdownPreviewWithDebounce = useMemo(() => debounce(100, throttle(150, (value: string) => {
     setMarkdownToPreview(value);
@@ -158,6 +157,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const markdownChangedHandler = useCallback((value: string) => {
     setMarkdownPreviewWithDebounce(value);
   }, [setMarkdownPreviewWithDebounce]);
+
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
