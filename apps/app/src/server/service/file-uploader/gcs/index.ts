@@ -14,8 +14,8 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
-import type { IGcsMultipartUploader } from './multipart-upload';
-import { GcsMultipartUploader } from './multipart-upload';
+import type { IGcsMultipartUploader } from './multipart-uploader';
+import { GcsMultipartUploader } from './multipart-uploader';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
 
@@ -62,10 +62,6 @@ async function isFileExists(file) {
   // check file exists
   const res = await file.exists();
   return res[0];
-}
-
-export interface IGcsFileUploader {
-  createMultipartUploader: (uploadKey: string) => IGcsMultipartUploader
 }
 
 // TODO: rewrite this module to be a type-safe implementation
@@ -175,7 +171,7 @@ class GcsFileUploader extends AbstractFileUploader {
 
   }
 
-  createMultipartUploader(uploadKey: string, maxPartSize: number) {
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
     const gcs = getGcsInstance();
     const myBucket = gcs.bucket(getGcsBucket());
     return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);

@@ -24,8 +24,7 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
-import type { IAwsMultipartUploader } from './multipart-upload';
-import { AwsMultipartUploader } from './multipart-upload';
+import { AwsMultipartUploader } from './multipart-uploader';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
@@ -88,12 +87,8 @@ const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
   return filePath;
 };
 
-export interface IAwsFileUploader {
-  createMultipartUploader: (uploadKey: string) => IAwsMultipartUploader
-}
-
 // TODO: rewrite this module to be a type-safe implementation
-class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
+class AwsFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritdoc
@@ -214,9 +209,9 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
   }
 
-  createMultipartUploader(uploadKey: string) {
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
     const s3 = S3Factory();
-    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey);
+    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
   }
 
 }

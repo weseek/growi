@@ -2,6 +2,8 @@ import type { Bucket, File } from '@google-cloud/storage';
 
 import loggerFactory from '~/utils/logger';
 
+import { MultipartUploader, type IMultipartUploader } from '../multipart-uploader';
+
 import axios from 'src/utils/axios';
 
 const logger = loggerFactory('growi:services:fileUploaderGcs:multipartUploader');
@@ -13,15 +15,7 @@ enum UploadStatus {
   ABORTED
 }
 
-// Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
-export interface IGcsMultipartUploader {
-  initUpload(): Promise<void>;
-  uploadPart(body: Buffer, partNumber: number, maxPartSize?: number): Promise<void>;
-  completeUpload(): Promise<void>;
-  abortUpload(): Promise<void>;
-  uploadId: string;
-  getUploadedFileSize(): Promise<number>;
-}
+export type IGcsMultipartUploader = IMultipartUploader
 
 /**
  * Class for uploading files to GCS using multipart upload.
@@ -29,33 +23,18 @@ export interface IGcsMultipartUploader {
  * Each instance can only be used for one multipart upload, and cannot be reused once completed.
  * TODO: Enable creation of uploader of inturrupted uploads: https://redmine.weseek.co.jp/issues/78040
  */
-export class GcsMultipartUploader implements IGcsMultipartUploader {
-
-  private uploadKey: string;
-
-  private _uploadId: string | undefined; // URL of GCS resumable upload
+export class GcsMultipartUploader extends MultipartUploader implements IGcsMultipartUploader {
 
   private file: File;
-
-  private currentStatus: UploadStatus = UploadStatus.BEFORE_INIT;
-
-  private _uploadedFileSize = 0;
 
   // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads?hl=en#chunked-upload
   private readonly minPartSize = 256 * 1024; // 256KB
 
-  private readonly maxPartSize: number;
-
   constructor(bucket: Bucket, uploadKey: string, maxPartSize: number) {
-    this.validateUploadPartSize(maxPartSize);
-    this.maxPartSize = maxPartSize;
-    this.uploadKey = uploadKey;
-    this.file = bucket.file(this.uploadKey);
-  }
+    super(uploadKey, maxPartSize);
 
-  get uploadId(): string {
-    if (this._uploadId == null) throw Error('UploadId is empty');
-    return this._uploadId;
+    this.validateUploadPartSize(maxPartSize);
+    this.file = bucket.file(this.uploadKey);
   }
 
   async initUpload(): Promise<void> {
@@ -150,39 +129,6 @@ export class GcsMultipartUploader implements IGcsMultipartUploader {
   // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads?hl=en#chunked-upload
   private validateUploadPartSize(uploadPartSize: number) {
     if (uploadPartSize > this.minPartSize && uploadPartSize % this.minPartSize !== 0) throw Error(`uploadPartSize must be a multiple of ${this.minPartSize}`);
-  }
-
-  private validatePartSize(partSize) {
-    if (partSize > this.maxPartSize) throw Error(`partSize must be less than or equal to ${this.maxPartSize}`);
-  }
-
-  private validateUploadStatus(desiredStatus: UploadStatus): void {
-    if (desiredStatus === this.currentStatus) return;
-
-    let errMsg: string | null = null;
-
-    if (this.currentStatus === UploadStatus.COMPLETED) {
-      errMsg = 'Multipart upload has already been completed';
-    }
-
-    if (this.currentStatus === UploadStatus.ABORTED) {
-      errMsg = 'Multipart upload has been aborted';
-    }
-
-    // currentStatus is IN_PROGRESS or BEFORE_INIT
-
-    if (this.currentStatus === UploadStatus.IN_PROGRESS && desiredStatus === UploadStatus.BEFORE_INIT) {
-      errMsg = 'Multipart upload has already been initiated';
-    }
-
-    if (this.currentStatus === UploadStatus.BEFORE_INIT && desiredStatus === UploadStatus.IN_PROGRESS) {
-      errMsg = 'Multipart upload not initiated';
-    }
-
-    if (errMsg != null) {
-      logger.error(errMsg);
-      throw Error(errMsg);
-    }
   }
 
 }

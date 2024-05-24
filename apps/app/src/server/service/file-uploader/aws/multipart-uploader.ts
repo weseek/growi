@@ -5,6 +5,9 @@ import {
 
 import loggerFactory from '~/utils/logger';
 
+import { MultipartUploader, type IMultipartUploader } from '../multipart-uploader';
+
+
 const logger = loggerFactory('growi:services:fileUploaderAws:multipartUploader');
 
 enum UploadStatus {
@@ -14,15 +17,7 @@ enum UploadStatus {
   ABORTED
 }
 
-// Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
-export interface IAwsMultipartUploader {
-  initUpload(): Promise<void>;
-  uploadPart(part: Buffer, partNumber: number): Promise<void>;
-  completeUpload(): Promise<void>;
-  abortUpload(): Promise<void>;
-  uploadId: string;
-  getUploadedFileSize(): Promise<number>;
-}
+export type IAwsMultipartUploader = IMultipartUploader
 
 /**
  * Class for uploading files to S3 using multipart upload.
@@ -30,31 +25,20 @@ export interface IAwsMultipartUploader {
  * Each instance can only be used for one multipart upload, and cannot be reused once completed.
  * TODO: Enable creation of uploader of inturrupted uploads: https://redmine.weseek.co.jp/issues/78040
  */
-export class AwsMultipartUploader implements IAwsMultipartUploader {
+export class AwsMultipartUploader extends MultipartUploader implements IAwsMultipartUploader {
 
   private bucket: string | undefined;
-
-  private uploadKey: string;
-
-  private _uploadId: string | undefined;
 
   private s3Client: S3Client;
 
   private parts: { PartNumber: number; ETag: string | undefined; }[] = [];
 
-  private currentStatus: UploadStatus = UploadStatus.BEFORE_INIT;
+  constructor(s3Client: S3Client, bucket: string | undefined, uploadKey: string, maxPartSize: number) {
+    super(uploadKey, maxPartSize);
 
-  private _uploadedFileSize = 0;
-
-  constructor(s3Client: S3Client, bucket: string | undefined, uploadKey: string) {
     this.s3Client = s3Client;
     this.bucket = bucket;
     this.uploadKey = uploadKey;
-  }
-
-  get uploadId(): string {
-    if (this._uploadId == null) throw Error('UploadId is empty');
-    return this._uploadId;
   }
 
   async initUpload(): Promise<void> {
@@ -74,6 +58,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   async uploadPart(part: Buffer, partNumber: number): Promise<void> {
     this.validateUploadStatus(UploadStatus.IN_PROGRESS);
+    this.validatePartSize(part.length);
 
     const uploadMetaData = await this.s3Client.send(new UploadPartCommand({
       Body: part,
@@ -127,35 +112,6 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       this._uploadedFileSize = headData.ContentLength;
     }
     return this._uploadedFileSize;
-  }
-
-  private validateUploadStatus(desiredStatus: UploadStatus): void {
-    if (desiredStatus === this.currentStatus) return;
-
-    let errMsg: string | null = null;
-
-    if (this.currentStatus === UploadStatus.COMPLETED) {
-      errMsg = 'Multipart upload has already been completed';
-    }
-
-    if (this.currentStatus === UploadStatus.ABORTED) {
-      errMsg = 'Multipart upload has been aborted';
-    }
-
-    // currentStatus is IN_PROGRESS or BEFORE_INIT
-
-    if (this.currentStatus === UploadStatus.IN_PROGRESS && desiredStatus === UploadStatus.BEFORE_INIT) {
-      errMsg = 'Multipart upload has already been initiated';
-    }
-
-    if (this.currentStatus === UploadStatus.BEFORE_INIT && desiredStatus === UploadStatus.IN_PROGRESS) {
-      errMsg = 'Multipart upload not initiated';
-    }
-
-    if (errMsg != null) {
-      logger.error(errMsg);
-      throw Error(errMsg);
-    }
   }
 
 }

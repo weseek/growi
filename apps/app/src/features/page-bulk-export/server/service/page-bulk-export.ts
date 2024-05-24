@@ -18,7 +18,8 @@ import { Attachment } from '~/server/models';
 import type { ActivityDocument } from '~/server/models/activity';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
-import type { IGcsMultipartUploader } from '~/server/service/file-uploader/gcs/multipart-upload';
+import type { FileUploader } from '~/server/service/file-uploader';
+import type { IMultipartUploader } from '~/server/service/file-uploader/multipart-uploader';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { getBufferToFixedSizeTransform } from '~/server/util/stream';
 import loggerFactory from '~/utils/logger';
@@ -74,12 +75,9 @@ class PageBulkExportService {
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
 
     // init multipart upload
-    // TODO: Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
-    const multipartUploader: IGcsMultipartUploader | undefined = this.crowi?.fileUploadService?.createMultipartUploader(uploadKey, this.maxPartSize);
+    const fileUploadService: FileUploader = this.crowi.fileUploadService;
+    const multipartUploader: IMultipartUploader = fileUploadService.createMultipartUploader(uploadKey, this.maxPartSize);
     let pageBulkExportJob: PageBulkExportJobDocument & HasObjectId;
-    if (multipartUploader == null) {
-      throw Error('Multipart upload not available for configured file upload type');
-    }
     try {
       await multipartUploader.initUpload();
       pageBulkExportJob = await PageBulkExportJob.create({
@@ -106,7 +104,7 @@ class PageBulkExportService {
   }
 
   private async handleExportErrorInStream(
-      err: Error | null, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, multipartUploader: IGcsMultipartUploader,
+      err: Error | null, activityParameters: ActivityParameters, pageBulkExportJob: PageBulkExportJobDocument, multipartUploader: IMultipartUploader,
   ): Promise<void> {
     if (err != null) {
       await multipartUploader.abortUpload();
@@ -183,7 +181,7 @@ class PageBulkExportService {
   }
 
   private getMultipartUploadWritable(
-      multipartUploader: IGcsMultipartUploader,
+      multipartUploader: IMultipartUploader,
       pageBulkExportJob: PageBulkExportJobDocument,
       attachment: IAttachmentDocument,
       activityParameters: ActivityParameters,
@@ -193,7 +191,7 @@ class PageBulkExportService {
     return new Writable({
       write: async(part: Buffer, encoding, callback) => {
         try {
-          await multipartUploader.uploadPart(part, partNumber, this.maxPartSize);
+          await multipartUploader.uploadPart(part, partNumber);
           partNumber += 1;
           // First aid to prevent unexplained memory leaks
           logger.info('global.gc() invoked.');
