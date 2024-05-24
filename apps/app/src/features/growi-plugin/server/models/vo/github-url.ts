@@ -5,7 +5,7 @@ const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 // https://regex101.com/r/CQjSuz/1
 const sanitizeBranchChars = new RegExp(/[^a-zA-Z0-9\_.]+/g);
 // https://regex101.com/r/5n58Bg/1
-const checkVersionTag = new RegExp(/v\d/g);
+const checkVersionTag = new RegExp(/v[\d]/g);
 export class GitHubUrl {
 
   private _organizationName: string;
