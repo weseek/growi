@@ -45,6 +45,9 @@ export class GitHubUrl {
   }
 
   get extractedArchiveDirName(): string {
+    if (this._tagName != null) {
+      return this._tagName?.replaceAll(sanitizeChars, '-');
+    }
     return this._branchName.replaceAll(sanitizeChars, '-');
   }
 
