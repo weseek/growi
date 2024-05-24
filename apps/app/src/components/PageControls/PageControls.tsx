@@ -66,7 +66,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (e:any) => void,
+  onClickMenuItem: (e: React.MouseEvent<HTMLInputElement>) => void,
   expandContentWidth?: boolean,
 }
 
@@ -223,7 +223,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback(async(e:any) => {
+  const switchContentWidthClickHandler = useCallback(async(e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const newValue = !expandContentWidth;
