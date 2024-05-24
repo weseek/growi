@@ -13,6 +13,8 @@ export class GitHubUrl {
 
   private _branchName: string;
 
+  private _tagName: string | undefined;
+
   get organizationName(): string {
     return this._organizationName;
   }
@@ -25,17 +27,28 @@ export class GitHubUrl {
     return this._branchName;
   }
 
+  get tagName(): string | undefined {
+    return this._tagName;
+  }
+
   get archiveUrl(): string {
     const encodedBranchName = encodeURIComponent(this.branchName);
+    const encodedTagName = encodeURIComponent(this.tagName ?? '');
+    if (encodedTagName !== '') {
+      const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/tags/${encodedTagName}.zip`, 'https://github.com');
+      return ghUrl.toString();
+    }
+
     const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/heads/${encodedBranchName}.zip`, 'https://github.com');
     return ghUrl.toString();
+
   }
 
   get extractedArchiveDirName(): string {
     return this._branchName.replaceAll(sanitizeChars, '-');
   }
 
-  constructor(url: string, branchName = 'main') {
+  constructor(url: string, branchName = 'main', tagName?: string) {
 
     let matched;
     try {
@@ -52,6 +65,7 @@ export class GitHubUrl {
     }
 
     this._branchName = branchName;
+    this._tagName = tagName;
 
     this._organizationName = sanitize(matched[1]);
     this._reposName = sanitize(matched[2]);

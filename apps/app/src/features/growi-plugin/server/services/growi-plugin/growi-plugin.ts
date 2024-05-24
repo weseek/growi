@@ -7,7 +7,7 @@ import type { GrowiPluginPackageData } from '@growi/pluginkit';
 import { importPackageJson, validateGrowiDirective } from '@growi/pluginkit/dist/v4/server/index.cjs';
 // eslint-disable-next-line no-restricted-imports
 import axios from 'axios';
-import mongoose from 'mongoose';
+import type mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
 import unzipStream from 'unzip-stream';
 
@@ -108,7 +108,7 @@ export class GrowiPluginService implements IGrowiPluginService {
   * Install a plugin from URL and save it in the DB and file system.
   */
   async install(origin: IGrowiPluginOrigin): Promise<string> {
-    const ghUrl = new GitHubUrl(origin.url, origin.ghBranch);
+    const ghUrl = new GitHubUrl(origin.url, origin.ghBranch, origin.ghTag);
     const {
       organizationName, reposName, archiveUrl, extractedArchiveDirName,
     } = ghUrl;
