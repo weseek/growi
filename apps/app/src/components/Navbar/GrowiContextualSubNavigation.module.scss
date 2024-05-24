@@ -1,5 +1,5 @@
 @use '~/styles/mixins';
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-contextual-sub-navigation {
   @include bs.media-breakpoint-down(md) {
@@ -9,7 +9,7 @@
   }
 }
 
-@include mixins.editing() {
+@include mixins.editing {
   .grw-contextual-sub-navigation {
     position: fixed;
     right: 0;

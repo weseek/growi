@@ -1,4 +1,4 @@
-import { Slides as SlidesSubstance, type SlidesProps } from '@growi/presentation';
+import { Slides as SlidesSubstance, type SlidesProps } from '@growi/presentation/dist/client';
 
 import '@growi/presentation/dist/style.css';
 

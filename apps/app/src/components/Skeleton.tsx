@@ -1,4 +1,7 @@
-import React from 'react';
+import styles from './Skeleton.module.scss';
+
+const moduleClass = styles['grw-skeleton'] ?? '';
+
 
 type SkeletonProps = {
   additionalClass?: string,
@@ -12,7 +15,7 @@ export const Skeleton = (props: SkeletonProps): JSX.Element => {
 
   return (
     <div className={`${additionalClass ?? ''}`}>
-      <div className={`grw-skeleton h-100 w-100 ${roundedPill ? 'rounded-pill' : ''}`}></div>
+      <div className={`grw-skeleton ${moduleClass} h-100 w-100 ${roundedPill ? 'rounded-pill' : ''}`}></div>
     </div>
   );
 };

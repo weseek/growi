@@ -28,7 +28,7 @@ describe('PageItemControl.tsx', () => {
     render(<PageItemControl {...props} />);
 
     // when
-    const openPageMoveRenameModalButton = screen.getByTestId('open-page-move-rename-modal-btn');
+    const openPageMoveRenameModalButton = screen.getByTestId('rename-page-btn');
     await waitFor(() => userEvent.click(openPageMoveRenameModalButton, { pointerEventsCheck: PointerEventsCheckLevel.Never }));
 
     // then

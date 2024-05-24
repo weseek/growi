@@ -1,11 +1,13 @@
 import { GlobalSocketEventName } from '@growi/core/dist/interfaces';
 import { Server } from 'socket.io';
 
+import { SocketEventName } from '~/interfaces/websocket';
 import loggerFactory from '~/utils/logger';
 
 import { RoomPrefix, getRoomNameWithId } from '../util/socket-io-helpers';
 
-import { getYjsConnectionManager } from './yjs-connection-manager';
+import { getYjsConnectionManager, extractPageIdFromYdocId } from './yjs-connection-manager';
+
 
 const expressSession = require('express-session');
 const passport = require('passport');
@@ -51,6 +53,7 @@ class SocketIoService {
 
     await this.setupLoginedUserRoomsJoinOnConnection();
     await this.setupDefaultSocketJoinRoomsEventHandler();
+    await this.setupDefaultSocketLeaveRoomsEventHandler();
   }
 
   getDefaultSocket() {
@@ -149,15 +152,45 @@ class SocketIoService {
   setupDefaultSocketJoinRoomsEventHandler() {
     this.io.on('connection', (socket) => {
       // set event handlers for joining rooms
-      socket.on('join:page', ({ pageId }) => {
+      socket.on(SocketEventName.JoinPage, ({ pageId }) => {
         socket.join(getRoomNameWithId(RoomPrefix.PAGE, pageId));
+      });
+    });
+  }
+
+  setupDefaultSocketLeaveRoomsEventHandler() {
+    this.io.on('connection', (socket) => {
+      socket.on(SocketEventName.LeavePage, ({ pageId }) => {
+        socket.leave(getRoomNameWithId(RoomPrefix.PAGE, pageId));
       });
     });
   }
 
   setupYjsConnection() {
     const yjsConnectionManager = getYjsConnectionManager();
+
     this.io.on('connection', (socket) => {
+
+      yjsConnectionManager.ysocketioInstance.on('awareness-update', async(update) => {
+        const pageId = extractPageIdFromYdocId(update.name);
+        const awarenessStateSize = update.awareness.states.size;
+
+        // Triggered when awareness changes
+        this.io
+          .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+          .emit(SocketEventName.YjsAwarenessStateSizeUpdated, awarenessStateSize);
+
+        // Triggered when the last user leaves the editor
+        if (awarenessStateSize === 0) {
+          const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+          const yjsDraft = currentYdoc?.getText('codemirror').toString();
+          const hasRevisionBodyDiff = await this.crowi.pageService.hasRevisionBodyDiff(pageId, yjsDraft);
+          this.io
+            .in(getRoomNameWithId(RoomPrefix.PAGE, pageId))
+            .emit(SocketEventName.YjsHasRevisionBodyDiffUpdated, hasRevisionBodyDiff);
+        }
+      });
+
       socket.on(GlobalSocketEventName.YDocSync, async({ pageId, initialValue }) => {
         try {
           await yjsConnectionManager.handleYDocSync(pageId, initialValue);

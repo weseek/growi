@@ -1,10 +1,12 @@
 import type { CSSProperties } from 'react';
-import React from 'react';
+
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
-
+import { SlideRenderer } from '../Page/SlideRenderer';
 
 import styles from './Preview.module.scss';
 
@@ -28,7 +30,11 @@ const Preview = (props: Props): JSX.Element => {
     expandContentWidth,
   } = props;
 
+  const { data: isEnabledMarp } = useIsEnabledMarp();
+  const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
+
   const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';
+
 
   return (
     <div
@@ -36,9 +42,13 @@ const Preview = (props: Props): JSX.Element => {
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
       style={style}
     >
-      { markdown != null && (
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
-      ) }
+      { markdown != null
+        && (
+          isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+            : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
+        )
+      }
     </div>
   );
 

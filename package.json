@@ -1,7 +1,9 @@
 {
   "name": "growi",
-  "version": "7.0.4-RC.0",
+  "version": "7.0.7-RC.0",
   "description": "Team collaboration software using markdown",
+  "license": "MIT",
+  "private": "true",
   "tags": [
     "wiki",
     "communication",
@@ -10,7 +12,6 @@
   ],
   "author": "Yuki Takei <yuki@weseek.co.jp>",
   "contributors": [],
-  "license": "MIT",
   "homepage": "https://growi.org",
   "repository": {
     "type": "git",
@@ -19,7 +20,6 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
-  "private": true,
   "workspaces": {
     "packages": [
       "packages/*",
@@ -75,8 +75,6 @@
     "glob": "^8.1.0",
     "mock-require": "^3.0.3",
     "path-browserify": "^1.0.1",
-    "postcss": "^8.4.31",
-    "postcss-scss": "^4.0.3",
     "reg-keygen-git-hash-plugin": "^0.11.1",
     "reg-notify-github-plugin": "^0.11.1",
     "reg-notify-slack-plugin": "^0.11.0",
@@ -84,8 +82,9 @@
     "reg-suit": "^0.12.2",
     "rollup-plugin-node-externals": "^6.1.1",
     "shx": "^0.3.4",
-    "stylelint": "^14.2.0",
-    "stylelint-config-recess-order": "^3.0.0",
+    "stylelint": "^16.5.0",
+    "stylelint-config-recommended-scss": "^14.0.0",
+    "stylelint-config-recess-order": "^5.0.1",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~5.0.0",

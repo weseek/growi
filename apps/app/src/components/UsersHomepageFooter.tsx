@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { RecentlyCreatedIcon } from '~/components/Icons/RecentlyCreatedIcon';
 import { RecentCreated } from '~/components/RecentCreated/RecentCreated';
 import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
