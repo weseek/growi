@@ -2116,7 +2116,7 @@
 "@growi/pluginkit@link:packages/pluginkit":
   version "0.9.0"
   dependencies:
-    "@growi/core" "link:packages/core"
+    "@growi/core" "^0.9.0"
     extensible-custom-error "^0.0.7"
 
 "@growi/presentation@link:packages/presentation":
