@@ -80,7 +80,7 @@ describe('Installing a GROWI theme plugin', () => {
     expect(count).toBe(1);
 
     // when
-    const results = await growiPluginService.findThemePlugin('vivid-internet-6');
+    const results = await growiPluginService.findThemePlugin('vivid-internet-v6');
 
     // expect
     expect(results).not.toBeNull();
