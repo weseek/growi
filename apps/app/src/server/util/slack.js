@@ -25,6 +25,10 @@ const prepareAttachmentTextForCreate = function(page, siteUrl) {
 };
 
 const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision) {
+  if (previousRevision == null) {
+    return;
+  }
+
   const diff = require('diff');
   let diffText = '';
 
