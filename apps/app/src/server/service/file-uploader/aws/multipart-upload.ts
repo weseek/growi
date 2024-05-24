@@ -17,10 +17,10 @@ enum UploadStatus {
 // Create abstract interface IMultipartUploader in https://redmine.weseek.co.jp/issues/135775
 export interface IAwsMultipartUploader {
   initUpload(): Promise<void>;
-  uploadPart(body: Buffer, partNumber: number): Promise<void>;
+  uploadPart(part: Buffer, partNumber: number): Promise<void>;
   completeUpload(): Promise<void>;
   abortUpload(): Promise<void>;
-  uploadId: string | undefined;
+  uploadId: string;
   getUploadedFileSize(): Promise<number>;
 }
 
@@ -44,7 +44,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
 
   private currentStatus: UploadStatus = UploadStatus.BEFORE_INIT;
 
-  private _uploadedFileSize: number | undefined;
+  private _uploadedFileSize = 0;
 
   constructor(s3Client: S3Client, bucket: string | undefined, uploadKey: string) {
     this.s3Client = s3Client;
@@ -52,7 +52,8 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
     this.uploadKey = uploadKey;
   }
 
-  get uploadId(): string | undefined {
+  get uploadId(): string {
+    if (this._uploadId == null) throw Error('UploadId is empty');
     return this._uploadId;
   }
 
@@ -63,16 +64,19 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       Bucket: this.bucket,
       Key: this.uploadKey,
     }));
+    if (response.UploadId == null) {
+      throw Error('UploadId is empty');
+    }
     this._uploadId = response.UploadId;
     this.currentStatus = UploadStatus.IN_PROGRESS;
     logger.info(`Multipart upload initialized. Upload key: ${this.uploadKey}`);
   }
 
-  async uploadPart(body: Buffer, partNumber: number): Promise<void> {
+  async uploadPart(part: Buffer, partNumber: number): Promise<void> {
     this.validateUploadStatus(UploadStatus.IN_PROGRESS);
 
     const uploadMetaData = await this.s3Client.send(new UploadPartCommand({
-      Body: body,
+      Body: part,
       Bucket: this.bucket,
       Key: this.uploadKey,
       PartNumber: partNumber,
@@ -83,6 +87,7 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
       PartNumber: partNumber,
       ETag: uploadMetaData.ETag,
     });
+    this._uploadedFileSize += part.length;
   }
 
   async completeUpload(): Promise<void> {
@@ -113,15 +118,15 @@ export class AwsMultipartUploader implements IAwsMultipartUploader {
   }
 
   async getUploadedFileSize(): Promise<number> {
-    if (this._uploadedFileSize != null) return this._uploadedFileSize;
-
-    this.validateUploadStatus(UploadStatus.COMPLETED);
-    const headData = await this.s3Client.send(new HeadObjectCommand({
-      Bucket: this.bucket,
-      Key: this.uploadKey,
-    }));
-    this._uploadedFileSize = headData.ContentLength;
-    return this._uploadedFileSize ?? 0;
+    if (this.currentStatus === UploadStatus.COMPLETED) {
+      const headData = await this.s3Client.send(new HeadObjectCommand({
+        Bucket: this.bucket,
+        Key: this.uploadKey,
+      }));
+      if (headData.ContentLength == null) throw Error('Could not fetch uploaded file size');
+      this._uploadedFileSize = headData.ContentLength;
+    }
+    return this._uploadedFileSize;
   }
 
   private validateUploadStatus(desiredStatus: UploadStatus): void {

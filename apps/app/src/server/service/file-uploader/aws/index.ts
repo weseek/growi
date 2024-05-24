@@ -24,6 +24,7 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
+import type { IAwsMultipartUploader } from './multipart-upload';
 import { AwsMultipartUploader } from './multipart-upload';
 
 
@@ -88,7 +89,7 @@ const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
 };
 
 export interface IAwsFileUploader {
-  createMultipartUploader: (uploadKey: string) => AwsMultipartUploader
+  createMultipartUploader: (uploadKey: string) => IAwsMultipartUploader
 }
 
 // TODO: rewrite this module to be a type-safe implementation

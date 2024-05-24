@@ -8,12 +8,14 @@ import {
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
-import { configManager } from '../config-manager';
-
+import { configManager } from '../../config-manager';
 import {
   AbstractFileUploader, type TemporaryUrl, type SaveFileParam,
-} from './file-uploader';
-import { ContentHeaders } from './utils';
+} from '../file-uploader';
+import { ContentHeaders } from '../utils';
+
+import type { IGcsMultipartUploader } from './multipart-upload';
+import { GcsMultipartUploader } from './multipart-upload';
 
 const logger = loggerFactory('growi:service:fileUploaderGcs');
 
@@ -62,6 +64,9 @@ async function isFileExists(file) {
   return res[0];
 }
 
+export interface IGcsFileUploader {
+  createMultipartUploader: (uploadKey: string) => IGcsMultipartUploader
+}
 
 // TODO: rewrite this module to be a type-safe implementation
 class GcsFileUploader extends AbstractFileUploader {
@@ -168,6 +173,12 @@ class GcsFileUploader extends AbstractFileUploader {
       lifetimeSec: lifetimeSecForTemporaryUrl,
     };
 
+  }
+
+  createMultipartUploader(uploadKey: string, maxPartSize: number) {
+    const gcs = getGcsInstance();
+    const myBucket = gcs.bucket(getGcsBucket());
+    return new GcsMultipartUploader(myBucket, uploadKey, maxPartSize);
   }
 
 }
