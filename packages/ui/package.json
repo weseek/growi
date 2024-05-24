@@ -33,6 +33,7 @@
     "dev": "vite build --mode dev",
     "watch": "yarn dev -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:styles": "stylelint \"./scss/**/*\"",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*"
   },
@@ -42,7 +43,7 @@
     "@growi/core": "link:../core",
     "@growi/core-styles": "link:../../packages/core-styles",
     "date-fns": "^3.6.0",
-    "reactstrap": "^9.2.0"
+    "reactstrap": "^9.2.2"
   },
   "peerDependencies": {
     "next": "^14",

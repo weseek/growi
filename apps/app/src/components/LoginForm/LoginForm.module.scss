@@ -1,5 +1,4 @@
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
-
 @use '~/styles/atoms/placeholders/buttons';
 
 .login-form :global {
@@ -24,8 +23,8 @@
   }
 
   .text-line {
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       flex-grow: 1;
       height: 1px;
       margin:0 1em;
