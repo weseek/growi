@@ -222,7 +222,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback(async(e: React.MouseEvent<HTMLInputElement>) => {
+  const switchContentWidthClickHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
     e.preventDefault();
 
     const newValue = !expandContentWidth;
