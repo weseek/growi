@@ -9,7 +9,7 @@
   }
 }
 
-@include mixins.editing {
+@include mixins.at-editing() {
   .grw-contextual-sub-navigation {
     position: fixed;
     right: 0;
