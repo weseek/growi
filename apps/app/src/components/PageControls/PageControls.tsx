@@ -87,7 +87,6 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
           className="form-check-input"
           type="checkbox"
           checked={expandContentWidth}
-          onChange={onClickMenuItem}
         />
         <label className="form-label form-check-label">
           { t('wide_view') }
