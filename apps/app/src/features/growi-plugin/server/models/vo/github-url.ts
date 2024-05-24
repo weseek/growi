@@ -2,8 +2,8 @@ import sanitize from 'sanitize-filename';
 
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
-// https://regex101.com/r/YhZVsj/1
-const sanitizeChars = new RegExp(/[^a-zA-Z_.]+/g);
+// https://regex101.com/r/CQjSuz/1
+const sanitizeChars = new RegExp(/[^a-zA-Z1-9_.]+/g);
 
 export class GitHubUrl {
 
