@@ -4,8 +4,9 @@ import sanitize from 'sanitize-filename';
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 // https://regex101.com/r/CQjSuz/1
 const sanitizeBranchChars = new RegExp(/[^a-zA-Z0-9_.]+/g);
-// https://regex101.com/r/5n58Bg/1
+// https://regex101.com/r/f4wj8q/1
 const checkVersionTag = new RegExp(/^v[\d]/g);
+
 export class GitHubUrl {
 
   private _organizationName: string;
