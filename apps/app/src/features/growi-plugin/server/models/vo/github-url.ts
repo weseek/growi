@@ -3,9 +3,7 @@ import sanitize from 'sanitize-filename';
 // https://regex101.com/r/fK2rV3/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 // https://regex101.com/r/CQjSuz/1
-const sanitizeBranchChars = new RegExp(/[^a-zA-Z1-9_.]+/g);
-const sanitizeTagChars = new RegExp(/[^a-uw-zA-Z1-9_.]+/g);
-
+const sanitizeChars = new RegExp(/[^a-zA-Z1-9_.]+/g);
 export class GitHubUrl {
 
   private _organizationName: string;
@@ -47,9 +45,9 @@ export class GitHubUrl {
 
   get extractedArchiveDirName(): string {
     if (this._tagName != null) {
-      return this._tagName?.replaceAll(sanitizeTagChars, '-');
+      return this._tagName?.replaceAll(sanitizeChars, '-');
     }
-    return this._branchName.replaceAll(sanitizeBranchChars, '-');
+    return this._branchName.replaceAll(sanitizeChars, '-');
   }
 
   constructor(url: string, branchName = 'main', tagName?: string) {
