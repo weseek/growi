@@ -67,7 +67,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
-          if (bookmark.page._id === pageId) {
+          if (bookmark.page?._id === pageId) {
             setSelectedItem(bookmarkFolder._id);
           }
         });
@@ -156,7 +156,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
                     isSelected={selectedItem === folder._id}
                   />
                 </div>
-                {folder.children?.map(child => (
+                {folder.childFolder?.map(child => (
                   <div key={child._id}>
                     <div
                       className="dropdown-item grw-bookmark-folder-menu-item grw-bookmark-folder-menu-item-folder-second list-group-item list-group-item-action"

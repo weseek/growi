@@ -1,6 +1,7 @@
 {
   "name": "@growi/pluginkit",
-  "version": "0.1.0",
+  "version": "0.9.0",
+  "description": "Plugin kit for GROWI",
   "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

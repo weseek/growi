@@ -20,7 +20,7 @@ const DeleteAllShareLinksModal = React.memo((props) => {
 
   return (
     <Modal isOpen={props.isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
-      <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={closeButtonHandler} className="text-danger">
         <span>
           <span className="material-symbols-outlined">delete_forever</span>
           {t('security_settings.delete_all_share_links')}

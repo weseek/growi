@@ -1,9 +1,8 @@
-import React, {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import type { IUserGroupHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 type Props = {
@@ -75,18 +74,18 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
         )}
         {
           userGroup?.createdAt != null && (
-            <div className="row">
+            <div className="row mb-3">
               <p className="col-md-2 col-form-label">{t('Created')}</p>
-              <p className="col-md-4 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
+              <p className="col-md-6 my-auto">{dateFnsFormat(new Date(userGroup.createdAt), 'yyyy-MM-dd')}</p>
             </div>
           )
         }
 
-        <div className="row">
+        <div className="row mb-3">
           <label htmlFor="name" className="col-md-2 col-form-label">
             {t('user_group_management.group_name')}
           </label>
-          <div className="col-md-4 my-auto">
+          <div className="col-md-6 my-auto">
             <input
               className="form-control"
               type="text"
@@ -100,24 +99,24 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mb-3">
           <label htmlFor="description" className="col-md-2 col-form-label">
             {t('Description')}
           </label>
-          <div className="col-md-4">
+          <div className="col-md-6">
             <textarea className="form-control" name="description" value={currentDescription} onChange={onChangeDescriptionHandler} />
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mb-3">
           <label htmlFor="parent" className="col-md-2 col-form-label">
             {t('user_group_management.parent_group')}
           </label>
-          <div className="dropdown col-md-4">
+          <div className="dropdown col-md-6">
             <button
               type="button"
               id="dropdownMenuButton"
-              data-toggle="dropdown"
+              data-bs-toggle="dropdown"
               className="btn btn-outline-secondary dropdown-toggle mb-3"
               disabled={isExternalGroup || !isSelectableParentUserGroups}
             >
@@ -155,7 +154,7 @@ export const UserGroupForm: FC<Props> = (props: Props) => {
           </div>
         </div>
 
-        <div className="row">
+        <div className="row mb-5">
           <div className="offset-md-2 col-md-10">
             <button type="submit" className="btn btn-primary">
               {submitButtonLabel}

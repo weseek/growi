@@ -1,7 +1,5 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/ui/scss/atoms/btn-muted';
-
 @use './button-styles';
 
 .btn-group-like :global {
@@ -13,6 +11,7 @@
   }
   .total-counts {
     @extend %btn-total-counts-basis;
+
     padding-left: 5px;
   }
 }

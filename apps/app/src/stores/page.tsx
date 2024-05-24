@@ -23,6 +23,7 @@ import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
+
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
 } from './context';
@@ -265,9 +266,9 @@ export const useSWRxInfinitePageRevisions = (
 };
 
 /*
- * Grant normalization fetching hooks
+ * Grant data fetching hooks
  */
-export const useSWRxIsGrantNormalized = (
+export const useSWRxCurrentGrantData = (
     pageId: string | null | undefined,
 ): SWRResponse<IResIsGrantNormalized, Error> => {
 
@@ -276,7 +277,7 @@ export const useSWRxIsGrantNormalized = (
   const { data: isNotFound } = useIsNotFound();
 
   const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null
-    ? ['/page/is-grant-normalized', pageId]
+    ? ['/page/grant-data', pageId]
     : null;
 
   return useSWRImmutable(

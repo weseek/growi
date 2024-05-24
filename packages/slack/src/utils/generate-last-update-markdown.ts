@@ -1,4 +1,4 @@
-import { formatDistanceStrict } from 'date-fns';
+import { formatDistanceStrict } from 'date-fns/formatDistanceStrict';
 
 export function generateLastUpdateMrkdwn(updatedAt: string | Date | number, baseDate: Date): string {
   if (updatedAt != null) {

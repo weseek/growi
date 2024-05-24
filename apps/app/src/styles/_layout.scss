@@ -1,6 +1,9 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
+
+body {
+  min-height: 100vh;
+}
 
 .dynamic-layout-root {
   @extend .flex-expand-vert;
@@ -15,10 +18,6 @@
     object-fit: cover;
     object-position: bottom;
   }
-}
-
-.grw-modal-head {
-  border-bottom: 1px solid transparent;
 }
 
 .grw-scrollable-modal-body {
@@ -74,7 +73,7 @@
     padding: 30px;
   }
 
-  a:after {
+  a::after {
     display: none !important;
   }
 

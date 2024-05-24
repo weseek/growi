@@ -1,9 +1,3 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-@use './comment-inheritance';
-@use '../PageEditor/page-editor-inheritance';
-
+/* stylelint-disable-next-line block-no-empty */
 .grw-comment-preview {
-  min-height: page-editor-inheritance.$navbar-editor-height
-    + comment-inheritance.$codemirror-default-height
-    + bs.$line-height-base;
 }

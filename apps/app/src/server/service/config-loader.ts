@@ -1,5 +1,5 @@
 import { envUtils } from '@growi/core/dist/utils';
-import { parseISO } from 'date-fns';
+import { parseISO } from 'date-fns/parseISO';
 
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
@@ -470,6 +470,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key:     'aws:lifetimeSecForTemporaryUrl',
     type:    ValueType.NUMBER,
     default: 120,
+  },
+  S3_OBJECT_ACL: {
+    ns:      'crowi',
+    key:     'aws:s3ObjectCannedACL',
+    type:    ValueType.STRING,
+    default: 'public-read',
   },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',

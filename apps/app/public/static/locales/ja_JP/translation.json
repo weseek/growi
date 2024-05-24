@@ -57,7 +57,7 @@
   "Timeline View": "タイムライン",
   "History": "更新履歴",
   "attachment_data": "添付データ",
-  "No_attachments_yet": "No attachments yet.",
+  "No_attachments_yet": "添付データはありません",
   "Presentation Mode": "プレゼンテーション",
   "Not available for guest": "ゲストユーザーは利用できません",
   "Not available in this version": "このバージョンでは利用できません",
@@ -83,6 +83,7 @@
   "Go to this version": "このバージョンを見る",
   "View diff": "差分を表示",
   "No diff": "差分なし",
+  "Latest": "最新",
   "User ID": "ユーザーID",
   "User Settings": "ユーザー設定",
   "User Information": "ユーザー情報",
@@ -125,6 +126,7 @@
   "Only me": "自分のみ",
   "Only inside the group": "特定グループのみ",
   "page_list": "ページリスト",
+  "comments": "コメント",
   "Reselect the group": "グループの再選択",
   "Shareable link": "このページの共有用URL",
   "The whitelist of registration permission E-mail address": "登録許可メールアドレスの<br>ホワイトリスト",
@@ -148,6 +150,7 @@
   "wide_view": "ワイドビュー",
   "Recent Changes": "最新の変更",
   "Page Tree": "ページツリー",
+  "Bookmarks": "ブックマーク",
   "In-App Notification": "通知",
   "original_path": "元のパス",
   "new_path": "新しいパス",
@@ -158,21 +161,29 @@
   "not_allowed_to_see_this_page": "このページは閲覧できません",
   "Confirm": "確認",
   "Successfully requested": "正常に処理を受け付けました",
-  "form_validation": {
-    "error_message": "いくつかの値が設定されていません",
-    "required": "%sに値を入力してください",
-    "invalid_syntax": "%sの構文が不正です",
-    "title_required": "タイトルを入力してください",
-    "field_required": "{{target}}に値を入力してください"
+  "input_validation": {
+    "target": {
+      "page_name": "ページ名",
+      "folder_name": "フォルダ名",
+      "field": "フィールド"
+    },
+    "message": {
+      "error_message": "いくつかの値が設定されていません",
+      "required": "%sに値を入力してください",
+      "invalid_syntax": "%sの構文が不正です",
+      "title_required": "タイトルを入力してください",
+      "field_required": "{{target}}に値を入力してください"
+    }
   },
-  "page_name": "ページ名",
-  "folder_name": "フォルダ名",
-  "field": "フィールド",
   "not_creatable_page": {
     "message": "このパスではページ コンテンツを作成できません。"
   },
   "custom_navigation": {
     "no_pages_under_this_page": "このページの配下にはページが存在しません。"
+  },
+  "author_info": {
+    "created_at": "作成日",
+    "last_revision_posted_at": "最終更新日"
   },
   "installer": {
     "tab": "アカウント作成",
@@ -361,8 +372,15 @@
     "changes_not_saved": "変更が保存されていない可能性があります。本当に移動しますか？"
   },
   "page_comment": {
+    "comments": "コメント",
+    "comment": "コメント",
+    "preview": "プレビュー",
+    "write": "入力",
+    "add_a_comment": "コメントを追加",
     "display_the_page_when_posting_this_comment": "投稿時のページを表示する",
-    "no_user_found": "ユーザー名が見つかりません"
+    "no_user_found": "ユーザー名が見つかりません",
+    "reply": "返信",
+    "delete_comment": "コメントを削除しますか？"
   },
   "page_api_error": {
     "notfound_or_forbidden": "元のページが見つからないか、アクセス権がありません。",
@@ -562,7 +580,8 @@
   },
   "slack_notification": {
     "popover_title": "Slack 通知",
-    "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。"
+    "popover_desc": "チャンネル名を入れてください。カンマ区切りのリストを入力することで複数のチャンネルに通知することができます。",
+    "input_channels": "チャンネル名"
   },
   "search_result": {
     "title": "検索",
@@ -810,7 +829,7 @@
     "paths_recovered": "パスを修復しました",
     "path_recovery_failed": "パスを修復できませんでした"
   },
-  "footer": {
+  "user_home_page": {
     "bookmarks": "ブックマーク",
     "recently_created": "最近作成したページ"
   },
@@ -881,5 +900,8 @@
     "show_wip_page": "WIP を表示",
     "size_s": "サイズ: S",
     "size_l": "サイズ: L"
+  },
+  "create_page": {
+    "untitled": "無題のページ"
   }
 }

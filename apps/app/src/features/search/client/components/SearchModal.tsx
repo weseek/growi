@@ -50,9 +50,15 @@ const SearchModal = (): JSX.Element => {
 
   useEffect(() => {
     if (!searchModalData?.isOpened) {
+      return;
+    }
+    if (searchModalData?.searchKeyword == null) {
       setSearchKeyword('');
     }
-  }, [searchModalData?.isOpened]);
+    else {
+      setSearchKeyword(searchModalData.searchKeyword);
+    }
+  }, [searchModalData?.isOpened, searchModalData?.searchKeyword]);
 
   return (
     <Modal size="lg" isOpen={searchModalData?.isOpened ?? false} toggle={closeSearchModal} data-testid="search-modal">
@@ -88,13 +94,12 @@ const SearchModal = (): JSX.Element => {
               </div>
 
               <ul {...getMenuProps()} className="list-unstyled m-0">
-                <div className="border-top mt-3 mb-2" />
+                <div className="border-top mt-2 mb-2" />
                 <SearchMethodMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}
                   getItemProps={getItemProps}
                 />
-                <div className="border-top mt-2 mb-2" />
                 <SearchResultMenuItem
                   activeIndex={highlightedIndex}
                   searchKeyword={searchKeyword}

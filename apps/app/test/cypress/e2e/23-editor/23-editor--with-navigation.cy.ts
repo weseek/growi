@@ -2,15 +2,9 @@ import path from 'path-browserify';
 
 function openEditor() {
   cy.get('#grw-page-editor-mode-manager').as('pageEditorModeManager').should('be.visible');
-  cy.waitUntil(() => {
-    // do
-    cy.get('@pageEditorModeManager').within(() => {
-      cy.get('button:nth-child(2)').click();
-    });
-    // until
-    return cy.get('.layout-root').then($elem => $elem.hasClass('editing'));
-  })
-  cy.get('.CodeMirror').should('be.visible');
+  cy.getByTestid('editor-button').click();
+  cy.getByTestid('grw-editor-navbar-bottom').should('be.visible');
+  cy.get('.cm-content').should('be.visible');
 }
 
 context('Editor while uploading to a new page', () => {
@@ -38,8 +32,8 @@ context('Editor while uploading to a new page', () => {
 
     // input the body
     const body = 'Hello World!';
-    cy.get('.CodeMirror textarea').type(body + '\n\n', { force: true });
-    cy.get('.CodeMirror-code').should('contain.text', body);
+    cy.get('.cm-content').should('be.visible').type(body, { force: true });
+    cy.getByTestid('page-editor-preview-body').should('contain.text', body);
 
     // open GrantSelector
     cy.waitUntil(() => {
@@ -48,18 +42,14 @@ context('Editor while uploading to a new page', () => {
         cy.get('button.dropdown-toggle').click({force: true});
       });
       // wait until
-      return cy.getByTestid('grw-grant-selector').within(() => {
-        return Cypress.$('.dropdown-menu.show').is(':visible');
-      });
+      return cy.getByTestid('grw-grant-selector-dropdown-menu').then($elem => $elem.is(':visible'))
     });
 
     // Select "Only me"
-    cy.getByTestid('grw-grant-selector').within(() => {
+    cy.getByTestid('grw-grant-selector-dropdown-menu').find('.dropdown-item').should('have.length', 4).then((menuItems) => {
       // click "Only me"
-      cy.get('.dropdown-menu.show').find('.dropdown-item').should('have.length', 4).then((menuItems) => {
-        menuItems[2].click();
-      });
-    });
+      menuItems[2].click();
+    })
 
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-2`);
@@ -67,7 +57,7 @@ context('Editor while uploading to a new page', () => {
     // intercept API req/res for fixing labels
     const dummyAttachmentId = '64b000000000000000000000';
     let uploadedAttachmentId = '';
-    cy.intercept('POST', '/_api/attachments.add', (req) => {
+    cy.intercept('POST', '/_api/v3/attachment', (req) => {
       req.continue((res) => {
         // store the attachment id
         uploadedAttachmentId = res.body.attachment._id;
@@ -86,20 +76,20 @@ context('Editor while uploading to a new page', () => {
 
     // drag-drop a file
     const filePath = path.relative('/', path.resolve(Cypress.spec.relative, '../assets/example.txt'));
-    cy.get('.dropzone').selectFile(filePath, { action: 'drag-drop' });
+    cy.get('.dropzone').eq(0).selectFile(filePath, { action: 'drag-drop' });
     cy.wait('@attachmentsAdd');
 
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-3`);
 
     // Update page using shortcut keys
-    cy.get('.CodeMirror').click().type('{ctrl+s}');
+    cy.get('.cm-content').click({force: true}).type('{ctrl+s}');
 
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-4`);
 
     // expect
     cy.get('.Toastify__toast').should('contain.text', 'Saved successfully');
-    cy.get('.CodeMirror-code').should('contain.text', body);
-    cy.get('.CodeMirror-code').should('contain.text', '[example.txt](/attachment/64b000000000000000000000');
+    cy.get('.cm-content').should('contain.text', body);
+    cy.get('.cm-content').should('contain.text', '[example.txt](/attachment/64b000000000000000000000');
     cy.getByTestid('grw-grant-selector').find('.dropdown-toggle').should('contain.text', 'Only me');
     cy.screenshot(`${ssPrefix}-prevent-grantselector-modified-5`);
   });
@@ -131,11 +121,9 @@ context('Editor while navigation', () => {
 
     // page1
     const bodyHello = 'hello';
-    cy.get('.CodeMirror').type(bodyHello);
-    cy.get('.CodeMirror').should('contain.text', bodyHello);
-    cy.get('.page-editor-preview-body').should('contain.text', bodyHello);
-    cy.getByTestid('page-editor').should('be.visible');
-    cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page1`);
+    cy.get('.cm-content').should('be.visible').type(bodyHello, { force: true });
+    cy.getByTestid('page-editor-preview-body').should('contain.text', bodyHello);
+    cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page1`);
 
     // save page1
     cy.getByTestid('save-page-btn').click();
@@ -159,31 +147,29 @@ context('Editor while navigation', () => {
     })
 
     openEditor();
-
-    cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page2`);
+    cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page2`);
 
     // type (without save)
     const bodyWorld = ' world!!'
-    cy.get('.CodeMirror').type(`${bodyWorld}`);
-    cy.get('.CodeMirror').should('contain.text', `${bodyHello}${bodyWorld}`);
-    cy.get('.page-editor-preview-body').should('contain.text', `${bodyHello}${bodyWorld}`);
-    cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page2-modified`);
+    cy.get('.cm-content').should('be.visible').type(`{moveToEnd}${bodyWorld}`, { force: true });
+    cy.getByTestid('page-editor-preview-body').should('contain.text', `${bodyHello}${bodyWorld}`);
+    cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page2-modified`);
 
     // create a link to page1
-    cy.get('.CodeMirror').type('\n\n[page1](./page1)');
+    cy.get('.cm-content').type('\n\n[page1](./page1)');
 
     // go to page1
-    cy.get('.page-editor-preview-body').within(() => {
+    cy.getByTestid('page-editor-preview-body').within(() => {
       cy.get("a:contains('page1')").click();
     });
 
     openEditor();
 
-    cy.get('.CodeMirror').screenshot(`${ssPrefix}-editor-for-page1-returned`);
+    cy.get('.cm-content').screenshot(`${ssPrefix}-editor-for-page1-returned`);
 
     // expect
-    cy.get('.CodeMirror').should('contain.text', bodyHello);
-    cy.get('.CodeMirror').should('not.contain.text', bodyWorld); // text that added to page2
-    cy.get('.CodeMirror').should('not.contain.text', 'page1'); // text that added to page2
+    cy.get('.cm-content').should('contain.text', bodyHello);
+    cy.get('.cm-content').should('not.contain.text', bodyWorld); // text that added to page2
+    cy.get('.cm-content').should('not.contain.text', 'page1'); // text that added to page2
   });
 });

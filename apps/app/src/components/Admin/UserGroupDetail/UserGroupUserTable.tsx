@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import type { IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user-group-response';
@@ -17,7 +17,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   return (
-    <table className="table table-bordered table-user-list">
+    <table className="table table-bordered table-user-list mb-5">
       <thead>
         <tr>
           <th style={{ width: '100px' }}>#</th>

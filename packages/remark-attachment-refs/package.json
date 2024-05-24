@@ -1,8 +1,9 @@
 {
   "name": "@growi/remark-attachment-refs",
-  "version": "7.0.1-RC.0",
-  "description": "GROWI Plugin to add ref/refimg/refs/refsimg tags",
+  "version": "1.0.0",
+  "description": "Remark plugin to add ref/refimg/refs/refsimg tags",
   "license": "MIT",
+  "private": "true",
   "keywords": [
     "growi",
     "growi-plugin"
@@ -37,11 +38,10 @@
     "watch:client": "yarn dev:client -w --emptyOutDir=false",
     "watch:server": "yarn dev:server -w --emptyOutDir=false",
     "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
-    "lint:styles": "stylelint src/**/*.scss src/**/*.css",
+    "lint:styles": "stylelint \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "test": "",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": ""
   },
   "dependencies": {
     "@growi/core": "link:../core",

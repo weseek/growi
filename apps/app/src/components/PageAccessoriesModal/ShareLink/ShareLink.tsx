@@ -51,7 +51,7 @@ export const ShareLink = (): JSX.Element => {
 
   return (
     <div className="container p-0" data-testid="share-link-management">
-      <h3 className="grw-modal-head d-flex pb-2">
+      <h3 className="d-flex pb-2">
         { t('share_links.share_link_list') }
         <button className="btn btn-danger ms-auto " type="button" onClick={deleteAllLinksButtonHandler}>{t('delete_all')}</button>
       </h3>

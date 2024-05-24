@@ -177,7 +177,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
   return (
     <div data-testid="template-modal">
-      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={close}>
         {t('template.modal_label.Select template')}
       </ModalHeader>
       <ModalBody className="container">

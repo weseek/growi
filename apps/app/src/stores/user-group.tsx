@@ -2,23 +2,15 @@ import type {
   IPageHasId, IUserGroupHasId, IUserGroupRelationHasId,
 } from '@growi/core';
 import { type SWRResponseWithUtils, withUtils } from '@growi/core/dist/swr';
-import useSWR, { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
-import {
+import type {
   IUserGroupRelationHasIdPopulatedUser,
   UserGroupResult, UserGroupListResult, ChildUserGroupListResult, UserGroupRelationListResult, UserGroupRelationsResult,
   UserGroupPagesResult, SelectableParentUserGroupsResult, SelectableUserChildGroupsResult, AncestorUserGroupsResult,
 } from '~/interfaces/user-group-response';
-
-
-export const useSWRxMyUserGroups = (shouldFetch: boolean): SWRResponse<IUserGroupHasId[], Error> => {
-  return useSWR(
-    shouldFetch ? '/me/user-groups' : null,
-    endpoint => apiv3Get<UserGroupListResult>(endpoint).then(result => result.data.userGroups),
-  );
-};
 
 export const useSWRxUserGroup = (groupId: string | null): SWRResponse<IUserGroupHasId, Error> => {
   return useSWRImmutable(

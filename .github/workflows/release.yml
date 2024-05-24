@@ -18,11 +18,11 @@ jobs:
       RELEASED_VERSION: ${{ steps.package-json.outputs.packageVersion }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: ${{ github.event.pull_request.base.ref }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'yarn'
@@ -84,7 +84,7 @@ jobs:
       TAGS: ${{ steps.meta.outputs.tags }}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Retrieve information from package.json
       uses: myrotvorets/info-from-package-json-action@1.2.0
@@ -103,7 +103,7 @@ jobs:
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
 
-  build-image:
+  build-app-image:
     needs: create-github-release
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
@@ -115,8 +115,8 @@ jobs:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
 
-  publish-image:
-    needs: [determine-tags, build-image]
+  publish-app-image:
+    needs: [determine-tags, build-app-image]
 
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
     with:
@@ -129,11 +129,11 @@ jobs:
 
 
   post-publish:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
@@ -154,15 +154,15 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: v${{ needs.create-github-release.outputs.RELEASED_VERSION }}
 
-    - uses: actions/setup-node@v3
+    - uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: 'yarn'

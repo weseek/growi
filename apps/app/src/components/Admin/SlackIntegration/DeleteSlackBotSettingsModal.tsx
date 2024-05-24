@@ -31,7 +31,7 @@ export const DeleteSlackBotSettingsModal = React.memo((props: DeleteSlackBotSett
 
   return (
     <Modal isOpen={isOpen} toggle={closeButtonHandler} className="page-comment-delete-modal">
-      <ModalHeader tag="h4" toggle={closeButtonHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={closeButtonHandler} className="text-danger">
         <span>
           {isResetAll && (
             <>

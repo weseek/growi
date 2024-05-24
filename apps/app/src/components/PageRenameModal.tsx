@@ -209,12 +209,12 @@ const PageRenameModal = (): JSX.Element => {
 
     return (
       <>
-        <div>
-          <label className="form-label">{ t('modal_rename.label.Current page name') }</label><br />
-          <code>{ path }</code>
+        <div className="mb-3">
+          <label className="form-label w-100">{ t('modal_rename.label.Current page name') }</label>
+          <code className="fs-6">{ path }</code>
         </div>
-        <div>
-          <label htmlFor="newPageName" className="form-label">{ t('modal_rename.label.New page name') }</label><br />
+        <div className="mb-3">
+          <label htmlFor="newPageName" className="form-label w-100">{ t('modal_rename.label.New page name') }</label>
           <div className="input-group">
             <div>
               <span className="input-group-text">{siteUrl}</span>
@@ -241,14 +241,13 @@ const PageRenameModal = (): JSX.Element => {
                 )}
             </form>
           </div>
+          { isTargetPageDuplicate && (
+            <p className="text-danger">Error: Target path is duplicated.</p>
+          ) }
+          { isMatchedWithUserHomepagePath && (
+            <p className="text-danger">Error: Cannot move to directory under /user page.</p>
+          ) }
         </div>
-
-        { isTargetPageDuplicate && (
-          <p className="text-danger">Error: Target path is duplicated.</p>
-        ) }
-        { isMatchedWithUserHomepagePath && (
-          <p className="text-danger">Error: Cannot move to directory under /user page.</p>
-        ) }
 
         { !isV5Compatible(page.meta) && (
           <>
@@ -352,7 +351,7 @@ const PageRenameModal = (): JSX.Element => {
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeRenameModal} data-testid="page-rename-modal" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={closeRenameModal} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={closeRenameModal}>
         { t('modal_rename.label.Move/Rename page') }
       </ModalHeader>
       <ModalBody>

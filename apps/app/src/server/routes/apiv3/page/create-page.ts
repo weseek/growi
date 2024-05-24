@@ -22,6 +22,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import { configManager } from '~/server/service/config-manager';
+import { getTranslation } from '~/server/service/i18next';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -43,8 +44,9 @@ async function generateUntitledPath(parentPath: string, basePathname: string, in
 }
 
 async function determinePath(_parentPath?: string, _path?: string, optionalParentPath?: string): Promise<string> {
-  // TODO: i18n
-  const basePathname = 'Untitled';
+  const { t } = await getTranslation();
+
+  const basePathname = t?.('create_page.untitled') || 'Untitled';
 
   if (_path != null) {
     const path = normalizePath(_path);

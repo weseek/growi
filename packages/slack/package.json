@@ -1,7 +1,9 @@
 {
   "name": "@growi/slack",
-  "version": "7.0.1-RC.0",
+  "version": "1.0.0",
+  "description": "Slack integration libraries for GROWI",
   "license": "MIT",
+  "private": "true",
   "type": "module",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -44,8 +46,7 @@
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
-    "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": "vitest run --coverage"
   },
   "dependencies": {
     "@slack/oauth": "^2.0.1",
@@ -57,7 +58,7 @@
     "browser-bunyan": "^1.6.3",
     "bunyan": "^1.8.15",
     "crypto": "^1.0.1",
-    "date-fns": "^2.23.0",
+    "date-fns": "^3.6.0",
     "extensible-custom-error": "^0.0.7",
     "http-errors": "^2.0.0",
     "qs": "^6.10.2",

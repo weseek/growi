@@ -111,10 +111,6 @@ export const Comment = (props: CommentProps): JSX.Element => {
     deleteBtnClicked(comment);
   };
 
-  const renderText = (comment: string) => {
-    return <span style={{ whiteSpace: 'pre-wrap' }}>{comment}</span>;
-  };
-
   const commentBody = useMemo(() => {
     if (rendererOptions == null) {
       return <></>;
@@ -142,33 +138,24 @@ export const Comment = (props: CommentProps): JSX.Element => {
           replyTo={undefined}
           currentCommentId={commentId}
           commentBody={comment.comment}
-          onCancelButtonClicked={() => setIsReEdit(false)}
-          onCommentButtonClicked={() => {
+          onCanceled={() => setIsReEdit(false)}
+          onCommented={() => {
             setIsReEdit(false);
-            if (onComment != null) onComment();
+            onComment();
           }}
           revisionId={revisionId}
         />
       ) : (
         <div id={commentId} className={rootClassName}>
-          <div className="page-comment-writer">
-            <UserPicture user={creator} />
-          </div>
-          <div className="page-comment-main">
-            <div className="page-comment-creator">
-              <Username user={creator} />
-            </div>
-            <div className="page-comment-body">{commentBody}</div>
-            <div className="page-comment-meta">
-              <Link href={`#${commentId}`} prefetch={false}>
+          <div className="page-comment-main bg-comment rounded mb-2">
+            <div className="d-flex align-items-center">
+              <UserPicture user={creator} additionalClassName="me-2" />
+              <div className="small fw-bold me-3">
+                <Username user={creator} />
+              </div>
+              <Link href={`#${commentId}`} prefetch={false} className="small page-comment-revision">
                 <FormattedDistanceDate id={commentId} date={comment.createdAt} />
               </Link>
-              { isEdited && (
-                <>
-                  <span id={editedDateId}>&nbsp;(edited)</span>
-                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
-                </>
-              ) }
               <span className="ms-2">
                 <Link
                   id={`page-comment-revision-${commentId}`}
@@ -182,6 +169,15 @@ export const Comment = (props: CommentProps): JSX.Element => {
                   {t('page_comment.display_the_page_when_posting_this_comment')}
                 </UncontrolledTooltip>
               </span>
+            </div>
+            <div className="page-comment-body">{commentBody}</div>
+            <div className="page-comment-meta">
+              { isEdited && (
+                <>
+                  <span id={editedDateId}>&nbsp;(edited)</span>
+                  <UncontrolledTooltip placement="bottom" fade={false} target={editedDateId}>{editedDateFormatted}</UncontrolledTooltip>
+                </>
+              ) }
             </div>
             { (isCurrentUserEqualsToAuthor() && !isReadOnly) && (
               <CommentControl

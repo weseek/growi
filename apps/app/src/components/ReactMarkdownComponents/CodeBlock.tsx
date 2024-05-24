@@ -1,11 +1,10 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import type { CodeComponent } from 'react-markdown/lib/ast-to-react';
+import type { CodeComponent, CodeProps } from 'react-markdown/lib/ast-to-react';
 import { PrismAsyncLight } from 'react-syntax-highlighter';
 import { oneDark } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 
 import styles from './CodeBlock.module.scss';
-
 
 // remove font-family
 Object.entries<object>(oneDark).forEach(([key, value]) => {
@@ -49,7 +48,7 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   const isSimpleString = Array.isArray(children) && children.length === 1 && typeof children[0] === 'string';
   if (!isSimpleString) {
     return (
-      <div className="code-highlighted" style={oneDark['pre[class*="language-"]']}>
+      <div style={oneDark['pre[class*="language-"]']}>
         <code className={`language-${lang}`} style={oneDark['code[class*="language-"]']}>
           {children}
         </code>
@@ -59,7 +58,6 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
 
   return (
     <PrismAsyncLight
-      className="code-highlighted"
       PreTag="div"
       style={oneDark}
       language={lang}
@@ -69,7 +67,7 @@ function CodeBlockSubstance({ lang, children }: { lang: string, children: ReactN
   );
 }
 
-export const CodeBlock: CodeComponent = ({ inline, className, children }) => {
+export const CodeBlock: CodeComponent = ({ inline, className, children }: CodeProps) => {
 
   if (inline) {
     return <code className={`code-inline ${className ?? ''}`}>{children}</code>;

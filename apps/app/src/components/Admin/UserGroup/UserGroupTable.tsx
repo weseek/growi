@@ -2,7 +2,7 @@ import type { FC } from 'react';
 import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
@@ -138,7 +138,7 @@ export const UserGroupTable: FC<Props> = ({
   }, [userGroupRelations, childUserGroups]);
 
   return (
-    <div data-testid="grw-user-group-table">
+    <div data-testid="grw-user-group-table" className="mb-5">
       <h3>{headerLabel}</h3>
 
       <table className="table table-bordered table-user-list">
@@ -179,7 +179,7 @@ export const UserGroupTable: FC<Props> = ({
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge rounded-pill bg-warning text-dark">{user.username}</li>;
+                      return <li key={user._id} className="list-inline-item badge text-bg-warning">{user.username}</li>;
                     })}
                   </ul>
                 </td>
@@ -187,7 +187,7 @@ export const UserGroupTable: FC<Props> = ({
                   <ul className="list-inline">
                     {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
                       return (
-                        <li key={group._id} className="list-inline-item badge badge-success">
+                        <li key={group._id} className="list-inline-item badge text-bg-success">
                           {isAclEnabled
                             ? (
                               <Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link>
