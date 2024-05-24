@@ -13,6 +13,7 @@
     );
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-sidebar-head :global {
     background-color: var(
