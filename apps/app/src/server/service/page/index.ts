@@ -47,6 +47,7 @@ import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
+import Workflow from '../../../features/approval-workflow/server/models/workflow';
 import type { ObjectIdLike } from '../../interfaces/mongoose-utils';
 import { Attachment } from '../../models';
 import { PathAlreadyExistsError } from '../../models/errors';
@@ -1884,7 +1885,7 @@ class PageService implements IPageService {
       Page.deleteMany({ _id: { $in: pageIds } }),
       PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
-
+      Workflow.deleteMany({ pageId: { $in: pageIds } }),
       // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
   }

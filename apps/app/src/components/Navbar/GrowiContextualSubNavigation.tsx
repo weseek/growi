@@ -16,6 +16,7 @@ import { DropdownItem } from 'reactstrap';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { useWorkflowModal } from '~/features/approval-workflow/client/stores/workflow';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -203,6 +204,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
   const { open: openRenameModal } = usePageRenameModal();
   const { open: openDeleteModal } = usePageDeleteModal();
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId);
+  const { open: openWorkflowModal } = useWorkflowModal();
 
   const [isStickyActive, setStickyActive] = useState(false);
 
@@ -260,6 +262,12 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
       mutateCurrentPage();
     }
   }, [isSharedPage, mutateCurrentPage]);
+
+
+  const workflowItemClickedHandler = useCallback((pageId: string) => {
+    openWorkflowModal(pageId);
+  }, [openWorkflowModal]);
+
 
   const additionalMenuItemsRenderer = useCallback(() => {
     if (revisionId == null || pageId == null) {
@@ -330,6 +338,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}
                 onClickSwitchContentWidth={switchContentWidthHandler}
+                onClickWorkflowMenuItem={workflowItemClickedHandler}
               />
             )}
 
