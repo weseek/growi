@@ -58,10 +58,8 @@ describe('MultipartUploader', () => {
         expectedErrorsByStatus.forEach(({
           current, desired, errorMessage,
         }) => {
-          it(`should throw error when current status is ${current} but desired status is ${desired}`, () => {
-            uploader.setCurrentStatus(current);
-            expect(() => uploader.testValidateUploadStatus(desired)).toThrow(errorMessage);
-          });
+          uploader.setCurrentStatus(current);
+          expect(() => uploader.testValidateUploadStatus(desired)).toThrow(errorMessage);
         });
       });
     });
