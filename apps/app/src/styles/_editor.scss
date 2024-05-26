@@ -1,7 +1,7 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+/* stylelint-disable selector-class-pattern */
 
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
-
 @import './organisms/wiki-custom-sidebar';
 
 :root {
@@ -12,7 +12,7 @@
 .layout-root.editing {
   overflow: hidden !important;
 
-  .page-wrapper {
+  .page-wrapper{
     height: 100vh;
   }
 
@@ -46,7 +46,7 @@
       .markdown-table-activated,
       .markdown-link-activated {
         .CodeMirror-cursor {
-          &:after {
+          &::after {
             position: relative;
             top: -1.1em;
             left: 0.3em;
@@ -54,7 +54,6 @@
             width: 1em;
             height: 1em;
             content: ' ';
-
             background-repeat: no-repeat;
             background-size: 1em;
           }
@@ -62,27 +61,28 @@
       }
 
       .markdown-table-activated .CodeMirror-cursor {
-        &:after {
-          background-image: url(/images/icons/editor/table.svg);
+        &::after {
+          background-image: url('/images/icons/editor/table.svg');
         }
       }
 
       .markdown-link-activated .CodeMirror-cursor {
-        &:after {
-          background-image: url(/images/icons/editor/link.svg);
+        &::after {
+          background-image: url('/images/icons/editor/link.svg');
         }
       }
 
     }
 
-    .page-editor-preview-container {
-    }
+    // .page-editor-preview-container {
+    // }
 
     .page-editor-preview-body {
       flex-grow: 1;
       padding: 18px 15px 0;
       overflow-y: scroll;
     }
+
     // editing /Sidebar
     .page-editor-preview-body.preview-sidebar {
       flex-grow: 0;
@@ -95,15 +95,6 @@
       }
     }
 
-  }
-
-  // .builtin-editor .tab-pane#edit
-
-  /*****************
-   *     Toastr
-   *****************/
-  .Toastify .Toastify__toast-container {
-    top: 4.5em;
   }
 
 }

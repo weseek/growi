@@ -1,4 +1,7 @@
+import path from 'path';
+
 import react from '@vitejs/plugin-react';
+import glob from 'glob';
 import { nodeExternals } from 'rollup-plugin-node-externals';
 import { defineConfig } from 'vite';
 import dts from 'vite-plugin-dts';
@@ -20,9 +23,17 @@ export default defineConfig({
     outDir: 'dist',
     sourcemap: true,
     lib: {
-      entry: 'src/index.ts',
+      entry: glob.sync(path.resolve(__dirname, 'src/**/*.ts'), {
+        ignore: '**/*.spec.ts',
+      }),
       name: 'presentation-libs',
       formats: ['es'],
+    },
+    rollupOptions: {
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: 'src',
+      },
     },
   },
 });

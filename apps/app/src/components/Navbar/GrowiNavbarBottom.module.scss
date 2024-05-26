@@ -4,6 +4,7 @@
 .grw-navbar-bottom :global {
   // apply transition
   transition-property: bottom;
+
   @include mixins.apply-navigation-transition();
 
   .navbar {

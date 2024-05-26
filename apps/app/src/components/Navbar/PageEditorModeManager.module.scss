@@ -1,5 +1,5 @@
 // @mixin page-editor-mode-manager($textColor, $borderColor, $bgColorHoverAndActive, $bgColor: white) {
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 
 .grw-page-editor-mode-manager :global {
@@ -20,6 +20,7 @@
 .grw-page-editor-mode-manager-skeleton :global {
   width: 90px;
   height: 38px;
+
   @include bs.media-breakpoint-up(md) {
     width: 179px;
     height: 30px;
@@ -47,6 +48,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-page-editor-mode-manager :global {
     .btn {
