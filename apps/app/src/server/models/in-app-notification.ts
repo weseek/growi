@@ -78,6 +78,9 @@ const inAppNotificationSchema = new Schema<InAppNotificationDocument, InAppNotif
 }, {
   timestamps: { createdAt: true, updatedAt: false },
 });
+// indexes
+inAppNotificationSchema.index({ createdAt: 1 });
+// apply plugins
 inAppNotificationSchema.plugin(mongoosePaginate);
 
 const transform = (doc, ret) => {

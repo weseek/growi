@@ -87,6 +87,7 @@ const activitySchema = new Schema<ActivityDocument, ActivityModel>({
     updatedAt: false,
   },
 });
+// activitySchema.index({ createdAt: 1 }); // Do not create index here because it is created by ActivityService as TTL index
 activitySchema.index({ target: 1, action: 1 });
 activitySchema.index({
   user: 1, target: 1, action: 1, createdAt: 1,

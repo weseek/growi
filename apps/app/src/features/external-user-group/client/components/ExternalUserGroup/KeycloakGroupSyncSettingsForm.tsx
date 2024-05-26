@@ -1,13 +1,12 @@
-import {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxKeycloakGroupSyncSettings } from '~/features/external-user-group/client/stores/external-user-group';
-import { KeycloakGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
+import type { KeycloakGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
 
 export const KeycloakGroupSyncSettingsForm: FC = () => {
   const { t } = useTranslation('admin');
@@ -49,11 +48,11 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
         <div className="row form-group">
           <label
             htmlFor="keycloakHost"
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {t('external_user_group.keycloak.host')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               type="text"
@@ -68,10 +67,10 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupRealm" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="keycloakGroupRealm" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.keycloak.group_realm')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -89,10 +88,10 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupSyncClientRealm" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="keycloakGroupSyncClientRealm" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.keycloak.group_sync_client_realm')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -110,10 +109,10 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupSyncClientID" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="keycloakGroupSyncClientID" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.keycloak.group_sync_client_id')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -131,10 +130,10 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupSyncClientSecret" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="keycloakGroupSyncClientSecret" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.keycloak.group_sync_client_secret')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -153,15 +152,15 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
         </div>
         <div className="row form-group">
           <label
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {/* {t('external_user_group.auto_generate_user_on_sync')} */}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="custom-control-input me-2"
                 name="autoGenerateUserOnKeycloakGroupSync"
                 id="autoGenerateUserOnKeycloakGroupSync"
                 checked={formValues.autoGenerateUserOnKeycloakGroupSync}
@@ -178,15 +177,15 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
         </div>
         <div className="row form-group">
           <label
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {/* {t('external_user_group.keycloak.preserve_deleted_keycloak_groups')} */}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="custom-control-input me-2"
                 name="preserveDeletedKeycloakGroups"
                 id="preserveDeletedKeycloakGroups"
                 checked={formValues.preserveDeletedKeycloakGroups}
@@ -201,14 +200,14 @@ export const KeycloakGroupSyncSettingsForm: FC = () => {
             </div>
           </div>
         </div>
-        <div className="px-5">
+        <div className="mt-5 mb-4">
           <h4 className="border-bottom mb-3">Attribute Mapping ({t('optional')})</h4>
         </div>
         <div className="row form-group">
-          <label htmlFor="keycloakGroupDescriptionAttribute" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="keycloakGroupDescriptionAttribute" className="text-left text-md-end col-md-3 col-form-label">
             {t('Description')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               type="text"

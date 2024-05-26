@@ -1,4 +1,6 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+/* stylelint-disable selector-class-pattern */
+
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 // Table
 @include bs.color-mode(dark) {

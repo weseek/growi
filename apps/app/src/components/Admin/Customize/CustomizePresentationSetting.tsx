@@ -53,7 +53,7 @@ const CustomizePresentationSetting = (props: Props): JSX.Element => {
                 href={`${t('admin:customize_settings.presentation_options.marp_in_gorwi_link')}`}
                 target="_blank"
                 rel="noopener noreferrer"
-              >{`${t('admin:customize_settings.presenattion_options.marp_in_growi')}`}
+              >{`${t('admin:customize_settings.presentation_options.marp_in_growi')}`}
               </a>
             </p>
           </CustomizePresentationOption>
