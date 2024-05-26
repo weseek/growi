@@ -662,7 +662,8 @@
     "bulk_export_notice": "ダウンロードの準備が完了すると、通知が届きます。ページ数が多いと、準備に時間がかかる場合があります。",
     "markdown": "マークダウン",
     "choose_export_format": "エクスポート形式を選択してください",
-    "bulk_export_started": "ただいま準備中です..."
+    "bulk_export_started": "ただいま準備中です...",
+    "bulk_export_download_expired": "ダウンロード期限が切れました"
   },
   "message": {
     "successfully_connected": "接続に成功しました!",
