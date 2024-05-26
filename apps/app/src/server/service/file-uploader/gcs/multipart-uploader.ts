@@ -33,7 +33,6 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
   constructor(bucket: Bucket, uploadKey: string, maxPartSize: number) {
     super(uploadKey, maxPartSize);
 
-    this.validateUploadPartSize(maxPartSize);
     this.file = bucket.file(this.uploadKey);
   }
 
@@ -51,6 +50,7 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
     this.validateUploadStatus(UploadStatus.IN_PROGRESS);
     this.validatePartSize(part.length);
 
+    // Upload the whole part in one request, or divide it in chunks and upload depending on the part size
     if (part.length === this.maxPartSize) {
       await this.uploadChunk(part);
     }
@@ -103,15 +103,17 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
     return this._uploadedFileSize;
   }
 
-  private uploadChunk = async(_part, isLastUpload = false) => {
-    this.validateUploadPartSize(_part.length);
+  private uploadChunk = async(chunk, isLastUpload = false) => {
+    // If chunk size is larger than the minimal part size, it is required to be a multiple of the minimal part size
+    // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads?hl=en#chunked-upload
+    if (chunk.length > this.minPartSize && chunk.length % this.minPartSize !== 0) throw Error(`chunk must be a multiple of ${this.minPartSize}`);
 
     const range = isLastUpload
-      ? `bytes ${this._uploadedFileSize}-${this._uploadedFileSize + _part.length - 1}/${this._uploadedFileSize + _part.length}`
-      : `bytes ${this._uploadedFileSize}-${this._uploadedFileSize + _part.length - 1}/*`;
+      ? `bytes ${this._uploadedFileSize}-${this._uploadedFileSize + chunk.length - 1}/${this._uploadedFileSize + chunk.length}`
+      : `bytes ${this._uploadedFileSize}-${this._uploadedFileSize + chunk.length - 1}/*`;
 
     try {
-      await axios.put(this.uploadId, _part, {
+      await axios.put(this.uploadId, chunk, {
         headers: {
           'Content-Range': `${range}`,
         },
@@ -122,13 +124,7 @@ export class GcsMultipartUploader extends MultipartUploader implements IGcsMulti
         throw e;
       }
     }
-    this._uploadedFileSize += _part.length;
+    this._uploadedFileSize += chunk.length;
   };
-
-  // If part size is larger than the minimal part size, it is required to be a multiple of the minimal part size
-  // ref: https://cloud.google.com/storage/docs/performing-resumable-uploads?hl=en#chunked-upload
-  private validateUploadPartSize(uploadPartSize: number) {
-    if (uploadPartSize > this.minPartSize && uploadPartSize % this.minPartSize !== 0) throw Error(`uploadPartSize must be a multiple of ${this.minPartSize}`);
-  }
 
 }
