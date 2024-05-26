@@ -2,18 +2,11 @@ import type { Bucket, File } from '@google-cloud/storage';
 
 import loggerFactory from '~/utils/logger';
 
-import { MultipartUploader, type IMultipartUploader } from '../multipart-uploader';
+import { MultipartUploader, UploadStatus, type IMultipartUploader } from '../multipart-uploader';
 
 import axios from 'src/utils/axios';
 
 const logger = loggerFactory('growi:services:fileUploaderGcs:multipartUploader');
-
-enum UploadStatus {
-  BEFORE_INIT,
-  IN_PROGRESS,
-  COMPLETED,
-  ABORTED
-}
 
 export type IGcsMultipartUploader = IMultipartUploader
 
