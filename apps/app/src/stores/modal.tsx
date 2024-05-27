@@ -4,10 +4,9 @@ import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
+import { MarkdownTable } from '@growi/editor';
 import type { SWRResponse } from 'swr';
 
-
-import MarkdownTable from '~/client/models/MarkdownTable';
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
