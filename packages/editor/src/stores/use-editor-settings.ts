@@ -8,9 +8,9 @@ import {
 
 import type { EditorSettings, KeyMapMode, EditorTheme } from '../consts';
 import type { UseCodeMirrorEditor } from '../services';
-import { getEditorTheme, getKeymap } from '../services-internal';
-import { insertNewlineContinueMarkup } from '../services-internal/list-util/insert-newline-continue-markup';
-import { insertNewRowToMarkdownTable, isInTable } from '../services-internal/table';
+import {
+  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
+} from '../services-internal';
 
 
 export const useEditorSettings = (
