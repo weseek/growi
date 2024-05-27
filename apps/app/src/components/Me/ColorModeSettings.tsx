@@ -4,8 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 import { Themes, useNextThemes } from '~/stores/use-next-themes';
 
-// import styles from './ColorModeSettings.module.scss';
-
 
 type ColorModeSettingsButtonProps = {
   isActive: boolean,
