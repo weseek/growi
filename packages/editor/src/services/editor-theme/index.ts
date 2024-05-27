@@ -1,5 +1,7 @@
 import type { Extension } from '@codemirror/state';
 
+import type { EditorTheme } from 'src/consts';
+
 export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {
     case 'eclipse':
@@ -23,20 +25,3 @@ export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension>
   }
   return (await import('./original-light')).originalLight;
 };
-
-const EditorTheme = {
-  defaultlight: 'defaultlight',
-  eclipse: 'eclipse',
-  basic: 'basic',
-  ayu: 'ayu',
-  rosepine:  'rosepine',
-  defaultdark: 'defaultdark',
-  material: 'material',
-  nord: 'nord',
-  cobalt: 'cobalt',
-  kimbie: 'kimbie',
-} as const;
-
-export const DEFAULT_THEME = 'defaultlight';
-export const AllEditorTheme = Object.values(EditorTheme);
-export type EditorTheme = typeof EditorTheme[keyof typeof EditorTheme]

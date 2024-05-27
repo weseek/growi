@@ -1,6 +1,8 @@
 import type { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 
+import type { KeyMapMode } from '../../consts';
+
 
 export const getKeymap = async(keyMapName?: KeyMapMode, onSave?: () => void): Promise<Extension> => {
   switch (keyMapName) {
@@ -13,14 +15,3 @@ export const getKeymap = async(keyMapName?: KeyMapMode, onSave?: () => void): Pr
   }
   return keymap.of((await import('@codemirror/commands')).defaultKeymap);
 };
-
-const KeyMapMode = {
-  default: 'default',
-  vim: 'vim',
-  emacs: 'emacs',
-  vscode: 'vscode',
-} as const;
-
-export const DEFAULT_KEYMAP = 'default';
-export const AllKeyMap = Object.values(KeyMapMode);
-export type KeyMapMode = typeof KeyMapMode[keyof typeof KeyMapMode];

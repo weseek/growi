@@ -6,8 +6,7 @@ import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
 } from '@codemirror/view';
 
-import type { EditorSettings } from '../consts';
-import type { EditorTheme, KeyMapMode } from '../services';
+import type { EditorSettings, KeyMapMode, EditorTheme } from '../consts';
 import { getEditorTheme, getKeymap } from '../services';
 import type { UseCodeMirrorEditor } from '../services-ext';
 import { insertNewlineContinueMarkup } from '../services/list-util/insert-newline-continue-markup';
