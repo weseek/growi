@@ -9,14 +9,14 @@ import { toastError } from './toastr';
 export const createAnnouncement = async(announcement: IAnnouncement, sender: IUserHasId, pageId: string, receivers: IUserHasId[]): Promise<void> => {
 
   try {
-    console.log('ok');
     await apiv3Post('/announcement', {
       announcement, sender, pageId, receivers,
     });
+    console.log('ok');
   }
   catch (err) {
-    console.log('failed');
     toastError(err);
+    console.log('failed');
   }
 
 };

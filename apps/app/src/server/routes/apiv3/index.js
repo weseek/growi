@@ -96,6 +96,8 @@ module.exports = (crowi, app) => {
   router.use('/bookmarks', require('./bookmarks')(crowi));
   router.use('/attachment', require('./attachment')(crowi));
 
+  router.use('/announcement', require('./announcement'))(crowi);
+
   router.use('/slack-integration', require('./slack-integration')(crowi));
 
   router.use('/staffs', require('./staffs')(crowi));
