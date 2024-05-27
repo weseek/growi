@@ -1,15 +1,17 @@
 import { useEffect, useCallback, useState } from 'react';
 
-import { Prec, Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
+import { Prec } from '@codemirror/state';
 import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
 } from '@codemirror/view';
 
-import type { EditorSettings } from '../consts';
-import type { UseCodeMirrorEditor, EditorTheme, KeyMapMode } from '../services';
-import { getEditorTheme, getKeymap } from '../services';
-import { insertNewlineContinueMarkup } from '../services/list-util/insert-newline-continue-markup';
-import { insertNewRowToMarkdownTable, isInTable } from '../services/table-util/insert-new-row-to-table-markdown';
+import type { EditorSettings, KeyMapMode, EditorTheme } from '../consts';
+import type { UseCodeMirrorEditor } from '../services';
+import {
+  getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,
+} from '../services-internal';
+
 
 export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
