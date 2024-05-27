@@ -1,10 +1,10 @@
 import type { Bucket, File } from '@google-cloud/storage';
+// eslint-disable-next-line no-restricted-imports
+import axios from 'axios';
 
 import loggerFactory from '~/utils/logger';
 
 import { MultipartUploader, type IMultipartUploader } from '../multipart-uploader';
-
-import axios from 'src/utils/axios';
 
 const logger = loggerFactory('growi:services:fileUploaderGcs:multipartUploader');
 
