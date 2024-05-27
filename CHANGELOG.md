@@ -1,8 +1,37 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.6...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
+
+## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle for WIP in 'Page Tree' sidebar (#8796) @maeshinshin
+* imprv: Hide the page creation button for users without editing permissions (#8808) @miya
+* imprv: Add config to toggle ACL between public_read and private on PutObject when using S3 with FileUploader (#8778) @ToshihitoKon
+
+### 🐛 Bug Fixes
+
+* fix: BookmarkItem occures an error when the related page has been deleted 2 (#8818) @yuki-takei
+* fix: BookmarkItem occures an error when the related page has been deleted (#8817) @yuki-takei
+* fix: Display share page date (#8809) @TatsuyaIse
+* fix: Admin layout (#8806) @satof3
+
+### 🧰 Maintenance
+
+* support: Modify env var for S3 Object-ACL (#8805) @yuki-takei
 
 ## [v7.0.4](https://github.com/weseek/growi/compare/v7.0.3...v7.0.4) - 2024-05-13
 

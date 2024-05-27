@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .btn-personal-dropdown :global {
   img {
@@ -25,6 +25,7 @@
 
   .personal-dropdown-item :global {
     --bs-link-color-rgb:var(--bs-gray-600);
+
     color: var(--bs-gray-600);
   }
 }
@@ -36,6 +37,7 @@
 
   .personal-dropdown-item :global {
     --bs-link-color-rgb:var(--bs-gray-500);
+
     color: var(--bs-gray-500);
   }
 }

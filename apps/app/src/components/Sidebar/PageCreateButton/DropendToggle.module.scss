@@ -1,5 +1,4 @@
 @use '~/styles/variables' as var;
-
 @use '../button-styles';
 
 .btn-toggle :global {
@@ -10,7 +9,7 @@
 
   .icon {
     top: 50%;
-    right: 0px;
+    right: 0;
     font-size: 22px;
     transform: translateY(-50%);
   }
@@ -29,10 +28,7 @@
 // hitarea
 .btn-toggle :global {
   .hitarea {
-    top: 0;
-    right: -10px;
-    bottom: 0;
-    left: 0;
+    inset: 0 -10px 0 0;
   }
 }
 

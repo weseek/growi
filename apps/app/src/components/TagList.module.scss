@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-tag-list :global {
   .list-group {
@@ -17,6 +17,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-tag-list :global {
     .grw-tag-count {
