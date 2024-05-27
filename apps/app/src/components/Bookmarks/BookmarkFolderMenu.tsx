@@ -67,7 +67,7 @@ export const BookmarkFolderMenu = (props: BookmarkFolderMenuProps): JSX.Element 
     if (isOpen && bookmarkFolders != null) {
       bookmarkFolders.forEach((bookmarkFolder) => {
         bookmarkFolder.bookmarks.forEach((bookmark) => {
-          if (bookmark.page._id === pageId) {
+          if (bookmark.page?._id === pageId) {
             setSelectedItem(bookmarkFolder._id);
           }
         });

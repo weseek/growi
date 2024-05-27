@@ -98,7 +98,7 @@ export const PagePathNav = (props: Props): JSX.Element => {
         { pageId != null && !isNotFound && (
           <div className="d-flex align-items-center ms-2">
             { isWipPage && (
-              <span className="badge rounded-pill text-bg-secondary ms-1 me-1">WIP</span>
+              <span className="badge text-bg-secondary ms-1 me-1">WIP</span>
             )}
             <CopyDropdown pageId={pageId} pagePath={pagePath} dropdownToggleId={copyDropdownId} dropdownToggleClassName="p-2">
               <span className="material-symbols-outlined">content_paste</span>

@@ -103,7 +103,7 @@ jobs:
           type=semver,value=${{ needs.create-github-release.outputs.RELEASED_VERSION }},pattern={{major}}.{{minor}}.{{patch}}
 
 
-  build-image:
+  build-app-image:
     needs: create-github-release
 
     uses: weseek/growi/.github/workflows/reusable-app-build-image.yml@master
@@ -115,8 +115,8 @@ jobs:
       AWS_ROLE_TO_ASSUME_FOR_OIDC: ${{ secrets.AWS_ROLE_TO_ASSUME_FOR_OIDC }}
 
 
-  publish-image:
-    needs: [determine-tags, build-image]
+  publish-app-image:
+    needs: [determine-tags, build-app-image]
 
     uses: weseek/growi/.github/workflows/reusable-app-create-manifests.yml@master
     with:
@@ -129,7 +129,7 @@ jobs:
 
 
   post-publish:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:
@@ -154,7 +154,7 @@ jobs:
 
 
   create-pr-for-next-rc:
-    needs: [create-github-release, publish-image]
+    needs: [create-github-release, publish-app-image]
     runs-on: ubuntu-latest
 
     steps:

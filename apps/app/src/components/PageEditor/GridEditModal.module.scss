@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-grid-edit-modal :global {
   .desktop-preview,
@@ -6,13 +6,13 @@
   .mobile-preview {
     .row {
       height: 140px;
-      margin: 0px;
+      margin: 0;
     }
   }
   .desktop-preview {
     .row {
       div {
-        padding: 0px;
+        padding: 0;
       }
     }
   }
@@ -20,7 +20,7 @@
   .tablet-preview {
     .row {
       div {
-        padding: 0px;
+        padding: 0;
       }
     }
   }
@@ -29,13 +29,14 @@
     width: 75%;
     .row {
       div {
-        padding: 0px;
+        padding: 0;
       }
     }
   }
 
   .grid-division-menu {
     width: 60vw;
+
     @include bs.media-breakpoint-down(lg) {
       width: 80vw;
     }

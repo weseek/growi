@@ -71,12 +71,14 @@ class RebuildIndexControls extends React.Component {
     const header = isRebuildingCompleted ? getCompletedLabel() : getSkipLabel();
 
     return (
-      <LabeledProgressBar
-        header={header}
-        currentCount={current}
-        errorsCount={skip}
-        totalCount={total}
-      />
+      <div className="mb-3">
+        <LabeledProgressBar
+          header={header}
+          currentCount={current}
+          errorsCount={skip}
+          totalCount={total}
+        />
+      </div>
     );
   }
 

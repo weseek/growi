@@ -52,8 +52,8 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
       <td style={{ verticalAlign: 'middle' }}>
         {shareLink.expiredAt && <span>{dateFnsFormat(new Date(shareLink.expiredAt), 'yyyy-MM-dd HH:mm')}</span>}
       </td>
-      <td style={{ maxWidth: '0', textAlign: 'center' }}>
-        <button className="btn btn-outline-warning" type="button" onClick={onDelete}>
+      <td style={{ maxWidth: '50', textAlign: 'center' }}>
+        <button className="btn btn-outline-danger" type="button" onClick={onDelete}>
           <span className="material-symbols-outlined">delete</span>{t('Delete')}
         </button>
       </td>
