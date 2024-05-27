@@ -17,7 +17,7 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
-import { useShowTableIcon } from '../../services/table-util/use-show-table-icon';
+import { useShowTableIcon } from '../../services/table';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';

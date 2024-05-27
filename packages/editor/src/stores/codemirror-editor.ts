@@ -5,8 +5,7 @@ import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror'
 import type { SWRResponse } from 'swr';
 import deepmerge from 'ts-deepmerge';
 
-import type { UseCodeMirrorEditor } from '../services';
-import { useCodeMirrorEditor } from '../services';
+import { type UseCodeMirrorEditor, useCodeMirrorEditor } from '../services-ext';
 
 
 const isValid = (u: UseCodeMirrorEditor) => {

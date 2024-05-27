@@ -6,10 +6,12 @@ import {
 } from '@codemirror/view';
 
 import type { EditorSettings } from '../consts';
-import type { UseCodeMirrorEditor, EditorTheme, KeyMapMode } from '../services';
+import type { EditorTheme, KeyMapMode } from '../services';
 import { getEditorTheme, getKeymap } from '../services';
+import type { UseCodeMirrorEditor } from '../services-ext';
 import { insertNewlineContinueMarkup } from '../services/list-util/insert-newline-continue-markup';
-import { insertNewRowToMarkdownTable, isInTable } from '../services/table-util/insert-new-row-to-table-markdown';
+import { insertNewRowToMarkdownTable, isInTable } from '../services/table';
+
 
 export const useEditorSettings = (
     codeMirrorEditor?: UseCodeMirrorEditor,
