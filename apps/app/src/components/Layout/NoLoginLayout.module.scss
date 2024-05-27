@@ -1,9 +1,16 @@
+/* stylelint-disable scss/no-global-function-names */
+
 @use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '@growi/core-styles/scss/variables/growi-official-colors' as var;
 
 
 .nologin :global {
   height: 100vh;
+
+  .nologin-header,
+  .nologin-dialog {
+    max-width: 480px;
+  }
 
   // layout
   .main {
@@ -54,11 +61,6 @@
     }
   }
 
-  .nologin-header,
-  .nologin-dialog {
-    max-width: 480px;
-  }
-
 }
 
 .link-switch {
@@ -80,9 +82,10 @@
   .nologin :global {
     // background color
     $color-gradient: #3c465c;
-    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
-      linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
-      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340deg, 100%, 55%, 0%) 70%),
+      linear-gradient(135deg, var.$growi-green 10%, hsla(225deg, 95%, 50%, 0%) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140deg, 90%, 50%, 0%) 80%),
+      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35deg, 95%, 55%, 0%) 70%);
 
     .nologin-header {
       background-color: rgba(white, 0.3);
@@ -134,9 +137,10 @@
   .nologin :global {
     // background color
     $color-gradient: #3c465c;
-    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340, 100%, 55%, 0) 70%),
-      linear-gradient(135deg, var.$growi-green 10%, hsla(225, 95%, 50%, 0) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140, 90%, 50%, 0) 80%),
-      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35, 95%, 55%, 0) 70%);
+
+    background: linear-gradient(45deg, darken($color-gradient, 30%) 0%, hsla(340deg, 100%, 55%, 0%) 70%),
+      linear-gradient(135deg, var.$growi-green 10%, hsla(225deg, 95%, 50%, 0%) 70%), linear-gradient(225deg, var.$growi-blue 10%, hsla(140deg, 90%, 50%, 0%) 80%),
+      linear-gradient(315deg, darken($color-gradient, 25%) 100%, hsla(35deg, 95%, 55%, 0%) 70%);
 
     .nologin-header {
       background-color: rgba(black, 0.3);
