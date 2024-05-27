@@ -1,7 +1,7 @@
 // Ref: https://github.com/craftzdog/cm6-themes/blob/221936c525dcfc05b298cc4d4a0ba284cb7c7138/packages/nord/src/index.ts
 
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
-import { Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
 

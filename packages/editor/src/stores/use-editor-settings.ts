@@ -1,6 +1,7 @@
 import { useEffect, useCallback, useState } from 'react';
 
-import { Prec, Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
+import { Prec } from '@codemirror/state';
 import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
 } from '@codemirror/view';

@@ -3,8 +3,9 @@ import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorTheme, KeyMapMode } from '../../services';
 import {
-  AllEditorTheme, AllKeyMap, EditorTheme, KeyMapMode,
+  AllEditorTheme, AllKeyMap,
 } from '../../services';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 

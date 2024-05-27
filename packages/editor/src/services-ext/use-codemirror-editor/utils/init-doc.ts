@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 
 import { Transaction } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 
 export type InitDoc = (doc?: string) => void;
 

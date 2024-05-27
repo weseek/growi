@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import { foldEffect } from '@codemirror/language';
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 
 export type FoldDrawio = void;
 

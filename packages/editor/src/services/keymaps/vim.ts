@@ -1,4 +1,4 @@
-import { Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { Vim, vim } from '@replit/codemirror-vim';
 
 // vim useful keymap custom

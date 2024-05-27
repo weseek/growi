@@ -1,6 +1,6 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
-import { AcceptedUploadFileType } from '@growi/core';
+import type { AcceptedUploadFileType } from '@growi/core';
 import {
   DropdownItem,
 } from 'reactstrap';

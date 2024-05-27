@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { ViewUpdate } from '@codemirror/view';
+import type { ViewUpdate } from '@codemirror/view';
 import { EditorView } from 'codemirror';
 
 

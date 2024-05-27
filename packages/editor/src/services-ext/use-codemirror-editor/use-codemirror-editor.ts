@@ -1,15 +1,16 @@
 import { useMemo } from 'react';
 
-import {
+import type {
   EditorState,
 } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 import { useCodeMirror, type UseCodeMirror } from '@uiw/react-codemirror';
 import deepmerge from 'ts-deepmerge';
 
 import { useAppendExtensions, type AppendExtensions } from './utils/append-extensions';
 import { useFocus, type Focus } from './utils/focus';
-import { FoldDrawio, useFoldDrawio } from './utils/fold-drawio';
+import type { FoldDrawio } from './utils/fold-drawio';
+import { useFoldDrawio } from './utils/fold-drawio';
 import { useGetDoc, type GetDoc } from './utils/get-doc';
 import { useInitDoc, type InitDoc } from './utils/init-doc';
 import { useInsertMarkdownElements, type InsertMarkdowElements } from './utils/insert-markdown-elements';

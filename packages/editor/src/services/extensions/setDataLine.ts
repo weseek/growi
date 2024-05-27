@@ -3,9 +3,8 @@
 
 
 import { RangeSetBuilder } from '@codemirror/state';
-import {
-  EditorView, Decoration, ViewPlugin, DecorationSet, ViewUpdate,
-} from '@codemirror/view';
+import type { EditorView, DecorationSet, ViewUpdate } from '@codemirror/view';
+import { Decoration, ViewPlugin } from '@codemirror/view';
 
 const stripeDeco = (view: EditorView) => {
   const builder = new RangeSetBuilder<Decoration>();

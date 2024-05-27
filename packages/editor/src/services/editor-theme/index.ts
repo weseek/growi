@@ -1,4 +1,4 @@
-import { Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 
 export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {

@@ -1,6 +1,6 @@
 // Ref: https://github.com/craftzdog/cm6-themes/blob/289d9e0ca6b500f4cdf68464f4f21dd8e2dd8963/packages/material-dark/src/index.ts
 import { HighlightStyle, syntaxHighlighting } from '@codemirror/language';
-import { Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { tags as t } from '@lezer/highlight';
 

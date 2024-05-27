@@ -1,6 +1,6 @@
 // Ref: https://github.com/uiwjs/react-codemirror/blob/bf3b862923d0cb04ccf4bb9da0791bdc7fd6d29b/themes/github/src/index.ts
 
-import { Extension } from '@codemirror/state';
+import type { Extension } from '@codemirror/state';
 import { tags as t } from '@lezer/highlight';
 import { createTheme } from '@uiw/codemirror-themes';
 

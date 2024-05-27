@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
 
 import { AcceptedUploadFileType } from '@growi/core';
-import { useDropzone, Accept } from 'react-dropzone';
-import type { DropzoneOptions, DropzoneState } from 'react-dropzone';
+import { useDropzone } from 'react-dropzone';
+import type { DropzoneOptions, DropzoneState, Accept } from 'react-dropzone';
 
 
 type FileDropzoneState = DropzoneState & {

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 
 export type InsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => void;
 

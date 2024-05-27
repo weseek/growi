@@ -2,18 +2,18 @@ type Props = {
   isEnabled: boolean,
 }
 
-export const FileDropzoneOverlay = (props: Props) => {
+export const FileDropzoneOverlay = (props: Props): JSX.Element => {
   const { isEnabled } = props;
 
-    if (isEnabled) {
-      return (
-        <div className="overlay overlay-dropzone-active">
-          <span className="overlay-content">
-            <span className="overlay-icon material-symbols-outlined">
-            </span>
+  if (isEnabled) {
+    return (
+      <div className="overlay overlay-dropzone-active">
+        <span className="overlay-content">
+          <span className="overlay-icon material-symbols-outlined">
           </span>
-        </div>
-      );
-    }
-    return <></>;
-}
+        </span>
+      </div>
+    );
+  }
+  return <></>;
+};
