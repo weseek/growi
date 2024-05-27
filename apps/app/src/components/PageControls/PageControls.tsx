@@ -66,7 +66,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (e: React.MouseEvent<HTMLInputElement>) => void,
+  onClickMenuItem: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -77,10 +77,15 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
     onClickMenuItem, expandContentWidth,
   } = props;
 
+  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    onClickMenuItem();
+  }, [onClickMenuItem]);
+
   return (
     <div
       className="grw-page-control-dropdown-item dropdown-item"
-      onClick={onClickMenuItem}
+      onClick={menuItemClickedHandler}
     >
       <div className="form-check form-switch ms-1">
         <input
@@ -222,8 +227,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const switchContentWidthClickHandler = useCallback(() => {
 
     const newValue = !expandContentWidth;
     if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
