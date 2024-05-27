@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 
+import type { ChangeSpec } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 
 export type InsertPrefix = (prefix: string, noSpaceIfPrefixExists?: boolean) => void;
@@ -16,7 +17,7 @@ export const useInsertPrefix = (view?: EditorView): InsertPrefix => {
     const endLine = view.state.doc.lineAt(to);
 
     // Insert prefix for each line
-    const lines = [];
+    const lines: ChangeSpec[] = [];
     let insertTextLength = 0;
     for (let i = startLine.number; i <= endLine.number; i++) {
       const line = view.state.doc.line(i);
