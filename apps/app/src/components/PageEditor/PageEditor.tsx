@@ -68,6 +68,7 @@ declare global {
 export type SaveOptions = {
   wip: boolean,
   slackChannels: string,
+  isSlackEnabled: boolean,
   overwriteScopesOfDescendants?: boolean
 }
 export type Save = (
