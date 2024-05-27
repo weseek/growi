@@ -1,13 +1,11 @@
 import {
-  forwardRef, useMemo, useRef, useEffect, useState,
+  forwardRef, useMemo, useRef, useEffect,
   DetailedHTMLProps,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
-import { StateEffect } from '@codemirror/state';
 import {
   EditorView,
-  ViewUpdate,
 } from '@codemirror/view';
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
@@ -19,7 +17,7 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
-import { isInTable } from '../../services/table-util/insert-new-row-to-table-markdown';
+import { useShowTableIcon } from '../../services/table-util/use-show-table-icon';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -73,8 +71,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     };
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
-
-  const [editorClass, setEditorClass] = useState('');
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
@@ -165,30 +161,33 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onScroll, codeMirrorEditor]);
 
 
-  const markdownTableActivatedClass = 'markdown-table-activated';
-  const editor = codeMirrorEditor?.view;
+  // const markdownTableActivatedClass = 'markdown-table-activated';
+  // const editor = codeMirrorEditor?.view;
 
-  const handleFocusChanged = () => {
-    if (editor == null) {
-      return;
-    }
-    if (isInTable(editor)) {
-      setEditorClass(markdownTableActivatedClass);
-    }
-    else {
-      setEditorClass('');
-    }
-  };
+  // const handleFocusChanged = () => {
+  //   if (editor == null) {
+  //     return;
+  //   }
+  //   if (isInTable(editor)) {
+  //     setEditorClass(markdownTableActivatedClass);
+  //   }
+  //   else {
+  //     setEditorClass('');
+  //   }
+  // };
 
-  const cursorPositionListener = EditorView.updateListener.of((v: ViewUpdate) => {
-    if (v.transactions.some(tr => tr.selection || tr.docChanged)) {
-      handleFocusChanged();
-    }
-  });
+  // const cursorPositionListener = EditorView.updateListener.of((v: ViewUpdate) => {
+  //   if (v.transactions.some(tr => tr.selection || tr.docChanged)) {
+  //     handleFocusChanged();
+  //   }
+  // });
 
-  editor?.dispatch({
-    effects: StateEffect.appendConfig.of(cursorPositionListener),
-  });
+  // editor?.dispatch({
+  //   effects: StateEffect.appendConfig.of(cursorPositionListener),
+  // });
+
+
+  const { editorClass } = useShowTableIcon(codeMirrorEditor);
 
 
   const {
