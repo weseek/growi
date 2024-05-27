@@ -59,10 +59,9 @@ class YjsConnectionManager {
 
     await this.mdb.flushDocument(pageId);
 
-    const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
-    const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
-
-    if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
+    // If no write operation has been performed, insert initial value
+    const clientsSize = currentYdoc.store.clients.size;
+    if (clientsSize === 0) {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
