@@ -1,6 +1,6 @@
 import { encodeSpaces } from '@growi/core/dist/utils/page-path-utils';
 
-export default class Linker {
+export class Linker {
 
   type: string;
 

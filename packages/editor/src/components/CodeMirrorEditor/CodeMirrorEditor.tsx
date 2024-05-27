@@ -13,11 +13,11 @@ import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay,
-} from '../../services';
+} from '../../services-internal';
 import {
   adjustPasteData, getStrFromBol,
-} from '../../services/paste-util/paste-markdown-util';
-import { useShowTableIcon } from '../../services/table';
+} from '../../services-internal/paste-util/paste-markdown-util';
+import { useShowTableIcon } from '../../services-internal/table';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';

@@ -7,10 +7,10 @@ import {
 } from '@codemirror/view';
 
 import type { EditorSettings, KeyMapMode, EditorTheme } from '../consts';
-import { getEditorTheme, getKeymap } from '../services';
-import type { UseCodeMirrorEditor } from '../services-ext';
-import { insertNewlineContinueMarkup } from '../services/list-util/insert-newline-continue-markup';
-import { insertNewRowToMarkdownTable, isInTable } from '../services/table';
+import type { UseCodeMirrorEditor } from '../services';
+import { getEditorTheme, getKeymap } from '../services-internal';
+import { insertNewlineContinueMarkup } from '../services-internal/list-util/insert-newline-continue-markup';
+import { insertNewRowToMarkdownTable, isInTable } from '../services-internal/table';
 
 
 export const useEditorSettings = (

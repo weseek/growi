@@ -5,7 +5,7 @@ import {
   DropdownItem,
 } from 'reactstrap';
 
-import { useFileDropzone } from '../../../services';
+import { useFileDropzone } from '../../../services-internal';
 
 type Props = {
   acceptedUploadFileType: AcceptedUploadFileType,
