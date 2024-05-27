@@ -4,7 +4,7 @@ import { ViewUpdate } from '@codemirror/view';
 import { EditorView } from 'codemirror';
 
 
-import { UseCodeMirrorEditor } from '../codemirror-editor';
+import type { UseCodeMirrorEditor } from '../../services-ext';
 
 import { isInTable } from './insert-new-row-to-table-markdown';
 

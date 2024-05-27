@@ -10,7 +10,7 @@ import {
 import { keymap, EditorView, KeyBinding } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 
-import type { UseCodeMirrorEditor } from '../services';
+import type { UseCodeMirrorEditor } from '../services-ext';
 import { emojiAutocompletionSettings } from '../services/extensions/emojiAutocompletionSettings';
 
 
