@@ -7,7 +7,7 @@ import {
 
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 
-export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
+const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
   const { t } = useTranslation();
   const { data: modalData, close: closeModal } = useGrantedGroupsInheritanceSelectModal();
   const [onlyInheritUserRelatedGrantedGroups, setOnlyInheritUserRelatedGrantedGroups] = useState(false);
@@ -23,7 +23,7 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
       isOpen={isOpened}
       toggle={() => closeModal()}
     >
-      <ModalHeader tag="h4" toggle={() => closeModal()} className="text-light">
+      <ModalHeader tag="h4" toggle={() => closeModal()}>
         {t('modal_granted_groups_inheritance_select.select_granted_groups')}
       </ModalHeader>
       <ModalBody>
@@ -65,3 +65,5 @@ export const GrantedGroupsInheritanceSelectModal = (): JSX.Element => {
     </Modal>
   );
 };
+
+export default GrantedGroupsInheritanceSelectModal;
