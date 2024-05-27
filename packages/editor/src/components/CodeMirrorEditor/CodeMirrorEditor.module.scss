@@ -43,7 +43,6 @@
 
 }
 
-
 @mixin insertMaterialSymbolAndMessage($code, $message) {
   .overlay-icon:before {
     margin-right: 0.2em;
@@ -138,5 +137,24 @@
     }
     /* end of.dropzone */
   }
-}
 
+  .markdown-table-activated .cm-cursor {
+    &:after {
+      position: relative;
+      top: 0em;
+      left: 0.3em;
+      display: block;
+      width: 1em;
+      height: 1em;
+      content: ' ';
+      background-repeat: no-repeat;
+      background-size: 1em;
+    }
+  }
+
+  .markdown-table-activated .cm-cursor.cm-cursor-primary {
+    &:after {
+      background-image: url(../../../svg/table.svg);
+    }
+  }
+}
