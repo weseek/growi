@@ -45,7 +45,7 @@ export const PageSelectModal: FC = () => {
     const parentPagePath = page.path;
 
     if (parentPagePath == null) {
-      return;
+      return <></>;
     }
 
     setClickedParentPagePath(parentPagePath);
@@ -68,7 +68,7 @@ export const PageSelectModal: FC = () => {
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
   if (currentPage == null) {
-    return;
+    return <></>;
   }
 
   // const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
@@ -81,7 +81,7 @@ export const PageSelectModal: FC = () => {
   // console.log(targetPathOrId);
 
   if (isGuestUser == null) {
-    return null;
+    return <></>;
   }
 
   return (
