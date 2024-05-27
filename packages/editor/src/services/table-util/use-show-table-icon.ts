@@ -36,10 +36,6 @@ export const useShowTableIcon = (codeMirrorEditor?: UseCodeMirrorEditor): { edit
       }
     });
 
-    // const extension = editor?.dispatch({
-    //   effects: StateEffect.appendConfig.of(cursorPositionListener),
-    // });
-
     const cleanupFunction = codeMirrorEditor?.appendExtensions(cursorPositionListener);
 
     return cleanupFunction;
