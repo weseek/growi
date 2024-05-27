@@ -1,11 +1,11 @@
-@keyframes attachement-refs-fadeIn {
+@keyframes attachement-refs-fade-in {
   0% {opacity: .2}
   100% {opacity: .9}
 }
 
 .attachment-refs :global {
   .attachement-refs-blink {
-    animation: attachement-refs-fadeIn 1s ease 0s infinite alternate;
+    animation: attachement-refs-fade-in 1s ease 0s infinite alternate;
   }
 
   li.attachment {

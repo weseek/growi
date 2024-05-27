@@ -3,15 +3,12 @@
   --#{$prefix}body-color-rgb: #{to-rgb($body-color-dark)};
   --#{$prefix}body-bg: #{$body-bg-dark};
   --#{$prefix}body-bg-rgb: #{to-rgb($body-bg-dark)};
-
   --#{$prefix}emphasis-color: #{$body-emphasis-color-dark};
   --#{$prefix}emphasis-color-rgb: #{to-rgb($body-emphasis-color-dark)};
-
   --#{$prefix}secondary-color: #{$body-secondary-color-dark};
   --#{$prefix}secondary-color-rgb: #{to-rgb($body-secondary-color-dark)};
   --#{$prefix}secondary-bg: #{$body-secondary-bg-dark};
   --#{$prefix}secondary-bg-rgb: #{to-rgb($body-secondary-bg-dark)};
-
   --#{$prefix}tertiary-color: #{$body-tertiary-color-dark};
   --#{$prefix}tertiary-color-rgb: #{to-rgb($body-tertiary-color-dark)};
   --#{$prefix}tertiary-bg: #{$body-tertiary-bg-dark};
@@ -33,9 +30,13 @@
   --#{$prefix}link-hover-color: #{$link-hover-color-dark};
   --#{$prefix}link-color-rgb: #{to-rgb($link-color-dark)};
   --#{$prefix}link-hover-color-rgb: #{to-rgb($link-hover-color-dark)};
-
   --#{$prefix}code-color: #{$code-color-dark};
-
+  --#{$prefix}highlight-color: #{$mark-color-dark};
+  --#{$prefix}highlight-bg: #{$mark-bg-dark};
   --#{$prefix}border-color: #{$border-color-dark};
   --#{$prefix}border-color-translucent: #{$border-color-translucent-dark};
+  --#{$prefix}form-valid-color: #{$form-valid-color-dark};
+  --#{$prefix}form-valid-border-color: #{$form-valid-border-color-dark};
+  --#{$prefix}form-invalid-color: #{$form-invalid-color-dark};
+  --#{$prefix}form-invalid-border-color: #{$form-invalid-border-color-dark};
 }

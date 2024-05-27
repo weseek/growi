@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-custom-nav-tab :global {
   .nav-title {
@@ -10,7 +10,7 @@
   }
 
   .grw-nav-slide-hr {
-    border-top: 0rem;
+    border-top: 0;
     border-bottom: 3px solid;
     transition: 0.3s ease-in-out;
   }

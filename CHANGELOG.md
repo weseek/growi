@@ -1,8 +1,79 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.3...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.7](https://github.com/weseek/growi/compare/v7.0.6...v7.0.7) - 2024-05-27
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle in groundglassbar (#8832) @maeshinshin
+* imprv: toastr location (#8831) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Do not insert initial value when input is empty in editor (#8773) @miya
+
+### 🧰 Maintenance
+
+* support: Apply changesets (#8840) @yuki-takei
+* support: Upgrade yjs packages (#8839) @yuki-takei
+* support: Upgrade stylelint (#8835) @yuki-takei
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
+
+## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle for WIP in 'Page Tree' sidebar (#8796) @maeshinshin
+* imprv: Hide the page creation button for users without editing permissions (#8808) @miya
+* imprv: Add config to toggle ACL between public_read and private on PutObject when using S3 with FileUploader (#8778) @ToshihitoKon
+
+### 🐛 Bug Fixes
+
+* fix: BookmarkItem occures an error when the related page has been deleted 2 (#8818) @yuki-takei
+* fix: BookmarkItem occures an error when the related page has been deleted (#8817) @yuki-takei
+* fix: Display share page date (#8809) @TatsuyaIse
+* fix: Admin layout (#8806) @satof3
+
+### 🧰 Maintenance
+
+* support: Modify env var for S3 Object-ACL (#8805) @yuki-takei
+
+## [v7.0.4](https://github.com/weseek/growi/compare/v7.0.3...v7.0.4) - 2024-05-13
+
+### 💎 Features
+
+* feat: Add a button to open PageCreateModal in the new page creation lead (#8774) @miya
+* feat: Show Yjs status indicator in SubNavigation (#8709) @miya
+* feat: Apply locale to defualt page title (#8600) @jam411
+
+### 🚀 Improvement
+
+* imprv: Behavior when creating first user fails (#8801) @miya
+* imprv: Add indexes for performance (#8800) @yuki-takei
+* imprv: Autosize Input for rename (#8795) @yuki-takei
+* imprv: behavior of dropdown toggle in 'Recent Changes' sidebar (#8782) @maeshinshin
+* imprv: Hide  personal drop down when guest user (#8786) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: Drawio not available with GROWI slides (#8725) @reiji-h
+* fix: Auto-scroll to the active page in the page tree (#8772) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump ejs from 3.1.9 to 3.1.10 (#8784) @dependabot
 
 ## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
 

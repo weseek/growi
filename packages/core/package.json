@@ -1,14 +1,13 @@
 {
   "name": "@growi/core",
-  "version": "7.0.4-RC.0",
+  "version": "0.9.0",
   "description": "GROWI Core Libraries",
   "license": "MIT",
   "keywords": [
     "growi"
   ],
   "files": [
-    "dist",
-    "scss"
+    "dist"
   ],
   "type": "module",
   "main": "dist/index.cjs",
@@ -50,8 +49,7 @@
     "./dist/utils/*": {
       "import": "./dist/utils/*.js",
       "require": "./dist/utils/*.cjs"
-    },
-    "./scss/*": "./scss/*.scss"
+    }
   },
   "scripts": {
     "build": "vite build",
@@ -61,8 +59,7 @@
     "lint:js": "yarn eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*",
-    "test": "vitest run --coverage",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "test": "vitest run --coverage"
   },
   "// comments for dependencies": {
     "escape-string-regexp": "5.0.0 or above exports only ESM"

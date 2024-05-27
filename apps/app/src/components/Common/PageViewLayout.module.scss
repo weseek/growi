@@ -1,5 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '~/styles/mixins';
 @use '~/styles/variables' as var;
 
@@ -9,6 +8,7 @@ $page-view-layout-margin-top: 32px;
 
 .page-view-layout :global {
   $page-content-footer-min-heigh: 130px;
+
   min-height: calc(100vh - #{$subnavigation-height + $page-view-layout-margin-top + $page-content-footer-min-heigh});
 }
 
@@ -42,6 +42,7 @@ $page-view-layout-margin-top: 32px;
     position: sticky;
 
     $page-path-nav-height: 99px;
+
     top: calc($subnavigation-height + $page-view-layout-margin-top + $page-path-nav-height + 4px);
   }
 }

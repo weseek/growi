@@ -17,6 +17,7 @@ import {
 import {
   adjustPasteData, getStrFromBol,
 } from '../../services/paste-util/paste-markdown-util';
+import { useShowTableIcon } from '../../services/table-util/use-show-table-icon';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -73,6 +74,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
+
+  useShowTableIcon(codeMirrorEditor);
 
   useEffect(() => {
     if (indentSize == null) {
@@ -159,7 +162,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-
   const {
     getRootProps,
     getInputProps,
@@ -211,7 +213,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
-      <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+      <div {...getRootProps()} className={`dropzone  ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />

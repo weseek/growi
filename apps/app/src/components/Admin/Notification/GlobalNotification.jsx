@@ -36,7 +36,7 @@ const GlobalNotification = (props) => {
     <>
       <h2 className="border-bottom my-4">{t('notification_settings.valid_page')}</h2>
 
-      <p className="card custom-card">
+      <p className="card custom-card bg-body-tertiary">
         {/* eslint-disable-next-line react/no-danger */}
         <span dangerouslySetInnerHTML={{ __html: t('notification_settings.link_notification_help') }} />
       </p>
@@ -75,7 +75,7 @@ const GlobalNotification = (props) => {
           </div>
         </div>
       </div>
-      <div className="row my-3">
+      <div className="row mt-3 mb-5">
         <div className="col-sm-5 offset-sm-4">
           <button
             type="button"
@@ -87,14 +87,15 @@ const GlobalNotification = (props) => {
         </div>
       </div>
 
-      <h2 className="border-bottom mb-5">{t('notification_settings.notification_list')}
-        <button
-          className="btn btn-outline-secondary pull-right"
-          type="button"
-          onClick={() => router.push('/admin/global-notification/new')}
-        >{t('notification_settings.add_notification')}
-        </button>
+      <h2 className="border-bottom mb-3">
+        {t('notification_settings.notification_list')}
       </h2>
+      <button
+        className="btn btn-outline-secondary mb-3"
+        type="button"
+        onClick={() => router.push('/admin/global-notification/new')}
+      >{t('notification_settings.add_notification')}
+      </button>
       <table className="table table-bordered">
         <thead>
           <tr>
