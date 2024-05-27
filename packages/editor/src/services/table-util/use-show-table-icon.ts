@@ -10,7 +10,7 @@ import { isInTable } from './insert-new-row-to-table-markdown';
 
 const markdownTableActivatedClass = 'markdown-table-activated';
 
-export const useShowTableIcon = (codeMirrorEditor?: UseCodeMirrorEditor): { editorClass: string } => {
+export const useShowTableIcon = (codeMirrorEditor?: UseCodeMirrorEditor): void => {
 
   const [editorClass, setEditorClass] = useState('');
 
@@ -30,18 +30,24 @@ export const useShowTableIcon = (codeMirrorEditor?: UseCodeMirrorEditor): { edit
       }
     };
 
-    const cursorPositionListener = EditorView.updateListener.of((v: ViewUpdate) => {
-      if (v.transactions.some(tr => tr.selection || tr.docChanged)) {
-        handleFocusChanged();
-      }
-    });
-
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(cursorPositionListener);
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(
+      EditorView.updateListener.of((v: ViewUpdate) => {
+        if (v.transactions.some(tr => tr.selection || tr.docChanged)) {
+          handleFocusChanged();
+        }
+      }),
+    );
 
     return cleanupFunction;
 
   }, [codeMirrorEditor, editor]);
 
-  return { editorClass };
+  useEffect(() => {
+    const cleanupFunction = codeMirrorEditor?.appendExtensions(
+      EditorView.editorAttributes.of({ class: editorClass }),
+    );
+
+    return cleanupFunction;
+  }, [codeMirrorEditor, editorClass]);
 
 };

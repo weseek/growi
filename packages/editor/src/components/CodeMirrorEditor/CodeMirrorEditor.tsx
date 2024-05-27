@@ -75,6 +75,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
 
+  useShowTableIcon(codeMirrorEditor);
+
   useEffect(() => {
     if (indentSize == null) {
       return;
@@ -160,8 +162,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-  const { editorClass } = useShowTableIcon(codeMirrorEditor);
-
   const {
     getRootProps,
     getInputProps,
@@ -213,7 +213,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
-      <div {...getRootProps()} className={`dropzone  ${editorClass}  ${fileUploadState} flex-expand-vert`}>
+      <div {...getRootProps()} className={`dropzone  ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
