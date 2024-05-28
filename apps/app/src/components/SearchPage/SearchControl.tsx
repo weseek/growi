@@ -15,7 +15,6 @@ import SortControl from './SortControl';
 import styles from './SearchControl.module.scss';
 
 type Props = {
-  isSearchServiceReachable: boolean,
   isEnableSort: boolean,
   isEnableFilter: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
@@ -31,7 +30,6 @@ type Props = {
 const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const {
-    isSearchServiceReachable,
     isEnableSort,
     isEnableFilter,
     initialSearchConditions,
@@ -51,14 +49,6 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
 
   const { t } = useTranslation('');
-
-  const searchFormSubmittedHandler = useCallback((input: string) => {
-    setKeyword(input);
-
-    onSearchInvoked?.(input, {
-      sort, order, includeUserPages, includeTrashPages,
-    });
-  }, [includeTrashPages, includeUserPages, onSearchInvoked, order, sort]);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
     setSort(nextSort);

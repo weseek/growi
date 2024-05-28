@@ -95,8 +95,6 @@ export const SearchPage = (): JSX.Element => {
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
-
   const { data, conditions, mutate } = useSWRxSearch(keyword ?? '', null, {
     ...configurationsByControl,
     offset,
@@ -220,12 +218,8 @@ export const SearchPage = (): JSX.Element => {
 
 
   const searchControl = useMemo(() => {
-    if (!isSearchServiceReachable) {
-      return <></>;
-    }
     return (
       <SearchControl
-        isSearchServiceReachable={isSearchServiceReachable}
         isEnableSort
         isEnableFilter
         initialSearchConditions={initialSearchConditions}
@@ -235,7 +229,7 @@ export const SearchPage = (): JSX.Element => {
         isCollapsed={isCollapsed}
       />
     );
-  }, [allControl, collapseContents, initialSearchConditions, isCollapsed, isSearchServiceReachable, searchInvokedHandler]);
+  }, [allControl, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
