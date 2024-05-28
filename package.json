@@ -37,6 +37,7 @@
     "app:server": "cd apps/app && yarn server",
     "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
     "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
+    "release-subpackages": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset publish",
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "dependencies": {

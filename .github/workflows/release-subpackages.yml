@@ -1,0 +1,49 @@
+name: Release Subpackages
+
+on:
+  push:
+    branches:
+      - master
+      - dev/*.*.*
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  release-subpackages:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-
+
+    - name: Install dependencies
+      run: |
+        yarn global add turbo
+        yarn global add node-gyp
+        yarn --frozen-lockfile
+
+    - name: Create Release Pull Request or Publish to npm
+      id: changesets
+      uses: changesets/action@v1
+      with:
+        # This expects you to have a script called release which does a build for your packages and calls changeset publish
+        publish: yarn release-subpackages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
