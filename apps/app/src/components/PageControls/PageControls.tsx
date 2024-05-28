@@ -292,7 +292,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
       { !hideSubControls && (
         <div className={`hstack gap-1 ${!isViewMode && 'd-none d-lg-flex'}`}>
-          {revisionId != null && _isIPageInfoForOperation && !isSearchPage && (
+          {revisionId != null && _isIPageInfoForOperation && (
             <SubscribeButton
               status={pageInfo.subscriptionStatus}
               onClick={subscribeClickhandler}
