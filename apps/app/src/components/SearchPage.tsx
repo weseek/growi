@@ -176,7 +176,7 @@ export const SearchPage = (): JSX.Element => {
         <NotAvailableForReadOnlyUser>
           <button
             type="button"
-            className={`${isCollapsed ? 'danger-style text-danger' : 'text-muted'} btn border-0 d-flex align-items-center`}
+            className={`${isCollapsed ? 'danger-button-style text-danger' : 'text-muted'} btn border-0 d-flex align-items-center`}
             aria-expanded="false"
             disabled={isDeleteButtonDisabled}
             onClick={() => { setIsCollapsed(!isCollapsed) }}
@@ -206,7 +206,7 @@ export const SearchPage = (): JSX.Element => {
 
             <button
               type="button"
-              className="ms-3 open-delete-modal-button btn border-0 text-danger danger-style d-flex align-items-center"
+              className="ms-3 open-delete-modal-button btn border-0 text-danger danger-button-style d-flex align-items-center"
               disabled={isDeleteButtonDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
