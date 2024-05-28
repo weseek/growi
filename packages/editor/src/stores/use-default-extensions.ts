@@ -7,11 +7,12 @@ import { languages } from '@codemirror/language-data';
 import {
   Prec, type Extension,
 } from '@codemirror/state';
-import { keymap, EditorView, KeyBinding } from '@codemirror/view';
+import type { KeyBinding } from '@codemirror/view';
+import { keymap, EditorView } from '@codemirror/view';
 import { tags } from '@lezer/highlight';
 
 import type { UseCodeMirrorEditor } from '../services';
-import { emojiAutocompletionSettings } from '../services/extensions/emojiAutocompletionSettings';
+import { emojiAutocompletionSettings } from '../services-internal';
 
 
 // set new markdownKeymap instead of default one

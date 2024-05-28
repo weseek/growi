@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import { AcceptedUploadFileType } from '@growi/core';
+import type { AcceptedUploadFileType } from '@growi/core';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 

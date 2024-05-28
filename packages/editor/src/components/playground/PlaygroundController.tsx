@@ -2,10 +2,11 @@ import { useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorTheme, KeyMapMode } from '../../consts';
 import {
-  AllEditorTheme, AllKeyMap, EditorTheme, KeyMapMode,
-} from '../../services';
+  GlobalCodeMirrorEditorKey,
+  AllEditorTheme, AllKeyMap,
+} from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
