@@ -44,22 +44,23 @@
 
   /* stylelint-disable no-descending-specificity */
   h1 {
-    padding: 0.3em 0;
+    padding-top: 0.3em;
     margin-top: 2em;
     font-size: 1.9em;
     line-height: 1.1em;
   }
   h1 > span {
     border-bottom: 2px solid var(--bs-border-color);
+    padding-bottom: 0.3em;
   }
 
   h2 {
-    padding-bottom: 0.3em;
     font-size: 1.6em;
     font-weight: bold;
     line-height: 1.225;
   }
   h2 > span {
+    padding-bottom: 0.3em;
     border-bottom: 1px solid var(--bs-border-color);
   }
 
