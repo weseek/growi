@@ -10,16 +10,19 @@
 
   .grw-recent-changes-skeleton-small {
     @include grw-skeleton-text($font-size: 14px, $line-height: 16px);
+
     max-width: 120px;
   }
 
   .grw-recent-changes-skeleton-h5 {
     @include grw-skeleton-h5;
+
     max-width: 120px;
   }
 
   .grw-recent-changes-skeleton-date {
     @include grw-skeleton-text($font-size: 10px, $line-height: 12px);
+
     width: 80px;
   }
 

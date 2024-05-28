@@ -2,7 +2,7 @@
 @use '~/styles/variables' as var;
 @use '~/styles/mixins';
 
-@include mixins.editing() {
+@include mixins.at-editing() {
   .grw-editor-navbar-bottom :global {
     .grw-grant-selector {
       max-width: 250px;
