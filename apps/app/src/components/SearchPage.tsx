@@ -91,6 +91,7 @@ export const SearchPage = (): JSX.Element => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
@@ -109,7 +110,7 @@ export const SearchPage = (): JSX.Element => {
     pushState(newKeyword);
 
     mutate();
-  }, [keyword, mutate, pushState]);
+  }, [mutate, pushState]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -140,6 +141,7 @@ export const SearchPage = (): JSX.Element => {
       instance.select();
     }
     else {
+      setIsCollapsed(true);
       instance.setIndeterminate();
     }
   }, []);
@@ -166,45 +168,55 @@ export const SearchPage = (): JSX.Element => {
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
 
   const hitsCount = data?.meta.hitsCount;
+  const isDeleteButtonDisabled = hitsCount === 0;
 
   const allControl = useMemo(() => {
-    const isDisabled = hitsCount === 0;
-
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
-          <div className="dropdown">
+          <button
+            type="button"
+            className="btn dropdown-toggle border-0"
+            aria-expanded="false"
+            disabled={isDeleteButtonDisabled}
+            onClick={() => { setIsCollapsed(!isCollapsed) }}
+          >
+            <span className="material-symbols-outlined">delete</span>
+          </button>
+        </NotAvailableForReadOnlyUser>
+      </NotAvailableForGuest>
+    );
+  }, [isCollapsed, isDeleteButtonDisabled]);
+
+  const collapseContents = useMemo(() => {
+    return (
+      <NotAvailableForGuest>
+        <NotAvailableForReadOnlyUser>
+          <div className="d-flex align-items-center py-3">
+            <div className="ms-4">
+              <OperateAllControl
+                ref={selectAllControlRef}
+                isCheckboxDisabled={isDeleteButtonDisabled}
+                onCheckboxChanged={selectAllCheckboxChangedHandler}
+              >
+                <span className="ms-2">全てのページを選択</span>
+              </OperateAllControl>
+            </div>
+
             <button
               type="button"
-              className="btn dropdown-toggle border-0"
-              data-bs-toggle="dropdown"
-              aria-expanded="false"
+              className="ms-2 open-delete-modal-button btn border-0 text-danger"
+              disabled={isDeleteButtonDisabled}
+              onClick={deleteAllButtonClickedHandler}
             >
-              <span className="material-symbols-outlined">delete</span>
+              <span className="material-symbols-outlined">delete</span> 選択したページを削除
             </button>
-            <ul className="dropdown-menu">
-              <li className="dropdown-item p-0">
-                <OperateAllControl
-                  ref={selectAllControlRef}
-                  isCheckboxDisabled={isDisabled}
-                  onCheckboxChanged={selectAllCheckboxChangedHandler}
-                >
-                  <button
-                    type="button"
-                    className="btn border-0 text-danger"
-                    disabled={isDisabled}
-                    onClick={deleteAllButtonClickedHandler}
-                  >
-                    {t('search_result.delete_all_selected_page')}
-                  </button>
-                </OperateAllControl>
-              </li>
-            </ul>
           </div>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
-  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
+  }, [deleteAllButtonClickedHandler, isDeleteButtonDisabled, selectAllCheckboxChangedHandler]);
+
 
   const searchControl = useMemo(() => {
     if (!isSearchServiceReachable) {
@@ -218,9 +230,11 @@ export const SearchPage = (): JSX.Element => {
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
         allControl={allControl}
+        collapseContents={collapseContents}
+        isCollapsed={isCollapsed}
       />
     );
-  }, [allControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
+  }, [allControl, collapseContents, initialSearchConditions, isCollapsed, isSearchServiceReachable, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {

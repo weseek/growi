@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { Collapse } from 'reactstrap';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
@@ -22,6 +23,9 @@ type Props = {
   onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
   allControl: React.ReactNode,
+
+  collapseContents?: React.ReactNode,
+  isCollapsed?: boolean,
 }
 
 const SearchControl = React.memo((props: Props): JSX.Element => {
@@ -33,6 +37,8 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     initialSearchConditions,
     onSearchInvoked,
     allControl,
+    collapseContents,
+    isCollapsed,
   } = props;
 
   const keywordOnInit = initialSearchConditions.keyword ?? '';
@@ -156,6 +162,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             </div>
           </>
         )}
+
         <div className="d-flex">
           <div className="btn-group">
             {/* TODO: imprv to delete all result UI */}
@@ -169,6 +176,12 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
           </div>
         </div>
       </div>
+
+      { collapseContents != null && (
+        <Collapse isOpen={isCollapsed}>
+          {collapseContents}
+        </Collapse>
+      ) }
 
       <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}
