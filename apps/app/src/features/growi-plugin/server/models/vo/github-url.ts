@@ -4,8 +4,10 @@ import sanitize from 'sanitize-filename';
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 // https://regex101.com/r/CQjSuz/1
 const sanitizeBranchChars = new RegExp(/[^a-zA-Z0-9_.]+/g);
+
 // https://regex101.com/r/f4wj8q/1
-const checkVersionTag = new RegExp(/^v[\d]/g);
+// GitHub will return a zip file with the v removed if the tag or branch name is "v + number"
+const checkVersionName = new RegExp(/^v[\d]/g);
 
 export class GitHubUrl {
 
@@ -15,7 +17,7 @@ export class GitHubUrl {
 
   private _branchName: string;
 
-  private _tagName: string | undefined;
+  private _tagName: string;
 
   get organizationName(): string {
     return this._organizationName;
@@ -29,13 +31,13 @@ export class GitHubUrl {
     return this._branchName;
   }
 
-  get tagName(): string | undefined {
+  get tagName(): string {
     return this._tagName;
   }
 
   get archiveUrl(): string {
     const encodedBranchName = encodeURIComponent(this.branchName);
-    const encodedTagName = encodeURIComponent(this.tagName ?? '');
+    const encodedTagName = encodeURIComponent(this.tagName);
     if (encodedTagName !== '') {
       const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/tags/${encodedTagName}.zip`, 'https://github.com');
       return ghUrl.toString();
@@ -47,14 +49,15 @@ export class GitHubUrl {
   }
 
   get extractedArchiveDirName(): string {
-    if (this._tagName != null) {
-      const tagName = this._tagName?.match(checkVersionTag) ? this._tagName.replace('v', '') : this._tagName;
+    if (this._tagName !== '') {
+      const tagName = this._tagName?.match(checkVersionName) ? this._tagName.replace('v', '') : this._tagName;
       return tagName.replaceAll(sanitizeBranchChars, '-');
     }
-    return this._branchName.replaceAll(sanitizeBranchChars, '-');
+    const branchName = this._branchName?.match(checkVersionName) ? this._branchName.replace('v', '') : this._branchName;
+    return branchName.replaceAll(sanitizeBranchChars, '-');
   }
 
-  constructor(url: string, branchName = 'main', tagName?: string) {
+  constructor(url: string, branchName = 'main', tagName = '') {
 
     let matched;
     try {
