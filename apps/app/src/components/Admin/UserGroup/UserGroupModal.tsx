@@ -1,6 +1,5 @@
-import React, {
-  FC, useState, useEffect, useCallback,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import type { Ref, IUserGroup, IUserGroupHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -70,7 +69,7 @@ export const UserGroupModal: FC<Props> = (props: Props) => {
   return (
     <Modal className="modal-md" isOpen={isShow} toggle={onHide}>
       <form onSubmit={onSubmitHandler}>
-        <ModalHeader tag="h4" toggle={onHide} className="bg-primary text-light">
+        <ModalHeader tag="h4" toggle={onHide}>
           {t('user_group_management.basic_info')}
         </ModalHeader>
 

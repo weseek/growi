@@ -1,8 +1,9 @@
 import crypto from 'crypto';
 
-import { addMinutes } from 'date-fns';
+import { addMinutes } from 'date-fns/addMinutes';
+import type { Model, Document } from 'mongoose';
 import mongoose, {
-  Schema, Model, Document,
+  Schema,
 } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 

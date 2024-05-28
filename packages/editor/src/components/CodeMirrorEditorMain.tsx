@@ -2,12 +2,13 @@ import { useEffect } from 'react';
 
 import { type Extension } from '@codemirror/state';
 import { keymap, scrollPastEnd } from '@codemirror/view';
+import type { IUserHasId } from '@growi/core/dist/interfaces';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
-import { setDataLine } from '../services/extensions/setDataLine';
+import { GlobalCodeMirrorEditorKey } from '../consts';
+import { setDataLine } from '../services-internal';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [
@@ -16,30 +17,23 @@ const additionalExtensions: Extension[] = [
   ],
 ];
 
-type Props = {
-  onChange?: (value: string) => void,
-  onSave?: () => void,
-  onUpload?: (files: File[]) => void,
-  onScroll?: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
-  indentSize?: number,
-  userName?: string,
+type Props = CodeMirrorEditorProps & {
+  user?: IUserHasId,
   pageId?: string,
   initialValue?: string,
-  onOpenEditor?: (markdown: string) => void,
-  editorTheme?: string,
+  isEditorMode: boolean,
+  onEditorsUpdated?: (userList: IUserHasId[]) => void,
 }
 
 export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
   const {
-    onSave, onChange, onUpload, onScroll, acceptedFileType, indentSize, userName, pageId, initialValue, onOpenEditor, editorTheme,
+    user, pageId, initialValue, isEditorMode,
+    onSave, onEditorsUpdated, ...otherProps
   } = props;
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.MAIN);
 
-  useCollaborativeEditorMode(userName, pageId, initialValue, onOpenEditor, codeMirrorEditor);
-
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
+  useCollaborativeEditorMode(isEditorMode, user, pageId, initialValue, onEditorsUpdated, codeMirrorEditor);
 
   // setup additional extensions
   useEffect(() => {
@@ -71,16 +65,11 @@ export const CodeMirrorEditorMain = (props: Props): JSX.Element => {
     return cleanupFunction;
   }, [codeMirrorEditor, onSave]);
 
-
   return (
     <CodeMirrorEditor
       editorKey={GlobalCodeMirrorEditorKey.MAIN}
-      onChange={onChange}
-      onUpload={onUpload}
-      onScroll={onScroll}
-      acceptedFileType={acceptedFileTypeNoOpt}
-      indentSize={indentSize}
-      editorTheme={editorTheme}
+      onSave={onSave}
+      {...otherProps}
     />
   );
 };

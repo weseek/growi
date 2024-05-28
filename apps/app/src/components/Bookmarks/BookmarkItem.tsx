@@ -12,23 +12,23 @@ import { UncontrolledTooltip, DropdownToggle } from 'reactstrap';
 
 import { bookmark, unbookmark, unlink } from '~/client/services/page-operation';
 import { addBookmarkToFolder, renamePage } from '~/client/util/bookmark-utils';
-import { ValidationTarget } from '~/client/util/input-validator';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { BookmarkFolderItems, DragItemDataType, DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, DragItemDataType } from '~/interfaces/bookmark-info';
+import { DRAG_ITEM_TYPE } from '~/interfaces/bookmark-info';
 import { usePutBackPageModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { MenuItemType, PageItemControl } from '../Common/Dropdown/PageItemControl';
 import { PageListItemS } from '../PageList/PageListItemS';
 
+import { BookmarkItemRenameInput } from './BookmarkItemRenameInput';
 import { BookmarkMoveToRootBtn } from './BookmarkMoveToRootBtn';
 import { DragAndDropWrapper } from './DragAndDropWrapper';
 
 type Props = {
   isReadOnlyUser: boolean
   isOperable: boolean,
-  bookmarkedPage: IPageHasId,
+  bookmarkedPage: IPageHasId | null,
   level: number,
   parentFolder: BookmarkFolderItems | null,
   canMoveToRoot: boolean,
@@ -38,7 +38,7 @@ type Props = {
 
 export const BookmarkItem = (props: Props): JSX.Element => {
   const BASE_FOLDER_PADDING = 15;
-  const BASE_BOOKMARK_PADDING = 20;
+  const BASE_BOOKMARK_PADDING = 16;
 
   const { t } = useTranslation();
   const router = useRouter();
@@ -50,17 +50,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
   const { open: openPutBackPageModal } = usePutBackPageModal();
   const [isRenameInputShown, setRenameInputShown] = useState(false);
 
-  const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage._id);
+  const { data: pageInfo, mutate: mutatePageInfo } = useSWRxPageInfo(bookmarkedPage?._id);
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
-  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
-  const { latter: pageTitle, former: formerPagePath } = dPagePath;
-  const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
-  const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level + 1));
+
+  const paddingLeft = BASE_BOOKMARK_PADDING + (BASE_FOLDER_PADDING * (level));
   const dragItem: Partial<DragItemDataType> = {
     ...bookmarkedPage, parentFolder,
   };
 
   const onClickMoveToRootHandler = useCallback(async() => {
+    if (bookmarkedPage == null) return;
+
     try {
       await addBookmarkToFolder(bookmarkedPage._id, null);
       bookmarkFolderTreeMutation();
@@ -68,7 +68,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     catch (err) {
       toastError(err);
     }
-  }, [bookmarkFolderTreeMutation, bookmarkedPage._id]);
+  }, [bookmarkFolderTreeMutation, bookmarkedPage]);
 
   const bookmarkMenuItemClickHandler = useCallback(async(pageId: string, shouldBookmark: boolean) => {
     if (shouldBookmark) {
@@ -85,9 +85,20 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, []);
 
-  const pressEnterForRenameHandler = useCallback(async(inputText: string) => {
+  const cancel = useCallback(() => {
+    setRenameInputShown(false);
+  }, []);
+
+  const rename = useCallback(async(inputText: string) => {
+    if (bookmarkedPage == null) return;
+
+
+    if (inputText.trim() === '') {
+      return cancel();
+    }
+
     const parentPath = pathUtils.addTrailingSlash(nodePath.dirname(bookmarkedPage.path ?? ''));
-    const newPagePath = nodePath.resolve(parentPath, inputText);
+    const newPagePath = nodePath.resolve(parentPath, inputText.trim());
     if (newPagePath === bookmarkedPage.path) {
       setRenameInputShown(false);
       return;
@@ -103,9 +114,11 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       setRenameInputShown(true);
       toastError(err);
     }
-  }, [bookmarkedPage.path, bookmarkedPage._id, bookmarkedPage.revision, bookmarkFolderTreeMutation, mutatePageInfo]);
+  }, [bookmarkedPage, cancel, bookmarkFolderTreeMutation, mutatePageInfo]);
 
   const deleteMenuItemClickHandler = useCallback(async(_pageId: string, pageInfo: IPageInfoAll | undefined): Promise<void> => {
+    if (bookmarkedPage == null) return;
+
     if (bookmarkedPage._id == null || bookmarkedPage.path == null) {
       throw Error('_id and path must not be null.');
     }
@@ -120,9 +133,11 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     };
 
     onClickDeleteMenuItemHandler(pageToDelete);
-  }, [bookmarkedPage._id, bookmarkedPage.path, bookmarkedPage.revision, onClickDeleteMenuItemHandler]);
+  }, [bookmarkedPage, onClickDeleteMenuItemHandler]);
 
   const putBackClickHandler = useCallback(() => {
+    if (bookmarkedPage == null) return;
+
     const { _id: pageId, path } = bookmarkedPage;
     const putBackedHandler = async() => {
       try {
@@ -140,6 +155,15 @@ export const BookmarkItem = (props: Props): JSX.Element => {
     openPutBackPageModal({ pageId, path }, { onPutBacked: putBackedHandler });
   }, [bookmarkedPage, openPutBackPageModal, bookmarkFolderTreeMutation, router, mutateCurrentPage, t]);
 
+  if (bookmarkedPage == null) {
+    return <></>;
+  }
+
+  const dPagePath = new DevidedPagePath(bookmarkedPage.path, false, true);
+  const { latter: pageTitle, former: formerPagePath } = dPagePath;
+
+  const bookmarkItemId = `bookmark-item-${bookmarkedPage._id}`;
+
   return (
     <DragAndDropWrapper
       item={dragItem}
@@ -147,19 +171,17 @@ export const BookmarkItem = (props: Props): JSX.Element => {
       useDragMode={isOperable}
     >
       <li
-        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 me-auto d-flex align-items-center"
+        className="grw-bookmark-item-list list-group-item list-group-item-action border-0 py-0 pe-1 me-auto d-flex align-items-center rounded-1"
         key={bookmarkedPage._id}
         id={bookmarkItemId}
         style={{ paddingLeft }}
       >
         { isRenameInputShown
           ? (
-            <ClosableTextInput
+            <BookmarkItemRenameInput
               value={nodePath.basename(bookmarkedPage.path ?? '')}
-              placeholder={t('Input page name')}
-              onClickOutside={() => { setRenameInputShown(false) }}
-              onPressEnter={pressEnterForRenameHandler}
-              validationTarget={ValidationTarget.PAGE}
+              onSubmit={rename}
+              onCancel={() => { setRenameInputShown(false) }}
             />
           )
           : <PageListItemS page={bookmarkedPage} pageTitle={pageTitle} isNarrowView />}
@@ -180,7 +202,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
               : undefined}
           >
             <DropdownToggle color="transparent" className="border-0 rounded btn-page-item-control p-0 grw-visible-on-hover me-1">
-              <i className="icon-options fa fa-rotate-90 p-1"></i>
+              <span className="material-symbols-outlined p-1">more_vert</span>
             </DropdownToggle>
           </PageItemControl>
         </div>
@@ -191,7 +213,7 @@ export const BookmarkItem = (props: Props): JSX.Element => {
           target={bookmarkItemId}
           fade={false}
         >
-          {formerPagePath !== null ? `${formerPagePath}/` : '/'}
+          {dPagePath.isFormerRoot ? '/' : `${formerPagePath}/`}
         </UncontrolledTooltip>
       </li>
     </DragAndDropWrapper>

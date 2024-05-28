@@ -123,7 +123,7 @@ context('Search all pages', () => {
     cy.waitUntil(() => {
       // do
       cy.getByTestid('grw-tag-labels').as('tagLabels').should('be.visible');
-      cy.get('@tagLabels').find('a.btn').as('btn').click();
+      cy.get('@tagLabels').find('button').first().as('btn').click({force: true});
       // wait until
       return cy.get('body').within(() => {
         return Cypress.$('.modal.show').is(':visible');
@@ -225,23 +225,23 @@ context('Sort with dropdown', () => {
     // open sort dropdown
     cy.waitUntil(() => {
       // do
-      cy.get('.grw-search-page-nav').within(() => {
-        cy.get('button.dropdown-toggle').first().click({force: true});
+      cy.get('.search-control').within(() => {
+        cy.get('button').first().click({force: true});
       });
       // wait until
-      return cy.get('.grw-search-page-nav').within(() => {
+      return cy.get('.search-control').within(() => {
         return Cypress.$('.dropdown-menu.show').is(':visible');
       });
     });
   });
 
   it('Open sort dropdown', () => {
-    cy.get('.grw-search-page-nav .dropdown-menu.show').should('be.visible');
+    cy.get('.search-control .dropdown-menu.show').should('be.visible');
       cy.screenshot(`${ssPrefix}2-open-sort-dropdown`);
   });
 
   it('Sort by relevance', () => {
-    cy.get('.grw-search-page-nav .dropdown-menu.show').should('be.visible').within(() => {
+    cy.get('.search-control .dropdown-menu.show').should('be.visible').within(() => {
       cy.get('button:nth-child(1)').click({force: true});
     });
     cy.getByTestid('search-result-base').should('be.visible');
@@ -256,7 +256,7 @@ context('Sort with dropdown', () => {
   });
 
   it('Sort by creation date', () => {
-    cy.get('.grw-search-page-nav .dropdown-menu.show').should('be.visible').within(() => {
+    cy.get('.search-control .dropdown-menu.show').should('be.visible').within(() => {
       cy.get('button:nth-child(2)').click({force: true});
     });
     cy.getByTestid('search-result-base').should('be.visible');
@@ -271,7 +271,7 @@ context('Sort with dropdown', () => {
   });
 
   it('Sort by last update date', () => {
-    cy.get('.grw-search-page-nav .dropdown-menu.show').should('be.visible').within(() => {
+    cy.get('.search-control .dropdown-menu.show').should('be.visible').within(() => {
       cy.get('button:nth-child(3)').click({force: true});
     });
     cy.getByTestid('search-result-base').should('be.visible');
@@ -328,7 +328,7 @@ context('Search and use', () => {
   it('Successfully add bookmark', () => {
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
       // Add bookmark
-      cy.getByTestid('add-remove-bookmark-btn').click({force: true});
+      cy.getByTestid('add-bookmark-btn').click({force: true});
     });
     cy.getByTestid('search-result-content').within(() => {
       cy.get('.btn-bookmark.active').should('be.visible');
@@ -349,7 +349,7 @@ context('Search and use', () => {
 
   it('Successfully open move/rename modal', () => {
     cy.get('.dropdown-menu.show').should('be.visible').within(() => {
-      cy.getByTestid('open-page-move-rename-modal-btn').click({force: true});
+      cy.getByTestid('rename-page-btn').click({force: true});
     });
     cy.getByTestid('page-rename-modal').should('be.visible').within(() => {
       cy.screenshot(`${ssPrefix}4-move-rename-page`);

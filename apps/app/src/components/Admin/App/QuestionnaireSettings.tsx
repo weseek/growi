@@ -2,6 +2,7 @@ import {
   useState, useCallback, useEffect,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
@@ -49,8 +50,8 @@ const QuestionnaireSettings = (): JSX.Element => {
 
   return (
     <div id="questionnaire-settings" className="mb-5">
-      <p className="card custom-card">
-        <div className="mb-4">{t('app_setting.questionnaire_settings_explanation')}</div>
+      <p className="card custom-card bg-info-subtle">
+        <div className="mb-3">{t('app_setting.questionnaire_settings_explanation')}</div>
         <span>
           <div className="mb-2">
             <span className="text-info me-2"><span className="material-symbols-outlined">info</span>{t('app_setting.about_data_sent')}</span>
@@ -65,14 +66,14 @@ const QuestionnaireSettings = (): JSX.Element => {
 
       {isLoading && (
         <div className="text-muted text-center mb-5">
-          <i className="fa fa-2x fa-spinner fa-pulse me-1" />
+          <LoadingSpinner className="me-1 fs-3" />
         </div>
       )}
 
       {!isLoading && (
         <>
-          <div className="row my-3">
-            <div className="form-check form-switch form-check-info col-md-5 offset-md-5">
+          <div className="my-4">
+            <div className="form-check form-switch form-check-info">
               <input
                 type="checkbox"
                 className="form-check-input"
@@ -86,8 +87,8 @@ const QuestionnaireSettings = (): JSX.Element => {
             </div>
           </div>
 
-          <div className="row my-4">
-            <div className="form-check form-check-info col-md-5 offset-md-5">
+          <div className="my-4">
+            <div className="form-check form-check-info">
               <input
                 type="checkbox"
                 className="form-check-input"

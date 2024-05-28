@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -46,12 +47,12 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
 
   return (
     <Modal size="lg" isOpen={isOpen} toggle={onCloseModal} autoFocus={false}>
-      <ModalHeader tag="h4" toggle={onCloseModal} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={onCloseModal}>
         Search Option
       </ModalHeader>
       <ModalBody>
         <div className="d-flex p-2">
-          <div className="border border-gray me-3">
+          <div className="me-3">
             <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="me-2"
@@ -62,7 +63,7 @@ const SearchOptionModal: FC<Props> = (props: Props) => {
               {t('Include Subordinated Target Page', { target: '/user' })}
             </label>
           </div>
-          <div className="border border-gray">
+          <div className="">
             <label className="form-label px-3 py-2 mb-0 d-flex align-items-center">
               <input
                 className="me-2"

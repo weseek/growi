@@ -1,10 +1,14 @@
 @use '@growi/ui/scss/molecules/page_list';
+
 $grw-sidebar-content-header-height: 58px;
 $grw-sidebar-content-footer-height: 50px;
 
 .user-page-footer :global {
   .grw-user-page-list-m {
-    .list-group{
+    .growi-custom-icons {
+      font-size: 1.1em;
+    }
+    .list-group {
       .list-group-item {
         .grw-visible-on-hover {
           display: none;
@@ -15,19 +19,9 @@ $grw-sidebar-content-footer-height: 50px;
             display: block;
           }
         }
-        .grw-triangle-container{
-          svg {
-            width: 12px;
-            height: 12px;
-          }
-        }
-        svg{
-          width: 20px;
-          height: 20px;
-        }
-        min-height: 40px;
-        border-radius: 0px;
 
+        min-height: 40px;
+        border-radius: 0;
 
         &.grw-bookmark-item-list {
           .picture {
@@ -40,17 +34,15 @@ $grw-sidebar-content-footer-height: 50px;
               height: 20px;
             }
           }
-          svg{
+          svg {
             width: 14px;
             height: 14px;
           }
-          .grw-foldertree-control{
+          .grw-foldertree-control {
             margin-left: 1rem;
           }
         }
       }
-
-
     }
 
     .grw-foldertree-item-container {
@@ -58,29 +50,15 @@ $grw-sidebar-content-footer-height: 50px;
         max-width: 25%;
       }
     }
-    .grw-foldertree-title-anchor{
+    .grw-foldertree-title-anchor {
       width: fit-content !important;
       margin-right: 20px;
     }
-    svg {
-      width: 35px;
-      height: 35px;
-      margin-bottom: 6px;
-    }
-    .new-bookmark-folder{
+    .new-bookmark-folder {
       max-height: 30px;
-      svg {
-        width: 18px;
-        height: 18px;
-      }
     }
     .grw-expand-compress-btn {
       max-height: 40px;
-      svg {
-        width: 18px;
-        height: 18px;
-        margin-bottom: 3px;
-      }
     }
     .grw-folder-tree-container {
       .grw-drop-item-area {

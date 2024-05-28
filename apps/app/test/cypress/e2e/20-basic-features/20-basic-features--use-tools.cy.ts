@@ -10,7 +10,7 @@ context('Modal for page operation', () => {
   });
 
   it('Page Deletion and PutBack is executed successfully', { scrollBehavior: false }, () => {
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox/Bootstrap5');
 
     cy.waitUntil(() => {
       // do
@@ -30,7 +30,7 @@ context('Modal for page operation', () => {
 
     cy.getByTestid('trash-page-alert').should('be.visible');
     cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-bootstrap4-is-in-garbage-box`);
+    cy.screenshot(`${ssPrefix}-bootstrap5-is-in-garbage-box`);
 
     cy.getByTestid('put-back-button').click();
     cy.getByTestid('put-back-page-modal').should('be.visible').within(() => {
@@ -39,11 +39,11 @@ context('Modal for page operation', () => {
     });
 
     cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-put-backed-bootstrap4-page`);
+    cy.screenshot(`${ssPrefix}-put-backed-bootstrap5-page`);
   });
 
   it('PageDuplicateModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox/5');
     cy.waitUntilSkeletonDisappear();
 
     cy.waitUntil(() => {
@@ -57,11 +57,11 @@ context('Modal for page operation', () => {
 
     cy.getByTestid('open-page-duplicate-modal-btn').filter(':visible').click({force: true});
 
-    cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap4`);
+    cy.getByTestid('page-duplicate-modal').should('be.visible').screenshot(`${ssPrefix}-duplicate-bootstrap5`);
   });
 
   it('PageMoveRenameModal is shown successfully', () => {
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox/Bootstrap5');
     cy.waitUntilSkeletonDisappear();
 
     cy.waitUntil(() => {
@@ -73,10 +73,10 @@ context('Modal for page operation', () => {
       return cy.getByTestid('page-item-control-menu').then($elem => $elem.is(':visible'))
     });
 
-    cy.getByTestid('open-page-move-rename-modal-btn').filter(':visible').click({force: true});
+    cy.getByTestid('rename-page-btn').filter(':visible').click({force: true});
     cy.getByTestid('grw-page-rename-button').should('be.disabled');
 
-    cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap4`);
+    cy.getByTestid('page-rename-modal').should('be.visible').screenshot(`${ssPrefix}-rename-bootstrap5`);
   });
 
 });
@@ -144,7 +144,7 @@ context('Page Accessories Modal', () => {
     cy.getByTestid('page-history').should('be.visible');
 
     cy.waitUntilSpinnerDisappear();
-    cy.screenshot(`${ssPrefix}-open-page-history-bootstrap4`);
+    cy.screenshot(`${ssPrefix}-open-page-history-bootstrap5`);
   });
 
   it('Page Attachment Data is shown successfully', () => {
@@ -155,7 +155,7 @@ context('Page Accessories Modal', () => {
     cy.waitUntilSpinnerDisappear();
     cy.getByTestid('page-attachment').should('be.visible').contains('No attachments yet.');
 
-    cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap4`);
+    cy.screenshot(`${ssPrefix}-open-page-attachment-data-bootstrap5`);
   });
 
   it('Share Link Management is shown successfully', () => {
@@ -167,7 +167,7 @@ context('Page Accessories Modal', () => {
     cy.getByTestid('page-accessories-modal').should('be.visible');
     cy.getByTestid('share-link-management').should('be.visible');
 
-    cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap4`);
+    cy.screenshot(`${ssPrefix}-open-share-link-management-bootstrap5`);
   });
 });
 
@@ -184,7 +184,7 @@ context('Tag Oprations', { scrollBehavior: false }, () =>{
     const ssPrefix = 'tag-operations-add-new-tag-'
     const tag = 'we';
 
-    cy.visit('/Sandbox/Bootstrap4');
+    cy.visit('/Sandbox/Bootstrap5');
     cy.collapseSidebar(true);
 
     // Add tag

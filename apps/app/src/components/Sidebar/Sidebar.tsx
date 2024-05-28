@@ -1,6 +1,7 @@
 import React, {
   type FC,
   memo, useCallback, useEffect, useState,
+  useRef,
 } from 'react';
 
 import dynamic from 'next/dynamic';
@@ -13,6 +14,7 @@ import {
   useCurrentProductNavWidth,
   usePreferCollapsedMode,
   useSidebarMode,
+  useSidebarScrollerRef,
 } from '~/stores/ui';
 
 import { DrawerToggler } from '../Common/DrawerToggler';
@@ -109,6 +111,10 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   const { data: currentProductNavWidth } = useCurrentProductNavWidth();
   const { data: isCollapsedContentsOpened, mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
+  const sidebarScrollerRef = useRef<HTMLDivElement>(null);
+  const { mutate: mutateSidebarScroller } = useSidebarScrollerRef();
+  mutateSidebarScroller(sidebarScrollerRef);
+
 
   // open menu when collapsed mode
   const primaryItemHoverHandler = useCallback(() => {
@@ -130,13 +136,18 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
     mutateCollapsedContentsOpened(false);
   }, [isCollapsedMode, mutateCollapsedContentsOpened]);
 
-  const openClass = `${isCollapsedContentsOpened ? 'open' : ''}`;
+  const closedClass = isCollapsedMode() && !isCollapsedContentsOpened ? 'd-none' : '';
+  const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';
   const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div className={`sidebar-contents-container flex-grow-1 overflow-y-auto ${openClass}`} style={{ width: collapsibleContentsWidth }}>
+      <div
+        ref={sidebarScrollerRef}
+        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
+        style={{ width: collapsibleContentsWidth }}
+      >
         {children}
       </div>
     </div>

@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
@@ -90,7 +90,7 @@ export const TrashPageAlert = (): JSX.Element => {
           onClick={openPutbackPageModalHandler}
           data-testid="put-back-button"
         >
-          <i className="icon-action-undo" aria-hidden="true"></i> {t('Put Back')}
+          <span className="material-symbols-outlined" aria-hidden="true">undo</span> {t('Put Back')}
         </button>
         <button
           type="button"

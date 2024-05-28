@@ -5,8 +5,7 @@ import type { ReactCodeMirrorProps, UseCodeMirror } from '@uiw/react-codemirror'
 import type { SWRResponse } from 'swr';
 import deepmerge from 'ts-deepmerge';
 
-import type { UseCodeMirrorEditor } from '../services';
-import { useCodeMirrorEditor } from '../services';
+import { type UseCodeMirrorEditor, useCodeMirrorEditor } from '../services';
 
 
 const isValid = (u: UseCodeMirrorEditor) => {
@@ -45,8 +44,6 @@ export const useCodeMirrorEditorIsolated = (
 
   if (shouldUpdate) {
     ref.current = newData;
-    // eslint-disable-next-line no-console
-    console.info('Initializing codemirror for main');
   }
 
   return useSWRStatic(swrKey, shouldUpdate ? newData : undefined);

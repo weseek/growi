@@ -16,7 +16,6 @@ describe('Page', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -488,7 +487,6 @@ describe('Page', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
@@ -1533,6 +1531,7 @@ describe('Page', () => {
             // userB group remains, although options does not include it
             { item: userGroupIdPModelB, type: GroupType.userGroup },
           ]));
+          expect(normalizeGrantedGroups(page.grantedGroups).length).toBe(3);
         });
       });
     });
@@ -1673,6 +1672,7 @@ describe('Page', () => {
         { item: upodUserGroupIdB, type: GroupType.userGroup },
         { item: upodExternalUserGroupIdB, type: GroupType.externalUserGroup },
       ]));
+      expect(normalizeGrantedGroups(upodPagegAgBUpdated.grantedGroups).length).toBe(4);
 
       // Not changed
       expect(upodPagegBUpdated.grant).toBe(PageGrant.GRANT_USER_GROUP);

@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
+import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -20,7 +20,7 @@ import styles from './DeleteAttachmentModal.module.scss';
 const logger = loggerFactory('growi:attachmentDelete');
 
 const iconByFormat = (format: string): string => {
-  return format.match(/image\/.+/i) ? 'icon-picture' : 'icon-doc';
+  return format.match(/image\/.+/i) ? 'image' : 'description';
 };
 
 export const DeleteAttachmentModal: React.FC = () => {
@@ -73,10 +73,10 @@ export const DeleteAttachmentModal: React.FC = () => {
     return (
       <div className="attachment-delete-image">
         <p>
-          <i className={iconByFormat(attachment.fileFormat)}></i> {attachment.originalName}
+          <span className="material-symbols-outlined">{iconByFormat(attachment.fileFormat)}</span> {attachment.originalName}
         </p>
         <p>
-          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator as IUser}></Username>
+          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
         </p>
         {content}
       </div>
@@ -85,7 +85,7 @@ export const DeleteAttachmentModal: React.FC = () => {
 
   const deletingIndicator = useMemo(() => {
     if (deleting) {
-      return <div className="speeding-wheel-sm"></div>;
+      return <LoadingSpinner />;
     }
     if (deleteError) {
       return <span>{deleteError}</span>;
@@ -101,7 +101,7 @@ export const DeleteAttachmentModal: React.FC = () => {
       aria-labelledby="contained-modal-title-lg"
       fade={false}
     >
-      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggleHandler} className="text-danger">
         <span id="contained-modal-title-lg">{t('delete_attachment_modal.confirm_delete_attachment')}</span>
       </ModalHeader>
       <ModalBody>

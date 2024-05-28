@@ -24,10 +24,10 @@ export const NewPageCreateButton: FC<NewPageCreateButtonProps> = (props) => {
             <button
               id="page-create-button-in-page-tree"
               type="button"
-              className="border-0 rounded btn btn-page-item-control p-0 grw-visible-on-hover"
+              className="border-0 rounded btn btn-page-item-control p-0"
               onClick={onClick}
             >
-              <i className="icon-plus d-block p-0" />
+              <span className="material-symbols-outlined p-0">add_circle</span>
             </button>
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>

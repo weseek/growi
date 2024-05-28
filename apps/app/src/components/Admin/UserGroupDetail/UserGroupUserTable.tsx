@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { UserPicture } from '@growi/ui/dist/components';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import type { IUserGroupRelationHasIdPopulatedUser } from '~/interfaces/user-group-response';
@@ -17,7 +17,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
 
   return (
-    <table className="table table-bordered table-user-list">
+    <table className="table table-bordered table-user-list mb-5">
       <thead>
         <tr>
           <th style={{ width: '100px' }}>#</th>
@@ -52,9 +52,9 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                       type="button"
                       id={`admin-group-menu-button-${relatedUser._id}`}
                       className="btn btn-outline-secondary btn-sm dropdown-toggle"
-                      data-toggle="dropdown"
+                      data-bs-toggle="dropdown"
                     >
-                      <i className="icon-settings"></i>
+                      <span className="material-symbols-outlined fs-5">settings</span>
                     </button>
                     <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${relatedUser._id}`}>
                       <button
@@ -62,7 +62,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
                         type="button"
                         onClick={() => props.onClickRemoveUserBtn(relatedUser.username)}
                       >
-                        <i className="icon-fw icon-user-unfollow"></i> {t('admin:user_group_management.remove_from_group')}
+                        <span className="material-symbols-outlined me-1">person_remove</span>{t('admin:user_group_management.remove_from_group')}
                       </button>
                     </div>
                   </div>
@@ -77,7 +77,7 @@ export const UserGroupUserTable = (props: Props): JSX.Element => {
             <td></td>
             <td className="text-center">
               <button className="btn btn-outline-secondary" type="button" onClick={props.onClickPlusBtn}>
-                <i className="ti ti-plus"></i>
+                <span className="material-symbols-outlined">add</span>
               </button>
             </td>
             <td></td>

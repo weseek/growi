@@ -1,6 +1,6 @@
 import React, { type ReactNode, useMemo } from 'react';
 
-import {
+import type {
   GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -10,18 +10,20 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components/Layout/BasicLayout';
-import { CrowiRequest } from '~/interfaces/crowi-request';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCurrentUser, useIsSearchPage, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
-  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp,
+  useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import { NextPageWithLayout } from '../_app.page';
+import type { NextPageWithLayout } from '../_app.page';
 import type { CommonProps } from '../utils/commons';
 import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
@@ -40,6 +42,8 @@ type Props = CommonProps & {
 
   // config
   registrationWhitelist: string[],
+
+  sidebarConfig: ISidebarConfig,
 };
 
 const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
@@ -99,8 +103,10 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/me');
 
   // init sidebar config with UserUISettings and sidebarConfig
   useInitSidebarConfig(props.sidebarConfig, props.userUISettings);
@@ -121,17 +127,15 @@ const MePage: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root">
-        <header className="py-3">
-          <div className="container-fluid">
-            <h1 className="title">{ targetPage.title }</h1>
-          </div>
-        </header>
+        <GroundGlassBar className="sticky-top py-4"></GroundGlassBar>
 
-        <div id="grw-fav-sticky-trigger" className="sticky-top"></div>
+        <div className="main ps-sidebar">
+          <div className="container-lg wide-gutter-x-lg">
 
-        <div id="main" className="main">
-          <div id="content-main" className="content-main container-lg">
+            <h1 className="sticky-top py-2 fs-3">{ targetPage.title }</h1>
+
             {targetPage.component}
+
           </div>
         </div>
       </div>
@@ -177,6 +181,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {

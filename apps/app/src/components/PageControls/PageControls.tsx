@@ -1,4 +1,6 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, {
+  memo, useCallback, useEffect, useMemo, useRef,
+} from 'react';
 
 import type {
   IPageInfoForOperation, IPageToDeleteWithMeta, IPageToRenameWithMeta,
@@ -6,6 +8,7 @@ import type {
 import {
   isIPageInfoForEntity, isIPageInfoForOperation,
 } from '@growi/core';
+import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
 import { DropdownItem } from 'reactstrap';
 
@@ -15,13 +18,16 @@ import {
 import { toastError } from '~/client/util/toastr';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
-import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import {
+  EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
+} from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { useSWRxPageInfo, useSWRxTagsInfo } from '../../stores/page';
 import { useSWRxUsersList } from '../../stores/user';
+import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import {
-  AdditionalMenuItemsRendererProps, ForceHideMenuItems, MenuItemType,
+  MenuItemType,
   PageItemControl,
 } from '../Common/Dropdown/PageItemControl';
 
@@ -43,23 +49,24 @@ type TagsProps = {
 
 const Tags = (props: TagsProps): JSX.Element => {
   const { onClickEditTagsButton } = props;
+  const { t } = useTranslation();
 
   return (
-    <div className="grw-taglabels-container d-flex align-items-center">
+    <div className="grw-tag-labels-container d-flex align-items-center">
       <button
         type="button"
-        className="btn btn-link btn-edit-tags text-muted border border-secondary p-1 d-flex align-items-center"
+        className="btn btn-sm btn-outline-neutral-secondary"
         onClick={onClickEditTagsButton}
       >
-        <i className="icon-tag me-2" />
-        Tags
+        <span className="material-symbols-outlined">local_offer</span>
+        <span className="d-none d-sm-inline ms-1">{t('Tags')}</span>
       </button>
     </div>
   );
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (newValue: boolean) => void,
+  onClickMenuItem: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -70,30 +77,39 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
     onClickMenuItem, expandContentWidth,
   } = props;
 
+  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    onClickMenuItem();
+  }, [onClickMenuItem]);
+
   return (
-    <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth))}
-      className="grw-page-control-dropdown-item"
+    <div
+      className="grw-page-control-dropdown-item dropdown-item"
+      onClick={menuItemClickedHandler}
     >
       <div className="form-check form-switch ms-1">
         <input
-          id="switchContentWidth"
           className="form-check-input"
           type="checkbox"
           checked={expandContentWidth}
-          onChange={() => {}}
         />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
+        <label className="form-label form-check-label">
           { t('wide_view') }
         </label>
       </div>
-    </DropdownItem>
+    </div>
   );
 };
 
 
 type CommonProps = {
+  pageId: string,
+  shareLinkId?: string | null,
+  revisionId?: string | null,
+  path?: string | null,
+  expandContentWidth?: boolean,
   disableSeenUserInfoPopover?: boolean,
+  hideSubControls?: boolean,
   showPageControlDropdown?: boolean,
   forceHideMenuItems?: ForceHideMenuItems,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
@@ -104,12 +120,7 @@ type CommonProps = {
 }
 
 type PageControlsSubstanceProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId: string | null,
-  path?: string | null,
   pageInfo: IPageInfoForOperation,
-  expandContentWidth?: boolean,
   onClickEditTagsButton: () => void,
 }
 
@@ -117,7 +128,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const {
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
-    disableSeenUserInfoPopover, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
+    disableSeenUserInfoPopover, hideSubControls, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
     onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
@@ -130,6 +141,19 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   const likerIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.likerIds ?? []).slice(0, 15) : [];
   const seenUserIds = isIPageInfoForEntity(pageInfo) ? (pageInfo.seenUserIds ?? []).slice(0, 15) : [];
+
+  const { mutate: mutatePageControlsX } = usePageControlsX();
+
+  const pageControlsRef = useRef<HTMLDivElement>(null);
+  const [pageControlsRect] = useRect(pageControlsRef);
+
+  useEffect(() => {
+    if (pageControlsRect?.x == null) {
+      return;
+    }
+    mutatePageControlsX(pageControlsRect.x);
+  }, [pageControlsRect?.x, mutatePageControlsX]);
+
 
   // Put in a mixture of seenUserIds and likerIds data to make the cache work
   const { data: usersList } = useSWRxUsersList([...likerIds, ...seenUserIds]);
@@ -177,7 +201,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     const page: IPageToRenameWithMeta = {
       data: {
         _id: pageId,
-        revision: revisionId,
+        revision: revisionId ?? null,
         path,
       },
       meta: pageInfo,
@@ -194,7 +218,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     const pageToDelete: IPageToDeleteWithMeta = {
       data: {
         _id: pageId,
-        revision: revisionId,
+        revision: revisionId ?? null,
         path,
       },
       meta: pageInfo,
@@ -203,7 +227,9 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+  const switchContentWidthClickHandler = useCallback(() => {
+
+    const newValue = !expandContentWidth;
     if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       logger.warn('Could not switch content width', {
         onClickSwitchContentWidth: onClickSwitchContentWidth == null ? 'null' : 'not null',
@@ -221,7 +247,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
+  }, [expandContentWidth, isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -234,7 +260,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
@@ -248,49 +274,56 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     MenuItemType.REVERT,
   ];
 
+  const _isIPageInfoForOperation = isIPageInfoForOperation(pageInfo);
   const isViewMode = editorMode === EditorMode.View;
 
   return (
-    <div className={`grw-page-controls ${styles['grw-page-controls']} d-flex`} style={{ gap: '2px' }}>
-      { isDeviceLargerThanMd && (
+    <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
+      { isViewMode && isDeviceLargerThanMd && (
         <SearchButton />
       )}
-      {revisionId != null && !isViewMode && (
+
+      {revisionId != null && !isViewMode && _isIPageInfoForOperation && (
         <Tags
           onClickEditTagsButton={onClickEditTagsButton}
         />
       )}
-      {revisionId != null && (
-        <SubscribeButton
-          status={pageInfo.subscriptionStatus}
-          onClick={subscribeClickhandler}
-        />
-      )}
-      {revisionId != null && (
-        <LikeButtons
-          onLikeClicked={likeClickhandler}
-          sumOfLikers={sumOfLikers}
-          isLiked={isLiked}
-          likers={likers}
-        />
-      )}
-      {revisionId != null && (
-        <BookmarkButtons
-          pageId={pageId}
-          isBookmarked={pageInfo.isBookmarked}
-          bookmarkCount={pageInfo.bookmarkCount}
-        />
-      )}
-      {revisionId != null && (
-        <SeenUserInfo
-          seenUsers={seenUsers}
-          sumOfSeenUsers={sumOfSeenUsers}
-          disabled={disableSeenUserInfoPopover}
-        />
+
+      { !hideSubControls && (
+        <div className={`hstack gap-1 ${!isViewMode && 'd-none d-lg-flex'}`}>
+          {revisionId != null && _isIPageInfoForOperation && (
+            <SubscribeButton
+              status={pageInfo.subscriptionStatus}
+              onClick={subscribeClickhandler}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <LikeButtons
+              onLikeClicked={likeClickhandler}
+              sumOfLikers={sumOfLikers}
+              isLiked={isLiked}
+              likers={likers}
+            />
+          )}
+          {revisionId != null && _isIPageInfoForOperation && (
+            <BookmarkButtons
+              pageId={pageId}
+              isBookmarked={pageInfo.isBookmarked}
+              bookmarkCount={pageInfo.bookmarkCount}
+            />
+          )}
+          {revisionId != null && (
+            <SeenUserInfo
+              seenUsers={seenUsers}
+              sumOfSeenUsers={sumOfSeenUsers}
+              disabled={disableSeenUserInfoPopover}
+            />
+          ) }
+        </div>
       ) }
-      { showPageControlDropdown && (
+
+      { showPageControlDropdown && _isIPageInfoForOperation && (
         <PageItemControl
-          alignEnd
           pageId={pageId}
           pageInfo={pageInfo}
           isEnableActions={!isGuestUser}
@@ -307,18 +340,12 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   );
 };
 
-type PageControlsProps = CommonProps & {
-  pageId: string,
-  shareLinkId?: string | null,
-  revisionId?: string,
-  path?: string | null,
-  expandContentWidth?: boolean,
-};
+type PageControlsProps = CommonProps;
 
 export const PageControls = memo((props: PageControlsProps): JSX.Element => {
   const {
-    pageId, revisionId, path, shareLinkId, expandContentWidth,
-    onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
+    pageId, revisionId, shareLinkId,
+    ...rest
   } = props;
 
   const { data: pageInfo, error } = useSWRxPageInfo(pageId ?? null, shareLinkId);
@@ -336,23 +363,17 @@ export const PageControls = memo((props: PageControlsProps): JSX.Element => {
     return <></>;
   }
 
-  if (!isIPageInfoForOperation(pageInfo)) {
+  if (!isIPageInfoForEntity(pageInfo)) {
     return <></>;
   }
 
   return (
     <PageControlsSubstance
-      {...props}
       pageInfo={pageInfo}
       pageId={pageId}
-      revisionId={revisionId ?? null}
-      path={path}
+      revisionId={revisionId}
       onClickEditTagsButton={onClickEditTagsButton}
-      onClickDuplicateMenuItem={onClickDuplicateMenuItem}
-      onClickRenameMenuItem={onClickRenameMenuItem}
-      onClickDeleteMenuItem={onClickDeleteMenuItem}
-      onClickSwitchContentWidth={onClickSwitchContentWidth}
-      expandContentWidth={expandContentWidth}
+      {...rest}
     />
   );
 });

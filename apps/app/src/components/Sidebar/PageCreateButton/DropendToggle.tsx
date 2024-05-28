@@ -15,6 +15,7 @@ export const DropendToggle = (): JSX.Element => {
       color="primary"
       className={`position-absolute z-1 ${moduleClass}`}
       aria-expanded={false}
+      data-testid="grw-page-create-button-dropend-toggle"
     >
       <Hexagon />
       <div className="hitarea position-absolute" />

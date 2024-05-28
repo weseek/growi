@@ -8,10 +8,10 @@ import {
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { IPageGrantData } from '~/interfaces/page';
-import { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
+import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
-import { useSWRxApplicableGrant, useSWRxIsGrantNormalized, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxApplicableGrant, useSWRxCurrentGrantData, useSWRxCurrentPage } from '~/stores/page';
 
 type ModalProps = {
   isOpen: boolean
@@ -99,10 +99,19 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     }
 
     if (grantData.grant === 5) {
-      if (grantData.userRelatedGrantedGroups == null || grantData.userRelatedGrantedGroups.length === 0) {
-        return t('fix_page_grant.modal.grant_label.isForbidden');
+      const groupGrantData = grantData.groupGrantData;
+      if (groupGrantData != null) {
+        const userRelatedGrantedGroups = groupGrantData.userRelatedGroups.filter(group => group.status === UserGroupPageGrantStatus.isGranted);
+        if (userRelatedGrantedGroups.length > 0) {
+          const grantedGroupNames = [
+            ...userRelatedGrantedGroups.map(group => group.name),
+            ...groupGrantData.nonUserRelatedGrantedGroups.map(group => group.name),
+          ];
+          return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantedGroupNames.join(', ')})`;
+        }
       }
-      return `${t('fix_page_grant.modal.radio_btn.grant_group')} (${grantData.userRelatedGrantedGroups.map(g => g.name).join(', ')})`;
+
+      return t('fix_page_grant.modal.grant_label.isForbidden');
     }
 
     throw Error('cannot get grant label'); // this error can't be throwed
@@ -226,7 +235,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
   return (
     <>
       <Modal size="lg" isOpen={isOpen} toggle={close}>
-        <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+        <ModalHeader tag="h4" toggle={close}>
           { t('fix_page_grant.modal.title') }
         </ModalHeader>
         {renderModalBodyAndFooter()}
@@ -236,7 +245,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
           isOpen={isGroupSelectModalShown}
           toggle={() => setIsGroupSelectModalShown(false)}
         >
-          <ModalHeader tag="h4" toggle={() => setIsGroupSelectModalShown(false)} className="bg-purple text-light">
+          <ModalHeader tag="h4" toggle={() => setIsGroupSelectModalShown(false)}>
             {t('user_group.select_group')}
           </ModalHeader>
           <ModalBody>
@@ -278,7 +287,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
 
   const [isOpen, setOpen] = useState<boolean>(false);
 
-  const { data: dataIsGrantNormalized } = useSWRxIsGrantNormalized(currentUser != null ? pageId : null);
+  const { data: dataIsGrantNormalized } = useSWRxCurrentGrantData(currentUser != null ? pageId : null);
   const { data: dataApplicableGrant } = useSWRxApplicableGrant(currentUser != null ? pageId : null);
 
   // Dependencies
@@ -297,7 +306,7 @@ export const FixPageGrantAlert = (): JSX.Element => {
     <>
       <div className="alert alert-warning py-3 ps-4 d-flex flex-column flex-lg-row">
         <div className="flex-grow-1 d-flex align-items-center">
-          <i className="icon-fw icon-exclamation ms-1" aria-hidden="true" />
+          <span className="material-symbols-outlined mx-1" aria-hidden="true">error</span>
           {t('fix_page_grant.alert.description')}
         </div>
         <div className="d-flex align-items-end align-items-lg-center">

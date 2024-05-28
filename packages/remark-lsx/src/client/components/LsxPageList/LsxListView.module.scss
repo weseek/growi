@@ -1,7 +1,20 @@
 @use '@growi/ui/scss/molecules/page_list';
 
 .page-list :global {
-  .page-list-ul > li > a:not(:hover) {
-    text-decoration: none;
+  .page-list-li  {
+    line-height: inherit;
+  }
+
+  .page-list-ul > li > div > a {
+    padding: 0;
+    color: inherit;
+
+    &:not(:hover) {
+      text-decoration: none;
+    }
+
+    &:hover {
+      color: inherit;
+    }
   }
 }

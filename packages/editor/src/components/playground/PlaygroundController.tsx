@@ -2,10 +2,11 @@ import { useCallback } from 'react';
 
 import { useForm } from 'react-hook-form';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorTheme, KeyMapMode } from '../../consts';
 import {
-  AllEditorTheme,
-} from '../../services';
+  GlobalCodeMirrorEditorKey,
+  AllEditorTheme, AllKeyMap,
+} from '../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 
 export const InitEditorValueRow = (): JSX.Element => {
@@ -71,38 +72,35 @@ export const SetCaretLineRow = (): JSX.Element => {
   );
 };
 
-type SetThemeRowProps = {
-  setEditorTheme: (value: string) => void,
+
+type SetParamRowProps = {
+    update: (value: any) => void,
+    items: string[],
 }
-const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
 
-  const { setEditorTheme } = props;
-
-  const createItems = (items: string[]): JSX.Element => {
-    return (
-      <div>
-        { items.map((theme) => {
-          return (
-            <button
-              type="button"
-              className="btn btn-outline-secondary"
-              onClick={() => {
-                setEditorTheme(theme);
-              }}
-            >{theme}
-            </button>
-          );
-        }) }
-      </div>
-    );
-  };
-
+const SetParamRow = (
+    props: SetParamRowProps,
+): JSX.Element => {
+  const { update, items } = props;
   return (
     <>
       <div className="row mt-3">
         <h2>default</h2>
         <div className="col">
-          {createItems(Object.keys(AllEditorTheme))}
+          <div>
+            { items.map((item) => {
+              return (
+                <button
+                  type="button"
+                  className="btn btn-outline-secondary"
+                  onClick={() => {
+                    update(item);
+                  }}
+                >{item}
+                </button>
+              );
+            }) }
+          </div>
         </div>
       </div>
     </>
@@ -111,16 +109,18 @@ const SetThemeRow = (props: SetThemeRowProps): JSX.Element => {
 
 
 type PlaygroundControllerProps = {
-  setEditorTheme: (value: string) => void
+  setEditorTheme: (value: EditorTheme) => void
+  setEditorKeymap: (value: KeyMapMode) => void
 };
 
 export const PlaygroundController = (props: PlaygroundControllerProps): JSX.Element => {
-  const { setEditorTheme } = props;
+  const { setEditorTheme, setEditorKeymap } = props;
   return (
     <div className="container mt-5">
       <InitEditorValueRow />
       <SetCaretLineRow />
-      <SetThemeRow setEditorTheme={setEditorTheme} />
+      <SetParamRow update={setEditorTheme} items={AllEditorTheme} />
+      <SetParamRow update={setEditorKeymap} items={AllKeyMap} />
     </div>
   );
 };

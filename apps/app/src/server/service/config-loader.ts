@@ -1,12 +1,11 @@
 import { envUtils } from '@growi/core/dist/utils';
-import { parseISO } from 'date-fns';
+import { parseISO } from 'date-fns/parseISO';
 
 import { GrowiServiceType } from '~/features/questionnaire/interfaces/growi-info';
 import loggerFactory from '~/utils/logger';
 
-import ConfigModel, {
-  Config, defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs,
-} from '../models/config';
+import type { Config } from '../models/config';
+import ConfigModel, { defaultCrowiConfigs, defaultMarkdownConfigs, defaultNotificationConfigs } from '../models/config';
 
 
 const logger = loggerFactory('growi:service:ConfigLoader');
@@ -472,6 +471,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.NUMBER,
     default: 120,
   },
+  S3_OBJECT_ACL: {
+    ns:      'crowi',
+    key:     'aws:s3ObjectCannedACL',
+    type:    ValueType.STRING,
+    default: 'public-read',
+  },
   GCS_API_KEY_JSON_PATH: {
     ns:      'crowi',
     key:     'gcs:apiKeyJsonPath',
@@ -711,6 +716,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     key: 'app:ssrMaxRevisionBodyLength',
     type: ValueType.NUMBER,
     default: 30000,
+  },
+  WIP_PAGE_EXPIRATION_SECONDS: {
+    ns: 'crowi',
+    key: 'app:wipPageExpirationSeconds',
+    type: ValueType.NUMBER,
+    default: 172800, // 2 days
   },
 };
 

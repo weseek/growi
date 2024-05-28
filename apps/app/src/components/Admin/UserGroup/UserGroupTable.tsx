@@ -1,13 +1,12 @@
-import React, {
-  FC, useState, useEffect,
-} from 'react';
+import type { FC } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import type { IUserGroupHasId, IUserGroupRelation, IUserHasId } from '@growi/core';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
-import { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
+import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 
 
 type Props = {
@@ -139,7 +138,7 @@ export const UserGroupTable: FC<Props> = ({
   }, [userGroupRelations, childUserGroups]);
 
   return (
-    <div data-testid="grw-user-group-table">
+    <div data-testid="grw-user-group-table" className="mb-5">
       <h3>{headerLabel}</h3>
 
       <table className="table table-bordered table-user-list">
@@ -163,7 +162,14 @@ export const UserGroupTable: FC<Props> = ({
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
-                    <td><Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link></td>
+                    <td>
+                      <Link
+                        className="link-opacity-75-hover"
+                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
+                      >
+                        {group.name}
+                      </Link>
+                    </td>
                   )
                   : (
                     <td>{group.name}</td>
@@ -173,7 +179,7 @@ export const UserGroupTable: FC<Props> = ({
                 <td>
                   <ul className="list-inline">
                     {users != null && users.map((user) => {
-                      return <li key={user._id} className="list-inline-item badge rounded-pill bg-warning text-dark">{user.username}</li>;
+                      return <li key={user._id} className="list-inline-item badge text-bg-warning">{user.username}</li>;
                     })}
                   </ul>
                 </td>
@@ -181,7 +187,7 @@ export const UserGroupTable: FC<Props> = ({
                   <ul className="list-inline">
                     {groupIdToChildGroupsMap[group._id] != null && groupIdToChildGroupsMap[group._id].map((group) => {
                       return (
-                        <li key={group._id} className="list-inline-item badge badge-success">
+                        <li key={group._id} className="list-inline-item badge text-bg-success">
                           {isAclEnabled
                             ? (
                               <Link href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}>{group.name}</Link>
@@ -206,16 +212,16 @@ export const UserGroupTable: FC<Props> = ({
                           className="btn btn-outline-secondary btn-sm dropdown-toggle"
                           data-bs-toggle="dropdown"
                         >
-                          <i className="icon-settings"></i>
+                          <span className="material-symbols-outlined fs-5">settings</span>
                         </button>
                         <div className="dropdown-menu" role="menu" aria-labelledby={`admin-group-menu-button-${group._id}`}>
                           <button className="dropdown-item" type="button" role="button" onClick={onClickEdit} data-user-group-id={group._id}>
-                            <i className="icon-fw icon-note"></i> {t('Edit')}
+                            <span className="material-symbols-outlined me-1">edit_square</span> {t('Edit')}
                           </button>
                           {onRemove != null
                           && (
                             <button className="dropdown-item" type="button" role="button" onClick={onClickRemove} data-user-group-id={group._id}>
-                              <i className="icon-fw fa fa-chain-broken"></i> {t('admin:user_group_management.remove_child_group')}
+                              <span className="material-symbols-outlined me-1">group_remove</span> {t('admin:user_group_management.remove_child_group')}
                             </button>
                           )}
                           <button className="dropdown-item" type="button" role="button" onClick={onClickDelete} data-user-group-id={group._id}>

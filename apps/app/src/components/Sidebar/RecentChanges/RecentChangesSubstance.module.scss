@@ -1,41 +1,29 @@
 @use '~/styles/mixins' as *;
 
 .grw-recent-changes-resize-button :global {
-  font-size: 12px;
   line-height: normal;
   transform: translateY(-2px);
-
-  .form-check-label::before {
-    padding-left: 5px;
-    content: 'L';
-  }
-
-  .form-check-input:checked + .form-check-label::before {
-    padding-left: 5px;
-    content: 'S';
-  }
 }
 
 .list-group-item :global {
   font-size: 12px;
 
   .grw-recent-changes-skeleton-small {
-    @include grw-skeleton-text($font-size:14px, $line-height:16px);
+    @include grw-skeleton-text($font-size: 14px, $line-height: 16px);
+
     max-width: 120px;
   }
 
   .grw-recent-changes-skeleton-h5 {
     @include grw-skeleton-h5;
+
     max-width: 120px;
   }
 
   .grw-recent-changes-skeleton-date {
-    @include grw-skeleton-text($font-size:10px, $line-height:12px);
-    width: 80px;
-  }
+    @include grw-skeleton-text($font-size: 10px, $line-height: 12px);
 
-  .icon-lock {
-    font-size: 14px;
+    width: 80px;
   }
 
   // For truncate-text
@@ -47,7 +35,6 @@
     max-width: fit-content;
   }
 }
-
 
 .grw-recent-changes-item-lower :global {
   font-size: 12px;
@@ -62,7 +49,7 @@
 
 // == Colors
 .grw-former-link a {
-  --bs-link-opacity: .5;
+  --bs-link-opacity: 0.5;
 
   &:global {
     &:hover {

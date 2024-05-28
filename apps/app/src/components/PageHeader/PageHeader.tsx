@@ -1,28 +1,58 @@
-import { FC } from 'react';
+import {
+  useCallback, useEffect, useRef, useState,
+} from 'react';
 
-import { useCurrentPagePath, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
+import { usePageControlsX } from '~/stores/ui';
 
 import { PagePathHeader } from './PagePathHeader';
 import { PageTitleHeader } from './PageTitleHeader';
 
-export const PageHeader: FC = () => {
-  const { data: currentPagePath } = useCurrentPagePath();
-  const { data: currentPage } = useSWRxCurrentPage();
+import styles from './PageHeader.module.scss';
 
-  if (currentPage == null || currentPagePath == null) {
+const moduleClass = styles['page-header'] ?? '';
+
+export const PageHeader = (): JSX.Element => {
+
+  const { data: currentPage } = useSWRxCurrentPage();
+  const { data: pageControlsX } = usePageControlsX();
+  const pageHeaderRef = useRef<HTMLDivElement>(null);
+
+  const [maxWidth, setMaxWidth] = useState<number>();
+
+  const calcMaxWidth = useCallback(() => {
+    if (pageControlsX == null || pageHeaderRef.current == null) {
+      // Length that allows users to use PageHeader functionality.
+      setMaxWidth(300);
+      return;
+    }
+    // At least 10px space between PageHeader and PageControls
+    const maxWidth = pageControlsX - pageHeaderRef.current.getBoundingClientRect().x - 10;
+    setMaxWidth(maxWidth);
+  }, [pageControlsX]);
+
+  useEffect(() => {
+    calcMaxWidth();
+  }, [calcMaxWidth]);
+
+  if (currentPage == null) {
     return <></>;
   }
 
   return (
-    <>
+    <div className={`${moduleClass} w-100`} ref={pageHeaderRef}>
       <PagePathHeader
-        currentPagePath={currentPagePath}
         currentPage={currentPage}
+        maxWidth={maxWidth}
+        onRenameTerminated={calcMaxWidth}
       />
-      <PageTitleHeader
-        currentPagePath={currentPagePath}
-        currentPage={currentPage}
-      />
-    </>
+      <div className="mt-0 mt-md-1">
+        <PageTitleHeader
+          currentPage={currentPage}
+          maxWidth={maxWidth}
+          onMoveTerminated={calcMaxWidth}
+        />
+      </div>
+    </div>
   );
 };

@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './comment-inheritance';
 @use '../PageEditor/page-editor-inheritance';
 
@@ -6,28 +6,39 @@
 .comment-editor-styles :global {
   .comment-form {
     position: relative;
-    margin-top: 1em;
+
+    // background
+    .bg-comment {
+      @extend %bg-comment
+    }
 
     // user icon
     .picture {
       @extend %picture;
     }
 
-    // seciton
-    .comment-form-main {
-      @extend %comment-section;
-      margin-left: 4.5em;
-      @include bs.media-breakpoint-down(xs) {
-        margin-left: 3.5em;
-      }
-    }
+  }
+}
 
-    // textarea
-    .comment-write {
-      margin-bottom: 0.5em;
-    }
-    .comment-form-preview {
-      padding-top: 0.5em;
-    }
+
+// adjust height
+.comment-editor-styles :global {
+  .cm-editor {
+    min-height: comment-inheritance.$codemirror-default-height !important;
+    max-height: #{2 * comment-inheritance.$codemirror-default-height};
+  }
+  .cm-gutters {
+    min-height: comment-inheritance.$codemirror-default-height !important;
+  }
+  .comment-preview-container {
+    min-height: page-editor-inheritance.$navbar-editor-height + comment-inheritance.$codemirror-default-height;
+    padding-top: 0.5em;
+  }
+}
+
+// border-radius
+.comment-editor-styles :global {
+  .cm-editor, .cm-scroller {
+    border-radius: var(--bs-border-radius);
   }
 }

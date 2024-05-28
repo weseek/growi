@@ -1,5 +1,5 @@
-import type { IUser, IUserHasId } from '@growi/core';
-import {
+import type { IUser } from '@growi/core';
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -10,11 +10,12 @@ import Head from 'next/head';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
-  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp,
+  useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
 } from '~/stores/context';
-import { useSWRxCurrentPage } from '~/stores/page';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
 import {
@@ -34,6 +35,7 @@ type Props = CommonProps & {
   // Render config
   rendererConfig: RendererConfig,
 
+  sidebarConfig: ISidebarConfig,
 };
 
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
@@ -48,8 +50,10 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   useCurrentUser(props.currentUser ?? null);
 
   // clear the cache for the current page
-  const { mutate } = useSWRxCurrentPage();
-  mutate(undefined, { revalidate: false });
+  //  in order to fix https://redmine.weseek.co.jp/issues/135811
+  useSWRxCurrentPage(null);
+  useCurrentPageId(null);
+  useCurrentPathname('/_private-legacy-pages');
 
   // Search
   useIsSearchPage(true);
@@ -95,6 +99,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
   props.rendererConfig = {

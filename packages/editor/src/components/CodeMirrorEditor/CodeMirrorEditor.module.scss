@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 
 .codemirror-editor-container :global {
@@ -6,6 +6,10 @@
   .cm-editor {
     width: 100%;
     height: 100%;
+
+    .cm-content {
+      font-family: var(--grw-codemirror-editor-content-font-family, monospace);
+    }
 
     // Header highlight style
     .cm-header {
@@ -38,7 +42,6 @@
   }
 
 }
-
 
 @mixin insertMaterialSymbolAndMessage($code, $message) {
   .overlay-icon:before {
@@ -134,5 +137,24 @@
     }
     /* end of.dropzone */
   }
-}
 
+  .markdown-table-activated .cm-cursor {
+    &:after {
+      position: relative;
+      top: 0em;
+      left: 0.3em;
+      display: block;
+      width: 1em;
+      height: 1em;
+      content: ' ';
+      background-repeat: no-repeat;
+      background-size: 1em;
+    }
+  }
+
+  .markdown-table-activated .cm-cursor.cm-cursor-primary {
+    &:after {
+      background-image: url(../../../svg/table.svg);
+    }
+  }
+}

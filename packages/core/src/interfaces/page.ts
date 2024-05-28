@@ -18,9 +18,9 @@ export type IGrantedGroup = {
 export type IPage = {
   path: string,
   status: string,
-  revision: Ref<IRevision>,
+  revision?: Ref<IRevision>,
   tags: Ref<ITag>[],
-  creator: any,
+  creator?: Ref<IUser>,
   createdAt: Date,
   updatedAt: Date,
   seenUsers: Ref<IUser>[],
@@ -30,7 +30,7 @@ export type IPage = {
   grant: PageGrant,
   grantedUsers: Ref<IUser>[],
   grantedGroups: IGrantedGroup[],
-  lastUpdateUser: Ref<IUser>,
+  lastUpdateUser?: Ref<IUser>,
   liker: Ref<IUser>[],
   commentCount: number
   slackChannels: string,
@@ -39,18 +39,16 @@ export type IPage = {
   latestRevision?: Ref<IRevision>,
   latestRevisionBodyLength?: number,
   expandContentWidth?: boolean,
-}
-
-export type IPagePopulatedToList = Omit<IPageHasId, 'lastUpdateUser'> & {
-  lastUpdateUser: IUserHasId,
+  wip?: boolean,
+  ttlTimestamp?: Date
 }
 
 export type IPagePopulatedToShowRevision = Omit<IPageHasId, 'lastUpdateUser'|'creator'|'deleteUser'|'grantedGroups'|'revision'|'author'> & {
-  lastUpdateUser: IUserHasId,
-  creator: IUserHasId | null,
+  lastUpdateUser?: IUserHasId,
+  creator?: IUserHasId,
   deleteUser: IUserHasId,
   grantedGroups: { type: GroupType, item: IUserGroupHasId }[],
-  revision: IRevisionHasId,
+  revision?: IRevisionHasId,
   author: IUserHasId,
 }
 

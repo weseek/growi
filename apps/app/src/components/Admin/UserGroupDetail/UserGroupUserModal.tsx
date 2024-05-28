@@ -1,16 +1,17 @@
 import React from 'react';
 
-import type { IUserGroupHasId } from '@growi/core';
+import type { IUserGroupHasId, IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { SearchTypes, SearchType } from '~/interfaces/user-group';
+import type { SearchType } from '~/interfaces/user-group';
+import { SearchTypes } from '~/interfaces/user-group';
 
 import CheckBoxForSerchUserOption from './CheckBoxForSerchUserOption';
 import RadioButtonForSerchUserOption from './RadioButtonForSerchUserOption';
-import UserGroupUserFormByInput from './UserGroupUserFormByInput';
+import { UserGroupUserFormByInput } from './UserGroupUserFormByInput';
 
 type Props = {
   isOpen: boolean,
@@ -19,7 +20,7 @@ type Props = {
   isAlsoMailSearched: boolean,
   isAlsoNameSearched: boolean,
   onClickAddUserBtn: (username: string) => Promise<void>,
-  onSearchApplicableUsers: (searchWord: string) => Promise<void>,
+  onSearchApplicableUsers: (searchWord: string) => Promise<IUserHasId[]>,
   onSwitchSearchType: (searchType: SearchType) => void
   onClose: () => void,
   onToggleIsAlsoMailSearched: () => void,
@@ -44,7 +45,7 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
 
   return (
     <Modal isOpen={isOpen} toggle={onClose}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
+      <ModalHeader tag="h4" toggle={onClose} className="text-info">
         {t('admin:user_group_management.add_modal.add_user') }
       </ModalHeader>
       <ModalBody>
@@ -54,9 +55,9 @@ const UserGroupUserModal = (props: Props): JSX.Element => {
             userGroup={userGroup}
             onClickAddUserBtn={onClickAddUserBtn}
             onSearchApplicableUsers={onSearchApplicableUsers}
-            onClose={onClose}
             isAlsoNameSearched={isAlsoNameSearched}
             isAlsoMailSearched={isAlsoMailSearched}
+            searchType={searchType}
           />
         </div>
         <h2 className="border-bottom">{t('admin:user_group_management.add_modal.search_option')}</h2>

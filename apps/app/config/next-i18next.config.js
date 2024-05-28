@@ -1,25 +1,42 @@
-const path = require('path');
-
-const { AllLang, Lang } = require('@growi/core');
-const { isServer } = require('@growi/core/dist/utils');
-const I18nextChainedBackend = require('i18next-chained-backend').default;
-const I18NextHttpBackend = require('i18next-http-backend');
-const I18NextLocalStorageBackend = require('i18next-localstorage-backend').default;
-
 const isDev = process.env.NODE_ENV === 'development';
 
+const path = require('path');
+
+const { AllLang } = require('@growi/core');
+const { isServer } = require('@growi/core/dist/utils');
+
+const { defaultLang } = require('./i18next.config');
+
+const HMRPlugin = isDev ? require('i18next-hmr/plugin').HMRPlugin : undefined;
+
+/** @type {import('next-i18next').UserConfig} */
 module.exports = {
-  defaultLang: Lang.en_US,
+  ...require('./i18next.config').initOptions,
+
   i18n: {
-    defaultLocale: Lang.en_US,
+    defaultLocale: defaultLang.toString(),
     locales: AllLang,
   },
-  defaultNS: 'translation',
+
   localePath: path.resolve('./public/static/locales'),
   serializeConfig: false,
-  use: isServer() ? [] : [I18nextChainedBackend],
+
+  // eslint-disable-next-line no-nested-ternary
+  use: isDev
+    ? isServer()
+      ? [new HMRPlugin({ webpack: { server: true } })]
+      : [
+        require('i18next-chained-backend').default,
+        new HMRPlugin({ webpack: { client: true } }),
+      ]
+    : [],
   backend: {
-    backends: isServer() ? [] : [I18NextLocalStorageBackend, I18NextHttpBackend],
+    backends: isServer()
+      ? []
+      : [
+        require('i18next-localstorage-backend').default,
+        require('i18next-http-backend').default,
+      ],
     backendOptions: [
       // options for i18next-localstorage-backend
       { expirationTime: isDev ? 0 : 24 * 60 * 60 * 1000 }, // 1 day in production
@@ -27,4 +44,5 @@ module.exports = {
       { loadPath: '/static/locales/{{lng}}/{{ns}}.json' },
     ],
   },
+
 };

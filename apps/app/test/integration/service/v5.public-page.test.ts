@@ -1,8 +1,9 @@
 /* eslint-disable no-unused-vars */
-import { advanceTo } from 'jest-date-mock';
 import mongoose from 'mongoose';
 
 import { PageActionType, PageActionStage } from '../../../src/interfaces/page-operation';
+import type { IPageTagRelation } from '../../../src/interfaces/page-tag-relation';
+import PageTagRelation from '../../../src/server/models/page-tag-relation';
 import Tag from '../../../src/server/models/tag';
 import { getInstance } from '../setup-crowi';
 
@@ -15,7 +16,6 @@ describe('PageService page operations with only public pages', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -49,7 +49,6 @@ describe('PageService page operations with only public pages', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
@@ -2016,13 +2015,13 @@ describe('PageService page operations with only public pages', () => {
         endpoint: '/_api/v3/pages/delete',
       });
       const page = await Page.findOne({ path: '/v5_PageForDelete6' });
-      const deletedTagRelation1 = await PageTagRelation.findOne({ _id: pageRelation1._id });
-      const deletedTagRelation2 = await PageTagRelation.findOne({ _id: pageRelation2._id });
+      const deletedTagRelation1 = await PageTagRelation.findOne<IPageTagRelation>({ _id: pageRelation1?._id });
+      const deletedTagRelation2 = await PageTagRelation.findOne<IPageTagRelation>({ _id: pageRelation2?._id });
 
       expect(page).toBe(null);
       expect(deletedPage.status).toBe(Page.STATUS_DELETED);
-      expect(deletedTagRelation1.isPageTrashed).toBe(true);
-      expect(deletedTagRelation2.isPageTrashed).toBe(true);
+      expect(deletedTagRelation1?.isPageTrashed).toBe(true);
+      expect(deletedTagRelation2?.isPageTrashed).toBe(true);
     });
   });
   describe('Delete completely', () => {
@@ -2103,8 +2102,8 @@ describe('PageService page operations with only public pages', () => {
       const deletedPages = await Page.find({ _id: { $in: [parentPage._id, childPage._id, grandchildPage._id] } });
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
       const tags = await Tag.find({ _id: { $in: [tag1?._id, tag2?._id] } });
-      const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1._id, pageTagRelation2._id] } });
-      const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
+      const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1?._id, pageTagRelation2?._id] } });
+      const remainingBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
       const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
       const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
@@ -2115,10 +2114,10 @@ describe('PageService page operations with only public pages', () => {
       expect(deletedRevisions.length).toBe(0);
       // tag should be Truthy
       expect(tags).toBeTruthy();
-      // pageTagRelation should be null
+      // PageTagRelation should be null
       expect(deletedPageTagRelations.length).toBe(0);
       // bookmark should be null
-      expect(deletedBookmarks.length).toBe(0);
+      expect(remainingBookmarks.length).toBe(1);
       // comment should be null
       expect(deletedComments.length).toBe(0);
       // pageRedirect should be null
@@ -2201,12 +2200,12 @@ describe('PageService page operations with only public pages', () => {
         ip: '::ffff:127.0.0.1',
         endpoint: '/_api/v3/pages/revert',
       });
-      const pageTagRelation = await PageTagRelation.findOne({ relatedPage: deletedPage._id, relatedTag: tag?._id });
+      const pageTagRelation = await PageTagRelation.findOne<IPageTagRelation>({ relatedPage: deletedPage._id, relatedTag: tag?._id });
 
       expect(revertedPage.parent).toStrictEqual(rootPage._id);
       expect(revertedPage.path).toBe('/v5_revert1');
       expect(revertedPage.status).toBe(Page.STATUS_PUBLISHED);
-      expect(pageTagRelation.isPageTrashed).toBe(false);
+      expect(pageTagRelation?.isPageTrashed).toBe(false);
 
     });
 

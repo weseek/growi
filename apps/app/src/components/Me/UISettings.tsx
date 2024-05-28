@@ -57,7 +57,7 @@ export const UISettings = (): JSX.Element => {
               label="Collapsed"
               additionalClasses={styles['grw-sidebar-mode-icon']}
             >
-              <span className="growi-custom-icons">sidebar-collapsed</span>
+              <span className="growi-custom-icons fs-6">sidebar-collapsed</span>
             </IconWithTooltip>
             <div className="form-check form-switch ms-1">
 
@@ -71,23 +71,23 @@ export const UISettings = (): JSX.Element => {
               <label className="form-label form-check-label" htmlFor="swSidebarMode"></label>
             </div>
             <IconWithTooltip id="iwt-sidebar-dock" label="Dock" additionalClasses={styles['grw-sidebar-mode-icon']}>
-              <span className="growi-custom-icons">sidebar-dock</span>
+              <span className="growi-custom-icons fs-6">sidebar-dock</span>
             </IconWithTooltip>
           </div>
           <div className="ms-2">
             <label className="form-label form-check-label" htmlFor="swSidebarMode">
               {t('ui_settings.side_bar_mode.side_bar_mode_setting')}
             </label>
-            <p className="form-text text-muted small">{t('ui_settings.side_bar_mode.description')}</p>
           </div>
         </div>
+        <p className="form-text text-muted small">{t('ui_settings.side_bar_mode.description')}</p>
       </>
     );
   };
 
   return (
     <>
-      <h2 className="border-bottom mb-4">{t('ui_settings.ui_settings')}</h2>
+      <h2 className="border-bottom pb- mb-4 fs-4">{t('ui_settings.ui_settings')}</h2>
 
       <div className="row justify-content-center">
         <div className="col-md-6">

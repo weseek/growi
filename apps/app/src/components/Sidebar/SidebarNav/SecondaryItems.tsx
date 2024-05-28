@@ -1,9 +1,10 @@
-import { FC, memo } from 'react';
+import type { FC } from 'react';
+import { memo } from 'react';
 
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { useGrowiCloudUri, useIsAdmin } from '~/stores/context';
+import { useIsGuestUser, useGrowiCloudUri, useIsAdmin } from '~/stores/context';
 
 import { SkeletonItem } from './SkeletonItem';
 
@@ -42,10 +43,11 @@ export const SecondaryItems: FC = memo(() => {
 
   const { data: isAdmin } = useIsAdmin();
   const { data: growiCloudUri } = useGrowiCloudUri();
+  const { data: isGuestUser } = useIsGuestUser();
 
   return (
     <div className={styles['grw-secondary-items']}>
-      <PersonalDropdown />
+      {!isGuestUser && <PersonalDropdown />}
       <SecondaryItem label="Help" iconName="help" href={growiCloudUri != null ? 'https://growi.cloud/help/' : 'https://docs.growi.org'} isBlank />
       {isAdmin && <SecondaryItem label="Admin" iconName="settings" href="/admin" />}
       <SecondaryItem label="Trash" href="/trash" iconName="delete" />

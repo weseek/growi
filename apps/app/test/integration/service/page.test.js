@@ -3,6 +3,7 @@ import { GroupType } from '@growi/core';
 import { advanceTo } from 'jest-date-mock';
 
 import { PageSingleDeleteCompConfigValue, PageRecursiveDeleteCompConfigValue } from '~/interfaces/page-delete-config';
+import PageTagRelation from '~/server/models/page-tag-relation';
 import Tag from '~/server/models/tag';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
@@ -62,7 +63,6 @@ describe('PageService', () => {
   let Page;
   let Revision;
   let User;
-  let PageTagRelation;
   let Bookmark;
   let Comment;
   let ShareLink;
@@ -75,7 +75,6 @@ describe('PageService', () => {
     User = mongoose.model('User');
     Page = mongoose.model('Page');
     Revision = mongoose.model('Revision');
-    PageTagRelation = mongoose.model('PageTagRelation');
     Bookmark = mongoose.model('Bookmark');
     Comment = mongoose.model('Comment');
     ShareLink = mongoose.model('ShareLink');
@@ -770,8 +769,9 @@ describe('PageService', () => {
         });
 
         test('is not deletable', async() => {
+          const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
-          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser1, false, userRelatedGroups);
           expect(isDeleteable).toBe(false);
         });
       });
@@ -790,8 +790,9 @@ describe('PageService', () => {
         });
 
         test('is not deletable', async() => {
+          const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser3);
-          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser3, false, userRelatedGroups);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser3, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
@@ -810,8 +811,9 @@ describe('PageService', () => {
         });
 
         test('is deletable', async() => {
+          const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser1);
-          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser1, false, userRelatedGroups);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser1, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
@@ -830,8 +832,9 @@ describe('PageService', () => {
         });
 
         test('is deletable', async() => {
+          const creatorId = await crowi.pageService.getCreatorIdForCanDelete(canDeleteCompletelyTestPage);
           const userRelatedGroups = await crowi.pageGrantService.getUserRelatedGroups(testUser2);
-          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, testUser2, false, userRelatedGroups);
+          const isDeleteable = crowi.pageService.canDeleteCompletely(canDeleteCompletelyTestPage, creatorId, testUser2, false, userRelatedGroups);
           expect(isDeleteable).toBe(true);
         });
       });
@@ -867,7 +870,9 @@ describe('PageService', () => {
       test('deleteCompletelyOperation', async() => {
         await crowi.pageService.deleteCompletelyOperation([parentForDeleteCompletely._id], [parentForDeleteCompletely.path], { });
 
-        expect(deleteManyBookmarkSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
+        // bookmarks should not be deleted
+        expect(deleteManyBookmarkSpy).not.toHaveBeenCalled();
+
         expect(deleteManyCommentSpy).toHaveBeenCalledWith({ page: { $in: [parentForDeleteCompletely._id] } });
         expect(deleteManyPageTagRelationSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });
         expect(deleteManyShareLinkSpy).toHaveBeenCalledWith({ relatedPage: { $in: [parentForDeleteCompletely._id] } });

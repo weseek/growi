@@ -1,11 +1,12 @@
-import React, {
-  SyntheticEvent, RefObject,
-} from 'react';
+import type { CSSProperties } from 'react';
+
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
-
+import { SlideRenderer } from '../Page/SlideRenderer';
 
 import styles from './Preview.module.scss';
 
@@ -17,33 +18,40 @@ type Props = {
   markdown?: string,
   pagePath?: string | null,
   expandContentWidth?: boolean,
-  pastEnd?: number,
+  style?: CSSProperties,
   onScroll?: (scrollTop: number) => void,
 }
 
-const Preview = React.forwardRef((props: Props): JSX.Element => {
+const Preview = (props: Props): JSX.Element => {
 
   const {
     rendererOptions,
-    markdown, pagePath, pastEnd,
+    markdown, pagePath, style,
     expandContentWidth,
   } = props;
 
+  const { data: isEnabledMarp } = useIsEnabledMarp();
+  const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
+
   const fluidLayoutClass = expandContentWidth ? 'fluid-layout' : '';
+
 
   return (
     <div
+      data-testid="page-editor-preview-body"
       className={`${moduleClass} ${fluidLayoutClass} ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
-      style={{ paddingBottom: pastEnd }}
+      style={style}
     >
-      { markdown != null && (
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
-      ) }
+      { markdown != null
+        && (
+          isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+            : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
+        )
+      }
     </div>
   );
 
-});
-
-Preview.displayName = 'Preview';
+};
 
 export default Preview;

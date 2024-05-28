@@ -1,10 +1,9 @@
 import type { IPageHasId } from '@growi/core';
 import { objectIdUtils } from '@growi/core/dist/utils';
-import monggoose, {
-  Types, Document, Model, Schema,
-} from 'mongoose';
+import type { Types, Document, Model } from 'mongoose';
+import monggoose, { Schema } from 'mongoose';
 
-import { BookmarkFolderItems, IBookmarkFolder } from '~/interfaces/bookmark-info';
+import type { BookmarkFolderItems, IBookmarkFolder } from '~/interfaces/bookmark-info';
 
 import loggerFactory from '../../utils/logger';
 import { getOrCreateModel } from '../util/mongoose-utils';
@@ -21,13 +20,13 @@ export interface BookmarkFolderDocument extends Document {
   owner: Types.ObjectId
   parent?: Types.ObjectId | undefined
   bookmarks?: Types.ObjectId[],
-  children?: BookmarkFolderDocument[]
+  childFolder?: BookmarkFolderDocument[]
 }
 
 export interface BookmarkFolderModel extends Model<BookmarkFolderDocument>{
   createByParameters(params: IBookmarkFolder): Promise<BookmarkFolderDocument>
   deleteFolderAndChildren(bookmarkFolderId: Types.ObjectId | string): Promise<{deletedCount: number}>
-  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null, children: BookmarkFolderItems[]): Promise<BookmarkFolderDocument>
+  updateBookmarkFolder(bookmarkFolderId: string, name: string, parent: string | null, childFolder: BookmarkFolderItems[]): Promise<BookmarkFolderDocument>
   insertOrUpdateBookmarkedPage(pageId: IPageHasId, userId: Types.ObjectId | string, folderId: string | null): Promise<BookmarkFolderDocument | null>
   updateBookmark(pageId: Types.ObjectId | string, status: boolean, userId: Types.ObjectId| string): Promise<BookmarkFolderDocument | null>
 }
@@ -51,7 +50,7 @@ const bookmarkFolderSchema = new Schema<BookmarkFolderDocument, BookmarkFolderMo
   toObject: { virtuals: true },
 });
 
-bookmarkFolderSchema.virtual('children', {
+bookmarkFolderSchema.virtual('childFolder', {
   ref: 'BookmarkFolder',
   localField: '_id',
   foreignField: 'parent',
@@ -108,7 +107,7 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(
     bookmarkFolderId: string,
     name: string,
     parentId: string | null,
-    children: BookmarkFolderItems[],
+    childFolder: BookmarkFolderItems[],
 ):
  Promise<BookmarkFolderDocument> {
   const updateFields: {name: string, parent: Types.ObjectId | null} = {
@@ -127,7 +126,7 @@ bookmarkFolderSchema.statics.updateBookmarkFolder = async function(
     if (parentFolder?.parent != null) {
       throw new Error('Update bookmark folder failed');
     }
-    if (children.length !== 0) {
+    if (childFolder.length !== 0) {
       throw new Error('Update bookmark folder failed');
     }
   }

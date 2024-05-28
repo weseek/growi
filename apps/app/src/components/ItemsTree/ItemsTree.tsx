@@ -1,5 +1,5 @@
 import React, {
-  useEffect, useRef, useState, useMemo, useCallback,
+  useEffect, useMemo, useCallback,
 } from 'react';
 
 import path from 'path';
@@ -8,21 +8,21 @@ import type { Nullable, IPageHasId, IPageToDeleteWithMeta } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
-import { debounce } from 'throttle-debounce';
 
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
-import { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
-import { SocketEventName, UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
-import {
-  IPageForPageDuplicateModal, usePageDuplicateModal, usePageDeleteModal,
-} from '~/stores/modal';
+import type { IPageForItem } from '~/interfaces/page';
+import type { AncestorsChildrenResult, RootPageResult, TargetAndAncestors } from '~/interfaces/page-listing-results';
+import type { OnDuplicatedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import type { UpdateDescCountData, UpdateDescCountRawData } from '~/interfaces/websocket';
+import { SocketEventName } from '~/interfaces/websocket';
+import type { IPageForPageDuplicateModal } from '~/stores/modal';
+import { usePageDuplicateModal, usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useCurrentPagePath, useSWRMUTxCurrentPage } from '~/stores/page';
 import {
   useSWRxPageAncestorsChildren, useSWRxRootPage, mutatePageTree, mutatePageList,
 } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
-import { usePageTreeDescCountMap, useSidebarScrollerRef } from '~/stores/ui';
+import { usePageTreeDescCountMap } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { ItemNode, type TreeItemProps } from '../TreeItem';
@@ -30,6 +30,8 @@ import { ItemNode, type TreeItemProps } from '../TreeItem';
 import ItemsTreeContentSkeleton from './ItemsTreeContentSkeleton';
 
 import styles from './ItemsTree.module.scss';
+
+const moduleClass = styles['items-tree'] ?? '';
 
 const logger = loggerFactory('growi:cli:ItemsTree');
 
@@ -89,10 +91,12 @@ const isSecondStageRenderingCondition = (condition: RenderingCondition|SecondSta
 type ItemsTreeProps = {
   isEnableActions: boolean
   isReadOnlyUser: boolean
+  isWipPageShown?: boolean
   targetPath: string
   targetPathOrId?: Nullable<string>
   targetAndAncestorsData?: TargetAndAncestors
   CustomTreeItem: React.FunctionComponent<TreeItemProps>
+  onClickTreeItem?: (page: IPageForItem) => void;
 }
 
 /*
@@ -100,7 +104,7 @@ type ItemsTreeProps = {
  */
 export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const {
-    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, CustomTreeItem,
+    targetPath, targetPathOrId, targetAndAncestorsData, isEnableActions, isReadOnlyUser, isWipPageShown, CustomTreeItem, onClickTreeItem,
   } = props;
 
   const { t } = useTranslation();
@@ -111,7 +115,6 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   const { data: currentPagePath } = useCurrentPagePath();
   const { open: openDuplicateModal } = usePageDuplicateModal();
   const { open: openDeleteModal } = usePageDeleteModal();
-  const { data: sidebarScrollerRef } = useSidebarScrollerRef();
 
   const { data: socket } = useGlobalSocket();
   const { data: ptDescCountMap, update: updatePtDescCountMap } = usePageTreeDescCountMap();
@@ -119,9 +122,6 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
   // for mutation
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
 
-  const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
-
-  const rootElemRef = useRef(null);
 
   const renderingCondition = useMemo(() => {
     return {
@@ -196,55 +196,6 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
     openDeleteModal([pageToDelete], { onDeleted: onDeletedHandler });
   }, [currentPagePath, mutateCurrentPage, openDeleteModal, router, t]);
 
-  // ***************************  Scroll on init ***************************
-  const scrollOnInit = useCallback(() => {
-    const scrollTargetElement = document.getElementById('grw-pagetree-current-page-item');
-
-    if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
-      return;
-    }
-
-    logger.debug('scrollOnInit has invoked');
-
-    const scrollElement = sidebarScrollerRef.current.getScrollElement();
-
-    // NOTE: could not use scrollIntoView
-    //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
-
-    // calculate the center point
-    const scrollTop = scrollTargetElement.offsetTop - scrollElement.getBoundingClientRect().height / 2;
-    scrollElement.scrollTo({ top: scrollTop });
-
-    setIsInitialScrollCompleted(true);
-  }, [sidebarScrollerRef]);
-
-  const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
-
-  useEffect(() => {
-    if (!isSecondStageRenderingCondition(renderingCondition) || isInitialScrollCompleted) {
-      return;
-    }
-
-    const rootElement = rootElemRef.current as HTMLElement | null;
-    if (rootElement == null) {
-      return;
-    }
-
-    const observerCallback = (mutationRecords: MutationRecord[]) => {
-      mutationRecords.forEach(() => scrollOnInitDebounced());
-    };
-
-    const observer = new MutationObserver(observerCallback);
-    observer.observe(rootElement, { childList: true, subtree: true });
-
-    // first call for the situation that all rendering is complete at this point
-    scrollOnInitDebounced();
-
-    return () => {
-      observer.disconnect();
-    };
-  }, [isInitialScrollCompleted, renderingCondition, scrollOnInitDebounced]);
-  // *******************************  end  *******************************
 
   if (error1 != null || error2 != null) {
     // TODO: improve message
@@ -271,17 +222,19 @@ export const ItemsTree = (props: ItemsTreeProps): JSX.Element => {
 
   if (initialItemNode != null) {
     return (
-      <ul className={`grw-pagetree ${styles['grw-pagetree']} list-group py-3`} ref={rootElemRef}>
+      <ul className={`${moduleClass} list-group`}>
         <CustomTreeItem
           key={initialItemNode.page.path}
           targetPathOrId={targetPathOrId}
           itemNode={initialItemNode}
           isOpen
           isEnableActions={isEnableActions}
+          isWipPageShown={isWipPageShown}
           isReadOnlyUser={isReadOnlyUser}
           onRenamed={onRenamed}
           onClickDuplicateMenuItem={onClickDuplicateMenuItem}
           onClickDeleteMenuItem={onClickDeleteMenuItem}
+          onClick={onClickTreeItem}
         />
       </ul>
     );

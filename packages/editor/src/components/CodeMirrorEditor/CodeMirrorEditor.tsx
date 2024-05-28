@@ -1,49 +1,63 @@
+import type { DetailedHTMLProps } from 'react';
 import {
   forwardRef, useMemo, useRef, useEffect,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
-import { Prec } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
+import {
+  EditorView,
+} from '@codemirror/view';
+import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../consts';
-import { useFileDropzone, FileDropzoneOverlay, AllEditorTheme } from '../../services';
+import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
 import {
-  adjustPasteData, getStrFromBol,
-} from '../../services/list-util/markdown-list-util';
-import { useCodeMirrorEditorIsolated } from '../../stores';
+  useFileDropzone, FileDropzoneOverlay,
+  adjustPasteData, getStrFromBol, useShowTableIcon,
+} from '../../services-internal';
+import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
 
 
 import style from './CodeMirrorEditor.module.scss';
 
-const CodeMirrorEditorContainer = forwardRef<HTMLDivElement>((props, ref) => {
-  return (
-    <div {...props} className={`flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} />
-  );
-});
+const CodeMirrorEditorContainer = forwardRef<HTMLDivElement, DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>>(
+  (props, ref) => {
+    const { className = '', ...rest } = props;
+    return (
+      <div className={`${className} flex-expand-vert ${style['codemirror-editor-container']}`} ref={ref} {...rest} />
+    );
+  },
+);
 
-type Props = {
-  editorKey: string | GlobalCodeMirrorEditorKey,
-  acceptedFileType: AcceptedUploadFileType,
+export type CodeMirrorEditorProps = {
+  acceptedUploadFileType?: AcceptedUploadFileType,
+  indentSize?: number,
+  editorSettings?: EditorSettings,
   onChange?: (value: string) => void,
+  onSave?: () => void,
   onUpload?: (files: File[]) => void,
   onScroll?: () => void,
-  indentSize?: number,
-  editorTheme?: string,
+}
+
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
+  hideToolbar?: boolean,
 }
 
 export const CodeMirrorEditor = (props: Props): JSX.Element => {
   const {
     editorKey,
-    acceptedFileType,
+    hideToolbar,
+
+    acceptedUploadFileType = AcceptedUploadFileType.NONE,
+    indentSize,
+    editorSettings,
     onChange,
+    onSave,
     onUpload,
     onScroll,
-    indentSize,
-    editorTheme,
   } = props;
 
   const containerRef = useRef(null);
@@ -55,6 +69,11 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
   }, [onChange]);
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey, containerRef.current, cmProps);
 
+  useDefaultExtensions(codeMirrorEditor);
+  useEditorSettings(codeMirrorEditor, editorSettings, onSave);
+
+  useShowTableIcon(codeMirrorEditor);
+
   useEffect(() => {
     if (indentSize == null) {
       return;
@@ -65,6 +84,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     return cleanupFunction;
 
   }, [codeMirrorEditor, indentSize]);
+
 
   useEffect(() => {
     const handlePaste = (event: ClipboardEvent) => {
@@ -139,31 +159,22 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-  useEffect(() => {
-    if (editorTheme == null) {
-      return;
-    }
-    if (AllEditorTheme[editorTheme] == null) {
-      return;
-    }
-
-    const extension = AllEditorTheme[editorTheme];
-
-    // React CodeMirror has default theme which is default prec
-    // and extension have to be higher prec here than default theme.
-    const cleanupFunction = codeMirrorEditor?.appendExtensions(Prec.high(extension));
-    return cleanupFunction;
-
-  }, [codeMirrorEditor, editorTheme]);
-
   const {
     getRootProps,
+    getInputProps,
     isDragActive,
     isDragAccept,
     isDragReject,
     isUploading,
-    open,
-  } = useFileDropzone({ onUpload, acceptedFileType });
+  } = useFileDropzone({
+    acceptedUploadFileType,
+    onUpload,
+    // ignore mouse and key events
+    dropzoneOpts: {
+      noClick: true,
+      noKeyboard: true,
+    },
+  });
 
   const fileUploadState = useMemo(() => {
 
@@ -171,7 +182,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
       return 'dropzone-uploading';
     }
 
-    switch (acceptedFileType) {
+    switch (acceptedUploadFileType) {
       case AcceptedUploadFileType.NONE:
         return 'dropzone-disabled';
 
@@ -195,15 +206,22 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
     }
 
     return '';
-  }, [isUploading, isDragAccept, isDragReject, acceptedFileType]);
+  }, [isUploading, isDragAccept, isDragReject, acceptedUploadFileType]);
 
   return (
-    <div className={`${style['codemirror-editor']} flex-expand-vert`}>
-      <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+    <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
+      <div {...getRootProps()} className={`dropzone  ${fileUploadState} flex-expand-vert`}>
+        <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
-        <Toolbar editorKey={editorKey} onFileOpen={open} acceptedFileType={acceptedFileType} />
       </div>
+      { !hideToolbar && (
+        <Toolbar
+          editorKey={editorKey}
+          acceptedUploadFileType={acceptedUploadFileType}
+          onUpload={onUpload}
+        />
+      ) }
     </div>
   );
 };

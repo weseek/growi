@@ -1,6 +1,8 @@
 import { memo } from 'react';
 
-import type { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../../../consts';
+import type { AcceptedUploadFileType } from '@growi/core';
+
+import type { GlobalCodeMirrorEditorKey } from '../../../consts';
 
 import { AttachmentsDropup } from './AttachmentsDropup';
 import { DiagramButton } from './DiagramButton';
@@ -13,16 +15,16 @@ import styles from './Toolbar.module.scss';
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
-  onFileOpen: () => void,
-  acceptedFileType: AcceptedUploadFileType
+  acceptedUploadFileType: AcceptedUploadFileType,
+  onUpload?: (files: File[]) => void,
 }
 
 export const Toolbar = memo((props: Props): JSX.Element => {
 
-  const { editorKey, onFileOpen, acceptedFileType } = props;
+  const { editorKey, acceptedUploadFileType, onUpload } = props;
   return (
-    <div className={`d-flex gap-2 p-2 codemirror-editor-toolbar ${styles['codemirror-editor-toolbar']}`}>
-      <AttachmentsDropup onFileOpen={onFileOpen} acceptedFileType={acceptedFileType} />
+    <div className={`d-flex gap-2 py-1 px-2 px-md-3 border-top ${styles['codemirror-editor-toolbar']}`}>
+      <AttachmentsDropup editorKey={editorKey} onUpload={onUpload} acceptedUploadFileType={acceptedUploadFileType} />
       <TextFormatTools editorKey={editorKey} />
       <EmojiButton
         editorKey={editorKey}

@@ -1,4 +1,4 @@
-import { manifestPath as presetThemesManifestPath } from '@growi/preset-themes';
+import { themesRootPath as presetThemesRootPath } from '@growi/preset-themes';
 import csrf from 'csurf';
 import qs from 'qs';
 
@@ -12,7 +12,6 @@ const logger = loggerFactory('growi:crowi:express-init');
 
 module.exports = function(crowi, app) {
   const debug = require('debug')('growi:crowi:express-init');
-  const path = require('path');
   const express = require('express');
   const compression = require('compression');
   const helmet = require('helmet');
@@ -86,7 +85,7 @@ module.exports = function(crowi, app) {
   const staticOption = (crowi.node_env === 'production') ? { maxAge: '30d' } : {};
   app.use(express.static(crowi.publicDir, staticOption));
   app.use('/static/preset-themes', express.static(
-    resolveFromRoot(`../../node_modules/@growi/preset-themes/${path.dirname(presetThemesManifestPath)}`),
+    resolveFromRoot(`../../node_modules/@growi/preset-themes/${presetThemesRootPath}`),
   ));
   app.use(PLUGIN_EXPRESS_STATIC_DIR, express.static(PLUGIN_STORING_PATH));
 

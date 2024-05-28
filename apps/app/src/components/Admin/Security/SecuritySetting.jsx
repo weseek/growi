@@ -252,7 +252,7 @@ class SecuritySetting extends React.Component {
     return (
       <div key={`page-delete-permission-dropdown-${deletionType}`} className="row">
 
-        <div className="col-md-3 text-md-end">
+        <div className="col-md-4 text-md-end">
           {!isRecursiveDeletion(deletionType) && isTypeDeletion(deletionType) && (
             <strong>{t('security_settings.page_delete')}</strong>
           )}
@@ -261,7 +261,7 @@ class SecuritySetting extends React.Component {
           )}
         </div>
 
-        <div className="col-md-6">
+        <div className="col-md-8">
           {
             !isRecursiveDeletion(deletionType)
               ? (
@@ -296,14 +296,14 @@ class SecuritySetting extends React.Component {
                     aria-expanded="false"
                     onClick={() => this.setExpantOtherDeleteOptionsState(deletionType, !expantDeleteOptionsState)}
                   >
-                    <i className={`fa fa-fw fa-arrow-right ${expantDeleteOptionsState ? 'fa-rotate-90' : ''}`}></i>
+                    <span className={`material-symbols-outlined me-1 ${expantDeleteOptionsState ? 'rotate-90' : ''}`}>navigate_next</span>
                     { t('security_settings.other_options') }
                   </button>
                   <Collapse isOpen={expantDeleteOptionsState}>
                     <div className="pb-4">
-                      <p className="card custom-card">
+                      <p className="card custom-card bg-warning-sublte">
                         <span className="text-warning">
-                          <i className="icon-info"></i>
+                          <span className="material-symbols-outlined">info</span>
                           {/* eslint-disable-next-line react/no-danger */}
                           <span dangerouslySetInnerHTML={{ __html: t('security_settings.page_delete_rights_caution') }} />
                         </span>
@@ -368,11 +368,11 @@ class SecuritySetting extends React.Component {
             <tbody>
               <tr>
                 <th scope="row">{ t('public') }</th>
-                <td><i className="icon-fw icon-check text-success"></i>{ t('security_settings.always_displayed') }</td>
+                <td><span className="material-symbols-outlined text-success me-1">check_circle</span>{ t('security_settings.always_displayed') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('anyone_with_the_link') }</th>
-                <td><i className="icon-fw icon-ban text-danger"></i>{ t('security_settings.always_hidden') }</td>
+                <td><span className="material-symbols-outlined text-danger me-1">cancel</span>{ t('security_settings.always_hidden') }</td>
               </tr>
               <tr>
                 <th scope="row">{ t('only_me') }</th>
@@ -412,12 +412,12 @@ class SecuritySetting extends React.Component {
           </table>
         </div>
 
-        <h4>{t('security_settings.page_access_rights')}</h4>
+        <h4 className="mb-3">{t('security_settings.page_access_rights')}</h4>
         <div className="row mb-4">
-          <div className="col-md-3 text-md-end py-2">
+          <div className="col-md-4 text-md-end py-2">
             <strong>{t('security_settings.Guest Users Access')}</strong>
           </div>
-          <div className="col-md-9">
+          <div className="col-md-8">
             <div className="dropdown">
               <button
                 className={`btn btn-outline-secondary dropdown-toggle text-end col-12
@@ -444,8 +444,8 @@ class SecuritySetting extends React.Component {
             </div>
             {adminGeneralSecurityContainer.isWikiModeForced && (
               <p className="alert alert-warning mt-2 col-6">
-                <i className="icon-exclamation icon-fw">
-                </i><b>FIXED</b><br />
+                <span className="material-symbols-outlined me-1">error</span>
+                <b>FIXED</b><br />
                 <b
                   dangerouslySetInnerHTML={{
                     __html: t('security_settings.Fixed by env var',
@@ -457,7 +457,7 @@ class SecuritySetting extends React.Component {
           </div>
         </div>
 
-        <h4>{t('security_settings.page_delete_rights')}</h4>
+        <h4 className="mb-3">{t('security_settings.page_delete_rights')}</h4>
         {/* Render PageDeletePermission */}
         {
           [
@@ -474,9 +474,9 @@ class SecuritySetting extends React.Component {
           ].map(arr => this.renderPageDeletePermission(arr[0], arr[1], arr[2], arr[3]))
         }
 
-        <h4>{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
+        <h4 className="mb-3">{t('security_settings.user_homepage_deletion.user_homepage_deletion')}</h4>
         <div className="row mb-4">
-          <div className="col-6 offset-3">
+          <div className="col-md-10 offset-md-2">
             <div className="form-check form-switch form-check-success">
               <input
                 type="checkbox"
@@ -512,9 +512,9 @@ class SecuritySetting extends React.Component {
         <h4>{t('security_settings.session')}</h4>
         <div className="row">
           <label className="text-start text-md-end col-md-3 col-form-label">{t('security_settings.max_age')}</label>
-          <div className="col-md-6">
+          <div className="col-md-8">
             <input
-              className="form-control col-md-3"
+              className="form-control col-md-4"
               type="text"
               defaultValue={adminGeneralSecurityContainer.state.sessionMaxAge || ''}
               onChange={(e) => {
@@ -524,9 +524,9 @@ class SecuritySetting extends React.Component {
             />
             {/* eslint-disable-next-line react/no-danger */}
             <p className="form-text text-muted" dangerouslySetInnerHTML={{ __html: t('security_settings.max_age_desc') }} />
-            <p className="card custom-card">
+            <p className="card custom-card bg-warning-subtle">
               <span className="text-warning">
-                <i className="icon-info"></i> {t('security_settings.max_age_caution')}
+                <span className="material-symbols-outlined">info</span> {t('security_settings.max_age_caution')}
               </span>
             </p>
           </div>

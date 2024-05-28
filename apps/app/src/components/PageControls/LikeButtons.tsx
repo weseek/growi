@@ -1,4 +1,5 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import type { IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
@@ -8,6 +9,7 @@ import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 import UserPictureList from '../Common/UserPictureList';
 
 import styles from './LikeButtons.module.scss';
+import popoverStyles from './user-list-popover.module.scss';
 
 type LikeButtonsProps = {
 
@@ -52,7 +54,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         <span className={`material-symbols-outlined ${isLiked ? 'fill' : ''}`}>favorite</span>
       </button>
 
-      <UncontrolledTooltip data-testid="like-button-tooltip" placement="top" target="like-button" autohide={false} fade={false}>
+      <UncontrolledTooltip data-testid="like-button-tooltip" target="like-button" autohide={false} fade={false}>
         {t(getTooltipMessage())}
       </UncontrolledTooltip>
 
@@ -65,7 +67,7 @@ const LikeButtons: FC<LikeButtonsProps> = (props: LikeButtonsProps) => {
         {sumOfLikers}
       </button>
       <Popover placement="bottom" isOpen={isPopoverOpen} target="po-total-likes" toggle={togglePopover} trigger="legacy">
-        <PopoverBody className="user-list-popover">
+        <PopoverBody className={`user-list-popover ${popoverStyles['user-list-popover']}`}>
           <div className="px-2 text-end user-list-content text-truncate text-muted">
             {props.likers?.length ? <UserPictureList users={props.likers} /> : t('No users have liked this yet.')}
           </div>

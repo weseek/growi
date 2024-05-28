@@ -1,32 +1,29 @@
-import { useEffect } from 'react';
+import { memo, useEffect } from 'react';
 
 import type { Extension } from '@codemirror/state';
-import { keymap, scrollPastEnd } from '@codemirror/view';
+import { keymap } from '@codemirror/view';
 
-import { GlobalCodeMirrorEditorKey, AcceptedUploadFileType } from '../consts';
 import { useCodeMirrorEditorIsolated } from '../stores';
 
-import { CodeMirrorEditor } from '.';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
+
+import type { GlobalCodeMirrorEditorKey } from 'src/consts';
 
 
 const additionalExtensions: Extension[] = [
-  scrollPastEnd(),
 ];
 
-
-type Props = {
-  onChange?: (value: string) => void,
-  onComment?: () => void,
-  acceptedFileType?: AcceptedUploadFileType,
+type Props = CodeMirrorEditorProps & {
+  editorKey: string | GlobalCodeMirrorEditorKey,
 }
 
-export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
+export const CodeMirrorEditorComment = memo((props: Props): JSX.Element => {
   const {
-    onComment, onChange, acceptedFileType,
+    editorKey,
+    onSave, ...rest
   } = props;
 
-  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(GlobalCodeMirrorEditorKey.COMMENT);
-  const acceptedFileTypeNoOpt = acceptedFileType ?? AcceptedUploadFileType.NONE;
+  const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
 
   // setup additional extensions
   useEffect(() => {
@@ -35,7 +32,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
 
   // set handler to comment with ctrl/cmd + Enter key
   useEffect(() => {
-    if (onComment == null) {
+    if (onSave == null) {
       return;
     }
 
@@ -46,7 +43,7 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
         run: () => {
           const doc = codeMirrorEditor?.getDoc();
           if (doc != null) {
-            onComment();
+            onSave();
           }
           return true;
         },
@@ -56,13 +53,13 @@ export const CodeMirrorEditorComment = (props: Props): JSX.Element => {
     const cleanupFunction = codeMirrorEditor?.appendExtensions?.(keymapExtension);
 
     return cleanupFunction;
-  }, [codeMirrorEditor, onComment]);
+  }, [codeMirrorEditor, onSave]);
 
   return (
     <CodeMirrorEditor
-      editorKey={GlobalCodeMirrorEditorKey.COMMENT}
-      onChange={onChange}
-      acceptedFileType={acceptedFileTypeNoOpt}
+      editorKey={editorKey}
+      onSave={onSave}
+      {...rest}
     />
   );
-};
+});

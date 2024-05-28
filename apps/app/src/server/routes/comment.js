@@ -3,6 +3,7 @@ import { Comment, CommentEvent, commentEvent } from '~/features/comment/server';
 import { SupportedAction, SupportedTargetModel, SupportedEventModel } from '~/interfaces/activity';
 import loggerFactory from '~/utils/logger';
 
+import { GlobalNotificationSettingEvent } from '../models';
 import { preNotifyService } from '../service/pre-notify';
 
 /**
@@ -243,6 +244,10 @@ module.exports = function(crowi, app) {
       return res.json(ApiResponse.error('Current user is not accessible to this page.'));
     }
 
+    if (comment === '') {
+      return res.json(ApiResponse.error('Comment text is required'));
+    }
+
     let createdComment;
     try {
       createdComment = await Comment.add(pageId, req.user._id, revisionId, comment, position, replyTo);
@@ -281,7 +286,7 @@ module.exports = function(crowi, app) {
 
     // global notification
     try {
-      await globalNotificationService.fire(GlobalNotificationSetting.EVENT.COMMENT, page, req.user, {
+      await globalNotificationService.fire(GlobalNotificationSettingEvent.COMMENT, page, req.user, {
         comment: createdComment,
       });
     }
@@ -474,7 +479,7 @@ module.exports = function(crowi, app) {
         throw new Error('Current user is not operatable to this comment.');
       }
 
-      await comment.removeWithReplies(comment);
+      await Comment.removeWithReplies(comment);
       await Page.updateCommentCount(comment.page);
       commentEvent.emit(CommentEvent.DELETE, comment);
     }

@@ -1,4 +1,5 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import {
@@ -31,8 +32,8 @@ export const ConfirmModal: FC<ConfirmModalProps> = (props: ConfirmModalProps) =>
 
   return (
     <Modal isOpen={props.isModalOpen} toggle={onCancel}>
-      <ModalHeader tag="h4" toggle={onCancel} className="bg-danger">
-        <span className="material-symbols-outlined">help</span>
+      <ModalHeader tag="h4" toggle={onCancel} className="text-danger">
+        <span className="material-symbols-outlined me-1">warning</span>
         {t('Warning')}
       </ModalHeader>
       <ModalBody>

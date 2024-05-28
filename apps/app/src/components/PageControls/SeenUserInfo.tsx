@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react';
+import type { FC } from 'react';
+import React, { useState } from 'react';
 
 import type { IUser } from '@growi/core';
-import { FootstampIcon } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { UncontrolledTooltip, Popover, PopoverBody } from 'reactstrap';
 
@@ -39,7 +39,7 @@ const SeenUserInfo: FC<Props> = (props: Props) => {
           </div>
         </PopoverBody>
       </Popover>
-      <UncontrolledTooltip data-testid="seen-user-info-tooltip" placement="top" target="btn-seen-user" fade={false}>
+      <UncontrolledTooltip data-testid="seen-user-info-tooltip" target="btn-seen-user" fade={false}>
         {t('tooltip.footprints')}
       </UncontrolledTooltip>
     </div>

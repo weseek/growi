@@ -1,8 +1,354 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.0...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.7...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.7](https://github.com/weseek/growi/compare/v7.0.6...v7.0.7) - 2024-05-27
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle in groundglassbar (#8832) @maeshinshin
+* imprv: toastr location (#8831) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Do not insert initial value when input is empty in editor (#8773) @miya
+
+### 🧰 Maintenance
+
+* support: Apply changesets (#8840) @yuki-takei
+* support: Upgrade yjs packages (#8839) @yuki-takei
+* support: Upgrade stylelint (#8835) @yuki-takei
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
+
+## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle for WIP in 'Page Tree' sidebar (#8796) @maeshinshin
+* imprv: Hide the page creation button for users without editing permissions (#8808) @miya
+* imprv: Add config to toggle ACL between public_read and private on PutObject when using S3 with FileUploader (#8778) @ToshihitoKon
+
+### 🐛 Bug Fixes
+
+* fix: BookmarkItem occures an error when the related page has been deleted 2 (#8818) @yuki-takei
+* fix: BookmarkItem occures an error when the related page has been deleted (#8817) @yuki-takei
+* fix: Display share page date (#8809) @TatsuyaIse
+* fix: Admin layout (#8806) @satof3
+
+### 🧰 Maintenance
+
+* support: Modify env var for S3 Object-ACL (#8805) @yuki-takei
+
+## [v7.0.4](https://github.com/weseek/growi/compare/v7.0.3...v7.0.4) - 2024-05-13
+
+### 💎 Features
+
+* feat: Add a button to open PageCreateModal in the new page creation lead (#8774) @miya
+* feat: Show Yjs status indicator in SubNavigation (#8709) @miya
+* feat: Apply locale to defualt page title (#8600) @jam411
+
+### 🚀 Improvement
+
+* imprv: Behavior when creating first user fails (#8801) @miya
+* imprv: Add indexes for performance (#8800) @yuki-takei
+* imprv: Autosize Input for rename (#8795) @yuki-takei
+* imprv: behavior of dropdown toggle in 'Recent Changes' sidebar (#8782) @maeshinshin
+* imprv: Hide  personal drop down when guest user (#8786) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: Drawio not available with GROWI slides (#8725) @reiji-h
+* fix: Auto-scroll to the active page in the page tree (#8772) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump ejs from 3.1.9 to 3.1.10 (#8784) @dependabot
+
+## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
+
+### 🚀 Improvement
+
+* imprv: Rename on blur (#8777) @yuki-takei
+* imprv: Re-calculate max-width for page tile on editor (#8775) @yuki-takei
+* imprv: Truncate page path title in editor (#8726) @reiji-h
+* imprv: FootstrampIcon uses material symbols (#8699) @kazutoweseek
+* imprv: behaviour when pressing enter after numerical input (ex: 2.3.4.) (#8754) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: An error occurred during user activation via email (#8767) @maeshinshin
+* fix: Admin customize screen (#8765) @yuki-takei
+* fix: Editor theme active line (material, nord) (#8762) @satof3
+* fix: 500 error occur when pressing the button for opening PageSelectModal (#8761) @WNomunomu
+* fix: Admin screen min-height for body (#8764) @yuki-takei
+* fix: Behaviour of table operation by enter key in editor (#8756) @WNomunomu
+* fix: EditingUserList shows user icons even when the user is not opening the editor (#8752) @miya
+* fix: Tags are not created when space key is entered (Firefox) (#8758) @miya
+* fix: Parent group selection dropdown does not work (#8759) @miya
+* fix: Codeblock overflow (#8753) @yuki-takei
+* fix:  Nord and Original-dark theme in editor (#8748) @satof3
+* fix: Material and Eclipse colors (#8749) @satof3
+* fix: Always autofocus when moving to the Editor (#8730) @reiji-h
+* fix: CopyDropdown protrudes from the screen issue (#8734) @WNomunomu
+* fix: Error on today's memo create from hotkey when memo exists (#8746) @arafubeatbox
+* fix: Editor styles (#8742) @yuki-takei
+* fix: Close the comment editor after the post (#8741) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump typeorm from 0.3.0 to 0.3.20 (#8745) @dependabot
+* support: Make AwsFileUploader type safe (#8780) @yuki-takei
+* support: Update modal header design (#8766) @satof3
+* support: Improve types in IPage and IRevision (#8763) @yuki-takei
+* support: Editor mobile appearance (#8760) @satof3
+* support: Localize in app tags language en change ja ch revision (#8757) @kazutoweseek
+* support: Upgrade vite and vitest (#8743) @yuki-takei
+* support: Adjust design details (#8738) @satof3
+* ci(deps): bump typeorm from 0.2.32 to 0.3.0 (#8602) @dependabot
+* support: Upgrade date-fns (#8744) @yuki-takei
+
+## [v7.0.2](https://github.com/weseek/growi/compare/v7.0.1...v7.0.2) - 2024-04-17
+
+### 💎 Features
+
+* feat: fr_FR locale
+
+### 🚀 Improvement
+
+* imprv: Hide title of untitled page when creating newly (#8536) @WNomunomu
+* imprv: Comment editor performance (#8731) @yuki-takei
+* imprv: Truncate page path title in view (#8707) @reiji-h
+* imprv: Show unrelated groups and disable ungrantable groups in grant select (#8695) @arafubeatbox
+* imprv: Bookmark sidebar layout (#8703) @satof3
+* imprv: Responsive layout (#8710) @yuki-takei
+* imprv: Sm size dropdown menu (#8711) @satof3
+* imprv: search results form improvements (#8705) @maeshinshin
+* imprv: WIP Page behavior (#8700) @miya
+* imprv: Disable groups not assignable to page due to parent grant (#8570) @arafubeatbox
+* imprv: Border delete in search modal (#8629) @kazutoweseek
+* imprv: Border in search modal (#8629) @kazutoweseek
+* imprv: New Comment style (#8631) @satof3
+* imprv: Hide title of untitled page when creating newly (#8536) @WNomunomu
+* imprv: Render lightbox above the sidebar (#8673) @yuki-takei
+* imprv: Add border to the page title header when editing (#8671) @yuki-takei
+* imprv: Set font-display to icon fonts (#8670) @yuki-takei
+* imprv: Enable box-shadow (#8668) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Login layout when external auth only (#8717) @satof3
+* fix: Initialize grant correctly after when page transition (#8633) @yukendev
+* fix: lsx icon layout and color (#8691) @satof3
+* fix: Tags are unintentionally created when a conversion is finalized (#8682) @miya
+* fix: Footnotes making page scrollable. (#8678) @reiji-h
+* fix: Automatic installation failure (#8685) @miya
+* fix: Page content preview not shown in duplicate alert page (#8645) @arafubeatbox
+* fix: react-toastify colors (#8672) @yuki-takei
+* fix: Add filePath to the schema of attachement for backward compatibility for v3.3 or earlier (#8679) @shield-9
+* fix: Questionnaire modal styles in dark mode (#8669) @yuki-takei
+* fix: Cannot display error when page path is duplicated (#8664) @TatsuyaIse
+
+### 🧰 Maintenance
+
+* ci(deps): bump express from 4.17.1 to 4.19.2 (#8617) @dependabot
+* support: Localize in app (#8716) @satof3
+* ci(deps): bump tar from 6.2.0 to 6.2.1 (#8712) @dependabot
+* support: Localize comment components (#8694) @satof3
+* support: Upgrade actions from v3 to v4 (2) (#8688) @yuki-takei
+* support: Upgrade actions from v3 to v4 (#8684) @yuki-takei
+* ci(deps): bump undici from 5.21.2 to 5.28.4 (#8686) @dependabot
+* ci(deps-dev): bump vite from 4.5.2 to 4.5.3 (#8675) @dependabot
+
+## [v7.0.1](https://github.com/weseek/growi/compare/v7.0.0...v7.0.1) - 2024-04-02
+
+### 🚀 Improvement
+
+* imprv: PagePathNav and PagePathHeader styles (#8643) @yuki-takei
+* imprv: Prevent tooltip flickering (#8642) @yuki-takei
+* imprv: PersonalDropdown style (#8641) @yuki-takei
+* imprv: Support color scheme in Page History (diff2html) (#8637) @yuki-takei
+* imprv: Disable RequestedAuthnContext in SAML authentication (v7.0.x) (#8635) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Admin users badge color in /admin/users (#8655) @satof3
+* fix: Custom logo style (#8656) @satof3
+* fix: Error when creating TTL index (#8653) @miya
+* fix: Login form style is broken (#8651) @yuki-takei
+* fix: Login buttons for external auth provider does not work (#8648) @yuki-takei
+* fix: Set `d-none` when the sidebar is closed in order to prevent scrollbars from appearing (#8640) @yuki-takei
+* fix: Style for Handsontable in dark mode (#8639) @yuki-takei
+* fix: Supress PageAccessoriesModal rerendering for keeping radio button selections of PageHistory (#8638) @yuki-takei
+* fix: Uncorrect update bookmark button clicked on page control (#8608) @jam411
+* fix: Counting comments when removing the thread (#8624) @yukendev
+
+### 🧰 Maintenance
+
+* support: Add light and dark badge color (#8652) @satof3
+* support: Omit configurations for publishing to GitHub Container Registry(ghcr.io) (#8628) @yuki-takei
+
+## [v7.0.0](https://github.com/weseek/growi/compare/v6.3.2...v7.0.0) - 2024-03-27
+
+### BREAKING CHANGES
+
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+* support: Omit promster (#8105) @yuki-takei
+* support: Omit HackMD (CodiMD) (#8094) @yuki-takei
+* support: Revoke well classes (#8041) @soumaeda
+
+### 💎 Features
+
+* feat: Not required latest revision when updating from Editor (#8522) @miya
+* feat: Add editing user list on page header (#8486) @jam411
+* feat: implement to add table when doing a line break in table markdown (#8461) @WNomunomu
+* feat: WIP Page (#8484) @miya
+* feat: 140020 140992 sidebar style (#8497) @yukendev
+* feat: Select parent page from PageSelectModal (#8446) @WNomunomu
+* feat: CollapsedParentsDropdown to display ancestor pathname (#8444) @miya
+* feat: Enable and fix page duplication of user unrelated pages (#8442) @arafubeatbox
+* feat: Multiple group grant for page (#8331) @arafubeatbox
+* feat: Built-in Collaborative Editor (#8176) @jam411
+* feat: Changing page title and path in edit mode (#8252) @WNomunomu
+* feat: Notification count badge (#8372) @miya
+* feat: Unread filtering for In-app notification (#8373) @miya
+* feat: Show notifications in sidebar (#8371) @miya
+* feat: Uniform behavior when creating pages from create new page button (#8297) @jam411
+* feat: New incremental search (#8238) @miya
+* feat: Allow deletion of user homepage when the user is deleted (#8224) @jam411
+* feat: LDAP/Keycloak group sync (#7857) @arafubeatbox
+* feat: Implementation of autocompletion function for emoji input (#8137) @WNomunomu
+* feat: Create page when click edit button if page is not found (#8174) @jam411
+* feat: Presentation preview and support Marp  (#8029) @reiji-h
+
+### 🚀 Improvement
+
+* imprv: New login design (#8607) @satof3
+* imprv: Multi group grant page duplicate explanation (#8507) @arafubeatbox
+* imprv: Update design for user homepage side contents (#8465) @jam411
+* imprv: Update page accessories modal design (#8466) @jam411
+* imprv: Creating/updating page APIs (#8459) @yuki-takei
+* imprv: improve PageHeader component (#8439) @WNomunomu
+* imprv: Use unzip stream instead of unzipper (#8378) @ryu-sato
+* imprv: Allow plugin that contain slashes in the branch name to be installed (#8359) @ryu-sato
+* imprv: Refactor DrawioViewer re-rendering by the resizing trigger (#8314) @yuki-takei
+* imprv: Upload handler use apiv3 post (#8279) @reiji-h
+* imprv: Apply content headers for attachment response (#8245) @yuki-takei
+* imprv: Add Marp preset template for ja_JP and zh_CN (#8179) @AikaHiyama
+* imprv: Update RichAttachments feat on shared pages (#8206) @jam411
+* imprv: Certify shared page attachment middleware (#8211) @yuki-takei
+* imprv: Able to edit tags in editor (#8167) @soumaeda
+* imprv: Responsive layout (#8200) @yuki-takei
+* imprv: Sidebar on edit (#8181) @yuki-takei
+* imprv: Sidebar mode (#8160) @yuki-takei
+* imprv: Limit the file types in editor. (#8146) @reiji-h
+* imprv: Support Ctrl+V file paste. (#8124) @reiji-h
+* imprv: i18n for marp settings (#8110) @moekumasaka
+* imprv: Download a markdown file using the page name as the file name (#8061) @soumaeda
+* imprv: i18n "Create /Sidebar page" label (#8085) @yuki-takei
+* imprv: Admin customize presentation form (#8083) @meiri-k
+* imprv: Search behavior (#8069) @yuki-takei
+* imprv: i18n resetting password mail body (#8058) @meiri-k
+* imprv: Add installed date to questionnaire answer (#7971) @TatsuyaIse
+* imprv: Export md with page name (#8005) @soumaeda
+* imprv: Show modal when you delete plugin (#7875) @soumaeda
+* imprv: Create  Japanese  ejs files (#7957) @meiri-k
+* imprv: Sidebar shows skelton with suspense (#7975) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Show both UserGroups and ExternalUserGroups for group delete modal transfer select (#8519) @arafubeatbox
+* fix: Multi group grant page becomes public when one of groups deleted (#8518) @arafubeatbox
+* fix: pages are not displayed in page tree (#8515) @WNomunomu
+* fix: Page being able to delete completely when not allowed (#8374) @arafubeatbox
+* fix: Logs are not saved when viewing the page (#8406) @miya
+* fix: Normalize duplicated root pages to valid paths when server startup (#8414) @miya
+* fix: Configured auditlog environment variables are not reflected in the administration screen (#8383) @miya
+* fix: Plugin is broken after unzipping (#8358) @ryu-sato
+* fix: Keycloak group sync config not loaded on sync execution (#8339) @arafubeatbox
+* fix: SAML callback action throws the field is undefined error when the ACL Rule string is only white space (#8322) @yuki-takei
+* fix: Update deleteCompletelyUserHomeBySystem for v4 process (#8289) @jam411
+* fix: Remove groups not related to the user from the user groups that are specified automatically when creating child pages (#8266) @arafubeatbox
+* fix: Certify shared page attachment middleware (#8255) @yuki-takei
+* fix: Show liker counts in lsx (#8194) @yuki-takei
+* fix: Marp is enabled incorrectly problem (#8100) @reiji-h
+* fix: Fixing swagger for tag update api (#8010) @miya
+* fix: Modification of links in the docs (#8004) @miya
+* fix: Type safe implementation for objects imported from ElasticsearchClient (#7862) @miya
+* fix: Consider an empty page when renaming and duplicating (v6.1.x) (#7980) @yuki-takei
+* fix: Consider an empty page when renaming and duplicating (#7979) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Upgrade Next.js v14 (#8586) @yuki-takei
+* imprv: New login design (#8607) @satof3
+* support: Node.js v20 (#8528) @miya
+* support: Upgrade react bootstrap typeahead (#8500) @jam411
+* ci(deps): bump ip from 2.0.0 to 2.0.1 (#8508) @dependabot
+* support: React Testing Library (#8393) @miya
+* ci(deps-dev): bump vite from 4.5.1 to 4.5.2 (#8392) @dependabot
+* support: Build GROWI custom icons (#8356) @yukendev
+* ci(deps-dev): bump vite from 4.5.0 to 4.5.1 (#8302) @dependabot
+* support: Remove obsolete route for attachment on MongoDB GridFS (#8239) @yuki-takei
+* support: Install material-symbols (#8182) @yuki-takei
+* ci(deps-dev): bump postcss from 8.4.26 to 8.4.31 (#8142) @dependabot
+* ci(deps): bump cypress-io/github-action from 5 to 6 (#8051) @dependabot
+* ci(deps): bump amannn/action-semantic-pull-request from 5.0.2 to 5.3.0 (#8127) @dependabot
+* ci(deps): bump aws-actions/configure-aws-credentials from 2 to 4 (#8128) @dependabot
+* support: Internationalization USER_REGISTRATION_APPROVAL_REQUEST label for v62x (#8130) @jam411
+* ci(deps): bump get-func-name from 2.0.0 to 2.0.2 (#8119) @dependabot
+* support: Omit promster (#8105) @yuki-takei
+* support: Omit HackMD (CodiMD) (#8094) @yuki-takei
+* support: Revoke well classes (#8041) @soumaeda
+* support: Upgrade to reactstrap v9 (#7984) @jam411
+* support: Update CodeMirror to v6 (#7968) @yuki-takei
+
+## [v6.3.2](https://github.com/weseek/growi/compare/v6.3.1...v6.3.2) - 2024-03-25
+
+### 🐛 Bug Fixes
+
+* fix: Show both UserGroups and ExternalUserGroups for group delete modal transfer select (#8519) @arafubeatbox
+
+### 🧰 Maintenance
+
+* ci(deps): bump ip from 2.0.0 to 2.0.1 (#8508) @dependabot
+
+## [v6.3.1](https://github.com/weseek/growi/compare/v6.3.0...v6.3.1) - 2024-02-01
+
+### 💎 Features
+
+* feat: Normalize duplicated root pages to valid paths when server startup (#8414) @miya
+
+### 🚀 Improvement
+
+* imprv: Use unzip stream instead of unzipper (#8378) @ryu-sato
+* imprv: Allow plugin that contain slashes in the branch name to be installed (#8359) @ryu-sato
+
+### 🐛 Bug Fixes
+
+* fix: Page being able to delete completely when not allowed (#8374) @arafubeatbox
+* fix: Logs are not saved when viewing the page (#8406) @miya
+* fix: Preventing duplication of `/user/username` pages (#8413) @WNomunomu
+* fix: Non-admin user cannot rename pages v63x (#8410) @jam411
+* fix: Duplicate root pages are created unintentionally (#8404) @miya
+* fix: Configured auditlog environment variables are not reflected in the administration screen (#8383) @miya
+* fix: plugin is broken after unzipping (#8358) @ryu-sato
+* fix: Keycloak group sync config not loaded on sync execution (#8339) @arafubeatbox
+
+### 🧰 Maintenance
+
+* support: React Testing Library (#8393) @miya
+* ci(deps-dev): bump vite from 4.5.1 to 4.5.2 (#8392) @dependabot
 
 ## [v6.3.0](https://github.com/weseek/growi/compare/v6.2.5...v6.3.0) - 2023-12-14
 
@@ -50,6 +396,7 @@
 * imprv: Allow deletion of user homepage when the user is deleted (#8224) @jam411
 
 ### 🐛 Bug Fixes
+
 * fix: Certify shared page attachment middleware (6.2.x) (#8256) @yuki-takei
 
 ### 🧰 Maintenance

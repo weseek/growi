@@ -30,31 +30,31 @@ const SecurityManagementContents = () => {
   const navTabMapping = useMemo(() => {
     return {
       passport_local: {
-        Icon: () => <i className="fa fa-users" />,
+        Icon: () => <span className="material-symbols-outlined">groups</span>,
         i18n: 'ID/Pass',
       },
       passport_ldap: {
-        Icon: () => <i className="fa fa-sitemap" />,
+        Icon: () => <span className="material-symbols-outlined">network_node</span>,
         i18n: 'LDAP',
       },
       passport_saml: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'SAML',
       },
       passport_oidc: {
-        Icon: () => <i className="fa fa-key" />,
+        Icon: () => <span className="material-symbols-outlined">key</span>,
         i18n: 'OIDC',
       },
       passport_google: {
-        Icon: () => <i className="fa fa-google" />,
+        Icon: () => <span className="growi-custom-icons align-bottom">google</span>,
         i18n: 'Google',
       },
       passport_github: {
-        Icon: () => <i className="fa fa-github" />,
+        Icon: () => <span className="growi-custom-icons align-bottom">github</span>,
         i18n: 'GitHub',
       },
       // passport_facebook: {
-      //   Icon: () => <i className="fa fa-facebook" />,
+      //   Icon: () => <span className="growi-custom-icons align-bottom">facebook</span>,
       //   i18n: '(TBD) Facebook',
       // },
     };
@@ -75,19 +75,19 @@ const SecurityManagementContents = () => {
 
       {/* XSS configuration link */}
       <div className="mb-5">
-        <h2 className="border-bottom">{t('security_settings.xss_prevent_setting')}</h2>
-        <div className="text-center">
+        <h2 className="border-bottom pb-2">{t('security_settings.xss_prevent_setting')}</h2>
+        <div className="mt-4">
           <Link
             href="/admin/markdown/#preventXSS"
             style={{ fontSize: 'large' }}
           >
-            <i className="fa-fw icon-login"></i> {t('security_settings.xss_prevent_setting_link')}
+            <span className="material-symbols-outlined me-1">login</span> {t('security_settings.xss_prevent_setting_link')}
           </Link>
         </div>
       </div>
 
       <div className="auth-mechanism-configurations">
-        <h2 className="border-bottom">{t('security_settings.Authentication mechanism settings')}</h2>
+        <h2 className="border-bottom pb-2">{t('security_settings.Authentication mechanism settings')}</h2>
         <CustomNav
           activeTab={activeTab}
           navTabMapping={navTabMapping}

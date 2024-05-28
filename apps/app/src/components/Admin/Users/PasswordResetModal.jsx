@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
@@ -53,7 +54,7 @@ class PasswordResetModal extends React.Component {
           onClick={this.onClickSendNewPasswordButton}
           disabled={!isMailerSetup || isEmailSending || isEmailSent}
         >
-          {isEmailSending && <i className="fa fa-spinner fa-pulse mx-2" />}
+          {isEmailSending && <LoadingSpinner className="mx-2" />}
           {!isEmailSending && (isEmailSent ? t('commons:Done') : t('commons:Send'))}
         </button>
         <button type="submit" className="btn btn-danger" onClick={this.props.onClose}>
@@ -125,7 +126,7 @@ class PasswordResetModal extends React.Component {
           </code>
           <CopyToClipboard text={temporaryPassword} onCopy={() => this.setState({ showTooltip: true })}>
             <button id="copy-tooltip" type="button" className="btn btn-outline-secondary border-0">
-              <i className="fa fa-clone" aria-hidden="true"></i>
+              <span className="material-symbols-outlined" aria-hidden="true">content_copy</span>
             </button>
           </CopyToClipboard>
           <Tooltip
@@ -186,7 +187,7 @@ class PasswordResetModal extends React.Component {
 
     return (
       <Modal isOpen={this.props.isOpen} toggle={this.props.onClose}>
-        <ModalHeader tag="h4" toggle={this.props.onClose} className="bg-warning text-light">
+        <ModalHeader tag="h4" toggle={this.props.onClose} className="text-warning">
           {t('user_management.reset_password') }
         </ModalHeader>
         <ModalBody>

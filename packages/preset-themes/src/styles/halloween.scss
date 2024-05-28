@@ -1,5 +1,8 @@
+@use 'sass:color';
+
 :root[data-bs-theme] {
-  @import '@growi/core/scss/bootstrap/init-stage-1';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-1';
+
   $gray-100: #F2ECF0;
   $gray-200: #E6DAE2;
   $gray-300: #DAC7D3;
@@ -9,8 +12,9 @@
   $gray-700: #7C656D;
   $gray-800: #594749;
   $gray-900: #362824;
-  @import '@growi/core/scss/bootstrap/theming/variables';
-  @import '@growi/core/scss/bootstrap/theming/utils/color-palette';
+
+  @import '@growi/core-styles/scss/bootstrap/theming/variables';
+  @import '@growi/core-styles/scss/bootstrap/theming/utils/color-palette';
 
   $primary: #AA4A04;
   $highlight: #51199B;
@@ -18,167 +22,21 @@
   @include generate-color-palette('primary', $primary, #140700, white);
   @include generate-color-palette('highlight', $highlight, #240E3E, white);
 
-  $body-color-dark:                   $gray-300;
-  $body-bg-dark:                      #1B0A0A;
-
-  $body-secondary-color-dark:         rgba($body-color-dark, .75);
-  $body-secondary-bg-dark:            $gray-800;
-
-  $body-tertiary-color-dark:          rgba($body-color-dark, .5);
-  $body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%);
-
-  $border-color-dark:                 $gray-700;
-
-  $link-color-dark:                   $gray-400;
+  $body-color-dark: $gray-300;
+  $body-bg-dark: #1B0A0A;
+  $body-secondary-color-dark: rgba($body-color-dark, .75);
+  $body-secondary-bg-dark: $gray-800;
+  $body-tertiary-color-dark: rgba($body-color-dark, .5);
+  $body-tertiary-bg-dark: color.mix($gray-800, $gray-900, 50%);
+  $border-color-dark: $gray-700;
+  $link-color-dark: $gray-400;
 
   @import 'bootstrap/scss/variables';
   @import 'bootstrap/scss/variables-dark';
-
-  @import '@growi/core/scss/bootstrap/init-stage-2';
-
-  @import '@growi/core/scss/bootstrap/theming/apply-dark';
+  @import '@growi/core-styles/scss/bootstrap/init-stage-2';
+  @import '@growi/core-styles/scss/bootstrap/theming/apply-dark';
 
   --grw-wiki-link-color-rgb: var(--grw-primary-400-rgb);
   --grw-wiki-link-hover-color-rgb: var(--grw-primary-300-rgb);
 
-
 }
-
-// @use '@growi/core/scss/bootstrap/init' as bs;
-
-// @use './variables' as var;
-// @use './theme/mixins/page-editor-mode-manager';
-// @use './theme/hsl-functions' as hsl;
-
-// $bordercolor: #7e0d7e;
-
-// // colors for overriding bootstrap $theme-colors
-
-
-// .growi:not(.login-page) {
-//   // add background-image
-//   .page-editor-preview-container {
-//     background-image: url('../images/halloween/halloween.jpg');
-//   }
-// }
-
-
-// :root[data-bs-theme='dark'] {
-//   --primary: hsl(var(--primary-hs),var(--primary-l)) !important;
-//   --primary-hs: 25,95%;
-//   --primary-l: 34%;
-//   --secondary: hsl(var(--secondary-hs),var(--secondary-l)) !important;
-//   --secondary-hs: 208,7%;
-//   --secondary-l: 46%;
-
-//   // Background colors
-//   --bgcolor-global: hsl(var(--bgcolor-global-hs),var(--bgcolor-global-l));
-//   --bgcolor-global-hs: 0,100%;
-//   --bgcolor-global-l: 1%;
-//   --bgcolor-inline-code: #1f1f22; //optional
-//   --bgcolor-card: var(--bgcolor-global);
-//   --bgcolor-blinked-section: #{hsl.alpha(var(--primary), 40%)};
-//   --bgcolor-keyword-highlighted: darkviolet;
-
-//   // Font colors
-//   --color-global: hsl(var(--color-global-hs),var(--color-global-l));
-//   --color-global-hs: 42,81%;
-//   --color-global-l: 54%;
-//   --color-reversal: #eeeeee;
-//   // --color-header: #2b2b2b;
-//   --color-link: hsl(var(--color-link-hs),var(--color-link-l));
-//   --color-link-hs: 262,33%;
-//   --color-link-l: 69%;
-//   --color-link-hover: #{hsl.lighten(var(--color-link), 20%)};
-//   --color-link-wiki: var(--color-link);
-//   --color-link-wiki-hs: var(--color-link-hs);
-//   --color-link-wiki-l: var(--color-link-l);
-//   --color-link-wiki-hover: #{hsl.lighten(var(--color-link), 20%)};
-//   --color-link-nabvar: #a7a7a7;
-//   --color-inline-code: #c7254e; // optional
-
-//   // List Group colors
-//   --color-list: #979797;
-//   --bgcolor-list: transparent;
-//   --color-list-hover: var(--primary);
-//   // --bgcolor-list-hover: ;
-//   // --color-list-active: var(--color-reversal);
-//   // --bgcolor-list-active: var(--primary);
-
-//   // Search Top
-//   --color-search: var(--primary);
-
-//   // Navbar
-//   --bgcolor-navbar: hsl(var(--bgcolor-navbar-hs),var(--bgcolor-navbar-l));
-//   --bgcolor-navbar-hs: 180,3%;
-//   --bgcolor-navbar-l: 93%;
-//   --bgcolor-search-top-dropdown: var(--primary);
-//   --bgcolor-search-top-dropdown-hs: var(--primary-hs);
-//   --bgcolor-search-top-dropdown-l: var(--primary-l);
-//   --border-image-navbar: linear-gradient(90deg, #e3b7ff 0%, #134774 100%);
-
-//   // Logo colors
-//   --bgcolor-logo: #{hsl.darken(var(--primary),10%)};
-//   --fillcolor-logo-mark: #dedede;
-
-//   // Sidebar
-//   --bgcolor-sidebar: hsl(var(--bgcolor-sidebar-hs),var(--bgcolor-sidebar-l));
-//   --bgcolor-sidebar-hs: 197,40%;
-//   --bgcolor-sidebar-l: 14%;
-//   --bgcolor-sidebar-nav-item-active: rgba(#969494, 0.3); // optional
-//   --text-shadow-sidebar-nav-item-active: 0px 0px 10px #969494; // optional
-
-//   // Sidebar contents
-//   --color-sidebar-context: hsl(var(--color-sidebar-context-hs),var(--color-sidebar-context-l));
-//   --color-sidebar-context-hs: 262,33%;
-//   --color-sidebar-context-l: 69%;
-//   --bgcolor-sidebar-context: hsl(var(--bgcolor-sidebar-context-hs),var(--bgcolor-sidebar-context-l));
-//   --bgcolor-sidebar-context-hs: 258,17%;
-//   --bgcolor-sidebar-context-l: 20%;
-
-//   // Sidebar list group
-//   --bgcolor-sidebar-list-group: #2c2926; // optional
-
-//   // Sidebar resize button
-//   --color-resize-button: #effcfa;
-//   --bgcolor-resize-button: var(--primary);
-//   --bgcolor-resize-button-hs: var(--primary-hs);
-//   --bgcolor-resize-button-l: var(--primary-l);
-//   --color-resize-button-hover: #effcfa;
-//   --bgcolor-resize-button-hover: #{hsl.lighten(var(--primary), 5%)};
-
-//   // Subnavigation
-//   --bgcolor-subnav: hsl(var(--bgcolor-subnav-hs),var(--bgcolor-subnav-l));
-//   --bgcolor-subnav-hs: var(--bgcolor-global-hs);
-//   --bgcolor-subnav-l: calc(var(--bgcolor-global-l) + 4%);
-
-//   // Icon colors
-//   --color-editor-icons: var(--color-global);
-
-//   // Border colors
-//   --border-color-theme: #{bs.$gray-300}; // former: `$navbar-border: $gray-300;`
-//   --bordercolor-inline-code: #4d4d4d; // optional
-
-//   // admin theme box
-//   --color-theme-color-box: #{hsl.lighten(var(--primary), 20%)};
-
-//   &, body {
-//     background-image: url('../images/halloween/halloween.jpg');
-//   }
-
-//   .grw-navbar {
-//     background-image: url('../images/halloween/halloween-navbar.jpg') !important;
-//   }
-
-//   // Button
-//   .btn-group.grw-page-editor-mode-manager {
-//     .btn.btn-outline-primary {
-//       @include page-editor-mode-manager.btn-page-editor-mode-manager(#{hsl.lighten(var(--primary), 35%)}, var(--primary), #{hsl.lighten(var(--primary), 5%)}, #{hsl.darken(var(--primary), 20%)});
-//     }
-//   }
-
-//   // Table
-//   .table {
-//     color: var(--color-global);
-//   }
-// }

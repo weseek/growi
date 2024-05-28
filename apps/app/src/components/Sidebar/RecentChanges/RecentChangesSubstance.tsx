@@ -7,6 +7,7 @@ import {
 } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { UserPicture } from '@growi/ui/dist/components';
+import { useTranslation } from 'react-i18next';
 
 import { useKeywordManager } from '~/client/services/search-operation';
 import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
@@ -91,14 +92,14 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
   const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
   const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
   const FormerLink = () => (
-    <div className={`${formerLinkClass} small`}>
+    <div className={`${formerLinkClass} ${isSmall ? 'text-truncate small' : ''}`}>
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} />
     </div>
   );
 
   let locked;
   if (page.grant !== 1) {
-    locked = <span><i className="icon-lock ms-2" /></span>;
+    locked = <span className="material-symbols-outlined ms-2 fs-6">lock</span>;
   }
 
   const isTagElementsRendered = !(isSmall || (page.tags.length === 0));
@@ -110,14 +111,17 @@ const PageItem = memo(({ page, isSmall, onClickTag }: PageItemProps): JSX.Elemen
         <UserPicture user={page.lastUpdateUser} size="md" noTooltip />
 
         <div className="flex-grow-1 ms-2">
-          <div className={`row ${isSmall ? 'gy-0' : 'gy-2'}`}>
+          <div className={`row ${isSmall ? 'gy-0' : 'gy-1'}`}>
 
             <div className="col-12">
               { !dPagePath.isRoot && <FormerLink /> }
             </div>
 
-            <h6 className={`col-12 ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
+            <h6 className={`col-12 d-flex align-items-center ${isSmall ? 'mb-0 text-truncate' : 'mb-0'}`}>
               <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.isRoot ? undefined : dPagePath.former} />
+              { page.wip && (
+                <span className="wip-page-badge badge rounded-pill text-bg-secondary ms-2">WIP</span>
+              ) }
               {locked}
             </h6>
 
@@ -143,12 +147,17 @@ PageItem.displayName = 'PageItem';
 type HeaderProps = {
   isSmall: boolean,
   onSizeChange: (isSmall: boolean) => void,
+  isWipPageShown: boolean,
+  onWipPageShownChange: () => void,
 }
 
 const PER_PAGE = 20;
-export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX.Element => {
+export const RecentChangesHeader = ({
+  isSmall, onSizeChange, isWipPageShown, onWipPageShownChange,
+}: HeaderProps): JSX.Element => {
+  const { t } = useTranslation();
 
-  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
+  const { mutate } = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
 
   const retrieveSizePreferenceFromLocalStorage = useCallback(() => {
     if (window.localStorage.isRecentChangesSidebarSmall === 'true') {
@@ -169,17 +178,50 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
   return (
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
-      <div className="d-flex align-items-center">
-        <div className={`grw-recent-changes-resize-button ${styles['grw-recent-changes-resize-button']} form-check form-switch ms-1`}>
-          <input
-            id="recentChangesResize"
-            className="form-check-input"
-            type="checkbox"
-            checked={isSmall}
-            onChange={changeSizeHandler}
-          />
-          <label className="form-label form-check-label" htmlFor="recentChangesResize" />
-        </div>
+
+      <div className="me-1">
+        <button
+          color="transparent"
+          className="btn p-0 border-0"
+          type="button"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+        >
+          <span className="material-symbols-outlined">more_horiz</span>
+        </button>
+
+        <ul className="dropdown-menu">
+          <li className="dropdown-item" onClick={changeSizeHandler}>
+            <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
+              <input
+                id="recentChangesResize"
+                className="form-check-input"
+                type="checkbox"
+                checked={isSmall}
+                onChange={() => {}}
+              />
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+                {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
+              </label>
+            </div>
+          </li>
+
+          <li className="dropdown-item" onClick={onWipPageShownChange}>
+            <div className="form-check form-switch mb-0">
+              <input
+                id="wipPageVisibility"
+                className="form-check-input"
+                type="checkbox"
+                checked={isWipPageShown}
+                onChange={() => {}}
+              />
+              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
+                {t('sidebar_header.show_wip_page')}
+              </label>
+            </div>
+          </li>
+        </ul>
       </div>
     </>
   );
@@ -187,10 +229,11 @@ export const RecentChangesHeader = ({ isSmall, onSizeChange }: HeaderProps): JSX
 
 type ContentProps = {
   isSmall: boolean,
+  isWipPageShown: boolean,
 }
 
-export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => {
-  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, { suspense: true });
+export const RecentChangesContent = ({ isSmall, isWipPageShown }: ContentProps): JSX.Element => {
+  const swrInifinitexRecentlyUpdated = useSWRINFxRecentlyUpdated(PER_PAGE, isWipPageShown, { suspense: true });
   const { data } = swrInifinitexRecentlyUpdated;
 
   const { pushState } = useKeywordManager();
@@ -199,7 +242,7 @@ export const RecentChangesContent = ({ isSmall }: ContentProps): JSX.Element => 
   const isReachingEnd = isEmpty || (data != null && data[data.length - 1]?.pages.length < PER_PAGE);
 
   return (
-    <div className="grw-recent-changes py-3">
+    <div className="grw-recent-changes">
       <ul className="list-group list-group-flush">
         <InfiniteScroll
           swrInifiniteResponse={swrInifinitexRecentlyUpdated}

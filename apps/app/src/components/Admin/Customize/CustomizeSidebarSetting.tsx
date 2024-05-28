@@ -1,5 +1,6 @@
 import React, { useCallback } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import { Card, CardBody } from 'reactstrap';
 
@@ -11,7 +12,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
   const { t } = useTranslation(['admin', 'commons']);
 
   const {
-    update, isSidebarCollapsedMode, setIsSidebarCollapsedMode,
+    data, update, setIsSidebarCollapsedMode, setIsSidebarClosedAtDockMode,
   } = useSWRxSidebarConfig();
 
   const { resolvedTheme } = useNextThemes();
@@ -28,6 +29,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
     }
   }, [t, update]);
 
+  if (data == null) {
+    return <LoadingSpinner />;
+  }
+
+  const { isSidebarCollapsedMode, isSidebarClosedAtDockMode } = data;
+
   return (
     <React.Fragment>
       <div className="row">
@@ -35,21 +42,22 @@ const CustomizeSidebarsetting = (): JSX.Element => {
 
           <h2 className="admin-setting-header">{t('customize_settings.default_sidebar_mode.title')}</h2>
 
-          <Card className="card custom-card my-3">
+          <Card className="card custom-card bg-body-tertiary my-3">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.desc')}
             </CardBody>
           </Card>
 
           <div className="d-flex justify-content-around mt-5">
-            <div id="layoutOptions" className="row row-cols-2">
+            <div className="row row-cols-2">
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  className={`card border border-4 ${isSidebarCollapsedMode ? 'border-primary' : ''}`}
                   onClick={() => setIsSidebarCollapsedMode(true)}
                   role="button"
                 >
-                  <img src={drawerIconFileName} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={drawerIconFileName} alt="Drawer Mode" />
                   <div className="card-body text-center">
                     Drawer Mode
                   </div>
@@ -57,11 +65,12 @@ const CustomizeSidebarsetting = (): JSX.Element => {
               </div>
               <div className="col">
                 <div
-                  className={`card customize-layout-card ${!isSidebarCollapsedMode ? 'border-active' : ''}`}
+                  className={`card border border-4 ${!isSidebarCollapsedMode ? 'border-primary' : ''}`}
                   onClick={() => setIsSidebarCollapsedMode(false)}
                   role="button"
                 >
-                  <img src={dockIconFileName} />
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={dockIconFileName} alt="Dock Mode" />
                   <div className="card-body  text-center">
                     Dock Mode
                   </div>
@@ -70,7 +79,7 @@ const CustomizeSidebarsetting = (): JSX.Element => {
             </div>
           </div>
 
-          <Card className="card custom-card my-5">
+          <Card className="card custom-card bg-body-tertiary my-5">
             <CardBody className="px-0 py-2">
               {t('customize_settings.default_sidebar_mode.dock_mode_default_desc')}
             </CardBody>
@@ -82,9 +91,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 type="radio"
                 id="is-open"
                 className="form-check-input"
-                name="mailVisibility"
-                checked={isSidebarCollapsedMode === false}
-                onChange={() => setIsSidebarCollapsedMode(false)}
+                checked={isSidebarCollapsedMode === false && isSidebarClosedAtDockMode === false}
+                disabled={isSidebarCollapsedMode}
+                onChange={() => setIsSidebarClosedAtDockMode(false)}
               />
               <label className="form-label form-check-label" htmlFor="is-open">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_open')}
@@ -95,9 +104,9 @@ const CustomizeSidebarsetting = (): JSX.Element => {
                 type="radio"
                 id="is-closed"
                 className="form-check-input"
-                name="mailVisibility"
-                checked={isSidebarCollapsedMode === true}
-                onChange={() => setIsSidebarCollapsedMode(true)}
+                checked={isSidebarCollapsedMode === false && isSidebarClosedAtDockMode === true}
+                disabled={isSidebarCollapsedMode}
+                onChange={() => setIsSidebarClosedAtDockMode(true)}
               />
               <label className="form-label form-check-label" htmlFor="is-closed">
                 {t('customize_settings.default_sidebar_mode.dock_mode_default_close')}

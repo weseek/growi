@@ -2,7 +2,7 @@ import React, {
   useCallback, useRef, useEffect, useMemo,
 } from 'react';
 
-import { GetInputProps } from '../interfaces/downshift';
+import type { GetInputProps } from '../interfaces/downshift';
 
 type Props = {
   searchKeyword: string,
@@ -35,7 +35,7 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   const inputOptions = useMemo(() => {
     return getInputProps({
-      type: 'search',
+      type: 'text',
       placeholder: 'Search...',
       className: 'form-control',
       ref: inputRef,
@@ -52,11 +52,18 @@ export const SearchForm = (props: Props): JSX.Element => {
 
   return (
     <form
-      className="w-100"
+      className="w-100 position-relative"
       onSubmit={submitHandler}
       data-testid="search-form"
     >
       <input {...inputOptions} />
+      <button
+        type="button"
+        className="btn btn-neutral-secondary text-muted position-absolute bottom-0 end-0 w-auto h-100 border-0"
+        onClick={() => { onChange?.('') }}
+      >
+        <span className="material-symbols-outlined p-0">cancel</span>
+      </button>
     </form>
   );
 };

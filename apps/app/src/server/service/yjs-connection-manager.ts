@@ -1,20 +1,31 @@
 import type { Server } from 'socket.io';
 import { MongodbPersistence } from 'y-mongodb-provider';
-import { YSocketIO } from 'y-socket.io/dist/server';
+import { YSocketIO, type Document as Ydoc } from 'y-socket.io/dist/server';
 import * as Y from 'yjs';
 
 import { getMongoUri } from '../util/mongoose-utils';
 
-export const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
-export const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+const MONGODB_PERSISTENCE_COLLECTION_NAME = 'yjs-writings';
+const MONGODB_PERSISTENCE_FLUSH_SIZE = 100;
+
+export const extractPageIdFromYdocId = (ydocId: string): string | undefined => {
+  const result = ydocId.match(/yjs\/(.*)/);
+  return result?.[1];
+};
 
 class YjsConnectionManager {
+
+  private static instance: YjsConnectionManager;
 
   private ysocketio: YSocketIO;
 
   private mdb: MongodbPersistence;
 
-  constructor(io: Server) {
+  get ysocketioInstance(): YSocketIO {
+    return this.ysocketio;
+  }
+
+  private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
 
@@ -22,22 +33,35 @@ class YjsConnectionManager {
       collectionName: MONGODB_PERSISTENCE_COLLECTION_NAME,
       flushSize: MONGODB_PERSISTENCE_FLUSH_SIZE,
     });
+  }
 
-    this.getCurrentYdoc = this.getCurrentYdoc.bind(this);
+  public static getInstance(io?: Server) {
+    if (this.instance != null) {
+      return this.instance;
+    }
+
+    if (io == null) {
+      throw new Error("'io' is required if initialize YjsConnectionManager");
+    }
+
+    this.instance = new YjsConnectionManager(io);
+    return this.instance;
   }
 
   public async handleYDocSync(pageId: string, initialValue: string): Promise<void> {
+    const currentYdoc = this.getCurrentYdoc(pageId);
+    if (currentYdoc == null) {
+      return;
+    }
+
     const persistedYdoc = await this.mdb.getYDoc(pageId);
     const persistedStateVector = Y.encodeStateVector(persistedYdoc);
 
     await this.mdb.flushDocument(pageId);
 
-    const currentYdoc = this.getCurrentYdoc(pageId);
-
-    const persistedCodeMirrorText = persistedYdoc.getText('codemirror').toString();
-    const currentCodeMirrorText = currentYdoc.getText('codemirror').toString();
-
-    if (persistedCodeMirrorText === '' && currentCodeMirrorText === '') {
+    // If no write operation has been performed, insert initial value
+    const clientsSize = currentYdoc.store.clients.size;
+    if (clientsSize === 0) {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
@@ -60,14 +84,32 @@ class YjsConnectionManager {
     persistedYdoc.destroy();
   }
 
-  private getCurrentYdoc(pageId: string): Y.Doc {
-    const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
+  public async handleYDocUpdate(pageId: string, newValue: string): Promise<void> {
+    // TODO: https://redmine.weseek.co.jp/issues/132775
+    // It's necessary to confirm that the user is not editing the target page in the Editor
+    const currentYdoc = this.getCurrentYdoc(pageId);
     if (currentYdoc == null) {
-      throw new Error(`currentYdoc for pageId ${pageId} is undefined.`);
+      return;
     }
+
+    const currentMarkdownLength = currentYdoc.getText('codemirror').length;
+    currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
+    currentYdoc.getText('codemirror').insert(0, newValue);
+    Y.encodeStateAsUpdate(currentYdoc);
+  }
+
+  public getCurrentYdoc(pageId: string): Ydoc | undefined {
+    const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     return currentYdoc;
   }
 
 }
 
-export default YjsConnectionManager;
+export const instantiateYjsConnectionManager = (io: Server): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance(io);
+};
+
+// export the singleton instance
+export const getYjsConnectionManager = (): YjsConnectionManager => {
+  return YjsConnectionManager.getInstance();
+};

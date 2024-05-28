@@ -90,12 +90,12 @@ describe('delete-completely-user-home-by-system test', () => {
     const mockPageEvent = mock<EventEmitter>();
     const mockDeleteMultipleCompletely = vi.fn().mockImplementation(() => Promise.resolve());
 
-    const mockPageService: IPageService = {
+    const mockPageService = mock<IPageService>({
       updateDescendantCountOfAncestors: mockUpdateDescendantCountOfAncestors,
       deleteCompletelyOperation: mockDeleteCompletelyOperation,
       getEventEmitter: () => mockPageEvent,
       deleteMultipleCompletely: mockDeleteMultipleCompletely,
-    };
+    });
 
     it('should call used page service functions', async() => {
       // when

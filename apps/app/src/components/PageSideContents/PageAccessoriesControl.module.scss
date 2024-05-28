@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .btn-page-accessories :global {
   display: flex;
@@ -14,16 +14,16 @@
 
 @include bs.media-breakpoint-down(sm) {
   .btn-page-accessories :global {
-    box-shadow: 0px 3px 6px rgba(black, 0.15);
+    box-shadow: 0 3px 6px rgba(black, 0.15);
   }
 }
 
-// apply larger font when smaller than lg
-@include bs.media-breakpoint-down(lg) {
-  .btn-page-accessories :global {
-    .material-symbols-outlined {
-      font-size: 2em;
-    }
+// apply font-size
+.btn-page-accessories :global {
+  --bs-btn-font-size: 14px;
+
+  @include bs.media-breakpoint-down(lg) {
+    --bs-btn-font-size: 16px;
   }
 }
 
@@ -31,6 +31,5 @@
 @include bs.media-breakpoint-up(lg) {
   .btn-page-accessories :global {
     flex-grow: 1;
-    padding: 1px 5px 1px 10px;
   }
 }

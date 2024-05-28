@@ -1,8 +1,9 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .search-typeahead :global {
   position: relative;
   width: 100%;
+
   // corner radius
   border-top-right-radius: bs.$border-radius;
   border-bottom-right-radius: bs.$border-radius;

@@ -7,6 +7,11 @@ import urljoin from 'url-join';
 
 import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../../stores/context';
 
+import styles from './AdminNavigation.module.scss';
+
+const moduleClass = styles['admin-navigation'];
+
+
 // eslint-disable-next-line react/prop-types
 const MenuLabel = ({ menu }: { menu: string }) => {
   const { t } = useTranslation(['admin', 'commons']);
@@ -46,7 +51,7 @@ const MenuLink = ({
 }: MenuLinkProps) => {
 
   const pageTransitionClassName = isListGroupItems
-    ? 'list-group-item list-group-item-action border-0 round-corner'
+    ? 'list-group-item list-group-item-action rounded border-0'
     : 'dropdown-item px-3 py-2';
 
   const href = isRoot ? '/admin' : urljoin('/admin', menu);
@@ -82,7 +87,7 @@ export const AdminNavigation = (): JSX.Element => {
 
   }, [pathname]);
 
-  const getListGroupItemOrDropdownItemList = (isListGroupItems: boolean) => {
+  const getListGroupItemOrDropdownItemList = useCallback((isListGroupItems: boolean) => {
     return (
       <>
         {/* eslint-disable no-multi-spaces */}
@@ -115,12 +120,12 @@ export const AdminNavigation = (): JSX.Element => {
         {/* eslint-enable no-multi-spaces */}
       </>
     );
-  };
+  }, [growiAppIdForGrowiCloud, growiCloudUri, isActiveMenu, pathname]);
 
   return (
     <React.Fragment>
       {/* List group */}
-      <div className="list-group admin-navigation sticky-top d-none d-lg-block">
+      <div className={`list-group ${moduleClass} sticky-top d-none d-lg-block`}>
         {getListGroupItemOrDropdownItemList(true)}
       </div>
 

@@ -16,14 +16,16 @@
   .modal-body {
     $modal-header: 54px;
     $modal-footer: 46px;
+    $margin-body: 0;
 
-    $margin-body: 0px;
     @if $hasModalHeader {
       $margin-body: $margin-body + $modal-header;
     }
+
     @if $hasModalFooter {
       $margin-body: $margin-body + $modal-footer;
     }
+
     height: calc(100% - #{$margin-body});
   }
 }

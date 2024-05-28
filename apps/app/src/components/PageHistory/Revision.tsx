@@ -64,7 +64,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
         <div className="ms-2">
           <div className="revision-history-author mb-1">
             <strong><Username user={author}></Username></strong>
-            { isLatestRevision && <span className="badge bg-info ms-2">Latest</span> }
+            { isLatestRevision && <span className="badge bg-info ms-2">{t('Latest')}</span> }
           </div>
           <div className="mb-1">
             <UserDate dateTime={revision.createdAt} />
@@ -75,7 +75,7 @@ export const Revision = (props: RevisionProps): JSX.Element => {
               onClick={onClose}
               prefetch={false}
             >
-              <i className="icon-login"></i> {t('Go to this version')}
+              <span className="material-symbols-outlined">login</span> {t('Go to this version')}
             </Link>
           </div>
         </div>

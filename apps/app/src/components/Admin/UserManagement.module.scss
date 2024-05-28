@@ -1,9 +1,10 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 // styles for admin user search
 .search-typeahead :global {
   position: relative;
   width: 100%;
+
   // corner radius
   border-top-right-radius: bs.$border-radius;
   border-bottom-right-radius: bs.$border-radius;
@@ -12,7 +13,7 @@
   }
   .search-clear {
     position: absolute;
-    top: 12px;
+    top: 15px;
     right: 1px;
     z-index: 3;
     width: 24px;
