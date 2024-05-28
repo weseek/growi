@@ -176,12 +176,13 @@ export const SearchPage = (): JSX.Element => {
         <NotAvailableForReadOnlyUser>
           <button
             type="button"
-            className="btn dropdown-toggle border-0"
+            className="btn border-0 text-muted"
             aria-expanded="false"
             disabled={isDeleteButtonDisabled}
             onClick={() => { setIsCollapsed(!isCollapsed) }}
           >
             <span className="material-symbols-outlined">delete</span>
+            <span className={`material-symbols-outlined me-1 ${isCollapsed ? 'rotate-180' : ''}`}>keyboard_arrow_up</span>
           </button>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
