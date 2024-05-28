@@ -80,7 +80,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
@@ -111,10 +111,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // user notification
-    const { revisionId, isSlackEnabled, slackChannels } = req.body;
+    const { isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const option = previousRevision != null ? { previousRevision } : undefined;
         const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
@@ -138,6 +138,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
+      const sanitizeRevisionId = revisionId == null ? undefined : xss.process(revisionId);
+
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
       if (!isExist) {
@@ -147,7 +149,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
 
-      if (currentPage != null && !await currentPage.isUpdatable(revisionId, origin)) {
+      if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -159,6 +161,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       }
 
       let updatedPage: PageDocument;
+      let previousRevision: IRevisionHasId | null;
       try {
         const {
           grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
@@ -168,7 +171,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
-        const previousRevision = await Revision.findById(revisionId);
+        previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
       }
       catch (err) {
@@ -183,7 +186,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       res.apiv3(result, 201);
 
-      postAction(req, res, updatedPage);
+      postAction(req, res, updatedPage, previousRevision);
     },
   ];
 };
