@@ -1,4 +1,5 @@
 import type { IPagePopulatedToShowRevision } from '@growi/core';
+import { AllLang } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 
@@ -10,10 +11,8 @@ export const useIsUntitledPage = (currentPage?: IPagePopulatedToShowRevision | n
     return false;
   }
 
-  const languageArray = ['ja_JP', 'en_US', 'zh_CN'];
-
   const determineIsUntitledPageTitle = () => {
-    return languageArray.some((lng) => {
+    return AllLang.some((lng) => {
       const untitledPageTitle = i18n.getFixedT(lng, 'translation')('create_page.untitled');
 
       // https://regex101.com/r/Wg2Hh6/1
