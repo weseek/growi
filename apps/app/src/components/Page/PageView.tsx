@@ -4,6 +4,7 @@ import React, {
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -38,6 +39,7 @@ const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => 
 const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
 const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
@@ -68,6 +70,9 @@ export const PageView = (props: Props): JSX.Element => {
   const page = pageBySWR ?? initialPage;
   const isNotFound = isNotFoundMeta || page?.revision == null;
   const isUsersHomepagePath = isUsersHomepage(pagePath);
+
+  const markdown = page?.revision?.body;
+  const isSlide = useSlidesByFrontmatter(markdown, rendererConfig.isEnabledMarp);
 
 
   // ***************************  Auto Scroll  ***************************
@@ -128,13 +133,21 @@ export const PageView = (props: Props): JSX.Element => {
       return <NotFoundPage path={pagePath} />;
     }
 
-    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
     const markdown = page.revision.body;
+    const rendererOptions = viewOptions ?? generateSSRViewOptions(rendererConfig, pagePath);
 
     return (
       <>
-        <PageContentsUtilities />
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+        {
+          isSlide != null
+            ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+            : (
+              <>
+                <PageContentsUtilities />
+                <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown} />
+              </>
+            )
+        }
       </>
     );
   };
