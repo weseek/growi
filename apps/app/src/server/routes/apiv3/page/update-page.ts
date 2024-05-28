@@ -65,9 +65,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
       .withMessage("'pageId' must be specified"),
-    body('revisionId').optional().exists().not()
-      .isEmpty({ ignore_whitespace: true })
-      .withMessage("'revisionId' must be specified"),
+    body('revisionId').optional().isMongoId().withMessage("'revisionId' must be mongoId"),
     body('body').exists().isString()
       .withMessage("The empty value is not allowd for the 'body'"),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
