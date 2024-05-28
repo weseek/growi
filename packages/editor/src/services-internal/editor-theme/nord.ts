@@ -87,7 +87,7 @@ export const nordTheme = EditorView.theme(
     '&.cm-focused .cm-matchingBracket': {
       // Customize
       backgroundColor: base02,
-      color: base02,
+      color: base04,
     },
 
     '.cm-gutters': {
