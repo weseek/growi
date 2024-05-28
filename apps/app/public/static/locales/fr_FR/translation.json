@@ -561,6 +561,8 @@
     "delete_completely": "Supprimer définitivement",
     "include_certain_path": "Inclure le chemin {{pathToInclude}} ",
     "delete_all_selected_page": "Tout supprimer",
+    "select_all": "Tout sélectionner",
+    "delete_selected_pages": "Supprimer les pages sélectionnées",
     "currently_not_implemented": "Non implémenté",
     "search_again": "Rechercher",
     "number_of_list_to_display": "Afficher",

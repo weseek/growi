@@ -200,7 +200,7 @@ export const SearchPage = (): JSX.Element => {
                 isCheckboxDisabled={isDeleteButtonDisabled}
                 onCheckboxChanged={selectAllCheckboxChangedHandler}
               >
-                <span className="ms-2">全件選択</span>
+                <span className="ms-2">{t('search_result.select_all')}</span>
               </OperateAllControl>
             </div>
 
@@ -210,13 +210,13 @@ export const SearchPage = (): JSX.Element => {
               disabled={isDeleteButtonDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
-              <span className="material-symbols-outlined fs-5">delete</span>選択したページを削除
+              <span className="material-symbols-outlined fs-5">delete</span>{t('search_result.delete_selected_pages')}
             </button>
           </div>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
-  }, [deleteAllButtonClickedHandler, isDeleteButtonDisabled, selectAllCheckboxChangedHandler]);
+  }, [deleteAllButtonClickedHandler, isDeleteButtonDisabled, selectAllCheckboxChangedHandler, t]);
 
 
   const searchControl = useMemo(() => {

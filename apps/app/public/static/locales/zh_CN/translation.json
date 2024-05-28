@@ -564,6 +564,8 @@
     "delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
     "delete_all_selected_page": "删除所有",
+    "select_all": "选择所有",
+    "delete_selected_pages": "删除选定页面",
     "currently_not_implemented": "这是当前未实现的功能",
     "search_again": "再次搜索",
     "number_of_list_to_display": "显示器的数量",
