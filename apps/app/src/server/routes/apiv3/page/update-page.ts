@@ -138,6 +138,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
+      const sanitizeRevisionId = revisionId == null ? undefined : xss.process(revisionId);
+
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
       if (!isExist) {
@@ -147,7 +149,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
 
-      if (currentPage != null && !await currentPage.isUpdatable(revisionId, origin)) {
+      if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -169,7 +171,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
-        previousRevision = await Revision.findById(revisionId);
+        previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
       }
       catch (err) {
