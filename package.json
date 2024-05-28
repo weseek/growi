@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.7-RC.0",
+  "version": "7.0.8-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -48,6 +48,8 @@
     "yargs": "^17.7.1"
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.3",
     "@swc-node/register": "^1.6.2",
     "@swc/core": "^1.3.36",
     "@swc/helpers": "^0.4.14",
@@ -83,8 +85,8 @@
     "rollup-plugin-node-externals": "^6.1.1",
     "shx": "^0.3.4",
     "stylelint": "^16.5.0",
-    "stylelint-config-recommended-scss": "^14.0.0",
     "stylelint-config-recess-order": "^5.0.1",
+    "stylelint-config-recommended-scss": "^14.0.0",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^3.9.0",
     "typescript": "~5.0.0",

@@ -8,7 +8,7 @@ import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
 import { userColor } from '../consts';
-import { UseCodeMirrorEditor } from '../services';
+import type { UseCodeMirrorEditor } from '../services';
 
 type UserLocalState = {
   name: string;

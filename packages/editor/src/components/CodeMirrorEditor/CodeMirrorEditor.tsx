@@ -1,6 +1,6 @@
+import type { DetailedHTMLProps } from 'react';
 import {
   forwardRef, useMemo, useRef, useEffect,
-  DetailedHTMLProps,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -10,13 +10,11 @@ import {
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay,
-} from '../../services';
-import {
-  adjustPasteData, getStrFromBol,
-} from '../../services/paste-util/paste-markdown-util';
+  adjustPasteData, getStrFromBol, useShowTableIcon,
+} from '../../services-internal';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';
@@ -73,6 +71,8 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   useDefaultExtensions(codeMirrorEditor);
   useEditorSettings(codeMirrorEditor, editorSettings, onSave);
+
+  useShowTableIcon(codeMirrorEditor);
 
   useEffect(() => {
     if (indentSize == null) {
@@ -159,7 +159,6 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   }, [onScroll, codeMirrorEditor]);
 
-
   const {
     getRootProps,
     getInputProps,
@@ -211,7 +210,7 @@ export const CodeMirrorEditor = (props: Props): JSX.Element => {
 
   return (
     <div className={`${style['codemirror-editor']} flex-expand-vert overflow-y-hidden`}>
-      <div {...getRootProps()} className={`dropzone ${fileUploadState} flex-expand-vert`}>
+      <div {...getRootProps()} className={`dropzone  ${fileUploadState} flex-expand-vert`}>
         <input {...getInputProps()} />
         <FileDropzoneOverlay isEnabled={isDragActive} />
         <CodeMirrorEditorContainer ref={containerRef} />
