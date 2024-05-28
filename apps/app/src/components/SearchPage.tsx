@@ -176,13 +176,13 @@ export const SearchPage = (): JSX.Element => {
         <NotAvailableForReadOnlyUser>
           <button
             type="button"
-            className={`${isCollapsed ? 'danger-style text-danger' : 'text-muted'} btn border-0`}
+            className={`${isCollapsed ? 'danger-style text-danger' : 'text-muted'} btn border-0 d-flex align-items-center`}
             aria-expanded="false"
             disabled={isDeleteButtonDisabled}
             onClick={() => { setIsCollapsed(!isCollapsed) }}
           >
-            <span className="material-symbols-outlined">delete</span>
-            <span className={`material-symbols-outlined me-1 ${isCollapsed ? 'rotate-180' : ''}`}>keyboard_arrow_up</span>
+            <span className="material-symbols-outlined fs-5">delete</span>
+            <span className={`material-symbols-outlined me-1 ${isCollapsed ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
           </button>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
@@ -193,24 +193,24 @@ export const SearchPage = (): JSX.Element => {
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
-          <div className="d-flex align-items-center py-3">
+          <div className="d-flex align-items-center py-2">
             <div className="ms-4">
               <OperateAllControl
                 ref={selectAllControlRef}
                 isCheckboxDisabled={isDeleteButtonDisabled}
                 onCheckboxChanged={selectAllCheckboxChangedHandler}
               >
-                <span className="ms-2">全てのページを選択</span>
+                <span className="ms-2">全件選択</span>
               </OperateAllControl>
             </div>
 
             <button
               type="button"
-              className="ms-2 open-delete-modal-button btn border-0 text-danger danger-style"
+              className="ms-3 open-delete-modal-button btn border-0 text-danger danger-style d-flex align-items-center"
               disabled={isDeleteButtonDisabled}
               onClick={deleteAllButtonClickedHandler}
             >
-              <span className="material-symbols-outlined">delete</span> 選択したページを削除
+              <span className="material-symbols-outlined fs-5">delete</span>選択したページを削除
             </button>
           </div>
         </NotAvailableForReadOnlyUser>
