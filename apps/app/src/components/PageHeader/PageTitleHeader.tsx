@@ -11,6 +11,7 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
+import { useEditorMode } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
@@ -51,9 +52,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
+  const { data: editorMode } = useEditorMode();
   const isNewlyCreatedPage = useIsUntitledPage(currentPage, editedPageTitle);
-
-  console.log(isNewlyCreatedPage);
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
@@ -99,7 +99,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     if (isNewlyCreatedPage) {
       setRenameInputShown(true);
     }
-  }, [currentPage._id, currentPagePath, isNewlyCreatedPage]);
+  }, [currentPage._id, currentPagePath, isNewlyCreatedPage, editorMode]);
 
   const isInvalid = validationResult != null;
 
