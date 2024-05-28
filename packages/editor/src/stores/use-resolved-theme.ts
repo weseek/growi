@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { ColorScheme } from '@growi/core';
+import type { ColorScheme } from '@growi/core';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 import { mutate } from 'swr';

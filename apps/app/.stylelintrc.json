@@ -1,7 +1,6 @@
 {
   "extends": "../../.stylelintrc.json",
   "ignoreFiles": [
-    "src/styles/prebuilt/*.css",
-    "src/linter-checker/test.scss"
+    "src/styles/prebuilt/*.css"
   ]
 }

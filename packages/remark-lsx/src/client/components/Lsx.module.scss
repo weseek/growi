@@ -3,7 +3,7 @@
   // https://stackoverflow.com/a/57667536
   .lsx-blink {
     & :local {
-      animation: lsx-fadeIn 1s ease 0s infinite alternate;
+      animation: lsx-fade-in 1s ease 0s infinite alternate;
     }
   }
 
@@ -38,7 +38,7 @@
 
 }
 
-@keyframes lsx-fadeIn {
+@keyframes lsx-fade-in {
   0% {
     opacity: 0.2;
   }

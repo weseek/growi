@@ -6,6 +6,7 @@
   .nologin-header,
   .nologin-dialog {
     width: 420px;
+
     @include bs.media-breakpoint-down(sm) {
       width: 320px;
     }
