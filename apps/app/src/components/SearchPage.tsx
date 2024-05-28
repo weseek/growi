@@ -270,17 +270,16 @@ export const SearchPage = (): JSX.Element => {
   }, [conditions, data, pagingNumberChangedHandler]);
 
   return (
-    <div className={`${styles['search-page']}`}>
-      <SearchPageBase
-        ref={searchPageBaseRef}
-        pages={data?.data}
-        searchingKeyword={keyword}
-        onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
-        // Components
-        searchControl={searchControl}
-        searchResultListHead={searchResultListHead}
-        searchPager={searchPager}
-      />
-    </div>
+    <SearchPageBase
+      className={styles['search-page']}
+      ref={searchPageBaseRef}
+      pages={data?.data}
+      searchingKeyword={keyword}
+      onSelectedPagesByCheckboxesChanged={selectedPagesByCheckboxesChangedHandler}
+      // Components
+      searchControl={searchControl}
+      searchResultListHead={searchResultListHead}
+      searchPager={searchPager}
+    />
   );
 };
