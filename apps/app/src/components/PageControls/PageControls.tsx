@@ -10,7 +10,6 @@ import {
 } from '@growi/core';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
-import { DropdownItem } from 'reactstrap';
 
 import {
   toggleLike, toggleSubscribe,
