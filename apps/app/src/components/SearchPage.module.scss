@@ -2,7 +2,7 @@
 
 .search-page :global {
   .danger-style {
-    color:bs.$danger;
-    background-color: rgba(bs.$danger, .1);
+    --bs-btn-bg: #{rgba( bs.$danger, .1 )};
+    --bs-btn-hover-bg: #{rgba( bs.$danger, .1 )};
   }
 }
