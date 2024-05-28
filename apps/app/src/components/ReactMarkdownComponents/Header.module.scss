@@ -5,14 +5,14 @@
 
   .revision-head-link {
     margin-right: 0.5em;
+    opacity: 0;
     user-select: none;
-    opacity: 0.5;
   }
   .revision-head-edit-button{
     margin-left: 0.5em;
+    opacity: 0;
     font-size: 16px;
     user-select: none;
-    opacity: 0.5;
     .material-symbols-outlined{
       vertical-align: middle;
     }
@@ -21,7 +21,13 @@
 
 .revision-head:hover :global {
   .revision-head-link, .revision-head-edit-button {
-    opacity: 1 !important;
+    opacity: 0.5;
+  }
+  .revision-head-link:hover :global {
+    opacity: 1;
+  }
+  .revision-head-edit-button:hover :global {
+    opacity: 1;
   }
 }
 
