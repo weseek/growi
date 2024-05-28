@@ -175,13 +175,13 @@ export const SearchPage = (): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
-  const toggleControl = useMemo(() => {
+  const extraControls = useMemo(() => {
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
           <button
             type="button"
-            className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center`}
+            className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center ms-2`}
             aria-expanded="false"
             onClick={() => { setIsCollapsed(!isCollapsed) }}
           >
@@ -237,12 +237,12 @@ export const SearchPage = (): JSX.Element => {
         isEnableFilter
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
-        toggleControl={toggleControl}
+        extraControls={extraControls}
         collapseContents={collapseContents}
         isCollapsed={isCollapsed}
       />
     );
-  }, [toggleControl, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
+  }, [extraControls, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {

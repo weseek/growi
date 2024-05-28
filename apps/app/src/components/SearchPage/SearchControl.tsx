@@ -21,7 +21,7 @@ type Props = {
 
   onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
-  toggleControl: React.ReactNode,
+  extraControls: React.ReactNode,
 
   collapseContents?: React.ReactNode,
   isCollapsed?: boolean,
@@ -34,7 +34,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     isEnableFilter,
     initialSearchConditions,
     onSearchInvoked,
-    toggleControl,
+    extraControls,
     collapseContents,
     isCollapsed,
   } = props;
@@ -153,11 +153,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
           </>
         )}
 
-        <div className="d-flex">
-          <div className="btn-group">
-            {toggleControl}
-          </div>
-        </div>
+        {extraControls}
       </div>
 
       { collapseContents != null && (
