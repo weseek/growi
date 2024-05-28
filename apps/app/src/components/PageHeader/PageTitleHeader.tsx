@@ -11,7 +11,7 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
@@ -96,7 +96,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   useEffect(() => {
     setEditedPagePath(currentPagePath);
-    if (isNewlyCreatedPage) {
+    if (isNewlyCreatedPage && editorMode === EditorMode.Editor) {
       setRenameInputShown(true);
     }
   }, [currentPage._id, currentPagePath, isNewlyCreatedPage, editorMode]);
