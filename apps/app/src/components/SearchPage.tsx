@@ -175,7 +175,7 @@ export const SearchPage = (): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
-  const allControl = useMemo(() => {
+  const toggleControl = useMemo(() => {
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
@@ -230,12 +230,12 @@ export const SearchPage = (): JSX.Element => {
         isEnableFilter
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
-        allControl={allControl}
+        toggleControl={toggleControl}
         collapseContents={collapseContents}
         isCollapsed={isCollapsed}
       />
     );
-  }, [allControl, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
+  }, [toggleControl, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {

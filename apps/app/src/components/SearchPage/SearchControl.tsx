@@ -21,7 +21,7 @@ type Props = {
 
   onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
-  allControl: React.ReactNode,
+  toggleControl: React.ReactNode,
 
   collapseContents?: React.ReactNode,
   isCollapsed?: boolean,
@@ -34,7 +34,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     isEnableFilter,
     initialSearchConditions,
     onSearchInvoked,
-    allControl,
+    toggleControl,
     collapseContents,
     isCollapsed,
   } = props;
@@ -155,14 +155,7 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
 
         <div className="d-flex">
           <div className="btn-group">
-            {/* TODO: imprv to delete all result UI */}
-            {/* <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span className="material-symbols-outlined ">delete</span>
-              <span className="material-symbols-outlined ">expand_more</span>
-            </button> */}
-            {/* <ul className="dropdown-menu"> */}
-            {allControl}
-            {/* </ul> */}
+            {toggleControl}
           </div>
         </div>
       </div>
