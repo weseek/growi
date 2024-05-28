@@ -5,14 +5,4 @@
     color:bs.$danger;
     background-color: rgba(bs.$danger, .1);
   }
-
-  .dropdown-toggle {
-    color: bs.$secondary;
-    &:hover {
-      @extend .danger-style;
-    }
-  }
-  .dropdown-toggle.show {
-    @extend .danger-style;
-  }
 }
