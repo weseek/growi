@@ -200,11 +200,18 @@ export const SearchPage = (): JSX.Element => {
           <div className="d-flex align-items-center py-2">
             <div className="ms-4">
               <OperateAllControl
+                inputId="cb-select-all"
+                inputClassName="form-check-input"
                 ref={selectAllControlRef}
                 isCheckboxDisabled={hitsCount === 0}
                 onCheckboxChanged={selectAllCheckboxChangedHandler}
               >
-                <span className="ms-2">{t('search_result.select_all')}</span>
+                <label
+                  className="form-check-label ms-2"
+                  htmlFor="cb-select-all"
+                >
+                  {t('search_result.select_all')}
+                </label>
               </OperateAllControl>
             </div>
 

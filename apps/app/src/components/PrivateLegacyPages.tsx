@@ -355,6 +355,7 @@ const PrivateLegacyPages = (): JSX.Element => {
       <div className="search-control d-flex align-items-center">
         <div className="d-flex ps-md-2">
           <OperateAllControl
+            inputClassName="ms-2"
             ref={selectAllControlRef}
             isCheckboxDisabled={isCheckboxDisabled}
             onCheckboxChanged={selectAllCheckboxChangedHandler}
