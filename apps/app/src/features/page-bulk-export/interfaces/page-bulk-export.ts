@@ -23,7 +23,7 @@ export interface IPageBulkExportJob {
 export interface IPageBulkExportJobHasId extends IPageBulkExportJob, HasObjectId {}
 
 // snapshot of page info to upload
-export interface IPageBulkExportPageInfo {
+export interface IPageBulkExportPageSnapshot {
   pageBulkExportJob: Ref<IPageBulkExportJob>,
   path: string, // page path when export was stared
   revision: Ref<IRevision>, // page revision when export was stared

@@ -9,6 +9,7 @@ import archiver from 'archiver';
 import type { QueueObject } from 'async';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
+import streamToPromise from 'stream-to-promise';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -27,6 +28,7 @@ import loggerFactory from '~/utils/logger';
 import { PageBulkExportFormat } from '../../interfaces/page-bulk-export';
 import type { PageBulkExportJobDocument } from '../models/page-bulk-export-job';
 import PageBulkExportJob from '../models/page-bulk-export-job';
+import PageBulkExportPageSnapshot from '../models/page-bulk-export-page-snapshot';
 
 const logger = loggerFactory('growi:services:PageBulkExportService');
 
@@ -56,7 +58,7 @@ class PageBulkExportService {
     this.activityEvent = crowi.event('activity');
   }
 
-  async bulkExportWithBasePagePath(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+  async export(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
 
@@ -69,7 +71,7 @@ class PageBulkExportService {
     const attachment = Attachment.createWithoutSave(null, currentUser, originalName, 'zip', 0, AttachmentType.PAGE_BULK_EXPORT);
     const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
 
-    const pagesReadable = this.getPageReadable(basePagePath);
+    const pagesReadable = this.getPageReadable(basePagePath, true);
     const zipArchiver = this.setUpZipArchiver();
     const pagesWritable = this.getPageWritable(zipArchiver);
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
@@ -87,6 +89,7 @@ class PageBulkExportService {
         format: PageBulkExportFormat.markdown,
       });
       await Subscription.upsertSubscription(currentUser, SupportedTargetModel.MODEL_PAGE_BULK_EXPORT_JOB, pageBulkExportJob, SubscriptionStatusType.SUBSCRIBE);
+      await this.createPageSnapshots(basePagePath, pageBulkExportJob);
     }
     catch (err) {
       logger.error(err);
@@ -115,18 +118,44 @@ class PageBulkExportService {
   /**
    * Get a Readable of all the pages under the specified path, including the root page.
    */
-  private getPageReadable(basePagePath: string): Readable {
+  private getPageReadable(basePagePath: string, populateRevision = false): Readable {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
     const builder = new PageQueryBuilder(Page.find())
       .addConditionToListWithDescendants(basePagePath);
 
+    if (populateRevision) {
+      builder.query = builder.query.populate('revision');
+    }
+
     return builder
       .query
-      .populate('revision')
       .lean()
       .cursor({ batchSize: this.pageBatchSize });
+  }
+
+  private async createPageSnapshots(basePagePath: string, pageBulkExportJob: PageBulkExportJobDocument) {
+    const pagesReadable = this.getPageReadable(basePagePath);
+    const pageSnapshotwritable = new Writable({
+      objectMode: true,
+      write: async(page: PageDocument, encoding, callback) => {
+        try {
+          await PageBulkExportPageSnapshot.create({
+            pageBulkExportJob: pageBulkExportJob._id,
+            path: page.path,
+            revision: page.revision,
+          });
+        }
+        catch (err) {
+          callback(err);
+          return;
+        }
+        callback();
+      },
+    });
+    pagesReadable.pipe(pageSnapshotwritable);
+    await streamToPromise(pageSnapshotwritable);
   }
 
   /**
