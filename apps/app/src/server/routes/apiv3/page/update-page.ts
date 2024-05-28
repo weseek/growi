@@ -169,7 +169,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
-        previousRevision = await Revision.findById<IRevisionHasId>(revisionId);
+        previousRevision = await Revision.findById(revisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
       }
       catch (err) {
