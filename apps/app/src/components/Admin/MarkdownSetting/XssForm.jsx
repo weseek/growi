@@ -41,7 +41,7 @@ class XssForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { xssOption } = adminMarkDownContainer.state;
 
-    const rehypeRecommendedTags = sanitizeDefaultSchema.tagNames;
+    const rehypeRecommendedTags = [...sanitizeDefaultSchema.tagNames, 'video'];
     const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
 
     return (

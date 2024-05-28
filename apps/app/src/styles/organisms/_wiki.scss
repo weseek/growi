@@ -105,7 +105,6 @@
     border-left: 0.3rem solid #ddd;
   }
 
-  /** <img> tag has a max-width by default, but user can also add the <video> tag to a custom whitelist. */
   img,video {
     max-width: 100%;
     margin: 5px 0;

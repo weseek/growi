@@ -16,7 +16,7 @@ class WhitelistInput extends React.Component {
     this.tagWhitelist = React.createRef();
     this.attrWhitelist = React.createRef();
 
-    this.tags = sanitizeDefaultSchema.tagNames;
+    this.tags = [...sanitizeDefaultSchema.tagNames, 'video'];
     this.attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
 
     this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
