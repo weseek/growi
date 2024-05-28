@@ -12,7 +12,7 @@ export const useIsUntitledPage = (currentPage?: IPagePopulatedToShowRevision | n
 
   const languageArray = ['ja_JP', 'en_US', 'zh_CN'];
 
-  const determineIsUntitledPageTitle = (languageArray, editedPageTitle) => {
+  const determineIsUntitledPageTitle = () => {
     return languageArray.some((lng) => {
       const untitledPageTitle = i18n.getFixedT(lng, 'translation')('create_page.untitled');
 
@@ -23,7 +23,7 @@ export const useIsUntitledPage = (currentPage?: IPagePopulatedToShowRevision | n
     });
   };
 
-  const isUntitledPageTitle = determineIsUntitledPageTitle(languageArray, editedPageTitle);
+  const isUntitledPageTitle = determineIsUntitledPageTitle();
 
   const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && isUntitledPageTitle) ?? false;
 
