@@ -20,26 +20,20 @@ const moduleClass = styles['tree-item-layout'] ?? '';
 
 
 // Utility to mark target
-const markTarget = (itemNode: ItemNode | ItemNode[], targetPathOrId?: Nullable<string>): void => {
+const markTarget = (itemNode: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
 
-  if (Array.isArray(itemNode)) {
-    itemNode.forEach((node) => {
-      if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-        node.page.isTarget = true;
-      }
-      else {
-        node.page.isTarget = false;
-      }
-      return node;
-    });
-  }
-  else {
-    itemNode.page.isTarget = itemNode.page.path === targetPathOrId;
-  }
-
+  itemNode.forEach((node) => {
+    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
+      node.page.isTarget = true;
+    }
+    else {
+      node.page.isTarget = false;
+    }
+    return node;
+  });
 };
 
 
@@ -102,7 +96,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   useEffect(() => {
     if (page.path === '/') {
-      markTarget(itemNode, targetPathOrId);
+      markTarget([itemNode], targetPathOrId);
     }
   }, [itemNode, page.path, targetPathOrId]);
 
