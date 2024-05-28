@@ -387,7 +387,6 @@ const PrivateLegacyPages = (): JSX.Element => {
   const searchControl = useMemo(() => {
     return (
       <SearchControl
-        isSearchServiceReachable
         isEnableSort={false}
         isEnableFilter={false}
         initialSearchConditions={{ keyword: initQ, limit: INITIAL_PAGING_SIZE }}
