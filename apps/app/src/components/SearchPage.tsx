@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
-import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
+import { useShowPageLimitationL } from '~/stores/context';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
@@ -92,6 +92,8 @@ export const SearchPage = (): JSX.Element => {
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
   const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [selectedCount, setSelectedCount] = useState(0);
+
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
 
@@ -123,6 +125,9 @@ export const SearchPage = (): JSX.Element => {
     else {
       instance.deselectAll();
     }
+
+    // update selected count
+    setSelectedCount(instance.getSelectedPageIds?.().size ?? 0);
   }, []);
 
   const selectedPagesByCheckboxesChangedHandler = useCallback((selectedCount: number, totalCount: number) => {
@@ -142,6 +147,9 @@ export const SearchPage = (): JSX.Element => {
       setIsCollapsed(true);
       instance.setIndeterminate();
     }
+
+    // update selected count
+    setSelectedCount(selectedCount);
   }, []);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
@@ -166,7 +174,6 @@ export const SearchPage = (): JSX.Element => {
   const deleteAllButtonClickedHandler = usePageDeleteModalForBulkDeletion(data, searchPageBaseRef, () => mutate());
 
   const hitsCount = data?.meta.hitsCount;
-  const isDeleteButtonDisabled = hitsCount === 0;
 
   const allControl = useMemo(() => {
     return (
@@ -176,7 +183,6 @@ export const SearchPage = (): JSX.Element => {
             type="button"
             className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center`}
             aria-expanded="false"
-            disabled={isDeleteButtonDisabled}
             onClick={() => { setIsCollapsed(!isCollapsed) }}
           >
             <span className="material-symbols-outlined fs-5">delete</span>
@@ -185,7 +191,7 @@ export const SearchPage = (): JSX.Element => {
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
-  }, [isCollapsed, isDeleteButtonDisabled]);
+  }, [isCollapsed]);
 
   const collapseContents = useMemo(() => {
     return (
@@ -195,7 +201,7 @@ export const SearchPage = (): JSX.Element => {
             <div className="ms-4">
               <OperateAllControl
                 ref={selectAllControlRef}
-                isCheckboxDisabled={isDeleteButtonDisabled}
+                isCheckboxDisabled={hitsCount === 0}
                 onCheckboxChanged={selectAllCheckboxChangedHandler}
               >
                 <span className="ms-2">{t('search_result.select_all')}</span>
@@ -205,7 +211,7 @@ export const SearchPage = (): JSX.Element => {
             <button
               type="button"
               className="ms-3 open-delete-modal-button btn btn-outline-danger d-flex align-items-center"
-              disabled={isDeleteButtonDisabled}
+              disabled={selectedCount === 0}
               onClick={deleteAllButtonClickedHandler}
             >
               <span className="material-symbols-outlined fs-5">delete</span>{t('search_result.delete_selected_pages')}
@@ -214,7 +220,7 @@ export const SearchPage = (): JSX.Element => {
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
-  }, [deleteAllButtonClickedHandler, isDeleteButtonDisabled, selectAllCheckboxChangedHandler, t]);
+  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, selectedCount, t]);
 
 
   const searchControl = useMemo(() => {
