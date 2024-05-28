@@ -12,6 +12,7 @@
   }
 
   font-size: 16px;
+  padding-left: 16px;
 
   a {
     @extend .link-offset-2;
@@ -32,6 +33,7 @@
   h6 {
     margin-top: 1.6em;
     margin-bottom: 0.8em;
+    margin-left: calc(-0.5em + -16px);
 
     &:first-child {
       margin-top: 0;
@@ -46,6 +48,8 @@
     margin-top: 2em;
     font-size: 1.9em;
     line-height: 1.1em;
+  }
+  h1 > span {
     border-bottom: 2px solid var(--bs-border-color);
   }
 
@@ -54,6 +58,8 @@
     font-size: 1.6em;
     font-weight: bold;
     line-height: 1.225;
+  }
+  h2 > span {
     border-bottom: 1px solid var(--bs-border-color);
   }
 
@@ -66,6 +72,8 @@
     font-size: 1.35em;
     font-weight: normal;
 
+  }
+  h4 > span {
     // style
     @include add-left-border(6px);
   }
@@ -74,6 +82,8 @@
     font-size: 1.25em;
     font-weight: normal;
 
+  }
+  h5 > span {
     // style
     @include add-left-border(4px);
   }
@@ -81,7 +91,8 @@
   h6 {
     font-size: 1.2em;
     font-weight: normal;
-
+   }
+   h6 > span {
     // style
     @include add-left-border(2px);
   }
@@ -281,6 +292,22 @@
   .revision-head-link,
   .revision-head-edit-button {
     opacity: 0.3;
+  }
+}
+
+@include bs.media-breakpoint-down(md) {
+  .wiki {
+
+    padding-left: 0;
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-left: 0;
+    }
   }
 }
 
