@@ -1,7 +1,7 @@
 import { Readable, Writable, pipeline } from 'stream';
 import { promisify } from 'util';
 
-import { getBufferToFixedSizeTransform } from './stream'; // adjust the path as needed
+import { getBufferToFixedSizeTransform } from './stream';
 
 const pipelinePromise = promisify(pipeline);
 
