@@ -18,6 +18,43 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  release-subpackages-snapshot:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+        cache-dependency-path: '**/yarn.lock'
+
+    - name: Cache/Restore node_modules
+      id: cache-dependencies
+      uses: actions/cache@v4
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          node_modules-release-subpackages-${{ runner.OS }}-node${{ inputs.node-version }}-
+
+    - name: Install dependencies
+      run: |
+        yarn global add turbo
+        yarn global add node-gyp
+        yarn --frozen-lockfile
+
+    - name: Snapshot release to npm
+      run: |
+        yarn release-subpackages:next
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
   release-subpackages:
 
     runs-on: ubuntu-latest
@@ -52,13 +89,6 @@ jobs:
       uses: changesets/action@v1
       with:
         publish: yarn release-subpackages
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-    - name: Snapshot release to npm
-      run: |
-        yarn release-subpackages:next
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
