@@ -1,6 +1,6 @@
-import { GrowiPluginType } from '@growi/core';
+import type { GrowiPluginType, GrowiThemeMetadata } from '@growi/core';
 
-import { GrowiPluginDirective } from './growi-plugin-package-data';
+import type { GrowiPluginDirective } from './growi-plugin-package-data';
 
 export type GrowiPluginValidationData = {
   projectDirRoot: string,
@@ -12,4 +12,8 @@ export type GrowiPluginValidationData = {
 
 export type GrowiTemplatePluginValidationData = GrowiPluginValidationData & {
   supportingLocales: string[],
+}
+
+export type GrowiThemePluginValidationData = GrowiPluginValidationData & {
+  themes: GrowiThemeMetadata[],
 }
