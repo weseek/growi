@@ -5,6 +5,7 @@ on:
     branches:
       - master
     paths:
+      - .changeset/**
       - .github/workflows/release-subpackages.yml
   workflow_run:
     workflows: ["Node CI for app development"]
