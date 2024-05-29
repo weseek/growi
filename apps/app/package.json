@@ -2,6 +2,7 @@
   "name": "@growi/app",
   "version": "7.0.8-RC.0",
   "license": "MIT",
+  "private": "true",
   "scripts": {
     "//// for production": "",
     "build": "run-p build:*",
