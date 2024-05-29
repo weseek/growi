@@ -58,7 +58,7 @@ jobs:
 
     - name: Snapshot release to npm
       run: |
-        yarn release-subpackages:next
+        yarn release-subpackages:snapshot
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
