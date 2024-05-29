@@ -51,7 +51,14 @@ jobs:
       id: changesets
       uses: changesets/action@v1
       with:
-        publish: yarn release-sebpackages
+        publish: yarn release-subpackages
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: Snapshot release to npm
+      run: |
+        yarn release-subpackages:next
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
