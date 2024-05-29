@@ -48,10 +48,8 @@ jobs:
     - name: Create Release Pull Request or Publish to npm
       id: changesets
       uses: changesets/action@v1
+      with:
+        publish: yarn release-sebpackages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-    # - name: Publish
-    #   if: steps.changesets.outputs.hasChangesets == 'false'
-    #   run: yarn release-subpackages
