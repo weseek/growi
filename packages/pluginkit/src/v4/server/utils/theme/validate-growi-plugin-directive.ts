@@ -11,7 +11,7 @@ import { validateGrowiDirective } from '../common';
  * @param projectDirRoot
  */
 export const validateThemePluginGrowiDirective = (projectDirRoot: string): GrowiThemePluginValidationData => {
-  const data = validateGrowiDirective(projectDirRoot, GrowiPluginType.Template);
+  const data = validateGrowiDirective(projectDirRoot, GrowiPluginType.Theme);
 
   const { growiPlugin } = data;
 
@@ -35,7 +35,7 @@ export const validateThemePluginGrowiDirective = (projectDirRoot: string): Growi
 
   if (invalidObjects.length > 0) {
     throw new GrowiPluginValidationError<GrowiPluginValidationData>(
-      `Some of theme metadata are invalid: ${invalidObjects}`,
+      `Some of theme metadata are invalid: ${invalidObjects.toString()}`,
     );
   }
 
