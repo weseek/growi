@@ -165,10 +165,10 @@ export const RecentChangesHeader = ({
     }
   }, [onSizeChange]);
 
-  const changeSizeHandler = useCallback((e) => {
-    onSizeChange(e.target.checked);
-    window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
-  }, [onSizeChange]);
+  const changeSizeHandler = useCallback(() => {
+    onSizeChange(!isSmall);
+    window.localStorage.setItem('isRecentChangesSidebarSmall', String(isSmall));
+  }, [isSmall, onSizeChange]);
 
   // componentDidMount
   useEffect(() => {
