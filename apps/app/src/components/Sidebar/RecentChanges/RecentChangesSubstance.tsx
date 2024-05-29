@@ -201,7 +201,7 @@ export const RecentChangesHeader = ({
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+              <label className="form-label form-check-label text-muted mb-0">
                 {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
               </label>
             </div>
@@ -214,9 +214,8 @@ export const RecentChangesHeader = ({
                 className="form-check-input"
                 type="checkbox"
                 checked={isWipPageShown}
-                onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
+              <label className="form-label form-check-label text-muted mb-0">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
