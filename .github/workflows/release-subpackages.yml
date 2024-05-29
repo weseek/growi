@@ -29,7 +29,6 @@ jobs:
     - uses: actions/setup-node@v4
       with:
         node-version: '20'
-        registry-url: 'https://registry.npmjs.org'
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
@@ -48,6 +47,14 @@ jobs:
         yarn global add turbo
         yarn global add node-gyp
         yarn --frozen-lockfile
+
+    - name: Setup .npmrc
+      run: |
+        cat << EOF > "$HOME/.npmrc"
+          //registry.npmjs.org/:_authToken=$NPM_TOKEN
+        EOF
+      env:
+        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     - name: Snapshot release to npm
       run: |
