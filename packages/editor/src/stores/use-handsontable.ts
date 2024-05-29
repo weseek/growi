@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { EditorView } from '@codemirror/view';
+import type { EditorView } from '@codemirror/view';
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 

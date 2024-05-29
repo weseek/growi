@@ -10,13 +10,12 @@ import {
 } from '@growi/core';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
-import { DropdownItem } from 'reactstrap';
 
 import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import {
   EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
@@ -66,7 +65,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: (newValue: boolean) => void,
+  onClickMenuItem: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -77,24 +76,27 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
     onClickMenuItem, expandContentWidth,
   } = props;
 
+  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    onClickMenuItem();
+  }, [onClickMenuItem]);
+
   return (
-    <DropdownItem
-      onClick={() => onClickMenuItem(!(expandContentWidth))}
-      className="grw-page-control-dropdown-item"
+    <div
+      className="grw-page-control-dropdown-item dropdown-item"
+      onClick={menuItemClickedHandler}
     >
       <div className="form-check form-switch ms-1">
         <input
-          id="switchContentWidth"
           className="form-check-input"
           type="checkbox"
           checked={expandContentWidth}
-          onChange={() => {}}
         />
-        <label className="form-label form-check-label" htmlFor="switchContentWidth">
+        <label className="form-label form-check-label">
           { t('wide_view') }
         </label>
       </div>
-    </DropdownItem>
+    </div>
   );
 };
 
@@ -133,6 +135,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -224,7 +227,9 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
 
-  const switchContentWidthClickHandler = useCallback(async(newValue: boolean) => {
+  const switchContentWidthClickHandler = useCallback(() => {
+
+    const newValue = !expandContentWidth;
     if (onClickSwitchContentWidth == null || (isGuestUser ?? true) || (isReadOnlyUser ?? true)) {
       logger.warn('Could not switch content width', {
         onClickSwitchContentWidth: onClickSwitchContentWidth == null ? 'null' : 'not null',
@@ -242,7 +247,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     catch (err) {
       toastError(err);
     }
-  }, [isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
+  }, [expandContentWidth, isGuestUser, isReadOnlyUser, onClickSwitchContentWidth, pageId, pageInfo]);
 
   const additionalMenuItemOnTopRenderer = useMemo(() => {
     if (!isIPageInfoForEntity(pageInfo)) {
@@ -274,7 +279,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
-      { isViewMode && isDeviceLargerThanMd && (
+      { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
         <SearchButton />
       )}
 
@@ -307,7 +312,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
               bookmarkCount={pageInfo.bookmarkCount}
             />
           )}
-          {revisionId != null && (
+          {revisionId != null && !isSearchPage && (
             <SeenUserInfo
               seenUsers={seenUsers}
               sumOfSeenUsers={sumOfSeenUsers}

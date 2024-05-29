@@ -1,4 +1,4 @@
-import MarkdownTable from '~/client/models/MarkdownTable';
+import { MarkdownTable } from '@growi/editor';
 
 export const getMarkdownTableFromLine = (markdown: string, bol: number, eol: number): MarkdownTable => {
   const tableLines = markdown.split(/\r\n|\r|\n/).slice(bol - 1, eol).join('\n');

@@ -458,6 +458,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} を複製しました",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "閲覧権限のあるグループを選択",
+    "inherit_all_granted_groups_from_parent": "閲覧権限のあるグループを親ページから全て引き継ぐ",
+    "only_inherit_related_groups": "自分が所属するグループのみを親ページから引き継ぐ",
+    "create_page": "ページ作成"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "ページを元に戻す",
@@ -594,6 +600,8 @@
     "delete_completely": "完全に削除する",
     "include_certain_path": "{{pathToInclude}}下を含む ",
     "delete_all_selected_page": "一括削除",
+    "select_all": "全件選択",
+    "delete_selected_pages": "選択したページを削除",
     "currently_not_implemented": "現在未実装の機能です",
     "search_again": "再検索",
     "number_of_list_to_display": "表示件数",

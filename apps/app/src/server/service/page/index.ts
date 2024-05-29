@@ -3786,12 +3786,14 @@ class PageService implements IPageService {
     // Determine grantData
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
     const grantUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
-    const grantUserGroupIds = options.grantUserGroupIds
-      ?? (
-        closestAncestor != null
-          ? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user)
-          : undefined
-      );
+    const getGrantedGroupsFromClosestAncestor = async() => {
+      if (closestAncestor == null) return undefined;
+      if (options.onlyInheritUserRelatedGrantedGroups) {
+        return this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
+      }
+      return closestAncestor.grantedGroups;
+    };
+    const grantUserGroupIds = options.grantUserGroupIds ?? await getGrantedGroupsFromClosestAncestor();
     const grantData = {
       grant,
       grantUserIds,

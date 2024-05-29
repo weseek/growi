@@ -3,7 +3,7 @@ import { useCallback } from 'react';
 import { DropdownItem } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../consts';
-import { getMarkdownLink, replaceFocusedMarkdownLinkWithEditor } from '../../../services/link-util/markdown-link-util';
+import { getMarkdownLink, replaceFocusedMarkdownLinkWithEditor } from '../../../services-internal';
 import { useCodeMirrorEditorIsolated } from '../../../stores';
 import { useLinkEditModal } from '../../../stores/use-link-edit-modal';
 

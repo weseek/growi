@@ -9,6 +9,12 @@ import { Sidebar } from '../Sidebar';
 
 import { RawLayout } from './RawLayout';
 
+
+import styles from './BasicLayout.module.scss';
+
+const moduleClass = styles['grw-basic-layout'] ?? '';
+
+
 const AlertSiteUrlUndefined = dynamic(() => import('../AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(() => import('../PageAttachment/DeleteAttachmentModal').then(mod => mod.DeleteAttachmentModal), { ssr: false });
 const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
@@ -23,6 +29,7 @@ const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
+const GrantedGroupsInheritanceSelectModal = dynamic(() => import('../GrantedGroupsInheritanceSelectModal'), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 
@@ -35,7 +42,7 @@ type Props = {
 
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
-    <RawLayout className={`${className ?? ''}`}>
+    <RawLayout className={`${moduleClass} ${className ?? ''}`}>
       <DndProvider backend={HTML5Backend}>
 
         <div className="page-wrapper flex-row">
@@ -66,6 +73,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <HotkeysManager />
 
       <ShortcutsModal />
+      <GrantedGroupsInheritanceSelectModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
   );
