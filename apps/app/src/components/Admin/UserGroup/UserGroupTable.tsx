@@ -71,6 +71,8 @@ export const UserGroupTable: FC<Props> = ({
   /*
    * State
    */
+  const onMouseEnterHandler = () => setIsHovered(true);
+  const onMouseLeaveHandler = () => setIsHovered(false);
   const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateGroupIdToUsersMap(userGroupRelations));
   const [groupIdToChildGroupsMap, setGroupIdToChildGroupsMap] = useState(generateGroupIdToChildGroupsMap(childUserGroups));
 
@@ -136,7 +138,7 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-
+  const [isHovered, setIsHovered] = useState(false);
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
       <h3>{headerLabel}</h3>
@@ -168,6 +170,14 @@ export const UserGroupTable: FC<Props> = ({
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
                         {group.name}
+                        <button
+                          className="btn btn-link btn-edit-groups text-secondary"
+                          type="button"
+                          onMouseEnter={onMouseEnterHandler}
+                          onMouseLeave={onMouseLeaveHandler}
+                        >   {(isHovered) && (<span className="material-symbols-outlined fs-6">edit</span>
+                          )}
+                        </button>
                       </Link>
                     </td>
                   )
