@@ -1,13 +1,17 @@
 name: Release Subpackages
 
 on:
+  push:
+    branches:
+      - master
+    paths:
+      - .github/workflows/release-subpackages.yml
   workflow_run:
     workflows: ["Node CI for app development"]
     types:
       - completed
     branches:
       - master
-      - dev/*.*.*
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
