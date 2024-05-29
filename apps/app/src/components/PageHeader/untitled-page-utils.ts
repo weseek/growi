@@ -16,6 +16,7 @@ export const useIsUntitledPage = (currentPage?: IPagePopulatedToShowRevision | n
       const untitledPageTitle = i18n.getFixedT(lng, 'translation')('create_page.untitled');
 
       // https://regex101.com/r/Wg2Hh6/1
+      // https://regex101.com/r/E0X8b7/1
       const untitledPageRegex = new RegExp(`^${untitledPageTitle}-\\d+$`);
 
       return untitledPageRegex.test(editedPageTitle);
