@@ -127,8 +127,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     return <></>;
   }
 
-  const isRootPage = page.path === '/';
-
   return (
     <div
       id={`tree-item-layout-${page._id}`}
@@ -140,9 +138,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
         ref={itemRef}
         role="button"
         className={`list-group-item list-group-item-action ${itemClassName}
-          border-0 py-0 ps-0 d-flex align-items-center rounded-1
-          ${isRootPage ? 'root' : ''}
-          ${isSelected ? 'active' : ''}`}
+          border-0 py-0 ps-0 d-flex align-items-center rounded-1`}
         id={isSelected ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
