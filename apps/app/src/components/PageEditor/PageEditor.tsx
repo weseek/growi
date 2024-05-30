@@ -49,8 +49,6 @@ import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-// import { useIsUntitledPage } from '../PageHeader/untitled-page-utils';
-
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
 import Preview from './Preview';
