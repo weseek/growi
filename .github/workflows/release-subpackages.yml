@@ -58,7 +58,13 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
+    - name: Retrieve changesets information
+      id: changesets-status
+      run: |
+        echo "CHANGESETS_LENGTH=$(yarn changeset status --output status.json && jq -r '.changesets | length' status.json && rm status.json)" >> $GITHUB_OUTPUT
+
     - name: Snapshot release to npm
+      if: ${{ steps.changesets-status.outputs.CHANGESETS_LENGTH }} > 0
       run: |
         yarn release-subpackages:snapshot
       env:
