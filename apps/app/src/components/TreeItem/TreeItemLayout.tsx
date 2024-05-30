@@ -159,7 +159,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const isRootPage = page.path === '/';
 
-  // It determines if root page is displayed as active when root page is target.
+  // It determines if page is displayed as active including when root page is target.
   const isTreeItemDisplayedActive = isRootPage && page.isTarget ? isRootPageItemActive : true;
 
   return (
