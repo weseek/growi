@@ -108,6 +108,7 @@ jobs:
       uses: changesets/action@v1
       with:
         title: Release Subpackages
+        version: yarn version-subpackages
         publish: yarn release-subpackages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

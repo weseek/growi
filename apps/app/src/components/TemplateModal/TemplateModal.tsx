@@ -5,7 +5,7 @@ import React, {
 import assert from 'assert';
 
 import type { Lang } from '@growi/core';
-import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/stores/use-template-modal';
+import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/dist/client';
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';

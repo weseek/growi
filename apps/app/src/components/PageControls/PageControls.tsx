@@ -65,7 +65,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: () => void,
+  onChange: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -73,26 +73,20 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    onClickMenuItem, expandContentWidth,
+    onChange, expandContentWidth,
   } = props;
 
-  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    onClickMenuItem();
-  }, [onClickMenuItem]);
-
   return (
-    <div
-      className="grw-page-control-dropdown-item dropdown-item"
-      onClick={menuItemClickedHandler}
-    >
-      <div className="form-check form-switch ms-1">
+    <div className="grw-page-control-dropdown-item dropdown-item">
+      <div className="form-check form-switch ms-1 flex-fill d-flex">
         <input
+          id="wide-view-checkbox"
           className="form-check-input"
           type="checkbox"
-          checked={expandContentWidth}
+          defaultChecked={expandContentWidth}
+          onChange={onChange}
         />
-        <label className="form-label form-check-label">
+        <label className="form-check-label flex-grow-1 ms-2" htmlFor="wide-view-checkbox">
           { t('wide_view') }
         </label>
       </div>
@@ -255,7 +249,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
 
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+      return <WideViewMenuItem {...props} onChange={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);

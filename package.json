@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.8",
+  "version": "7.0.9-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -37,6 +37,7 @@
     "app:server": "cd apps/app && yarn server",
     "slackbot-proxy:build": "turbo run build --filter @growi/slackbot-proxy",
     "slackbot-proxy:server": "cd apps/slackbot-proxy && yarn start:prod",
+    "version-subpackages": "changeset version && yarn upgrade --scope=@growi",
     "release-subpackages": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset publish",
     "release-subpackages:snapshot": "turbo run build --filter @growi/core --filter @growi/pluginkit && changeset version --snapshot next && changeset publish --no-git-tag --snapshot --tag next",
     "version": "yarn version --no-git-tag-version --preid=RC"
