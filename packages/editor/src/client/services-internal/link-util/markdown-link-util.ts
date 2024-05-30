@@ -1,6 +1,6 @@
 import type { EditorView } from '@codemirror/view';
 
-import { Linker } from './Linker';
+import { Linker } from '../../../models';
 
 const curPos = (editor: EditorView) => {
   return editor.state.selection.main.head;
