@@ -1,10 +1,15 @@
-import React, {
+import type {
   SyntheticEvent, RefObject,
 } from 'react';
+import React from 'react';
+
+import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsEnabledMarp } from '~/stores/context';
 
 import RevisionRenderer from '../Page/RevisionRenderer';
+import { SlideRenderer } from '../Page/SlideRenderer';
 
 
 type Props = {
@@ -21,6 +26,9 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
     markdown, pagePath,
   } = props;
 
+  const { data: isEnabledMarp } = useIsEnabledMarp();
+  const isSlide = useSlidesByFrontmatter(markdown, isEnabledMarp);
+
   return (
     <div
       className={`page-editor-preview-body ${pagePath === '/Sidebar' ? 'preview-sidebar' : ''}`}
@@ -32,7 +40,9 @@ const Preview = React.forwardRef((props: Props, ref: RefObject<HTMLDivElement>):
       }}
     >
       { markdown != null && (
-        <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
+        isSlide != null
+          ? <SlideRenderer marp={isSlide.marp} markdown={markdown} />
+          : <RevisionRenderer rendererOptions={rendererOptions} markdown={markdown}></RevisionRenderer>
       ) }
     </div>
   );
