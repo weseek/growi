@@ -224,7 +224,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
             };
 
             return (
-              <ItemClassFixed {...itemProps} />
+              <ItemClassFixed key={node.page._id} {...itemProps} />
             );
           }) }
 
