@@ -3,7 +3,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { ToastContainer } from 'react-toastify';
 
-import { Playground } from './components/playground';
+import { Playground } from './client/components/playground';
 
 import './main.scss';
 

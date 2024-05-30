@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 
+import { MarkdownTable } from '@growi/editor';
 import { useTranslation } from 'next-i18next';
 import {
   Button,
   Collapse,
 } from 'reactstrap';
 
-import MarkdownTable from '~/client/models/MarkdownTable';
 
 type MarkdownTableDataImportFormProps = {
   onCancel: () => void,

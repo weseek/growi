@@ -1,9 +1,10 @@
 import React, { type ReactNode, useCallback, useMemo } from 'react';
 
 import { Origin } from '@growi/core';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 
-import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCreatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
@@ -67,7 +68,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
   const { data: currentPageYjsData } = useCurrentPageYjsData();
 
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { isCreating, create } = useCreatePage();
 
   const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
@@ -76,15 +77,17 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      await createAndTransit(
-        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
-        { shouldCheckPageExists: true },
+      const parentPath = path != null ? normalizePath(path.split('/').slice(0, -1).join('/')) : undefined; // does not have to exist
+      await create(
+        {
+          path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,
+        },
       );
     }
     catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [createAndTransit, isNotFound, mutateEditorMode, path, t]);
+  }, [create, isNotFound, mutateEditorMode, path, t]);
 
   const _isBtnDisabled = isCreating || isBtnDisabled;
 

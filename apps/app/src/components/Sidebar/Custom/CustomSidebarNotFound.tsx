@@ -3,16 +3,16 @@ import { useCallback } from 'react';
 import { Origin } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 
-import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCreatePage } from '~/client/services/create-page';
 
 export const SidebarNotFound = (): JSX.Element => {
   const { t } = useTranslation();
 
-  const { createAndTransit } = useCreatePageAndTransit();
+  const { create } = useCreatePage();
 
   const clickCreateButtonHandler = useCallback(async() => {
-    createAndTransit({ path: '/Sidebar', wip: false, origin: Origin.View });
-  }, [createAndTransit]);
+    create({ path: '/Sidebar', wip: false, origin: Origin.View }, { skipPageExistenceCheck: true });
+  }, [create]);
 
   return (
     <div>
