@@ -61,7 +61,9 @@ jobs:
     - name: Retrieve changesets information
       id: changesets-status
       run: |
-        echo "CHANGESETS_LENGTH=$(yarn changeset status --output status.json && jq -r '.changesets | length' status.json && rm status.json)" >> $GITHUB_OUTPUT
+        yarn changeset status --output status.json
+        echo "CHANGESETS_LENGTH=$(jq -r '.changesets | length' status.json)" >> $GITHUB_OUTPUT
+        rm status.json
 
     - name: Snapshot release to npm
       if: ${{ steps.changesets-status.outputs.CHANGESETS_LENGTH }} > 0
