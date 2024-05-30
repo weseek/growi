@@ -20,12 +20,12 @@ const moduleClass = styles['tree-item-layout'] ?? '';
 
 
 // Utility to mark target
-const markTarget = (itemNode: ItemNode[], targetPathOrId?: Nullable<string>): void => {
+const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
   if (targetPathOrId == null) {
     return;
   }
 
-  itemNode.forEach((node) => {
+  children.forEach((node) => {
     if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
       node.page.isTarget = true;
     }
@@ -95,6 +95,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     if (hasChildren()) setIsOpen(true);
   }, [hasChildren]);
 
+  // Since the markTarget function above cannot handle the root page, set isTarget to true for the root page here.
   useEffect(() => {
     if (page.path === '/' && targetPathOrId === '/') {
       itemNode.page.isTarget = true;
@@ -158,6 +159,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const isRootPage = page.path === '/';
 
+  // It determines if root page is displayed as active when root page is target.
   const isTreeItemDisplayedActive = isRootPage && page.isTarget ? isRootPageItemActive : true;
 
   return (
