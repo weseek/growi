@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "@growi/core": "link:../core",
-    "@growi/core-styles": "link:../../packages/core-styles",
+    "@growi/core-styles": "link:../core-styles",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.2"
   },
