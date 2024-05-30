@@ -4,7 +4,7 @@ import type { Extension } from '@codemirror/state';
 import { placeholder, scrollPastEnd } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { useCodeMirrorEditorIsolated, useDefaultExtensions, useEditorSettings } from '../stores';
 
 const additionalExtensions: Extension[] = [

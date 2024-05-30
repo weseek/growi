@@ -1,6 +1,6 @@
 import type { Extension } from '@codemirror/state';
 
-import type { EditorTheme } from '../../consts';
+import type { EditorTheme } from '../../../consts';
 
 export const getEditorTheme = async(themeName?: EditorTheme): Promise<Extension> => {
   switch (themeName) {

@@ -7,7 +7,7 @@ import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next';
 import { SocketIOProvider } from 'y-socket.io';
 import * as Y from 'yjs';
 
-import { userColor } from '../consts';
+import { userColor } from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 
 type UserLocalState = {

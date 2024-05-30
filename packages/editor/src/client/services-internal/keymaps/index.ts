@@ -1,7 +1,7 @@
 import type { Extension } from '@codemirror/state';
 import { keymap } from '@codemirror/view';
 
-import type { KeyMapMode } from '../../consts';
+import type { KeyMapMode } from '../../../consts';
 
 
 export const getKeymap = async(keyMapName?: KeyMapMode, onSave?: () => void): Promise<Extension> => {

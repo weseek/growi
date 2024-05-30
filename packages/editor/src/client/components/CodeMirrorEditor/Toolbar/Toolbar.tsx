@@ -2,7 +2,7 @@ import { memo } from 'react';
 
 import type { AcceptedUploadFileType } from '@growi/core';
 
-import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import type { GlobalCodeMirrorEditorKey } from '../../../../consts';
 
 import { AttachmentsDropup } from './AttachmentsDropup';
 import { DiagramButton } from './DiagramButton';

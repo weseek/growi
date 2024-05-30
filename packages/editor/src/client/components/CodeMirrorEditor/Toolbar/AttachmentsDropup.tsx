@@ -8,7 +8,7 @@ import {
   Dropdown,
 } from 'reactstrap';
 
-import type { GlobalCodeMirrorEditorKey } from '../../../consts';
+import type { GlobalCodeMirrorEditorKey } from '../../../../consts';
 
 import { AttachmentsDropdownItem } from './AttachmentsDropdownItem';
 import { LinkEditButton } from './LinkEditButton';

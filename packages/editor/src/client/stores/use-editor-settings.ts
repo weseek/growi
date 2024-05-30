@@ -6,7 +6,7 @@ import {
   keymap, type Command, highlightActiveLine, highlightActiveLineGutter,
 } from '@codemirror/view';
 
-import type { EditorSettings, KeyMapMode, EditorTheme } from '../consts';
+import type { EditorSettings, KeyMapMode, EditorTheme } from '../../consts';
 import type { UseCodeMirrorEditor } from '../services';
 import {
   getEditorTheme, getKeymap, insertNewlineContinueMarkup, insertNewRowToMarkdownTable, isInTable,

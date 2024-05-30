@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 import { type Extension, EditorState } from '@codemirror/state';
 
-import { GlobalCodeMirrorEditorKey } from '../consts';
+import { GlobalCodeMirrorEditorKey } from '../../consts';
 import { setDataLine } from '../services-internal';
 import { useCodeMirrorEditorIsolated } from '../stores';
 

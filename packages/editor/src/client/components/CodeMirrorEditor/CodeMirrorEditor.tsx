@@ -10,7 +10,7 @@ import {
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay,
   adjustPasteData, getStrFromBol, useShowTableIcon,

@@ -5,8 +5,8 @@ import {
 import { AcceptedUploadFileType } from '@growi/core';
 import { toast } from 'react-toastify';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
-import type { EditorSettings, EditorTheme, KeyMapMode } from '../../consts';
+import { GlobalCodeMirrorEditorKey } from '../../../consts';
+import type { EditorSettings, EditorTheme, KeyMapMode } from '../../../consts';
 import { useCodeMirrorEditorIsolated } from '../../stores';
 import { CodeMirrorEditorMain } from '../CodeMirrorEditorMain';
 
