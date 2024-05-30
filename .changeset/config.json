@@ -11,5 +11,15 @@
     "useCalculatedVersion": true,
     "prereleaseTemplate": "{tag}.{commit}"
   },
-  "ignore": []
+  "ignore": [
+    "@growi/app",
+    "@growi/slackbot-proxy",
+    "@growi/custom-icons",
+    "@growi/editor",
+    "@growi/presentation",
+    "@growi/preset-*",
+    "@growi/remark-*",
+    "@growi/slack",
+    "@growi/ui"
+  ]
 }
