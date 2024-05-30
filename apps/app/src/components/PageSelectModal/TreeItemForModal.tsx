@@ -37,6 +37,7 @@ export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
       itemClass={TreeItemForModal}
       customHoveredEndComponents={[NewPageCreateButton]}
       onClick={onClick}
+      isRootPageItemActive
     />
   );
 };

@@ -41,6 +41,7 @@ type TreeItemLayoutProps = TreeItemProps & {
   className?: string,
   itemRef?: RefObject<any> | RefCallback<any>,
   indentSize?: number,
+  isRootPageItemActive?: boolean,
 }
 
 export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
@@ -50,7 +51,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     itemLevel: baseItemLevel = 1,
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass,
+    itemRef, itemClass, isRootPageItemActive,
     showAlternativeContent,
   } = props;
 
@@ -95,8 +96,11 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   }, [hasChildren]);
 
   useEffect(() => {
-    if (page.path === '/') {
-      markTarget([itemNode], targetPathOrId);
+    if (page.path === '/' && targetPathOrId === '/') {
+      itemNode.page.isTarget = true;
+    }
+    else {
+      itemNode.page.isTarget = false;
     }
   }, [itemNode, page.path, targetPathOrId]);
 
@@ -152,6 +156,10 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     return <></>;
   }
 
+  const isRootPage = page.path === '/';
+
+  const isTreeItemDisplayedActive = isRootPage && page.isTarget ? isRootPageItemActive : true;
+
   return (
     <div
       id={`tree-item-layout-${page._id}`}
@@ -164,7 +172,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
         role="button"
         className={`list-group-item ${itemClassName}
           border-0 py-0 ps-0 d-flex align-items-center rounded-1
-          ${page.isTarget ? 'active' : 'list-group-item-action'}`}
+          ${page.isTarget && isTreeItemDisplayedActive ? 'active' : 'list-group-item-action'}`}
         id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
