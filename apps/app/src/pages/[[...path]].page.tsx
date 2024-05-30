@@ -582,7 +582,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
  * @param namespacesRequired
  */
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
-  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
+  const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired);
   props._nextI18Next = nextI18NextConfig._nextI18Next;
 }
 
