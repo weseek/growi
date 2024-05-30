@@ -37,6 +37,7 @@ import {
 } from '~/stores/editor';
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
+  useUntitledPage,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
@@ -48,7 +49,7 @@ import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
-import { useIsUntitledPage } from '../PageHeader/untitled-page-utils';
+// import { useIsUntitledPage } from '../PageHeader/untitled-page-utils';
 
 import { EditorNavbar } from './EditorNavbar';
 import EditorNavbarBottom from './EditorNavbarBottom';
@@ -130,7 +131,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const currentPageTitle = currentPagePath != null ? nodePath.basename(currentPagePath) : undefined;
 
-  const isNewlyCreatedPage = useIsUntitledPage(currentPage, currentPageTitle);
+  const { data: isUntitledPage } = useUntitledPage(currentPage?._id);
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -282,10 +283,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (editorMode === EditorMode.Editor && !isNewlyCreatedPage) {
+    if (editorMode === EditorMode.Editor && !isUntitledPage) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, editorMode, isNewlyCreatedPage]);
+  }, [codeMirrorEditor, editorMode, isUntitledPage]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {
