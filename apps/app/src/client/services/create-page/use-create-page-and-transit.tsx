@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 
 import { exist } from '~/client/services/page-operation';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
-import { useCurrentPagePath } from '~/stores/page';
+import { useCurrentPagePath, mutateUntitledPage } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
@@ -91,6 +91,11 @@ export const useCreatePageAndTransit: UseCreatePageAndTransit = () => {
       const response = await createPage(params);
 
       await router.push(`/${response.page._id}#edit`);
+
+      if (params.path == null) {
+        mutateUntitledPage(response.page._id, true);
+      }
+
       mutateEditorMode(EditorMode.Editor);
 
       onCreated?.();
