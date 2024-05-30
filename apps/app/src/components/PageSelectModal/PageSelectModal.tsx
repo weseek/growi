@@ -71,9 +71,11 @@ export const PageSelectModal: FC = () => {
     return <></>;
   }
 
-  const targetPathOrId = clickedParentPagePath || currentPage.path;
+  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
 
-  const targetPath = clickedParentPagePath || currentPage.path;
+  const targetPathOrId = clickedParentPagePath || parentPagePath;
+
+  const targetPath = clickedParentPagePath || parentPagePath;
 
   if (isGuestUser == null) {
     return <></>;
