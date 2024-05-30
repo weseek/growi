@@ -7,7 +7,7 @@ import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-
 import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
-import { useCurrentPagePath } from '~/stores/page';
+import { mutateUntitledPage, useCurrentPagePath } from '~/stores/page';
 import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { createPage } from './create-page';
@@ -105,6 +105,10 @@ export const useCreatePage: UseCreatePage = () => {
         if (!skipTransition) {
           await router.push(`/${response.page._id}#edit`);
           mutateEditorMode(EditorMode.Editor);
+        }
+
+        if (params.path == null) {
+          mutateUntitledPage(response.page._id, true);
         }
 
         onCreated?.();
