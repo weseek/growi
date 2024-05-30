@@ -154,7 +154,11 @@
 
   .markdown-table-activated .cm-cursor.cm-cursor-primary {
     &:after {
-      background-image: url(../../../svg/table.svg);
+      font-family: var(--grw-font-family-material-symbols-outlined);
+      font-size: 1.5em;
+      content: 'table_chart';
+      opacity: 0.7;
+      transform: translateY(-1.2em)
     }
   }
 }
