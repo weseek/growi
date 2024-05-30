@@ -239,7 +239,7 @@ export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>):
   );
 };
 
-export const useUntitledPage = (pageId: string): SWRResponse<boolean> => {
+export const useUntitledPage = (pageId?: string): SWRResponse<boolean> => {
 
   const key = `untitled/${pageId}`;
 
