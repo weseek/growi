@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.8...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.9](https://github.com/weseek/growi/compare/v7.0.8...v7.0.9) - 2024-05-30
+
+### 🐛 Bug Fixes
+
+* fix: Supress warning of checkbox (#8865) @yuki-takei
+* fix: Editor package import/export (#8864) @yuki-takei
 
 ## [v7.0.8](https://github.com/weseek/growi/compare/v7.0.7...v7.0.8) - 2024-05-30
 
