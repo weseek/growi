@@ -139,8 +139,9 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
         role="button"
         className={`list-group-item list-group-item-action ${itemClassName}
           border-0 py-0 ps-0 d-flex align-items-center rounded-1`}
-        id={isSelected ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
+        id={`grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
+        aria-current={isSelected ? true : undefined}
       >
 
         <div className="btn-triangle-container d-flex justify-content-center">
