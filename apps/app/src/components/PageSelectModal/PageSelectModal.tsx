@@ -67,11 +67,7 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
-  if (currentPage == null) {
-    return <></>;
-  }
-
-  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage.path));
+  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
 
   const targetPathOrId = clickedParentPagePath || parentPagePath;
 
