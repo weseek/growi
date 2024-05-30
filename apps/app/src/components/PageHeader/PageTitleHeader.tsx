@@ -71,11 +71,16 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
         setRenameInputShown(false);
         setValidationResult(undefined);
         onMoveTerminated?.();
+        mutateUntitledPage(false);
       },
       () => {
         setRenameInputShown(true);
+      },
+      () => {
+        setRenameInputShown(false);
+        setValidationResult(undefined);
+        onMoveTerminated?.();
       });
-    mutateUntitledPage(false);
   }, [editedPagePath, mutateUntitledPage, onMoveTerminated, pagePathRenameHandler]);
 
   const cancel = useCallback(() => {

@@ -72,6 +72,11 @@ export const PagePathHeader = memo((props: Props): JSX.Element => {
       },
       () => {
         setRenameInputShown(true);
+      },
+      () => {
+        setRenameInputShown(false);
+        setValidationResult(undefined);
+        onRenameTerminated?.();
       });
   }, [dPagePath.latter, pagePathRenameHandler, onRenameTerminated]);
 

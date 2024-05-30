@@ -8,7 +8,8 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage } from '~/stores/page';
 import { mutatePageTree, mutatePageList } from '~/stores/page-listing';
 
-type PagePathRenameHandler = (newPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void) => Promise<void>
+
+type PagePathRenameHandler = (newPagePath: string, onRenameFinish?: () => void, onRenameFailure?: () => void, onRenamedSkipped?: () => void) => Promise<void>
 
 export const usePagePathRenameHandler = (
     currentPage?: IPagePopulatedToShowRevision | null,
@@ -17,7 +18,7 @@ export const usePagePathRenameHandler = (
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
   const { t } = useTranslation();
 
-  const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure) => {
+  const pagePathRenameHandler = useCallback(async(newPagePath, onRenameFinish, onRenameFailure, onRenameSkipped) => {
 
     if (currentPage == null) {
       return;
@@ -33,7 +34,7 @@ export const usePagePathRenameHandler = (
     };
 
     if (newPagePath === currentPage.path || newPagePath === '') {
-      onRenameFinish?.();
+      onRenameSkipped?.();
       return;
     }
 
