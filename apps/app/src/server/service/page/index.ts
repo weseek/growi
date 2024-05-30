@@ -4396,7 +4396,6 @@ class PageService implements IPageService {
       .lean()
       .exec();
 
-    this.injectIsTargetIntoPages(pages, path);
     await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
     /*
@@ -4414,14 +4413,6 @@ class PageService implements IPageService {
     });
 
     return pathToChildren;
-  }
-
-  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
-    pages.forEach((page) => {
-      if (page.path === path) {
-        page.isTarget = true;
-      }
-    });
   }
 
   /**

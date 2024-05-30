@@ -1,11 +1,8 @@
 import React, {
-  useCallback, useState, useEffect,
+  useCallback, useState, useEffect, useMemo,
   type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
 
-import type { Nullable } from '@growi/core';
-
-import type { IPageForItem } from '~/interfaces/page';
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
 
@@ -19,29 +16,10 @@ import styles from './TreeItemLayout.module.scss';
 const moduleClass = styles['tree-item-layout'] ?? '';
 
 
-// Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-  if (targetPathOrId == null) {
-    return;
-  }
-
-  children.forEach((node) => {
-    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-      node.page.isTarget = true;
-    }
-    else {
-      node.page.isTarget = false;
-    }
-    return node;
-  });
-};
-
-
 type TreeItemLayoutProps = TreeItemProps & {
   className?: string,
   itemRef?: RefObject<any> | RefCallback<any>,
   indentSize?: number,
-  isRootPageItemActive?: boolean,
 }
 
 export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
@@ -51,7 +29,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     itemLevel: baseItemLevel = 1,
     itemNode, targetPathOrId, isOpen: _isOpen = false,
     onRenamed, onClick, onClickDuplicateMenuItem, onClickDeleteMenuItem, isEnableActions, isReadOnlyUser, isWipPageShown = true,
-    itemRef, itemClass, isRootPageItemActive,
+    itemRef, itemClass,
     showAlternativeContent,
   } = props;
 
@@ -95,24 +73,11 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
     if (hasChildren()) setIsOpen(true);
   }, [hasChildren]);
 
-  // Since the markTarget function above cannot handle the root page, set isTarget to true for the root page here.
-  useEffect(() => {
-    if (page.path === '/') {
-      if (targetPathOrId === '/') {
-        page.isTarget = true;
-      }
-      else {
-        page.isTarget = false;
-      }
-    }
-  }, [page, page.path, targetPathOrId]);
-
   /*
    * Make sure itemNode.children and currentChildren are synced
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
   }, [children, currentChildren.length, targetPathOrId]);
@@ -123,10 +88,13 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen, targetPathOrId]);
+
+  const isSelected = useMemo(() => {
+    return page._id === targetPathOrId || page.path === targetPathOrId;
+  }, [page, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? TreeItemLayout;
 
@@ -161,9 +129,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
 
   const isRootPage = page.path === '/';
 
-  // It determines if page is displayed as active including when root page is target.
-  const isTreeItemDisplayedActive = isRootPage ? isRootPageItemActive : true;
-
   return (
     <div
       id={`tree-item-layout-${page._id}`}
@@ -174,10 +139,11 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item ${itemClassName}
+        className={`list-group-item list-group-item-action ${itemClassName}
           border-0 py-0 ps-0 d-flex align-items-center rounded-1
-          ${page.isTarget && isTreeItemDisplayedActive ? 'active' : 'list-group-item-action'}`}
-        id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
+          ${isRootPage ? 'root' : ''}
+          ${isSelected ? 'active' : ''}`}
+        id={isSelected ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
       >
 
