@@ -8,7 +8,7 @@ import type { LabelType } from '~/interfaces/template';
 import { useCurrentPagePath } from '~/stores/page';
 
 
-import { useCreatePageAndTransit } from './use-create-page-and-transit';
+import { useCreatePage } from './use-create-page';
 
 type UseCreateTemplatePage = () => {
   isCreatable: boolean,
@@ -20,17 +20,18 @@ export const useCreateTemplatePage: UseCreateTemplatePage = () => {
 
   const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
 
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { isCreating, create } = useCreatePage();
   const isCreatable = currentPagePath != null && isCreatablePage(normalizePath(`${currentPagePath}/_template`));
 
   const createTemplate = useCallback(async(label: LabelType) => {
     if (isLoadingPagePath || !isCreatable) return;
 
-    return createAndTransit(
-      { path: normalizePath(`${currentPagePath}/${label}`), wip: false, origin: Origin.View },
-      { shouldCheckPageExists: true },
+    return create(
+      {
+        path: normalizePath(`${currentPagePath}/${label}`), parentPath: currentPagePath, wip: false, origin: Origin.View,
+      },
     );
-  }, [currentPagePath, isCreatable, isLoadingPagePath, createAndTransit]);
+  }, [currentPagePath, isCreatable, isLoadingPagePath, create]);
 
   return {
     isCreatable,

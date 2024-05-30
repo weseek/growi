@@ -29,6 +29,7 @@ const PageDeleteModal = dynamic(() => import('../PageDeleteModal'), { ssr: false
 const PageRenameModal = dynamic(() => import('../PageRenameModal'), { ssr: false });
 const PagePresentationModal = dynamic(() => import('../PagePresentationModal'), { ssr: false });
 const PageAccessoriesModal = dynamic(() => import('../PageAccessoriesModal').then(mod => mod.PageAccessoriesModal), { ssr: false });
+const GrantedGroupsInheritanceSelectModal = dynamic(() => import('../GrantedGroupsInheritanceSelectModal'), { ssr: false });
 const DeleteBookmarkFolderModal = dynamic(() => import('../DeleteBookmarkFolderModal').then(mod => mod.DeleteBookmarkFolderModal), { ssr: false });
 const SearchModal = dynamic(() => import('../../features/search/client/components/SearchModal'), { ssr: false });
 
@@ -72,6 +73,7 @@ export const BasicLayout = ({ children, className }: Props): JSX.Element => {
       <HotkeysManager />
 
       <ShortcutsModal />
+      <GrantedGroupsInheritanceSelectModal />
       <SystemVersion showShortcutsButton />
     </RawLayout>
   );

@@ -1,6 +1,6 @@
+import type { DetailedHTMLProps } from 'react';
 import {
   forwardRef, useMemo, useRef, useEffect,
-  DetailedHTMLProps,
 } from 'react';
 
 import { indentUnit } from '@codemirror/language';
@@ -10,14 +10,11 @@ import {
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
+import type { EditorSettings, GlobalCodeMirrorEditorKey } from '../../consts';
 import {
   useFileDropzone, FileDropzoneOverlay,
-} from '../../services';
-import {
-  adjustPasteData, getStrFromBol,
-} from '../../services/paste-util/paste-markdown-util';
-import { useShowTableIcon } from '../../services/table-util/use-show-table-icon';
+  adjustPasteData, getStrFromBol, useShowTableIcon,
+} from '../../services-internal';
 import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
 
 import { Toolbar } from './Toolbar';

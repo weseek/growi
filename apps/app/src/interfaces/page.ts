@@ -70,6 +70,7 @@ export type IOptionsForUpdate = {
 export type IOptionsForCreate = {
   grant?: PageGrant,
   grantUserGroupIds?: IGrantedGroup[],
+  onlyInheritUserRelatedGrantedGroups?: boolean,
   overwriteScopesOfDescendants?: boolean,
 
   origin?: Origin
