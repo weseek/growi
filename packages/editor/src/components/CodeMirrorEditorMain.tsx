@@ -5,7 +5,7 @@ import { keymap, scrollPastEnd } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 
 import { GlobalCodeMirrorEditorKey } from '../consts';
-import { setDataLine } from '../services/extensions/setDataLine';
+import { setDataLine } from '../services-internal';
 import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
 
 import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';

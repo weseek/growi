@@ -1,4 +1,5 @@
-import { GrowiThemeMetadata, GrowiThemeSchemeType } from '../interfaces/growi-theme-metadata';
+import type { GrowiThemeMetadata } from '@growi/core';
+import { GrowiThemeSchemeType } from '@growi/core';
 
 const { BOTH, LIGHT, DARK } = GrowiThemeSchemeType;
 
