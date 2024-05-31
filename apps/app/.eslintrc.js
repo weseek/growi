@@ -27,7 +27,6 @@ module.exports = {
       },
     ]],
     '@typescript-eslint/no-var-requires': 'off',
-    '@typescript-eslint/consistent-type-imports': 'warn',
 
     // set 'warn' temporarily -- 2021.08.02 Yuki Takei
     '@typescript-eslint/no-use-before-define': ['warn'],

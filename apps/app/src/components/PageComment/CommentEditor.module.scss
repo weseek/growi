@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './comment-inheritance';
 @use '../PageEditor/page-editor-inheritance';
 
@@ -31,8 +31,7 @@
     min-height: comment-inheritance.$codemirror-default-height !important;
   }
   .comment-preview-container {
-    min-height: page-editor-inheritance.$navbar-editor-height
-      + comment-inheritance.$codemirror-default-height;
+    min-height: page-editor-inheritance.$navbar-editor-height + comment-inheritance.$codemirror-default-height;
     padding-top: 0.5em;
   }
 }

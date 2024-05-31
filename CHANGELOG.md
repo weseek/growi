@@ -1,8 +1,63 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.5...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.9...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.9](https://github.com/weseek/growi/compare/v7.0.8...v7.0.9) - 2024-05-30
+
+### 🐛 Bug Fixes
+
+* fix: Supress warning of checkbox (#8865) @yuki-takei
+* fix: Editor package import/export (#8864) @yuki-takei
+
+## [v7.0.8](https://github.com/weseek/growi/compare/v7.0.7...v7.0.8) - 2024-05-30
+
+### 💎 Features
+
+* feat: Select unrelated group inheritance on child page create (#8812) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Design coding of search result page (#8828) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Page body sometimes appears doubled up when the editor is opened (#8858) @miya
+* fix: Brackets appearance when Nord editor theme (#8852) @satof3
+* fix: Slack notification not sent on page update (#8841) @miya
+* fix: Table icon is not displayed when hovering over the table (#8830) @WNomunomu
+
+### 🧰 Maintenance
+
+* support: Reorganize editor module exports (#8846) @yuki-takei
+
+## [v7.0.7](https://github.com/weseek/growi/compare/v7.0.6...v7.0.7) - 2024-05-27
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle in groundglassbar (#8832) @maeshinshin
+* imprv: toastr location (#8831) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Do not insert initial value when input is empty in editor (#8773) @miya
+
+### 🧰 Maintenance
+
+* support: Apply changesets (#8840) @yuki-takei
+* support: Upgrade yjs packages (#8839) @yuki-takei
+* support: Upgrade stylelint (#8835) @yuki-takei
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
 
 ## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
 

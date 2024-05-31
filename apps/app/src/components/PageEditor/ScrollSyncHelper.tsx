@@ -1,6 +1,7 @@
 import { useCallback, type RefObject, useRef } from 'react';
 
-import { useCodeMirrorEditorIsolated, type GlobalCodeMirrorEditorKey } from '@growi/editor';
+import type { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client';
 
 let defaultTop = 0;
 const padding = 5;

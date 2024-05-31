@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 
 .btn-group-switching :global {
@@ -31,6 +31,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .btn-group-switching :global {
     .btn {

@@ -54,14 +54,16 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
         </button>
 
         <ul className="dropdown-menu">
-          <li className="dropdown-item" onClick={onWipPageShownChange}>
-            <div className="form-check form-switch">
+          <li className="dropdown-item">
+            <div className="form-check form-switch flex-fill d-flex">
               <input
+                id="show-wip-page-checkbox"
                 className="form-check-input"
                 type="checkbox"
-                checked={isWipPageShown}
+                defaultChecked={isWipPageShown}
+                onChange={onWipPageShownChange}
               />
-              <label className="form-label form-check-label text-muted mb-0">
+              <label className="form-check-label flex-grow-1 ms-2" htmlFor="show-wip-page-checkbox">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
@@ -109,19 +111,25 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
   const { data: sidebarScrollerRef } = useSidebarScrollerRef();
   const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
 
-  const rootElemRef = useRef(null);
+  const rootElemRef = useRef<HTMLDivElement>(null);
 
   // ***************************  Scroll on init ***************************
   const scrollOnInit = useCallback(() => {
-    const scrollTargetElement = document.getElementById('grw-pagetree-current-page-item');
+    const rootElement = rootElemRef.current;
+    const scrollElement = sidebarScrollerRef?.current;
 
-    if (sidebarScrollerRef?.current == null || scrollTargetElement == null) {
+    if (rootElement == null || scrollElement == null) {
+      return;
+    }
+
+    const scrollTargetElement = rootElement.querySelector<HTMLElement>('[aria-current]');
+
+    if (scrollTargetElement == null) {
       return;
     }
 
     logger.debug('scrollOnInit has invoked');
 
-    const scrollElement = sidebarScrollerRef.current;
 
     // NOTE: could not use scrollIntoView
     //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
@@ -172,7 +180,6 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
   if (isGuestUser == null) {
     return null;
   }
-
 
   return (
     <div ref={rootElemRef} className="pt-4">

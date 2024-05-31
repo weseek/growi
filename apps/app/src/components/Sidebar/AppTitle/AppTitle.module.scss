@@ -1,9 +1,6 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
-@use '@growi/core/scss/growi-official-colors';
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '~/styles/variables' as var;
-
 @use '../button-styles';
 
 // GROWI Logo
@@ -55,6 +52,7 @@
     $grw-page-editor-mode-manager-width: 140px;
     $gap: 24px;
     $grw-contextual-subnavigation-padding-right: 24px;
+
     width: calc(100vw - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
   }
 }

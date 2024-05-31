@@ -1,4 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as *;
+@use '@growi/core-styles/scss/bootstrap/init' as *;
 @use '~/styles/mixins';
 
 $slack-work-space-name-card-background: #fff5ff;
@@ -114,6 +114,7 @@ $slack-work-space-name-card-border: #efc1f6;
       border-width: 2px;
     }
   }
+
   // TODO: change to utility class on Bootstrap 5
   .slack-connection-log {
     .slack-connection-log-title {
@@ -173,6 +174,7 @@ $slack-work-space-name-card-border: #efc1f6;
       &.with-proxy {
         .hr-container {
           margin-top: 40px;
+
           @include media-breakpoint-up(lg) {
             margin-top: 65px;
           }
@@ -189,7 +191,7 @@ $slack-work-space-name-card-border: #efc1f6;
   //// TODO: migrate to Bootstrap 4
   //// omit all .btn-toggle and use Switches
   //// https://getbootstrap.com/docs/4.2/components/forms/#switches
-  //
+
   // Toggle Twitter Bootstrap button class when active
   // https://jsfiddle.net/ms040m01/3/
   // @mixin active-color($color, $bg-color, $border-color) {

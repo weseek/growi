@@ -1,7 +1,7 @@
-@use '~/styles/_modal';
+@use '~/styles/modal';
 
 .grw-presentation-modal :global {
-
+  /* stylelint-disable-next-line length-zero-no-unit */
   @include modal.expand-modal-fullscreen(false, false, 0px);
 
   .modal-content {
