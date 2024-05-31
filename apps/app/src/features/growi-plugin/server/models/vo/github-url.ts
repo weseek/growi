@@ -39,8 +39,8 @@ export class GitHubUrl {
   get archiveUrl(): string {
     const encodedBranchName = encodeURIComponent(this.branchName);
     const encodedTagName = encodeURIComponent(this.tagName);
-    const zipUrl = encodedTagName !== '' ? `tags/${encodedTagName}.zip` : `heads/${encodedBranchName}.zip`;
-    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/${zipUrl}`, 'https://github.com');
+    const zipUrl = encodedTagName !== '' ? `tags/${encodedTagName}` : `heads/${encodedBranchName}`;
+    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/${zipUrl}.zip`, 'https://github.com');
     return ghUrl.toString();
   }
 
