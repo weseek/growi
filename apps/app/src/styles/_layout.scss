@@ -1,6 +1,9 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use './variables' as var;
+
+body {
+  min-height: 100vh;
+}
 
 .dynamic-layout-root {
   @extend .flex-expand-vert;
@@ -15,10 +18,6 @@
     object-fit: cover;
     object-position: bottom;
   }
-}
-
-.grw-modal-head {
-  border-bottom: 1px solid transparent;
 }
 
 .grw-scrollable-modal-body {
@@ -48,13 +47,33 @@
   }
 }
 
+// md/lg layout padding
+.ps-sidebar {
+  @include bs.media-breakpoint-between(md, xl) {
+    padding-left: var.$grw-sidebar-nav-width;
+  }
+}
+
+.wide-gutter-x-lg {
+  @include bs.media-breakpoint-up(lg) {
+    &,
+    .container,
+    .container-fluid,
+    .container-xxl,
+    .container-xl,
+    .container-lg {
+      --bs-gutter-x: 3rem;
+    }
+  }
+}
+
 // printable style
 @media print {
   body {
     padding: 30px;
   }
 
-  a:after {
+  a::after {
     display: none !important;
   }
 

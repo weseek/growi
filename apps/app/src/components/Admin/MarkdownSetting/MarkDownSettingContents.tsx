@@ -40,24 +40,24 @@ const MarkDownSettingContents = React.memo((props: Props): JSX.Element => {
   }, [adminMarkDownContainer]);
 
   return (
-    <div data-testid="admin-markdown">
+    <div data-testid="admin-markdown" className="mb-5">
       {/* Line Break Setting */}
       <h2 className="admin-setting-header">{t('markdown_settings.lineBreak_header')}</h2>
-      <Card className="card custom-card my-3">
+      <Card className="card custom-card bg-body-tertiary my-3">
         <CardBody className="px-0 py-2">{ t('markdown_settings.lineBreak_desc') }</CardBody>
       </Card>
       <LineBreakForm />
 
       {/* Indent Setting */}
-      <h2 className="admin-setting-header">{t('markdown_settings.indent_header')}</h2>
-      <Card className="card custom-card my-3">
+      <h2 className="admin-setting-header mt-5">{t('markdown_settings.indent_header')}</h2>
+      <Card className="card custom-card bg-body-tertiary my-3">
         <CardBody className="px-0 py-2">{t('markdown_settings.indent_desc') }</CardBody>
       </Card>
       <IndentForm />
 
       {/* XSS Setting */}
-      <h2 className="admin-setting-header">{ t('markdown_settings.xss_header') }</h2>
-      <Card className="card custom-card my-3">
+      <h2 className="admin-setting-header mt-5">{ t('markdown_settings.xss_header') }</h2>
+      <Card className="card custom-card bg-body-tertiary my-3">
         <CardBody className="px-0 py-2">{ t('markdown_settings.xss_desc') }</CardBody>
       </Card>
       <XssForm />

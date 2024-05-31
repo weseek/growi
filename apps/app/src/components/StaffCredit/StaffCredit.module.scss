@@ -3,19 +3,16 @@
   // attached !important for updating from .modal-dialog class style
   width: 80vw !important;
   max-width: unset !important;
-
   height: 80vh !important;
   max-height: unset !important;
-
   margin: 10vh 10vw !important;
 
   // see https://css-tricks.com/old-timey-terminal-styling/
   .credit-curtain {
     padding-top: 80vh;
-
     text-shadow: 0 0 10px #c8c8c8;
     background-color: black;
-    background-image: radial-gradient(rgba(50, 100, 100, 0.75), black 120%);
+    background-image: radial-gradient(rgba(50, 100, 100, 75%), black 120%);
   }
 
   .background {

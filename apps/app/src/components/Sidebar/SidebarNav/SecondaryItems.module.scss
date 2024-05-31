@@ -1,5 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '../button-styles';
 
 
@@ -7,13 +6,11 @@
   .btn {
     @extend %btn-basis;
 
-    span {
-      opacity: 0.6;
+    opacity: 0.6;
 
-      &:hover,
-      &:focus {
-        opacity: 0.8;
-      }
+    &:hover,
+    &:focus {
+      opacity: 0.8;
     }
   }
 }
@@ -24,6 +21,7 @@
     @extend %btn-primary-color-vars;
   }
 }
+
 @include bs.color-mode(light) {
   .grw-secondary-items :global {
     .btn-primary {
@@ -32,6 +30,7 @@
     }
   }
 }
+
 @include bs.color-mode(dark) {
   .grw-secondary-items :global {
     .btn-primary {

@@ -5,12 +5,12 @@ import React, {
 import {
   type IPageInfoAll, isIPageInfoForOperation,
 } from '@growi/core';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Dropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap';
 
-import { LoadingSpinner } from '~/components/LoadingSpinner';
 import { NotAvailableForGuest } from '~/components/NotAvailableForGuest';
 import type { IPageOperationProcessData } from '~/interfaces/page-operation';
 import { useSWRxPageInfo } from '~/stores/page';
@@ -169,7 +169,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
           <DropdownItem
             onClick={bookmarkItemClickedHandler}
             className="grw-page-control-dropdown-item"
-            data-testid="add-remove-bookmark-btn"
+            data-testid={pageInfo.isBookmarked ? 'remove-bookmark-btn' : 'add-bookmark-btn'}
           >
             <span className="material-symbols-outlined grw-page-control-dropdown-icon">bookmark</span>
             { pageInfo.isBookmarked ? t('remove_bookmark') : t('add_bookmark') }
@@ -180,7 +180,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         { !forceHideMenuItems?.includes(MenuItemType.RENAME) && isEnableActions && !isReadOnlyUser && pageInfo.isMovable && (
           <DropdownItem
             onClick={renameItemClickedHandler}
-            data-testid="open-page-move-rename-modal-btn"
+            data-testid="rename-page-btn"
             className="grw-page-control-dropdown-item"
           >
             <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">redo</span>

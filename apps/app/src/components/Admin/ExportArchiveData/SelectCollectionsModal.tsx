@@ -103,7 +103,7 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
     const html = t('admin:export_management.desc_password_seed');
 
     // eslint-disable-next-line react/no-danger
-    return <div className="card custom-card" dangerouslySetInnerHTML={{ __html: html }}></div>;
+    return <div className="card custom-card bg-body-tertiary" dangerouslySetInnerHTML={{ __html: html }}></div>;
   }, [selectedCollections, t]);
 
   const renderCheckboxes = useCallback((collectionNames, color?) => {
@@ -156,8 +156,8 @@ const SelectCollectionsModal = (props: Props): JSX.Element => {
   }, [isAllChecked, checkAll]);
 
   return (
-    <Modal isOpen={isOpen} toggle={onClose}>
-      <ModalHeader tag="h4" toggle={onClose} className="bg-info text-light">
+    <Modal size="lg" isOpen={isOpen} toggle={onClose}>
+      <ModalHeader tag="h4" toggle={onClose} className="text-info">
         {t('admin:export_management.export_collections')}
       </ModalHeader>
 

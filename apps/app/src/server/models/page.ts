@@ -75,9 +75,9 @@ export interface PageModel extends Model<PageDocument> {
   findTargetAndAncestorsByPathOrId(pathOrId: string): Promise<TargetAndAncestorsResult>
   findRecentUpdatedPages(path: string, user, option, includeEmpty?: boolean): Promise<PaginatedPages>
   generateGrantCondition(
-    user, userGroups, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
+    user, userGroups: string[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
-  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
+  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | null>
   findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
   findTemplate(path: string): Promise<{
@@ -144,7 +144,7 @@ const schema = new Schema<PageDocument, PageModel>({
   commentCount: { type: Number, default: 0 },
   expandContentWidth: { type: Boolean },
   wip: { type: Boolean },
-  ttlTimestamp: { type: Date, index: true },
+  ttlTimestamp: { type: Date },
   updatedAt: { type: Date, default: Date.now }, // Do not use timetamps for updatedAt because it breaks 'updateMetadata: false' option
   deleteUser: { type: ObjectId, ref: 'User' },
   deletedAt: { type: Date },
@@ -153,6 +153,9 @@ const schema = new Schema<PageDocument, PageModel>({
   toJSON: { getters: true },
   toObject: { getters: true },
 });
+// indexes
+schema.index({ createdAt: 1 });
+schema.index({ updatedAt: 1 });
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
@@ -417,7 +420,7 @@ export class PageQueryBuilder {
   }
 
   addConditionToFilteringByViewer(
-      user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+      user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
   ): PageQueryBuilder {
     const condition = generateGrantCondition(user, userGroups, includeAnyoneWithTheLink, showPagesRestrictedByOwner, showPagesRestrictedByGroup);
 
@@ -962,7 +965,7 @@ schema.statics.findParent = async function(pageId): Promise<PageDocument | null>
 schema.statics.PageQueryBuilder = PageQueryBuilder as any; // mongoose does not support constructor type as statics attrs type
 
 export function generateGrantCondition(
-    user, userGroups, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
+    user, userGroups: string[] | null, includeAnyoneWithTheLink = false, showPagesRestrictedByOwner = false, showPagesRestrictedByGroup = false,
 ): { $or: any[] } {
   const grantConditions: AnyObject[] = [
     { grant: null },
@@ -1024,10 +1027,10 @@ function generateGrantConditionForSystemDeletion(): { $or: any[] } {
 
 schema.statics.generateGrantConditionForSystemDeletion = generateGrantConditionForSystemDeletion;
 
-// find ancestor page with isEmpty: false. If parameter path is '/', return undefined
-schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
+// find ancestor page with isEmpty: false. If parameter path is '/', return null
+schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | null> {
   if (path === '/') {
-    return;
+    return null;
   }
 
   const builderForAncestors = new PageQueryBuilder(this.find(), false); // empty page not included
@@ -1038,7 +1041,7 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
     .query
     .exec();
 
-  return ancestors[0];
+  return ancestors[0] ?? null;
 };
 
 schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]) {

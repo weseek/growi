@@ -1,13 +1,14 @@
-import React, { type ReactNode, useCallback } from 'react';
+import React, { type ReactNode, useCallback, useMemo } from 'react';
 
 import { Origin } from '@growi/core';
+import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
 
-
-import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCreatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
 import { useIsNotFound } from '~/stores/page';
 import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import { shouldCreateWipPage } from '../../utils/should-create-wip-page';
 
@@ -65,8 +66,9 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
   const { data: isNotFound } = useIsNotFound();
   const { mutate: mutateEditorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { isCreating, create } = useCreatePage();
 
   const editButtonClickedHandler = useCallback(async() => {
     if (isNotFound == null || isNotFound === false) {
@@ -75,17 +77,29 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
     }
 
     try {
-      await createAndTransit(
-        { path, wip: shouldCreateWipPage(path), origin: Origin.View },
-        { shouldCheckPageExists: true },
+      const parentPath = path != null ? normalizePath(path.split('/').slice(0, -1).join('/')) : undefined; // does not have to exist
+      await create(
+        {
+          path, parentPath, wip: shouldCreateWipPage(path), origin: Origin.View,
+        },
       );
     }
     catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [createAndTransit, isNotFound, mutateEditorMode, path, t]);
+  }, [create, isNotFound, mutateEditorMode, path, t]);
 
   const _isBtnDisabled = isCreating || isBtnDisabled;
+
+  const circleColor = useMemo(() => {
+    if (currentPageYjsData?.awarenessStateSize != null && currentPageYjsData.awarenessStateSize > 0) {
+      return 'bg-primary';
+    }
+
+    if (currentPageYjsData?.hasRevisionBodyDiff != null && currentPageYjsData.hasRevisionBodyDiff) {
+      return 'bg-secondary';
+    }
+  }, [currentPageYjsData]);
 
   return (
     <>
@@ -113,6 +127,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
             onClick={editButtonClickedHandler}
           >
             <span className="material-symbols-outlined me-1 fs-5">edit_square</span>{t('Edit')}
+            { circleColor != null && <span className={`position-absolute top-0 start-100 translate-middle p-1 rounded-circle ${circleColor}`} />}
           </PageEditorModeButton>
         )}
       </div>

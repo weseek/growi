@@ -3,7 +3,7 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
-import { UserPicture } from '@growi/ui/dist/components';
+import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Button, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -13,7 +13,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import { Username } from '../User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
@@ -77,7 +76,7 @@ export const DeleteAttachmentModal: React.FC = () => {
           <span className="material-symbols-outlined">{iconByFormat(attachment.fileFormat)}</span> {attachment.originalName}
         </p>
         <p>
-          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator as IUser}></Username>
+          uploaded by <UserPicture user={attachment.creator} size="sm"></UserPicture> <Username user={attachment.creator}></Username>
         </p>
         {content}
       </div>
@@ -102,7 +101,7 @@ export const DeleteAttachmentModal: React.FC = () => {
       aria-labelledby="contained-modal-title-lg"
       fade={false}
     >
-      <ModalHeader tag="h4" toggle={toggleHandler} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={toggleHandler} className="text-danger">
         <span id="contained-modal-title-lg">{t('delete_attachment_modal.confirm_delete_attachment')}</span>
       </ModalHeader>
       <ModalBody>

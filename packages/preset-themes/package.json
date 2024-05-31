@@ -1,8 +1,9 @@
 {
   "name": "@growi/preset-themes",
+  "version": "1.0.0",
   "description": "GROWI preset themes",
-  "version": "7.0.0-RC.0",
   "license": "MIT",
+  "private": "true",
   "main": "dist/libs/preset-themes.umd.js",
   "module": "dist/libs/preset-themes.mjs",
   "types": "dist/libs/index.d.ts",
@@ -21,18 +22,20 @@
     "watch:libs": "yarn dev:libs -w --emptyOutDir=false",
     "watch:themes": "yarn dev:themes -w --emptyOutDir=false",
     "lint:eslint": "yarn eslint \"**/*.{js,jsx,ts,tsx}\"",
-    "lint:styles": "stylelint src/**/*.scss",
+    "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*",
-    "preview": "vite preview",
-    "version": "yarn version --no-git-tag-version --preid=RC"
+    "preview": "vite preview"
   },
   "dependencies": {},
   "devDependencies": {
-    "bootstrap": "^5.3.1",
+    "@growi/core": "link:../core",
+    "@growi/core-styles": "link:../core-styles",
+    "bootstrap": "=5.3.2",
     "sass": "^1.55.0"
   },
   "peerDependencies": {
+    "@popperjs/core": "^2.11.8",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   }

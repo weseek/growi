@@ -1,35 +1,40 @@
 import type { FC } from 'react';
 
 import {
-  SimpleItem, useNewPageInput, type TreeItemProps,
+  TreeItemLayout, useNewPageInput, type TreeItemProps,
 } from '../TreeItem';
 
 
-type PageTreeItemProps = TreeItemProps & {
+import styles from './TreeItemForModal.module.scss';
+
+const moduleClass = styles['tree-item-for-modal'];
+
+
+type TreeItemForModalProps = TreeItemProps & {
   key?: React.Key | null,
 };
 
-export const TreeItemForModal: FC<PageTreeItemProps> = (props) => {
+export const TreeItemForModal: FC<TreeItemForModalProps> = (props) => {
 
-  const { isOpen, onClick } = props;
+  const { itemNode, targetPathOrId } = props;
+  const { page } = itemNode;
 
   const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
+  const isSelected = page._id === targetPathOrId || page.path === targetPathOrId;
+
+  const itemClassNames = [
+    isSelected ? 'active' : '',
+  ];
+
   return (
-    <SimpleItem
-      key={props.key}
-      targetPathOrId={props.targetPathOrId}
-      itemNode={props.itemNode}
-      isOpen={isOpen}
-      isEnableActions={props.isEnableActions}
-      isReadOnlyUser={props.isReadOnlyUser}
-      onClickDuplicateMenuItem={props.onClickDuplicateMenuItem}
-      onClickDeleteMenuItem={props.onClickDeleteMenuItem}
-      onRenamed={props.onRenamed}
-      customNextComponents={[NewPageInput]}
+    <TreeItemLayout
+      {...props}
+      className={moduleClass}
       itemClass={TreeItemForModal}
-      customEndComponents={[NewPageCreateButton]}
-      onClick={onClick}
+      itemClassName={itemClassNames.join(' ')}
+      customHeadOfChildrenComponents={[NewPageInput]}
+      customHoveredEndComponents={[NewPageCreateButton]}
     />
   );
 };

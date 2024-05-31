@@ -1,10 +1,10 @@
 @use '~/styles/variables' as var;
-@use '@growi/core/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .grw-page-status-alert :global {
   $margin-bottom: var.$grw-navbar-bottom-height + 10px;
 
-  box-shadow: 0px 2px 4px #0000004d;
+  box-shadow: 0 2px 4px #0000004d;
   opacity: 0.9;
 
   @include bs.media-breakpoint-down(sm) {
@@ -15,11 +15,6 @@
     }
     .grw-card-btn-container {
       text-align: center;
-
-      .btn {
-        // TODO: activate (https://redmine.weseek.co.jp/issues/128307)
-        // @include bs.button-size(bs.$btn-padding-y-lg, bs.$btn-padding-x-lg, bs.$btn-font-size-lg, bs.$btn-line-height-lg, bs.$btn-border-radius-lg);
-      }
     }
   }
 

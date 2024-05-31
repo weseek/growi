@@ -3,9 +3,8 @@ import React, { useEffect } from 'react';
 
 import EventEmitter from 'events';
 
-import { isIPageInfoForEntity, isPopulated } from '@growi/core';
+import { isIPageInfoForEntity } from '@growi/core';
 import type {
-  GroupType,
   IDataWithMeta, IPageInfoForEntity, IPagePopulatedToShowRevision,
 } from '@growi/core';
 import {
@@ -26,8 +25,9 @@ import { PageView } from '~/components/Page/PageView';
 import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import type { IPageGrantData } from '~/interfaces/page';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
 import {
@@ -44,13 +44,13 @@ import {
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
-  useSWRxCurrentPage, useSWRMUTxCurrentPage, useSWRxIsGrantNormalized, useCurrentPageId,
+  useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
   useIsNotFound, useIsLatestRevision, useTemplateTagData, useTemplateBodyData,
 } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 import { useRemoteRevisionId } from '~/stores/remote-latest-page';
-import { useSelectedGrant } from '~/stores/ui';
 import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/websocket';
+import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { BasicLayout } from '../components/Layout/BasicLayout';
@@ -151,6 +151,8 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
 
+  sidebarConfig: ISidebarConfig,
+
   isSlackConfigured: boolean,
   // isMailerSetup: boolean,
   isAclEnabled: boolean,
@@ -172,7 +174,7 @@ type Props = CommonProps & {
   skipSSR: boolean,
   ssrMaxRevisionBodyLength: number,
 
-  grantData?: IPageGrantData,
+  yjsData: CurrentPageYjsData,
 
   rendererConfig: RendererConfig,
 };
@@ -234,6 +236,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
   const { data: currentPage } = useSWRxCurrentPage(pageWithMeta?.data ?? null); // store initial data
 
   const { trigger: mutateCurrentPage } = useSWRMUTxCurrentPage();
+  const { trigger: mutateCurrentPageYjsDataFromApi } = useSWRMUTxCurrentPageYjsData();
+
   const { mutate: mutateEditingMarkdown } = useEditingMarkdown();
   const { data: currentPageId, mutate: mutateCurrentPageId } = useCurrentPageId();
 
@@ -241,13 +245,12 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   const { mutate: mutateIsLatestRevision } = useIsLatestRevision();
 
-  const { data: grantData } = useSWRxIsGrantNormalized(pageId);
-  const { mutate: mutateSelectedGrant } = useSelectedGrant();
-
   const { mutate: mutateRemoteRevisionId } = useRemoteRevisionId();
 
   const { mutate: mutateTemplateTagData } = useTemplateTagData();
   const { mutate: mutateTemplateBodyData } = useTemplateBodyData();
+
+  const { mutate: mutateCurrentPageYjsData } = useCurrentPageYjsData();
 
   useSetupGlobalSocket();
   useSetupGlobalSocketForPage(pageId);
@@ -262,19 +265,14 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
       const mutatePageData = async() => {
         const pageData = await mutateCurrentPage();
         mutateEditingMarkdown(pageData?.revision?.body);
+        mutateCurrentPageYjsDataFromApi();
       };
 
       // If skipSSR is true, use the API to retrieve page data.
       // Because pageWIthMeta does not contain revision.body
       mutatePageData();
     }
-  }, [currentPageId, mutateCurrentPage, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
-
-  // sync grant data
-  useEffect(() => {
-    const grantDataToApply = props.grantData ? props.grantData : grantData?.grantData.currentPageGrant;
-    mutateSelectedGrant(grantDataToApply);
-  }, [grantData?.grantData.currentPageGrant, mutateSelectedGrant, props.grantData]);
+  }, [currentPageId, mutateCurrentPage, mutateCurrentPageYjsDataFromApi, mutateEditingMarkdown, props.isNotFound, props.skipSSR]);
 
   // sync pathname by Shallow Routing https://nextjs.org/docs/routing/shallow-routing
   useEffect(() => {
@@ -317,6 +315,10 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
     mutateTemplateBodyData(props.templateBodyData);
   }, [props.templateBodyData, mutateTemplateBodyData]);
 
+  useEffect(() => {
+    mutateCurrentPageYjsData(props.yjsData);
+  }, [mutateCurrentPageYjsData, props.yjsData]);
+
   // If the data on the page changes without router.push, pageWithMeta remains old because getServerSideProps() is not executed
   // So preferentially take page data from useSWRxCurrentPage
   const pagePath = currentPage?.path ?? pageWithMeta?.data.path ?? props.currentPathname;
@@ -329,9 +331,8 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
       <div className="dynamic-layout-root justify-content-between">
-        <nav className="sticky-top">
-          <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
-        </nav>
+
+        <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
 
         <DisplaySwitcher
           pageView={(
@@ -413,7 +414,7 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
 
   const Page = crowi.model('Page') as PageModel;
   const PageRedirect = mongooseModel('PageRedirect') as PageRedirectModel;
-  const { pageService, configManager, pageGrantService } = crowi;
+  const { pageService, configManager } = crowi;
 
   let currentPathname = props.currentPathname;
 
@@ -457,34 +458,6 @@ async function injectPageData(context: GetServerSidePropsContext, props: Props):
     await page.populateDataToShowRevision(props.skipSSR); // shouldExcludeBody = skipSSR
   }
 
-  if (page == null && user != null) {
-    const templateData = await Page.findTemplate(props.currentPathname);
-    if (templateData != null) {
-      props.templateTagData = templateData.templateTags as string[];
-      props.templateBodyData = templateData.templateBody as string;
-    }
-
-    // apply parent page grant, without groups that user isn't related to
-    const ancestor = await Page.findAncestorByPathAndViewer(currentPathname, user);
-    if (ancestor != null) {
-      ancestor.populate('grantedGroups.item');
-      const userRelatedGrantedGroups = (await pageGrantService.getUserRelatedGrantedGroups(ancestor, user)).map((group) => {
-        if (isPopulated(group.item)) {
-          return {
-            id: group.item._id,
-            name: group.item.name,
-            type: group.type,
-          };
-        }
-        return null;
-      }).filter((info): info is NonNullable<{id: string, name: string, type: GroupType}> => info != null);
-      props.grantData = {
-        grant: ancestor.grant,
-        userRelatedGrantedGroups,
-      };
-    }
-  }
-
   props.pageWithMeta = pageWithMeta;
 }
 
@@ -524,6 +497,10 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
       if (!isToppage) {
         props.currentPathname = `/${page._id}`;
       }
+    }
+
+    if (!props.skipSSR) {
+      props.yjsData = await crowi.pageService.getYjsData(page._id.toString());
     }
   }
 }
@@ -571,6 +548,11 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isIndentSizeForced = configManager.getConfig('markdown', 'markdown:isIndentSizeForced');
 
   props.isEnabledAttachTitleHeader = configManager.getConfig('crowi', 'customize:isEnabledAttachTitleHeader');
+
+  props.sidebarConfig = {
+    isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
+  };
 
   props.rendererConfig = {
     isEnabledLinebreaks: configManager.getConfig('markdown', 'markdown:isEnabledLinebreaks'),

@@ -3,6 +3,7 @@ import React, {
   forwardRef, useEffect, useImperativeHandle, useRef, useState,
 } from 'react';
 
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 
@@ -17,7 +18,6 @@ import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 
 import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from '../LoadingSpinner';
 
 // Do not import with next/dynamic
 // see: https://github.com/weseek/growi/pull/7923
@@ -35,6 +35,7 @@ export interface IReturnSelectedPageIds {
 
 
 type Props = {
+  className?: string,
   pages?: IPageWithSearchMeta[],
   searchingKeyword?: string,
 
@@ -54,6 +55,7 @@ const SearchResultContent = dynamic(() => import('./SearchResultContent').then(m
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
 
   const {
+    className,
     pages,
     searchingKeyword,
     forceHideMenuItems,
@@ -171,7 +173,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     : undefined;
 
   return (
-    <div className="search-result-base flex-grow-1 d-flex flex-expand-vh-100" data-testid="search-result-base">
+    <div className={`${className ?? ''} search-result-base flex-grow-1 d-flex flex-expand-vh-100`} data-testid="search-result-base">
 
       <div className="flex-expand-vert border boder-gray search-result-list" id="search-result-list">
 

@@ -1,19 +1,25 @@
-import React, { memo, useCallback } from 'react';
+import React, {
+  memo, useCallback, useEffect, useMemo, useRef, useState,
+} from 'react';
 
 import { useTranslation } from 'next-i18next';
-import {
-  UncontrolledButtonDropdown, DropdownMenu, DropdownToggle, DropdownItem,
-} from 'reactstrap';
+import { debounce } from 'throttle-debounce';
 
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
-import { mutatePageTree, useSWRxRootPage, useSWRxV5MigrationStatus } from '~/stores/page-listing';
+import {
+  mutatePageTree, useSWRxPageAncestorsChildren, useSWRxRootPage, useSWRxV5MigrationStatus,
+} from '~/stores/page-listing';
+import { useSidebarScrollerRef } from '~/stores/ui';
+import loggerFactory from '~/utils/logger';
 
 import { ItemsTree } from '../../ItemsTree/ItemsTree';
 import { PageTreeItem } from '../PageTreeItem';
 import { SidebarHeaderReloadButton } from '../SidebarHeaderReloadButton';
 
 import { PrivateLegacyPagesLink } from './PrivateLegacyPagesLink';
+
+const logger = loggerFactory('growi:cli:PageTreeSubstance');
 
 type HeaderProps = {
   isWipPageShown: boolean,
@@ -35,28 +41,35 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
     <>
       <SidebarHeaderReloadButton onClick={() => mutate()} />
 
-      <UncontrolledButtonDropdown className="me-1">
-        <DropdownToggle color="transparent" className="p-0 border-0">
+      <div className="me-1">
+        <button
+          color="transparent"
+          className="btn p-0 border-0"
+          type="button"
+          data-bs-toggle="dropdown"
+          data-bs-auto-close="outside"
+          aria-expanded="false"
+        >
           <span className="material-symbols-outlined">more_horiz</span>
-        </DropdownToggle>
+        </button>
 
-        <DropdownMenu container="body">
-          <DropdownItem onClick={onWipPageShownChange} className="">
-            <div className="form-check form-switch">
+        <ul className="dropdown-menu">
+          <li className="dropdown-item">
+            <div className="form-check form-switch flex-fill d-flex">
               <input
-                id="wipPageVisibility"
+                id="show-wip-page-checkbox"
                 className="form-check-input"
                 type="checkbox"
-                checked={isWipPageShown}
-                onChange={() => {}}
+                defaultChecked={isWipPageShown}
+                onChange={onWipPageShownChange}
               />
-              <label className="form-label form-check-label text-muted" htmlFor="wipPageVisibility">
+              <label className="form-check-label flex-grow-1 ms-2" htmlFor="show-wip-page-checkbox">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
-          </DropdownItem>
-        </DropdownMenu>
-      </UncontrolledButtonDropdown>
+          </li>
+        </ul>
+      </div>
     </>
   );
 });
@@ -91,6 +104,71 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
   const { data: migrationStatus } = useSWRxV5MigrationStatus({ suspense: true });
 
   const targetPathOrId = targetId || currentPath;
+  const path = currentPath || '/';
+
+  const { data: ancestorsChildrenResult } = useSWRxPageAncestorsChildren(path, { suspense: true });
+  const { data: rootPageResult } = useSWRxRootPage({ suspense: true });
+  const { data: sidebarScrollerRef } = useSidebarScrollerRef();
+  const [isInitialScrollCompleted, setIsInitialScrollCompleted] = useState(false);
+
+  const rootElemRef = useRef<HTMLDivElement>(null);
+
+  // ***************************  Scroll on init ***************************
+  const scrollOnInit = useCallback(() => {
+    const rootElement = rootElemRef.current;
+    const scrollElement = sidebarScrollerRef?.current;
+
+    if (rootElement == null || scrollElement == null) {
+      return;
+    }
+
+    const scrollTargetElement = rootElement.querySelector<HTMLElement>('[aria-current]');
+
+    if (scrollTargetElement == null) {
+      return;
+    }
+
+    logger.debug('scrollOnInit has invoked');
+
+
+    // NOTE: could not use scrollIntoView
+    //  https://stackoverflow.com/questions/11039885/scrollintoview-causing-the-whole-page-to-move
+
+    // calculate the center point
+    const scrollTop = scrollTargetElement.offsetTop - scrollElement.getBoundingClientRect().height / 2;
+    scrollElement.scrollTo({ top: scrollTop });
+
+    setIsInitialScrollCompleted(true);
+  }, [sidebarScrollerRef]);
+
+  const scrollOnInitDebounced = useMemo(() => debounce(500, scrollOnInit), [scrollOnInit]);
+
+  useEffect(() => {
+    if (isInitialScrollCompleted || ancestorsChildrenResult == null || rootPageResult == null) {
+      return;
+    }
+
+    const rootElement = rootElemRef.current as HTMLElement | null;
+    if (rootElement == null) {
+      return;
+    }
+
+    const observerCallback = (mutationRecords: MutationRecord[]) => {
+      mutationRecords.forEach(() => scrollOnInitDebounced());
+    };
+
+    const observer = new MutationObserver(observerCallback);
+    observer.observe(rootElement, { childList: true, subtree: true });
+
+    // first call for the situation that all rendering is complete at this point
+    scrollOnInitDebounced();
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [isInitialScrollCompleted, scrollOnInitDebounced, ancestorsChildrenResult, rootPageResult]);
+  // *******************************  end  *******************************
+
 
   if (!migrationStatus?.isV5Compatible) {
     return <PageTreeUnavailable />;
@@ -103,10 +181,8 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
     return null;
   }
 
-  const path = currentPath || '/';
-
   return (
-    <>
+    <div ref={rootElemRef} className="pt-4">
       <ItemsTree
         isEnableActions={!isGuestUser}
         isReadOnlyUser={!!isReadOnlyUser}
@@ -118,13 +194,13 @@ export const PageTreeContent = memo(({ isWipPageShown }: PageTreeContentProps) =
       />
 
       {!isGuestUser && !isReadOnlyUser && migrationStatus?.migratablePagesCount != null && migrationStatus.migratablePagesCount !== 0 && (
-        <div className="grw-pagetree-footer border-top py-3 w-100">
+        <div className="grw-pagetree-footer border-top mt-4 py-2 w-100">
           <div className="private-legacy-pages-link px-3 py-2">
             <PrivateLegacyPagesLink />
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 });
 

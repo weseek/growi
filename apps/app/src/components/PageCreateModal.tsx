@@ -4,7 +4,7 @@ import React, {
 
 import { Origin } from '@growi/core';
 import { pagePathUtils, pathUtils } from '@growi/core/dist/utils';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -12,7 +12,7 @@ import {
 import { debounce } from 'throttle-debounce';
 
 import { useCreateTemplatePage } from '~/client/services/create-page';
-import { useCreatePageAndTransit } from '~/client/services/create-page/use-create-page-and-transit';
+import { useCreatePage } from '~/client/services/create-page/use-create-page';
 import { useToastrOnError } from '~/client/services/use-toastr-on-error';
 import { useCurrentUser, useIsSearchServiceReachable } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
@@ -36,7 +36,7 @@ const PageCreateModal: React.FC = () => {
   const path = pageCreateModalData?.path;
   const isOpened = pageCreateModalData?.isOpened ?? false;
 
-  const { createAndTransit } = useCreatePageAndTransit();
+  const { create } = useCreatePage();
   const { createTemplate } = useCreateTemplatePage();
 
   const { data: isReachable } = useIsSearchServiceReachable();
@@ -94,25 +94,28 @@ const PageCreateModal: React.FC = () => {
    */
   const createTodayPage = useCallback(async() => {
     const joinedPath = [todaysParentPath, todayInput].join('/');
-    return createAndTransit(
-      { path: joinedPath, wip: true, origin: Origin.View },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+    return create(
+      {
+        path: joinedPath, parentPath: todaysParentPath, wip: true, origin: Origin.View,
+      },
+      { onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, todayInput, todaysParentPath]);
+  }, [closeCreateModal, create, todayInput, todaysParentPath]);
 
   /**
    * access input page
    */
   const createInputPage = useCallback(async() => {
-    return createAndTransit(
+    return create(
       {
         path: pageNameInput,
+        parentPath: pathname,
         wip: true,
         origin: Origin.View,
       },
-      { shouldCheckPageExists: true, onTerminated: closeCreateModal },
+      { onTerminated: closeCreateModal },
     );
-  }, [closeCreateModal, createAndTransit, pageNameInput]);
+  }, [closeCreateModal, create, pageNameInput, pathname]);
 
   /**
    * access template page
@@ -136,7 +139,7 @@ const PageCreateModal: React.FC = () => {
     return (
       <div className="row">
         <fieldset className="col-12 mb-4">
-          <h3 className="grw-modal-head pb-2">{t('create_page_dropdown.todays.desc', { ns: 'commons' })}</h3>
+          <h3 className="pb-2">{t('create_page_dropdown.todays.desc', { ns: 'commons' })}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
 
@@ -181,7 +184,7 @@ const PageCreateModal: React.FC = () => {
     return (
       <div className="row" data-testid="row-create-page-under-below">
         <fieldset className="col-12 mb-4">
-          <h3 className="grw-modal-head pb-2">{t('Create under')}</h3>
+          <h3 className="pb-2">{t('Create under')}</h3>
 
           <div className="d-sm-flex align-items-center justify-items-between">
             <div className="flex-fill">
@@ -239,7 +242,7 @@ const PageCreateModal: React.FC = () => {
       <div className="row">
         <fieldset className="col-12">
 
-          <h3 className="grw-modal-head pb-2">
+          <h3 className="pb-2">
             {t('template.modal_label.Create template under')}<br />
             <code className="h6" data-testid="grw-page-create-modal-path-name">{pathname}</code>
           </h3>
@@ -292,7 +295,7 @@ const PageCreateModal: React.FC = () => {
       className={`grw-create-page ${styles['grw-create-page']}`}
       autoFocus={false}
     >
-      <ModalHeader tag="h4" toggle={() => closeCreateModal()} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={() => closeCreateModal()}>
         {t('New Page')}
       </ModalHeader>
       <ModalBody>

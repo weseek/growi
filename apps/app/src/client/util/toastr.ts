@@ -1,4 +1,5 @@
-import { toast, ToastContent, ToastOptions } from 'react-toastify';
+import type { ToastContent, ToastOptions } from 'react-toastify';
+import { toast } from 'react-toastify';
 
 import { toArrayIfNot } from '~/utils/array-utils';
 

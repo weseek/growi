@@ -1,4 +1,5 @@
-@import '@growi/core/scss/bootstrap/apply';
+@import '@growi/core-styles/scss/bootstrap/apply';
+@import '@growi/ui/dist/style';
 
 // react-bootstrap-typeahead
 @import 'react-bootstrap-typeahead/css/Typeahead';
@@ -6,3 +7,6 @@
 // SimpleBar
 @import 'simplebar/dist/simplebar.min.css';
 @import './override-simplebar';
+
+// Handsontable
+@import './override-handsontable';

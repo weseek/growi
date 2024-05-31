@@ -1,4 +1,4 @@
-import { allOrigin } from '@growi/core';
+import { Origin, allOrigin, getIdForRef } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -20,6 +20,7 @@ import {
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import Xss from '~/services/xss';
 import XssOption from '~/services/xss/xssOption';
 import loggerFactory from '~/utils/logger';
@@ -68,18 +69,27 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       .isEmpty({ ignore_whitespace: true })
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
-      .withMessage("The empty value is not allowd for the 'body'"),
+      .withMessage("Empty value is not allowed for 'body'"),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
     body('userRelatedGrantUserGroupIds').optional().isArray().withMessage('userRelatedGrantUserGroupIds must be an array of group id'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
     body('isSlackEnabled').optional().isBoolean().withMessage('isSlackEnabled must be boolean'),
     body('slackChannels').optional().isString().withMessage('slackChannels must be string'),
     body('origin').optional().isIn(allOrigin).withMessage('origin must be "view" or "editor"'),
+    body('wip').optional().isBoolean().withMessage('wip must be boolean'),
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
+    // Reflect the updates in ydoc
+    const origin = req.body.origin;
+    if (origin === Origin.View || origin === undefined) {
+      const yjsConnectionManager = getYjsConnectionManager();
+      await yjsConnectionManager.handleYDocUpdate(req.body.pageId, req.body.body);
+    }
+
     // persist activity
+    const creator = updatedPage.creator != null ? getIdForRef(updatedPage.creator) : undefined;
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: updatedPage,
@@ -88,7 +98,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const activityEvent = crowi.event('activity');
     activityEvent.emit(
       'update', res.locals.activity._id, parameters,
-      { path: updatedPage.path, creator: updatedPage.creator._id.toString() },
+      { path: updatedPage.path, creator },
       preNotifyService.generatePreNotify,
     );
 
@@ -101,10 +111,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // user notification
-    const { revisionId, isSlackEnabled, slackChannels } = req.body;
+    const { isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const option = previousRevision != null ? { previousRevision } : undefined;
         const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
@@ -128,6 +138,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
+      const sanitizeRevisionId = revisionId == null ? undefined : xss.process(revisionId);
+
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
       if (!isExist) {
@@ -137,7 +149,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
 
-      if (currentPage != null && !await currentPage.isUpdatable(revisionId, origin)) {
+      if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
@@ -148,15 +160,18 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage;
+      let updatedPage: PageDocument;
+      let previousRevision: IRevisionHasId | null;
       try {
-        const { grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants } = req.body;
-        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin };
+        const {
+          grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
+        } = req.body;
+        const options: IOptionsForUpdate = { overwriteScopesOfDescendants, origin, wip };
         if (grant != null) {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
-        const previousRevision = await Revision.findById(revisionId);
+        previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
       }
       catch (err) {
@@ -171,7 +186,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       res.apiv3(result, 201);
 
-      postAction(req, res, updatedPage);
+      postAction(req, res, updatedPage, previousRevision);
     },
   ];
 };

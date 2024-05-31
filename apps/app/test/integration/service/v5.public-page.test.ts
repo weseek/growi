@@ -2103,7 +2103,7 @@ describe('PageService page operations with only public pages', () => {
       const deletedRevisions = await Revision.find({ pageId: { $in: [parentPage._id, grandchildPage._id] } });
       const tags = await Tag.find({ _id: { $in: [tag1?._id, tag2?._id] } });
       const deletedPageTagRelations = await PageTagRelation.find({ _id: { $in: [pageTagRelation1?._id, pageTagRelation2?._id] } });
-      const deletedBookmarks = await Bookmark.find({ _id: bookmark._id });
+      const remainingBookmarks = await Bookmark.find({ _id: bookmark._id });
       const deletedComments = await Comment.find({ _id: comment._id });
       const deletedPageRedirects = await PageRedirect.find({ _id: { $in: [pageRedirect1._id, pageRedirect2._id] } });
       const deletedShareLinks = await ShareLink.find({ _id: { $in: [shareLink1._id, shareLink2._id] } });
@@ -2117,7 +2117,7 @@ describe('PageService page operations with only public pages', () => {
       // PageTagRelation should be null
       expect(deletedPageTagRelations.length).toBe(0);
       // bookmark should be null
-      expect(deletedBookmarks.length).toBe(0);
+      expect(remainingBookmarks.length).toBe(1);
       // comment should be null
       expect(deletedComments.length).toBe(0);
       // pageRedirect should be null

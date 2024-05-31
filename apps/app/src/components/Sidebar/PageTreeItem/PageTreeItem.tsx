@@ -19,12 +19,18 @@ import loggerFactory from '~/utils/logger';
 
 import type { ItemNode } from '../../TreeItem';
 import {
-  SimpleItem, useNewPageInput, type TreeItemProps,
+  TreeItemLayout, useNewPageInput, type TreeItemProps,
 } from '../../TreeItem';
 
-import { Ellipsis } from './Ellipsis';
+import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
+import { CreatingNewPageSpinner } from './CreatingNewPageSpinner';
+import { usePageItemControl } from './use-page-item-control';
+
 
 import styles from './PageTreeItem.module.scss';
+
+const moduleClass = styles['page-tree-item'] ?? '';
+
 
 const logger = loggerFactory('growi:cli:Item');
 
@@ -51,14 +57,18 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const { t } = useTranslation();
 
   const {
-    itemNode, isOpen: _isOpen = false, onRenamed,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onRenamed,
   } = props;
 
   const { page } = itemNode;
   const [isOpen, setIsOpen] = useState(_isOpen);
-  const [shouldHide, setShouldHide] = useState(false);
 
   const { mutate: mutateChildren } = useSWRxPageChildren(isOpen ? page._id : null);
+
+  const {
+    showRenameInput, Control, RenameInput,
+  } = usePageItemControl();
+  const { isProcessingSubmission, Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
 
   const itemSelectedHandler = useCallback((page: IPageForItem) => {
     if (page.path == null || page._id == null) {
@@ -69,17 +79,6 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
 
     router.push(link);
   }, [router]);
-
-  const displayDroppedItemByPageId = useCallback((pageId) => {
-    const target = document.getElementById(`pagetree-item-${pageId}`);
-    if (target == null) {
-      return;
-    }
-    //   // wait 500ms to avoid removing before d-none is set by useDrag end() callback
-    setTimeout(() => {
-      target.classList.remove('d-none');
-    }, 500);
-  }, []);
 
   const [, drag] = useDrag({
     type: 'PAGE_TREE',
@@ -93,9 +92,6 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     end: (item, monitor) => {
       // in order to set d-none to dropped Item
       const dropResult = monitor.getDropResult();
-      if (dropResult != null) {
-        setShouldHide(true);
-      }
     },
     collect: monitor => ({
       isDragging: monitor.isDragging(),
@@ -129,8 +125,6 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       setIsOpen(true);
     }
     catch (err) {
-      // display the dropped item
-      displayDroppedItemByPageId(droppedPage._id);
       if (err.code === 'operation__blocked') {
         toastWarning(t('pagetree.you_cannot_move_this_page_now'));
       }
@@ -165,15 +159,25 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     [page],
   );
 
-  const itemRef = (c) => { drag(c); drop(c) };
+  const itemRef = (c) => {
+    // do not apply when RenameInput is shown
+    if (showRenameInput) return;
 
-  const mainClassName = `${isOver ? 'grw-pagetree-is-over' : ''} ${shouldHide ? 'd-none' : ''}`;
+    drag(c);
+    drop(c);
+  };
 
-  const { Input: NewPageInput, CreateButton: NewPageCreateButton } = useNewPageInput();
+  const isSelected = page._id === targetPathOrId || page.path === targetPathOrId;
+  const itemClassNames = [
+    isOver ? 'drag-over' : '',
+    page.path !== '/' && isSelected ? 'active' : '', // set 'active' except the root page
+  ];
 
   return (
-    <SimpleItem
+    <TreeItemLayout
+      className={moduleClass}
       targetPathOrId={props.targetPathOrId}
+      itemLevel={props.itemLevel}
       itemNode={props.itemNode}
       isOpen={isOpen}
       isEnableActions={props.isEnableActions}
@@ -185,9 +189,12 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       itemRef={itemRef}
       itemClass={PageTreeItem}
-      mainClassName={mainClassName}
-      customEndComponents={[Ellipsis, NewPageCreateButton]}
-      customNextComponents={[NewPageInput]}
+      itemClassName={itemClassNames.join(' ')}
+      customEndComponents={[CountBadgeForPageTreeItem]}
+      customHoveredEndComponents={[Control, NewPageCreateButton]}
+      customHeadOfChildrenComponents={[NewPageInput, () => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
+      showAlternativeContent={showRenameInput}
+      customAlternativeComponents={[RenameInput]}
     />
   );
 };

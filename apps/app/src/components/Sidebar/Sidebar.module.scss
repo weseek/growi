@@ -1,5 +1,4 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 @use '~/styles/variables' as var;
 @use '~/styles/mixins';
 
@@ -44,6 +43,7 @@
         left: var.$grw-sidebar-nav-width;
         min-height: 50vh;
         max-height: calc(100vh - var.$grw-sidebar-nav-width * 2);
+        border-radius: 0 4px 4px 0 ;
       }
     }
   }
@@ -59,6 +59,7 @@
 
       // apply transition
       transition-property: transform;
+
       @include mixins.apply-navigation-transition();
 
       &:not(.open) {
@@ -81,6 +82,7 @@
       background-color: color-mix(in srgb, var(--grw-highlight-100), var(--bs-body-bg));
     }
   }
+
   // frosted glass effect in collapsed mode
   .grw-sidebar {
     &:global {
@@ -103,6 +105,7 @@
       background-color: color-mix(in srgb, var(--grw-highlight-800), var(--bs-body-bg));
     }
   }
+
   // frosted glass effect in collapsed mode
   .grw-sidebar {
     &:global {

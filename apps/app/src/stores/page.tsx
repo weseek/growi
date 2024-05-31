@@ -18,10 +18,11 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
-import type { IRecordApplicableGrant, IResIsGrantNormalized } from '~/interfaces/page-grant';
+import type { IRecordApplicableGrant, IResCurrentGrantData } from '~/interfaces/page-grant';
 import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
+
 
 import {
   useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
@@ -214,12 +215,15 @@ export const useSWRMUTxPageInfo = (
     shareLinkId?: string | null,
 ): SWRMutationResponse<IPageInfo | IPageInfoForOperation> => {
 
+  // Cache remains from guest mode when logging in via the Login lead, so add 'isGuestUser' key
+  const { data: isGuestUser } = useIsGuestUser();
+
   // assign null if shareLinkId is undefined in order to identify SWR key only by pageId
   const fixedShareLinkId = shareLinkId ?? null;
 
   const key = useMemo(() => {
-    return pageId != null ? ['/page/info', pageId, fixedShareLinkId] : null;
-  }, [fixedShareLinkId, pageId]);
+    return pageId != null ? ['/page/info', pageId, fixedShareLinkId, isGuestUser] : null;
+  }, [fixedShareLinkId, isGuestUser, pageId]);
 
   return useSWRMutation(
     key,
@@ -262,18 +266,18 @@ export const useSWRxInfinitePageRevisions = (
 };
 
 /*
- * Grant normalization fetching hooks
+ * Grant data fetching hooks
  */
-export const useSWRxIsGrantNormalized = (
+export const useSWRxCurrentGrantData = (
     pageId: string | null | undefined,
-): SWRResponse<IResIsGrantNormalized, Error> => {
+): SWRResponse<IResCurrentGrantData, Error> => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isNotFound } = useIsNotFound();
 
   const key = !isGuestUser && !isReadOnlyUser && !isNotFound && pageId != null
-    ? ['/page/is-grant-normalized', pageId]
+    ? ['/page/grant-data', pageId]
     : null;
 
   return useSWRImmutable(

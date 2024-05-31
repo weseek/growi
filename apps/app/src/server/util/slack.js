@@ -24,7 +24,17 @@ const prepareAttachmentTextForCreate = function(page, siteUrl) {
   return convertMarkdownToMarkdown(body, siteUrl);
 };
 
+/**
+ * Return diff with latest revisionBody
+ * @param {IPageHasId} page
+ * @param {string} siteUrl
+ * @param {IRevisionHasId} previousRevision
+ */
 const prepareAttachmentTextForUpdate = function(page, siteUrl, previousRevision) {
+  if (previousRevision == null) {
+    return;
+  }
+
   const diff = require('diff');
   let diffText = '';
 

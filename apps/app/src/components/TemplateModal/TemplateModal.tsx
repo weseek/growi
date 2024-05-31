@@ -5,10 +5,11 @@ import React, {
 import assert from 'assert';
 
 import type { Lang } from '@growi/core';
-import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/src/stores/use-template-modal';
+import { useTemplateModal, type TemplateModalStatus } from '@growi/editor/dist/client';
 import {
   extractSupportedLocales, getLocalizedTemplate, type TemplateSummary,
 } from '@growi/pluginkit/dist/v4';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -26,7 +27,6 @@ import { usePersonalSettings } from '~/stores/personal-settings';
 import { usePreviewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { LoadingSpinner } from '../LoadingSpinner';
 import Preview from '../PageEditor/Preview';
 
 import { useFormatter } from './use-formatter';
@@ -177,7 +177,7 @@ const TemplateModalSubstance = (props: TemplateModalSubstanceProps): JSX.Element
 
   return (
     <div data-testid="template-modal">
-      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={close}>
         {t('template.modal_label.Select template')}
       </ModalHeader>
       <ModalBody className="container">

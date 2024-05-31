@@ -3,10 +3,10 @@ import { useCallback, useMemo } from 'react';
 import type {
   IAttachmentHasId, IPageToDeleteWithMeta, IPageToRenameWithMeta, IUserGroupHasId,
 } from '@growi/core';
+import { useSWRStatic } from '@growi/core/dist/swr';
+import { MarkdownTable } from '@growi/editor';
 import type { SWRResponse } from 'swr';
 
-
-import MarkdownTable from '~/client/models/MarkdownTable';
 import type { BookmarkFolderItems } from '~/interfaces/bookmark-info';
 import type {
   OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction, OnPutBackedFunction, onDeletedBookmarkFolderFunction, OnSelectedFunction,
@@ -38,6 +38,38 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
     ...swrResponse,
     open: (path?: string) => swrResponse.mutate({ isOpened: true, path }),
     close: () => swrResponse.mutate({ isOpened: false }),
+  };
+};
+
+/*
+* GrantedGroupsInheritanceSelectModal
+*/
+type GrantedGroupsInheritanceSelectModalStatus = {
+  isOpened: boolean,
+  onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>,
+}
+
+type GrantedGroupsInheritanceSelectModalStatusUtils = {
+  open(onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+  close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+}
+
+export const useGrantedGroupsInheritanceSelectModal = (
+    status?: GrantedGroupsInheritanceSelectModalStatus,
+): SWRResponse<GrantedGroupsInheritanceSelectModalStatus, Error> & GrantedGroupsInheritanceSelectModalStatusUtils => {
+  const initialData: GrantedGroupsInheritanceSelectModalStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<GrantedGroupsInheritanceSelectModalStatus, Error>(
+    'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
+  );
+
+  const { mutate } = swrResponse;
+
+  return {
+    ...swrResponse,
+    open: useCallback(
+      (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
+    ),
+    close: useCallback(() => mutate({ isOpened: false }), [mutate]),
   };
 };
 
@@ -363,33 +395,35 @@ type PageAccessoriesModalUtils = {
 export const usePageAccessoriesModal = (): SWRResponse<PageAccessoriesModalStatus, Error> & PageAccessoriesModalUtils => {
 
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<PageAccessoriesModalStatus, Error>('pageAccessoriesModalStatus', undefined, { fallbackData: initialStatus });
+
+  const { data, mutate } = swrResponse;
 
   return Object.assign(swrResponse, {
-    open: (activatedContents) => {
-      if (swrResponse.data == null) {
+    open: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
+      mutate({
         isOpened: true,
         activatedContents,
       });
-    },
-    close: () => {
-      if (swrResponse.data == null) {
+    }, [data, mutate]),
+    close: useCallback(() => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({ isOpened: false });
-    },
-    selectContents: (activatedContents) => {
-      if (swrResponse.data == null) {
+      mutate({ isOpened: false });
+    }, [data, mutate]),
+    selectContents: useCallback((activatedContents) => {
+      if (data == null) {
         return;
       }
-      swrResponse.mutate({
-        isOpened: swrResponse.data.isOpened,
+      mutate({
+        isOpened: data.isOpened,
         activatedContents,
       });
-    },
+    }, [data, mutate]),
   });
 };
 

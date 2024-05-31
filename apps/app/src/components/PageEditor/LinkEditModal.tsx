@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import path from 'path';
 
-import Linker from '@growi/editor/src/services/link-util/Linker';
-import { useLinkEditModal } from '@growi/editor/src/stores/use-link-edit-modal';
+import { Linker } from '@growi/editor';
+import { useLinkEditModal } from '@growi/editor/dist/client';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,
@@ -338,7 +338,7 @@ export const LinkEditModal = (): JSX.Element => {
 
   return (
     <Modal className="link-edit-modal" isOpen={linkEditModalStatus.isOpened} toggle={close} size="lg" autoFocus={false}>
-      <ModalHeader tag="h4" toggle={close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={close}>
         {t('link_edit.edit_link')}
       </ModalHeader>
 

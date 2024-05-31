@@ -1,17 +1,17 @@
-@import '@growi/core/scss/flex-expand';
-@import '@growi/core/scss/rotate';
-
+@import '@growi/core-styles/scss/helpers/flex-expand';
+@import '@growi/core-styles/scss/helpers/rotate';
 @import 'mixins';
 
 // atoms
-@import 'atoms/buttons';
 @import 'atoms/custom_control';
 @import 'atoms/code';
 @import 'atoms/tag';
+@import 'atoms/tooltip';
 
 // molecules
 @import 'molecules/toastr';
 @import 'molecules/list-group-item';
+
 // @import 'molecules/duplicated-paths-table.scss';
 
 // organisms
@@ -83,13 +83,13 @@
 }
 
 .cmd-key.mac {
-  &:after {
+  &::after {
     content: '⌘';
   }
 }
 
 .cmd-key.win {
-  &:after {
+  &::after {
     content: 'Ctrl';
   }
 }

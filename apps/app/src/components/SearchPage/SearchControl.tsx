@@ -3,37 +3,40 @@ import React, {
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
+import { Collapse } from 'reactstrap';
 
 import { SORT_AXIS, SORT_ORDER } from '~/interfaces/search';
 import type { ISearchConditions, ISearchConfigurations } from '~/stores/search';
 
-import SearchForm from '../SearchForm';
-
+import { SearchModalTriggerinput } from './SearchModalTriggerinput';
 import SearchOptionModal from './SearchOptionModal';
 import SortControl from './SortControl';
 
 import styles from './SearchControl.module.scss';
 
 type Props = {
-  isSearchServiceReachable: boolean,
   isEnableSort: boolean,
   isEnableFilter: boolean,
   initialSearchConditions: Partial<ISearchConditions>,
 
   onSearchInvoked?: (keyword: string, configurations: Partial<ISearchConfigurations>) => void,
 
-  allControl: React.ReactNode,
+  extraControls: React.ReactNode,
+
+  collapseContents?: React.ReactNode,
+  isCollapsed?: boolean,
 }
 
 const SearchControl = React.memo((props: Props): JSX.Element => {
 
   const {
-    isSearchServiceReachable,
     isEnableSort,
     isEnableFilter,
     initialSearchConditions,
     onSearchInvoked,
-    allControl,
+    extraControls,
+    collapseContents,
+    isCollapsed,
   } = props;
 
   const keywordOnInit = initialSearchConditions.keyword ?? '';
@@ -46,14 +49,6 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
   const [isFileterOptionModalShown, setIsFileterOptionModalShown] = useState(false);
 
   const { t } = useTranslation('');
-
-  const searchFormSubmittedHandler = useCallback((input: string) => {
-    setKeyword(input);
-
-    onSearchInvoked?.(input, {
-      sort, order, includeUserPages, includeTrashPages,
-    });
-  }, [includeTrashPages, includeUserPages, onSearchInvoked, order, sort]);
 
   const changeSortHandler = useCallback((nextSort: SORT_AXIS, nextOrder: SORT_ORDER) => {
     setSort(nextSort);
@@ -88,11 +83,8 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
     <div className="shadow-sm">
       <div className="grw-search-page-nav d-flex py-3 align-items-center">
         <div className="flex-grow-1 mx-4">
-          <SearchForm
-            isSearchServiceReachable={isSearchServiceReachable}
+          <SearchModalTriggerinput
             keywordOnInit={keyword}
-            disableIncrementalSearch
-            onSubmit={searchFormSubmittedHandler}
           />
         </div>
       </div>
@@ -160,19 +152,15 @@ const SearchControl = React.memo((props: Props): JSX.Element => {
             </div>
           </>
         )}
-        <div className="d-flex">
-          <div className="btn-group">
-            {/* TODO: imprv to delete all result UI */}
-            {/* <button className={`btn btn-sm rounded ${styles['btn-delete']}`} type="button" data-bs-toggle="dropdown" aria-expanded="false">
-              <span className="material-symbols-outlined ">delete</span>
-              <span className="material-symbols-outlined ">expand_more</span>
-            </button> */}
-            {/* <ul className="dropdown-menu"> */}
-            {allControl}
-            {/* </ul> */}
-          </div>
-        </div>
+
+        {extraControls}
       </div>
+
+      { collapseContents != null && (
+        <Collapse isOpen={isCollapsed}>
+          {collapseContents}
+        </Collapse>
+      ) }
 
       <SearchOptionModal
         isOpen={isFileterOptionModalShown || false}

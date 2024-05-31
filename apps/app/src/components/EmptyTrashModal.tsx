@@ -1,5 +1,6 @@
+import type { FC } from 'react';
 import React, {
-  useState, FC,
+  useState,
 } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -60,7 +61,7 @@ const EmptyTrashModal: FC = () => {
 
   return (
     <Modal size="lg" isOpen={isOpened} toggle={closeEmptyTrashModal} data-testid="page-delete-modal">
-      <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="bg-danger text-light">
+      <ModalHeader tag="h4" toggle={closeEmptyTrashModal} className="text-danger">
         <span className="material-symbols-outlined">delete_forever</span>
         {t('modal_empty.empty_the_trash')}
       </ModalHeader>

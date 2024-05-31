@@ -75,7 +75,7 @@ export const PageAccessoriesModal = (): JSX.Element => {
         expandWindow={() => setIsWindowExpanded(true)}
         contractWindow={() => setIsWindowExpanded(false)}
       />
-      <button type="button" className="btn btn-close" onClick={close} aria-label="Close"></button>
+      <button type="button" className="btn btn-close ms-2" onClick={close} aria-label="Close"></button>
     </span>
   ), [close, isWindowExpanded]);
 

@@ -1,9 +1,6 @@
-@use '@growi/core/scss/bootstrap/init' as bs;
-
-@use '@growi/core/scss/growi-official-colors';
-
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
+@use '@growi/core-styles/scss/variables/growi-official-colors';
 @use '~/styles/variables' as var;
-
 @use '../button-styles';
 
 // GROWI Logo
@@ -21,6 +18,10 @@
       height: $height;
       padding: (($height - $logomark-height) / 2) (($width - $logomark-width) / 2);
     }
+  }
+
+  .confidential-tooltip {
+    max-width: 180px;
   }
 }
 
@@ -42,12 +43,16 @@
   $grw-page-editor-mode-manager-width: 90px;
   $grw-contextual-subnavigation-padding-right: 12px;
   $gap: 8px;
-  width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+
+  @include bs.media-breakpoint-up(sm) {
+    width: calc(100vw - #{$grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
+  }
 
   @include bs.media-breakpoint-up(md) {
     $grw-page-editor-mode-manager-width: 140px;
     $gap: 24px;
     $grw-contextual-subnavigation-padding-right: 24px;
+
     width: calc(100vw - #{var.$grw-sidebar-nav-width + $grw-page-controls-width + $grw-page-editor-mode-manager-width + $grw-contextual-subnavigation-padding-right + $gap * 2});
   }
 }

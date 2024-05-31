@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import type { IUserHasId } from '@growi/core';
 import { UserPicture } from '@growi/ui/dist/components';
-import dateFnsFormat from 'date-fns/format';
+import { format as dateFnsFormat } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
@@ -22,34 +22,34 @@ const UserTable = (props: UserTableProps) => {
   const { adminUsersContainer } = props;
 
   const getUserStatusLabel = (userStatus: number) => {
-    let additionalClassName = 'bg-info';
+    let additionalClassName = 'text-bg-info';
     let text = 'Approval Pending';
 
     switch (userStatus) {
       case 1:
-        additionalClassName = 'bg-info';
+        additionalClassName = 'text-bg-info';
         text = 'Approval Pending';
         break;
       case 2:
-        additionalClassName = 'bg-success';
+        additionalClassName = 'text-bg-success';
         text = 'Active';
         break;
       case 3:
-        additionalClassName = 'bg-warning text-dark';
+        additionalClassName = 'text-bg-warning';
         text = 'Suspended';
         break;
       case 4:
-        additionalClassName = 'bg-danger';
+        additionalClassName = 'text-bg-danger';
         text = 'Deleted';
         break;
       case 5:
-        additionalClassName = 'bg-pink';
+        additionalClassName = 'text-bg-secondary';
         text = 'Invited';
         break;
     }
 
     return (
-      <span className={`badge rounded-pill ${additionalClassName}`}>
+      <span className={`badge ${additionalClassName}`}>
         {text}
       </span>
     );
@@ -153,12 +153,12 @@ const UserTable = (props: UserTableProps) => {
                 <td>
                   {getUserStatusLabel(user.status)}
                   {(user.admin) && (
-                    <span className="badge bg-indigo rounded-pill ms-2">
+                    <span className="badge text-bg-secondary ms-2">
                       {t('admin:user_management.user_table.administrator')}
                     </span>
                   )}
                   {(user.readOnly) && (
-                    <span className="badge bg-light text-dark rounded-pill ms-2">
+                    <span className="badge text-bg-light ms-2">
                       {t('admin:user_management.user_table.read_only')}
                     </span>
                   )}

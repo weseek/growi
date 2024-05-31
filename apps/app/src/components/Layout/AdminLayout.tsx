@@ -31,7 +31,7 @@ const AdminLayout = ({
     <RawLayout>
       <div className={`admin-page ${styles['admin-page']}`}>
 
-        <header className="py-0 container-fluid">
+        <header className="py-0 container">
           <h1 className="p-3 fs-2 d-flex align-items-center">
             <Link href="/" className="d-block mb-1 me-2">
               <GrowiLogo />
@@ -39,13 +39,13 @@ const AdminLayout = ({
             {componentTitle}
           </h1>
         </header>
-        <div id="main" className="main">
-          <div className="container-fluid">
+        <div className="main">
+          <div className="container">
             <div className="row">
               <div className="col-lg-3">
                 <AdminNavigation />
               </div>
-              <div className="col-lg-9">
+              <div className="col-lg-9 mb-5">
                 {children}
               </div>
             </div>

@@ -57,13 +57,13 @@ class ImportDataPageContents extends React.Component {
               </tbody>
             </table>
 
-            <div className="card custom-card mb-0 small">
+            <div className="card custom-card bg-body-tertiary mb-0 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="row">
+            <div className="row mt-4">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
 
@@ -83,7 +83,7 @@ class ImportDataPageContents extends React.Component {
 
             </div>
 
-            <div className="row">
+            <div className="row mt-3">
               <label htmlFor="settingForm[importer:esa:access_token]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.esa_settings.access_token')}
               </label>
@@ -98,12 +98,12 @@ class ImportDataPageContents extends React.Component {
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mt-3">
               <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToEsa"
                   type="button"
-                  className="btn btn-primary btn-esa"
+                  className="btn btn-primary btn-esa me-3"
                   name="Esa"
                   onClick={adminImportContainer.esaHandleSubmit}
                   value={t('importer_management.import')}
@@ -163,16 +163,16 @@ class ImportDataPageContents extends React.Component {
                 </tr>
               </tbody>
             </table>
-            <div className="card custom-card mb-0 small">
+            <div className="card custom-card bg-body-tertiary mb-3 small">
               <ul>
                 <li>{t('importer_management.page_skip')}</li>
               </ul>
             </div>
 
-            <div className="row">
+            <div className="row mt-3">
               <input type="password" name="dummypass" style={{ display: 'none', top: '-100px', left: '-100px' }} />
             </div>
-            <div className="row">
+            <div className="row mt-3">
               <label htmlFor="settingForm[importer:qiita:team_name]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.qiita_settings.team_name')}
               </label>
@@ -187,7 +187,7 @@ class ImportDataPageContents extends React.Component {
               </div>
             </div>
 
-            <div className="row">
+            <div className="row mt-3">
               <label htmlFor="settingForm[importer:qiita:access_token]" className="text-start text-md-end col-md-3 col-form-label">
                 {t('importer_management.qiita_settings.access_token')}
               </label>
@@ -203,12 +203,12 @@ class ImportDataPageContents extends React.Component {
             </div>
 
 
-            <div className="row">
+            <div className="row mt-3">
               <div className="offset-md-3 col-md-6">
                 <input
                   id="testConnectionToQiita"
                   type="button"
-                  className="btn btn-primary btn-qiita"
+                  className="btn btn-primary btn-qiita me-3"
                   name="Qiita"
                   onClick={adminImportContainer.qiitaHandleSubmit}
                   value={t('importer_management.import')}

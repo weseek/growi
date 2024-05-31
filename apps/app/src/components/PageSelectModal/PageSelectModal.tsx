@@ -1,8 +1,11 @@
 import type { FC } from 'react';
-import { useState, useCallback } from 'react';
+import {
+  Suspense, useState, useCallback, useEffect,
+} from 'react';
 
 import nodePath from 'path';
 
+import { pathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter, Button,
@@ -11,13 +14,13 @@ import {
 import type { IPageForItem } from '~/interfaces/page';
 import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { usePageSelectModal } from '~/stores/modal';
-import { useCurrentPagePath, useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
+import { useSWRxCurrentPage } from '~/stores/page';
 
 import { ItemsTree } from '../ItemsTree';
+import ItemsTreeContentSkeleton from '../ItemsTree/ItemsTreeContentSkeleton';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 
 import { TreeItemForModal } from './TreeItemForModal';
-
 
 export const PageSelectModal: FC = () => {
   const {
@@ -33,8 +36,6 @@ export const PageSelectModal: FC = () => {
 
   const { data: isGuestUser } = useIsGuestUser();
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
-  const { data: currentPath } = useCurrentPagePath();
-  const { data: targetId } = useCurrentPageId();
   const { data: targetAndAncestorsData } = useTargetAndAncestors();
   const { data: currentPage } = useSWRxCurrentPage();
 
@@ -44,7 +45,7 @@ export const PageSelectModal: FC = () => {
     const parentPagePath = page.path;
 
     if (parentPagePath == null) {
-      return;
+      return <></>;
     }
 
     setClickedParentPagePath(parentPagePath);
@@ -66,12 +67,14 @@ export const PageSelectModal: FC = () => {
     closeModal();
   }, [clickedParentPagePath, closeModal, currentPage?.path, pagePathRenameHandler]);
 
-  const targetPathOrId = targetId || currentPath;
+  const parentPagePath = pathUtils.addTrailingSlash(nodePath.dirname(currentPage?.path ?? ''));
 
-  const path = currentPath || '/';
+  const targetPathOrId = clickedParentPagePath || parentPagePath;
+
+  const targetPath = clickedParentPagePath || parentPagePath;
 
   if (isGuestUser == null) {
-    return null;
+    return <></>;
   }
 
   return (
@@ -83,15 +86,17 @@ export const PageSelectModal: FC = () => {
     >
       <ModalHeader toggle={closeModal}>{t('page_select_modal.select_page_location')}</ModalHeader>
       <ModalBody>
-        <ItemsTree
-          CustomTreeItem={TreeItemForModal}
-          isEnableActions={!isGuestUser}
-          isReadOnlyUser={!!isReadOnlyUser}
-          targetPath={path}
-          targetPathOrId={targetPathOrId}
-          targetAndAncestorsData={targetAndAncestorsData}
-          onClickTreeItem={onClickTreeItem}
-        />
+        <Suspense fallback={<ItemsTreeContentSkeleton />}>
+          <ItemsTree
+            CustomTreeItem={TreeItemForModal}
+            isEnableActions={!isGuestUser}
+            isReadOnlyUser={!!isReadOnlyUser}
+            targetPath={targetPath}
+            targetPathOrId={targetPathOrId}
+            targetAndAncestorsData={targetAndAncestorsData}
+            onClickTreeItem={onClickTreeItem}
+          />
+        </Suspense>
       </ModalBody>
       <ModalFooter>
         <Button color="secondary" onClick={onClickCancel}>{t('Cancel')}</Button>

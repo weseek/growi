@@ -3,11 +3,12 @@ import React, {
 } from 'react';
 
 import type { IUser } from '@growi/core';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import {
-  MergeViewer, CodeMirrorEditorDiff, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated,
-} from '@growi/editor';
+  MergeViewer, CodeMirrorEditorDiff, useCodeMirrorEditorIsolated,
+} from '@growi/editor/dist/client';
 import { UserPicture } from '@growi/ui/dist/components';
-import { format } from 'date-fns';
+import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';
 import {
   Modal, ModalHeader, ModalBody, ModalFooter,

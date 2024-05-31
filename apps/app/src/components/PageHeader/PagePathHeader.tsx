@@ -1,17 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import type { FC } from 'react';
+import type { ChangeEvent } from 'react';
+import {
+  useState, useCallback, memo,
+} from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { normalizePath } from '@growi/core/dist/utils/path-utils';
 import { useTranslation } from 'next-i18next';
+import { debounce } from 'throttle-debounce';
 
-import { ValidationTarget } from '~/client/util/input-validator';
+import type { InputValidationResult } from '~/client/util/use-input-validator';
+import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 
-import ClosableTextInput from '../Common/ClosableTextInput';
 import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
+import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';
 
@@ -21,12 +25,17 @@ const moduleClass = styles['page-path-header'];
 
 
 type Props = {
-  currentPage: IPagePopulatedToShowRevision
+  currentPage: IPagePopulatedToShowRevision,
+  className?: string,
+  maxWidth?: number,
+  onRenameTerminated?: () => void,
 }
 
-export const PagePathHeader: FC<Props> = (props) => {
+export const PagePathHeader = memo((props: Props): JSX.Element => {
   const { t } = useTranslation();
-  const { currentPage } = props;
+  const {
+    currentPage, className, maxWidth, onRenameTerminated,
+  } = props;
 
   const dPagePath = new DevidedPagePath(currentPage.path, true);
   const parentPagePath = dPagePath.former;
@@ -35,91 +44,95 @@ export const PagePathHeader: FC<Props> = (props) => {
 
   const [isRenameInputShown, setRenameInputShown] = useState(false);
   const [isHover, setHover] = useState(false);
-  const [editingParentPagePath, setEditingParentPagePath] = useState(parentPagePath);
 
   const { data: PageSelectModalData, open: openPageSelectModal } = usePageSelectModal();
   const isOpened = PageSelectModalData?.isOpened ?? false;
 
+  const [validationResult, setValidationResult] = useState<InputValidationResult>();
+
+  const inputValidator = useInputValidator(ValidationTarget.PAGE);
+
+  const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
+    const validationResult = inputValidator(e.target.value);
+    setValidationResult(validationResult ?? undefined);
+  }, [inputValidator]);
+  const changeHandlerDebounced = debounce(300, changeHandler);
+
+
   const pagePathRenameHandler = usePagePathRenameHandler(currentPage);
 
-  const onRenameFinish = useCallback(() => {
-    setRenameInputShown(false);
-  }, []);
 
-  const onRenameFailure = useCallback(() => {
-    setRenameInputShown(true);
-  }, []);
+  const rename = useCallback((inputText) => {
+    const pathToRename = normalizePath(`${inputText}/${dPagePath.latter}`);
+    pagePathRenameHandler(pathToRename,
+      () => {
+        setRenameInputShown(false);
+        setValidationResult(undefined);
+        onRenameTerminated?.();
+      },
+      () => {
+        setRenameInputShown(true);
+      });
+  }, [dPagePath.latter, pagePathRenameHandler, onRenameTerminated]);
 
-  const onInputChange = useCallback((inputText: string) => {
-    setEditingParentPagePath(inputText);
-  }, []);
-
-  const onPressEnter = useCallback(() => {
-    const pathToRename = normalizePath(`${editingParentPagePath}/${dPagePath.latter}`);
-    pagePathRenameHandler(pathToRename, onRenameFinish, onRenameFailure);
-  }, [editingParentPagePath, onRenameFailure, onRenameFinish, pagePathRenameHandler, dPagePath.latter]);
-
-  const onPressEscape = useCallback(() => {
+  const cancel = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
+    setValidationResult(undefined);
     setRenameInputShown(false);
-  }, [parentPagePath]);
+  }, []);
 
   const onClickEditButton = useCallback(() => {
     // reset
-    setEditingParentPagePath(parentPagePath);
     setRenameInputShown(true);
-  }, [parentPagePath]);
-
-  const clickOutSideHandler = useCallback((e) => {
-    const container = document.getElementById('page-path-header');
-
-    if (container && !container.contains(e.target)) {
-      setRenameInputShown(false);
-    }
   }, []);
-
-  useEffect(() => {
-    document.addEventListener('click', clickOutSideHandler);
-
-    return () => {
-      document.removeEventListener('click', clickOutSideHandler);
-    };
-  }, [clickOutSideHandler]);
-
 
   if (dPagePath.isRoot) {
     return <></>;
   }
 
+
+  const isInvalid = validationResult != null;
+
+  const inputMaxWidth = maxWidth != null
+    ? getAdjustedMaxWidthForAutosizeInput(maxWidth, 'sm', validationResult != null ? false : undefined) - 16
+    : undefined;
+
   return (
     <div
       id="page-path-header"
-      className={`d-flex ${moduleClass} small`}
+      className={`d-flex ${moduleClass} ${className ?? ''} small position-relative ms-2`}
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
     >
-      <div className="me-2">
+      <div
+        className="page-path-header-input d-inline-block"
+      >
         { isRenameInputShown && (
-          <div className="position-absolute">
-            <ClosableTextInput
-              useAutosizeInput
-              value={editingParentPagePath}
-              placeholder={t('Input page name')}
-              inputClassName="form-control-sm"
-              onPressEnter={onPressEnter}
-              onPressEscape={onPressEscape}
-              onChange={onInputChange}
-              validationTarget={ValidationTarget.PAGE}
-            />
+          <div className="position-relative">
+            <div className="position-absolute w-100">
+              <AutosizeSubmittableInput
+                value={parentPagePath}
+                inputClassName={`form-control form-control-sm ${isInvalid ? 'is-invalid' : ''}`}
+                inputStyle={{ maxWidth: inputMaxWidth }}
+                placeholder={t('Input parent page path')}
+                onChange={changeHandlerDebounced}
+                onSubmit={rename}
+                onCancel={cancel}
+                autoFocus
+              />
+            </div>
           </div>
         ) }
-        <div className={`${isRenameInputShown ? 'invisible' : ''}`}>
-          <PagePathHierarchicalLink linkedPagePath={linkedPagePath} />
+        <div className={`${isRenameInputShown ? 'invisible' : ''} text-truncate`}>
+          <PagePathHierarchicalLink
+            linkedPagePath={linkedPagePath}
+          />
         </div>
       </div>
 
-      <div className={`page-path-header-buttons d-flex align-items-center ${isHover && !isRenameInputShown ? '' : 'invisible'}`}>
+      <div
+        className={`page-path-header-buttons d-flex align-items-center ms-2 ${isHover && !isRenameInputShown ? '' : 'invisible'}`}
+      >
         <button
           type="button"
           className="btn btn-outline-neutral-secondary me-2 d-flex align-items-center justify-content-center"
@@ -140,4 +153,4 @@ export const PagePathHeader: FC<Props> = (props) => {
       {isOpened && <PageSelectModal />}
     </div>
   );
-};
+});

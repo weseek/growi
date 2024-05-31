@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
-import { useIsSearchServiceReachable, useShowPageLimitationL } from '~/stores/context';
+import { useShowPageLimitationL } from '~/stores/context';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';
@@ -17,6 +17,7 @@ import { OperateAllControl } from './SearchPage/OperateAllControl';
 import SearchControl from './SearchPage/SearchControl';
 import { type IReturnSelectedPageIds, SearchPageBase, usePageDeleteModalForBulkDeletion } from './SearchPage/SearchPageBase';
 
+import styles from './SearchPage.module.scss';
 
 // TODO: replace with "customize:showPageLimitationS"
 const INITIAL_PAGIONG_SIZE = 20;
@@ -90,10 +91,11 @@ export const SearchPage = (): JSX.Element => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(showPageLimitationL ?? INITIAL_PAGIONG_SIZE);
   const [configurationsByControl, setConfigurationsByControl] = useState<Partial<ISearchConfigurations>>({});
+  const [isCollapsed, setIsCollapsed] = useState<boolean>(false);
+  const [selectedCount, setSelectedCount] = useState(0);
+
   const selectAllControlRef = useRef<ISelectableAndIndeterminatable|null>(null);
   const searchPageBaseRef = useRef<ISelectableAll & IReturnSelectedPageIds|null>(null);
-
-  const { data: isSearchServiceReachable } = useIsSearchServiceReachable();
 
   const { data, conditions, mutate } = useSWRxSearch(keyword ?? '', null, {
     ...configurationsByControl,
@@ -108,7 +110,7 @@ export const SearchPage = (): JSX.Element => {
     pushState(newKeyword);
 
     mutate();
-  }, [keyword, mutate, pushState]);
+  }, [mutate, pushState]);
 
   const selectAllCheckboxChangedHandler = useCallback((isChecked: boolean) => {
     const instance = searchPageBaseRef.current;
@@ -123,6 +125,9 @@ export const SearchPage = (): JSX.Element => {
     else {
       instance.deselectAll();
     }
+
+    // update selected count
+    setSelectedCount(instance.getSelectedPageIds?.().size ?? 0);
   }, []);
 
   const selectedPagesByCheckboxesChangedHandler = useCallback((selectedCount: number, totalCount: number) => {
@@ -139,8 +144,12 @@ export const SearchPage = (): JSX.Element => {
       instance.select();
     }
     else {
+      setIsCollapsed(true);
       instance.setIndeterminate();
     }
+
+    // update selected count
+    setSelectedCount(selectedCount);
   }, []);
 
   const pagingSizeChangedHandler = useCallback((pagingSize: number) => {
@@ -166,46 +175,74 @@ export const SearchPage = (): JSX.Element => {
 
   const hitsCount = data?.meta.hitsCount;
 
-  const allControl = useMemo(() => {
-    const isDisabled = hitsCount === 0;
-
+  const extraControls = useMemo(() => {
     return (
       <NotAvailableForGuest>
         <NotAvailableForReadOnlyUser>
-          <OperateAllControl
-            ref={selectAllControlRef}
-            isCheckboxDisabled={isDisabled}
-            onCheckboxChanged={selectAllCheckboxChangedHandler}
+          <button
+            type="button"
+            className={`${isCollapsed ? 'active' : ''} btn btn-muted-danger d-flex align-items-center ms-2`}
+            aria-expanded="false"
+            onClick={() => { setIsCollapsed(!isCollapsed) }}
           >
-            <button
-              type="button"
-              className="btn border-0 text-danger"
-              disabled={isDisabled}
-              onClick={deleteAllButtonClickedHandler}
-            >
-              {t('search_result.delete_all_selected_page')}
-            </button>
-          </OperateAllControl>
+            <span className="material-symbols-outlined fs-5">delete</span>
+            <span className={`material-symbols-outlined me-1 ${isCollapsed ? 'rotate-180' : ''}`}>keyboard_arrow_down</span>
+          </button>
         </NotAvailableForReadOnlyUser>
       </NotAvailableForGuest>
     );
-  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, t]);
+  }, [isCollapsed]);
+
+  const collapseContents = useMemo(() => {
+    return (
+      <NotAvailableForGuest>
+        <NotAvailableForReadOnlyUser>
+          <div className="d-flex align-items-center py-2">
+            <div className="ms-4">
+              <OperateAllControl
+                inputId="cb-select-all"
+                inputClassName="form-check-input"
+                ref={selectAllControlRef}
+                isCheckboxDisabled={hitsCount === 0}
+                onCheckboxChanged={selectAllCheckboxChangedHandler}
+              >
+                <label
+                  className="form-check-label ms-2"
+                  htmlFor="cb-select-all"
+                >
+                  {t('search_result.select_all')}
+                </label>
+              </OperateAllControl>
+            </div>
+
+            <button
+              type="button"
+              className="ms-3 open-delete-modal-button btn btn-outline-danger d-flex align-items-center"
+              disabled={selectedCount === 0}
+              onClick={deleteAllButtonClickedHandler}
+            >
+              <span className="material-symbols-outlined fs-5">delete</span>{t('search_result.delete_selected_pages')}
+            </button>
+          </div>
+        </NotAvailableForReadOnlyUser>
+      </NotAvailableForGuest>
+    );
+  }, [deleteAllButtonClickedHandler, hitsCount, selectAllCheckboxChangedHandler, selectedCount, t]);
+
 
   const searchControl = useMemo(() => {
-    if (!isSearchServiceReachable) {
-      return <></>;
-    }
     return (
       <SearchControl
-        isSearchServiceReachable={isSearchServiceReachable}
         isEnableSort
         isEnableFilter
         initialSearchConditions={initialSearchConditions}
         onSearchInvoked={searchInvokedHandler}
-        allControl={allControl}
+        extraControls={extraControls}
+        collapseContents={collapseContents}
+        isCollapsed={isCollapsed}
       />
     );
-  }, [allControl, initialSearchConditions, isSearchServiceReachable, searchInvokedHandler]);
+  }, [extraControls, collapseContents, initialSearchConditions, isCollapsed, searchInvokedHandler]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
@@ -241,6 +278,7 @@ export const SearchPage = (): JSX.Element => {
 
   return (
     <SearchPageBase
+      className={styles['search-page']}
       ref={searchPageBaseRef}
       pages={data?.data}
       searchingKeyword={keyword}

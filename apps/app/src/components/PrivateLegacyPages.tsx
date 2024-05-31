@@ -3,6 +3,7 @@ import React, {
 } from 'react';
 
 import { useGlobalSocket } from '@growi/core/dist/swr';
+import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
   UncontrolledButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal, ModalHeader, ModalBody, ModalFooter,
@@ -25,7 +26,6 @@ import {
 } from '~/stores/search';
 
 import { MenuItemType } from './Common/Dropdown/PageItemControl';
-import { LoadingSpinner } from './LoadingSpinner';
 import PaginationWrapper from './PaginationWrapper';
 import { PrivateLegacyPagesMigrationModal } from './PrivateLegacyPagesMigrationModal';
 import { OperateAllControl } from './SearchPage/OperateAllControl';
@@ -151,7 +151,7 @@ const ConvertByPathModal = React.memo((props: ConvertByPathModalProps): JSX.Elem
 
   return (
     <Modal size="lg" isOpen={props.isOpen} toggle={props.close}>
-      <ModalHeader tag="h4" toggle={props.close} className="bg-primary text-light">
+      <ModalHeader tag="h4" toggle={props.close}>
         { t('private_legacy_pages.by_path_modal.title') }
       </ModalHeader>
       <ModalBody>
@@ -348,13 +348,14 @@ const PrivateLegacyPages = (): JSX.Element => {
     );
   }, [t, openConvertModalHandler]);
 
-  const searchControlAllAction = useMemo(() => {
+  const extraControls = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
 
     return (
-      <div className="search-control d-flex align-items-center">
-        <div className="d-flex ps-md-2">
+      <div className="d-flex align-items-center">
+        <div className="d-flex">
           <OperateAllControl
+            inputClassName="me-2"
             ref={selectAllControlRef}
             isCheckboxDisabled={isCheckboxDisabled}
             onCheckboxChanged={selectAllCheckboxChangedHandler}
@@ -387,15 +388,14 @@ const PrivateLegacyPages = (): JSX.Element => {
   const searchControl = useMemo(() => {
     return (
       <SearchControl
-        isSearchServiceReachable
         isEnableSort={false}
         isEnableFilter={false}
         initialSearchConditions={{ keyword: initQ, limit: INITIAL_PAGING_SIZE }}
         onSearchInvoked={searchInvokedHandler}
-        allControl={searchControlAllAction}
+        extraControls={extraControls}
       />
     );
-  }, [searchInvokedHandler, searchControlAllAction]);
+  }, [searchInvokedHandler, extraControls]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {
