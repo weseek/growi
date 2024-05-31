@@ -1,13 +1,14 @@
+
 import sanitize from 'sanitize-filename';
 
-// https://regex101.com/r/fK2rV3/1
+// https://regex101.com/r/OJB2UJ/1
 const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
-// https://regex101.com/r/CQjSuz/1
-const sanitizeBranchChars = new RegExp(/[^a-zA-Z0-9_.]+/g);
 
-// https://regex101.com/r/f4wj8q/1
+// https://regex101.com/r/CQjSuz/1
+const sanitizeSymbolsChars = new RegExp(/[^a-zA-Z0-9_.]+/g);
+// https://regex101.com/r/ARgXvb/1
 // GitHub will return a zip file with the v removed if the tag or branch name is "v + number"
-const checkVersionName = new RegExp(/^v[\d]/g);
+const sanitizeVersionChars = new RegExp(/^v[\d]/gi);
 
 export class GitHubUrl {
 
@@ -38,23 +39,14 @@ export class GitHubUrl {
   get archiveUrl(): string {
     const encodedBranchName = encodeURIComponent(this.branchName);
     const encodedTagName = encodeURIComponent(this.tagName);
-    if (encodedTagName !== '') {
-      const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/tags/${encodedTagName}.zip`, 'https://github.com');
-      return ghUrl.toString();
-    }
-
-    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/heads/${encodedBranchName}.zip`, 'https://github.com');
+    const zipUrl = encodedTagName !== '' ? `tags/${encodedTagName}.zip` : `heads/${encodedBranchName}.zip`;
+    const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/${zipUrl}`, 'https://github.com');
     return ghUrl.toString();
-
   }
 
   get extractedArchiveDirName(): string {
-    if (this._tagName !== '') {
-      const tagName = this._tagName?.match(checkVersionName) ? this._tagName.replace('v', '') : this._tagName;
-      return tagName.replaceAll(sanitizeBranchChars, '-');
-    }
-    const branchName = this._branchName?.match(checkVersionName) ? this._branchName.replace('v', '') : this._branchName;
-    return branchName.replaceAll(sanitizeBranchChars, '-');
+    const name = this._tagName !== '' ? this._tagName : this._branchName;
+    return name.replace(sanitizeVersionChars, m => m.substring(1)).replaceAll(sanitizeSymbolsChars, '-');
   }
 
   constructor(url: string, branchName = 'main', tagName = '') {
