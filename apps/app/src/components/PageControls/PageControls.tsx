@@ -78,24 +78,16 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
     onClick, expandContentWidth,
   } = props;
 
-  const clickHandler = useCallback<MouseEventHandler>((e) => {
-    if (onClick == null) return;
-
-    e.preventDefault();
-    onClick?.();
-  }, [onClick]);
-
   return (
-    <DropdownItem className="grw-page-control-dropdown-item dropdown-item" onClick={clickHandler} toggle={false}>
-      <div className="form-check form-switch ms-1 flex-fill d-flex">
+    <DropdownItem className="grw-page-control-dropdown-item dropdown-item" onClick={onClick} toggle={false}>
+      <div className="form-check form-switch ms-1">
         <input
-          id="wide-view-checkbox"
-          className="form-check-input"
+          className="form-check-input pe-none"
           type="checkbox"
           checked={expandContentWidth}
           onChange={() => {}}
         />
-        <label className="form-check-label flex-grow-1 ms-2">
+        <label className="form-check-label pe-none">
           { t('wide_view') }
         </label>
       </div>
