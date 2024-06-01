@@ -2,7 +2,7 @@ import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('growi:services:fileUploader:multipartUploader');
 
-enum UploadStatus {
+export enum UploadStatus {
   BEFORE_INIT,
   IN_PROGRESS,
   COMPLETED,
@@ -67,14 +67,17 @@ export abstract class MultipartUploader implements IMultipartUploader {
       errMsg = 'Multipart upload has been aborted';
     }
 
-    // currentStatus is IN_PROGRESS or BEFORE_INIT
-
-    if (this.currentStatus === UploadStatus.IN_PROGRESS && desiredStatus === UploadStatus.BEFORE_INIT) {
-      errMsg = 'Multipart upload has already been initiated';
+    if (this.currentStatus === UploadStatus.IN_PROGRESS) {
+      if (desiredStatus === UploadStatus.BEFORE_INIT) {
+        errMsg = 'Multipart upload is already in progress';
+      }
+      else {
+        errMsg = 'Multipart upload is still in progress';
+      }
     }
 
-    if (this.currentStatus === UploadStatus.BEFORE_INIT && desiredStatus === UploadStatus.IN_PROGRESS) {
-      errMsg = 'Multipart upload not initiated';
+    if (this.currentStatus === UploadStatus.BEFORE_INIT) {
+      errMsg = 'Multipart upload has not been initiated';
     }
 
     if (errMsg != null) {
