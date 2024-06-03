@@ -411,10 +411,13 @@ jobs:
         yarn global add node-gyp
         yarn --frozen-lockfile
 
-    - name: Install Playwright dependencies
+    - name: Install Playwright browsers
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: |
         yarn playwright install
+
+    - name: Install Playwright system dependencies
+      run: |
         sudo yarn playwright install-deps
 
     - name: Download production files artifact
@@ -446,7 +449,7 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        playwright test
+        yarn playwright test
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-test-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
