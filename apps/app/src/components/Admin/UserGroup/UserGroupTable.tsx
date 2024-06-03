@@ -167,7 +167,7 @@ export const UserGroupTable: FC<Props> = ({
                     <td>
                       <span className="material-symbols-outlined me-2 mt-2">group</span>
                       <Link
-                        className="link-opacity-75-hover text-decoration-underline"
+                        className="link-opacity-75-hover .gap-0 text-decoration-underline"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
                         {group.name}
@@ -176,7 +176,7 @@ export const UserGroupTable: FC<Props> = ({
                           type="button"
                           onMouseEnter={onMouseEnterHandler}
                           onMouseLeave={onMouseLeaveHandler}
-                        >   {(isHovered) && (<span className="material-symbols-outlined fs-6 my-1">edit</span>
+                        >   {(isHovered) && (<span className="material-symbols-outlined fs-6">edit</span>
                           )}
                         </button>
                       </Link>
