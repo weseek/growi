@@ -165,9 +165,9 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td>
-                      <span className="material-symbols-outlined me-2">group</span>
+                      <span className="material-symbols-outlined me-2 mt-2">group</span>
                       <Link
-                        className="link-opacity-75-hove text-decoration-underline"
+                        className="link-opacity-75-hover text-decoration-underline"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
                         {group.name}
