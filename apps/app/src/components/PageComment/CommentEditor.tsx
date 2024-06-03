@@ -4,9 +4,10 @@ import React, {
   useMemo,
 } from 'react';
 
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import {
-  CodeMirrorEditorComment, GlobalCodeMirrorEditorKey, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor';
+  CodeMirrorEditorComment, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
+} from '@growi/editor/dist/client';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';

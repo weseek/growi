@@ -26,6 +26,7 @@ import { CountBadgeForPageTreeItem } from './CountBadgeForPageTreeItem';
 import { CreatingNewPageSpinner } from './CreatingNewPageSpinner';
 import { usePageItemControl } from './use-page-item-control';
 
+
 import styles from './PageTreeItem.module.scss';
 
 const moduleClass = styles['page-tree-item'] ?? '';
@@ -56,7 +57,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
   const { t } = useTranslation();
 
   const {
-    itemNode, isOpen: _isOpen = false, onRenamed,
+    itemNode, targetPathOrId, isOpen: _isOpen = false, onRenamed,
   } = props;
 
   const { page } = itemNode;
@@ -166,7 +167,11 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
     drop(c);
   };
 
-  const itemClassName = `${isOver ? 'drag-over' : ''}`;
+  const isSelected = page._id === targetPathOrId || page.path === targetPathOrId;
+  const itemClassNames = [
+    isOver ? 'drag-over' : '',
+    page.path !== '/' && isSelected ? 'active' : '', // set 'active' except the root page
+  ];
 
   return (
     <TreeItemLayout
@@ -184,7 +189,7 @@ export const PageTreeItem: FC<TreeItemProps> = (props) => {
       onRenamed={props.onRenamed}
       itemRef={itemRef}
       itemClass={PageTreeItem}
-      itemClassName={itemClassName}
+      itemClassName={itemClassNames.join(' ')}
       customEndComponents={[CountBadgeForPageTreeItem]}
       customHoveredEndComponents={[Control, NewPageCreateButton]}
       customHeadOfChildrenComponents={[NewPageInput, () => <CreatingNewPageSpinner show={isProcessingSubmission} />]}
