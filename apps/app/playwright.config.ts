@@ -10,6 +10,8 @@ import { defineConfig, devices } from '@playwright/test';
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+  timeout: 7 * 1000,
+
   testDir: './playwright',
   outputDir: './playwright/output',
   /* Run tests in files in parallel */
@@ -38,6 +40,9 @@ export default defineConfig({
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
+
+    viewport: { width: 1400, height: 1024 },
+
     // Use prepared auth state.
     storageState: 'playwright/.auth/user.json',
   },
@@ -86,10 +91,4 @@ export default defineConfig({
     // },
   ],
 
-  /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
 });
