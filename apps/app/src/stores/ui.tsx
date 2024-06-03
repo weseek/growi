@@ -516,8 +516,10 @@ export const useIsUntitledPage = (): SWRResponse<boolean> => {
 
   const { data: pageId } = useCurrentPageId();
 
-  return useSWRImmutable(
+  return useSWRStatic(
     pageId == null ? null : [key, pageId],
+    undefined,
+    { fallbackData: false },
   );
 
 };
