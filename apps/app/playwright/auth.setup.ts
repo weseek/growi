@@ -2,23 +2,21 @@ import { test as setup, expect } from '@playwright/test';
 
 const authFile = 'playwright/.auth/user.json';
 
-setup('authenticate', async({ page }) => {
+setup('Authenticate as the "admin" user', async({ page }) => {
   // Perform authentication steps. Replace these actions with your own.
   await page.goto('/admin');
-  await page.waitForURL('/login');
 
-  await page.getByLabel('Username or email address').fill('admin');
-  await page.getByLabel('Password').fill('adminadmin');
-  await page.getByRole('button', { name: 'Sign in' }).click();
-  // Wait until the page receives the cookies.
-  //
-  // Sometimes login flow sets cookies in the process of several redirects.
-  // Wait for the final URL to ensure that the cookies are actually set.
+  const loginForm = await page.$('form#login-form');
+
+  if (loginForm != null) {
+    await page.getByLabel('Username or E-mail').fill('admin');
+    await page.getByLabel('Password').fill('adminadmin');
+    await page.locator('[type=submit]').filter({ hasText: 'Login' }).click();
+  }
+
   await page.waitForURL('/admin');
-  // Alternatively, you can wait until the page reaches a state where all cookies are set.
-  await expect(page.getByRole('button', { name: 'View profile and more' })).toBeVisible();
+  await expect(page).toHaveTitle(/Wiki Management Homepage/);
 
   // End of authentication steps.
-
   await page.context().storageState({ path: authFile });
 });
