@@ -1,6 +1,9 @@
 import fs from 'node:fs';
+import path from 'node:path';
 
 import { defineConfig, devices } from '@playwright/test';
+
+const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
 
 /**
  * Read environment variables from file.
@@ -46,7 +49,7 @@ export default defineConfig({
     viewport: { width: 1400, height: 1024 },
 
     // Use prepared auth state.
-    storageState: fs.existsSync('playwright/.auth/admin.json') ? 'playwright/.auth/admin.json' : undefined,
+    storageState: fs.existsSync(authFile) ? authFile : undefined,
   },
 
   /* Configure projects for major browsers */
