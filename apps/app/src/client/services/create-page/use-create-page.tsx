@@ -7,8 +7,8 @@ import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-
 import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
-import { mutateUntitledPage, useCurrentPagePath } from '~/stores/page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { useCurrentPagePath } from '~/stores/page';
+import { EditorMode, useEditorMode, useIsUntitledPage } from '~/stores/ui';
 
 import { createPage } from './create-page';
 
@@ -51,6 +51,7 @@ export const useCreatePage: UseCreatePage = () => {
 
   const { data: currentPagePath } = useCurrentPagePath();
   const { mutate: mutateEditorMode } = useEditorMode();
+  const { mutate: mutateIsUntitledPage } = useIsUntitledPage();
   const { open: openGrantedGroupsInheritanceSelectModal, close: closeGrantedGroupsInheritanceSelectModal } = useGrantedGroupsInheritanceSelectModal();
 
   const [isCreating, setCreating] = useState(false);
@@ -108,7 +109,7 @@ export const useCreatePage: UseCreatePage = () => {
         }
 
         if (params.path == null) {
-          mutateUntitledPage(response.page._id, true);
+          mutateIsUntitledPage(true);
         }
 
         onCreated?.();
@@ -133,7 +134,7 @@ export const useCreatePage: UseCreatePage = () => {
     }
 
     await _create();
-  }, [currentPagePath, mutateEditorMode, router, openGrantedGroupsInheritanceSelectModal, closeGrantedGroupsInheritanceSelectModal, t]);
+  }, [currentPagePath, mutateEditorMode, router, t, closeGrantedGroupsInheritanceSelectModal, mutateIsUntitledPage, openGrantedGroupsInheritanceSelectModal]);
 
   return {
     isCreating,

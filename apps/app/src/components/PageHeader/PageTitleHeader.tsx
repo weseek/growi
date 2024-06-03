@@ -11,8 +11,7 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { useUntitledPage } from '~/stores/page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
+import { EditorMode, useEditorMode, useIsUntitledPage } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
@@ -51,7 +50,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
   const editedPageTitle = nodePath.basename(editedPagePath);
 
   const { data: editorMode } = useEditorMode();
-  const { data: isUntitledPage, mutate: mutateUntitledPage } = useUntitledPage(currentPage._id);
+  const { data: isUntitledPage, mutate: mutateIsUntitledPage } = useIsUntitledPage();
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
@@ -71,7 +70,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
         setRenameInputShown(false);
         setValidationResult(undefined);
         onMoveTerminated?.();
-        mutateUntitledPage(false);
+        mutateIsUntitledPage(false);
       },
       () => {
         setRenameInputShown(true);
@@ -81,7 +80,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
         setValidationResult(undefined);
         onMoveTerminated?.();
       });
-  }, [editedPagePath, mutateUntitledPage, onMoveTerminated, pagePathRenameHandler]);
+  }, [editedPagePath, mutateIsUntitledPage, onMoveTerminated, pagePathRenameHandler]);
 
   const cancel = useCallback(() => {
     setEditedPagePath(currentPagePath);

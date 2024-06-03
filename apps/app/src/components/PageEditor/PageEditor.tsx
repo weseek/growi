@@ -37,13 +37,12 @@ import {
 } from '~/stores/editor';
 import {
   useCurrentPagePath, useSWRxCurrentPage, useCurrentPageId, useIsNotFound, useTemplateBodyData, useSWRxCurrentGrantData,
-  useUntitledPage,
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useSelectedGrant,
+  useEditorMode, useIsUntitledPage, useSelectedGrant,
 } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
@@ -102,6 +101,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: isUntitledPage } = useIsUntitledPage();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
@@ -127,10 +127,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   const currentRevisionId = currentPage?.revision?._id;
   const isRevisionIdRequiredForPageUpdate = currentPage?.revision?.origin === undefined;
-
-  const currentPageTitle = currentPagePath != null ? nodePath.basename(currentPagePath) : undefined;
-
-  const { data: isUntitledPage } = useUntitledPage(currentPage?._id);
 
   const initialValueRef = useRef('');
   const initialValue = useMemo(() => {
@@ -282,7 +278,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (editorMode === EditorMode.Editor && !isUntitledPage) {
+    if (editorMode === EditorMode.Editor && isUntitledPage === false) {
       codeMirrorEditor?.focus();
     }
   }, [codeMirrorEditor, editorMode, isUntitledPage]);

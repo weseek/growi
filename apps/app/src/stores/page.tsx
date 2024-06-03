@@ -239,22 +239,6 @@ export const useSWRxPageRevision = (pageId: string, revisionId: Ref<IRevision>):
   );
 };
 
-export const useUntitledPage = (pageId?: string): SWRResponse<boolean> => {
-
-  const key = `untitled/${pageId}`;
-
-  return useSWR(key, null);
-
-};
-
-export const mutateUntitledPage = (pageId: string, isUntitledPage: boolean): void => {
-
-  const key = `untitled/${pageId}`;
-
-  mutate(key, isUntitledPage);
-
-};
-
 /*
  * SWR Infinite for page revision list
  */

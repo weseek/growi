@@ -510,3 +510,14 @@ export const useIsAbleToShowPageAuthors = (): SWRResponse<boolean, Error> => {
     () => isPageExist && !isUsersTopPagePath,
   );
 };
+
+export const useIsUntitledPage = (): SWRResponse<boolean> => {
+  const key = 'isUntitledPage';
+
+  const { data: pageId } = useCurrentPageId();
+
+  return useSWRImmutable(
+    pageId == null ? null : [key, pageId],
+  );
+
+};
