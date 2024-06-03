@@ -11,5 +11,5 @@ test('get h1', async({ page }) => {
   await page.goto('/Sandbox');
 
   // Expects page to have a heading with the name of Installation.
-  await expect(page.getByRole('heading', { name: 'Sandbox' })).toBeVisible();
+  await expect(page.getByRole('heading').filter({ hasText: /\/Sandbox/ })).toBeVisible();
 });
