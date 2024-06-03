@@ -50,7 +50,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
   const editedPageTitle = nodePath.basename(editedPagePath);
 
   const { data: editorMode } = useEditorMode();
-  const { data: isUntitledPage, mutate: mutateIsUntitledPage } = useIsUntitledPage();
+  const { data: isUntitledPage } = useIsUntitledPage();
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
@@ -70,17 +70,11 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
         setRenameInputShown(false);
         setValidationResult(undefined);
         onMoveTerminated?.();
-        mutateIsUntitledPage(false);
       },
       () => {
         setRenameInputShown(true);
-      },
-      () => {
-        setRenameInputShown(false);
-        setValidationResult(undefined);
-        onMoveTerminated?.();
       });
-  }, [editedPagePath, mutateIsUntitledPage, onMoveTerminated, pagePathRenameHandler]);
+  }, [editedPagePath, onMoveTerminated, pagePathRenameHandler]);
 
   const cancel = useCallback(() => {
     setEditedPagePath(currentPagePath);
