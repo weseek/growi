@@ -1,3 +1,5 @@
+import fs from 'node:fs';
+
 import { defineConfig, devices } from '@playwright/test';
 
 /**
@@ -44,7 +46,7 @@ export default defineConfig({
     viewport: { width: 1400, height: 1024 },
 
     // Use prepared auth state.
-    storageState: 'playwright/.auth/user.json',
+    storageState: fs.existsSync('playwright/.auth/admin.json') ? 'playwright/.auth/admin.json' : undefined,
   },
 
   /* Configure projects for major browsers */

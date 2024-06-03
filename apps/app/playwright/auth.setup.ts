@@ -1,6 +1,6 @@
 import { test as setup, expect } from '@playwright/test';
 
-const authFile = 'playwright/.auth/user.json';
+const authFile = 'playwright/.auth/admin.json';
 
 setup('Authenticate as the "admin" user', async({ page }) => {
   // Perform authentication steps. Replace these actions with your own.
