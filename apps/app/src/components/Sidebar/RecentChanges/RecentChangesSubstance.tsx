@@ -196,12 +196,12 @@ export const RecentChangesHeader = ({
             <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
               <input
                 id="recentChangesResize"
-                className="form-check-input"
+                className="form-check-input pe-none"
                 type="checkbox"
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-check-label">
+              <label className="form-check-label pe-none" aria-disabled="true">
                 {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
               </label>
             </div>
@@ -215,7 +215,7 @@ export const RecentChangesHeader = ({
                 type="checkbox"
                 checked={isWipPageShown}
               />
-              <label className="form-label form-check-label text-muted mb-0">
+              <label className="form-check-label pe-none">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
