@@ -1,5 +1,3 @@
-export * from './components';
+// only export universal modules
 export * from './consts';
 export * from './models';
-export * from './services';
-export * from './stores';

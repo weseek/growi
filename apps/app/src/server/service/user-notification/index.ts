@@ -1,3 +1,5 @@
+import type { IRevisionHasId } from '@growi/core';
+
 import { toArrayFromCsv } from '~/utils/to-array-from-csv';
 
 
@@ -27,11 +29,11 @@ export class UserNotificationService {
    * @param {User} user
    * @param {string} slackChannelsStr comma separated string. e.g. 'general,channel1,channel2'
    * @param {string} mode 'create' or 'update' or 'comment'
-   * @param {string} previousRevision
+   * @param {IRevisionHasId} previousRevision
    * @param {Comment} comment
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async fire(page, user, slackChannelsStr, mode, option?: { previousRevision: string }, comment = {}): Promise<PromiseSettledResult<any>[]> {
+  async fire(page, user, slackChannelsStr, mode, option?: { previousRevision: IRevisionHasId }, comment = {}): Promise<PromiseSettledResult<any>[]> {
     const {
       appService, slackIntegrationService,
     } = this.crowi;
