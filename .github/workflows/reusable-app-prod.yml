@@ -402,9 +402,9 @@ jobs:
       with:
         path: |
           ~/.cache/ms-playwright
-        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.project }}-${{ hashFiles('**/yarn.lock') }}
+        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.browser }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.project }}-
+          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.browser }}-
 
     - name: Install dependencies
       run: |
