@@ -349,11 +349,11 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-    #     spec-group: ['10', '20', '21', '22', '23', '30', '40', '50', '60']
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shard: [1/2, 2/2]
 
     services:
       mongodb:
@@ -402,9 +402,9 @@ jobs:
       with:
         path: |
           ~/.cache/ms-playwright
-        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.project }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-
+          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.project }}-
 
     - name: Install dependencies
       run: |
@@ -414,7 +414,7 @@ jobs:
     - name: Install Playwright browsers
       if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: |
-        yarn playwright install
+        yarn playwright install ${{ matrix.browser }}
 
     - name: Install Playwright system dependencies
       run: |
@@ -434,8 +434,16 @@ jobs:
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
+    - name: Playwright Run (installer)
+      if: ${{ matrix.project == 'chromium' }}
+      working-directory: ./apps/app
+      run: |
+        yarn playwright test --project=chromium/installer
+      env:
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-playwright-installer
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
     - name: Copy dotenv file for automatic installation
-      # if: ${{ matrix.spec-group != '10' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
@@ -449,9 +457,9 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test
+        yarn playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-test-playwright
+        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Slack Notification

@@ -59,7 +59,7 @@ export default defineConfig({
     { name: 'auth', testMatch: /auth\.setup\.ts/ },
 
     {
-      name: 'installer',
+      name: 'chromium/installer',
       use: { ...devices['Desktop Chrome'] },
       testMatch: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup'],
