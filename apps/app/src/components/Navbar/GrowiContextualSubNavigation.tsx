@@ -352,9 +352,11 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                     <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
                   </Link>
                 ) : (
-                  <Link href="#" className="btn me-2 disabled" prefetch={false} aria-disabled="true">
-                    <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-                  </Link>
+                  <span className="d-inline-block" tabIndex="0" data-bs-toggle="tooltip" data-bs-title="Disabled tooltip">
+                    <Link href="#" className="btn me-2 disabled" prefetch={false} aria-disabled="true">
+                      <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                    </Link>
+                  </span>
                 )}
                 <Link href="/login#login" className="btn btn-primary" prefetch={false}>
                   <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
