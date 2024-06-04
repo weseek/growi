@@ -68,21 +68,21 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: /10-install\/.*\.spec\.ts/,
+      testIgnore: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      testIgnore: /10-install\/.*\.spec\.ts/,
+      testIgnore: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      testIgnore: /10-install\/.*\.spec\.ts/,
+      testIgnore: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
