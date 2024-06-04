@@ -42,7 +42,6 @@ export class GitHubUrl {
     const zipUrl = encodedTagName !== '' ? `tags/${encodedTagName}` : `heads/${encodedBranchName}`;
     const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/${zipUrl}.zip`, 'https://github.com');
     return ghUrl.toString();
-
   }
 
   get extractedArchiveDirName(): string {
@@ -67,7 +66,6 @@ export class GitHubUrl {
     }
 
     this._branchName = branchName;
-    this._tagName = tagName;
     this._tagName = tagName;
 
     this._organizationName = sanitize(matched[1]);
