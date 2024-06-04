@@ -347,11 +347,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
             { isGuestUser && (
               <div className="mt-2">
                 {/* Sign up link */}
-                {isRegistrationEnabled && (
-                  <Link href="/login#register" className="btn me-2" prefetch={false}>
-                    <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
-                  </Link>
-                )}
+                <Link
+                  href="/login#register"
+                  className={`btn me-2 ${isRegistrationEnabled ? '' : 'disabled'}`}
+                  prefetch={false}
+                  aria-disabled={!isRegistrationEnabled}
+                >
+                  <span className="material-symbols-outlined me-1">person_add</span>{t('Sign up')}
+                </Link>
                 <Link href="/login#login" className="btn btn-primary" prefetch={false}>
                   <span className="material-symbols-outlined me-1">login</span>{t('Sign in')}
                 </Link>
