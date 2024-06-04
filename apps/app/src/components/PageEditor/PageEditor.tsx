@@ -9,10 +9,11 @@ import nodePath from 'path';
 
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
+  CodeMirrorEditorMain,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor';
+} from '@growi/editor/dist/client';
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -68,6 +69,7 @@ declare global {
 export type SaveOptions = {
   wip: boolean,
   slackChannels: string,
+  isSlackEnabled: boolean,
   overwriteScopesOfDescendants?: boolean
 }
 export type Save = (

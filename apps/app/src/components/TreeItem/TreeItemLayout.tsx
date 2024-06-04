@@ -1,9 +1,7 @@
 import React, {
-  useCallback, useState, useEffect,
+  useCallback, useState, useEffect, useMemo,
   type FC, type RefObject, type RefCallback, type MouseEvent,
 } from 'react';
-
-import type { Nullable } from '@growi/core';
 
 import { useSWRxPageChildren } from '~/stores/page-listing';
 import { usePageTreeDescCountMap } from '~/stores/ui';
@@ -16,24 +14,6 @@ import type { TreeItemProps, TreeItemToolProps } from './interfaces';
 import styles from './TreeItemLayout.module.scss';
 
 const moduleClass = styles['tree-item-layout'] ?? '';
-
-
-// Utility to mark target
-const markTarget = (children: ItemNode[], targetPathOrId?: Nullable<string>): void => {
-  if (targetPathOrId == null) {
-    return;
-  }
-
-  children.forEach((node) => {
-    if (node.page._id === targetPathOrId || node.page.path === targetPathOrId) {
-      node.page.isTarget = true;
-    }
-    else {
-      node.page.isTarget = false;
-    }
-    return node;
-  });
-};
 
 
 type TreeItemLayoutProps = TreeItemProps & {
@@ -98,7 +78,6 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
    */
   useEffect(() => {
     if (children.length > currentChildren.length) {
-      markTarget(children, targetPathOrId);
       setCurrentChildren(children);
     }
   }, [children, currentChildren.length, targetPathOrId]);
@@ -109,10 +88,13 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
   useEffect(() => {
     if (isOpen && data != null) {
       const newChildren = ItemNode.generateNodesFromPages(data.children);
-      markTarget(newChildren, targetPathOrId);
       setCurrentChildren(newChildren);
     }
   }, [data, isOpen, targetPathOrId]);
+
+  const isSelected = useMemo(() => {
+    return page._id === targetPathOrId || page.path === targetPathOrId;
+  }, [page, targetPathOrId]);
 
   const ItemClassFixed = itemClass ?? TreeItemLayout;
 
@@ -155,11 +137,11 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
       <li
         ref={itemRef}
         role="button"
-        className={`list-group-item ${itemClassName}
-          border-0 py-0 ps-0 d-flex align-items-center rounded-1
-          ${page.isTarget ? 'active' : 'list-group-item-action'}`}
-        id={page.isTarget ? 'grw-pagetree-current-page-item' : `grw-pagetree-list-${page._id}`}
+        className={`list-group-item list-group-item-action ${itemClassName}
+          border-0 py-0 ps-0 d-flex align-items-center rounded-1`}
+        id={`grw-pagetree-list-${page._id}`}
         onClick={itemClickHandler}
+        aria-current={isSelected ? true : undefined}
       >
 
         <div className="btn-triangle-container d-flex justify-content-center">
@@ -224,7 +206,7 @@ export const TreeItemLayout: FC<TreeItemLayoutProps> = (props) => {
             };
 
             return (
-              <ItemClassFixed {...itemProps} />
+              <ItemClassFixed key={node.page._id} {...itemProps} />
             );
           }) }
 

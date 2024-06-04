@@ -42,6 +42,38 @@ export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<Crea
 };
 
 /*
+* GrantedGroupsInheritanceSelectModal
+*/
+type GrantedGroupsInheritanceSelectModalStatus = {
+  isOpened: boolean,
+  onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>,
+}
+
+type GrantedGroupsInheritanceSelectModalStatusUtils = {
+  open(onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+  close(): Promise<GrantedGroupsInheritanceSelectModalStatus | undefined>
+}
+
+export const useGrantedGroupsInheritanceSelectModal = (
+    status?: GrantedGroupsInheritanceSelectModalStatus,
+): SWRResponse<GrantedGroupsInheritanceSelectModalStatus, Error> & GrantedGroupsInheritanceSelectModalStatusUtils => {
+  const initialData: GrantedGroupsInheritanceSelectModalStatus = { isOpened: false };
+  const swrResponse = useSWRStatic<GrantedGroupsInheritanceSelectModalStatus, Error>(
+    'grantedGroupsInheritanceSelectModalStatus', status, { fallbackData: initialData },
+  );
+
+  const { mutate } = swrResponse;
+
+  return {
+    ...swrResponse,
+    open: useCallback(
+      (onCreateBtnClick?: (onlyInheritUserRelatedGrantedGroups?: boolean) => Promise<void>) => mutate({ isOpened: true, onCreateBtnClick }), [mutate],
+    ),
+    close: useCallback(() => mutate({ isOpened: false }), [mutate]),
+  };
+};
+
+/*
 * PageDeleteModal
 */
 export type IDeleteModalOption = {
