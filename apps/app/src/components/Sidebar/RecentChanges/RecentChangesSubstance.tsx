@@ -201,7 +201,7 @@ export const RecentChangesHeader = ({
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0">
+              <label className="form-check-label">
                 {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
               </label>
             </div>
