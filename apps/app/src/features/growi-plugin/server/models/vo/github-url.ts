@@ -20,6 +20,8 @@ export class GitHubUrl {
 
   private _tagName: string;
 
+  private _tagName: string;
+
   get organizationName(): string {
     return this._organizationName;
   }
@@ -36,12 +38,17 @@ export class GitHubUrl {
     return this._tagName;
   }
 
+  get tagName(): string {
+    return this._tagName;
+  }
+
   get archiveUrl(): string {
     const encodedBranchName = encodeURIComponent(this.branchName);
     const encodedTagName = encodeURIComponent(this.tagName);
     const zipUrl = encodedTagName !== '' ? `tags/${encodedTagName}` : `heads/${encodedBranchName}`;
     const ghUrl = new URL(`/${this.organizationName}/${this.reposName}/archive/refs/${zipUrl}.zip`, 'https://github.com');
     return ghUrl.toString();
+
   }
 
   get extractedArchiveDirName(): string {
@@ -50,6 +57,7 @@ export class GitHubUrl {
     // return name.replace(sanitizeVersionChars, m => m.substring(1)).replaceAll(sanitizeSymbolsChars, '-');
   }
 
+  constructor(url: string, branchName = 'main', tagName = '') {
   constructor(url: string, branchName = 'main', tagName = '') {
 
     let matched;
@@ -67,6 +75,7 @@ export class GitHubUrl {
     }
 
     this._branchName = branchName;
+    this._tagName = tagName;
     this._tagName = tagName;
 
     this._organizationName = sanitize(matched[1]);

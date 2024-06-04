@@ -1,8 +1,15 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v6.3.4...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v6.3.5...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v6.3.5](https://github.com/weseek/growi/compare/v6.3.4...v6.3.5) - 2024-05-30
+
+### 🐛 Bug Fixes
+
+* fix: Drawio not available with GROWI slides in v6 (#8827) @reiji-h
+* fix: [v6] An error occurred during user activation via email (#8850) @maeshinshin
 
 ## [v6.3.4](https://github.com/weseek/growi/compare/v6.3.3...v6.3.4) - 2024-04-17
 
