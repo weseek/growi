@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { Origin } from '@growi/core';
 
-import { useCreatePageAndTransit } from '~/client/services/create-page';
+import { useCreatePage } from '~/client/services/create-page';
 import { useCurrentPagePath } from '~/stores/page';
 
 
@@ -14,20 +14,23 @@ type UseCreateNewPage = () => {
 export const useCreateNewPage: UseCreateNewPage = () => {
   const { data: currentPagePath, isLoading: isLoadingPagePath } = useCurrentPagePath();
 
-  const { isCreating, createAndTransit } = useCreatePageAndTransit();
+  const { isCreating, create } = useCreatePage();
 
   const createNewPage = useCallback(async() => {
     if (isLoadingPagePath) return;
 
-    return createAndTransit(
+    return create(
       {
         parentPath: currentPagePath,
         optionalParentPath: '/',
         wip: true,
         origin: Origin.View,
       },
+      {
+        skipPageExistenceCheck: true,
+      },
     );
-  }, [createAndTransit, currentPagePath, isLoadingPagePath]);
+  }, [create, currentPagePath, isLoadingPagePath]);
 
   return {
     isCreating,

@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import React, {
   memo, useCallback, useEffect, useMemo, useRef,
 } from 'react';
@@ -16,7 +17,7 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import {
   EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
@@ -66,7 +67,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: () => void,
+  onClick: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -74,30 +75,23 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    onClickMenuItem, expandContentWidth,
+    onClick, expandContentWidth,
   } = props;
 
-  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    onClickMenuItem();
-  }, [onClickMenuItem]);
-
   return (
-    <div
-      className="grw-page-control-dropdown-item dropdown-item"
-      onClick={menuItemClickedHandler}
-    >
+    <DropdownItem className="grw-page-control-dropdown-item dropdown-item" onClick={onClick} toggle={false}>
       <div className="form-check form-switch ms-1">
         <input
-          className="form-check-input"
+          className="form-check-input pe-none"
           type="checkbox"
           checked={expandContentWidth}
+          onChange={() => {}}
         />
-        <label className="form-label form-check-label">
+        <label className="form-check-label pe-none">
           { t('wide_view') }
         </label>
       </div>
-    </div>
+    </DropdownItem>
   );
 };
 
@@ -136,6 +130,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: editorMode } = useEditorMode();
   const { data: isDeviceLargerThanMd } = useIsDeviceLargerThanMd();
+  const { data: isSearchPage } = useIsSearchPage();
 
   const { mutate: mutatePageInfo } = useSWRxPageInfo(pageId, shareLinkId);
 
@@ -255,7 +250,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
 
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+      return <WideViewMenuItem {...props} onClick={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);
@@ -279,7 +274,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
   return (
     <div className={`${styles['grw-page-controls']} hstack gap-2`} ref={pageControlsRef}>
-      { isViewMode && isDeviceLargerThanMd && (
+      { isViewMode && isDeviceLargerThanMd && !isSearchPage && !isSearchPage && (
         <SearchButton />
       )}
 
@@ -312,7 +307,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
               bookmarkCount={pageInfo.bookmarkCount}
             />
           )}
-          {revisionId != null && (
+          {revisionId != null && !isSearchPage && (
             <SeenUserInfo
               seenUsers={seenUsers}
               sumOfSeenUsers={sumOfSeenUsers}

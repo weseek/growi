@@ -48,6 +48,7 @@ export const DropendMenu = React.memo((props: DropendMenuProps): JSX.Element => 
           <DropdownItem divider />
           <li><span className="text-muted px-3">{t('create_page_dropdown.todays.desc')}</span></li>
           <DropdownItem
+            aria-label="Create today page"
             onClick={onClickCreateTodaysMemo}
           >
             {todaysPath}
