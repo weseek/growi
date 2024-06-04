@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 import nodePath from 'path';
 
@@ -11,11 +11,11 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
+import { EditorMode, useEditorMode, useIsUntitledPage } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
-
 
 import styles from './PageTitleHeader.module.scss';
 
@@ -49,12 +49,8 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
 
   const editedPageTitle = nodePath.basename(editedPagePath);
 
-  // TODO: https://redmine.weseek.co.jp/issues/142729
-  // https://regex101.com/r/Wg2Hh6/1
-  const untitledPageRegex = /^Untitled-\d+$/;
-
-  const isNewlyCreatedPage = (currentPage.wip && currentPage.latestRevision == null && untitledPageRegex.test(editedPageTitle)) ?? false;
-
+  const { data: editorMode } = useEditorMode();
+  const { data: isUntitledPage } = useIsUntitledPage();
 
   const changeHandler = useCallback(async(e: ChangeEvent<HTMLInputElement>) => {
     const newPageTitle = pathUtils.removeHeadingSlash(e.target.value);
@@ -95,13 +91,12 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
     setRenameInputShown(true);
   }, [currentPagePath, isMovable]);
 
-  // TODO: auto focus when create new page
-  // https://redmine.weseek.co.jp/issues/136128
-  // useEffect(() => {
-  //   if (isNewlyCreatedPage) {
-  //     setRenameInputShown(true);
-  //   }
-  // }, [currentPage._id, isNewlyCreatedPage]);
+  useEffect(() => {
+    setEditedPagePath(currentPagePath);
+    if (isUntitledPage && editorMode === EditorMode.Editor) {
+      setRenameInputShown(true);
+    }
+  }, [currentPage._id, currentPagePath, editorMode, isUntitledPage]);
 
   const isInvalid = validationResult != null;
 
@@ -116,7 +111,7 @@ export const PageTitleHeader = (props: Props): JSX.Element => {
           <div className="position-relative">
             <div className="position-absolute w-100">
               <AutosizeSubmittableInput
-                value={isNewlyCreatedPage ? '' : editedPageTitle}
+                value={isUntitledPage ? '' : editedPageTitle}
                 inputClassName={`form-control fs-4 ${isInvalid ? 'is-invalid' : ''}`}
                 inputStyle={{ maxWidth: inputMaxWidth }}
                 placeholder={t('Input page name')}

@@ -19,11 +19,6 @@
       "cache": false
     },
 
-    "@growi/pluginkit#build": {
-      "dependsOn": ["@growi/core#build"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
     "@growi/remark-attachment-refs#build": {
       "dependsOn": ["@growi/core#build", "@growi/remark-growi-directive#build", "@growi/ui#build"],
       "outputs": ["dist/**"],
@@ -56,11 +51,6 @@
       "outputMode": "new-only"
     },
 
-    "@growi/pluginkit#dev": {
-      "dependsOn": ["@growi/core#dev"],
-      "outputs": ["dist/**"],
-      "outputMode": "new-only"
-    },
     "@growi/remark-attachment-refs#dev": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"],
       "outputs": ["dist/**"],
@@ -109,9 +99,6 @@
       "persistent": true
     },
 
-    "@growi/pluginkit#lint": {
-      "dependsOn": ["@growi/core#dev"]
-    },
     "@growi/remark-attachment-refs#lint": {
       "dependsOn": ["@growi/core#dev", "@growi/remark-growi-directive#dev", "@growi/ui#dev"]
     },
@@ -129,10 +116,6 @@
 
     "@growi/slackbot-proxy#test": {
       "dependsOn": ["@growi/slack#dev"],
-      "outputMode": "new-only"
-    },
-    "@growi/pluginkit#test": {
-      "dependsOn": ["@growi/core#dev"],
       "outputMode": "new-only"
     },
     "@growi/preset-templates#test": {
