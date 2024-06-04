@@ -8,7 +8,7 @@ const githubReposIdPattern = new RegExp(/^\/([^/]+)\/([^/]+)$/);
 const sanitizeSymbolsChars = new RegExp(/[^a-zA-Z0-9_.]+/g);
 // https://regex101.com/r/ARgXvb/1
 // GitHub will return a zip file with the v removed if the tag or branch name is "v + number"
-// const sanitizeVersionChars = new RegExp(/^v[\d]/gi);
+const sanitizeVersionChars = new RegExp(/^v[\d]/gi);
 
 export class GitHubUrl {
 
@@ -47,8 +47,7 @@ export class GitHubUrl {
 
   get extractedArchiveDirName(): string {
     const name = this._tagName !== '' ? this._tagName : this._branchName;
-    return name.replaceAll(sanitizeSymbolsChars, '-');
-    // return name.replace(sanitizeVersionChars, m => m.substring(1)).replaceAll(sanitizeSymbolsChars, '-');
+    return name.replace(sanitizeVersionChars, m => m.substring(1)).replaceAll(sanitizeSymbolsChars, '-');
   }
 
   constructor(url: string, branchName = 'main', tagName = '') {
