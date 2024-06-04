@@ -20,8 +20,6 @@ export class GitHubUrl {
 
   private _tagName: string;
 
-  private _tagName: string;
-
   get organizationName(): string {
     return this._organizationName;
   }
@@ -32,10 +30,6 @@ export class GitHubUrl {
 
   get branchName(): string {
     return this._branchName;
-  }
-
-  get tagName(): string {
-    return this._tagName;
   }
 
   get tagName(): string {
@@ -57,7 +51,6 @@ export class GitHubUrl {
     // return name.replace(sanitizeVersionChars, m => m.substring(1)).replaceAll(sanitizeSymbolsChars, '-');
   }
 
-  constructor(url: string, branchName = 'main', tagName = '') {
   constructor(url: string, branchName = 'main', tagName = '') {
 
     let matched;
