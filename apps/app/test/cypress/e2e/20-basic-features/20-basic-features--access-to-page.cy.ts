@@ -21,18 +21,6 @@ context('Access to page', () => {
     });
   });
 
-  it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox');
-    cy.collapseSidebar(true, true);
-
-    // for check download toc data
-    // https://redmine.weseek.co.jp/issues/111384
-    // cy.get('.toc-link').should('be.visible');
-
-    cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}-sandbox`);
-  });
-
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#headers');

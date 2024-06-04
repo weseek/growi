@@ -1,3 +1,4 @@
+import type { MouseEventHandler } from 'react';
 import React, {
   memo, useCallback, useEffect, useMemo, useRef,
 } from 'react';
@@ -10,6 +11,7 @@ import {
 } from '@growi/core';
 import { useRect } from '@growi/ui/dist/utils';
 import { useTranslation } from 'next-i18next';
+import { DropdownItem } from 'reactstrap';
 
 import {
   toggleLike, toggleSubscribe,
@@ -65,7 +67,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 type WideViewMenuItemProps = AdditionalMenuItemsRendererProps & {
-  onClickMenuItem: () => void,
+  onClick: () => void,
   expandContentWidth?: boolean,
 }
 
@@ -73,30 +75,23 @@ const WideViewMenuItem = (props: WideViewMenuItemProps): JSX.Element => {
   const { t } = useTranslation();
 
   const {
-    onClickMenuItem, expandContentWidth,
+    onClick, expandContentWidth,
   } = props;
 
-  const menuItemClickedHandler = useCallback((e: React.MouseEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    onClickMenuItem();
-  }, [onClickMenuItem]);
-
   return (
-    <div
-      className="grw-page-control-dropdown-item dropdown-item"
-      onClick={menuItemClickedHandler}
-    >
+    <DropdownItem className="grw-page-control-dropdown-item dropdown-item" onClick={onClick} toggle={false}>
       <div className="form-check form-switch ms-1">
         <input
-          className="form-check-input"
+          className="form-check-input pe-none"
           type="checkbox"
           checked={expandContentWidth}
+          onChange={() => {}}
         />
-        <label className="form-label form-check-label">
+        <label className="form-check-label pe-none">
           { t('wide_view') }
         </label>
       </div>
-    </div>
+    </DropdownItem>
   );
 };
 
@@ -255,7 +250,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     }
     const wideviewMenuItemRenderer = (props: WideViewMenuItemProps) => {
 
-      return <WideViewMenuItem {...props} onClickMenuItem={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
+      return <WideViewMenuItem {...props} onClick={switchContentWidthClickHandler} expandContentWidth={expandContentWidth} />;
     };
     return wideviewMenuItemRenderer;
   }, [pageInfo, switchContentWidthClickHandler, expandContentWidth]);

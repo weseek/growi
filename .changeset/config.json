@@ -7,5 +7,19 @@
   "access": "public",
   "baseBranch": "master",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "snapshot": {
+    "useCalculatedVersion": true,
+    "prereleaseTemplate": "{tag}.{commit}"
+  },
+  "ignore": [
+    "@growi/app",
+    "@growi/slackbot-proxy",
+    "@growi/custom-icons",
+    "@growi/editor",
+    "@growi/presentation",
+    "@growi/preset-*",
+    "@growi/remark-*",
+    "@growi/slack",
+    "@growi/ui"
+  ]
 }

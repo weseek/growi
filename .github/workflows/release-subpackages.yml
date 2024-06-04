@@ -21,6 +21,8 @@ concurrency:
 jobs:
   release-subpackages-snapshot:
 
+    if: "!startsWith(github.head_ref, 'changeset-release/')"
+
     runs-on: ubuntu-latest
 
     steps:
@@ -56,9 +58,17 @@ jobs:
       env:
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
-    - name: Snapshot release to npm
+    - name: Retrieve changesets information
+      id: changesets-status
       run: |
-        yarn release-subpackages:next
+        yarn changeset status --output status.json
+        echo "CHANGESETS_LENGTH=$(jq -r '.changesets | length' status.json)" >> $GITHUB_OUTPUT
+        rm status.json
+
+    - name: Snapshot release to npm
+      if: steps.changesets-status.outputs.CHANGESETS_LENGTH > 0
+      run: |
+        yarn release-subpackages:snapshot
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -97,6 +107,8 @@ jobs:
       id: changesets
       uses: changesets/action@v1
       with:
+        title: Release Subpackages
+        version: yarn version-subpackages
         publish: yarn release-subpackages
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
