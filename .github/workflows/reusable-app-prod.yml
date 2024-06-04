@@ -435,7 +435,7 @@ jobs:
         cat config/ci/.env.local.for-ci >> .env.production.local
 
     - name: Playwright Run (installer)
-      if: ${{ matrix.project == 'chromium' }}
+      if: ${{ matrix.browser == 'chromium' }}
       working-directory: ./apps/app
       run: |
         yarn playwright test --project=chromium/installer
@@ -457,7 +457,7 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}
+        yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
         MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
