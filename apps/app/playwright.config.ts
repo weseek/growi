@@ -55,24 +55,35 @@ export default defineConfig({
   /* Configure projects for major browsers */
   projects: [
     // Setup project
-    { name: 'setup', testMatch: /.*\.setup\.ts/ },
+    { name: 'setup', testMatch: /.*\.setup\.ts/, testIgnore: /auth\.setup\.ts/ },
+    { name: 'auth', testMatch: /auth\.setup\.ts/ },
+
+    {
+      name: 'installer',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /10-installer\/.*\.spec\.ts/,
+      dependencies: ['setup'],
+    },
 
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup'],
+      testIgnore: /10-install\/.*\.spec\.ts/,
+      dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup'],
+      testIgnore: /10-install\/.*\.spec\.ts/,
+      dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup'],
+      testIgnore: /10-install\/.*\.spec\.ts/,
+      dependencies: ['setup', 'auth'],
     },
 
     /* Test against mobile viewports. */
