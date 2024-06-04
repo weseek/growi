@@ -42,7 +42,7 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
-  useIsRegistrationEnabled,
+  useIsLocalAccountRegistrationEnabled,
 } from '~/stores/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
@@ -153,7 +153,7 @@ type Props = CommonProps & {
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
 
-  isRegistrationEnabled: boolean,
+  isLocalAccountRegistrationEnabled: boolean,
 
   sidebarConfig: ISidebarConfig,
 
@@ -229,7 +229,7 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
   useIsUploadAllFileAllowed(props.isUploadAllFileAllowed);
   useIsUploadEnabled(props.isUploadEnabled);
-  useIsRegistrationEnabled(props.isRegistrationEnabled);
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
   const { pageWithMeta } = props;
 
@@ -549,7 +549,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
   props.isUploadAllFileAllowed = crowi.fileUploadService.getFileUploadEnabled();
   props.isUploadEnabled = crowi.fileUploadService.getIsUploadable();
 
-  props.isRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
     && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.adminPreferredIndentSize = configManager.getConfig('markdown', 'markdown:adminPreferredIndentSize');

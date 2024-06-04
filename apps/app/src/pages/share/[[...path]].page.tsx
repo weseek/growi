@@ -23,7 +23,7 @@ import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
-  useIsRegistrationEnabled,
+  useIsLocalAccountRegistrationEnabled,
 } from '~/stores/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
@@ -47,7 +47,7 @@ type Props = CommonProps & {
   isSearchServiceReachable: boolean,
   isSearchScopeChildrenAsDefault: boolean,
   isEnabledMarp: boolean,
-  isRegistrationEnabled: boolean,
+  isLocalAccountRegistrationEnabled: boolean,
   drawioUri: string | null,
   rendererConfig: RendererConfig,
   skipSSR: boolean,
@@ -99,7 +99,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
   useIsSearchScopeChildrenAsDefault(props.isSearchScopeChildrenAsDefault);
   useIsEnabledMarp(props.rendererConfig.isEnabledMarp);
   useIsContainerFluid(props.isContainerFluid);
-  useIsRegistrationEnabled(props.isRegistrationEnabled);
+  useIsLocalAccountRegistrationEnabled(props.isLocalAccountRegistrationEnabled);
 
   const { trigger: mutateCurrentPage, data: currentPage } = useSWRMUTxCurrentPage();
 
@@ -164,7 +164,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.drawioUri = configManager.getConfig('crowi', 'app:drawioUri');
 
-  props.isRegistrationEnabled = crowi.passportService.isLocalStrategySetup
+  props.isLocalAccountRegistrationEnabled = crowi.passportService.isLocalStrategySetup
     && configManager.getConfig('crowi', 'security:registrationMode') !== RegistrationMode.CLOSED;
 
   props.rendererConfig = {

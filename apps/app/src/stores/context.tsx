@@ -192,8 +192,8 @@ export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean,
   return useStaticSWR('isContainerFluid', initialData);
 };
 
-export const useIsRegistrationEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isRegistrationEnabled', initialData);
+export const useIsLocalAccountRegistrationEnabled = (initialData?: boolean): SWRResponse<boolean, Error> => {
+  return useStaticSWR('isLocalAccountRegistrationEnabled', initialData);
 };
 
 /** **********************************************************
