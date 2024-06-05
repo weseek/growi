@@ -165,18 +165,18 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td>
-                      <span className="material-symbols-outlined me-2 mt-2">group</span>
                       <Link
                         className="link-opacity-75-hover  text-decoration-underline"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
+                        <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         {group.name}
                         <button
-                          className="btn btn-link btn-edit-groups text-secondary"
+                          className="btn btn-link btn-edit-groups text-secondary py-0"
                           type="button"
                           onMouseEnter={onMouseEnterHandler}
                           onMouseLeave={onMouseLeaveHandler}
-                        >   {(isHovered) && (<span className="material-symbols-outlined fs-6">edit</span>
+                        >   {(isHovered) && (<span className="material-symbols-outlined py-0">edit</span>
                           )}
                         </button>
                       </Link>
