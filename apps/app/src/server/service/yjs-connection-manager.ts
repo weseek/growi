@@ -54,13 +54,13 @@ class YjsConnectionManager {
       return;
     }
 
-    const persistedYdoc = await this.mdb.getYDoc(pageId);
+    const persistedYdoc = await this.getPersistedYdoc(pageId);
     const persistedStateVector = Y.encodeStateVector(persistedYdoc);
 
     await this.mdb.flushDocument(pageId);
 
     // If no write operation has been performed, insert initial value
-    const clientsSize = currentYdoc.store.clients.size;
+    const clientsSize = persistedYdoc.store.clients.size;
     if (clientsSize === 0) {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
@@ -101,6 +101,11 @@ class YjsConnectionManager {
   public getCurrentYdoc(pageId: string): Ydoc | undefined {
     const currentYdoc = this.ysocketio.documents.get(`yjs/${pageId}`);
     return currentYdoc;
+  }
+
+  public async getPersistedYdoc(pageId: string): Promise<Y.Doc> {
+    const persistedYdoc = await this.mdb.getYDoc(pageId);
+    return persistedYdoc;
   }
 
 }

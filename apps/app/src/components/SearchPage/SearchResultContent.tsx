@@ -188,7 +188,7 @@ export const SearchResultContent: FC<Props> = (props: Props) => {
       : undefined;
 
     return (
-      <div className="d-flex flex-column align-items-end justify-content-center px-2 py-1">
+      <div className="d-flex flex-column flex-row-reverse flex px-2 py-1">
         <PageControls
           pageId={page._id}
           revisionId={revisionId}

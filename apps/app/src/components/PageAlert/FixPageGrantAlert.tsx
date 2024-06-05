@@ -9,7 +9,7 @@ import {
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
-import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResIsGrantNormalizedGrantData } from '~/interfaces/page-grant';
+import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResGrantData } from '~/interfaces/page-grant';
 import { useCurrentUser } from '~/stores/context';
 import { useSWRxApplicableGrant, useSWRxCurrentGrantData, useSWRxCurrentPage } from '~/stores/page';
 
@@ -17,7 +17,7 @@ type ModalProps = {
   isOpen: boolean
   pageId: string
   dataApplicableGrant: IRecordApplicableGrant
-  currentAndParentPageGrantData: IResIsGrantNormalizedGrantData
+  currentAndParentPageGrantData: IResGrantData
   close(): void
 }
 

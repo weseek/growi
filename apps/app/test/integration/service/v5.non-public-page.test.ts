@@ -358,6 +358,19 @@ describe('PageService page operations with non-public pages', () => {
         parent: rootPage._id,
         descendantCount: 0,
       },
+      {
+        path: '/mc6_top',
+        grant: Page.GRANT_USER_GROUP,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+        grantedGroups: [
+          { item: groupIdIsolate, type: GroupType.userGroup },
+          { item: groupIdB, type: GroupType.userGroup },
+        ],
+      },
     ]);
 
     /**
@@ -956,6 +969,50 @@ describe('PageService page operations with non-public pages', () => {
         expect(_pageT.descendantCount).toStrictEqual(1);
         // isGrantNormalized is called when GRANT PUBLIC
         expect(isGrantNormalizedSpy).toBeCalledTimes(1);
+      });
+    });
+    describe('Creating a page under a page with grant USER_GROUP', () => {
+      describe('When onlyInheritUserRelatedGrantedGroups is true', () => {
+        test('Only user related groups should be inherited', async() => {
+          const pathT = '/mc6_top';
+          const pageT = await Page.findOne({ path: pathT });
+          expect(pageT).toBeTruthy();
+
+          const pathN = '/mc6_top/onlyRelatedGroupsInherited'; // path to create
+          await create(pathN, 'new body', npDummyUser1, { grant: Page.GRANT_USER_GROUP, onlyInheritUserRelatedGrantedGroups: true });
+
+          const _pageT = await Page.findOne({ path: pathT });
+          const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_USER_GROUP }); // newly crated
+          expect(_pageT).toBeTruthy();
+          expect(_pageN).toBeTruthy();
+          expect(_pageN.parent).toStrictEqual(_pageT._id);
+          expect(_pageT.descendantCount).toStrictEqual(1);
+          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([
+            { item: groupIdIsolate, type: GroupType.userGroup },
+          ]);
+        });
+      });
+
+      describe('When onlyInheritUserRelatedGrantedGroups is false', () => {
+        test('All groups should be inherited', async() => {
+          const pathT = '/mc6_top';
+          const pageT = await Page.findOne({ path: pathT });
+          expect(pageT).toBeTruthy();
+
+          const pathN = '/mc6_top/allGroupsInherited'; // path to create
+          await create(pathN, 'new body', npDummyUser1, { grant: Page.GRANT_USER_GROUP, onlyInheritUserRelatedGrantedGroups: false });
+
+          const _pageT = await Page.findOne({ path: pathT });
+          const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_USER_GROUP }); // newly crated
+          expect(_pageT).toBeTruthy();
+          expect(_pageN).toBeTruthy();
+          expect(_pageN.parent).toStrictEqual(_pageT._id);
+          expect(_pageT.descendantCount).toStrictEqual(2);
+          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([
+            { item: groupIdIsolate, type: GroupType.userGroup },
+            { item: groupIdB, type: GroupType.userGroup },
+          ]);
+        });
       });
     });
 

@@ -1,6 +1,7 @@
 import react, { useMemo, useRef } from 'react';
 
-import { CodeMirrorEditorReadOnly, GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
+import { CodeMirrorEditorReadOnly } from '@growi/editor/dist/client';
 import { throttle } from 'throttle-debounce';
 
 import { useShouldExpandContent } from '~/client/services/layout';
