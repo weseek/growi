@@ -145,7 +145,7 @@ jobs:
       working-directory: ./apps/slackbot-proxy
       run: |
         cp config/ci/.env.local.for-ci .env.development.local
-        turbo run dev:ci
+        turbo run dev:ci --env-mode=loose
       env:
         SERVER_URI: http://localhost:8080
         TYPEORM_CONNECTION: mysql
