@@ -348,6 +348,8 @@ jobs:
     if: ${{ !inputs.skip-e2e-test }}
 
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:latest
 
     strategy:
       fail-fast: false
@@ -396,29 +398,14 @@ jobs:
         restore-keys: |
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
-    - name: Cache/Restore Playwright files
-      uses: actions/cache@v4
-      id: playwright-cache
-      with:
-        path: |
-          ~/.cache/ms-playwright
-        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.browser }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ matrix.browser }}-
-
     - name: Install dependencies
       run: |
         yarn global add node-gyp
         yarn --frozen-lockfile
 
     - name: Install Playwright browsers
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: |
-        yarn playwright install ${{ matrix.browser }}
-
-    - name: Install Playwright system dependencies
-      run: |
-        sudo yarn playwright install-deps
+        yarn playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -434,7 +421,7 @@ jobs:
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
-    - name: Playwright Run (installer)
+    - name: Playwright Run (--project=chromium/installer)
       if: ${{ matrix.browser == 'chromium' }}
       working-directory: ./apps/app
       run: |
