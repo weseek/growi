@@ -44,9 +44,9 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
@@ -56,9 +56,9 @@ jobs:
             **/.turbo
             **/dist
             **/node_modules/.cache/turbo
-          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
@@ -110,9 +110,9 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
@@ -122,9 +122,9 @@ jobs:
             **/.turbo
             **/dist
             **/node_modules/.cache/turbo
-          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
@@ -186,9 +186,9 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
@@ -198,9 +198,9 @@ jobs:
             **/.turbo
             **/dist
             **/node_modules/.cache/turbo
-          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.head_ref || github.ref_name }}-
             dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies

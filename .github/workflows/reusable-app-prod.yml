@@ -53,9 +53,9 @@ jobs:
         path: |
           **/node_modules
           !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -71,9 +71,9 @@ jobs:
           **/dist
           **/node_modules/.cache/turbo
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
@@ -166,9 +166,9 @@ jobs:
         path: |
           **/node_modules
         # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -258,9 +258,9 @@ jobs:
         path: |
           **/node_modules
         # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
@@ -387,9 +387,9 @@ jobs:
         path: |
           **/node_modules
         # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
