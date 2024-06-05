@@ -48,13 +48,14 @@ jobs:
         mv out/* .
 
     - name: Cache/Restore node_modules
-      id: cache-dependencies
       uses: actions/cache@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          !**/node_modules/.cache/turbo
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -62,18 +63,18 @@ jobs:
         yarn global add node-gyp
         yarn --frozen-lockfile
 
-    - name: Restore dist
+    - name: Cache/Restore dist
       uses: actions/cache@v4
       with:
         path: |
-          node_modules/.cache/turbo
           **/.turbo
           **/dist
+          **/node_modules/.cache/turbo
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
         restore-keys: |
-          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
-          dist-app-7.x-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
       working-directory: ./apps/app
@@ -159,15 +160,16 @@ jobs:
         rm -rf apps packages
         mv out/* .
 
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
+    - name: Restore node_modules
+      uses: actions/cache/restore@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # shared key with build-prod
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-7.x-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -250,15 +252,16 @@ jobs:
         rm -rf apps packages
         mv out/* .
 
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
+    - name: Restore node_modules
+      uses: actions/cache/restore@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # shared key with ci-app.yml
+        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v4
@@ -376,25 +379,16 @@ jobs:
         cache: 'yarn'
         cache-dependency-path: '**/yarn.lock'
 
-    - name: Install turbo
-      run: |
-        yarn global add turbo
-
-    - name: Prune repositories
-      run: |
-        turbo prune @growi/app
-        rm -rf apps packages
-        mv out/* .
-
-    - name: Cache/Restore node_modules
-      id: cache-dependencies
-      uses: actions/cache@v4
+    - name: Restore node_modules
+      uses: actions/cache/restore@v4
       with:
         path: |
           **/node_modules
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # shared key with ci-app.yml
+        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
+          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Cache/Restore Playwright files
       uses: actions/cache@v4

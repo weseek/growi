@@ -43,22 +43,23 @@ jobs:
         with:
           path: |
             **/node_modules
-            !**/node_modules/.cache
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+            !**/node_modules/.cache/turbo
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Restore dist
-        uses: actions/cache/restore@v4
+      - name: Cache/Restore dist
+        uses: actions/cache@v4
         with:
           path: |
             **/.turbo
-            **/node_modules/.cache
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
@@ -79,14 +80,6 @@ jobs:
           channel: '#ci'
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
 
 
   ci-app-test:
@@ -112,25 +105,27 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
 
       - name: Cache/Restore node_modules
-        id: cache-dependencies
         uses: actions/cache@v4
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+            !**/node_modules/.cache/turbo
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Restore dist
-        uses: actions/cache/restore@v4
+      - name: Cache/Restore dist
+        uses: actions/cache@v4
         with:
           path: |
             **/.turbo
             **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
@@ -162,14 +157,6 @@ jobs:
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
 
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-          key: dist-app-ci-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
-
 
   ci-app-launch-dev:
     runs-on: ubuntu-latest
@@ -194,26 +181,27 @@ jobs:
           cache-dependency-path: '**/yarn.lock'
 
       - name: Cache/Restore node_modules
-        id: cache-dependencies
         uses: actions/cache@v4
         with:
           path: |
             **/node_modules
-          key: node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-${{ hashFiles('apps/app/package.json') }}
+            !**/node_modules/.cache/turbo
+          key: node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}-
-            node_modules-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            node_modules-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
-      - name: Restore dist
-        uses: actions/cache/restore@v4
+      - name: Cache/Restore dist
+        uses: actions/cache@v4
         with:
           path: |
             **/.turbo
             **/dist
-            ${{ github.workspace }}/apps/app/.next
-          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
+            **/node_modules/.cache/turbo
+          key: dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-${{ github.sha }}
           restore-keys: |
-            dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-${{ github.ref_name }}-
+            dist-ci-app-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Install dependencies
         run: |
@@ -238,12 +226,3 @@ jobs:
           channel: '#ci'
           isCompactMode: true
           url: ${{ secrets.SLACK_WEBHOOK_URL }}
-
-      - name: Cache dist
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            **/.turbo
-            **/dist
-            ${{ github.workspace }}/apps/app/.next
-          key: dist-app-dev-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('node_modules/.cache/turbo/*-meta.json') }}
