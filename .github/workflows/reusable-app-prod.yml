@@ -53,9 +53,8 @@ jobs:
         path: |
           **/node_modules
           !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -71,9 +70,8 @@ jobs:
           **/dist
           **/node_modules/.cache/turbo
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.sha }}
         restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
           dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
@@ -166,9 +164,8 @@ jobs:
         path: |
           **/node_modules
         # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -216,7 +213,7 @@ jobs:
       fail-fast: false
       matrix:
         # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-        spec-group: ['10', '20', '21', '22', '23', '30', '40', '50', '60']
+        spec-group: ['20', '21', '22', '23', '30', '40', '50', '60']
 
     services:
       mongodb:
@@ -257,11 +254,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by build-prod
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v4
@@ -351,12 +347,14 @@ jobs:
     if: ${{ !inputs.skip-e2e-test }}
 
     runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:latest
 
-    # strategy:
-    #   fail-fast: false
-    #   matrix:
-    #     # List string expressions that is comma separated ids of tests in "test/cypress/integration"
-    #     spec-group: ['10', '20', '21', '22', '23', '30', '40', '50', '60']
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
+        shard: [1/2, 2/2]
 
     services:
       mongodb:
@@ -384,21 +382,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by build-prod
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.ref_name }}-
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
-
-    - name: Cache/Restore Playwright files
-      uses: actions/cache@v4
-      id: playwright-cache
-      with:
-        path: |
-          ~/.cache/ms-playwright
-        key: deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-        restore-keys: |
-          deps-for-playwright-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
@@ -406,13 +393,8 @@ jobs:
         yarn --frozen-lockfile
 
     - name: Install Playwright browsers
-      if: steps.playwright-cache.outputs.cache-hit != 'true'
       run: |
-        yarn playwright install
-
-    - name: Install Playwright system dependencies
-      run: |
-        sudo yarn playwright install-deps
+        yarn playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -428,8 +410,17 @@ jobs:
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
+    - name: Playwright Run (--project=chromium/installer)
+      if: ${{ matrix.browser == 'chromium' }}
+      working-directory: ./apps/app
+      run: |
+        yarn playwright test --project=chromium/installer
+      env:
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
     - name: Copy dotenv file for automatic installation
-      # if: ${{ matrix.spec-group != '10' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
@@ -443,9 +434,10 @@ jobs:
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test
+        yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
       env:
-        MONGO_URI: mongodb://localhost:${{ job.services.mongodb.ports['27017'] }}/growi-test-playwright
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
     - name: Slack Notification
