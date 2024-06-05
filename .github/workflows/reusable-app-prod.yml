@@ -172,13 +172,6 @@ jobs:
       run: |
         yarn --production
 
-    - name: Cache node_modules for production
-      uses: actions/cache/save@v4
-      with:
-        path: |
-          **/node_modules
-        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
-
     - name: Download production files artifact
       uses: actions/download-artifact@v4
       with:
@@ -261,10 +254,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        # saved key by launch-prod
-        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by build-prod
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v4
@@ -278,7 +271,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn global add node-gyp
-        yarn --production
+        yarn --frozen-lockfile
         yarn cypress install
 
     - name: Download production files artifact
@@ -389,15 +382,15 @@ jobs:
       with:
         path: |
           **/node_modules
-        # saved key by launch-prod
-        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by build-prod
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
+          node_modules-app-build-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
         yarn global add node-gyp
-        yarn --production
+        yarn --frozen-lockfile
 
     - name: Install Playwright browsers
       run: |
