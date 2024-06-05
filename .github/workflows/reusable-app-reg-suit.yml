@@ -65,11 +65,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by launch-prod
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |

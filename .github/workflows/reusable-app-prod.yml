@@ -53,9 +53,8 @@ jobs:
         path: |
           **/node_modules
           !**/node_modules/.cache/turbo
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
@@ -71,9 +70,8 @@ jobs:
           **/dist
           **/node_modules/.cache/turbo
           ${{ github.workspace }}/apps/app/.next
-        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ github.sha }}
+        key: dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.sha }}
         restore-keys: |
-          dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           dist-app-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Build
@@ -166,14 +164,20 @@ jobs:
         path: |
           **/node_modules
         # shared key with build-prod
-        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        key: node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
           node_modules-app-build-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
         yarn --production
+
+    - name: Cache node_modules for production
+      uses: actions/cache/save@v4
+      with:
+        path: |
+          **/node_modules
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -257,11 +261,10 @@ jobs:
       with:
         path: |
           **/node_modules
-        # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by launch-prod
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Cache/Restore Cypress files
       uses: actions/cache@v4
@@ -275,7 +278,7 @@ jobs:
     - name: Install dependencies
       run: |
         yarn global add node-gyp
-        yarn --frozen-lockfile
+        yarn --production
         yarn cypress install
 
     - name: Download production files artifact
@@ -386,16 +389,15 @@ jobs:
       with:
         path: |
           **/node_modules
-        # shared key with ci-app.yml
-        key: node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-${{ hashFiles('**/yarn.lock') }}
+        # saved key by launch-prod
+        key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-${{ github.head_ref || github.ref_name }}-
-          node_modules-ci-app-${{ runner.OS }}-node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
         yarn global add node-gyp
-        yarn --frozen-lockfile
+        yarn --production
 
     - name: Install Playwright browsers
       run: |
