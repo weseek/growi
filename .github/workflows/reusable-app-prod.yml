@@ -79,7 +79,7 @@ jobs:
     - name: Build
       working-directory: ./apps/app
       run: |
-        turbo run build
+        turbo run build --env-mode=loose
       env:
         ANALYZE_BUNDLE_SIZE: 1
 
