@@ -165,10 +165,10 @@ export const RecentChangesHeader = ({
     }
   }, [onSizeChange]);
 
-  const changeSizeHandler = useCallback((e) => {
-    onSizeChange(e.target.checked);
-    window.localStorage.setItem('isRecentChangesSidebarSmall', e.target.checked);
-  }, [onSizeChange]);
+  const changeSizeHandler = useCallback(() => {
+    onSizeChange(!isSmall);
+    window.localStorage.setItem('isRecentChangesSidebarSmall', String(isSmall));
+  }, [isSmall, onSizeChange]);
 
   // componentDidMount
   useEffect(() => {
@@ -196,12 +196,12 @@ export const RecentChangesHeader = ({
             <div className={`${styles['grw-recent-changes-resize-button']} form-check form-switch mb-0`}>
               <input
                 id="recentChangesResize"
-                className="form-check-input"
+                className="form-check-input pe-none"
                 type="checkbox"
                 checked={isSmall}
                 onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0" htmlFor="recentChangesResize">
+              <label className="form-check-label pe-none" aria-disabled="true">
                 {isSmall ? t('sidebar_header.size_s') : t('sidebar_header.size_l')}
               </label>
             </div>
@@ -214,9 +214,8 @@ export const RecentChangesHeader = ({
                 className="form-check-input"
                 type="checkbox"
                 checked={isWipPageShown}
-                onChange={() => {}}
               />
-              <label className="form-label form-check-label text-muted mb-0" htmlFor="wipPageVisibility">
+              <label className="form-check-label pe-none">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>
