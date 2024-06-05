@@ -20,6 +20,7 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
+  "packageManager": "yarn@1.22.22",
   "workspaces": {
     "packages": [
       "packages/*",

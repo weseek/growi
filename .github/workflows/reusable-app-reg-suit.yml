@@ -66,7 +66,7 @@ jobs:
 
     - name: Prune repositories
       run: |
-        turbo prune --scope=@growi/app
+        turbo prune @growi/app
         rm -rf apps packages
         mv out/* .
 

@@ -12,7 +12,7 @@ WORKDIR ${optDir}
 
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune --scope=@growi/app --docker
+RUN turbo prune @growi/app --docker
 
 
 ##

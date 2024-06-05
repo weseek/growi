@@ -1,21 +1,21 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "dependsOn": ["@growi/core#build"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "dev": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "watch": {
       "dependsOn": ["@growi/core#dev"],
       "outputs": ["dist/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "lint": {
       "dependsOn": ["@growi/core#dev"]

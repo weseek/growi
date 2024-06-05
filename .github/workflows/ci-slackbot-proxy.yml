@@ -206,7 +206,7 @@ jobs:
 
     - name: Prune repositories
       run: |
-        turbo prune --scope=@growi/slackbot-proxy
+        turbo prune @growi/slackbot-proxy
         rm -rf apps packages
         mv out/* .
 
