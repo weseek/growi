@@ -13,7 +13,7 @@
     "tsc": "tsc -p tsconfig.build.json",
     "tsc:w": "yarn tsc -w",
     "dev:ci": "yarn dev --ci",
-    "dev": "cross-env NODE_ENV=development nodemon --exec yarn ts-node src/index.ts",
+    "dev": "cross-env NODE_ENV=development nodemon --exec yarn ts-node --inspect src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
     "start:prod": "cross-env NODE_ENV=production node -r dotenv-flow/config dist/index.js",
     "postbuild": "yarn cp:public && yarn cp:views && yarn cp:bootstrap",
