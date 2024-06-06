@@ -15,6 +15,14 @@
     "build": {
       "dependsOn": ["^build", "styles-prebuilt"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "inputs": [
+        "config/**",
+        "public/**",
+        "resource/**",
+        "src/**",
+        "tsconfig*.json",
+        "vite*.ts"
+      ],
       "outputLogs": "new-only"
     },
 

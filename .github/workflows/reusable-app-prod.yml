@@ -79,7 +79,7 @@ jobs:
       run: |
         turbo run build --env-mode=loose
       env:
-        ANALYZE_BUNDLE_SIZE: 1
+        ANALYZE: 1
 
     - name: Archive production files
       id: archive-prod-files
