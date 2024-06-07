@@ -4,22 +4,11 @@ import { Lang } from '@growi/core';
 
 import { defaultLang } from '^/config/i18next.config';
 
-// https://docs.google.com/spreadsheets/d/1FoYdyEraEQuWofzbYCDPKN7EdKgS_2ZrsDrOA8scgwQ
-const DIAGRAMS_NET_LANG_MAP = {
-  ja_JP: 'ja',
-  zh_CN: 'zh',
-  fr_FR: 'fr',
-};
-
 const ACCEPT_LANG_MAP = {
   en: Lang.en_US,
   ja: Lang.ja_JP,
   zh: Lang.zh_CN,
   fr: Lang.fr_FR,
-};
-
-export const getDiagramsNetLangCode = (lang) => {
-  return DIAGRAMS_NET_LANG_MAP[lang];
 };
 
 /**

@@ -4,6 +4,7 @@ import React, {
   useMemo,
 } from 'react';
 
+import type { Lang } from '@growi/core';
 import { useCodeMirrorEditorIsolated, useDrawioModalForEditor } from '@growi/editor/dist/client';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
@@ -11,7 +12,6 @@ import {
   ModalBody,
 } from 'reactstrap';
 
-import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
@@ -22,6 +22,19 @@ import loggerFactory from '~/utils/logger';
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
 const logger = loggerFactory('growi:components:DrawioModal');
+
+
+// https://docs.google.com/spreadsheets/d/1FoYdyEraEQuWofzbYCDPKN7EdKgS_2ZrsDrOA8scgwQ
+const DIAGRAMS_NET_LANG_MAP = {
+  ja_JP: 'ja',
+  zh_CN: 'zh',
+  fr_FR: 'fr',
+};
+
+export const getDiagramsNetLangCode = (lang: Lang) => {
+  return DIAGRAMS_NET_LANG_MAP[lang];
+};
+
 
 const headerColor = '#334455';
 const fontFamily = "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
