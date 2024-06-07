@@ -1,10 +1,8 @@
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUser } from '@growi/core';
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
-import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 
-import { apiv3Post } from '~/client/util/apiv3-client';
-import { toastError } from '~/client/util/toastr';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCurrentUser } from '~/stores/context';
 
@@ -12,59 +10,22 @@ import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, getNextI18NextConfig } from './utils/commons';
 
 
+const Maintenance = dynamic(() => import('~/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
+
 type Props = CommonProps & {
   currentUser: IUser,
 };
 
 const MaintenancePage: NextPage<CommonProps> = (props: Props) => {
-  const { t } = useTranslation();
 
   useCurrentUser(props.currentUser ?? null);
-
-  const logoutHandler = async() => {
-    try {
-      await apiv3Post('/logout');
-      window.location.reload();
-    }
-    catch (err) {
-      toastError(err);
-    }
-  };
 
   return (
     <div className="container-lg">
       <div className="container">
         <div className="row justify-content-md-center">
           <div className="col-md-6 mt-5">
-            <div className="text-center">
-              <h1><span className="material-symbols-outlined large">error</span></h1>
-              <h1 className="text-center">{ t('maintenance_mode.maintenance_mode') }</h1>
-              <h3>{ t('maintenance_mode.growi_is_under_maintenance') }</h3>
-              <hr />
-              <div className="text-start">
-                {props.currentUser?.admin
-              && (
-                <p>
-                  <span className="material-symbols-outlined">arrow_circle_right</span>
-                  <a className="btn btn-link" href="/admin">{ t('maintenance_mode.admin_page') }</a>
-                </p>
-              )}
-                {props.currentUser != null
-                  ? (
-                    <p>
-                      <span className="material-symbols-outlined">arrow_circle_right</span>
-                      <a className="btn btn-link" onClick={logoutHandler} id="maintanounse-mode-logout">{ t('maintenance_mode.logout') }</a>
-                    </p>
-                  )
-                  : (
-                    <p>
-                      <span className="material-symbols-outlined">arrow_circle_right</span>
-                      <a className="btn btn-link" href="/login">{ t('maintenance_mode.login') }</a>
-                    </p>
-                  )
-                }
-              </div>
-            </div>
+            <Maintenance currentUser={props.currentUser} />
           </div>
         </div>
       </div>
