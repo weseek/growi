@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useAppTitle } from '~/stores/context';
 
-import GrowiLogo from '../Icons/GrowiLogo';
+import GrowiLogo from '../../components-universal/Common/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
 

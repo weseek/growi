@@ -18,7 +18,7 @@ import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
 const PluginsExtensionPageContents = dynamic(
   () => import('~/features/growi-plugin/client/components/Admin').then(mod => mod.PluginsExtensionPageContents),
   { ssr: false },

@@ -4,17 +4,17 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { AdminNavigation } from '../Admin/Common/AdminNavigation';
-import GrowiLogo from '../Icons/GrowiLogo';
+import GrowiLogo from '~/components-universal/Common/GrowiLogo';
+import { RawLayout } from '~/components/Layout/RawLayout';
 
-import { RawLayout } from './RawLayout';
+import { AdminNavigation } from '../Admin/Common/AdminNavigation';
 
 import styles from './Admin.module.scss';
 
 
-const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
-const HotkeysManager = dynamic(() => import('../Hotkeys/HotkeysManager'), { ssr: false });
+const PageCreateModal = dynamic(() => import('~/components/PageCreateModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('~/components/SystemVersion'), { ssr: false });
+const HotkeysManager = dynamic(() => import('~/components/Hotkeys/HotkeysManager'), { ssr: false });
 
 
 type Props = {
