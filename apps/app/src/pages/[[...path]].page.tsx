@@ -21,8 +21,8 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
+import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import { PageView } from '~/components/Page/PageView';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
