@@ -9,9 +9,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 
-import InstallerForm from '../components/InstallerForm';
 import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
 } from '../stores/context';
@@ -20,6 +19,7 @@ import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
 
 
+const InstallerForm = dynamic(() => import('../components/InstallerForm'), { ssr: false });
 const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
 const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 

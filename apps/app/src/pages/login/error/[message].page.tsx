@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import { useRouter } from 'next/router';
 
-import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 import type { CommonProps } from '~/pages/utils/commons';
 import { getServerSideCommonProps, getNextI18NextConfig } from '~/pages/utils/commons';
 

@@ -9,7 +9,7 @@ import { apiv3Post } from '~/client/util/apiv3-client';
 import { useCurrentUser } from '../stores/context';
 
 
-export type InvitedFormProps = {
+type InvitedFormProps = {
   invitedFormUsername: string,
   invitedFormName: string,
 }

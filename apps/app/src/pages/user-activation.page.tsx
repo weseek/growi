@@ -1,19 +1,25 @@
 import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
-import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
 import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
+
 import type { CommonProps } from './utils/commons';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
+
+
+const CompleteUserRegistrationForm = dynamic(() => import('~/components/CompleteUserRegistrationForm')
+  .then(mod => mod.CompleteUserRegistrationForm), { ssr: false });
+
 
 type Props = CommonProps & {
   token: string

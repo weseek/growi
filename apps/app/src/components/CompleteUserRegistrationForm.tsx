@@ -25,7 +25,7 @@ interface Props {
   isEmailAuthenticationEnabled: boolean,
 }
 
-const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
+export const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
 
   const { t } = useTranslation();
   const {
@@ -206,5 +206,3 @@ const CompleteUserRegistrationForm: React.FC<Props> = (props: Props) => {
   );
 
 };
-
-export default CompleteUserRegistrationForm;
