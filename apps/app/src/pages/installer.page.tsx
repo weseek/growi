@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 
-import { pagePathUtils } from '@growi/core/dist/utils';
 import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
@@ -22,8 +21,6 @@ import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } f
 const InstallerForm = dynamic(() => import('../components/InstallerForm'), { ssr: false });
 const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
 const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
-
-const { isTrashPage: _isTrashPage } = pagePathUtils;
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);
