@@ -8,7 +8,7 @@ import { SWRConfig } from 'swr';
 
 import * as nextI18nConfig from '^/config/next-i18next.config';
 
-import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
+import { GlobalFonts } from '~/components-universal/FontFamily/GlobalFonts';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
 } from '~/stores/context';
