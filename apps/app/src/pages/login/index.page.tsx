@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { IExternalAuthProviderType } from '@growi/core';
 import type {
@@ -7,6 +7,7 @@ import type {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
@@ -42,6 +43,14 @@ type Props = CommonProps & {
 
 const LoginPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
+
+  const router = useRouter();
+  useEffect(() => {
+    if (router.query.externalAccountLoginError) {
+      const cleanUrl = router.pathname;
+      router.replace(cleanUrl, undefined, { shallow: true });
+    }
+  }, [router]);
 
   // commons
   useCsrfToken(props.csrfToken);
