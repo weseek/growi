@@ -3,8 +3,6 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useEditorModeClassName } from '../../client/services/layout';
-
 import { RawLayout } from './RawLayout';
 
 const PageCreateModal = dynamic(() => import('~/components/PageCreateModal'), { ssr: false });
@@ -18,10 +16,8 @@ type Props = {
 }
 
 export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
-  const className = useEditorModeClassName();
-
   return (
-    <RawLayout className={className}>
+    <RawLayout>
 
       <div className="page-wrapper">
         {children}

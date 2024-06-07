@@ -3,7 +3,7 @@ import { isClient } from '@growi/core/dist/utils';
 import { ThemeProvider, useTheme } from 'next-themes';
 import type { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types';
 
-import { useForcedColorScheme } from '../stores/context';
+import { useForcedColorScheme } from './context';
 
 export const Themes = {
   ...ColorScheme,
