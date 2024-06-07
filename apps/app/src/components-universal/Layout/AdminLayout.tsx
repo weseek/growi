@@ -5,9 +5,11 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import GrowiLogo from '~/components-universal/Common/GrowiLogo';
-import { RawLayout } from '~/components/Layout/RawLayout';
 
 import { AdminNavigation } from '../Admin/Common/AdminNavigation';
+
+import { RawLayout } from './RawLayout';
+
 
 import styles from './Admin.module.scss';
 

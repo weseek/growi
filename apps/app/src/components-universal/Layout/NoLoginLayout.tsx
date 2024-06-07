@@ -3,8 +3,9 @@ import React from 'react';
 
 import { useAppTitle } from '~/stores/context';
 
-import { RawLayout } from '../../components/Layout/RawLayout';
 import GrowiLogo from '../Common/GrowiLogo';
+
+import { RawLayout } from './RawLayout';
 
 
 import commonStyles from './NoLoginLayout.module.scss';
