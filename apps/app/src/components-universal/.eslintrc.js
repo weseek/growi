@@ -5,11 +5,11 @@ module.exports = {
     'no-restricted-imports': ['error', {
       patterns: [
         '~/client/',
-        '../client/',
+        'client/',
         '~/components/',
-        '../components/',
+        'components/',
         '~/stores/',
-        '../stores/',
+        'stores/',
       ],
     }],
   },
