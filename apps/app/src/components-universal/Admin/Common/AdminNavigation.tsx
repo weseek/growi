@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '../../../stores/context';
+import { useGrowiCloudUri, useGrowiAppIdForGrowiCloud } from '~/stores/context';
 
 import styles from './AdminNavigation.module.scss';
 
