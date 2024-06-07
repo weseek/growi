@@ -10,10 +10,6 @@ $page-view-layout-margin-top: 32px;
   $page-content-footer-min-heigh: 130px;
 
   min-height: calc(100vh - #{$subnavigation-height + $page-view-layout-margin-top + $page-content-footer-min-heigh});
-
-  // .grw-container-convertible :global {
-  //   margin-left: 16px;
-  // }
 }
 
 // fluid layout
