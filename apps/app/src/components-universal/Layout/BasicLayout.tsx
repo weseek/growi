@@ -2,8 +2,6 @@ import type { ReactNode } from 'react';
 import React from 'react';
 
 import dynamic from 'next/dynamic';
-import { DndProvider } from 'react-dnd';
-import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { Sidebar } from '~/components/Sidebar';
 
@@ -47,31 +45,28 @@ type Props = {
 export const BasicLayout = ({ children, className }: Props): JSX.Element => {
   return (
     <RawLayout className={`${moduleClass} ${className ?? ''}`}>
-      <DndProvider backend={HTML5Backend}>
-
-        <div className="page-wrapper flex-row">
-          <div className="z-2">
-            <Sidebar />
-          </div>
-
-          <div className="d-flex flex-grow-1 flex-column mw-0 z-1">{/* neccessary for nested {children} make expanded */}
-            <AlertSiteUrlUndefined />
-            {children}
-          </div>
+      <div className="page-wrapper flex-row">
+        <div className="z-2">
+          <Sidebar />
         </div>
 
-        <GrowiNavbarBottom />
+        <div className="d-flex flex-grow-1 flex-column mw-0 z-1">{/* neccessary for nested {children} make expanded */}
+          <AlertSiteUrlUndefined />
+          {children}
+        </div>
+      </div>
 
-        <PageCreateModal />
-        <PageDuplicateModal />
-        <PageDeleteModal />
-        <PageRenameModal />
-        <PageAccessoriesModal />
-        <DeleteAttachmentModal />
-        <DeleteBookmarkFolderModal />
-        <PutbackPageModal />
-        <SearchModal />
-      </DndProvider>
+      <GrowiNavbarBottom />
+
+      <PageCreateModal />
+      <PageDuplicateModal />
+      <PageDeleteModal />
+      <PageRenameModal />
+      <PageAccessoriesModal />
+      <DeleteAttachmentModal />
+      <DeleteBookmarkFolderModal />
+      <PutbackPageModal />
+      <SearchModal />
 
       <PagePresentationModal />
       <HotkeysManager />

@@ -4,6 +4,8 @@ import React, { useCallback } from 'react';
 import type { IPageToDeleteWithMeta } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
@@ -102,54 +104,58 @@ export const BookmarkFolderTree: React.FC<Props> = (props: Props) => {
   // };
 
   return (
-    <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`}>
-      <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group py-2`}>
-        {bookmarkFolders?.map((bookmarkFolder) => {
-          return (
-            <BookmarkFolderItem
-              key={bookmarkFolder._id}
-              isReadOnlyUser={!!isReadOnlyUser}
-              isOperable={props.isOperable}
-              bookmarkFolder={bookmarkFolder}
-              isOpen={false}
-              level={0}
-              root={bookmarkFolder._id}
-              isUserHomepage={isUserHomepage}
-              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
-              bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-            />
-          );
-        })}
-        {userBookmarks?.map(userBookmark => (
-          <div key={userBookmark?._id} className="grw-foldertree-item-container grw-root-bookmarks">
-            <BookmarkItem
-              isReadOnlyUser={!!isReadOnlyUser}
-              isOperable={props.isOperable}
-              bookmarkedPage={userBookmark}
-              level={0}
-              parentFolder={null}
-              canMoveToRoot={false}
-              onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
-              bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
-            />
-          </div>
-        ))}
-      </ul>
-      {/* TODO: update in bookmarks folder v2. Also delete drop_item_here in translation.json, if don't need it. */}
-      {/* {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
-        <DragAndDropWrapper
-          useDropMode={true}
-          type={acceptedTypes}
-          onDropItem={itemDropHandler}
-          isDropable={isDroppable}
-        >
-          <div className="grw-drop-item-area">
-            <div className="d-flex flex-column align-items-center">
-              {t('bookmark_folder.drop_item_here')}
+    <DndProvider backend={HTML5Backend}>
+
+      <div className={`grw-folder-tree-container ${styles['grw-folder-tree-container']}`}>
+        <ul className={`grw-foldertree ${styles['grw-foldertree']} list-group py-2`}>
+          {bookmarkFolders?.map((bookmarkFolder) => {
+            return (
+              <BookmarkFolderItem
+                key={bookmarkFolder._id}
+                isReadOnlyUser={!!isReadOnlyUser}
+                isOperable={props.isOperable}
+                bookmarkFolder={bookmarkFolder}
+                isOpen={false}
+                level={0}
+                root={bookmarkFolder._id}
+                isUserHomepage={isUserHomepage}
+                onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
+                bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
+              />
+            );
+          })}
+          {userBookmarks?.map(userBookmark => (
+            <div key={userBookmark?._id} className="grw-foldertree-item-container grw-root-bookmarks">
+              <BookmarkItem
+                isReadOnlyUser={!!isReadOnlyUser}
+                isOperable={props.isOperable}
+                bookmarkedPage={userBookmark}
+                level={0}
+                parentFolder={null}
+                canMoveToRoot={false}
+                onClickDeleteMenuItemHandler={onClickDeleteMenuItemHandler}
+                bookmarkFolderTreeMutation={bookmarkFolderTreeMutation}
+              />
             </div>
-          </div>
-        </DragAndDropWrapper>
-      )} */}
-    </div>
+          ))}
+        </ul>
+        {/* TODO: update in bookmarks folder v2. Also delete drop_item_here in translation.json, if don't need it. */}
+        {/* {bookmarkFolderData != null && bookmarkFolderData.length > 0 && (
+          <DragAndDropWrapper
+            useDropMode={true}
+            type={acceptedTypes}
+            onDropItem={itemDropHandler}
+            isDropable={isDroppable}
+          >
+            <div className="grw-drop-item-area">
+              <div className="d-flex flex-column align-items-center">
+                {t('bookmark_folder.drop_item_here')}
+              </div>
+            </div>
+          </DragAndDropWrapper>
+        )} */}
+      </div>
+
+    </DndProvider>
   );
 };
