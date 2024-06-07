@@ -8,8 +8,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
 import superjson from 'superjson';
 
+import { ShareLinkLayout } from '~/components-universal/Layout/ShareLinkLayout';
 import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
-import { ShareLinkLayout } from '~/components/Layout/ShareLinkLayout';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
 import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { SupportedActionType } from '~/interfaces/activity';

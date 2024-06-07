@@ -9,6 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -17,7 +18,6 @@ import type { IDataTagCount } from '~/interfaces/tag';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { useSWRxTagsList } from '~/stores/tag';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useIsSearchPage,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,

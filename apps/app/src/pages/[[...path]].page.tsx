@@ -21,6 +21,7 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { useEditorModeClassName } from '~/client/services/layout';
+import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import { PageView } from '~/components/Page/PageView';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
@@ -53,7 +54,6 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
 import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 

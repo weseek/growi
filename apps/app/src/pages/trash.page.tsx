@@ -7,6 +7,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -14,7 +15,6 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
-import { BasicLayout } from '../components/Layout/BasicLayout';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,

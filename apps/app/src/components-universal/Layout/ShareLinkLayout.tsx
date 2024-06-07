@@ -7,10 +7,10 @@ import { useEditorModeClassName } from '../../client/services/layout';
 
 import { RawLayout } from './RawLayout';
 
-const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
-const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const PageCreateModal = dynamic(() => import('~/components/PageCreateModal'), { ssr: false });
+const GrowiNavbarBottom = dynamic(() => import('~/components/Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+const ShortcutsModal = dynamic(() => import('~/components/ShortcutsModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('~/components/SystemVersion'), { ssr: false });
 
 
 type Props = {
