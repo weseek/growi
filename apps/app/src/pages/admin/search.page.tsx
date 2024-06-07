@@ -1,12 +1,13 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useIsSearchServiceReachable, useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';

@@ -1,14 +1,16 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminSlackIntegrationLegacyContainer from '~/client/services/AdminSlackIntegrationLegacyContainer';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -23,12 +25,16 @@ const AdminLegacySlackIntegrationPage: NextPage<CommonProps> = (props) => {
 
   const title = t('slack_integration_legacy.slack_integration_legacy');
   const headTitle = generateCustomTitle(props, title);
-  const injectableContainers: Container<any>[] = [];
 
-  if (isClient()) {
-    const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
-    injectableContainers.push(adminSlackIntegrationLegacyContainer);
-  }
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
+
+  useEffect(() => {
+    (async() => {
+      const AdminSlackIntegrationLegacyContainer = (await import('~/client/services/AdminSlackIntegrationLegacyContainer')).default;
+      const adminSlackIntegrationLegacyContainer = new AdminSlackIntegrationLegacyContainer();
+      injectableContainers.push(adminSlackIntegrationLegacyContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

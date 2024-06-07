@@ -1,4 +1,4 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -6,8 +6,9 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 

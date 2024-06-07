@@ -1,14 +1,15 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminExternalAccountsContainer from '~/client/services/AdminExternalAccountsContainer';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -23,15 +24,16 @@ const AdminUserManagementPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('user_management.external_account');
-  const injectableContainers: Container<any>[] = [];
 
-  if (isClient()) {
-    const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-    injectableContainers.push(
-      adminExternalAccountsContainer,
-    );
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminExternalAccountsContainer = (await import('~/client/services/AdminExternalAccountsContainer')).default;
+      const adminExternalAccountsContainer = new AdminExternalAccountsContainer();
+      injectableContainers.push(adminExternalAccountsContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

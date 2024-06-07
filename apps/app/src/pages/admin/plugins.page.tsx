@@ -1,15 +1,17 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
 
-import AdminAppContainer from '~/client/services/AdminAppContainer';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
@@ -30,12 +32,16 @@ const AdminAppPage: NextPage<CommonProps> = (props) => {
   useCurrentUser(props.currentUser ?? null);
 
   const title = t('plugins.plugins');
-  const injectableContainers: Container<any>[] = [];
 
-  if (isClient()) {
-    const adminAppContainer = new AdminAppContainer();
-    injectableContainers.push(adminAppContainer);
-  }
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
+
+  useEffect(() => {
+    (async() => {
+      const AdminAppContainer = (await import('~/client/services/AdminAppContainer')).default;
+      const adminAppContainer = new AdminAppContainer();
+      injectableContainers.push(adminAppContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

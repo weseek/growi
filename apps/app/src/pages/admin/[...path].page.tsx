@@ -1,9 +1,9 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import dynamic from 'next/dynamic';
 
-import { CommonProps } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 

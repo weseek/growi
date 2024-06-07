@@ -1,15 +1,16 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-
-import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
@@ -26,12 +27,15 @@ const AdminMarkdownPage: NextPage<CommonProps> = (props) => {
   const componentTitle = t('markdown_settings.markdown_settings');
   const pageTitle = generateCustomTitle(props, componentTitle);
 
-  const injectableContainers: Container<any>[] = [];
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-  if (isClient()) {
-    const adminMarkDownContainer = new AdminMarkDownContainer();
-    injectableContainers.push(adminMarkDownContainer);
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminMarkDownContainer = (await import('~/client/services/AdminMarkDownContainer')).default;
+      const adminMarkDownContainer = new AdminMarkDownContainer();
+      injectableContainers.push(adminMarkDownContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

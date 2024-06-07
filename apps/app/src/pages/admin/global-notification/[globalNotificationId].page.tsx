@@ -1,19 +1,18 @@
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { isClient, objectIdUtils } from '@growi/core/dist/utils';
-import {
+import { objectIdUtils } from '@growi/core/dist/utils';
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-
-import AdminNotificationContainer from '~/client/services/AdminNotificationContainer';
-import { toastError } from '~/client/util/toastr';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import { useCurrentUser } from '~/stores/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
@@ -33,12 +32,16 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
 
 
   useEffect(() => {
+    const toastError = import('~/client/util/toastr').then(mod => mod.toastError);
+
     if (globalNotificationId == null) {
       router.push('/admin/notification');
     }
     if ((currentGlobalNotificationId != null && !objectIdUtils.isValidObjectId(currentGlobalNotificationId))) {
-      toastError(t('notification_settings.not_found_global_notification_triggerid'));
-      router.push('/admin/global-notification/new');
+      (async() => {
+        (await toastError)(t('notification_settings.not_found_global_notification_triggerid'));
+        router.push('/admin/global-notification/new');
+      })();
       return;
     }
   }, [currentGlobalNotificationId, globalNotificationId, router, t]);
@@ -47,13 +50,15 @@ const AdminGlobalNotificationNewPage: NextPage<CommonProps> = (props) => {
   const title = t('external_notification.external_notification');
   const customTitle = generateCustomTitle(props, title);
 
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-  const injectableContainers: Container<any>[] = [];
-
-  if (isClient()) {
-    const adminNotificationContainer = new AdminNotificationContainer();
-    injectableContainers.push(adminNotificationContainer);
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminNotificationContainer = (await import('~/client/services/AdminNotificationContainer')).default;
+      const adminNotificationContainer = new AdminNotificationContainer();
+      injectableContainers.push(adminNotificationContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     <ForbiddenPage />;
