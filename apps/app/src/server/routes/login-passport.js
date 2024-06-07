@@ -1,4 +1,3 @@
-
 import { ErrorV3 } from '@growi/core/dist/models';
 import next from 'next';
 
@@ -124,7 +123,6 @@ module.exports = function(crowi, app) {
 
     const parameters = { action: SupportedAction.ACTION_USER_LOGIN_FAILURE };
     activityEvent.emit('update', res.locals.activity._id, parameters);
-
     return res.apiv3Err(error);
   };
 
@@ -138,7 +136,8 @@ module.exports = function(crowi, app) {
 
     const { nextApp } = crowi;
     req.crowi = crowi;
-    nextApp.render(req, res, '/login', { externalAccountLoginError: error });
+    req.externalAccountLoginError = error;
+    nextApp.render(req, res, '/login', { externalAccountLoginError: JSON.stringify(error) });
     return;
   };
 
@@ -504,7 +503,7 @@ module.exports = function(crowi, app) {
     passport.authenticate('saml')(req, res);
   };
 
-  const loginPassportSamlCallback = async(req, res) => {
+  const loginPassportSamlCallback = async(req, res, next) => {
     const providerId = 'saml';
     const strategyName = 'saml';
     const attrMapId = crowi.configManager.getConfig('crowi', 'security:passport-saml:attrMapId');

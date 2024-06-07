@@ -14,6 +14,7 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
+import type { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
 import type { CommonProps } from '~/pages/utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from '~/pages/utils/commons';
 import {
@@ -134,7 +135,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   if (context.query.externalAccountLoginError != null) {
-    const externalAccountLoginError = context.query.externalAccountLoginError;
+    const externalAccountLoginError = JSON.parse(context.query.externalAccountLoginError as string) as ExternalAccountLoginError;
     if (isExternalAccountLoginError(externalAccountLoginError)) {
       props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
     }
