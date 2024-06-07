@@ -1,9 +1,9 @@
 import { ColorScheme } from '@growi/core';
 import { isClient } from '@growi/core/dist/utils';
 import { ThemeProvider, useTheme } from 'next-themes';
-import { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types';
+import type { ThemeProviderProps, UseThemeProps } from 'next-themes/dist/types';
 
-import { useForcedColorScheme } from './context';
+import { useForcedColorScheme } from '../stores/context';
 
 export const Themes = {
   ...ColorScheme,

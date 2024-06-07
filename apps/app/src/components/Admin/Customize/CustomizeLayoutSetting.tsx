@@ -6,8 +6,8 @@ import { LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxLayoutSetting } from '~/stores/admin/customize';
-import { useNextThemes } from '~/stores/use-next-themes';
 
 const useIsContainerFluid = () => {
   const { data: layoutSetting, update: updateLayoutSetting } = useSWRxLayoutSetting();

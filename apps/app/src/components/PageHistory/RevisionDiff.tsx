@@ -10,7 +10,7 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import { Themes, useNextThemes } from '~/stores/use-next-themes';
+import { Themes, useNextThemes } from '~/stores-universal/use-next-themes';
 
 import UserDate from '../User/UserDate';
 

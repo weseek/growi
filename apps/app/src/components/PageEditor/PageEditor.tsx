@@ -24,6 +24,7 @@ import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
@@ -46,7 +47,6 @@ import {
   useEditorMode, useIsUntitledPage, useSelectedGrant,
 } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
-import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
