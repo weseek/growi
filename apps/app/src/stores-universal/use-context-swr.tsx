@@ -1,10 +1,9 @@
 import assert from 'assert';
 
-import {
+import { useSWRStatic } from '@growi/core/dist/swr';
+import type {
   Key, SWRConfiguration, SWRResponse,
 } from 'swr';
-
-import { useStaticSWR } from './use-static-swr';
 
 
 export function useContextSWR<Data, Error>(key: Key): SWRResponse<Data, Error>;
@@ -21,7 +20,7 @@ export function useContextSWR<Data, Error>(
 
   assert.notStrictEqual(configuration?.fetcher, null, 'useContextSWR does not support \'configuration.fetcher\'');
 
-  const swrResponse = useStaticSWR(key, data, configuration);
+  const swrResponse = useSWRStatic(key, data, configuration);
 
   // overwrite mutate
   const result = Object.assign(swrResponse, { mutate: () => { throw Error('mutate can not be used in context') } });

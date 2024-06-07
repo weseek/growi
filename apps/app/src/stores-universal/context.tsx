@@ -1,5 +1,6 @@
 import { AcceptedUploadFileType } from '@growi/core';
 import type { ColorScheme, IUserHasId } from '@growi/core';
+import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 import useSWR from 'swr';
 import useSWRImmutable from 'swr/immutable';
@@ -10,7 +11,6 @@ import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { TargetAndAncestors } from '../interfaces/page-listing-results';
 
 import { useContextSWR } from './use-context-swr';
-import { useStaticSWR } from './use-static-swr';
 
 
 type Nullable<T> = T | null;
@@ -173,7 +173,7 @@ export const useIsDefaultLogo = (initialData?: boolean): SWRResponse<boolean, Er
 };
 
 export const useIsCustomizedLogoUploaded = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isCustomizedLogoUploaded', initialData);
+  return useSWRStatic('isCustomizedLogoUploaded', initialData);
 };
 
 export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<ColorScheme, Error> => {
@@ -181,15 +181,15 @@ export const useForcedColorScheme = (initialData?: ColorScheme): SWRResponse<Col
 };
 
 export const useGrowiCloudUri = (initialData?: string): SWRResponse<string, Error> => {
-  return useStaticSWR('growiCloudUri', initialData);
+  return useContextSWR('growiCloudUri', initialData);
 };
 
 export const useGrowiAppIdForGrowiCloud = (initialData?: number): SWRResponse<number, Error> => {
-  return useStaticSWR('growiAppIdForGrowiCloud', initialData);
+  return useContextSWR('growiAppIdForGrowiCloud', initialData);
 };
 
 export const useIsContainerFluid = (initialData?: boolean): SWRResponse<boolean, Error> => {
-  return useStaticSWR('isContainerFluid', initialData);
+  return useContextSWR('isContainerFluid', initialData);
 };
 
 /** **********************************************************
