@@ -22,7 +22,7 @@ import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
-const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
+const SearchResultLayout = dynamic(() => import('~/components-universal/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
