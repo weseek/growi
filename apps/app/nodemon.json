@@ -4,6 +4,6 @@
     ".next",
     "public/static",
     "package.json",
-    "apps/app/test"
+    "playwright"
   ]
 }
