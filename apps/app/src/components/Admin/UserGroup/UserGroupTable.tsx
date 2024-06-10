@@ -165,11 +165,9 @@ export const UserGroupTable: FC<Props> = ({
                   ? (
                     <td>
                       <Link
-                        className="link-opacity-75-hover  text-decoration-underline"
+                        className="link-opacity-75-hover"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
-                        <span className="material-symbols-outlined pe-2 pt-2">group</span>
-                        {group.name}
                         <button
                           className="btn btn-link btn-edit-groups text-secondary py-0"
                           type="button"
@@ -177,7 +175,10 @@ export const UserGroupTable: FC<Props> = ({
                           key={index}
                           onMouseEnter={() => setHoveredIndex(index)}
                           onMouseLeave={() => setHoveredIndex(undefined)}
-                        >   {(hoveredIndex === index) && (<span className="material-symbols-outlined py-0">edit</span>
+                        >
+                          <span className="material-symbols-outlined pe-2 pt-2">group</span>
+                          <span className="text-decoration-underline">{group.name}</span>
+                          {(hoveredIndex === index) && (<span className="material-symbols-outlined px-2 py-0">edit</span>
                           )}
                         </button>
                       </Link>
