@@ -21,7 +21,7 @@ export default class XssOption {
   constructor(config: XssOptionConfig) {
     const initializedConfig: Partial<XssOptionConfig> = (config != null) ? config : {};
 
-    this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
+    this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention ?? true;
     this.tagWhitelist = initializedConfig.tagWhitelist || recommendedTagNames;
     this.attrWhitelist = initializedConfig.attrWhitelist || recommendedAttributes;
   }

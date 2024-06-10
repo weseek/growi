@@ -12,16 +12,16 @@ export class Xss {
 
   myxss: FilterXSS;
 
-  constructor(xssOption: XssOption) {
-
-    xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
+  constructor(xssOption?: XssOption) {
 
     // default
     const option: IFilterXSSOptions = {
       stripIgnoreTag: true,
       stripIgnoreTagBody: false, // see https://github.com/weseek/growi/pull/505
       css: false,
-      whiteList: xssOption.attrWhitelist as Record<string, string[] | undefined>,
+      whiteList: xssOption != null
+        ? xssOption.attrWhitelist as Record<string, string[] | undefined>
+        : {},
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
       onTag: (tag, html, options) => {
         // pass autolink
@@ -35,7 +35,7 @@ export class Xss {
     this.myxss = new FilterXSS(option);
   }
 
-  process(document: string): string {
+  process(document: string | undefined): string {
     let count = 0;
     let currDoc = document;
     let prevDoc = document;
@@ -48,7 +48,7 @@ export class Xss {
       }
 
       prevDoc = currDoc;
-      currDoc = this.myxss.process(currDoc);
+      currDoc = this.myxss.process(currDoc ?? '');
     }
     while (currDoc !== prevDoc);
 
