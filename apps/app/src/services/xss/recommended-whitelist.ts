@@ -1,5 +1,6 @@
 import { defaultSchema } from 'hast-util-sanitize';
 import type { Attributes } from 'hast-util-sanitize/lib';
+import deepmerge from 'ts-deepmerge';
 
 /**
  * reference: https://meta.stackexchange.com/questions/1777/what-html-tags-are-allowed-on-stack-exchange-sites,
@@ -16,11 +17,13 @@ export const tagNames: Array<string> = [
   'rb', 'u',
 ];
 
-export const attributes: Attributes = {
-  ...defaultSchema.attributes,
-  iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
-  video: ['controls', 'src', 'muted', 'preload', 'width', 'height', 'autoplay'],
-  // The special value 'data*' as a property name can be used to allow all data properties.
-  // see: https://github.com/syntax-tree/hast-util-sanitize/
-  '*': ['key', 'class', 'className', 'style', 'data*'],
-};
+export const attributes: Attributes = deepmerge(
+  defaultSchema.attributes ?? {},
+  {
+    iframe: ['allow', 'referrerpolicy', 'sandbox', 'src', 'srcdoc'],
+    video: ['controls', 'src', 'muted', 'preload', 'width', 'height', 'autoplay'],
+    // The special value 'data*' as a property name can be used to allow all data properties.
+    // see: https://github.com/syntax-tree/hast-util-sanitize/
+    '*': ['key', 'class', 'className', 'style', 'data*'],
+  },
+);

@@ -15,6 +15,11 @@ describe('recommended-whitelist', () => {
   test('.attributes should return data attributes', () => {
     expect(attributes).not.toBeNull();
     expect(Object.keys(attributes)).includes('*');
+    expect(attributes['*']).includes('alt');
+    expect(attributes['*']).includes('align');
+    expect(attributes['*']).includes('width');
+    expect(attributes['*']).includes('height');
+    expect(attributes['*']).includes('className');
     expect(attributes['*']).includes('data*');
   });
 
