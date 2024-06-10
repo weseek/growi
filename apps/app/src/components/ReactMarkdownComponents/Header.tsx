@@ -118,7 +118,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
         #
       </NextLink>
       <div className="d-inline flex-fill">
-        <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''} `}>
+        <CustomTag id={id} className={`${isActive ? styles.blink : ''} `}>
           {children}
           {showEditButton && (
             <EditLink line={node.position?.start.line} />

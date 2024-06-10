@@ -10,19 +10,20 @@
       border-left-color: var(--bs-border-color);
     }
   }
+  margin-left: 1em;
 
   font-size: 16px;
+
+  // @extend .text-break;
+  // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
+  word-break: break-word !important; // Deprecated, but avoids issues with flex containers
+  word-wrap: break-word !important; // Used instead of `overflow-wrap` for IE & Edge Legacy
 
   a {
     @extend .link-offset-2;
 
     text-decoration-line: underline;
   }
-
-  // @extend .text-break;
-  // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
-  word-break: break-word !important; // Deprecated, but avoids issues with flex containers
-  word-wrap: break-word !important; // Used instead of `overflow-wrap` for IE & Edge Legacy
 
   h1,
   h2,
@@ -38,6 +39,7 @@
   .h6 {
     margin-top: 1.6em;
     margin-bottom: 0.8em;
+    margin-left: -1em;
 
     &:first-child {
       margin-top: 0;
