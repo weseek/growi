@@ -3,6 +3,7 @@
   "ignore": [
     ".next",
     "public/static",
-    "package.json"
+    "package.json",
+    "apps/app/test"
   ]
 }
