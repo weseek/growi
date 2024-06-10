@@ -1,0 +1,8 @@
+{
+  "ext": "js,ts,json",
+  "ignore": [
+    ".next",
+    "public/static",
+    "package.json"
+  ]
+}

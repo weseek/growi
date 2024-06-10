@@ -49,7 +49,7 @@ concurrency:
 jobs:
 
   test-prod-node18:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@feat/136128-144923-autofocus-on-PageTitleHeader-when-editing-Untitled-page
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 18.x
       skip-e2e-test: true
@@ -58,7 +58,7 @@ jobs:
 
 
   test-prod-node20:
-    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@feat/136128-144923-autofocus-on-PageTitleHeader-when-editing-Untitled-page
+    uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 20.x
       skip-e2e-test: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
