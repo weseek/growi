@@ -81,7 +81,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.xssService = null;
     this.aclService = null;
     this.appService = null;
     this.fileUploadService = null;
@@ -133,12 +132,11 @@ Crowi.prototype.init = async function() {
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
 
-  // customizeService depends on AppService and XssService
+  // customizeService depends on AppService
   // passportService depends on appService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
-    this.setUpXss(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -594,16 +592,6 @@ Crowi.prototype.setUpGlobalNotification = async function() {
 Crowi.prototype.setUpUserNotification = async function() {
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
-  }
-};
-
-/**
- * setup XssService
- */
-Crowi.prototype.setUpXss = async function() {
-  const XssService = require('../service/xss');
-  if (this.xssService == null) {
-    this.xssService = new XssService(this.configManager);
   }
 };
 
