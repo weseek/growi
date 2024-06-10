@@ -11,8 +11,10 @@ import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
 
+
 import type { ConfigManager } from './config-manager';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
+import { xss } from './xss';
 
 
 const logger = loggerFactory('growi:service:CustomizeService');
@@ -28,8 +30,6 @@ class CustomizeService implements S2sMessageHandlable {
   s2sMessagingService: any;
 
   appService: any;
-
-  xssService: any;
 
   lastLoadedAt?: Date;
 
@@ -47,7 +47,6 @@ class CustomizeService implements S2sMessageHandlable {
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
     this.appService = crowi.appService;
-    this.xssService = crowi.xssService;
   }
 
   /**
@@ -136,7 +135,7 @@ class CustomizeService implements S2sMessageHandlable {
       .replace('{{page}}', dPagePath.latter) // for backward compatibility
       .replace('{{pagename}}', dPagePath.latter);
 
-    return this.xssService.process(customTitle);
+    return xss.process(customTitle);
   }
 
   generateCustomTitleForFixedPageName(title) {
@@ -147,7 +146,7 @@ class CustomizeService implements S2sMessageHandlable {
       .replace('{{pagepath}}', title)
       .replace('{{pagename}}', title);
 
-    return this.xssService.process(customTitle);
+    return xss.process(customTitle);
   }
 
   async initGrowiTheme(): Promise<void> {

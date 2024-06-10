@@ -8,7 +8,7 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { SearchType } from '~/interfaces/user-group';
-import Xss from '~/services/xss';
+import { Xss } from '~/services/xss';
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -25,7 +25,6 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
   } = props;
 
   const { t } = useTranslation();
-  const typeaheadRef = useRef(null);
   const [inputUser, setInputUser] = useState<IUserHasId[]>([]);
   const [applicableUsers, setApplicableUsers] = useState<IUserHasId[]>([]);
   const [isLoading, setIsLoading] = useState(false);

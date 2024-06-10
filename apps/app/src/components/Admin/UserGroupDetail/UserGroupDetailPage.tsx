@@ -18,7 +18,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
-import Xss from '~/services/xss';
+import { Xss } from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
