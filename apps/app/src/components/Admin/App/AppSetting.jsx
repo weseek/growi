@@ -40,7 +40,7 @@ const AppSetting = (props) => {
           <input
             className="form-control"
             type="text"
-            value={adminAppContainer.state.title || ''}
+            defaletValue={adminAppContainer.state.title || ''}
             onChange={(e) => {
               adminAppContainer.changeTitle(e.target.value);
             }}
@@ -60,7 +60,7 @@ const AppSetting = (props) => {
           <input
             className="form-control"
             type="text"
-            value={adminAppContainer.state.confidential || ''}
+            defaultValue={adminAppContainer.state.confidential || ''}
             onChange={(e) => {
               adminAppContainer.changeConfidential(e.target.value);
             }}
