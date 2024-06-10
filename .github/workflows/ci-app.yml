@@ -44,9 +44,9 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-
+            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -108,9 +108,9 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-
+            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
@@ -182,10 +182,10 @@ jobs:
           path: |
             **/node_modules
             !**/node_modules/.cache/turbo
-          key: node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
+          key: node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-${{ hashFiles('**/yarn.lock') }}
           restore-keys: |
-            node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-
-            node_modules-app-devdependencies-${{ runner.OS }}--node${{ matrix.node-version }}-
+            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
+            node_modules-app-devdependencies-${{ runner.OS }}-node${{ matrix.node-version }}-
 
       - name: Cache/Restore dist
         uses: actions/cache@v4
