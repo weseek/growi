@@ -16,6 +16,7 @@ import styles from './Header.module.scss';
 
 
 const logger = loggerFactory('growi:components:Header');
+const moduleClass = styles['revision-head'] ?? '';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -113,7 +114,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
-    <div className={`${styles['revision-head']} d-flex flex-row`}>
+    <div className={`${moduleClass} d-flex flex-row`}>
       <NextLink href={`#${id}`} className={`d-none d-md-inline revision-head-link h${props.level}`}>
         #
       </NextLink>

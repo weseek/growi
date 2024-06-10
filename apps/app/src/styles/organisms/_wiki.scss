@@ -49,6 +49,12 @@
   }
 
   /* stylelint-disable no-descending-specificity */
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    @include bs.media-breakpoint-up(md) {
+      margin-left: -1em;
+    }
+  }
+
   h1, .h1 {
     padding: 0.3em 0;
     margin-top: 2em;
@@ -231,7 +237,6 @@
     h6 {
       margin-top: 1.6em * $ratio;
       margin-bottom: 0.8em * $ratio;
-
       &:first-child {
         margin-top: 15px;
       }
