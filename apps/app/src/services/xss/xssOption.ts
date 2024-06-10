@@ -1,32 +1,29 @@
-import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
+import type { Attributes } from 'hast-util-sanitize/lib';
 
 import type { RehypeSanitizeOption } from '~/interfaces/rehype';
-
-type tagWhitelist = typeof sanitizeDefaultSchema.tagNames;
-type attrWhitelist = typeof sanitizeDefaultSchema.attributes;
+import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from '~/services/xss/recommended-whitelist';
 
 export type XssOptionConfig = {
   isEnabledXssPrevention: boolean,
   xssOption: RehypeSanitizeOption,
-  tagWhitelist: tagWhitelist,
-  attrWhitelist: attrWhitelist,
+  tagWhitelist: Array<string>,
+  attrWhitelist: Attributes,
 }
 
 export default class XssOption {
 
   isEnabledXssPrevention: boolean;
 
-  tagWhitelist: any[];
+  tagWhitelist: Array<string>;
 
-  attrWhitelist: any[];
+  attrWhitelist: Attributes;
 
   constructor(config: XssOptionConfig) {
-    const recommendedWhitelist = require('~/services/xss/recommended-whitelist');
     const initializedConfig: Partial<XssOptionConfig> = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention || true;
-    this.tagWhitelist = initializedConfig.tagWhitelist || recommendedWhitelist.tags;
-    this.attrWhitelist = initializedConfig.attrWhitelist || recommendedWhitelist.attrs;
+    this.tagWhitelist = initializedConfig.tagWhitelist || recommendedTagNames;
+    this.attrWhitelist = initializedConfig.attrWhitelist || recommendedAttributes;
   }
 
 }

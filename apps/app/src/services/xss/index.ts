@@ -1,26 +1,27 @@
-const xss = require('xss');
+import type { IFilterXSSOptions } from 'xss';
+import { FilterXSS } from 'xss';
+
+import type XssOption from './xssOption';
+
 const commonmarkSpec = require('./commonmark-spec');
 
 
 const REPETITIONS_NUM = 50;
 
-class Xss {
+export class Xss {
 
-  constructor(xssOption) {
+  myxss: FilterXSS;
+
+  constructor(xssOption: XssOption) {
 
     xssOption = xssOption || {}; // eslint-disable-line no-param-reassign
 
-    const tagWhitelist = xssOption.tagWhitelist || [];
-    const attrWhitelist = xssOption.attrWhitelist || [];
-
-    const whitelistContent = {};
-
     // default
-    const option = {
+    const option: IFilterXSSOptions = {
       stripIgnoreTag: true,
       stripIgnoreTagBody: false, // see https://github.com/weseek/growi/pull/505
       css: false,
-      whitelist: whitelistContent,
+      whiteList: xssOption.attrWhitelist as Record<string, string[] | undefined>,
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
       onTag: (tag, html, options) => {
         // pass autolink
@@ -30,15 +31,11 @@ class Xss {
       },
     };
 
-    tagWhitelist.forEach((tag) => {
-      whitelistContent[tag] = attrWhitelist;
-    });
-
     // create the XSS Filter instance
-    this.myxss = new xss.FilterXSS(option);
+    this.myxss = new FilterXSS(option);
   }
 
-  process(document) {
+  process(document: string): string {
     let count = 0;
     let currDoc = document;
     let prevDoc = document;
@@ -59,5 +56,3 @@ class Xss {
   }
 
 }
-
-module.exports = Xss;
