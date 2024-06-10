@@ -1,7 +1,8 @@
 // based on https://gist.github.com/morajabi/523d7a642d8c0a2f71fcfa0d8b3d2846?permalink_comment_id=4688158#gistcomment-4688158
 
+import type { RefObject } from 'react';
 import {
-  useState, useEffect, RefObject, useCallback,
+  useState, useEffect, useCallback,
 } from 'react';
 
 type MutableRefObject<T> = {
