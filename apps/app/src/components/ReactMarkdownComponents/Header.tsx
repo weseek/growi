@@ -113,16 +113,18 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
-  <div className='d-flex flex-row'>
-    <NextLink href={`#${id}`} className={`d-none d-md-inline revision-head-link h${props.level}`}>
-      #
-    </NextLink>
-    <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''} d-inline flex-fill`}>
-      {children}
-      {showEditButton && (
-        <EditLink line={node.position?.start.line} />
-      )}
-    </CustomTag>
-  </div>
+    <div className={`${styles['revision-head']} d-flex flex-row`}>
+      <NextLink href={`#${id}`} className={`d-none d-md-inline revision-head-link h${props.level}`}>
+        #
+      </NextLink>
+      <div className="d-inline flex-fill">
+        <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''} `}>
+          {children}
+          {showEditButton && (
+            <EditLink line={node.position?.start.line} />
+          )}
+        </CustomTag>
+      </div>
+    </div>
   );
 };
