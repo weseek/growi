@@ -16,6 +16,7 @@ import styles from './Header.module.scss';
 
 
 const logger = loggerFactory('growi:components:Header');
+const moduleClass = styles['revision-head'] ?? '';
 
 declare global {
   // eslint-disable-next-line vars-on-top, no-var
@@ -113,14 +114,18 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
 
   return (
-    <CustomTag id={id} className={`${styles['revision-head']} ${isActive ? styles.blink : ''}`}>
-      {children}
-      <NextLink href={`#${id}`} className="revision-head-link">
-        <span className="material-symbols-outlined">link</span>
-      </NextLink>
-      {showEditButton && (
-        <EditLink line={node.position?.start.line} />
-      )}
-    </CustomTag>
+    <>
+      <CustomTag id={id} className={`position-relative ${moduleClass} ${isActive ? styles.blink : ''} `}>
+        <NextLink href={`#${id}`} className="d-none d-md-inline revision-head-link position-absolute">
+          #
+        </NextLink>
+
+        {children}
+
+        { showEditButton && (
+          <EditLink line={node.position?.start.line} />
+        ) }
+      </CustomTag>
+    </>
   );
 };
