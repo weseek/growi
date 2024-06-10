@@ -71,8 +71,6 @@ export const UserGroupTable: FC<Props> = ({
   /*
    * State
    */
-  const onMouseEnterHandler = () => setIsHovered(true);
-  const onMouseLeaveHandler = () => setIsHovered(false);
   const [groupIdToUsersMap, setGroupIdToUsersMap] = useState(generateGroupIdToUsersMap(userGroupRelations));
   const [groupIdToChildGroupsMap, setGroupIdToChildGroupsMap] = useState(generateGroupIdToChildGroupsMap(childUserGroups));
 
@@ -138,7 +136,8 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const [isHovered, setIsHovered] = useState(false);
+  const [hoveredIndex, setHoveredIndex] = useState<undefined | number>(undefined);
+
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
       <h3>{headerLabel}</h3>
@@ -156,7 +155,7 @@ export const UserGroupTable: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {userGroups.map((group) => {
+          {userGroups.map((group, index) => {
             const users = groupIdToUsersMap[group._id];
 
             return (
@@ -174,9 +173,11 @@ export const UserGroupTable: FC<Props> = ({
                         <button
                           className="btn btn-link btn-edit-groups text-secondary py-0"
                           type="button"
-                          onMouseEnter={onMouseEnterHandler}
-                          onMouseLeave={onMouseLeaveHandler}
-                        >   {(isHovered) && (<span className="material-symbols-outlined py-0">edit</span>
+                          // eslint-disable-next-line react/no-array-index-key
+                          key={index}
+                          onMouseEnter={() => setHoveredIndex(index)}
+                          onMouseLeave={() => setHoveredIndex(undefined)}
+                        >   {(hoveredIndex === index) && (<span className="material-symbols-outlined py-0">edit</span>
                           )}
                         </button>
                       </Link>
