@@ -141,7 +141,7 @@ const SharedPage: NextPageWithLayout<Props> = (props: Props) => {
 SharedPage.getLayout = function getLayout(page) {
   return (
     <>
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
       <ShareLinkLayout>{page}</ShareLinkLayout>
     </>
   );
