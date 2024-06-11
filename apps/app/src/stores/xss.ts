@@ -1,7 +1,7 @@
 
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 
-import Xss from '~/services/xss';
+import type Xss from '~/services/general-xss-filter';
 
 import { useStaticSWR } from './use-static-swr';
 

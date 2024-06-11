@@ -7,6 +7,7 @@ import { DefaultThemeMetadata, PresetThemesMetadatas, manifestPath } from '@grow
 import uglifycss from 'uglifycss';
 
 import { growiPluginService } from '~/features/growi-plugin/server/services';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -14,7 +15,6 @@ import S2sMessage from '../models/vo/s2s-message';
 
 import type { ConfigManager } from './config-manager';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
-import { xss } from './xss';
 
 
 const logger = loggerFactory('growi:service:CustomizeService');
@@ -135,7 +135,7 @@ class CustomizeService implements S2sMessageHandlable {
       .replace('{{page}}', dPagePath.latter) // for backward compatibility
       .replace('{{pagename}}', dPagePath.latter);
 
-    return xss.process(customTitle);
+    return generalXssFilter.process(customTitle);
   }
 
   generateCustomTitleForFixedPageName(title) {
@@ -146,7 +146,7 @@ class CustomizeService implements S2sMessageHandlable {
       .replace('{{pagepath}}', title)
       .replace('{{pagename}}', title);
 
-    return xss.process(customTitle);
+    return generalXssFilter.process(customTitle);
   }
 
   async initGrowiTheme(): Promise<void> {
