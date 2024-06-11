@@ -134,10 +134,9 @@ module.exports = function(crowi, app) {
     };
     await crowi.activityService.createActivity(parameters);
 
-    const { nextApp } = crowi;
     req.crowi = crowi;
-    req.externalAccountLoginError = error;
-    nextApp.render(req, res, '/login', { externalAccountLoginError: JSON.stringify(error) });
+    req.session.externalAccountLoginError = JSON.stringify(error);
+    res.redirect('/login');
     return;
   };
 

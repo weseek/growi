@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import { IExternalAuthProviderType } from '@growi/core';
 import type {
@@ -7,7 +7,6 @@ import type {
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import Head from 'next/head';
-import { useRouter } from 'next/router';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import { LoginForm } from '~/components/LoginForm';
@@ -15,7 +14,6 @@ import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
-import type { ExternalAccountLoginError } from '~/models/vo/external-account-login-error';
 import type { CommonProps } from '~/pages/utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from '~/pages/utils/commons';
 import {
@@ -43,14 +41,6 @@ type Props = CommonProps & {
 
 const LoginPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
-
-  const router = useRouter();
-  useEffect(() => {
-    if (router.query.externalAccountLoginError) {
-      const cleanUrl = router.pathname;
-      router.replace(cleanUrl, undefined, { shallow: true });
-    }
-  }, [router]);
 
   // commons
   useCsrfToken(props.csrfToken);
@@ -143,10 +133,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  if (context.query.externalAccountLoginError != null) {
-    const externalAccountLoginError = JSON.parse(context.query.externalAccountLoginError as string) as ExternalAccountLoginError;
-    if (isExternalAccountLoginError(externalAccountLoginError)) {
-      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
+  const externalAccountLoginError = (context.req as CrowiRequest).session.externalAccountLoginError;
+  if (externalAccountLoginError != null) {
+    delete (context.req as CrowiRequest).session.externalAccountLoginError;
+    const parsedError = JSON.parse(externalAccountLoginError);
+    if (isExternalAccountLoginError(parsedError)) {
+      props.externalAccountLoginError = { ...parsedError as IExternalAccountLoginError };
     }
   }
 

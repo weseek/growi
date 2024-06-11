@@ -171,9 +171,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
     // Generate login error elements using <ul>, <li>
 
-    const loginErrorElement = props.externalAccountLoginError != null
-      ? generateSafelySetErrors([...loginErrorList, props.externalAccountLoginError])
-      : generateSafelySetErrors(loginErrorList);
+    const loginErrorElement = (loginErrorList ?? []).length > 0
+    // prioritize loginErrorList because the list should contains new error
+      ? generateSafelySetErrors(loginErrorList)
+      : generateSafelySetErrors(props.externalAccountLoginError != null ? [props.externalAccountLoginError] : []);
 
     return (
       <>
