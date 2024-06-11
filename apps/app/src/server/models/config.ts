@@ -3,7 +3,8 @@ import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { RehypeSanitizeOption } from '../../interfaces/rehype';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
+
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
@@ -161,7 +162,7 @@ export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:xss:attrWhitelist': [],
 
   'markdown:rehypeSanitize:isEnabledPrevention': true,
-  'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
+  'markdown:rehypeSanitize:option': RehypeSanitizeType.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
   'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,
