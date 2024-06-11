@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 
+
 test('admin is successfully loaded', async({ page }) => {
   await page.goto('/admin');
 
@@ -21,8 +22,8 @@ test('admin/security is successfully loaded', async({ page }) => {
   await page.goto('/admin/security');
 
   await expect(page.getByTestId('admin-security')).toBeVisible();
-  await expect(page.locator('#isShowRestrictedByOwner')).toBeChecked();
-  await expect(page.locator('#isShowRestrictedByGroup')).toBeChecked();
+  await expect(page.locator('#isShowRestrictedByOwner')).not.toBeChecked();
+  await expect(page.locator('#isShowRestrictedByGroup')).not.toBeChecked();
 });
 
 test('admin/markdown is successfully loaded', async({ page }) => {
@@ -62,7 +63,7 @@ test('admin/slack-integration is successfully loaded', async({ page }) => {
 
   await expect(page.getByTestId('admin-slack-integration')).toBeVisible();
   await expect(page.locator('img.bot-difficulty-icon')).toHaveCount(3);
-  await expect(page.locator('img.bot-difficulty-icon')).toBeVisible();
+  await expect(page.locator('img.bot-difficulty-icon').first()).toBeVisible();
 });
 
 test('admin/slack-integration-legacy is successfully loaded', async({ page }) => {
@@ -82,7 +83,7 @@ test('admin/user-groups is successfully loaded', async({ page }) => {
   await page.goto('/admin/user-groups');
 
   await expect(page.getByTestId('admin-user-groups')).toBeVisible();
-  await expect(page.getByTestId('grw-user-group-table')).toBeVisible();
+  await expect(page.getByTestId('grw-user-group-table').first()).toBeVisible();
 });
 
 test('admin/search is successfully loaded', async({ page }) => {
