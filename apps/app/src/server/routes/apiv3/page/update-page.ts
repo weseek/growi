@@ -18,8 +18,8 @@ import {
 } from '~/server/models';
 import type { PageDocument, PageModel } from '~/server/models/page';
 import { preNotifyService } from '~/server/service/pre-notify';
-import { xss, xssForRevisionId } from '~/server/service/xss';
 import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -121,7 +121,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
-      const sanitizeRevisionId = revisionId == null ? undefined : xssForRevisionId.process(revisionId);
+      const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
 
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
@@ -136,7 +136,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
-          revisionBody: xss.process(latestRevision?.body),
+          revisionBody: latestRevision?.body,
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };
