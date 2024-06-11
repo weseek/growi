@@ -1,4 +1,6 @@
 @use '@growi/ui/scss/molecules/page_list';
+@use '~/styles/variables' as var;
+@use '@growi/core-styles/scss/bootstrap/init' as bs;
 
 .page-list :global {
   .highlighted-keyword {
@@ -7,8 +9,19 @@
   }
 }
 
-.search-result-content :global  {
-  .highlighted-keyword {
-    background:linear-gradient(transparent 40%, #FCF0C0 40%);
+// == Colors
+@include bs.color-mode(light) {
+  .search-result-content :global {
+    .highlighted-keyword {
+      background:linear-gradient(transparent 40%, var.$grw-marker-yellow 40%);
+    }
+  }
+}
+
+@include bs.color-mode(dark) {
+  .search-result-content :global {
+    .highlighted-keyword {
+      background:linear-gradient(transparent 40%, var.$grw-marker-yellow 40%);
+    }
   }
 }
