@@ -6,8 +6,8 @@ import { tagNames as recommendedTagNames, attributes as recommendedAttributes } 
 export type XssOptionConfig = {
   isEnabledXssPrevention: boolean,
   xssOption: RehypeSanitizeOption,
-  tagWhitelist: Array<string>,
-  attrWhitelist: Attributes,
+  customTagWhitelist: Array<string>,
+  customAttrWhitelist: Attributes,
 }
 
 export default class XssOption {
@@ -22,8 +22,8 @@ export default class XssOption {
     const initializedConfig: Partial<XssOptionConfig> = (config != null) ? config : {};
 
     this.isEnabledXssPrevention = initializedConfig.isEnabledXssPrevention ?? true;
-    this.tagWhitelist = initializedConfig.tagWhitelist || recommendedTagNames;
-    this.attrWhitelist = initializedConfig.attrWhitelist || recommendedAttributes;
+    this.tagWhitelist = initializedConfig.customTagWhitelist || recommendedTagNames;
+    this.attrWhitelist = initializedConfig.customAttrWhitelist || recommendedAttributes;
   }
 
 }

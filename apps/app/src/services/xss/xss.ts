@@ -1,9 +1,8 @@
 import type { IFilterXSSOptions } from 'xss';
 import { FilterXSS } from 'xss';
 
+import commonmarkSpec from './commonmark-spec';
 import type XssOption from './xssOption';
-
-const commonmarkSpec = require('./commonmark-spec');
 
 
 const REPETITIONS_NUM = 50;
@@ -14,7 +13,6 @@ export class Xss {
 
   constructor(xssOption?: XssOption) {
 
-    // default
     const option: IFilterXSSOptions = {
       stripIgnoreTag: true,
       stripIgnoreTagBody: false, // see https://github.com/weseek/growi/pull/505
@@ -23,7 +21,7 @@ export class Xss {
         ? xssOption.attrWhitelist as Record<string, string[] | undefined>
         : {},
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
-      onTag: (tag, html, options) => {
+      onTag: (tag, html) => {
         // pass autolink
         if (tag.match(commonmarkSpec.uriAutolinkRegexp) || tag.match(commonmarkSpec.emailAutolinkRegexp)) {
           return html;
