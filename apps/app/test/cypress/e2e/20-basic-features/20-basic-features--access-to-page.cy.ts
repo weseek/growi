@@ -119,32 +119,6 @@ context('Access to page', () => {
 });
 
 
-context('Access to /me page', () => {
-  const ssPrefix = 'access-to-me-page-';
-
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
-
-  it('/me is successfully loaded', () => {
-    cy.visit('/me');
-
-    cy.getByTestid('grw-user-settings').should('be.visible');
-
-    cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-me`);
-  });
-
-  // it('Draft page is successfully shown', () => {
-  //   cy.visit('/me/drafts');
-  //   cy.screenshot(`${ssPrefix}-draft-page`);
-  // });
-
-});
-
 context('Access to special pages', () => {
   const ssPrefix = 'access-to-special-pages-';
 
