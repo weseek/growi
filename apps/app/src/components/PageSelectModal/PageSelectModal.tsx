@@ -1,6 +1,6 @@
 import type { FC } from 'react';
 import {
-  Suspense, useState, useCallback, useEffect,
+  Suspense, useState, useCallback,
 } from 'react';
 
 import nodePath from 'path';
