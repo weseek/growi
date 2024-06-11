@@ -5,6 +5,8 @@ import { defineConfig, devices } from '@playwright/test';
 
 const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
 
+const storageState = fs.existsSync(authFile) ? authFile : undefined;
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -47,9 +49,6 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     viewport: { width: 1400, height: 1024 },
-
-    // Use prepared auth state.
-    storageState: fs.existsSync(authFile) ? authFile : undefined,
   },
 
   /* Configure projects for major browsers */
@@ -60,29 +59,35 @@ export default defineConfig({
 
     {
       name: 'chromium/installer',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState },
       testMatch: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup'],
     },
 
     {
-      name: 'chromium',
+      name: 'chromium/guest-mode',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
+      testMatch: /21-basic-features-for-guest\/.*\.spec\.ts/,
+    },
+
+    {
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'], storageState },
+      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Firefox'], storageState },
+      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
     {
       name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
+      use: { ...devices['Desktop Safari'], storageState },
+      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
       dependencies: ['setup', 'auth'],
     },
 
