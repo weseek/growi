@@ -27,6 +27,7 @@ test('admin/security is successfully loaded', async({ page }) => {
 
 test('admin/markdown is successfully loaded', async({ page }) => {
   await page.goto('/admin/markdown');
+
   await expect(page.getByTestId('admin-markdown')).toBeVisible();
   await expect(page.locator('#isEnabledLinebreaksInComments')).toBeChecked();
 });
