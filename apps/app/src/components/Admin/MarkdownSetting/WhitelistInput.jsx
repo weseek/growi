@@ -2,9 +2,9 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
+import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from '~/services/renderer/recommended-whitelist';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 
@@ -16,8 +16,8 @@ class WhitelistInput extends React.Component {
     this.tagWhitelist = React.createRef();
     this.attrWhitelist = React.createRef();
 
-    this.tags = [...sanitizeDefaultSchema.tagNames, 'video'];
-    this.attrs = JSON.stringify(sanitizeDefaultSchema.attributes);
+    this.tags = recommendedTagNames;
+    this.attrs = recommendedAttributes;
 
     this.onClickRecommendTagButton = this.onClickRecommendTagButton.bind(this);
     this.onClickRecommendAttrButton = this.onClickRecommendAttrButton.bind(this);
