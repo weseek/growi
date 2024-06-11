@@ -95,7 +95,6 @@ class Crowi {
     this.inAppNotificationService = null;
     this.activityService = null;
     this.commentService = null;
-    this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
 
