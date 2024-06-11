@@ -25,7 +25,7 @@ const schemesCondition = schemesForAutolink.join('|');
  * @type {RegExp}
  * @see https://spec.commonmark.org/0.16/#autolinks
  */
-const uriAutolinkRegexp = new RegExp(`^(${schemesCondition}):\\/\\/.+$`);
+export const uriAutolinkRegexp = new RegExp(`^(${schemesCondition}):\\/\\/.+$`);
 
 /**
  * RegExp for email
@@ -33,10 +33,4 @@ const uriAutolinkRegexp = new RegExp(`^(${schemesCondition}):\\/\\/.+$`);
  * @see https://spec.commonmark.org/0.16/#autolinks
  */
 // eslint-disable-next-line max-len
-const emailAutolinkRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-
-
-module.exports = {
-  uriAutolinkRegexp,
-  emailAutolinkRegexp,
-};
+export const emailAutolinkRegexp = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;

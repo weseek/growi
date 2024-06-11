@@ -1,7 +1,7 @@
 import type { IFilterXSSOptions } from 'xss';
 import { FilterXSS } from 'xss';
 
-import commonmarkSpec from './commonmark-spec';
+import { uriAutolinkRegexp, emailAutolinkRegexp } from './commonmark-spec';
 import type XssOption from './xssOption';
 
 
@@ -23,7 +23,7 @@ export class Xss {
       escapeHtml: (html) => { return html }, // resolve https://github.com/weseek/growi/issues/221
       onTag: (tag, html) => {
         // pass autolink
-        if (tag.match(commonmarkSpec.uriAutolinkRegexp) || tag.match(commonmarkSpec.emailAutolinkRegexp)) {
+        if (tag.match(uriAutolinkRegexp) || tag.match(emailAutolinkRegexp)) {
           return html;
         }
       },
