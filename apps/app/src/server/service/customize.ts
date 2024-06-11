@@ -1,13 +1,11 @@
 import path from 'path';
 
 import type { ColorScheme } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
 import { getForcedColorScheme } from '@growi/core/dist/utils';
 import { DefaultThemeMetadata, PresetThemesMetadatas, manifestPath } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 
 import { growiPluginService } from '~/features/growi-plugin/server/services';
-import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
@@ -123,30 +121,6 @@ class CustomizeService implements S2sMessageHandlable {
     this.customTitleTemplate = configValue;
 
     this.lastLoadedAt = new Date();
-  }
-
-  generateCustomTitle(pageOrPath) {
-    const path = pageOrPath.path || pageOrPath;
-    const dPagePath = new DevidedPagePath(path, true, true);
-
-    const customTitle = this.customTitleTemplate
-      .replace('{{sitename}}', this.appService.getAppTitle())
-      .replace('{{pagepath}}', path)
-      .replace('{{page}}', dPagePath.latter) // for backward compatibility
-      .replace('{{pagename}}', dPagePath.latter);
-
-    return generalXssFilter.process(customTitle);
-  }
-
-  generateCustomTitleForFixedPageName(title) {
-    // replace
-    const customTitle = this.customTitleTemplate
-      .replace('{{sitename}}', this.appService.getAppTitle())
-      .replace('{{page}}', title)
-      .replace('{{pagepath}}', title)
-      .replace('{{pagename}}', title);
-
-    return generalXssFilter.process(customTitle);
   }
 
   async initGrowiTheme(): Promise<void> {
