@@ -18,6 +18,7 @@ export const useSubmittable = (props: SubmittableInputProps): Partial<React.Inpu
   } = props;
 
   const [inputText, setInputText] = useState(value ?? '');
+  const [lastSubmittedInputText, setLastSubmittedInputText] = useState<string|undefined>(value ?? '');
   const [isComposing, setComposing] = useState(false);
 
   const changeHandler = useCallback(async(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,6 +35,7 @@ export const useSubmittable = (props: SubmittableInputProps): Partial<React.Inpu
         if (isComposing) {
           return;
         }
+        setLastSubmittedInputText(inputText);
         onSubmit?.(inputText.trim());
         break;
       case 'Escape':
@@ -46,10 +48,16 @@ export const useSubmittable = (props: SubmittableInputProps): Partial<React.Inpu
   }, [inputText, isComposing, onCancel, onSubmit]);
 
   const blurHandler = useCallback((e) => {
+    // suppress continuous calls to submit by blur event
+    if (lastSubmittedInputText === inputText) {
+      return;
+    }
+
     // submit on blur
+    setLastSubmittedInputText(inputText);
     onSubmit?.(inputText.trim());
     onBlur?.(e);
-  }, [inputText, onSubmit, onBlur]);
+  }, [inputText, lastSubmittedInputText, onSubmit, onBlur]);
 
   const compositionStartHandler = useCallback((e: CompositionEvent<HTMLInputElement>) => {
     setComposing(true);
