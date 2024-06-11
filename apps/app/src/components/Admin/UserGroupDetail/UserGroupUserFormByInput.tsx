@@ -8,7 +8,6 @@ import { AsyncTypeahead } from 'react-bootstrap-typeahead';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { SearchType } from '~/interfaces/user-group';
-import { generalXssFilter } from '~/services/general-xss-filter';
 
 type Props = {
   userGroup: IUserGroupHasId,
@@ -36,11 +35,11 @@ export const UserGroupUserFormByInput: FC<Props> = (props) => {
 
     try {
       await onClickAddUserBtn(userName);
-      toastSuccess(`Added "${generalXssFilter.process(userName)}" to "${generalXssFilter.process(userGroup.name)}"`);
+      toastSuccess(`Added "${userName}" to "${userGroup.name}"`);
       setInputUser([]);
     }
     catch (err) {
-      toastError(new Error(`Unable to add "${generalXssFilter.process(userName)}" to "${generalXssFilter.process(userGroup.name)}"`));
+      toastError(new Error(`Unable to add "${userName}" to "${userGroup.name}"`));
     }
   };
 

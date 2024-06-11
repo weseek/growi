@@ -18,7 +18,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
-import { generalXssFilter } from '~/services/general-xss-filter';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
@@ -220,11 +219,11 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const removeUserByUsername = useCallback(async(username: string) => {
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
-      toastSuccess(`Removed "${generalXssFilter.process(username)}" from "${generalXssFilter.process(currentUserGroup?.name)}"`);
+      toastSuccess(`Removed "${username}" from "${currentUserGroup?.name}"`);
       mutateUserGroupRelationList();
     }
     catch (err) {
-      toastError(new Error(`Unable to remove "${generalXssFilter.process(username)}" from "${generalXssFilter.process(currentUserGroup?.name)}"`));
+      toastError(new Error(`Unable to remove "${username}" from "${currentUserGroup?.name}"`));
     }
   }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList]);
 
