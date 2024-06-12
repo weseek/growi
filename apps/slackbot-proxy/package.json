@@ -4,14 +4,12 @@
   "license": "MIT",
   "private": "true",
   "scripts": {
-    "build": "yarn tsc && tsc-alias -p tsconfig.build.json",
+    "build": "tspc -p tsconfig.build.json",
     "clean": "shx rm -rf dist",
     "cp:public": "cp -RT ./src/public ./dist/public",
     "cp:views": "cp -RT ./src/views ./dist/views",
     "cp:bootstrap": "cp -RT ../../node_modules/bootstrap/dist ./dist/public/bootstrap",
     "cp:bootstrap:dev": "cp -RT ../../node_modules/bootstrap/dist ./src/public/bootstrap",
-    "tsc": "tsc -p tsconfig.build.json",
-    "tsc:w": "yarn tsc -w",
     "dev:ci": "cross-env NODE_ENV=development yarn ts-node src/index.ts --ci",
     "dev": "cross-env NODE_ENV=development nodemon --exec yarn ts-node --inspect src/index.ts",
     "start:prod:ci": "yarn start:prod --ci",
@@ -20,10 +18,10 @@
     "predev": "yarn cp:bootstrap:dev",
     "lint:js": "yarn eslint src/**/*.{js,ts}",
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
-    "lint:typecheck": "tsc",
+    "lint:typecheck": "tspc",
     "lint": "run-p lint:*",
     "version": "yarn version --no-git-tag-version --preid=slackbot-proxy",
-    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config"
+    "ts-node": "node -r ts-node/register/transpile-only -r typescript-transform-paths/register -r dotenv-flow/config"
   },
   "// comments for dependencies": {
     "read-pkg-up": "v8 doesn't support CommonJS anymore. https://github.com/sindresorhus/read-pkg-up/issues/17",
@@ -67,7 +65,6 @@
     "bootstrap": "=5.3.2",
     "browser-bunyan": "^1.6.3",
     "eslint-plugin-regex": "^1.8.0",
-    "morgan": "^1.10.0",
-    "tsc-alias": "^1.2.9"
+    "morgan": "^1.10.0"
   }
 }

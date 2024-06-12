@@ -8,7 +8,7 @@
     "build": "run-p build:*",
     "start": "yarn next start",
     "build:client": "yarn next build",
-    "build:server": "yarn cross-env NODE_ENV=production tsc -p tsconfig.build.server.json && tsc-alias -p tsconfig.build.server-tsc-alias.json",
+    "build:server": "yarn cross-env NODE_ENV=production tspc -p tsconfig.build.server.json",
     "postbuild:server": "shx echo \"Listing files under transpiled\" && shx ls transpiled && shx rm -rf dist && shx mv transpiled/src dist && shx rm -rf transpiled",
     "clean": "shx rm -rf dist transpiled",
     "server": "yarn cross-env NODE_ENV=production node -r dotenv-flow/config dist/server/app.js",
@@ -28,7 +28,7 @@
     "cy:run": "cypress run --browser chromium",
     "//// for CI": "",
     "dev:ci": "yarn cross-env NODE_ENV=development yarn ts-node src/server/app.ts --ci",
-    "lint:typecheck": "npx -y tsc",
+    "lint:typecheck": "npx -y tspc",
     "lint:eslint": "yarn eslint --quiet \"**/*.{js,jsx,ts,tsx}\"",
     "lint:styles": "stylelint \"src/**/*.scss\"",
     "lint:swagger2openapi": "node node_modules/.bin/oas-validate tmp/swagger.json",
@@ -282,7 +282,6 @@
     "simplebar-react": "^2.3.6",
     "socket.io-client": "^4.7.5",
     "source-map-loader": "^4.0.1",
-    "swagger2openapi": "^7.0.8",
-    "tsc-alias": "^1.2.9"
+    "swagger2openapi": "^7.0.8"
   }
 }
