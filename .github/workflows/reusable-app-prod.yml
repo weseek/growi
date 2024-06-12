@@ -353,7 +353,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, chromium/guest-mode, firefox, webkit]
+        browser: [chromium, firefox, webkit]
         shard: [1/2, 2/2]
 
     services:
@@ -435,6 +435,16 @@ jobs:
       working-directory: ./apps/app
       run: |
         yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+      env:
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Playwright Run (--project=${browser}/guest-mode)
+      if: ${{ matrix.browser == 'chromium' }}
+      working-directory: ./apps/app
+      run: |
+        yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright

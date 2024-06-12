@@ -1,11 +1,18 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type Project } from '@playwright/test';
 
 const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
 
 const storageState = fs.existsSync(authFile) ? authFile : undefined;
+
+const supportedBrowsers = ['chromium', 'firefox', 'webkit'];
+const projectsForGuestMode: Array<Project> = supportedBrowsers.map(browser => ({
+  name: `${browser}/guest-mode`,
+  use: { ...devices['Desktop Chrome'] },
+  testMatch: /21-basic-features-for-guest\/.*\.spec\.ts/,
+}));
 
 /**
  * Read environment variables from file.
@@ -64,11 +71,7 @@ export default defineConfig({
       dependencies: ['setup'],
     },
 
-    {
-      name: 'chromium/guest-mode',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: /21-basic-features-for-guest\/.*\.spec\.ts/,
-    },
+    ...projectsForGuestMode,
 
     {
       name: 'chromium',
