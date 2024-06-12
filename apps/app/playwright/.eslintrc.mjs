@@ -5,15 +5,13 @@ export default [
   {
     ...playwright.configs['flat/recommended'],
     files: ['./**'],
-  },
-  {
-    files: ['./**'],
     rules: {
       'import/extensions': [
         'error',
         'ignorePackages',
         {
           ts: 'never',
+
         },
       ],
     },
@@ -22,6 +20,13 @@ export default [
       'import/resolver': {
         typescript: {},
       },
+    },
+  },
+  {
+    files: ['./**'],
+    rules: {
+      // Customize Playwright rules
+      // ...
     },
   },
 ];
