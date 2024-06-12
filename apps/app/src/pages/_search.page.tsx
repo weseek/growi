@@ -108,7 +108,7 @@ const Layout = ({ children, ...props }: LayoutProps): JSX.Element => {
 SearchResultPage.getLayout = function getLayout(page) {
   return (
     <>
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
       <Layout {...page.props}>{page}</Layout>
     </>
   );

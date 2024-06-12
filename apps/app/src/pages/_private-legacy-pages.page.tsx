@@ -76,7 +76,7 @@ const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
         <title>{title}</title>
       </Head>
 
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={props.rendererConfig.drawioUri} />
 
       <SearchResultLayout>
         <div id="private-regacy-pages">

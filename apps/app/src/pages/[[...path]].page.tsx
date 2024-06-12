@@ -371,7 +371,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
   return (
     <>
       <GrowiPluginsActivator />
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
 
       <Layout {...page.props}>
         {page}
