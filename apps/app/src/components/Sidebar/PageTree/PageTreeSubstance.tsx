@@ -54,16 +54,15 @@ export const PageTreeHeader = memo(({ isWipPageShown, onWipPageShownChange }: He
         </button>
 
         <ul className="dropdown-menu">
-          <li className="dropdown-item">
-            <div className="form-check form-switch flex-fill d-flex">
+          <li className="dropdown-item" onClick={onWipPageShownChange}>
+            <div className="form-check form-switch">
               <input
-                id="show-wip-page-checkbox"
-                className="form-check-input"
+                className="form-check-input pe-none"
                 type="checkbox"
-                defaultChecked={isWipPageShown}
-                onChange={onWipPageShownChange}
+                checked={isWipPageShown}
+                onChange={() => {}}
               />
-              <label className="form-check-label flex-grow-1 ms-2" htmlFor="show-wip-page-checkbox">
+              <label className="form-check-label pe-none">
                 {t('sidebar_header.show_wip_page')}
               </label>
             </div>

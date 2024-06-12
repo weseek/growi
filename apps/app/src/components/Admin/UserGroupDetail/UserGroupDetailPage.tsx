@@ -1,5 +1,5 @@
 import React, {
-  useState, useCallback, useEffect, useMemo,
+  useState, useCallback, useEffect,
 } from 'react';
 
 import {
@@ -18,7 +18,6 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete, SearchType } from '~/interfaces/user-group';
 import { SearchTypes } from '~/interfaces/user-group';
-import Xss from '~/services/xss';
 import { useIsAclEnabled } from '~/stores/context';
 import { useUpdateUserGroupConfirmModal } from '~/stores/modal';
 import { useSWRxUserGroupPages, useSWRxSelectableParentUserGroups, useSWRxSelectableChildUserGroups } from '~/stores/user-group';
@@ -54,7 +53,6 @@ type Props = {
 const UserGroupDetailPage = (props: Props): JSX.Element => {
   const { t } = useTranslation('admin');
   const router = useRouter();
-  const xss = useMemo(() => new Xss(), []);
   const { userGroupId: currentUserGroupId, isExternalGroup } = props;
 
   const { data: currentUserGroup } = useUserGroup(currentUserGroupId, isExternalGroup);
@@ -221,13 +219,13 @@ const UserGroupDetailPage = (props: Props): JSX.Element => {
   const removeUserByUsername = useCallback(async(username: string) => {
     try {
       await apiv3Delete(`/user-groups/${currentUserGroupId}/users/${username}`);
-      toastSuccess(`Removed "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`);
+      toastSuccess(`Removed "${username}" from "${currentUserGroup?.name}"`);
       mutateUserGroupRelationList();
     }
     catch (err) {
-      toastError(new Error(`Unable to remove "${xss.process(username)}" from "${xss.process(currentUserGroup?.name)}"`));
+      toastError(new Error(`Unable to remove "${username}" from "${currentUserGroup?.name}"`));
     }
-  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList, xss]);
+  }, [currentUserGroup?.name, currentUserGroupId, mutateUserGroupRelationList]);
 
   const showUpdateModal = useCallback((group: IUserGroupHasId) => {
     setUpdateModalShown(true);

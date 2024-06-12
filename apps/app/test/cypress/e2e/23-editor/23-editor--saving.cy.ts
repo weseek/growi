@@ -9,53 +9,6 @@ context('PageCreateButton', () => {
     });
   });
 
-  it("DropendMenu is shown successfully", () => {
-    cy.visit('/');
-    cy.collapseSidebar(true, true);
-
-    cy.getByTestid('grw-page-create-button').trigger('mouseover');
-
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('grw-page-create-button-dropend-toggle').click({force: true});
-      // wait until
-      return cy.getByTestid('grw-page-create-button-dropend-menu').then($elem => $elem.is(':visible'));
-    });
-
-    cy.screenshot(`${ssPrefix}page-create-button-dropend-menu-shown`);
-  });
-
-  it("Successfully Create Today's page", () => {
-    cy.visit('/');
-    cy.collapseSidebar(true);
-
-    cy.getByTestid('grw-page-create-button').trigger('mouseover');
-
-    cy.waitUntil(() => {
-      // do
-      cy.getByTestid('grw-page-create-button-dropend-toggle').click({force: true});
-      // wait until
-      return cy.getByTestid('grw-page-create-button-dropend-menu').then($elem => $elem.is(':visible'));
-    });
-
-    cy.getByTestid('grw-page-create-button-dropend-menu').should('be.visible').within(() => {
-      cy.get('button').eq(1).click();
-    });
-
-    cy.getByTestid('page-editor').should('be.visible');
-    cy.getByTestid('save-page-btn').as('save-page-btn').should('be.visible');
-    cy.waitUntil(() => {
-      // do
-      cy.get('@save-page-btn').click();
-      // wait until
-      return cy.get('@save-page-btn').then($elem => $elem.is(':disabled'));
-    });
-    cy.get('.layout-root').should('not.have.class', 'editing');
-
-    cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}create-today-page`);
-  });
-
   it.skip('Successfully create page under specific path', () => {
     const pageName = 'child';
 

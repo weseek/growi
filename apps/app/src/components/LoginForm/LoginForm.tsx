@@ -196,10 +196,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <span className="text-white opacity-75 d-flex align-items-center">
-              <span className="material-symbols-outlined">person</span>
-            </span>
+            <label className="text-white opacity-75 d-flex align-items-center" htmlFor="tiUsernameForLogin">
+              <span className="material-symbols-outlined" aria-label="Username or E-mail">person</span>
+            </label>
             <input
+              id="tiUsernameForLogin"
               type="text"
               className={`form-control rounded ms-2 ${isLdapStrategySetup ? 'ldap-space' : ''}`}
               data-testid="tiUsernameForLogin"
@@ -217,10 +218,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group">
-            <span className="text-white opacity-75 d-flex align-items-center">
-              <span className="material-symbols-outlined">lock</span>
-            </span>
+            <label className="text-white opacity-75 d-flex align-items-center" htmlFor="tiPasswordForLogin">
+              <span className="material-symbols-outlined" aria-label="Password">lock</span>
+            </label>
             <input
+              id="tiPasswordForLogin"
               type="password"
               className="form-control rounded ms-2"
               data-testid="tiPasswordForLogin"
@@ -241,7 +243,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <span className="material-symbols-outlined">login</span>
+                  <span className="material-symbols-outlined" aria-label="Login">login</span>
                 )}
               </span>
               <span className="flex-grow-1">{t('Sign in')}</span>

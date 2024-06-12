@@ -11,7 +11,7 @@ WORKDIR ${optDir}
 
 RUN yarn global add turbo
 COPY . .
-RUN turbo prune --scope=@growi/slackbot-proxy --docker
+RUN turbo prune @growi/slackbot-proxy --docker
 
 
 ##
