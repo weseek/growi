@@ -437,13 +437,11 @@ jobs:
     - name: Copy dotenv file for automatic installation with allowing guest mode
       working-directory: ./apps/app
       run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
+        cat config/ci/.env.local.for-guest >> .env.production.local
 
     - name: Playwright Run (--project=${browser}/guest-mode)
-      if: ${{ matrix.browser == 'chromium' }}
       working-directory: ./apps/app
       run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
         yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
