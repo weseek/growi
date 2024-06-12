@@ -5,28 +5,25 @@ export default [
   {
     ...playwright.configs['flat/recommended'],
     files: ['./**'],
+  },
+  {
+    files: ['./**'],
     rules: {
       'import/extensions': [
         'error',
         'ignorePackages',
         {
           ts: 'never',
-
         },
       ],
+      'import/no-unresolved': 'off',
     },
     settings: {
-      // resolve path aliases by eslint-import-resolver-typescript
       'import/resolver': {
-        typescript: {},
+        node: {
+          extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        },
       },
-    },
-  },
-  {
-    files: ['./**'],
-    rules: {
-      // Customize Playwright rules
-      // ...
     },
   },
 ];
