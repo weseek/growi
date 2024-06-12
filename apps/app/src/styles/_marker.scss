@@ -2,22 +2,18 @@
 
 // Light mode color
 @include bs.color-mode(light) {
-  :root {
-    --grw-marker-yellow: #FFFA90;
-    --grw-marker-red: #FFAADD;
-    --grw-marker-blue: #9AE0FF;
-    --grw-marker-cyan: #88FFF0;
-    --grw-marker-green: #B8FF9A;
-  }
+  --grw-marker-bg-yellow: #FFFA90;
+  --grw-marker-bg-red: #FFAADD;
+  --grw-marker-bg-blue: #9AE0FF;
+  --grw-marker-bg-cyan: #88FFF0;
+  --grw-marker-bg-green: #B8FF9A;
 }
 
 // dark mode color
 @include bs.color-mode(dark) {
-  :root {
-    --grw-marker-yellow: #888000;
-    --grw-marker-red: #900066;
-    --grw-marker-blue: #0A6A9A;
-    --grw-marker-cyan: #008888;
-    --grw-marker-green: #007000;
-  }
+  --grw-marker-bg-yellow: #888000;
+  --grw-marker-bg-red: #900066;
+  --grw-marker-bg-blue: #0A6A9A;
+  --grw-marker-bg-cyan: #008888;
+  --grw-marker-bg-green: #007000;
 }
