@@ -171,8 +171,7 @@ export const UserGroupTable: FC<Props> = ({
                         <button
                           className="btn btn-link btn-edit-groups text-secondary py-0"
                           type="button"
-                          // eslint-disable-next-line react/no-array-index-key
-                          key={index}
+                          key={group._id}
                           onMouseEnter={() => setHoveredIndex(index)}
                           onMouseLeave={() => setHoveredIndex(undefined)}
                         >
