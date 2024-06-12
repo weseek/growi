@@ -3,6 +3,7 @@
   "ignore": [
     ".next",
     "public/static",
-    "package.json"
+    "package.json",
+    "playwright"
   ]
 }

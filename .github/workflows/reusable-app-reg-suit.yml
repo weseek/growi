@@ -68,7 +68,7 @@ jobs:
         # saved key by launch-prod
         key: node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-${{ hashFiles('**/yarn.lock') }}
         restore-keys: |
-          node_modules-app-launch-prod-${{ runner.OS }}--node${{ inputs.node-version }}-
+          node_modules-app-launch-prod-${{ runner.OS }}-node${{ inputs.node-version }}-
 
     - name: Install dependencies
       run: |
