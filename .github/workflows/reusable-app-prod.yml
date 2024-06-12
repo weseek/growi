@@ -353,7 +353,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        browser: [chromium, chromium/guest-mode, firefox, webkit]
         shard: [1/2, 2/2]
 
     services:
