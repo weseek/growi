@@ -9,8 +9,19 @@ export default [
   {
     files: ['./**'],
     rules: {
-      // Customize Playwright rules
-      // ...
+      'import/extensions': [
+        'error',
+        'ignorePackages',
+        {
+          ts: 'never',
+        },
+      ],
+    },
+    settings: {
+      // resolve path aliases by eslint-import-resolver-typescript
+      'import/resolver': {
+        typescript: {},
+      },
     },
   },
 ];
