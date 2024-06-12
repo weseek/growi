@@ -9,21 +9,10 @@ export default [
   {
     files: ['./**'],
     rules: {
-      'import/extensions': [
-        'error',
-        'ignorePackages',
-        {
-          ts: 'never',
-        },
-      ],
-      'import/no-unresolved': 'off',
+      // Customize Playwright rules
+      // ...
     },
-    settings: {
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        },
-      },
-    },
+    extends: ['weseek/typescript'],
+    plugins: ['@typescript-eslint'],
   },
 ];
