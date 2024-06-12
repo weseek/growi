@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { MarkdownTable } from '@growi/editor';
-import { useHandsontableModalForEditor } from '@growi/editor/dist/client';
+import { useHandsontableModalForEditor } from '@growi/editor/client/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';
@@ -10,6 +10,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
+
 
 import { replaceFocusedMarkdownTableWithEditor, getMarkdownTable } from '~/components/PageEditor/markdown-table-util-for-editor';
 import { useHandsontableModal } from '~/stores/modal';

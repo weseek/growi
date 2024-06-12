@@ -5,15 +5,16 @@ import React, {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import {
-  CodeMirrorEditorComment, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor/dist/client';
+import { CodeMirrorEditorComment } from '@growi/editor/client/components/CodeMirrorEditorComment';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/client/stores/codemirror-editor';
+import { useResolvedThemeForEditor } from '@growi/editor/client/stores/use-resolved-theme';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import {
   TabContent, TabPane,
 } from 'reactstrap';
+
 
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
@@ -36,7 +37,7 @@ import { CommentPreview } from './CommentPreview';
 import { SwitchingButtonGroup } from './SwitchingButtonGroup';
 
 
-import '@growi/editor/dist/style.css';
+import '@growi/editor/client/style.css';
 import styles from './CommentEditor.module.scss';
 
 

@@ -62,6 +62,19 @@ const getTranspilePackages = () => {
   return packages;
 };
 
+const optimizePackageImports = [
+  '@growi/core',
+  '@growi/editor',
+  '@growi/pluginkit',
+  '@growi/presentation',
+  '@growi/preset-themes',
+  '@growi/remark-attachment-refs',
+  '@growi/remark-drawio',
+  '@growi/remark-growi-directive',
+  '@growi/remark-lsx',
+  '@growi/slack',
+  '@growi/ui',
+];
 
 module.exports = async(phase, { defaultConfig }) => {
 
@@ -85,6 +98,9 @@ module.exports = async(phase, { defaultConfig }) => {
     transpilePackages: phase !== PHASE_PRODUCTION_SERVER
       ? getTranspilePackages()
       : undefined,
+    // experimental: {
+    //   optimizePackageImports,
+    // },
 
     /** @param config {import('next').NextConfig} */
     webpack(config, options) {

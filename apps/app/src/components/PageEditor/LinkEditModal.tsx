@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import path from 'path';
 
 import { Linker } from '@growi/editor';
-import { useLinkEditModal } from '@growi/editor/dist/client';
+import { useLinkEditModal } from '@growi/editor/client/stores/use-link-edit-modal';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,

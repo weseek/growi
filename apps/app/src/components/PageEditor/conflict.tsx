@@ -3,7 +3,7 @@ import { useCallback, useEffect } from 'react';
 import { Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/client/stores/codemirror-editor';
 import { useTranslation } from 'react-i18next';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';

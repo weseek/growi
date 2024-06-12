@@ -4,8 +4,9 @@ import { DropdownItem } from 'reactstrap';
 
 import type { GlobalCodeMirrorEditorKey } from '../../../../consts';
 import { getMarkdownLink, replaceFocusedMarkdownLinkWithEditor } from '../../../services-internal';
-import { useCodeMirrorEditorIsolated } from '../../../stores';
+import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
 import { useLinkEditModal } from '../../../stores/use-link-edit-modal';
+
 
 type Props = {
   editorKey: string | GlobalCodeMirrorEditorKey,
