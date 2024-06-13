@@ -10,7 +10,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
+import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';

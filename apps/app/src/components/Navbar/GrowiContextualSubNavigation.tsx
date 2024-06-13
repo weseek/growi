@@ -16,6 +16,7 @@ import { DropdownItem } from 'reactstrap';
 
 import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import {
   useCurrentPathname,
@@ -35,10 +36,9 @@ import {
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
+
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
-
-import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
