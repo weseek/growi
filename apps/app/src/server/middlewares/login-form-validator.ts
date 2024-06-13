@@ -1,7 +1,12 @@
-import { body, validationResult } from 'express-validator';
+import { ErrorV3 } from '@growi/core/dist/models';
+import { body, validationResult, type ValidationChain } from 'express-validator';
+
+const DEFAULT_PASSOWRD_MINIMUM_NUMBER = 8;
 
 // form rules
-export const loginRules = () => {
+export const loginRules = (minPasswordLength?: number): ValidationChain[] => {
+  const fixedMinPasswordLength = minPasswordLength ?? DEFAULT_PASSOWRD_MINIMUM_NUMBER;
+
   return [
     body('loginForm.username')
       .matches(/^[\da-zA-Z\-_.+@]+$/)
@@ -12,8 +17,8 @@ export const loginRules = () => {
     body('loginForm.password')
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
-      .isLength({ min: 6 })
-      .withMessage('message.Password minimum character should be more than 6 characters')
+      .isLength({ min: fixedMinPasswordLength })
+      .withMessage(new ErrorV3('message.Password minimum character should be more than n characters', undefined, undefined, { number: fixedMinPasswordLength }))
       .not()
       .isEmpty()
       .withMessage('message.Password field is required'),
@@ -21,7 +26,7 @@ export const loginRules = () => {
 };
 
 // validation action
-export const loginValidation = (req, res, next) => {
+export const loginValidation = (req, res, next): ValidationChain[] => {
   const form = req.body;
 
   const errors = validationResult(req);

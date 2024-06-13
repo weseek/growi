@@ -52,6 +52,8 @@ module.exports = function(crowi, app) {
   const unavailableWhenMaintenanceMode = generateUnavailableWhenMaintenanceModeMiddleware(crowi);
   const unavailableWhenMaintenanceModeForApi = generateUnavailableWhenMaintenanceModeMiddlewareForApi(crowi);
 
+  const minPasswordLength = crowi.configManager.getConfig('crowi', 'app:minPasswordLength');
+
 
   /* eslint-disable max-len, comma-spacing, no-multi-spaces */
 
@@ -96,7 +98,7 @@ module.exports = function(crowi, app) {
   app.get('/passport/oidc/callback'               , loginPassport.injectRedirectTo, loginPassport.loginPassportOidcCallback     , loginPassport.loginFailureForExternalAccount);
   app.post('/passport/saml/callback'              , addActivity, loginPassport.injectRedirectTo, loginPassport.loginPassportSamlCallback, loginPassport.loginFailureForExternalAccount);
 
-  app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules() , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
+  app.post('/_api/login/testLdap'    , loginRequiredStrictly , loginFormValidator.loginRules(minPasswordLength) , loginFormValidator.loginValidation , loginPassport.testLdapCredentials);
 
   // importer management for admin
   app.post('/_api/admin/settings/importerEsa'   , loginRequiredStrictly , adminRequired , csrfProtection, addActivity, admin.importer.api.validators.importer.esa(),admin.api.importerSettingEsa);

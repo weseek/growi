@@ -231,6 +231,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               placeholder="Password"
               onChange={(e) => { setPasswordForLogin(e.target.value) }}
               name="passwordForLogin"
+              minLength={minPasswordLength}
             />
           </div>
 
@@ -255,15 +256,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </>
     );
   }, [
-    props,
-    separateErrorsBasedOnErrorCode,
-    loginErrors,
-    generateDangerouslySetErrors,
-    generateSafelySetErrors,
-    isLdapSetupFailed,
-    t,
-    handleLoginWithLocalSubmit,
-    isLoading,
+    props, separateErrorsBasedOnErrorCode, loginErrors, generateDangerouslySetErrors, generateSafelySetErrors,
+    isLdapSetupFailed, t, handleLoginWithLocalSubmit, minPasswordLength, isLoading,
   ]);
 
 
@@ -457,13 +451,13 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 </span>
                 {/* Password */}
                 <input
-                  minLength={minPasswordLength}
                   type="password"
                   className="form-control rounded ms-2"
                   onChange={(e) => { setPasswordForRegister(e.target.value) }}
                   placeholder={t('Password')}
                   name="password"
                   required
+                  minLength={minPasswordLength}
                 />
               </div>
             </div>
@@ -505,7 +499,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration, emailForRegistrationOrder,
-    props.username, props.name, props.email, registrationWhitelist, isLoading, switchForm, tWithOpt, handleRegisterFormSubmit]);
+    props.username, props.name, props.email, registrationWhitelist, minPasswordLength, isLoading, switchForm, tWithOpt, handleRegisterFormSubmit,
+  ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
     return <CompleteUserRegistration />;
