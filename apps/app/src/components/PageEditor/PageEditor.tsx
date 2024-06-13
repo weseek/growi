@@ -18,11 +18,12 @@ import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useDefaultIndentSize, useCurrentUser,
@@ -41,10 +42,7 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
-import {
-  EditorMode,
-  useEditorMode, useIsUntitledPage, useSelectedGrant,
-} from '~/stores/ui';
+import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
 import loggerFactory from '~/utils/logger';
 

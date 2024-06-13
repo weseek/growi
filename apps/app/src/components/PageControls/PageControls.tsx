@@ -17,10 +17,13 @@ import {
   toggleLike, toggleSubscribe,
 } from '~/client/services/page-operation';
 import { toastError } from '~/client/util/toastr';
+import {
+  EditorMode, useEditorMode,
+} from '~/stores-universal/ui';
 import { useIsGuestUser, useIsReadOnlyUser, useIsSearchPage } from '~/stores/context';
 import { useTagEditModal, type IPageForPageDuplicateModal } from '~/stores/modal';
 import {
-  EditorMode, useEditorMode, useIsDeviceLargerThanMd, usePageControlsX,
+  useIsDeviceLargerThanMd, usePageControlsX,
 } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 

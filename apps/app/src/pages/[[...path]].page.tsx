@@ -20,7 +20,6 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { useEditorModeClassName } from '~/client/services/layout';
 import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import { PageView } from '~/components/Page/PageView';
@@ -31,6 +30,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { PageModel, PageDocument } from '~/server/models/page';
 import type { PageRedirectModel } from '~/server/models/page-redirect';
+import { useEditorModeClassName } from '~/services/layout/use-editor-mode-class-name';
 import {
   useCurrentUser,
   useIsForbidden, useIsSharedUser,

@@ -11,7 +11,8 @@ import { useTranslation } from 'next-i18next';
 
 import type { InputValidationResult } from '~/client/util/use-input-validator';
 import { ValidationTarget, useInputValidator } from '~/client/util/use-input-validator';
-import { EditorMode, useEditorMode, useIsUntitledPage } from '~/stores/ui';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useIsUntitledPage } from '~/stores/ui';
 
 import { CopyDropdown } from '../Common/CopyDropdown';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';

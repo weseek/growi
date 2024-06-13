@@ -1,9 +1,9 @@
 import dynamic from 'next/dynamic';
 
 import { useHashChangedEffect } from '~/client/services/side-effects/hash-changed';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useIsEditable } from '~/stores/context';
 import { useIsLatestRevision } from '~/stores/page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 import { LazyRenderer } from '../Common/LazyRenderer';
 

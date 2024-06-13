@@ -11,11 +11,11 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,

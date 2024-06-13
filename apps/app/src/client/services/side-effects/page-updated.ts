@@ -3,10 +3,10 @@ import { useCallback, useEffect } from 'react';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 
 import { SocketEventName } from '~/interfaces/websocket';
+import { useEditorMode, EditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useSWRxCurrentPage, useSWRMUTxCurrentPage } from '~/stores/page';
 import { useSetRemoteLatestPageData, type RemoteRevisionData } from '~/stores/remote-latest-page';
-import { useEditorMode, EditorMode } from '~/stores/ui';
 
 
 export const usePageUpdatedEffect = (): void => {

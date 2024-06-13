@@ -1,13 +1,6 @@
 import type { IPage, IPagePopulatedToShowRevision } from '@growi/core';
 
 import { useIsContainerFluid } from '~/stores/context';
-import { useEditorMode } from '~/stores/ui';
-
-export const useEditorModeClassName = (): string => {
-  const { getClassNamesByEditorMode } = useEditorMode();
-
-  return `${getClassNamesByEditorMode().join(' ') ?? ''}`;
-};
 
 const useDetermineExpandContent = (expandContentWidth?: boolean | null): boolean => {
   const { data: dataIsContainerFluid } = useIsContainerFluid();
