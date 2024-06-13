@@ -1,7 +1,6 @@
 import React, { Suspense, useCallback, useRef } from 'react';
 
-import type { IPagePopulatedToShowRevision } from '@growi/core';
-import { getIdForRef, type IPageInfoForOperation } from '@growi/core';
+import type { IPagePopulatedToShowRevision, IPageInfoForOperation } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -70,7 +69,7 @@ const Tags = (props: TagsProps): JSX.Element => {
 };
 
 
-export type PageSideContentsProps = {
+type PageSideContentsProps = {
   page: IPagePopulatedToShowRevision,
   isSharedUser?: boolean,
 }

@@ -8,7 +8,7 @@ import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 
-export type UsersHomepageFooterProps = {
+type UsersHomepageFooterProps = {
   creatorId: string;
 };
 
