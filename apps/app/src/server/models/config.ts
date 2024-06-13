@@ -1,4 +1,3 @@
-import { PresetThemes } from '@growi/preset-themes';
 import type { Types } from 'mongoose';
 import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
@@ -124,7 +123,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
-  'customize:theme' : PresetThemes.DEFAULT,
+  'customize:theme' : 'default', // PresetThemes.DEFAULT
   'customize:theme:forcedColorScheme' : null,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
