@@ -98,9 +98,9 @@ module.exports = async(phase, { defaultConfig }) => {
     transpilePackages: phase !== PHASE_PRODUCTION_SERVER
       ? getTranspilePackages()
       : undefined,
-    // experimental: {
-    //   optimizePackageImports,
-    // },
+    experimental: {
+      optimizePackageImports,
+    },
 
     /** @param config {import('next').NextConfig} */
     webpack(config, options) {
