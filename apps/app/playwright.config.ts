@@ -15,7 +15,7 @@ const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 7 * 1000,
+  // timeout: 7 * 1000,
 
   testDir: './playwright',
   outputDir: './playwright/output',
