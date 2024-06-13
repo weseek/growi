@@ -2,10 +2,9 @@ import { test, expect } from '@playwright/test';
 
 
 test('Visit User home', async({ page }) => {
-  await page.goto('/');
+  await page.goto('dummy');
 
   // Open PersonalDropdown
-  await expect(page.getByTestId('personal-dropdown-button')).toBeVisible();
   await page.getByTestId('personal-dropdown-button').click();
   await expect(page.getByTestId('grw-personal-dropdown-menu-user-home')).toBeVisible();
 
@@ -15,33 +14,34 @@ test('Visit User home', async({ page }) => {
 });
 
 test('Vist User settings', async({ page }) => {
-  await page.goto('/');
+  await page.goto('dummy');
 
   // Open PersonalDropdown
-  await expect(page.getByTestId('personal-dropdown-button')).toBeVisible();
   await page.getByTestId('personal-dropdown-button').click();
   await expect(page.getByTestId('grw-personal-dropdown-menu-user-home')).toBeVisible();
 
   // Click UserSettingsMenu
-  await expect(page.getByTestId('grw-personal-dropdown-menu-user-settings')).toBeVisible();
+  page.getByTestId('grw-personal-dropdown-menu-user-settings').click();
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 });
 
 
 // test('Access User information', async({ page }) => {
+//   await page.goto('/me');
+
 //   // User information
-//   await page.waitForSelector('[data-testid="grw-user-settings"]', { visible: true });
-//   await page.screenshot({ path: `${ssPrefix}-user-information-1.png` });
-//   await page.click('[data-testid="grw-besic-info-settings-update-button"]');
+//   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+//   await page.getByTestId('grw-besic-info-settings-update-button').click();
+//   await page.
+
 //   await page.waitForSelector('.Toastify__toast', { visible: true });
-//   await page.screenshot({ path: `${ssPrefix}-user-information-2.png` });
 
 //   const toasts = await page.$$('.Toastify__toast');
 //   for (const toast of toasts) {
 //     await toast.click('.Toastify__close-button');
 //     await toast.evaluate(t => t.querySelector('.Toastify__progress-bar').style.display = 'none');
 //   }
-// };
+// });
 
 //   test('Access External account', async({ page }) => {
 //     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(2) a');
