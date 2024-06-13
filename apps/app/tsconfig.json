@@ -37,6 +37,10 @@
   ],
   "ts-node": {
     "transpileOnly": true,
-    "swc": true
+    "swc": true,
+    "compilerOptions": {
+      "module": "CommonJS",
+      "moduleResolution": "Node"
+    }
   }
 }
