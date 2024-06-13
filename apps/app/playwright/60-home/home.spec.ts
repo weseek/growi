@@ -25,108 +25,99 @@ test('Vist User settings', async({ page }) => {
   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 });
 
+test('Open questionnaire modal', async({ page }) => {
+  await page.goto('/dummy');
 
-// test('Access User information', async({ page }) => {
-//   await page.goto('/me');
+  // Open PersonalDropdown
+  await page.getByTestId('personal-dropdown-button').click();
+  await expect(page.getByTestId('grw-personal-dropdown-menu-user-home')).toBeVisible();
 
-//   // User information
-//   await expect(page.getByTestId('grw-user-settings')).toBeVisible();
-//   await page.getByTestId('grw-besic-info-settings-update-button').click();
-//   await page.
+  // Expect the questionnaire modal to be displayed when the QuestionnaireModalToggleButton is clicked
+  await page.getByTestId('grw-proactive-questionnaire-modal-toggle-btn').click();
+  await expect(page.getByTestId('grw-proactive-questionnaire-modal')).toBeVisible();
+});
 
-//   await page.waitForSelector('.Toastify__toast', { visible: true });
+test('Access User information', async({ page }) => {
+  await page.goto('/me');
 
-//   const toasts = await page.$$('.Toastify__toast');
-//   for (const toast of toasts) {
-//     await toast.click('.Toastify__close-button');
-//     await toast.evaluate(t => t.querySelector('.Toastify__progress-bar').style.display = 'none');
-//   }
-// });
+  // Click BasicInfoSettingUpdateButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
 
-//   test('Access External account', async({ page }) => {
-//     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(2) a');
-//     await page.evaluate(() => window.scrollTo(0, 0));
-//     await page.screenshot({ path: `${ssPrefix}-external-account-1.png` });
-//     await page.click('[data-testid="grw-external-account-add-button"]');
-//     await page.waitForSelector('[data-testid="grw-associate-modal"]', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-external-account-2.png` });
-//     await page.click('[data-testid="grw-associate-modal"] .modal-footer button'); // click add button in modal form
-//     await page.waitForSelector('.Toastify__toast', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-external-account-3.png` });
+  // Expect a success toaster to be displayed when the BasicInfoSettingUpdateButton is pressed
+  await page.getByTestId('grw-besic-info-settings-update-button').click();
+  await expect(page.locator('.Toastify__toast')).toBeVisible();
+});
 
-//     const toasts = await page.$$('.Toastify__toast');
-//     for (const toast of toasts) {
-//       await toast.click('.Toastify__close-button');
-//       await toast.evaluate(t => t.querySelector('.Toastify__progress-bar').style.display = 'none');
-//     }
-//     await page.click('[data-testid="grw-associate-modal"] [aria-label="Close"]');
-//     await page.screenshot({ path: `${ssPrefix}-external-account-4.png` });
+test('Access External account', async({ page }) => {
+  await page.goto('/me');
 
-//     await expect(page.locator('.Toastify__toast')).toHaveCount(0);
-//   });
+  // Click ExternalAccountsTabButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+  await page.getByTestId('external-accounts-tab-button').first().click();
 
-//   test('Access Password setting', async({ page }) => {
-//     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(3) a');
-//     await page.evaluate(() => window.scrollTo(0, 0));
-//     await page.screenshot({ path: `${ssPrefix}-password-settings-1.png` });
-//     await page.click('[data-testid="grw-password-settings-update-button"]');
-//     await page.waitForSelector('.Toastify__toast', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-password-settings-2.png` });
+  // Expect an error toaster to be displayed when the AddExternalAccountsButton is pressed
+  await page.getByTestId('grw-external-account-add-button').click();
+  await expect(page.getByTestId('grw-associate-modal')).toBeVisible();
+  await page.getByTestId('add-external-account-button').click();
+  await expect(page.locator('.Toastify__toast')).toBeVisible();
+  await page.locator('.Toastify__close-button').click();
+  await expect(page.locator('.Toastify__toast')).not.toBeVisible();
+});
 
-//     const toasts = await page.$$('.Toastify__toast');
-//     for (const toast of toasts) {
-//       await toast.click('.Toastify__close-button');
-//       await toast.evaluate(t => t.querySelector('.Toastify__progress-bar').style.display = 'none');
-//     }
-//   });
+test('Access Password setting', async({ page }) => {
+  await page.goto('/me');
 
-//   test('Access API setting', async({ page }) => {
-//     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(4) a');
-//     await page.evaluate(() => window.scrollTo(0, 0));
-//     await page.screenshot({ path: `${ssPrefix}-api-setting-1.png` });
-//     await page.click('[data-testid="grw-api-settings-update-button"]');
-//     await page.waitForSelector('[data-testid="grw-api-settings-input"]', { visible: true });
-//     await page.waitForSelector('.Toastify__toast', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-api-setting-2.png` });
+  // Click PasswordSettingTabButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+  await page.getByTestId('password-settings-tab-button').first().click();
 
-//     const toasts = await page.$$('.Toastify__toast');
-//     for (const toast of toasts) {
-//       await toast.click('.Toastify__close-button');
-//       await toast.evaluate(t => t.querySelector('.Toastify__progress-bar').style.display = 'none');
-//     }
-//   });
+  // Expect three error toasters to be displayed when the PasswordUpdateButton is pressed
+  await page.getByTestId('grw-password-settings-update-button').click();
+  const toastElements = page.locator('.Toastify__toast');
+  expect(toastElements).toHaveCount(3);
 
-//   test('Access In-app notification setting', async({ page }) => {
-//     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(5) a');
-//     await page.evaluate(() => window.scrollTo(0, 0));
-//     await page.screenshot({ path: `${ssPrefix}-in-app-notification-setting-1.png` });
-//     await page.click('[data-testid="grw-in-app-notification-settings-update-button"]');
-//     await page.waitForSelector('.Toastify__toast', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-in-app-notification-setting-2.png` });
-//   });
+  const toastElementsCount = await toastElements.count();
+  for (let i = 0; i < toastElementsCount; i++) {
+    // eslint-disable-next-line no-await-in-loop
+    await toastElements.nth(i).click();
+  }
 
-//   test('Access Other setting', async({ page }) => {
-//     await page.click('[data-testid="grw-personal-settings"] .nav-title.nav li:nth-of-type(6) a');
-//     await page.evaluate(() => window.scrollTo(0, 0));
-//     await page.screenshot({ path: `${ssPrefix}-other-setting-1.png` });
-//     await page.click('[data-testid="grw-questionnaire-settings-update-btn"]');
-//     await page.waitForSelector('.Toastify__toast', { visible: true });
-//     await page.screenshot({ path: `${ssPrefix}-other-setting-2.png` });
-//   });
-// });
+  expect(page.getByTestId('.Toastify__toast')).not.toBeVisible();
+});
 
-// test.describe('Access proactive questionnaire modal', () => {
-//   test('Opens questionnaire modal', async({ page }) => {
-//     await page.goto('/dummy');
 
-//     // open PersonalDropdown
-//     await page.waitForSelector('[data-testid="personal-dropdown-button"]', { visible: true });
-//     await page.click('[data-testid="personal-dropdown-button"]');
-//     await page.waitForSelector('[data-testid="grw-personal-dropdown-menu-user-home"]', { visible: true });
+test('Access API setting', async({ page }) => {
+  await page.goto('/me');
 
-//     await page.click('[data-testid="grw-proactive-questionnaire-modal-toggle-btn"]');
-//     await page.waitForSelector('[data-testid="grw-proactive-questionnaire-modal"]', { visible: true });
+  // Click ApiSettingTabButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+  await page.getByTestId('api-settings-tab-button').first().click();
 
-//     await page.screenshot({ path: `${ssPrefix}-opened.png` });
-//   });
-// });
+  // Expect a success toaster to be displayed when the UpdateApiTokenButton is clicked
+  await page.getByTestId('grw-api-settings-update-button').click();
+  await expect(page.locator('.Toastify__toast')).toBeVisible();
+});
+
+test('Access In-App Notification setting', async({ page }) => {
+  await page.goto('/me');
+
+  // Click InAppNotificationSettingTabButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+  await page.getByTestId('in-app-notification-settings-tab-button').first().click();
+
+  // Expect a success toaster to be displayed when the InAppNotificationSettingsUpdateButton is clicked
+  await page.getByTestId('grw-in-app-notification-settings-update-button').click();
+  await expect(page.locator('.Toastify__toast')).toBeVisible();
+});
+
+test('Acccess Other setting', async({ page }) => {
+  await page.goto('/me');
+
+  // Click OtherSettingTabButton
+  await expect(page.getByTestId('grw-user-settings')).toBeVisible();
+  await page.getByTestId('other-settings-tab-button').first().click();
+
+  // Expect a success toaster to be displayed when the QuestionnaireSettingsUpdateButton is clicked
+  await page.getByTestId('grw-questionnaire-settings-update-btn').click();
+  await expect(page.locator('.Toastify__toast')).toBeVisible();
+});
