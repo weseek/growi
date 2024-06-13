@@ -7,9 +7,9 @@ import { Picker } from 'emoji-mart';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
-import { useCodeMirrorEditorIsolated, useResolvedThemeForEditor } from '../../../stores';
-
 import 'emoji-mart/css/emoji-mart.css';
+import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
+import { useResolvedThemeForEditor } from '../../../stores/use-resolved-theme';
 
 type Props = {
   editorKey: string,

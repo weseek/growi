@@ -4,8 +4,9 @@ import React, {
   useMemo,
 } from 'react';
 
-import type { Lang } from '@growi/core';
-import { useCodeMirrorEditorIsolated, useDrawioModalForEditor } from '@growi/editor/dist/client';
+import { Lang } from '@growi/core';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useDrawioModalForEditor } from '@growi/editor/dist/client/stores/use-drawio';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,
@@ -26,12 +27,13 @@ const logger = loggerFactory('growi:components:DrawioModal');
 
 // https://docs.google.com/spreadsheets/d/1FoYdyEraEQuWofzbYCDPKN7EdKgS_2ZrsDrOA8scgwQ
 const DIAGRAMS_NET_LANG_MAP = {
+  en_US: 'en',
   ja_JP: 'ja',
   zh_CN: 'zh',
   fr_FR: 'fr',
 };
 
-export const getDiagramsNetLangCode = (lang: Lang) => {
+export const getDiagramsNetLangCode = (lang: Lang): string => {
   return DIAGRAMS_NET_LANG_MAP[lang];
 };
 
@@ -88,7 +90,7 @@ export const DrawioModal = (): JSX.Element => {
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', '1');
     url.searchParams.append('embed', '1');
-    url.searchParams.append('lang', getDiagramsNetLangCode(personalSettingsInfo?.lang || 'en'));
+    url.searchParams.append('lang', getDiagramsNetLangCode(personalSettingsInfo?.lang ?? Lang.en_US));
     url.searchParams.append('ui', 'atlas');
     url.searchParams.append('configure', '1');
 

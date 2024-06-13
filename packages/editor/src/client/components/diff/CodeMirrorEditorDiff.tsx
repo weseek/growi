@@ -4,8 +4,10 @@ import type { Extension } from '@codemirror/state';
 import { placeholder, scrollPastEnd } from '@codemirror/view';
 import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
 
-import { GlobalCodeMirrorEditorKey } from '../../consts';
-import { useCodeMirrorEditorIsolated, useDefaultExtensions, useEditorSettings } from '../stores';
+import { GlobalCodeMirrorEditorKey } from '../../../consts';
+import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
+import { useDefaultExtensions } from '../../stores/use-default-extensions';
+import { useEditorSettings } from '../../stores/use-editor-settings';
 
 const additionalExtensions: Extension[] = [
   [

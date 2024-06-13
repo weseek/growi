@@ -3,10 +3,10 @@ import { useEffect } from 'react';
 import { type Extension, EditorState } from '@codemirror/state';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { CodeMirrorEditor } from '../components-internal/CodeMirrorEditor';
 import { setDataLine } from '../services-internal';
-import { useCodeMirrorEditorIsolated } from '../stores';
+import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
 
-import { CodeMirrorEditor } from '.';
 
 const additionalExtensions: Extension[] = [
   [

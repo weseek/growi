@@ -15,7 +15,9 @@ import {
   useFileDropzone, FileDropzoneOverlay,
   adjustPasteData, getStrFromBol, useShowTableIcon,
 } from '../../services-internal';
-import { useDefaultExtensions, useCodeMirrorEditorIsolated, useEditorSettings } from '../../stores';
+import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
+import { useDefaultExtensions } from '../../stores/use-default-extensions';
+import { useEditorSettings } from '../../stores/use-editor-settings';
 
 import { Toolbar } from './Toolbar';
 

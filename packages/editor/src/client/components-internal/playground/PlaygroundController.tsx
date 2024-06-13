@@ -7,7 +7,7 @@ import {
   GlobalCodeMirrorEditorKey,
   AllEditorTheme, AllKeyMap,
 } from '../../../consts';
-import { useCodeMirrorEditorIsolated } from '../../stores';
+import { useCodeMirrorEditorIsolated } from '../../stores/codemirror-editor';
 
 export const InitEditorValueRow = (): JSX.Element => {
 
