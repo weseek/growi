@@ -133,7 +133,7 @@
     "md5": "^2.2.1",
     "mermaid": "^10.1.0",
     "method-override": "^3.0.0",
-    "migrate-mongo": "^8.2.3",
+    "migrate-mongo": "^11.0.0",
     "mkdirp": "^1.0.3",
     "mongoose": "^6.11.3",
     "mongoose-gridfs": "^1.2.42",
