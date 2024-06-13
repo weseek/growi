@@ -54,7 +54,7 @@ import Preview from './Preview';
 import { useScrollSync } from './ScrollSyncHelper';
 import { useConflictResolver, useConflictEffect, type ConflictHandler } from './conflict';
 
-import '@growi/editor/dist/client/style.css';
+import '@growi/editor/dist/style.css';
 
 
 const logger = loggerFactory('growi:PageEditor');
