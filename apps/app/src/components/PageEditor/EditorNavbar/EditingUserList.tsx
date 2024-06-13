@@ -30,7 +30,7 @@ export const EditingUserList: FC<Props> = ({ userList }) => {
     <div className="d-flex flex-column justify-content-start justify-content-sm-end">
       <div className="d-flex justify-content-start justify-content-sm-end">
         {firstFourUsers.map(user => (
-          <div className="ms-1">
+          <div key={user._id} className="ms-1">
             <UserPicture
               user={user}
               noLink

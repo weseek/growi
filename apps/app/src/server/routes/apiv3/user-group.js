@@ -7,6 +7,7 @@ import { serializeUserGroupRelationSecurely } from '~/server/models/serializers/
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 import { excludeTestIdsFromTargetIds } from '~/server/util/compare-objectId';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
@@ -230,8 +231,8 @@ module.exports = (crowi) => {
     const { name, description = '', parentId } = req.body;
 
     try {
-      const userGroupName = crowi.xss.process(name);
-      const userGroupDescription = crowi.xss.process(description);
+      const userGroupName = generalXssFilter.process(name);
+      const userGroupDescription = generalXssFilter.process(description);
       const userGroup = await UserGroup.createGroup(userGroupName, userGroupDescription, parentId);
 
       const parameters = { action: SupportedAction.ACTION_ADMIN_USER_GROUP_CREATE };

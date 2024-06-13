@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.0.9",
+  "version": "7.0.10-RC.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -17,7 +17,7 @@
     "styles-prebuilt": "vite build -c vite.styles-prebuilt.config.ts",
     "migrate": "node -r dotenv-flow/config node_modules/.bin/migrate-mongo up -f config/migrate-mongo-config.js",
     "//// for development": "",
-    "dev": "yarn cross-env NODE_ENV=development yarn ts-node-dev --inspect --transpile-only src/server/app.ts",
+    "dev": "yarn cross-env NODE_ENV=development nodemon --exec yarn ts-node --inspect src/server/app.ts",
     "dev:styles-prebuilt": "yarn styles-prebuilt --mode dev",
     "dev:migrate-mongo": "yarn cross-env NODE_ENV=development yarn ts-node node_modules/.bin/migrate-mongo",
     "dev:migrate": "yarn dev:migrate:status > tmp/cache/migration-status.out && yarn dev:migrate:up",
@@ -48,8 +48,7 @@
     "swagger-jsdoc": "swagger-jsdoc -o tmp/swagger.json -d config/swagger-definition.js",
     "openapi:v3": "yarn cross-env API_VERSION=3 yarn swagger-jsdoc -- \"src/server/routes/apiv3/**/*.js\" \"src/server/models/**/*.js\"",
     "openapi:v1": "yarn cross-env API_VERSION=1 yarn swagger-jsdoc -- \"src/server/*/*.js\" \"src/server/models/**/*.js\"",
-    "ts-node": "node -r ts-node/register -r tsconfig-paths/register -r dotenv-flow/config",
-    "ts-node-dev": "ts-node-dev -r tsconfig-paths/register -r dotenv-flow/config",
+    "ts-node": "node -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv-flow/config",
     "version": "yarn version --no-git-tag-version --preid=RC"
   },
   "// comments for dependencies": {
@@ -229,8 +228,8 @@
     "@handsontable/react": "=2.1.0",
     "@next/bundle-analyzer": "^14.1.3",
     "@popperjs/core": "^2.11.8",
-    "@swc-node/jest": "^1.6.2",
-    "@swc/jest": "^0.2.24",
+    "@swc-node/jest": "^1.8.1",
+    "@swc/jest": "^0.2.36",
     "@testing-library/react": "^14.1.2",
     "@testing-library/user-event": "^14.5.2",
     "@types/express": "^4.17.11",
@@ -241,7 +240,7 @@
     "@types/throttle-debounce": "^5.0.1",
     "@types/unzip-stream": "^0.3.4",
     "@types/url-join": "^4.0.2",
-    "@vitejs/plugin-react": "^4.2.1",
+    "@vitejs/plugin-react": "^4.3.0",
     "@vitest/coverage-v8": "^0.34.6",
     "babel-loader": "^8.2.5",
     "bootstrap": "=5.3.2",

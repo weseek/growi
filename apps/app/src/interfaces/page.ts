@@ -10,7 +10,7 @@ export {
   isIPageInfoForEntity, isIPageInfoForOperation, isIPageInfoForListing,
 } from '@growi/core';
 
-export type IPageForItem = Partial<IPageHasId & {isTarget?: boolean, processData?: IPageOperationProcessData}>;
+export type IPageForItem = Partial<IPageHasId & {processData?: IPageOperationProcessData}>;
 
 export const UserGroupPageGrantStatus = {
   isGranted: 'isGranted',

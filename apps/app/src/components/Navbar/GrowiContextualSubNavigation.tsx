@@ -35,7 +35,6 @@ import {
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
-import { CreateTemplateModal } from '../CreateTemplateModal';
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
 
@@ -43,6 +42,9 @@ import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';
+
+
+const CreateTemplateModal = dynamic(() => import('../CreateTemplateModal').then(mod => mod.CreateTemplateModal), { ssr: false });
 
 const PageEditorModeManager = dynamic(
   () => import('./PageEditorModeManager').then(mod => mod.PageEditorModeManager),
