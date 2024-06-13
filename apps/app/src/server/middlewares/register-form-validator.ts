@@ -24,7 +24,7 @@ export const registerRules = (minPasswordLength?: number): ValidationChain[] => 
       .matches(/^[\x20-\x7F]*$/)
       .withMessage('message.Password has invalid character')
       .isLength({ min: fixedMinPasswordLength })
-      .withMessage(new ErrorV3('message.Password minimum character should be more than 8 characters', undefined, undefined, fixedMinPasswordLength))
+      .withMessage(new ErrorV3('message.Password minimum character should be more than n characters', undefined, undefined, { number: fixedMinPasswordLength }))
       .not()
       .isEmpty()
       .withMessage('message.Password field is required'),

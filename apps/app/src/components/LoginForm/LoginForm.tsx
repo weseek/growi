@@ -38,6 +38,7 @@ type LoginFormProps = {
   enabledExternalAuthType?: IExternalAuthProviderType[],
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
+  minPasswordLength?: number,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -46,8 +47,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType, minPasswordLength,
   } = props;
+
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
   const isSomeExternalAuthEnabled = enabledExternalAuthType != null && enabledExternalAuthType.length > 0;
 
@@ -360,7 +362,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <p className="alert alert-danger">
               {registerErrors.map(err => (
                 <span>
-                  {t(err.message)}<br />
+                  {tWithOpt(err.message, err.args)}<br />
                 </span>
               ))}
             </p>
@@ -455,6 +457,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 </span>
                 {/* Password */}
                 <input
+                  minLength={minPasswordLength}
                   type="password"
                   className="form-control rounded ms-2"
                   onChange={(e) => { setPasswordForRegister(e.target.value) }}
@@ -501,9 +504,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </React.Fragment>
     );
   }, [
-    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit, isLoading,
-  ]);
+    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration, emailForRegistrationOrder,
+    props.username, props.name, props.email, registrationWhitelist, isLoading, switchForm, tWithOpt, handleRegisterFormSubmit]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {
     return <CompleteUserRegistration />;
