@@ -36,7 +36,7 @@ type Props = CommonProps & {
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
-  minPasswordLength?: number,
+  minPasswordLength: number,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -120,7 +120,6 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
   props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
   props.minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
-
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {

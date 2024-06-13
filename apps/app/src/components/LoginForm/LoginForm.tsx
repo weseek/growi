@@ -38,7 +38,7 @@ type LoginFormProps = {
   enabledExternalAuthType?: IExternalAuthProviderType[],
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
-  minPasswordLength?: number,
+  minPasswordLength: number,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
