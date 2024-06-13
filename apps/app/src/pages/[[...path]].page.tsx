@@ -55,7 +55,6 @@ import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yj
 import loggerFactory from '~/utils/logger';
 
 import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-import { DisplaySwitcher } from '../components/Page/DisplaySwitcher';
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -71,16 +70,22 @@ declare global {
 
 
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
-const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
+
+const DisplaySwitcher = dynamic(() => import('../components/Page/DisplaySwitcher').then(mod => mod.DisplaySwitcher), { ssr: false });
+const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
+
 const UnsavedAlertDialog = dynamic(() => import('../components/UnsavedAlertDialog'), { ssr: false });
+const DescendantsPageListModal = dynamic(() => import('../components/DescendantsPageListModal').then(mod => mod.DescendantsPageListModal), { ssr: false });
 const DrawioModal = dynamic(() => import('../components/PageEditor/DrawioModal').then(mod => mod.DrawioModal), { ssr: false });
 const HandsontableModal = dynamic(() => import('../components/PageEditor/HandsontableModal').then(mod => mod.HandsontableModal), { ssr: false });
 const TemplateModal = dynamic(() => import('../components/TemplateModal').then(mod => mod.TemplateModal), { ssr: false });
 const LinkEditModal = dynamic(() => import('../components/PageEditor/LinkEditModal').then(mod => mod.LinkEditModal), { ssr: false });
-const PageStatusAlert = dynamic(() => import('../components/PageStatusAlert').then(mod => mod.PageStatusAlert), { ssr: false });
-const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
 const TagEditModal = dynamic(() => import('../components/PageTags/TagEditModal').then(mod => mod.TagEditModal), { ssr: false });
 const ConflictDiffModal = dynamic(() => import('../components/PageEditor/ConflictDiffModal').then(mod => mod.ConflictDiffModal), { ssr: false });
+const QuestionnaireModalManager = dynamic(() => import('~/features/questionnaire/client/components/QuestionnaireModalManager'), { ssr: false });
+
+const EditablePageEffects = dynamic(() => import('../components/Page/EditablePageEffects').then(mod => mod.EditablePageEffects), { ssr: false });
+
 
 const logger = loggerFactory('growi:pages:all');
 
@@ -334,15 +339,15 @@ const Page: NextPageWithLayout<Props> = (props: Props) => {
 
         <GrowiContextualSubNavigation isLinkSharingDisabled={props.disableLinkSharing} />
 
-        <DisplaySwitcher
-          pageView={(
-            <PageView
-              pagePath={pagePath}
-              initialPage={pageWithMeta?.data}
-              rendererConfig={props.rendererConfig}
-            />
-          )}
+        <PageView
+          className="d-edit-none"
+          pagePath={pagePath}
+          initialPage={pageWithMeta?.data}
+          rendererConfig={props.rendererConfig}
         />
+
+        <EditablePageEffects />
+        <DisplaySwitcher />
 
         <PageStatusAlert />
       </div>

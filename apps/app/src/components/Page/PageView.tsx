@@ -48,6 +48,7 @@ type Props = {
   pagePath: string,
   rendererConfig: RendererConfig,
   initialPage?: IPagePopulatedToShowRevision,
+  className?: string,
 }
 
 export const PageView = (props: Props): JSX.Element => {
@@ -57,7 +58,7 @@ export const PageView = (props: Props): JSX.Element => {
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
   const {
-    pagePath, initialPage, rendererConfig,
+    pagePath, initialPage, rendererConfig, className,
   } = props;
 
   const { data: isIdenticalPathPage } = useIsIdenticalPath();
@@ -168,6 +169,7 @@ export const PageView = (props: Props): JSX.Element => {
 
   return (
     <PageViewLayout
+      className={className}
       headerContents={headerContents}
       sideContents={sideContents}
       footerContents={footerContents}
