@@ -4,9 +4,9 @@ import React, {
 
 import type { IUser } from '@growi/core';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { CodeMirrorEditorDiff } from '@growi/editor/client/components/diff/CodeMirrorEditorDiff';
-import { MergeViewer } from '@growi/editor/client/components/diff/MergeViewer';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/client/stores/codemirror-editor';
+import { CodeMirrorEditorDiff } from '@growi/editor/dist/client/components/diff/CodeMirrorEditorDiff';
+import { MergeViewer } from '@growi/editor/dist/client/components/diff/MergeViewer';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { UserPicture } from '@growi/ui/dist/components';
 import { format } from 'date-fns/format';
 import { useTranslation } from 'next-i18next';

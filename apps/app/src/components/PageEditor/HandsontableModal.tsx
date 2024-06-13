@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import { MarkdownTable } from '@growi/editor';
-import { useHandsontableModalForEditor } from '@growi/editor/client/stores/use-handsontable';
+import { useHandsontableModalForEditor } from '@growi/editor/dist/client/stores/use-handsontable';
 import { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import { useTranslation } from 'next-i18next';

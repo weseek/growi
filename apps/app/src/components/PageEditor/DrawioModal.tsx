@@ -5,8 +5,8 @@ import React, {
 } from 'react';
 
 import { Lang } from '@growi/core';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/client/stores/codemirror-editor';
-import { useDrawioModalForEditor } from '@growi/editor/client/stores/use-drawio';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useDrawioModalForEditor } from '@growi/editor/dist/client/stores/use-drawio';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,

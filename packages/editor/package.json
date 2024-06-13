@@ -5,14 +5,8 @@
   "license": "MIT",
   "private": "true",
   "type": "module",
-  "exports": {
-    ".": "./dist/index.js",
-    "./client/components/*": "./dist/client/components/*.js",
-    "./client/components/diff": "./dist/client/components/diff/*.js",
-    "./client/services": "./dist/client/services/index.js",
-    "./client/stores/*": "./dist/client/stores/*.js",
-    "./client/style.css": "./dist/style.css"
-  },
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "scripts": {
     "build": "tsc && vite build",
     "clean": "shx rm -rf dist",
