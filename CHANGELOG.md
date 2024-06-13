@@ -1,8 +1,36 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.9...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.10...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.10](https://github.com/weseek/growi/compare/v7.0.9...v7.0.10) - 2024-06-13
+
+### 💎 Features
+
+* imprv: Autofocus on PageTitleHeader when edigin untitled page (#8813) @WNomunomu
+* imprv: Autofocus on PageTitleHeader when creating untitled page (#8813) @WNomunomu
+
+### 🚀 Improvement
+
+* imprv: DrawioViewerScript should respect the base path in DRAWIO_URI 2 (#8889) @yuki-takei
+* imprv: Styling icon on the side of header (#8833) @reiji-h
+* imprv: DrawioViewerScript should respect the base path in DRAWIO_URI (#8878) @yuki-takei
+* imprv: Behavior when clicking on a label in the dropdown (#8857) @maeshinshin
+* imprv(plugin): Support github tag in githuburl.ts (#8868) @reiji-h
+* imprv: Display selected tree item in page select modal as active (#8802) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: Match width of video tag to img tag (#8836) @TatsuyaIse
+* fix: Behaviour of input during Japanese input (#8880) @miya
+* fix: Supress warning of checkbox 2 (#8871) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Watch with nodemon (#8877) @yuki-takei
+* support: Add playwright test for installer (#8874) @yuki-takei
+* support: Upgrade turbo to v2 (#8875) @yuki-takei
 
 ## [v7.0.9](https://github.com/weseek/growi/compare/v7.0.8...v7.0.9) - 2024-05-30
 
