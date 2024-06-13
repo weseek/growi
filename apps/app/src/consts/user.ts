@@ -1,0 +1,2 @@
+
+export const DEFAULT_PASSOWRD_MINIMUM_NUMBER = 8;

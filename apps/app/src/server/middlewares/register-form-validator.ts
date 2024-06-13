@@ -1,7 +1,7 @@
 import { ErrorV3 } from '@growi/core/dist/models';
 import { body, validationResult, type ValidationChain } from 'express-validator';
 
-const DEFAULT_PASSOWRD_MINIMUM_NUMBER = 8;
+import { DEFAULT_PASSOWRD_MINIMUM_NUMBER } from '~/consts/user';
 
 // form rules
 export const registerRules = (minPasswordLength?: number): ValidationChain[] => {
