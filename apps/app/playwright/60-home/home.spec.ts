@@ -81,7 +81,7 @@ test('Access Password setting', async({ page }) => {
     await toastElements.nth(i).click();
   }
 
-  expect(page.getByTestId('.Toastify__toast')).not.toBeVisible();
+  await expect(page.getByTestId('.Toastify__toast')).not.toBeVisible();
 });
 
 
