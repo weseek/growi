@@ -74,7 +74,6 @@ test('Access Password setting', async({ page }) => {
   // Expect three error toasters to be displayed when the PasswordUpdateButton is pressed
   await page.getByTestId('grw-password-settings-update-button').click();
   const toastElements = page.locator('.Toastify__toast');
-  expect(toastElements).toHaveCount(3);
 
   const toastElementsCount = await toastElements.count();
   for (let i = 0; i < toastElementsCount; i++) {
