@@ -10,8 +10,12 @@ declare global {
   var GraphViewer: IGraphViewerGlobal;
 }
 
-export const DrawioViewerScript = (): JSX.Element => {
-  const viewerMinJsSrc = useViewerMinJsUrl();
+type Props = {
+  drawioUri: string;
+}
+
+export const DrawioViewerScript = ({ drawioUri }: Props): JSX.Element => {
+  const viewerMinJsSrc = useViewerMinJsUrl(drawioUri);
 
   const loadedHandler = useCallback(() => {
     // disable useResizeSensor and checkVisibleState

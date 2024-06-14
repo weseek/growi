@@ -65,7 +65,7 @@ export const CreateTemplateModal: React.FC<CreateTemplateModalProps> = ({
     catch (err) {
       toastError(t('toaster.create_failed', { target: path }));
     }
-  }, [createTemplate, path, t]);
+  }, [createTemplate, onClose, path, t]);
 
   const parentPath = pathUtils.addTrailingSlash(path);
 

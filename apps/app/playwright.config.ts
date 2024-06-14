@@ -24,7 +24,9 @@ const projectsForGuestMode: Array<Project> = supportedBrowsers.map(browser => ({
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  timeout: 7 * 1000,
+  expect: {
+    timeout: 7 * 1000,
+  },
 
   testDir: './playwright',
   outputDir: './playwright/output',
