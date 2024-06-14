@@ -3,6 +3,7 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "CommonJS",
+    "moduleResolution": "Node",
     "outDir": "transpiled",
     "declaration": true,
     "noResolve": false,
@@ -21,8 +22,14 @@
     "resource",
     "src/client",
     "src/components",
+    "src/components-universal",
     "src/linter-checker",
     "src/stores",
+    "src/stores-universal",
     "src/styles",
+    "src/**/*.jsx",
+    "src/**/*.tsx",
+    "src/**/*.spec.ts",
+    "src/**/*.integ.ts"
   ]
 }
