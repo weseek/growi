@@ -3,7 +3,6 @@ import assert from 'assert';
 import { isClient } from '@growi/core/dist/utils/browser-utils';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
-// eslint-disable-next-line import/extensions
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
@@ -20,8 +19,8 @@ import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
 import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
 import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
@@ -35,6 +34,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
+
 
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
@@ -71,7 +71,7 @@ export const generateViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -132,7 +132,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -184,7 +184,7 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -277,7 +277,7 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 

@@ -112,7 +112,7 @@ const AssociateModal = (props: Props): JSX.Element => {
         </div>
       </ModalBody>
       <ModalFooter className="border-top-0">
-        <button type="button" className="btn btn-primary mt-3" onClick={clickAddLdapAccountHandler}>
+        <button type="button" className="btn btn-primary mt-3" data-testid="add-external-account-button" onClick={clickAddLdapAccountHandler}>
           <span className="material-symbols-outlined" aria-hidden="true">add_circle</span>
           {t('add')}
         </button>

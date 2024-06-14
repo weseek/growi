@@ -2,17 +2,17 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 import PropTypes from 'prop-types';
-import { defaultSchema as sanitizeDefaultSchema } from 'rehype-sanitize';
 
 import AdminMarkDownContainer from '~/client/services/AdminMarkDownContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
+import { tagNames as recommendedTagNames, attributes as recommendedAttributes } from '~/services/renderer/recommended-whitelist';
 import loggerFactory from '~/utils/logger';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 
-import WhitelistInput from './WhitelistInput';
+import { WhitelistInput } from './WhitelistInput';
 
 const logger = loggerFactory('growi:importer');
 
@@ -41,8 +41,8 @@ class XssForm extends React.Component {
     const { t, adminMarkDownContainer } = this.props;
     const { xssOption } = adminMarkDownContainer.state;
 
-    const rehypeRecommendedTags = sanitizeDefaultSchema.tagNames;
-    const rehypeRecommendedAttributes = JSON.stringify(sanitizeDefaultSchema.attributes);
+    const rehypeRecommendedTags = recommendedTagNames.join(',');
+    const rehypeRecommendedAttributes = JSON.stringify(recommendedAttributes);
 
     return (
       <div className="col-12 mt-3">
@@ -55,8 +55,8 @@ class XssForm extends React.Component {
                 className="form-check-input"
                 id="xssOption1"
                 name="XssOption"
-                checked={xssOption === RehypeSanitizeOption.RECOMMENDED}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.RECOMMENDED }) }}
+                checked={xssOption === RehypeSanitizeType.RECOMMENDED}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.RECOMMENDED }) }}
               />
               <label className="form-label form-check-label w-100" htmlFor="xssOption1">
                 <p className="fw-bold">{t('markdown_settings.xss_options.recommended_setting')}</p>
@@ -97,12 +97,12 @@ class XssForm extends React.Component {
                 className="form-check-input"
                 id="xssOption2"
                 name="XssOption"
-                checked={xssOption === RehypeSanitizeOption.CUSTOM}
-                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeOption.CUSTOM }) }}
+                checked={xssOption === RehypeSanitizeType.CUSTOM}
+                onChange={() => { adminMarkDownContainer.setState({ xssOption: RehypeSanitizeType.CUSTOM }) }}
               />
               <label className="form-label form-check-label w-100" htmlFor="xssOption2">
                 <p className="fw-bold">{t('markdown_settings.xss_options.custom_whitelist')}</p>
-                <WhitelistInput customizable />
+                <WhitelistInput adminMarkDownContainer={adminMarkDownContainer} />
               </label>
             </div>
           </div>
