@@ -30,6 +30,13 @@ const InstallerForm = memo((): JSX.Element => {
 
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
 
+  const tWithOpt = useCallback((key: string, opt?: any) => {
+    if (typeof opt === 'object') {
+      return t(key, opt).toString();
+    }
+    return t(key);
+  }, [t]);
+
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({
       headers: {
@@ -113,7 +120,7 @@ const InstallerForm = memo((): JSX.Element => {
             <p className="alert alert-danger text-center">
               {registerErrors.map(err => (
                 <span>
-                  {t(err.message)}<br />
+                  {tWithOpt(err.message, err.args)}<br />
                 </span>
               ))}
             </p>
@@ -218,6 +225,7 @@ const InstallerForm = memo((): JSX.Element => {
               <span className="material-symbols-outlined" aria-hidden>lock</span>
             </label>
             <input
+              minLength={}
               id="tiPassword"
               type="password"
               className="form-control rounded"
