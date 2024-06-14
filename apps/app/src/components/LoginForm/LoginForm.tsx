@@ -231,7 +231,6 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
               placeholder="Password"
               onChange={(e) => { setPasswordForLogin(e.target.value) }}
               name="passwordForLogin"
-              minLength={minPasswordLength}
             />
           </div>
 
@@ -257,7 +256,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     );
   }, [
     props, separateErrorsBasedOnErrorCode, loginErrors, generateDangerouslySetErrors, generateSafelySetErrors,
-    isLdapSetupFailed, t, handleLoginWithLocalSubmit, minPasswordLength, isLoading,
+    isLdapSetupFailed, t, handleLoginWithLocalSubmit, isLoading,
   ]);
 
 

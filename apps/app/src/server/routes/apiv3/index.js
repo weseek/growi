@@ -55,7 +55,7 @@ module.exports = (crowi, app) => {
   const login = require('../login')(crowi, app);
   const loginPassport = require('../login-passport')(crowi, app);
 
-  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(minPasswordLength), loginFormValidator.loginValidation,
+  routerForAuth.post('/login', applicationInstalled, loginFormValidator.loginRules(), loginFormValidator.loginValidation,
     addActivity, loginPassport.injectRedirectTo, loginPassport.isEnableLoginWithLocalOrLdap, loginPassport.loginWithLocal, loginPassport.loginWithLdap,
     loginPassport.cannotLoginErrorHadnler, loginPassport.loginFailure);
 
