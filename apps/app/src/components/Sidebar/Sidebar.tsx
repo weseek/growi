@@ -1,10 +1,11 @@
-import React, {
-  type FC,
+import type { FC } from 'react';
+import {
   memo, useCallback, useEffect, useState,
   useRef,
 } from 'react';
 
 import dynamic from 'next/dynamic';
+import SimpleBar from 'simplebar-react';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores/context';
@@ -24,8 +25,10 @@ import { ResizableArea } from './ResizableArea/ResizableArea';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
+
 import styles from './Sidebar.module.scss';
 
+import 'simplebar-react/dist/simplebar.min.css';
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
 
@@ -140,16 +143,20 @@ const CollapsibleContainer = memo((props: CollapsibleContainerProps): JSX.Elemen
   const openedClass = isCollapsedMode() && isCollapsedContentsOpened ? 'open' : '';
   const collapsibleContentsWidth = isCollapsedMode() ? currentProductNavWidth : undefined;
 
+  // TODO: fix scroll bar
   return (
     <div className={`flex-expand-horiz ${className}`} onMouseLeave={mouseLeaveHandler}>
       <Nav onPrimaryItemHover={primaryItemHoverHandler} />
-      <div
-        ref={sidebarScrollerRef}
-        className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
-        style={{ width: collapsibleContentsWidth }}
-      >
-        {children}
-      </div>
+      <SimpleBar>
+        <div
+          ref={sidebarScrollerRef}
+          className={`sidebar-contents-container flex-grow-1 overflow-y-auto overflow-x-hidden ${closedClass} ${openedClass}`}
+          style={{ width: collapsibleContentsWidth }}
+        >
+          {children}
+          aaaaaaaaaaaaaaaaaaa
+        </div>
+      </SimpleBar>
     </div>
   );
 
@@ -185,6 +192,15 @@ const DrawableContainer = memo((props: DrawableContainerProps): JSX.Element => {
   );
 });
 
+const SidebarContentsWrapper = memo((props: { sidebarMode: SidebarMode }) => {
+
+  return (
+    <div id="grw-sidebar-contents-wrapper">
+      <SidebarContents />
+    </div>
+  );
+});
+SidebarContentsWrapper.displayName = 'SidebarContentsWrapper';
 
 export const Sidebar = (): JSX.Element => {
 
@@ -194,6 +210,11 @@ export const Sidebar = (): JSX.Element => {
   } = useSidebarMode();
 
   const { data: isSearchPage } = useIsSearchPage();
+
+
+  if (sidebarMode == null) {
+    return <></>;
+  }
 
   // css styles
   const grwSidebarClass = styles['grw-sidebar'];
@@ -224,7 +245,7 @@ export const Sidebar = (): JSX.Element => {
           { sidebarMode != null && !isCollapsedMode() && <AppTitleOnSidebarHead /> }
           <SidebarHead />
           <CollapsibleContainer Nav={SidebarNav} className="border-top">
-            <SidebarContents />
+            <SidebarContentsWrapper sidebarMode={sidebarMode} />
           </CollapsibleContainer>
         </ResizableContainer>
       </DrawableContainer>
