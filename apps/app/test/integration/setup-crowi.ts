@@ -13,7 +13,6 @@ const initCrowi = async(crowi) => {
 
   await Promise.all([
     crowi.setUpApp(),
-    crowi.setUpXss(),
   ]);
 
   await Promise.all([

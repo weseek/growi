@@ -4,8 +4,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import { useCodeMirrorEditorIsolated } from '@growi/editor';
-import { useDrawioModalForEditor } from '@growi/editor/src/stores/use-drawio';
+import { useCodeMirrorEditorIsolated, useDrawioModalForEditor } from '@growi/editor/dist/client';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,

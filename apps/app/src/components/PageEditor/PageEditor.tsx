@@ -9,10 +9,11 @@ import nodePath from 'path';
 
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
+import { GlobalCodeMirrorEditorKey } from '@growi/editor';
 import {
-  CodeMirrorEditorMain, GlobalCodeMirrorEditorKey,
+  CodeMirrorEditorMain,
   useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor';
+} from '@growi/editor/dist/client';
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
@@ -42,7 +43,7 @@ import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import {
   EditorMode,
-  useEditorMode, useSelectedGrant,
+  useEditorMode, useIsUntitledPage, useSelectedGrant,
 } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
 import { useNextThemes } from '~/stores/use-next-themes';
@@ -68,6 +69,7 @@ declare global {
 export type SaveOptions = {
   wip: boolean,
   slackChannels: string,
+  isSlackEnabled: boolean,
   overwriteScopesOfDescendants?: boolean
 }
 export type Save = (
@@ -100,6 +102,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: isEditable } = useIsEditable();
   const { mutate: mutateWaitingSaveProcessing } = useWaitingSaveProcessing();
   const { data: editorMode, mutate: mutateEditorMode } = useEditorMode();
+  const { data: isUntitledPage } = useIsUntitledPage();
   const { data: isIndentSizeForced } = useIsIndentSizeForced();
   const { data: currentIndentSize, mutate: mutateCurrentIndentSize } = useCurrentIndentSize();
   const { data: defaultIndentSize } = useDefaultIndentSize();
@@ -276,10 +279,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to focus
   useLayoutEffect(() => {
-    if (editorMode === EditorMode.Editor) {
+    if (editorMode === EditorMode.Editor && isUntitledPage === false) {
       codeMirrorEditor?.focus();
     }
-  }, [codeMirrorEditor, currentPage, editorMode]);
+  }, [codeMirrorEditor, editorMode, isUntitledPage]);
 
   // Detect indent size from contents (only when users are allowed to change it)
   useEffect(() => {

@@ -4,7 +4,8 @@ updates:
     directory: '/'
     open-pull-requests-limit: 3
     schedule:
-      interval: monthly
+      interval: weekly
+      day: saturday
     labels:
       - "type/dependencies"
     commit-message:
@@ -16,6 +17,7 @@ updates:
     open-pull-requests-limit: 3
     schedule:
       interval: weekly
+      day: saturday
     labels:
       - "type/dependencies"
     commit-message:
@@ -27,4 +29,6 @@ updates:
       - dependency-name: "@handsontable/react"
       - dependency-name: handsontable
       - dependency-name: typeorm
+      - dependency-name: mysql2
+
 

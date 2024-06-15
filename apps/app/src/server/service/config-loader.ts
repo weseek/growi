@@ -715,7 +715,7 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     ns: 'crowi',
     key: 'app:ssrMaxRevisionBodyLength',
     type: ValueType.NUMBER,
-    default: 30000,
+    default: 3000,
   },
   WIP_PAGE_EXPIRATION_SECONDS: {
     ns: 'crowi',

@@ -189,10 +189,8 @@ class AwsFileUploader extends AbstractFileUploader {
 
       // eslint-disable-next-line no-nested-ternary
       return 'stream' in body
-        ? body.stream() // get stream from Blob
-        : !('read' in body)
-          ? body as unknown as NodeJS.ReadableStream // cast force
-          : body;
+        ? body.stream() as unknown as NodeJS.ReadableStream // get stream from Blob and cast force
+        : body as unknown as NodeJS.ReadableStream; // cast force
     }
     catch (err) {
       logger.error(err);

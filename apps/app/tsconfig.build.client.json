@@ -5,7 +5,6 @@
     ".next/types/**/*.ts"
   ],
   "compilerOptions": {
-    "module": "ESNext",
     "strict": false,
     "strictNullChecks": true,
 
