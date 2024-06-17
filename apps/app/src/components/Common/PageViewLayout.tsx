@@ -23,12 +23,12 @@ export const PageViewLayout = (props: Props): JSX.Element => {
 
   return (
     <>
-      <div className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert ps-sidebar position-relative z-0`}>
+      <div className={`main ${pageViewLayoutClass} ${fluidLayoutClass} flex-expand-vert ps-sidebar`}>
         <div className="container-lg wide-gutter-x-lg grw-container-convertible flex-expand-vert">
           { headerContents != null && headerContents }
           { sideContents != null
             ? (
-              <div className="flex-expand-horiz gap-3">
+              <div className="flex-expand-horiz gap-3 z-0">
                 <div className="flex-expand-vert flex-basis-0 mw-0">
                   {children}
                 </div>
@@ -40,7 +40,9 @@ export const PageViewLayout = (props: Props): JSX.Element => {
               </div>
             )
             : (
-              <>{children}</>
+              <div className="z-0">
+                {children}
+              </div>
             )
           }
         </div>
