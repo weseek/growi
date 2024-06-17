@@ -5,8 +5,8 @@ import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 import { addHours } from 'date-fns/addHours';
 
-import { Relation, PermissionSettingsInterface } from '~/entities/relation';
-import { RelationRepository } from '~/repositories/relation';
+import type { Relation, PermissionSettingsInterface } from '~/entities/relation';
+import type { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:RelationsService');

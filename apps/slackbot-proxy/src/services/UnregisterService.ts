@@ -4,18 +4,18 @@ import type {
 import {
   inputBlock, markdownSectionBlock, actionsBlock, buttonElement,
 } from '@growi/slack/dist/utils/block-kit-builder';
-import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import { getInteractionIdRegexpFromCommandName } from '@growi/slack/dist/utils/payload-interaction-id-helpers';
 import { respond, replaceOriginal } from '@growi/slack/dist/utils/response-url';
-import { AuthorizeResult } from '@slack/oauth';
-import { MultiStaticSelect } from '@slack/web-api';
+import type { AuthorizeResult } from '@slack/oauth';
+import type { MultiStaticSelect } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
-import { DeleteResult } from 'typeorm';
+import type { DeleteResult } from 'typeorm';
 
-import { Installation } from '~/entities/installation';
-import { InstallationRepository } from '~/repositories/installation';
-import { RelationRepository } from '~/repositories/relation';
+import type { Installation } from '~/entities/installation';
+import type { InstallationRepository } from '~/repositories/installation';
+import type { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');

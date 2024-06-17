@@ -1,6 +1,6 @@
 import { Service } from '@tsed/di';
 
-import { GrowiUriWithOriginalData, GrowiUriInjector, TypedBlock } from '~/interfaces/growi-uri-injector';
+import type { GrowiUriWithOriginalData, GrowiUriInjector, TypedBlock } from '~/interfaces/growi-uri-injector';
 
 
 type ButtonElement = TypedBlock & {

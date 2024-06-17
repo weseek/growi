@@ -1,10 +1,11 @@
+import type { IMiddleware } from '@tsed/common';
 import {
-  IMiddleware, Inject, Middleware, Next, Req, Res,
+  Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
 
-import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
-import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
+import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import type { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
+import type { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 
 
 @Middleware()

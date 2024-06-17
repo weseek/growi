@@ -1,4 +1,4 @@
-import { Installation as SlackInstallation } from '@slack/oauth';
+import type { Installation as SlackInstallation } from '@slack/oauth';
 import {
   Required,
 } from '@tsed/schema';

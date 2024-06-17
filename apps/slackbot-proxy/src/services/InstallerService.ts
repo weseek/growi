@@ -1,10 +1,9 @@
-import {
-  Installation as SlackInstallation, InstallationQuery, InstallProvider,
-} from '@slack/oauth';
+import type { Installation as SlackInstallation, InstallationQuery } from '@slack/oauth';
+import { InstallProvider } from '@slack/oauth';
 import { Inject, Service } from '@tsed/di';
 
 import { Installation } from '~/entities/installation';
-import { InstallationRepository } from '~/repositories/installation';
+import type { InstallationRepository } from '~/repositories/installation';
 
 @Service()
 export class InstallerService {

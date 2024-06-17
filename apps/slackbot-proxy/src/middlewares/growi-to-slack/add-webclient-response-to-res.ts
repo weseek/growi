@@ -1,6 +1,7 @@
 import { ErrorCode } from '@slack/web-api';
+import type { IMiddleware } from '@tsed/common';
 import {
-  IMiddleware, Middleware, Next, Req, Res,
+  Middleware, Next, Req, Res,
 } from '@tsed/common';
 
 
