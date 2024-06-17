@@ -9,18 +9,28 @@ import { useRouter } from 'next/router';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useTWithOpt } from '~/client/util/t-with-opt';
 import { toastError } from '~/client/util/toastr';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 
+
 import styles from './InstallerForm.module.scss';
+
 
 const moduleClass = styles['installer-form'] ?? '';
 
+type Props = {
+  minPasswordLength: number,
+}
 
-const InstallerForm = memo((): JSX.Element => {
+const InstallerForm = memo((props: Props): JSX.Element => {
   const { t, i18n } = useTranslation();
 
+  const { minPasswordLength } = props;
+
   const router = useRouter();
+
+  const tWithOpt = useTWithOpt();
 
   const isSupportedLang = AllLang.includes(i18n.language as Lang);
 
@@ -113,7 +123,7 @@ const InstallerForm = memo((): JSX.Element => {
             <p className="alert alert-danger text-center">
               {registerErrors.map(err => (
                 <span>
-                  {t(err.message)}<br />
+                  {tWithOpt(err.message, err.args)}<br />
                 </span>
               ))}
             </p>
@@ -218,6 +228,7 @@ const InstallerForm = memo((): JSX.Element => {
               <span className="material-symbols-outlined" aria-hidden>lock</span>
             </label>
             <input
+              minLength={minPasswordLength}
               id="tiPassword"
               type="password"
               className="form-control rounded"
