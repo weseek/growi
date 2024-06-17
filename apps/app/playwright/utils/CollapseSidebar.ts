@@ -1,3 +1,4 @@
+// TODO: https://redmine.weseek.co.jp/issues/148538
 import { expect, type Page } from '@playwright/test';
 
 export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<void> => {
