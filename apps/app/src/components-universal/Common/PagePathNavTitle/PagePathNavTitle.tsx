@@ -8,7 +8,7 @@ import { PagePathNav } from '../PagePathNav';
 import type { PagePathNavLayoutProps } from '../PagePathNav/PagePathNavLayout';
 
 const PagePathNavSticky = withLoadingProps<PagePathNavLayoutProps>(useLoadingProps => dynamic(
-  () => import('~/components/Common/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
+  () => import('~/components/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
   {
     ssr: false,
     loading: () => {
