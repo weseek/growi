@@ -425,12 +425,6 @@ jobs:
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
-    - name: Copy dotenv file for automatic installation with allowing guest mode
-      if: ${{ matrix.spec-group == '21' }}
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
-
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
