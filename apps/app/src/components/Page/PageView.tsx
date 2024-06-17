@@ -7,6 +7,7 @@ import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
+import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
@@ -17,7 +18,6 @@ import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 
-import { PagePathNavSticky } from '../Common/PagePathNav';
 import { PageViewLayout } from '../Common/PageViewLayout';
 import { PageAlerts } from '../PageAlert/PageAlerts';
 import { PageContentFooter } from '../PageContentFooter';
@@ -93,7 +93,6 @@ export const PageView = (props: Props): JSX.Element => {
   }, [isCommentsLoaded]);
   // *******************************  end  *******************************
 
-
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
       return <IdenticalPathPage />;
@@ -106,9 +105,7 @@ export const PageView = (props: Props): JSX.Element => {
     }
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
-  const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />
-  );
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (

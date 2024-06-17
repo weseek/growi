@@ -25,7 +25,7 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { PagePathNav } from '../Common/PagePathNav';
+import { PagePathNav } from '../../components-universal/Common/PagePathNav';
 import { type RevisionLoaderProps } from '../Page/RevisionLoader';
 import type { PageContentFooterProps } from '../PageContentFooter';
 

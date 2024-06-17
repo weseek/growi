@@ -14,9 +14,9 @@ import {
   usePageControlsX, useCurrentProductNavWidth, useSidebarMode,
 } from '~/stores/ui';
 
-import { PagePathHierarchicalLink } from '../PagePathHierarchicalLink';
-import type { PagePathNavLayoutProps } from '../PagePathNav';
-import { PagePathNavLayout, Separator } from '../PagePathNav';
+import { PagePathHierarchicalLink } from '../../../components-universal/Common/PagePathHierarchicalLink';
+import type { PagePathNavLayoutProps } from '../../../components-universal/Common/PagePathNav';
+import { PagePathNavLayout, Separator } from '../../../components-universal/Common/PagePathNav';
 
 import { CollapsedParentsDropdown } from './CollapsedParentsDropdown';
 

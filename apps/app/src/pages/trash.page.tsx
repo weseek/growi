@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 
 import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -7,9 +6,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
+import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
 import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
-import { PagePathNavSticky } from '~/components/Common/PagePathNav';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -26,6 +25,7 @@ import type { CommonProps } from './utils/commons';
 import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, useInitSidebarConfig,
 } from './utils/commons';
+
 
 const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
 const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
@@ -77,7 +77,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
         <div className="main ps-sidebar">
           <div className="container-lg wide-gutter-x-lg">
-            <PagePathNavSticky pagePath="/trash" />
+            <PagePathNavTitle pagePath="/trash" />
             <TrashPageList />
           </div>
         </div>

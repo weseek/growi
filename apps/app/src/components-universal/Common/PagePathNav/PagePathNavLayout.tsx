@@ -21,7 +21,7 @@ type Props = PagePathNavLayoutProps & {
   latterLink?: ReactNode,
 }
 
-const CopyDropdown = dynamic(() => import('../CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
+const CopyDropdown = dynamic(() => import('../../../components/Common/CopyDropdown').then(mod => mod.CopyDropdown), { ssr: false });
 
 export const PagePathNavLayout = (props: Props): JSX.Element => {
   const {

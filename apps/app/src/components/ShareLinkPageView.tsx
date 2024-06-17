@@ -4,6 +4,7 @@ import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
+import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -12,7 +13,6 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { PagePathNavSticky } from './Common/PagePathNav';
 import { PageViewLayout } from './Common/PageViewLayout';
 import RevisionRenderer from './Page/RevisionRenderer';
 import ShareLinkAlert from './Page/ShareLinkAlert';
@@ -60,9 +60,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
 
-  const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
-  );
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
 
   const sideContents = !isNotFound
     ? (
