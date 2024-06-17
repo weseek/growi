@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
@@ -13,18 +13,19 @@ import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { PageViewLayout } from './Common/PageViewLayout';
-import RevisionRenderer from './Page/RevisionRenderer';
-import ShareLinkAlert from './Page/ShareLinkAlert';
-import { PageContentFooter } from './PageContentFooter';
+import { PageContentFooter } from '../PageView/PageContentFooter';
+import { PageViewLayout } from '../PageView/PageViewLayout';
+import RevisionRenderer from '../PageView/RevisionRenderer';
+
+import ShareLinkAlert from './ShareLinkAlert';
 
 
 const logger = loggerFactory('growi:Page');
 
 
-const PageSideContents = dynamic(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
+const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,

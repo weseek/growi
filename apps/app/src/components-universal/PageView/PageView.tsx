@@ -18,26 +18,27 @@ import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 
-import { PageViewLayout } from '../Common/PageViewLayout';
-import { PageAlerts } from '../PageAlert/PageAlerts';
-import { PageContentFooter } from '../PageContentFooter';
 import { UserInfo } from '../User/UserInfo';
 
+import { PageAlerts } from './PageAlerts/PageAlerts';
+import { PageContentFooter } from './PageContentFooter';
+import { PageViewLayout } from './PageViewLayout';
 import RevisionRenderer from './RevisionRenderer';
+
 
 import styles from './PageView.module.scss';
 
 
-const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
-const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-const PageSideContents = dynamic(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const PageContentsUtilities = dynamic(() => import('./PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
-const Comments = dynamic(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
-const UsersHomepageFooter = dynamic(() => import('../UsersHomepageFooter')
+const NotCreatablePage = dynamic(() => import('../../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
+const NotFoundPage = dynamic(() => import('../../components/NotFoundPage'), { ssr: false });
+const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageContentsUtilities = dynamic(() => import('../../components/Page/PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
+const Comments = dynamic(() => import('../../components/Comments').then(mod => mod.Comments), { ssr: false });
+const UsersHomepageFooter = dynamic(() => import('../../components/UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
-const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const IdenticalPathPage = dynamic(() => import('../../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {

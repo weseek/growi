@@ -5,7 +5,7 @@ import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { useIsEnabledMarp } from '~/stores/context';
 
-import RevisionRenderer from '../Page/RevisionRenderer';
+import RevisionRenderer from '../../components-universal/PageView/RevisionRenderer';
 import { SlideRenderer } from '../Page/SlideRenderer';
 
 import styles from './Preview.module.scss';

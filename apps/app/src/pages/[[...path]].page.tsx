@@ -22,7 +22,7 @@ import superjson from 'superjson';
 
 import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
 import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
-import { PageView } from '~/components/Page/PageView';
+import { PageView } from '~/components-universal/PageView/PageView';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';

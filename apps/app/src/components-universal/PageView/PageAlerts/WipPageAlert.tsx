@@ -2,11 +2,10 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import { publish } from '~/client/services/page-operation';
 import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
-
-import { publish } from '../../client/services/page-operation';
 
 
 export const WipPageAlert = (): JSX.Element => {

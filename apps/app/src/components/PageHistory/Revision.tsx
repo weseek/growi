@@ -7,8 +7,8 @@ import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 import urljoin from 'url-join';
 
-import UserDate from '../User/UserDate';
-import { Username } from '../User/Username';
+import UserDate from '../../components-universal/User/UserDate';
+import { Username } from '../../components-universal/User/Username';
 
 import styles from './Revision.module.scss';
 
