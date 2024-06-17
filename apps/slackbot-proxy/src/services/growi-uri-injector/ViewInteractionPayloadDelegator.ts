@@ -1,8 +1,7 @@
 import { Service } from '@tsed/di';
 
-import {
-  GrowiUriInjector, GrowiUriWithOriginalData, isGrowiUriWithOriginalData, TypedBlock,
-} from '~/interfaces/growi-uri-injector';
+import type { GrowiUriInjector, GrowiUriWithOriginalData, TypedBlock } from '~/interfaces/growi-uri-injector';
+import { isGrowiUriWithOriginalData } from '~/interfaces/growi-uri-injector';
 
 // see: https://api.slack.com/reference/interaction-payloads/views
 type ViewElement = TypedBlock & {

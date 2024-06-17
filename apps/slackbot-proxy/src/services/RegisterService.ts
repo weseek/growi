@@ -4,18 +4,19 @@ import type {
 import {
   markdownSectionBlock, markdownHeaderBlock, inputSectionBlock, inputBlock,
 } from '@growi/slack/dist/utils/block-kit-builder';
-import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import { getInteractionIdRegexpFromCommandName } from '@growi/slack/dist/utils/payload-interaction-id-helpers';
 import { respond } from '@growi/slack/dist/utils/response-url';
-import { AuthorizeResult } from '@slack/oauth';
+import type { AuthorizeResult } from '@slack/oauth';
+import type { Block, ConversationsSelect } from '@slack/web-api';
 import {
-  WebClient, LogLevel, Block, ConversationsSelect,
+  WebClient, LogLevel,
 } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 
 
-import { InstallationRepository } from '~/repositories/installation';
-import { OrderRepository } from '~/repositories/order';
+import type { InstallationRepository } from '~/repositories/installation';
+import type { OrderRepository } from '~/repositories/order';
 import loggerFactory from '~/utils/logger';
 
 import { InvalidUrlError } from '../models/errors';

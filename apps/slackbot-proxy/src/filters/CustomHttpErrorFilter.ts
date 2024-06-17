@@ -1,5 +1,6 @@
+import type { ExceptionFilterMethods, PlatformContext, PlatformResponse } from '@tsed/common';
 import {
-  Catch, ExceptionFilterMethods, PlatformContext, PlatformResponse,
+  Catch,
 } from '@tsed/common';
 
 import { CustomHttpError } from '~/models/errors';
