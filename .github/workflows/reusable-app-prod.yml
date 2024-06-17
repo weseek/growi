@@ -437,7 +437,7 @@ jobs:
     - name: Copy dotenv file for automatic installation with allowing guest mode
       working-directory: ./apps/app
       run: |
-        cat config/ci/.env.local.for-guest >> .env.production.local
+        cat config/ci/.env.local.for-set-wiki-mode-to-public >> .env.production.local
 
     - name: Playwright Run (--project=${browser}/guest-mode)
       working-directory: ./apps/app
