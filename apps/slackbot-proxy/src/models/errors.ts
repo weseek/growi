@@ -1,5 +1,5 @@
 import ExtensibleCustomError from 'extensible-custom-error';
-import type { HttpError } from 'http-errors';
+import { HttpError } from 'http-errors';
 
 export class InvalidUrlError extends ExtensibleCustomError {
 

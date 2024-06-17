@@ -4,16 +4,16 @@ import type {
   InteractionHandledResult,
 } from '@growi/slack';
 import { markdownSectionBlock } from '@growi/slack/dist/utils/block-kit-builder';
-import type { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
+import { InteractionPayloadAccessor } from '@growi/slack/dist/utils/interaction-payload-accessor';
 import { getInteractionIdRegexpFromCommandName } from '@growi/slack/dist/utils/payload-interaction-id-helpers';
 import { replaceOriginal, respond } from '@growi/slack/dist/utils/response-url';
-import type { AuthorizeResult } from '@slack/oauth';
+import { AuthorizeResult } from '@slack/oauth';
 import { Inject, Service } from '@tsed/di';
 
-import type { Installation } from '~/entities/installation';
-import type { Relation } from '~/entities/relation';
-import type { InstallationRepository } from '~/repositories/installation';
-import type { RelationRepository } from '~/repositories/relation';
+import { Installation } from '~/entities/installation';
+import { Relation } from '~/entities/relation';
+import { InstallationRepository } from '~/repositories/installation';
+import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:UnregisterService');

@@ -1,12 +1,11 @@
-import type { OnInit } from '@tsed/di';
-import { Inject, Service } from '@tsed/di';
+import { Inject, OnInit, Service } from '@tsed/di';
 
-import type {
+import {
   GrowiUriInjector, GrowiUriWithOriginalData, TypedBlock,
 } from '~/interfaces/growi-uri-injector';
 
-import type { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPayloadDelegator';
-import type { CheckboxesActionPayloadDelegator } from './block-elements/CheckboxesActionPayloadDelegator';
+import { ButtonActionPayloadDelegator } from './block-elements/ButtonActionPayloadDelegator';
+import { CheckboxesActionPayloadDelegator } from './block-elements/CheckboxesActionPayloadDelegator';
 
 
 // see: https://api.slack.com/reference/block-kit/blocks

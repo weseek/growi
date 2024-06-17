@@ -1,6 +1,5 @@
-import type { PlatformRouter } from '@tsed/common';
-import { Controller } from '@tsed/common';
-import type { Request, Response } from 'express';
+import { Controller, PlatformRouter } from '@tsed/common';
+import { Request, Response } from 'express';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 

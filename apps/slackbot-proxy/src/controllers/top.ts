@@ -4,7 +4,7 @@ import {
 } from '@tsed/common';
 import readPkgUp from 'read-pkg-up';
 
-import type { InstallerService } from '~/services/InstallerService';
+import { InstallerService } from '~/services/InstallerService';
 
 const isOfficialMode = process.env.OFFICIAL_MODE === 'true';
 
