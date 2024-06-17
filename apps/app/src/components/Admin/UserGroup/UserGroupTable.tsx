@@ -168,19 +168,19 @@ export const UserGroupTable: FC<Props> = ({
                         className="link-opacity-75-hover"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
-                        <button
-                          className="btn btn-link btn-edit-groups text-secondary py-0"
-                          type="button"
-                          key={group._id}
-                          onMouseEnter={() => setHoveredIndex(index)}
-                          onMouseLeave={() => setHoveredIndex(undefined)}
-                        >
-                          <span className="material-symbols-outlined pe-2 pt-2">group</span>
-                          <span className="text-decoration-underline">{group.name}</span>
-                          {(hoveredIndex === index) && (<span className="material-symbols-outlined px-2 py-0">edit</span>
-                          )}
-                        </button>
                       </Link>
+                      <button
+                        className="btn btn-link btn-edit-groups text-secondary py-0"
+                        type="button"
+                        key={group._id}
+                        onMouseEnter={() => setHoveredIndex(index)}
+                        onMouseLeave={() => setHoveredIndex(undefined)}
+                      >
+                        <span className="material-symbols-outlined pe-2 pt-2">group</span>
+                        <span className="text-decoration-underline">{group.name}</span>
+                        {(hoveredIndex === index) && (<span className="material-symbols-outlined px-2 py-0">edit</span>
+                        )}
+                      </button>
                     </td>
                   )
                   : (
