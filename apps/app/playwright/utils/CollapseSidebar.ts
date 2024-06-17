@@ -9,7 +9,7 @@ export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<
   const collapseSidebarToggle = page.getByTestId('btn-toggle-collapse');
   await expect(collapseSidebarToggle).toBeVisible();
 
-  collapseSidebarToggle.click();
+  await collapseSidebarToggle.click();
 
   const grwSidebarDoc = page.getByTestId('grw-sidebar-doc');
 
