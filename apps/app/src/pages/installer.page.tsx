@@ -36,14 +36,6 @@ type Props = CommonProps & {
   pageWithMetaStr: string,
 };
 
-
-type TextFormProps = {
-  username: string,
-}
-const TextForm = (props: TextFormProps): JSX.Element => {
-  return <>{props.username}</>;
-};
-
 const InstallerPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
   const { t: tCommons } = useTranslation('commons');
