@@ -1,13 +1,12 @@
-import type { AuthorizeResult, InstallationQuery } from '@slack/oauth';
-import type { IMiddleware } from '@tsed/common';
+import { AuthorizeResult, InstallationQuery } from '@slack/oauth';
 import {
-  Inject, Middleware, Next, Req, Res,
+  IMiddleware, Inject, Middleware, Next, Req, Res,
 } from '@tsed/common';
-import type Logger from 'bunyan';
+import Logger from 'bunyan';
 import createError from 'http-errors';
 
-import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
-import type { InstallerService } from '~/services/InstallerService';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import { InstallerService } from '~/services/InstallerService';
 import loggerFactory from '~/utils/logger';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

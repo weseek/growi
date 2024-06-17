@@ -1,9 +1,10 @@
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import type { IMiddleware } from '@tsed/common';
-import { Middleware, Req } from '@tsed/common';
-import type Logger from 'bunyan';
+import {
+  IMiddleware, Middleware, Req,
+} from '@tsed/common';
+import Logger from 'bunyan';
 
-import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import loggerFactory from '~/utils/logger';
 
 const logger: Logger = loggerFactory('slackbot-proxy:middlewares:JoinToConversationsMiddleware');

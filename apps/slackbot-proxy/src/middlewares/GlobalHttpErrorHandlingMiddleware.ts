@@ -1,9 +1,7 @@
-import type { PlatformContext, PlatformResponse } from '@tsed/common';
 import {
-  Err, Middleware, Next,
+  Err, Middleware, Next, PlatformContext, PlatformResponse,
 } from '@tsed/common';
-import type { HttpError } from 'http-errors';
-import { isHttpError } from 'http-errors';
+import { HttpError, isHttpError } from 'http-errors';
 
 @Middleware()
 export class GlobalHttpErrorHandlingMiddleware {

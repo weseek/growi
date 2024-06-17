@@ -2,8 +2,7 @@ import { type BlockKitRequest, REQUEST_TIMEOUT_FOR_PTOG } from '@growi/slack';
 import { verifyGrowiToSlackRequest } from '@growi/slack/dist/middlewares';
 import { getConnectionStatuses, getConnectionStatus } from '@growi/slack/dist/utils/check-communicable';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import type { WebAPICallResult } from '@slack/web-api';
-import { ErrorCode } from '@slack/web-api';
+import { ErrorCode, WebAPICallResult } from '@slack/web-api';
 import {
   Controller, Get, Post, Inject, Req, Res, UseBefore, PathParams, Put, QueryParams,
 } from '@tsed/common';
@@ -12,16 +11,15 @@ import { addHours } from 'date-fns/addHours';
 import createError from 'http-errors';
 
 
-import type { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
-import type { WebclientRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
-import { AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
-import type { InstallationRepository } from '~/repositories/installation';
-import type { OrderRepository } from '~/repositories/order';
-import type { RelationRepository } from '~/repositories/relation';
-import type { InstallerService } from '~/services/InstallerService';
-import type { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
-import type { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
-import type { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
+import { GrowiReq } from '~/interfaces/growi-to-slack/growi-req';
+import { WebclientRes, AddWebclientResponseToRes } from '~/middlewares/growi-to-slack/add-webclient-response-to-res';
+import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
+import { RelationRepository } from '~/repositories/relation';
+import { InstallerService } from '~/services/InstallerService';
+import { ActionsBlockPayloadDelegator } from '~/services/growi-uri-injector/ActionsBlockPayloadDelegator';
+import { SectionBlockPayloadDelegator } from '~/services/growi-uri-injector/SectionBlockPayloadDelegator';
+import { ViewInteractionPayloadDelegator } from '~/services/growi-uri-injector/ViewInteractionPayloadDelegator';
 import loggerFactory from '~/utils/logger';
 
 

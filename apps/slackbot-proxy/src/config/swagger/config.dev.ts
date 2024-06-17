@@ -1,4 +1,4 @@
-import type { SwaggerSettings } from '@tsed/swagger';
+import { SwaggerSettings } from '@tsed/swagger';
 
 const settings: SwaggerSettings[] = [
   {

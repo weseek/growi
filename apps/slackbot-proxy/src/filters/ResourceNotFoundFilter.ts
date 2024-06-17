@@ -1,6 +1,5 @@
-import type { ExceptionFilterMethods, PlatformContext, PlatformResponse } from '@tsed/common';
 import {
-  Catch, ResourceNotFound,
+  Catch, ExceptionFilterMethods, PlatformContext, PlatformResponse, ResourceNotFound,
 } from '@tsed/common';
 
 @Catch(ResourceNotFound)

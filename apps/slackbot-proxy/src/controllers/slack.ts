@@ -1,6 +1,6 @@
 
 
-import type { ServerResponse } from 'http';
+import { ServerResponse } from 'http';
 
 import {
   type GrowiCommand, type IChannelOptionalId,
@@ -14,31 +14,30 @@ import { respondRejectedErrors } from '@growi/slack/dist/utils/post-ephemeral-er
 import { respond } from '@growi/slack/dist/utils/response-url';
 import { parseSlashCommand } from '@growi/slack/dist/utils/slash-command-parser';
 import { generateWebClient } from '@growi/slack/dist/utils/webclient-factory';
-import type { Installation } from '@slack/oauth';
-import type { WebAPICallResult } from '@slack/web-api';
-import type { PlatformResponse } from '@tsed/common';
+import { Installation } from '@slack/oauth';
+import { WebAPICallResult } from '@slack/web-api';
 import {
-  Controller, Get, Inject, Post, Req, Res, UseBefore,
+  Controller, Get, Inject, PlatformResponse, Post, Req, Res, UseBefore,
 } from '@tsed/common';
 import axios from 'axios';
 
-import type { Relation } from '~/entities/relation';
-import type { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
+import { Relation } from '~/entities/relation';
+import { SlackOauthReq } from '~/interfaces/slack-to-growi/slack-oauth-req';
 import { AddSigningSecretToReq } from '~/middlewares/slack-to-growi/add-signing-secret-to-req';
 import {
   AuthorizeCommandMiddleware, AuthorizeInteractionMiddleware, AuthorizeEventsMiddleware,
 } from '~/middlewares/slack-to-growi/authorizer';
 import { ExtractGrowiUriFromReq } from '~/middlewares/slack-to-growi/extract-growi-uri-from-req';
 import { UrlVerificationMiddleware } from '~/middlewares/slack-to-growi/url-verification';
-import type { InstallationRepository } from '~/repositories/installation';
-import type { OrderRepository } from '~/repositories/order';
-import type { RelationRepository } from '~/repositories/relation';
-import type { InstallerService } from '~/services/InstallerService';
-import type { LinkSharedService } from '~/services/LinkSharedService';
-import type { RegisterService } from '~/services/RegisterService';
-import type { RelationsService } from '~/services/RelationsService';
-import type { SelectGrowiService } from '~/services/SelectGrowiService';
-import type { UnregisterService } from '~/services/UnregisterService';
+import { InstallationRepository } from '~/repositories/installation';
+import { OrderRepository } from '~/repositories/order';
+import { RelationRepository } from '~/repositories/relation';
+import { InstallerService } from '~/services/InstallerService';
+import { LinkSharedService } from '~/services/LinkSharedService';
+import { RegisterService } from '~/services/RegisterService';
+import { RelationsService } from '~/services/RelationsService';
+import { SelectGrowiService } from '~/services/SelectGrowiService';
+import { UnregisterService } from '~/services/UnregisterService';
 import loggerFactory from '~/utils/logger';
 import { postInstallSuccessMessage, postWelcomeMessageOnce } from '~/utils/welcome-message';
 

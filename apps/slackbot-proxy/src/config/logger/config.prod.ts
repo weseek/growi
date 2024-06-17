@@ -1,4 +1,4 @@
-import type { UniversalBunyanConfig } from 'universal-bunyan';
+import { UniversalBunyanConfig } from 'universal-bunyan';
 
 const config: UniversalBunyanConfig = {
   default: 'info',

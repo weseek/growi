@@ -3,7 +3,7 @@ import type { WebClient } from '@slack/web-api';
 import { Inject, Service } from '@tsed/di';
 import axios from 'axios';
 
-import type { RelationRepository } from '~/repositories/relation';
+import { RelationRepository } from '~/repositories/relation';
 import loggerFactory from '~/utils/logger';
 
 const logger = loggerFactory('slackbot-proxy:services:LinkSharedService');
