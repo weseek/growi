@@ -9,10 +9,13 @@ import { useRouter } from 'next/router';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useTWithOpt } from '~/client/util/t-with-opt';
 import { toastError } from '~/client/util/toastr';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 
+
 import styles from './InstallerForm.module.scss';
+
 
 const moduleClass = styles['installer-form'] ?? '';
 
@@ -27,6 +30,8 @@ const InstallerForm = memo((props: Props): JSX.Element => {
 
   const router = useRouter();
 
+  const tWithOpt = useTWithOpt();
+
   const isSupportedLang = AllLang.includes(i18n.language as Lang);
 
   const [isValidUserName, setValidUserName] = useState(true);
@@ -34,13 +39,6 @@ const InstallerForm = memo((props: Props): JSX.Element => {
   const [currentLocale, setCurrentLocale] = useState(isSupportedLang ? i18n.language : Lang.en_US);
 
   const [registerErrors, setRegisterErrors] = useState<IErrorV3[]>([]);
-
-  const tWithOpt = useCallback((key: string, opt?: any) => {
-    if (typeof opt === 'object') {
-      return t(key, opt).toString();
-    }
-    return t(key);
-  }, [t]);
 
   const checkUserName = useCallback(async(event) => {
     const axios = require('axios').create({

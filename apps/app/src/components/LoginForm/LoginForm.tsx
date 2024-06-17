@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useTWithOpt } from '~/client/util/t-with-opt';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
@@ -20,6 +21,7 @@ import { CompleteUserRegistration } from '../CompleteUserRegistration';
 import { ExternalAuthButton } from './ExternalAuthButton';
 
 import styles from './LoginForm.module.scss';
+
 
 const moduleClass = styles['login-form'];
 
@@ -73,19 +75,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const isRegistrationEnabled = isLocalStrategySetup && registrationMode !== RegistrationMode.CLOSED;
 
+  const tWithOpt = useTWithOpt();
+
   useEffect(() => {
     const { hash } = window.location;
     if (hash === '#register') {
       setIsRegistering(true);
     }
   }, []);
-
-  const tWithOpt = useCallback((key: string, opt?: any) => {
-    if (typeof opt === 'object') {
-      return t(key, opt).toString();
-    }
-    return t(key);
-  }, [t]);
 
   const resetLoginErrors = useCallback(() => {
     if (loginErrors.length === 0) return;
