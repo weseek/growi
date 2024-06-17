@@ -179,7 +179,7 @@ export const UserGroupTable: FC<Props> = ({
                         >
                           <span className="material-symbols-outlined pe-2 pt-2">group</span>
                           <span className="text-decoration-underline">{group.name}</span>
-                          { hoveredIndex && (<span className="material-symbols-outlined px-2 py-0">edit</span>
+                          {(hoveredIndex === index) && (<span className="material-symbols-outlined px-2 py-0">edit</span>
                           )}
                         </button>
                       </div>
