@@ -13,6 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
+import { PagePathNav } from '~/components-universal/Common/PagePathNav';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -25,8 +26,7 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { PagePathNav } from '../../components-universal/Common/PagePathNav';
-import { type RevisionLoaderProps } from '../Page/RevisionLoader';
+import type { RevisionLoaderProps } from '../Page/RevisionLoader';
 import type { PageContentFooterProps } from '../PageContentFooter';
 
 import styles from './SearchResultContent.module.scss';
