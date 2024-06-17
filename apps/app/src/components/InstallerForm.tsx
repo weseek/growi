@@ -16,9 +16,14 @@ import styles from './InstallerForm.module.scss';
 
 const moduleClass = styles['installer-form'] ?? '';
 
+type Props = {
+  minPasswordLength: number,
+}
 
-const InstallerForm = memo((): JSX.Element => {
+const InstallerForm = memo((props: Props): JSX.Element => {
   const { t, i18n } = useTranslation();
+
+  const { minPasswordLength } = props;
 
   const router = useRouter();
 
@@ -225,7 +230,7 @@ const InstallerForm = memo((): JSX.Element => {
               <span className="material-symbols-outlined" aria-hidden>lock</span>
             </label>
             <input
-              minLength={}
+              minLength={minPasswordLength}
               id="tiPassword"
               type="password"
               className="form-control rounded"
