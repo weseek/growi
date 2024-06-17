@@ -11,12 +11,10 @@ export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<
 
   await collapseSidebarToggle.click();
 
-  const grwSidebarDoc = page.getByTestId('grw-sidebar-doc');
-
   if (isCollapsed) {
-    await expect(grwSidebarDoc).not.toBeVisible();
+    await expect(page.locator('.grw-sidebar-dock')).not.toBeVisible();
   }
   else {
-    await expect(grwSidebarDoc).toBeVisible();
+    await expect(page.locator('.grw-sidebar-dock')).toBeVisible();
   }
 };
