@@ -1,7 +1,7 @@
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
-import type { EditorMode } from './ui';
+import type { EditorMode } from '../stores-universal/ui';
 
 /*
 * PageStatusAlert
