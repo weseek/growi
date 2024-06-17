@@ -7,6 +7,11 @@ import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 import { PagePathNav } from '../PagePathNav';
 import type { PagePathNavLayoutProps } from '../PagePathNav';
 
+import styles from './PagePathNavTitle.module.scss';
+
+const moduleClass = styles['grw-page-path-nav-title'] ?? '';
+
+
 const PagePathNavSticky = withLoadingProps<PagePathNavLayoutProps>(useLoadingProps => dynamic(
   () => import('~/components/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
   {
@@ -32,7 +37,7 @@ export const PagePathNavTitle = (props: PagePathNavLayoutProps): JSX.Element => 
   }, []);
 
   return isClient
-    ? <PagePathNavSticky {...props} />
-    : <PagePathNav {...props} />;
+    ? <PagePathNavSticky {...props} className={moduleClass} latterLinkClassName="fs-2" />
+    : <PagePathNav {...props} className={moduleClass} latterLinkClassName="fs-2" />;
 
 };

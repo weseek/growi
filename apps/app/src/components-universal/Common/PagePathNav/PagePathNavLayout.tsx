@@ -8,6 +8,7 @@ import styles from './PagePathNav.module.scss';
 
 
 export type PagePathNavLayoutProps = {
+  className?: string,
   pagePath: string,
   pageId?: string | null,
   isWipPage?: boolean,
@@ -25,9 +26,12 @@ const CopyDropdown = dynamic(() => import('../../../components/Common/CopyDropdo
 
 export const PagePathNavLayout = (props: Props): JSX.Element => {
   const {
+    className = '',
     pageId, pagePath, isWipPage,
-    formerLink, formerLinkClassName,
-    latterLink, latterLinkClassName,
+    formerLink,
+    formerLinkClassName = '',
+    latterLink,
+    latterLinkClassName = '',
     maxWidth,
   } = props;
 
@@ -36,7 +40,7 @@ export const PagePathNavLayout = (props: Props): JSX.Element => {
   const copyDropdownId = `copydropdown-${pageId}`;
 
   return (
-    <div style={{ maxWidth }}>
+    <div className={className} style={{ maxWidth }}>
       <span className={`${formerLinkClassName ?? ''} ${styles['grw-former-link']}`}>{formerLink}</span>
       <div className="d-flex align-items-center">
         <h1 className={`m-0 ${latterLinkClassName}`}>
