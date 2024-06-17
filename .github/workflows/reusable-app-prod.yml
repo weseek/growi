@@ -408,12 +408,7 @@ jobs:
     - name: Copy dotenv file for ci
       working-directory: ./apps/app
       run: |
-        cat config/ci/.env.local.for-playwright >> .env.production.local
-
-    # - name: Copy dotenv file for ci
-    #   working-directory: ./apps/app
-    #   run: |
-    #     cat config/ci/.env.local.for-ci >> .env.production.local
+        cat config/ci/.env.local.for-ci >> .env.production.local
 
     - name: Playwright Run (--project=chromium/installer)
       if: ${{ matrix.browser == 'chromium' }}
@@ -425,10 +420,10 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    # - name: Copy dotenv file for automatic installation
-    #   working-directory: ./apps/app
-    #   run: |
-    #     cat config/ci/.env.local.for-auto-install >> .env.production.local
+    - name: Copy dotenv file for automatic installation
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-auto-install >> .env.production.local
 
     - name: Playwright Run
       working-directory: ./apps/app
@@ -439,10 +434,10 @@ jobs:
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
         ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
 
-    # - name: Copy dotenv file for automatic installation with allowing guest mode
-    #   working-directory: ./apps/app
-    #   run: |
-    #     cat config/ci/.env.local.for-guest >> .env.production.local
+    - name: Copy dotenv file for automatic installation with allowing guest mode
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-guest >> .env.production.local
 
     - name: Playwright Run (--project=${browser}/guest-mode)
       working-directory: ./apps/app
