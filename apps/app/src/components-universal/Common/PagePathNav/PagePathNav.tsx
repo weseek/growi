@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
@@ -20,32 +22,42 @@ const Separator = ({ className }: {className?: string}): JSX.Element => {
 
 export const PagePathNav = (props: PagePathNavLayoutProps): JSX.Element => {
   const { pagePath } = props;
-  const dPagePath = new DevidedPagePath(pagePath, false, true);
 
   const isInTrash = isTrashPage(pagePath);
 
-  let formerLink;
-  let latterLink;
+  const formerLink = useMemo(() => {
+    const dPagePath = new DevidedPagePath(pagePath, false, true);
 
-  // one line
-  if (dPagePath.isRoot || dPagePath.isFormerRoot) {
-    const linkedPagePath = new LinkedPagePath(pagePath);
-    latterLink = <PagePathHierarchicalLink linkedPagePath={linkedPagePath} isInTrash={isInTrash} />;
-  }
-  // two line
-  else {
+    // one line
+    if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+      return undefined;
+    }
+
+    // two line
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
-    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
-    formerLink = (
+    return (
       <>
         <PagePathHierarchicalLink linkedPagePath={linkedPagePathFormer} isInTrash={isInTrash} />
         <Separator />
       </>
     );
-    latterLink = (
+  }, [isInTrash, pagePath]);
+
+  const latterLink = useMemo(() => {
+    const dPagePath = new DevidedPagePath(pagePath, false, true);
+
+    // one line
+    if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+      const linkedPagePath = new LinkedPagePath(pagePath);
+      return <PagePathHierarchicalLink linkedPagePath={linkedPagePath} isInTrash={isInTrash} />;
+    }
+
+    // two line
+    const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
+    return (
       <PagePathHierarchicalLink linkedPagePath={linkedPagePathLatter} basePath={dPagePath.former} isInTrash={isInTrash} />
     );
-  }
+  }, [isInTrash, pagePath]);
 
   return (
     <PagePathNavLayout

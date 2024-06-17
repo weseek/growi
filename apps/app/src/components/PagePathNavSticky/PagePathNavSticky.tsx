@@ -16,7 +16,7 @@ import {
 
 import { PagePathHierarchicalLink } from '../../components-universal/Common/PagePathHierarchicalLink';
 import type { PagePathNavLayoutProps } from '../../components-universal/Common/PagePathNav';
-import { PagePathNavLayout, Separator } from '../../components-universal/Common/PagePathNav';
+import { PagePathNav, PagePathNavLayout, Separator } from '../../components-universal/Common/PagePathNav';
 
 import { CollapsedParentsDropdown } from './CollapsedParentsDropdown';
 
@@ -57,7 +57,6 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
     };
   }, [pageControlsX, pagePathNavRef, sidebarMode]);
 
-  // one line with collapsed parents
   const latterLink = useMemo(() => {
     const dPagePath = new DevidedPagePath(pagePath, false, true);
 
@@ -66,6 +65,13 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
     const linkedPagePathFormer = new LinkedPagePath(dPagePath.former);
     const linkedPagePathLatter = new LinkedPagePath(dPagePath.latter);
 
+    // not collapsed
+    if (dPagePath.isRoot || dPagePath.isFormerRoot) {
+      const linkedPagePath = new LinkedPagePath(pagePath);
+      return <PagePathHierarchicalLink linkedPagePath={linkedPagePath} isInTrash={isInTrash} />;
+    }
+
+    // collapsed
     return (
       <>
         <CollapsedParentsDropdown linkedPagePath={linkedPagePathFormer} />
@@ -88,12 +94,15 @@ export const PagePathNavSticky = (props: PagePathNavLayoutProps): JSX.Element =>
           //      which width is minimized by 'd-inline-block'
           //
             <div className="d-inline-block pe-auto">
-              <PagePathNavLayout
-                {...props}
-                latterLink={latterLink}
-                latterLinkClassName={isCollapseParents ? 'fs-3  text-truncate' : props.latterLinkClassName}
-                maxWidth={isCollapseParents ? navMaxWidth : undefined}
-              />
+              { !isCollapseParents && <PagePathNav {...props} /> }
+              { isCollapseParents && (
+                <PagePathNavLayout
+                  {...props}
+                  latterLink={latterLink}
+                  latterLinkClassName="fs-3 text-truncate"
+                  maxWidth={isCollapseParents ? navMaxWidth : undefined}
+                />
+              ) }
             </div>
           );
         }}
