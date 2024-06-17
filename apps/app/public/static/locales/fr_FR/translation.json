@@ -665,10 +665,9 @@
     "Email format is invalid": "Format d'adresse courriel invalide.",
     "Email field is required": "Adresse courriel requise.",
     "Password has invalid character": "Le mot de passe contient des caractères invalides",
-    "Password minimum character should be more than 8 characters": "Le mot de passe doit contenir plus de 8 caractères.",
+    "Password minimum character should be more than n characters": "Le mot de passe doit contenir plus de {{number}} caractères.",
     "Password field is required": "Mot de passe requis.",
     "Username or E-mail has invalid characters": "Le nom d'utilisateur ou l'adresse courriel contient des caractères invalides",
-    "Password minimum character should be more than 6 characters": "Le mot de passe doit contenir au moins 6 caractères.",
     "user_not_found": "Utilisateur introuvable.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException</strong></p><p class='mb-0'> L'authentification est réussie pour {{ failedProviderForDuplicatedUsernameException }} , mais la création d'un utilisateur a échouée. Voir <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },

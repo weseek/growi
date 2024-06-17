@@ -671,10 +671,9 @@
     "Email format is invalid": "Email format is invalid.",
     "Email field is required": "Email field is required.",
     "Password has invalid character": "Password has invalid character.",
-    "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters.",
+    "Password minimum character should be more than n characters": "Password minimum character should be more than {{number}} characters.",
     "Password field is required": "Password field is required.",
     "Username or E-mail has invalid characters": "Username or E-mail has invalid characters.",
-    "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters.",
     "user_not_found": "User not found.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },

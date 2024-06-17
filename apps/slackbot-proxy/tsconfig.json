@@ -3,6 +3,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "CommonJS",
+    "moduleResolution": "Node",
 
     "baseUrl": ".",
     "paths": {
