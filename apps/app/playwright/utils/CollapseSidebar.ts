@@ -6,12 +6,17 @@ export const collapseSidebar = async(page: Page, isCollapsed: boolean): Promise<
     return;
   }
 
-  await page.getByTestId('btn-toggle-collapse').click();
+  const collapseSidebarToggle = page.getByTestId('btn-toggle-collapse');
+  await expect(collapseSidebarToggle).toBeVisible();
+
+  collapseSidebarToggle.click();
+
+  const grwSidebarDoc = page.getByTestId('grw-sidebar-doc');
 
   if (isCollapsed) {
-    await expect(page.getByTestId('grw-sidebar-doc')).not.toBeVisible();
+    await expect(grwSidebarDoc).not.toBeVisible();
   }
   else {
-    await expect(page.getByTestId('grw-sidebar-doc')).toBeVisible();
+    await expect(grwSidebarDoc).toBeVisible();
   }
 };
