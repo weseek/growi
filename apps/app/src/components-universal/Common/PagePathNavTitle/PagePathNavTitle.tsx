@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { PagePathNav } from '../PagePathNav';
-import type { PagePathNavLayoutProps } from '../PagePathNav/PagePathNavLayout';
+import type { PagePathNavLayoutProps } from '../PagePathNav';
 
 const PagePathNavSticky = withLoadingProps<PagePathNavLayoutProps>(useLoadingProps => dynamic(
   () => import('~/components/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
