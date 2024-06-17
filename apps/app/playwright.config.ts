@@ -5,6 +5,7 @@ import { defineConfig, devices, type Project } from '@playwright/test';
 
 const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
 
+// Use prepared auth state.
 const storageState = fs.existsSync(authFile) ? authFile : undefined;
 
 const supportedBrowsers = ['chromium', 'firefox', 'webkit'];
