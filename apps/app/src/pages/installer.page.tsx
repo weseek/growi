@@ -10,6 +10,7 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 
 import InstallerForm from '../components/InstallerForm';
 import {
@@ -31,7 +32,7 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 }
 
 type Props = CommonProps & {
-
+  minPasswordLength: number,
   pageWithMetaStr: string,
 };
 
@@ -43,7 +44,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
     return {
       user_infomation: {
         Icon: () => <span className="material-symbols-outlined me-2">person</span>,
-        Content: InstallerForm,
+        Content: () => <InstallerForm minPasswordLength={props.minPasswordLength} />,
         i18n: t('installer.tab'),
       },
       external_accounts: {
@@ -53,7 +54,7 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
         i18n: tCommons('g2g_data_transfer.tab'),
       },
     };
-  }, [t, tCommons]);
+  }, [props.minPasswordLength, t, tCommons]);
 
   // commons
   useAppTitle(props.appTitle);
@@ -76,6 +77,14 @@ const InstallerPage: NextPage<Props> = (props: Props) => {
   );
 };
 
+async function injectServerConfigurations(context: GetServerSidePropsContext, props: Props): Promise<void> {
+  const req: CrowiRequest = context.req as CrowiRequest;
+  const { crowi } = req;
+  const { configManager } = crowi;
+
+  props.minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+}
+
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
 
@@ -88,6 +97,7 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   const props: Props = result.props as Props;
 
   await injectNextI18NextConfigurations(context, props, ['translation']);
+  injectServerConfigurations(context, props);
 
   return {
     props,
