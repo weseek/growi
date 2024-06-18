@@ -353,7 +353,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit, chromium/installer, chromium/guest-mode, firefox/guest-mode, webkit/guest-mode]
+        project: [chromium, firefox, webkit. chromium/installer, chromium/guest-mode, firefox/guest-mode, webkit/guest-mode]
         shard: [1/2, 2/2]
 
     services:
@@ -417,6 +417,7 @@ jobs:
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: Copy dotenv file for ci
+      if: ${{ matrix.project == 'chromium' || matrix.project == 'firefox' || matrix.project == 'webkit' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
