@@ -55,7 +55,7 @@ export const DescendantsPageListModal = (): JSX.Element => {
         isLinkEnabled: () => !isSharedUser,
       },
       timeline: {
-        Icon: () => <span className="material-symbols-outlined">timeline</span>,
+        Icon: () => <span data-testid="timeline-tab-button" className="material-symbols-outlined">timeline</span>,
         Content: () => {
           if (status == null || !status.isOpened) {
             return <></>;
