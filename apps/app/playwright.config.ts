@@ -8,10 +8,18 @@ const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
 // Use prepared auth state.
 const storageState = fs.existsSync(authFile) ? authFile : undefined;
 
-const supportedBrowsers = ['chromium', 'firefox', 'webkit'];
+const supportedBrowsers = ['chromium', 'firefox', 'webkit'] as const;
+
+const projects: Array<Project> = supportedBrowsers.map(browser => ({
+  name: browser,
+  use: { ...devices[`Desktop ${browser}`], storageState },
+  testMatch: /10-installer\/.*\.spec\.ts/,
+  dependencies: ['setup'],
+}));
+
 const projectsForGuestMode: Array<Project> = supportedBrowsers.map(browser => ({
   name: `${browser}/guest-mode`,
-  use: { ...devices['Desktop Chrome'] },
+  use: { ...devices[`Desktop ${browser}`] }, // Do not use storageState
   testMatch: /21-basic-features-for-guest\/.*\.spec\.ts/,
 }));
 
@@ -74,28 +82,9 @@ export default defineConfig({
       dependencies: ['setup'],
     },
 
+    ...projects,
+
     ...projectsForGuestMode,
-
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'], storageState },
-      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
-
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'], storageState },
-      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'], storageState },
-      testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
 
     /* Test against mobile viewports. */
     // {
