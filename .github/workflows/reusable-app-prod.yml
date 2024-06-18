@@ -353,7 +353,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [chromium, firefox, webkit. chromium/installer, chromium/guest-mode, firefox/guest-mode, webkit/guest-mode]
+        browser: [chromium, firefox, webkit]
         shard: [1/2, 2/2]
 
     services:
@@ -392,20 +392,9 @@ jobs:
         yarn global add node-gyp
         yarn --frozen-lockfile
 
-    - name: Install Playwright browsers (chromium)
-      if: startsWith(matrix.project, 'chromium')
+    - name: Install Playwright browsers
       run: |
-        yarn playwright install --with-deps chromium
-
-    - name: Install Playwright browsers (firefox)
-      if: startsWith(matrix.project, 'firefox')
-      run: |
-        yarn playwright install --with-deps firefox
-
-    - name: Install Playwright browsers (webkit)
-      if: startsWith(matrix.project, 'webkit')
-      run: |
-        yarn playwright install --with-deps webkit
+        yarn playwright install --with-deps ${{ matrix.browser }}
 
     - name: Download production files artifact
       uses: actions/download-artifact@v4
@@ -417,27 +406,43 @@ jobs:
         tar -xf ${{ needs.build-prod.outputs.PROD_FILES }}
 
     - name: Copy dotenv file for ci
-      if: ${{ matrix.project == 'chromium' || matrix.project == 'firefox' || matrix.project == 'webkit' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-ci >> .env.production.local
 
+    - name: Playwright Run (--project=chromium/installer)
+      if: ${{ matrix.browser == 'chromium' }}
+      working-directory: ./apps/app
+      run: |
+        yarn playwright test --project=chromium/installer
+      env:
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright-installer
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
     - name: Copy dotenv file for automatic installation
-      if: ${{ matrix.project == 'chromium/installer' }}
       working-directory: ./apps/app
       run: |
         cat config/ci/.env.local.for-auto-install >> .env.production.local
 
-    - name: Copy dotenv file for automatic installation with allowing guest mode
-      if: endsWith(matrix.project, 'guest-mode')
-      working-directory: ./apps/app
-      run: |
-        cat config/ci/.env.local.for-auto-install-with-allowing-guest >> .env.production.local
-
     - name: Playwright Run
       working-directory: ./apps/app
       run: |
-        yarn playwright test --project=${{ matrix.project }} --shard=${{ matrix.shard }}
+        yarn playwright test --project=${{ matrix.browser }} --shard=${{ matrix.shard }}
+      env:
+        HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
+        MONGO_URI: mongodb://mongodb:27017/growi-playwright
+        ELASTICSEARCH_URI: http://localhost:${{ job.services.elasticsearch.ports['9200'] }}/growi
+
+    - name: Copy dotenv file for automatic installation with allowing guest mode
+      working-directory: ./apps/app
+      run: |
+        cat config/ci/.env.local.for-set-wiki-mode-to-public >> .env.production.local
+
+    - name: Playwright Run (--project=${browser}/guest-mode)
+      working-directory: ./apps/app
+      run: |
+        yarn playwright test --project=${{ matrix.browser }}/guest-mode --shard=${{ matrix.shard }}
       env:
         HOME: /root # ref: https://github.com/microsoft/playwright/issues/6500
         MONGO_URI: mongodb://mongodb:27017/growi-playwright
