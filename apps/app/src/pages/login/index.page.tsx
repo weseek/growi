@@ -133,10 +133,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  if (context.query.externalAccountLoginError != null) {
-    const externalAccountLoginError = context.query.externalAccountLoginError;
-    if (isExternalAccountLoginError(externalAccountLoginError)) {
-      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
+  const externalAccountLoginError = (context.req as CrowiRequest).session.externalAccountLoginError;
+  if (externalAccountLoginError != null) {
+    delete (context.req as CrowiRequest).session.externalAccountLoginError;
+    const parsedError = JSON.parse(externalAccountLoginError);
+    if (isExternalAccountLoginError(parsedError)) {
+      props.externalAccountLoginError = { ...parsedError as IExternalAccountLoginError };
     }
   }
 
