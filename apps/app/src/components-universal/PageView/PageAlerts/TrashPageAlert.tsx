@@ -5,8 +5,6 @@ import { format } from 'date-fns/format';
 import { useRouter } from 'next/router';
 import { useTranslation } from 'react-i18next';
 
-import { unlink } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
 import { usePageDeleteModal, usePutBackPageModal } from '~/stores/modal';
 import {
   useCurrentPagePath, useSWRxPageInfo, useSWRxCurrentPage, useIsTrashPage, useSWRMUTxCurrentPage,
@@ -49,16 +47,19 @@ export const TrashPageAlert = (): JSX.Element => {
     if (isEmptyPage) {
       return;
     }
-    const putBackedHandler = () => {
+    const putBackedHandler = async() => {
       if (currentPagePath == null) {
         return;
       }
       try {
+        const unlink = (await import('~/client/services/page-operation')).unlink;
         unlink(currentPagePath);
+
         router.push(`/${pageId}`);
         mutateCurrentPage();
       }
       catch (err) {
+        const toastError = (await import('~/client/util/toastr')).toastError;
         toastError(err);
       }
     };

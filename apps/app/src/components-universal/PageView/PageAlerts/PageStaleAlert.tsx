@@ -2,7 +2,7 @@ import { isIPageInfoForEntity } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
 
-import { useIsEnabledStaleNotification } from '~/stores/context';
+import { useIsEnabledStaleNotification } from '~/stores-universal/context';
 import { useSWRxCurrentPage, useSWRxPageInfo } from '~/stores/page';
 
 export const PageStaleAlert = ():JSX.Element => {

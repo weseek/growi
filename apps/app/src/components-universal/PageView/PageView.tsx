@@ -13,7 +13,7 @@ import { useShouldExpandContent } from '~/services/layout/use-should-expand-cont
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
