@@ -13,7 +13,7 @@ const supportedBrowsers = ['chromium', 'firefox', 'webkit'] as const;
 const projects: Array<Project> = supportedBrowsers.map(browser => ({
   name: browser,
   use: { ...devices[`Desktop ${browser}`], storageState },
-  testIgnore: /10-installer\/.*\.spec\.ts/,
+  testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
   dependencies: ['setup', 'auth'],
 }));
 
