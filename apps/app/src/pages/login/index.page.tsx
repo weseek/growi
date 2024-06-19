@@ -19,7 +19,7 @@ import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } f
 import {
   useCsrfToken,
   useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 import styles from './index.module.scss';
 

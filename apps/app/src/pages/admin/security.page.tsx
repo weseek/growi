@@ -12,7 +12,7 @@ import { Provider } from 'unstated';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores/context';
+import { useCurrentUser, useIsMailerSetup, useSiteUrl } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 

@@ -10,10 +10,9 @@ import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-
 import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
-} from '../stores/context';
+} from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';

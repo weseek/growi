@@ -12,13 +12,13 @@ import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
-
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
-} from '../stores/context';
+} from '~/stores-universal/context';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
+
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';

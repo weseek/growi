@@ -10,8 +10,7 @@ import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
+import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';

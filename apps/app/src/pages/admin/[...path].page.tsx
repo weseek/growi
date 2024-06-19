@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 
 import AdminLayout from '~/components-universal/Layout/AdminLayout';
 import type { CommonProps } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
