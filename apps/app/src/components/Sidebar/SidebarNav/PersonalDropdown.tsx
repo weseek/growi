@@ -108,7 +108,7 @@ export const PersonalDropdown = (): JSX.Element => {
             </span>
           </DropdownItem>
 
-          <DropdownItem onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
+          <DropdownItem data-testid="logout-button" onClick={logoutHandler} className={`my-1 ${styles['personal-dropdown-item']}`}>
             <span className="d-flex align-items-center">
               <span className="item-icon material-symbols-outlined me-2 pb-0 fs-6">logout</span>
               <span className="item-text">{t('Sign out')}</span>
