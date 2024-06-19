@@ -3,10 +3,9 @@ import { test, expect } from '@playwright/test';
 test('Create comment page', async({ page }) => {
   await page.goto('/comment');
   await page.getByTestId('editor-button').click();
-
-  expect(page.url()).not.toBe('http://localhost:3000/comment#edit');
+  await page.getByTestId('save-page-btn').click();
+  await expect(page.locator('.page-meta')).toBeVisible();
 });
-
 
 test('Successfully add comments', async({ page }) => {
   const commentText = 'add comment';
