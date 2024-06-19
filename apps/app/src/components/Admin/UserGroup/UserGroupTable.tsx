@@ -163,27 +163,26 @@ export const UserGroupTable: FC<Props> = ({
                 {isExternalGroup && <td>{(group as IExternalUserGroupHasId).provider}</td>}
                 {isAclEnabled
                   ? (
-                    <td>
-                      <div
-                        onMouseEnter={() => setHoveredIndex(index)}
-                        onMouseLeave={() => setHoveredIndex(undefined)}
+                    <td
+                      onMouseLeave={() => setHoveredIndex(undefined)}
+                      onMouseEnter={() => setHoveredIndex(index)}
+                    >
+
+
+                      <Link
+                        className="link-opacity-75-hover"
+                        href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
-                        <Link
-                          className="link-opacity-75-hover"
-                          href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
-                        >
-                        </Link>
-                        <button
-                          className="btn btn-link btn-edit-groups text-secondary py-0"
-                          type="button"
-                          key={group._id}
-                        >
-                          <span className="material-symbols-outlined pe-2 pt-2">group</span>
-                          <span className="text-decoration-underline">{group.name}</span>
-                          {(hoveredIndex === index) && (<span className="material-symbols-outlined px-2 py-0">edit</span>
-                          )}
-                        </button>
-                      </div>
+                      </Link>
+                      <button
+                        className="btn btn-link btn-edit-groups text-secondary py-0"
+                        type="button"
+                        key={group._id}
+                      >
+                        <span className="material-symbols-outlined pe-2 pt-2">group</span>
+                        <span className="text-decoration-underline">{group.name}</span>
+                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredIndex === index ? '' : 'opacity-0'}`}>edit</span>
+                      </button>
                     </td>
                   )
                   : (
