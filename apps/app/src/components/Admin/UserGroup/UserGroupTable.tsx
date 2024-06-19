@@ -155,7 +155,7 @@ export const UserGroupTable: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {userGroups.map((group, index) => {
+          {userGroups.map((group, item) => {
             const users = groupIdToUsersMap[group._id];
 
             return (
@@ -164,7 +164,7 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td
-                      onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseEnter={() => setHoveredIndex(item)}
                       onMouseLeave={() => setHoveredIndex(undefined)}
                     >
 
@@ -181,7 +181,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredIndex === index ? '' : 'opacity-0'}`}>edit</span>
+                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredIndex === item ? '' : 'opacity-0'}`}>edit</span>
                       </button>
                     </td>
                   )
