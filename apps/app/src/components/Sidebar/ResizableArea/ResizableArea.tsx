@@ -1,21 +1,11 @@
-import React, { memo, useCallback, useRef } from 'react';
+import { memo, useCallback, useRef } from 'react';
 
+import type { ResizableAreaProps } from './props';
 
 import styles from './ResizableArea.module.scss';
 
 
-type Props = {
-  className?: string,
-  width?: number,
-  minWidth?: number,
-  disabled?: boolean,
-  children?: React.ReactNode,
-  onResize?: (newWidth: number) => void,
-  onResizeDone?: (newWidth: number) => void,
-  onCollapsed?: () => void,
-}
-
-export const ResizableArea = memo((props: Props): JSX.Element => {
+export const ResizableArea = memo((props: ResizableAreaProps): JSX.Element => {
   const {
     className,
     width, minWidth = 0,
