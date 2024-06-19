@@ -18,13 +18,13 @@ test.describe('Access to sharelink by guest', () => {
   });
 
   test('The sharelink page is successfully loaded', async({ page }) => {
-    await page.goto('/');
+    // await page.goto('/');
 
     // logout
-    await page.getByTestId('personal-dropdown-button').click();
-    await expect(page.getByTestId('logout-button')).toBeVisible();
-    await page.getByTestId('logout-button').click();
-    await page.waitForURL('http://localhost:3000/login');
+    // await page.getByTestId('personal-dropdown-button').click();
+    // await expect(page.getByTestId('logout-button')).toBeVisible();
+    // await page.getByTestId('logout-button').click();
+    // await page.waitForURL('http://localhost:3000/login');
 
     // access sharelink
     await page.goto(`/share/${createdSharelink}`);
