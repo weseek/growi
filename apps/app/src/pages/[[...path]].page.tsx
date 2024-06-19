@@ -21,8 +21,8 @@ import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
 import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import { PageView } from '~/components-universal/PageView/PageView';
+import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
@@ -42,7 +42,7 @@ import {
   useIsSlackConfigured, useRendererConfig, useGrowiCloudUri,
   useIsAllReplyShown, useIsContainerFluid, useIsNotCreatable,
   useIsUploadAllFileAllowed, useIsUploadEnabled,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useEditingMarkdown } from '~/stores/editor';
 import {
   useSWRxCurrentPage, useSWRMUTxCurrentPage, useCurrentPageId,
