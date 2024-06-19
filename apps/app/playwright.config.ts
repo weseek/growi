@@ -1,9 +1,27 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices, type Project } from '@playwright/test';
 
 const authFile = path.resolve(__dirname, './playwright/.auth/admin.json');
+
+// Use prepared auth state.
+const storageState = fs.existsSync(authFile) ? authFile : undefined;
+
+const supportedBrowsers = ['chromium', 'firefox', 'webkit'] as const;
+
+const projects: Array<Project> = supportedBrowsers.map(browser => ({
+  name: browser,
+  use: { ...devices[`Desktop ${browser}`], storageState },
+  testIgnore: /(10-installer|21-basic-features-for-guest)\/.*\.spec\.ts/,
+  dependencies: ['setup', 'auth'],
+}));
+
+const projectsForGuestMode: Array<Project> = supportedBrowsers.map(browser => ({
+  name: `${browser}/guest-mode`,
+  use: { ...devices[`Desktop ${browser}`] }, // Do not use storageState
+  testMatch: /21-basic-features-for-guest\/.*\.spec\.ts/,
+}));
 
 /**
  * Read environment variables from file.
@@ -49,9 +67,6 @@ export default defineConfig({
     trace: 'on-first-retry',
 
     viewport: { width: 1400, height: 1024 },
-
-    // Use prepared auth state.
-    storageState: fs.existsSync(authFile) ? authFile : undefined,
   },
 
   /* Configure projects for major browsers */
@@ -62,31 +77,14 @@ export default defineConfig({
 
     {
       name: 'chromium/installer',
-      use: { ...devices['Desktop Chrome'] },
+      use: { ...devices['Desktop Chrome'], storageState },
       testMatch: /10-installer\/.*\.spec\.ts/,
       dependencies: ['setup'],
     },
 
-    {
-      name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
+    ...projects,
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
-
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-      testIgnore: /10-installer\/.*\.spec\.ts/,
-      dependencies: ['setup', 'auth'],
-    },
+    ...projectsForGuestMode,
 
     /* Test against mobile viewports. */
     // {
