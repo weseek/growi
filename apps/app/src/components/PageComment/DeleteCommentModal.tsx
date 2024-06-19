@@ -75,7 +75,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
       <>
         <span className="text-danger">{errorMessage}</span>&nbsp;
         <Button onClick={cancelToDelete}>{t('Cancel')}</Button>
-        <Button color="danger" onClick={confirmToDelete}>
+        <Button data-testid="delete-comment-button" color="danger" onClick={confirmToDelete}>
           <span className="material-symbols-outlined">delete_forever</span>
           {t('Delete')}
         </Button>
@@ -84,7 +84,7 @@ export const DeleteCommentModal = (props: DeleteCommentModalProps): JSX.Element 
   };
 
   return (
-    <Modal isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
+    <Modal data-testid="page-comment-delete-modal" isOpen={isShown} toggle={cancelToDelete} className={`${styles['page-comment-delete-modal']}`}>
       <ModalHeader tag="h4" toggle={cancelToDelete} className="text-danger">
         {headerContent()}
       </ModalHeader>

@@ -1,3 +1,5 @@
+import { useCallback } from 'react';
+
 import { useSWRStatic } from '@growi/core/dist/swr';
 import type { SWRResponse } from 'swr';
 
@@ -26,14 +28,19 @@ type PageStatusAlertUtils = {
 export const usePageStatusAlert = (): SWRResponse<PageStatusAlertStatus, Error> & PageStatusAlertUtils => {
   const initialData: PageStatusAlertStatus = { isOpen: false };
   const swrResponse = useSWRStatic<PageStatusAlertStatus, Error>('pageStatusAlert', undefined, { fallbackData: initialData });
+  const { mutate } = swrResponse;
+
+  const open = useCallback(({ ...options }) => {
+    mutate({ isOpen: true, ...options });
+  }, [mutate]);
+
+  const close = useCallback(() => {
+    mutate({ isOpen: false });
+  }, [mutate]);
 
   return {
     ...swrResponse,
-    open({ ...options }) {
-      swrResponse.mutate({ isOpen: true, ...options });
-    },
-    close() {
-      swrResponse.mutate({ isOpen: false });
-    },
+    open,
+    close,
   };
 };
