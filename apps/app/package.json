@@ -205,7 +205,7 @@
     "url-join": "^4.0.0",
     "usehooks-ts": "^2.6.0",
     "validator": "^13.7.0",
-    "ws": "^8.3.0",
+    "ws": "^8.17.1",
     "xss": "^1.0.14",
     "y-mongodb-provider": "^0.1.10",
     "y-socket.io": "^1.1.3",
