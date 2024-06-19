@@ -164,8 +164,8 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td
-                      onMouseLeave={() => setHoveredIndex(undefined)}
                       onMouseEnter={() => setHoveredIndex(index)}
+                      onMouseLeave={() => setHoveredIndex(undefined)}
                     >
 
 
