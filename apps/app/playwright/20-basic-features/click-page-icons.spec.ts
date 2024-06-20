@@ -6,7 +6,6 @@ test.describe('Click page icons', () => {
   });
 
   test('Successfully Subscribe/Unsubscribe a page', async({ page }) => {
-    await page.goto('/Sandbox');
     const subscribeButton = page.locator('.btn-subscribe');
 
     // Subscribe
@@ -19,7 +18,6 @@ test.describe('Click page icons', () => {
   });
 
   test('Successfully Like/Unlike a page', async({ page }) => {
-    await page.goto('/Sandbox');
     const likeButton = page.locator('.btn-like').first();
 
     // Like
@@ -32,7 +30,6 @@ test.describe('Click page icons', () => {
   });
 
   test('Successfully Bookmark / Unbookmark a page', async({ page }) => {
-    await page.goto('/Sandbox');
     const bookmarkButton = page.locator('.btn-bookmark').first();
 
     // Bookmark
@@ -45,8 +42,6 @@ test.describe('Click page icons', () => {
   });
 
   test('Successfully display list of "seen by user"', async({ page }) => {
-    await page.goto('/Sandbox');
-
     await page.locator('.btn-seen-user').click();
 
     const imgCount = await page.locator('.user-list-content').locator('img').count();
