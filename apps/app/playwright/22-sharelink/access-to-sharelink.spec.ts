@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Access to sharelink by guest', () => {
+test.describe.serial('Access to sharelink by guest', () => {
   let createdSharelink: string | null;
 
   test('Prepare sharelink', async({ page }) => {
