@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+import { login } from '../utils/Login';
+
 test.describe.serial('Access to sharelink by guest', () => {
   let createdSharelink: string | null;
 
@@ -18,16 +20,18 @@ test.describe.serial('Access to sharelink by guest', () => {
   });
 
   test('The sharelink page is successfully loaded', async({ page }) => {
-    // await page.goto('/');
+    await page.goto('/');
 
-    // logout
-    // await page.getByTestId('personal-dropdown-button').click();
-    // await expect(page.getByTestId('logout-button')).toBeVisible();
-    // await page.getByTestId('logout-button').click();
-    // await page.waitForURL('http://localhost:3000/login');
+    // Logout
+    await page.getByTestId('personal-dropdown-button').click();
+    await expect(page.getByTestId('logout-button')).toBeVisible();
+    await page.getByTestId('logout-button').click();
+    await page.waitForURL('http://localhost:3000/login');
 
-    // access sharelink
+    // Access sharelink
     await page.goto(`/share/${createdSharelink}`);
     await expect(page.locator('.page-meta')).toBeVisible();
+
+    await login(page);
   });
 });
