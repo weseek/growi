@@ -1,7 +1,7 @@
-import type { IPage, IUserHasId } from '@growi/core';
+import type { IPage } from '@growi/core';
 
-import { Announcement } from '~/features/announcement';
-import type { IAnnouncement } from '~/interfaces/announcement';
+import { Announcement, AnnouncementStatuses } from '~/features/announcement';
+import type { IAnnouncement, ParamsForAnnouncement } from '~/interfaces/announcement';
 
 import type Crowi from '../crowi';
 import type { ActivityDocument } from '../models/activity';
@@ -20,16 +20,34 @@ export default class AnnouncementService {
     this.activityEvent = crowi.event('activity');
 
     this.getReadRate = this.getReadRate.bind(this);
-    this.insertByActivity = this.insertByActivity.bind(this);
-    this.createAnnouncement = this.createAnnouncement.bind(this);
+    this.insertAnnouncement = this.insertAnnouncement.bind(this);
+    this.doAnnounce = this.doAnnounce.bind(this);
 
   }
 
   getReadRate = async() => {};
 
-  insertByActivity = async(
-      announcement: IAnnouncement,
+  insertAnnouncement = async(
+      params: ParamsForAnnouncement,
   ): Promise<void> => {
+
+    const {
+      sender, comment, emoji, isReadReceiptTrackingEnabled, pageId, receivers,
+    } = params;
+
+    const announcement: IAnnouncement = {
+      sender,
+      comment,
+      emoji,
+      isReadReceiptTrackingEnabled,
+      pageId,
+      receivers: receivers.map((receiver) => {
+        return {
+          receiver,
+          readStatus: AnnouncementStatuses.STATUS_UNREAD,
+        };
+      }),
+    };
 
     const operation = [{
       insertOne: {
@@ -43,20 +61,19 @@ export default class AnnouncementService {
 
   };
 
-  createAnnouncement = async(activity: ActivityDocument, target: IPage, receivers: IUserHasId[], announcement: IAnnouncement): Promise<void> => {
+  doAnnounce = async(activity: ActivityDocument, target: IPage, params: ParamsForAnnouncement): Promise<void> => {
 
-    this.insertByActivity(announcement);
+    this.insertAnnouncement(params);
 
     const preNotify = async(props: PreNotifyProps) => {
 
       const { notificationTargetUsers } = props;
 
-      notificationTargetUsers?.push(...receivers);
+      notificationTargetUsers?.push(...params.receivers);
     };
 
     this.activityEvent.emit('updated', activity, target, preNotify);
 
-    return;
   };
 
 }

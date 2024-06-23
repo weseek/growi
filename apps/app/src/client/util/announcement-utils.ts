@@ -1,17 +1,16 @@
-import type { IUserHasId } from '@growi/core';
+import type {
+  IPage, IUser, IUserHasId, Ref,
+} from '@growi/core';
 
-import { type IAnnouncement } from '~/interfaces/announcement';
+import { type IAnnouncement, type ParamsForAnnouncement } from '~/interfaces/announcement';
 
 import { apiv3Post } from './apiv3-client';
 import { toastError } from './toastr';
 
-
-export const createAnnouncement = async(announcement: IAnnouncement, sender: IUserHasId, pageId: string, receivers: IUserHasId[]): Promise<void> => {
+export const createAnnouncement = async(params: ParamsForAnnouncement): Promise<void> => {
 
   try {
-    await apiv3Post('/announcement', {
-      announcement, sender, pageId, receivers,
-    });
+    await apiv3Post('/announcement', params);
   }
   catch (err) {
     toastError(err);

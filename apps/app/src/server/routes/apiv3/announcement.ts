@@ -2,6 +2,7 @@ import type { Router, Request } from 'express';
 
 // import express from 'express';
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
+import type { ParamsForAnnouncement } from '~/interfaces/announcement';
 import type Crowi from '~/server/crowi';
 
 const express = require('express');
@@ -16,14 +17,12 @@ module.exports = (crowi: Crowi): Router => {
 
   router.post('/', loginRequiredStrictly, async(req: Request) => {
 
-    const {
-      announcement, sender, pageId, receivers,
-    } = req.body;
+    const params: ParamsForAnnouncement = req.body;
 
-    const page = await Page.findById(pageId);
+    const page = await Page.findById(params.pageId);
 
     const parametersForActivity = {
-      user: sender,
+      user: params.sender,
       target: page,
       targetModel: SupportedTargetModel.MODEL_PAGE,
       action: SupportedAction.ACTION_USER_ANNOUNCE,
@@ -31,7 +30,7 @@ module.exports = (crowi: Crowi): Router => {
 
     const activity = crowi.activityService.createActivity(parametersForActivity);
 
-    crowi.announcementService.createAnnouncement(activity, page, receivers, announcement);
+    crowi.announcementService.doAnnounce(activity, page, params);
 
   });
 

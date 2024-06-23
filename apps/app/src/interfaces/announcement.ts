@@ -10,13 +10,16 @@ export interface IAnnouncement {
   emoji?: string
   isReadReceiptTrackingEnabled: boolean
   pageId: Ref<IPage>
-  receivers: [
+  receivers:
     {
       receiver: Ref<IUser>,
       updatedAt?: Date,
       readStatus: AnnouncementStatusesType,
-    }
-  ]
+    }[]
 }
 
 export type IAnnouncementHasId = IAnnouncement & HasObjectId;
+
+export interface ParamsForAnnouncement extends Omit<IAnnouncement, 'receivers'> {
+  receivers: [Ref<IUser>]
+}
