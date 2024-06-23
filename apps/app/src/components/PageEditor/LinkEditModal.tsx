@@ -2,8 +2,8 @@ import React, { useEffect, useState, useCallback } from 'react';
 
 import path from 'path';
 
-import Linker from '@growi/editor/src/services/link-util/Linker';
-import { useLinkEditModal } from '@growi/editor/src/stores/use-link-edit-modal';
+import { Linker } from '@growi/editor';
+import { useLinkEditModal } from '@growi/editor/dist/client';
 import { useTranslation } from 'next-i18next';
 import {
   Modal,

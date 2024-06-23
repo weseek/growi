@@ -13,79 +13,104 @@
 
   font-size: 16px;
 
+  // @extend .text-break;
+  // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
+  word-break: break-word !important; // Deprecated, but avoids issues with flex containers
+  word-wrap: break-word !important; // Used instead of `overflow-wrap` for IE & Edge Legacy
+
   a {
     @extend .link-offset-2;
 
     text-decoration-line: underline;
   }
 
-  // @extend .text-break;
-  // https://github.com/twbs/bootstrap/blob/v4.6.1/scss/utilities/_text.scss#L65-L68
-  word-break: break-word !important; // Deprecated, but avoids issues with flex containers
-  word-wrap: break-word !important; // Used instead of `overflow-wrap` for IE & Edge Legacy
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6 {
+    margin-top: 1.6em;
+    margin-bottom: 0.8em;
+
+    scroll-margin-top: var.$grw-scroll-margin-top-in-view;
+  }
+
+  h1, .h1 {
+    padding: 0.3em 0;
+    margin-top: 2em;
+    font-size: 1.9em;
+    line-height: 1.1em;
+  }
+
+  h1 {
+    border-bottom: 2px solid var(--bs-border-color);
+  }
+
+  h2, .h2 {
+    padding-bottom: 0.3em;
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.225;
+  }
+  h2 {
+    border-bottom: 1px solid var(--bs-border-color);
+  }
+
+  h3, .h3 {
+    font-size: 1.4em;
+    font-weight: bold;
+  }
+
+  h4, .h4 {
+    font-size: 1.35em;
+    font-weight: normal;
+  }
+  h4 {
+    // style
+    @include add-left-border(6px);
+  }
+
+  h5, .h5 {
+    font-size: 1.25em;
+    font-weight: normal;
+  }
+  h5 {
+    // style
+    @include add-left-border(4px);
+  }
+
+  h6, .h6 {
+    font-size: 1.2em;
+    font-weight: normal;
+  }
+  h6 {
+    // style
+    @include add-left-border(2px);
+  }
 
   h1,
   h2,
   h3,
   h4,
   h5,
-  h6 {
-    margin-top: 1.6em;
-    margin-bottom: 0.8em;
-
+  h6,
+  .h1,
+  .h2,
+  .h3,
+  .h4,
+  .h5,
+  .h6 {
     &:first-child {
       margin-top: 0;
     }
-
-    scroll-margin-top: var.$grw-scroll-margin-top-in-view;
   }
-
-  /* stylelint-disable no-descending-specificity */
-  h1 {
-    padding: 0.3em 0;
-    margin-top: 2em;
-    font-size: 1.9em;
-    line-height: 1.1em;
-    border-bottom: 2px solid var(--bs-border-color);
-  }
-
-  h2 {
-    padding-bottom: 0.3em;
-    font-size: 1.6em;
-    font-weight: bold;
-    line-height: 1.225;
-    border-bottom: 1px solid var(--bs-border-color);
-  }
-
-  h3 {
-    font-size: 1.4em;
-    font-weight: bold;
-  }
-
-  h4 {
-    font-size: 1.35em;
-    font-weight: normal;
-
-    // style
-    @include add-left-border(6px);
-  }
-
-  h5 {
-    font-size: 1.25em;
-    font-weight: normal;
-
-    // style
-    @include add-left-border(4px);
-  }
-
-  h6 {
-    font-size: 1.2em;
-    font-weight: normal;
-
-    // style
-    @include add-left-border(2px);
-  }
-  /* stylelint-enable no-descending-specificity */
 
   p {
     margin: 15px 0;
@@ -105,7 +130,7 @@
     border-left: 0.3rem solid #ddd;
   }
 
-  img {
+  img,video {
     max-width: 100%;
     margin: 5px 0;
   }
@@ -207,10 +232,6 @@
     h6 {
       margin-top: 1.6em * $ratio;
       margin-bottom: 0.8em * $ratio;
-
-      &:first-child {
-        margin-top: 15px;
-      }
     }
 
     /* stylelint-disable no-descending-specificity */
@@ -231,6 +252,17 @@
       font-size: 1.2em * $ratio;
     }
     /* stylelint-enable no-descending-specificity */
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      &:first-child {
+        margin-top: 15px;
+      }
+    }
 
     blockquote {
       font-size: 0.9em * $ratio;

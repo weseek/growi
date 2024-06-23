@@ -1,4 +1,4 @@
-import { XssOptionConfig } from '~/services/xss/xssOption';
+import type { RehypeSanitizeConfiguration } from './rehype-sanitize';
 
 export type RendererConfig = {
   isSharedPage?: boolean
@@ -11,4 +11,4 @@ export type RendererConfig = {
 
   drawioUri: string,
   plantumlUri: string,
-} & XssOptionConfig;
+} & RehypeSanitizeConfiguration;

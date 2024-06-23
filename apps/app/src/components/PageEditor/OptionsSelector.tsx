@@ -175,16 +175,19 @@ IndentSizeSelector.displayName = 'IndentSizeSelector';
 
 
 type SwitchItemProps = {
-  onClick: () => void,
+  inputId: string,
+  onChange: () => void,
   checked: boolean,
   text: string,
 };
 const SwitchItem = memo((props: SwitchItemProps): JSX.Element => {
-  const { onClick, checked, text } = props;
+  const {
+    inputId, onChange, checked, text,
+  } = props;
   return (
     <FormGroup switch>
-      <Input type="switch" checked={checked} onClick={onClick} />
-      <label>{text}</label>
+      <Input id={inputId} type="switch" checked={checked} onChange={onChange} />
+      <label htmlFor={inputId}>{text}</label>
     </FormGroup>
 
   );
@@ -203,7 +206,12 @@ const ConfigurationSelector = memo((): JSX.Element => {
     const isActive = editorSettings.styleActiveLine;
 
     return (
-      <SwitchItem onClick={() => update({ styleActiveLine: !isActive })} checked={isActive} text={t('page_edit.Show active line')} />
+      <SwitchItem
+        inputId="switchActiveLine"
+        onChange={() => update({ styleActiveLine: !isActive })}
+        checked={isActive}
+        text={t('page_edit.Show active line')}
+      />
     );
   }, [editorSettings, update, t]);
 
@@ -215,7 +223,12 @@ const ConfigurationSelector = memo((): JSX.Element => {
     const isActive = editorSettings.autoFormatMarkdownTable;
 
     return (
-      <SwitchItem onClick={() => update({ autoFormatMarkdownTable: !isActive })} checked={isActive} text={t('page_edit.auto_format_table')} />
+      <SwitchItem
+        inputId="switchTableAutoFormatting"
+        onChange={() => update({ autoFormatMarkdownTable: !isActive })}
+        checked={isActive}
+        text={t('page_edit.auto_format_table')}
+      />
     );
   }, [editorSettings, t, update]);
 

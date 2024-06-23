@@ -52,7 +52,7 @@ jobs:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 18.x
-      skip-cypress: true
+      skip-e2e-test: true
     secrets:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
@@ -61,7 +61,7 @@ jobs:
     uses: weseek/growi/.github/workflows/reusable-app-prod.yml@master
     with:
       node-version: 20.x
-      skip-cypress: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
+      skip-e2e-test: ${{ contains( github.event.pull_request.labels.*.name, 'dependencies' ) }}
       cypress-report-artifact-name-prefix: cypress-report-
       cypress-config-video: ${{ inputs.cypress-config-video || false }}
     secrets:

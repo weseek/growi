@@ -179,7 +179,7 @@ export const PageComment: FC<PageCommentProps> = memo((props: PageCommentProps):
                       <NotAvailableForReadOnlyUser>
                         <button
                           type="button"
-                          id="comment-reply-button"
+                          data-testid="comment-reply-button"
                           className="btn btn-secondary btn-comment-reply text-start w-100 ms-5"
                           onClick={() => onReplyButtonClickHandler(comment._id)}
                         >

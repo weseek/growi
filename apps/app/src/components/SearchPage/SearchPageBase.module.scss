@@ -9,6 +9,8 @@
 
 .search-result-content :global  {
   .highlighted-keyword {
-    background:linear-gradient(transparent 40%, #FCF0C0 40%);
+    background:linear-gradient(
+      transparent 40%,
+      var(--grw-marker-bg, var(--grw-marker-bg-yellow)) 40%);
   }
 }

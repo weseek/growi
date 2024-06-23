@@ -1,9 +1,9 @@
-import { PageGrant, GroupType } from '@growi/core';
+import type { PageGrant, GroupType } from '@growi/core';
 
-import { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
-import { UserGroupDocument } from '~/server/models/user-group';
+import type { ExternalUserGroupDocument } from '~/features/external-user-group/server/models/external-user-group';
+import type { UserGroupDocument } from '~/server/models/user-group';
 
-import { IPageGrantData } from './page';
+import type { IPageGrantData } from './page';
 
 
 type UserGroupType = typeof GroupType.userGroup;
@@ -18,12 +18,12 @@ export type IRecordApplicableGrant = Partial<Record<PageGrant, IDataApplicableGr
 export type IResApplicableGrant = {
   data?: IRecordApplicableGrant
 }
-export type IResIsGrantNormalizedGrantData = {
+export type IResGrantData = {
   isForbidden: boolean,
   currentPageGrant: IPageGrantData,
   parentPageGrant?: IPageGrantData
 }
-export type IResIsGrantNormalized = {
+export type IResCurrentGrantData = {
   isGrantNormalized: boolean,
-  grantData: IResIsGrantNormalizedGrantData
+  grantData: IResGrantData
 };

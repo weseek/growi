@@ -415,6 +415,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} 已重复",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "Select groups that can access page",
+    "inherit_all_granted_groups_from_parent": "Inherit all groups that can access page from parent",
+    "only_inherit_related_groups": "Only inherit groups that you belong to from parent",
+    "create_page": "Create Page"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",
@@ -564,6 +570,8 @@
     "delete_completely": "完全删除",
     "include_certain_path": "包含 {{pathToInclude}} 路径 ",
     "delete_all_selected_page": "删除所有",
+    "select_all": "选择所有",
+    "delete_selected_pages": "删除选定页面",
     "currently_not_implemented": "这是当前未实现的功能",
     "search_again": "再次搜索",
     "number_of_list_to_display": "显示器的数量",
@@ -666,10 +674,9 @@
     "Email format is invalid": "电子邮件的格式是无效的",
     "Email field is required": "电子邮件字段是必需的",
     "Password has invalid character": "密码有无效字符",
-    "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
+    "Password minimum character should be more than n characters": "密码最小字符应超过{{number}}个字符",
     "Password field is required": "密码字段是必需的",
     "Username or E-mail has invalid characters": "用户名或电子邮件有无效的字符",
-    "Password minimum character should be more than 6 characters": "密码最小字符应超过6个字符",
     "user_not_found": "未找到用户",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>发生了重复用户名异常</strong></p><p class='mb-0'> 你的 {{ failedProviderForDuplicatedUsernameException }} 认证成功了，但不能创建新的用户。参见问题<a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },

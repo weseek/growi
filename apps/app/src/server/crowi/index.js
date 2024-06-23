@@ -14,7 +14,6 @@ import { KeycloakUserGroupSyncService } from '~/features/external-user-group/ser
 import { LdapUserGroupSyncService } from '~/features/external-user-group/server/service/ldap-user-group-sync';
 import QuestionnaireService from '~/features/questionnaire/server/service/questionnaire';
 import QuestionnaireCronService from '~/features/questionnaire/server/service/questionnaire-cron';
-import Xss from '~/services/xss';
 import loggerFactory from '~/utils/logger';
 import { projectRoot } from '~/utils/project-dir-utils';
 
@@ -81,7 +80,6 @@ class Crowi {
     this.mailService = null;
     this.passportService = null;
     this.globalNotificationService = null;
-    this.xssService = null;
     this.aclService = null;
     this.appService = null;
     this.fileUploadService = null;
@@ -97,7 +95,6 @@ class Crowi {
     this.inAppNotificationService = null;
     this.activityService = null;
     this.commentService = null;
-    this.xss = new Xss();
     this.questionnaireService = null;
     this.questionnaireCronService = null;
     this.announcementService = null;
@@ -134,12 +131,11 @@ Crowi.prototype.init = async function() {
   await this.setupS2sMessagingService();
   await this.setupSocketIoService();
 
-  // customizeService depends on AppService and XssService
+  // customizeService depends on AppService
   // passportService depends on appService
   // export and import depends on setUpGrowiBridge
   await Promise.all([
     this.setUpApp(),
-    this.setUpXss(),
     this.setUpGrowiBridge(),
   ]);
 
@@ -596,16 +592,6 @@ Crowi.prototype.setUpGlobalNotification = async function() {
 Crowi.prototype.setUpUserNotification = async function() {
   if (this.userNotificationService == null) {
     this.userNotificationService = new UserNotificationService(this);
-  }
-};
-
-/**
- * setup XssService
- */
-Crowi.prototype.setUpXss = async function() {
-  const XssService = require('../service/xss');
-  if (this.xssService == null) {
-    this.xssService = new XssService(this.configManager);
   }
 };
 

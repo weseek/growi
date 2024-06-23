@@ -9,18 +9,28 @@ import { useRouter } from 'next/router';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useTWithOpt } from '~/client/util/t-with-opt';
 import { toastError } from '~/client/util/toastr';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
 
+
 import styles from './InstallerForm.module.scss';
+
 
 const moduleClass = styles['installer-form'] ?? '';
 
+type Props = {
+  minPasswordLength: number,
+}
 
-const InstallerForm = memo((): JSX.Element => {
+const InstallerForm = memo((props: Props): JSX.Element => {
   const { t, i18n } = useTranslation();
 
+  const { minPasswordLength } = props;
+
   const router = useRouter();
+
+  const tWithOpt = useTWithOpt();
 
   const isSupportedLang = AllLang.includes(i18n.language as Lang);
 
@@ -113,7 +123,7 @@ const InstallerForm = memo((): JSX.Element => {
             <p className="alert alert-danger text-center">
               {registerErrors.map(err => (
                 <span>
-                  {t(err.message)}<br />
+                  {tWithOpt(err.message, err.args)}<br />
                 </span>
               ))}
             </p>
@@ -170,11 +180,11 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className={`input-group mb-3${hasErrorClass}`}>
-            <span className="p-2 text-white opacity-75">
-              <span className="material-symbols-outlined">person</span>
-            </span>
+            <label className="p-2 text-white opacity-75" aria-label={t('User ID')} htmlFor="tiUsername">
+              <span className="material-symbols-outlined" aria-hidden>person</span>
+            </label>
             <input
-              data-testid="tiUsername"
+              id="tiUsername"
               type="text"
               className="form-control rounded"
               placeholder={t('User ID')}
@@ -186,11 +196,11 @@ const InstallerForm = memo((): JSX.Element => {
           <p className="form-text">{ unavailableUserId }</p>
 
           <div className="input-group mb-3">
-            <span className="p-2 text-white opacity-75">
-              <span className="material-symbols-outlined">sell</span>
-            </span>
+            <label className="p-2 text-white opacity-75" aria-label={t('Name')} htmlFor="tiName">
+              <span className="material-symbols-outlined" aria-hidden>sell</span>
+            </label>
             <input
-              data-testid="tiName"
+              id="tiName"
               type="text"
               className="form-control rounded"
               placeholder={t('Name')}
@@ -200,11 +210,11 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="p-2 text-white opacity-75">
-              <span className="material-symbols-outlined">mail</span>
-            </span>
+            <label className="p-2 text-white opacity-75" aria-label={t('Email')} htmlFor="tiEmail">
+              <span className="material-symbols-outlined" aria-hidden>mail</span>
+            </label>
             <input
-              data-testid="tiEmail"
+              id="tiEmail"
               type="email"
               className="form-control rounded"
               placeholder={t('Email')}
@@ -214,11 +224,12 @@ const InstallerForm = memo((): JSX.Element => {
           </div>
 
           <div className="input-group mb-3">
-            <span className="p-2 text-white opacity-75">
-              <span className="material-symbols-outlined">lock</span>
-            </span>
+            <label className="p-2 text-white opacity-75" aria-label={t('Password')} htmlFor="tiPassword">
+              <span className="material-symbols-outlined" aria-hidden>lock</span>
+            </label>
             <input
-              data-testid="tiPassword"
+              minLength={minPasswordLength}
+              id="tiPassword"
               type="password"
               className="form-control rounded"
               placeholder={t('Password')}
@@ -229,19 +240,18 @@ const InstallerForm = memo((): JSX.Element => {
 
           <div className="input-group mt-4 justify-content-center">
             <button
-              data-testid="btnSubmit"
               type="submit"
               className="btn btn-secondary btn-register col-6 d-flex"
               disabled={isLoading}
             >
-              <span>
+              <span aria-hidden>
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
                   <span className="material-symbols-outlined">person_add</span>
                 )}
               </span>
-              <span className="flex-grow-1">{ t('Create') }</span>
+              <label className="flex-grow-1">{ t('Create') }</label>
             </button>
           </div>
 

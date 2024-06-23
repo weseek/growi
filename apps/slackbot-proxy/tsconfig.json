@@ -3,6 +3,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "module": "CommonJS",
+    "moduleResolution": "Node",
 
     "baseUrl": ".",
     "paths": {
@@ -14,7 +15,15 @@
     "strictNullChecks": true,
     "strictBindCallApply": true,
     "noImplicitAny": false,
-    "noImplicitOverride": true
+    "noImplicitOverride": true,
+
+    // Note: To transform paths for both the output .js and .d.ts files, you need both of the below entries
+    "plugins": [
+      // Transform paths in output .js files
+      { "transform": "typescript-transform-paths" },
+      // Transform paths in output .d.ts files (Include this line if you output declarations files)
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "include": [
     "src"

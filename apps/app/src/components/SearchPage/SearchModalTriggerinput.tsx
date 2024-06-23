@@ -18,14 +18,20 @@ export const SearchModalTriggerinput: React.FC<Props> = (props: Props) => {
   }, [openSearchModal, keywordOnInit]);
 
   return (
-    <div>
-      <input
-        className="form-control"
-        type="input"
-        value={keywordOnInit}
+    <div className="d-flex align-items-center">
+      <span className="text-secondary material-symbols-outlined fs-4 me-2">search</span>
+      <form
+        className="w-100 position-relative"
         onClick={inputClickHandler}
-        readOnly
-      />
+      >
+        <input
+          className="form-control"
+          type="input"
+          value={keywordOnInit}
+          onClick={inputClickHandler}
+          readOnly
+        />
+      </form>
     </div>
   );
 };

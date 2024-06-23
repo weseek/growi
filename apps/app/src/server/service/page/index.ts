@@ -44,6 +44,7 @@ import type { UserGroupDocument } from '~/server/models/user-group';
 import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -610,7 +611,7 @@ class PageService implements IPageService {
 
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
@@ -839,7 +840,7 @@ class PageService implements IPageService {
     } = options;
 
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
     if (isRecursively) {
@@ -1104,7 +1105,7 @@ class PageService implements IPageService {
       throw Error('Page not found.');
     }
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
@@ -1278,7 +1279,7 @@ class PageService implements IPageService {
     options.grantUserGroupIds = page.grantedGroups;
     options.grantedUserIds = page.grantedUsers;
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     const createdPage = await this.create(
       newPagePath, page.revision.body, user, options,
@@ -3777,7 +3778,7 @@ class PageService implements IPageService {
     }
 
     // Values
-    const path: string = this.crowi.xss.process(_path); // sanitize path
+    const path: string = generalXssFilter.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
     const Page = mongoose.model<PageDocument, PageModel>('Page');
@@ -3786,12 +3787,14 @@ class PageService implements IPageService {
     // Determine grantData
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
     const grantUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
-    const grantUserGroupIds = options.grantUserGroupIds
-      ?? (
-        closestAncestor != null
-          ? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user)
-          : undefined
-      );
+    const getGrantedGroupsFromClosestAncestor = async() => {
+      if (closestAncestor == null) return undefined;
+      if (options.onlyInheritUserRelatedGrantedGroups) {
+        return this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
+      }
+      return closestAncestor.grantedGroups;
+    };
+    const grantUserGroupIds = options.grantUserGroupIds ?? await getGrantedGroupsFromClosestAncestor();
     const grantData = {
       grant,
       grantUserIds,
@@ -3905,7 +3908,7 @@ class PageService implements IPageService {
     const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
-    path = this.crowi.xss.process(path); // eslint-disable-line no-param-reassign
+    path = generalXssFilter.process(path); // eslint-disable-line no-param-reassign
 
     let grant = options.grant;
     // force public
@@ -3986,7 +3989,7 @@ class PageService implements IPageService {
 
     // Values
     // eslint-disable-next-line no-param-reassign
-    path = this.crowi.xss.process(path); // sanitize path
+    path = generalXssFilter.process(path); // sanitize path
 
     const {
       grantUserGroupIds, grantUserIds,
@@ -4394,7 +4397,6 @@ class PageService implements IPageService {
       .lean()
       .exec();
 
-    this.injectIsTargetIntoPages(pages, path);
     await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
     /*
@@ -4412,14 +4414,6 @@ class PageService implements IPageService {
     });
 
     return pathToChildren;
-  }
-
-  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
-    pages.forEach((page) => {
-      if (page.path === path) {
-        page.isTarget = true;
-      }
-    });
   }
 
   /**
@@ -4451,8 +4445,11 @@ class PageService implements IPageService {
 
   async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
     const yjsConnectionManager = getYjsConnectionManager();
+
     const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
-    const yjsDraft = currentYdoc?.getText('codemirror').toString();
+    const persistedYdoc = await yjsConnectionManager.getPersistedYdoc(pageId);
+
+    const yjsDraft = (currentYdoc ?? persistedYdoc)?.getText('codemirror').toString();
     const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
 
     return {
