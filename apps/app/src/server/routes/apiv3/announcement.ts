@@ -28,7 +28,7 @@ module.exports = (crowi: Crowi): Router => {
       endpoint: req.originalUrl,
       user: req.user?._id,
       target: page,
-      targetModel: SupportedTargetModel.MODEL_PAGE,
+      targetModel: SupportedTargetModel.MODEL_ANNOUNCEMENT,
       action: SupportedAction.ACTION_USER_ANNOUNCE,
       snapshot: {
         username: req.user?.username,
