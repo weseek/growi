@@ -1,9 +1,6 @@
-import type { IPage, IUser, IUserHasId } from '@growi/core';
-import { subDays } from 'date-fns';
-import type { Types, FilterQuery, UpdateQuery } from 'mongoose';
+import type { IPage, IUserHasId } from '@growi/core';
 
-import type { AnnouncementDocument } from '~/features/announcement';
-import { AnnouncementStatuses, Announcement } from '~/features/announcement';
+import { Announcement } from '~/features/announcement';
 import type { IAnnouncement } from '~/interfaces/announcement';
 
 import type Crowi from '../crowi';
@@ -11,10 +8,6 @@ import type { ActivityDocument } from '../models/activity';
 
 
 import type { PreNotifyProps } from './pre-notify';
-import { preNotifyService, type PreNotify } from './pre-notify';
-
-
-const { STATUS_UNREAD, STATUS_ALREADY_READ, STATUS_IGNORED } = AnnouncementStatuses;
 
 export default class AnnouncementService {
 
