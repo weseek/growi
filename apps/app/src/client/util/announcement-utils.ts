@@ -1,8 +1,8 @@
-import type { IUser, IUserHasId } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
 
 import { type IAnnouncement } from '~/interfaces/announcement';
 
-import { apiv3Post, apiv3Put } from './apiv3-client';
+import { apiv3Post } from './apiv3-client';
 import { toastError } from './toastr';
 
 
@@ -12,11 +12,9 @@ export const createAnnouncement = async(announcement: IAnnouncement, sender: IUs
     await apiv3Post('/announcement', {
       announcement, sender, pageId, receivers,
     });
-    console.log('ok');
   }
   catch (err) {
     toastError(err);
-    console.log('failed');
   }
 
 };
