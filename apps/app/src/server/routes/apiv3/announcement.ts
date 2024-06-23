@@ -1,8 +1,10 @@
-import type { Router, Request } from 'express';
+import type { Router } from 'express';
+
 
 // import express from 'express';
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import type { ParamsForAnnouncement } from '~/interfaces/announcement';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type Crowi from '~/server/crowi';
 
 const express = require('express');
@@ -15,20 +17,25 @@ module.exports = (crowi: Crowi): Router => {
 
   const loginRequiredStrictly = require('~/server/middlewares/login-required')(crowi);
 
-  router.post('/', loginRequiredStrictly, async(req: Request) => {
+  router.post('/', loginRequiredStrictly, async(req: CrowiRequest) => {
 
     const params: ParamsForAnnouncement = req.body;
 
     const page = await Page.findById(params.pageId);
 
     const parametersForActivity = {
-      user: params.sender,
+      ip: req.ip,
+      endpoint: req.originalUrl,
+      user: req.user?._id,
       target: page,
       targetModel: SupportedTargetModel.MODEL_PAGE,
       action: SupportedAction.ACTION_USER_ANNOUNCE,
+      snapshot: {
+        username: req.user?.username,
+      },
     };
 
-    const activity = crowi.activityService.createActivity(parametersForActivity);
+    const activity = await crowi.activityService.createActivity(parametersForActivity);
 
     crowi.announcementService.doAnnounce(activity, page, params);
 
