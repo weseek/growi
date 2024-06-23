@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import ReactCardFlip from 'react-card-flip';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
+import { useTWithOpt } from '~/client/util/t-with-opt';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { LoginErrorCode } from '~/interfaces/errors/login-error';
 import type { IErrorV3 } from '~/interfaces/errors/v3-error';
@@ -20,6 +21,7 @@ import { CompleteUserRegistration } from '../CompleteUserRegistration';
 import { ExternalAuthButton } from './ExternalAuthButton';
 
 import styles from './LoginForm.module.scss';
+
 
 const moduleClass = styles['login-form'];
 
@@ -38,6 +40,7 @@ type LoginFormProps = {
   enabledExternalAuthType?: IExternalAuthProviderType[],
   isMailerSetup?: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
+  minPasswordLength: number,
 }
 export const LoginForm = (props: LoginFormProps): JSX.Element => {
   const { t } = useTranslation();
@@ -46,8 +49,9 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const {
     isLocalStrategySetup, isLdapStrategySetup, isLdapSetupFailed, isPasswordResetEnabled,
-    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType,
+    isEmailAuthenticationEnabled, registrationMode, registrationWhitelist, isMailerSetup, enabledExternalAuthType, minPasswordLength,
   } = props;
+
   const isLocalOrLdapStrategiesEnabled = isLocalStrategySetup || isLdapStrategySetup;
   const isSomeExternalAuthEnabled = enabledExternalAuthType != null && enabledExternalAuthType.length > 0;
 
@@ -71,19 +75,14 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
   const isRegistrationEnabled = isLocalStrategySetup && registrationMode !== RegistrationMode.CLOSED;
 
+  const tWithOpt = useTWithOpt();
+
   useEffect(() => {
     const { hash } = window.location;
     if (hash === '#register') {
       setIsRegistering(true);
     }
   }, []);
-
-  const tWithOpt = useCallback((key: string, opt?: any) => {
-    if (typeof opt === 'object') {
-      return t(key, opt).toString();
-    }
-    return t(key);
-  }, [t]);
 
   const resetLoginErrors = useCallback(() => {
     if (loginErrors.length === 0) return;
@@ -172,9 +171,10 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
     const loginErrorElementWithDangerouslySetInnerHTML = generateDangerouslySetErrors(loginErrorListForDangerouslySetInnerHTML);
     // Generate login error elements using <ul>, <li>
 
-    const loginErrorElement = props.externalAccountLoginError != null
-      ? generateSafelySetErrors([...loginErrorList, props.externalAccountLoginError])
-      : generateSafelySetErrors(loginErrorList);
+    const loginErrorElement = (loginErrorList ?? []).length > 0
+    // prioritize loginErrorList because the list should contains new error
+      ? generateSafelySetErrors(loginErrorList)
+      : generateSafelySetErrors(props.externalAccountLoginError != null ? [props.externalAccountLoginError] : []);
 
     return (
       <>
@@ -196,10 +196,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
 
         <form role="form" onSubmit={handleLoginWithLocalSubmit} id="login-form">
           <div className="input-group">
-            <span className="text-white opacity-75 d-flex align-items-center">
-              <span className="material-symbols-outlined">person</span>
-            </span>
+            <label className="text-white opacity-75 d-flex align-items-center" htmlFor="tiUsernameForLogin">
+              <span className="material-symbols-outlined" aria-label="Username or E-mail">person</span>
+            </label>
             <input
+              id="tiUsernameForLogin"
               type="text"
               className={`form-control rounded ms-2 ${isLdapStrategySetup ? 'ldap-space' : ''}`}
               data-testid="tiUsernameForLogin"
@@ -217,10 +218,11 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
           </div>
 
           <div className="input-group">
-            <span className="text-white opacity-75 d-flex align-items-center">
-              <span className="material-symbols-outlined">lock</span>
-            </span>
+            <label className="text-white opacity-75 d-flex align-items-center" htmlFor="tiPasswordForLogin">
+              <span className="material-symbols-outlined" aria-label="Password">lock</span>
+            </label>
             <input
+              id="tiPasswordForLogin"
               type="password"
               className="form-control rounded ms-2"
               data-testid="tiPasswordForLogin"
@@ -241,7 +243,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  <span className="material-symbols-outlined">login</span>
+                  <span className="material-symbols-outlined" aria-label="Login">login</span>
                 )}
               </span>
               <span className="flex-grow-1">{t('Sign in')}</span>
@@ -251,15 +253,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </>
     );
   }, [
-    props,
-    separateErrorsBasedOnErrorCode,
-    loginErrors,
-    generateDangerouslySetErrors,
-    generateSafelySetErrors,
-    isLdapSetupFailed,
-    t,
-    handleLoginWithLocalSubmit,
-    isLoading,
+    props, separateErrorsBasedOnErrorCode, loginErrors, generateDangerouslySetErrors, generateSafelySetErrors,
+    isLdapSetupFailed, t, handleLoginWithLocalSubmit, isLoading,
   ]);
 
 
@@ -358,7 +353,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
             <p className="alert alert-danger">
               {registerErrors.map(err => (
                 <span>
-                  {t(err.message)}<br />
+                  {tWithOpt(err.message, err.args)}<br />
                 </span>
               ))}
             </p>
@@ -459,6 +454,7 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
                   placeholder={t('Password')}
                   name="password"
                   required
+                  minLength={minPasswordLength}
                 />
               </div>
             </div>
@@ -499,8 +495,8 @@ export const LoginForm = (props: LoginFormProps): JSX.Element => {
       </React.Fragment>
     );
   }, [
-    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration,
-    emailForRegistrationOrder, props.username, props.name, props.email, registrationWhitelist, switchForm, handleRegisterFormSubmit, isLoading,
+    t, isEmailAuthenticationEnabled, registrationMode, isMailerSetup, registerErrors, isSuccessToRagistration, emailForRegistrationOrder,
+    props.username, props.name, props.email, registrationWhitelist, minPasswordLength, isLoading, switchForm, tWithOpt, handleRegisterFormSubmit,
   ]);
 
   if (registrationMode === RegistrationMode.RESTRICTED && isSuccessToRagistration && !isEmailAuthenticationEnabled) {

@@ -371,7 +371,7 @@ Page.getLayout = function getLayout(page: React.ReactElement<Props>) {
   return (
     <>
       <GrowiPluginsActivator />
-      <DrawioViewerScript />
+      <DrawioViewerScript drawioUri={page.props.rendererConfig.drawioUri} />
 
       <Layout {...page.props}>
         {page}
@@ -500,7 +500,7 @@ async function injectRoutingInformation(context: GetServerSidePropsContext, prop
     }
 
     if (!props.skipSSR) {
-      props.yjsData = await crowi.pageService.getYjsData(page._id);
+      props.yjsData = await crowi.pageService.getYjsData(page._id.toString());
     }
   }
 }
@@ -566,9 +566,9 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
     // XSS Options
     isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:rehypeSanitize:isEnabledPrevention'),
-    xssOption: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
-    attrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
-    tagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
+    sanitizeType: configManager.getConfig('markdown', 'markdown:rehypeSanitize:option'),
+    customAttrWhitelist: JSON.parse(crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:attributes')),
+    customTagWhitelist: crowi.configManager.getConfig('markdown', 'markdown:rehypeSanitize:tagNames'),
     highlightJsStyleBorder: crowi.configManager.getConfig('crowi', 'customize:highlightJsStyleBorder'),
   };
 

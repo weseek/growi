@@ -24,7 +24,7 @@
 }
 
 // Hide when editing
-@include mixins.editing {
+@include mixins.at-editing() {
   .btn-toggle-collapse {
     visibility: hidden;
   }

@@ -35,6 +35,7 @@ export interface IReturnSelectedPageIds {
 
 
 type Props = {
+  className?: string,
   pages?: IPageWithSearchMeta[],
   searchingKeyword?: string,
 
@@ -54,6 +55,7 @@ const SearchResultContent = dynamic(() => import('./SearchResultContent').then(m
 const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturnSelectedPageIds, Props> = (props:Props, ref) => {
 
   const {
+    className,
     pages,
     searchingKeyword,
     forceHideMenuItems,
@@ -171,7 +173,7 @@ const SearchPageBaseSubstance: ForwardRefRenderFunction<ISelectableAll & IReturn
     : undefined;
 
   return (
-    <div className="search-result-base flex-grow-1 d-flex flex-expand-vh-100" data-testid="search-result-base">
+    <div className={`${className ?? ''} search-result-base flex-grow-1 d-flex flex-expand-vh-100`} data-testid="search-result-base">
 
       <div className="flex-expand-vert border boder-gray search-result-list" id="search-result-list">
 

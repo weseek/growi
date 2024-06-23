@@ -35,30 +35,32 @@ declare global {
 const logger = loggerFactory('growi:SavePageControls');
 
 
-const SavePageButton = (props: {slackChannels: string, isDeviceLargerThanMd?: boolean}) => {
+const SavePageButton = (props: {slackChannels: string, isSlackEnabled?: boolean, isDeviceLargerThanMd?: boolean}) => {
 
   const { t } = useTranslation();
   const { data: _isWaitingSaveProcessing } = useWaitingSaveProcessing();
   const [isSavePageModalShown, setIsSavePageModalShown] = useState<boolean>(false);
 
-  const { slackChannels, isDeviceLargerThanMd } = props;
+  const { slackChannels, isSlackEnabled, isDeviceLargerThanMd } = props;
 
   const isWaitingSaveProcessing = _isWaitingSaveProcessing === true; // ignore undefined
 
   const save = useCallback(async(): Promise<void> => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { wip: false, slackChannels });
-  }, [slackChannels]);
+    globalEmitter.emit('saveAndReturnToView', { wip: false, slackChannels, isSlackEnabled });
+  }, [isSlackEnabled, slackChannels]);
 
   const saveAndOverwriteScopesOfDescendants = useCallback(() => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { wip: false, overwriteScopesOfDescendants: true, slackChannels });
-  }, [slackChannels]);
+    globalEmitter.emit('saveAndReturnToView', {
+      wip: false, overwriteScopesOfDescendants: true, slackChannels, isSlackEnabled,
+    });
+  }, [isSlackEnabled, slackChannels]);
 
   const saveAndMakeWip = useCallback(() => {
     // save
-    globalEmitter.emit('saveAndReturnToView', { wip: true, slackChannels });
-  }, [slackChannels]);
+    globalEmitter.emit('saveAndReturnToView', { wip: true, slackChannels, isSlackEnabled });
+  }, [isSlackEnabled, slackChannels]);
 
   const labelSubmitButton = t('Update');
   const labelOverwriteScopes = t('page_edit.overwrite_scopes', { operation: labelSubmitButton });
@@ -197,11 +199,11 @@ export const SavePageControls = (): JSX.Element | null => {
               )
             }
 
-            <SavePageButton slackChannels={slackChannels} isDeviceLargerThanMd />
+            <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} isDeviceLargerThanMd />
           </>
         ) : (
           <>
-            <SavePageButton slackChannels={slackChannels} />
+            <SavePageButton isSlackEnabled={isSlackEnabled} slackChannels={slackChannels} />
             <button
               type="button"
               className="btn btn-outline-neutral-secondary border-0 fs-5 p-0 ms-1 text-muted"

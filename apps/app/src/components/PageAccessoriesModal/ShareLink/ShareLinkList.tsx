@@ -25,7 +25,7 @@ const ShareLinkTr = (props: ShareLinkTrProps): JSX.Element => {
   return (
     <tr key={shareLinkId}>
       <td className="d-flex justify-content-between align-items-center">
-        <span>{shareLinkId}</span>
+        <span data-testid="share-link">{shareLinkId}</span>
 
         { isRelatedPageExists && (
           <CopyDropdown

@@ -1,16 +1,16 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "extends": ["//"],
-  "pipeline": {
+  "tasks": {
     "build": {
       "outputs": ["dist/**"],
       "inputs": ["svg/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     },
     "dev": {
       "outputs": ["dist/**"],
       "inputs": ["svg/**"],
-      "outputMode": "new-only"
+      "outputLogs": "new-only"
     }
   }
 }

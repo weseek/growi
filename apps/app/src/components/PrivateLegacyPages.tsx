@@ -348,13 +348,14 @@ const PrivateLegacyPages = (): JSX.Element => {
     );
   }, [t, openConvertModalHandler]);
 
-  const searchControlAllAction = useMemo(() => {
+  const extraControls = useMemo(() => {
     const isCheckboxDisabled = hitsCount === 0;
 
     return (
-      <div className="search-control d-flex align-items-center">
-        <div className="d-flex ps-md-2">
+      <div className="d-flex align-items-center">
+        <div className="d-flex">
           <OperateAllControl
+            inputClassName="me-2"
             ref={selectAllControlRef}
             isCheckboxDisabled={isCheckboxDisabled}
             onCheckboxChanged={selectAllCheckboxChangedHandler}
@@ -387,15 +388,14 @@ const PrivateLegacyPages = (): JSX.Element => {
   const searchControl = useMemo(() => {
     return (
       <SearchControl
-        isSearchServiceReachable
         isEnableSort={false}
         isEnableFilter={false}
         initialSearchConditions={{ keyword: initQ, limit: INITIAL_PAGING_SIZE }}
         onSearchInvoked={searchInvokedHandler}
-        allControl={searchControlAllAction}
+        extraControls={extraControls}
       />
     );
-  }, [searchInvokedHandler, searchControlAllAction]);
+  }, [searchInvokedHandler, extraControls]);
 
   const searchResultListHead = useMemo(() => {
     if (data == null) {

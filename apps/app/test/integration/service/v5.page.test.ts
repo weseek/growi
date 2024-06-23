@@ -16,7 +16,6 @@ describe('Test page service methods', () => {
   let ShareLink;
   let PageRedirect;
   let PageOperation;
-  let xssSpy;
 
   let rootPage;
 
@@ -50,7 +49,6 @@ describe('Test page service methods', () => {
     /*
      * Common
      */
-    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
 
     // ***********************************************************************************************************
     // * Do NOT change properties of globally used documents. Otherwise, it might cause some errors in other tests

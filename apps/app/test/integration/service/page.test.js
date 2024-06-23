@@ -8,6 +8,7 @@ import Tag from '~/server/models/tag';
 import UserGroup from '~/server/models/user-group';
 import UserGroupRelation from '~/server/models/user-group-relation';
 
+import { generalXssFilter } from '../../../src/services/general-xss-filter';
 
 const mongoose = require('mongoose');
 
@@ -66,7 +67,7 @@ describe('PageService', () => {
   let Bookmark;
   let Comment;
   let ShareLink;
-  let xssSpy;
+  let generalXssFilterProcessSpy;
 
   beforeAll(async() => {
     crowi = await getInstance();
@@ -346,7 +347,7 @@ describe('PageService', () => {
       },
     ]);
 
-    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+    generalXssFilterProcessSpy = jest.spyOn(generalXssFilter, 'process');
 
     /**
      * getParentAndFillAncestors
@@ -494,7 +495,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename1,
           '/renamed1', testUser2, {}, { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
-        expect(xssSpy).toHaveBeenCalled();
+        expect(generalXssFilterProcessSpy).toHaveBeenCalled();
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
@@ -508,7 +509,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename2, '/renamed2', testUser2, { updateMetadata: true },
           { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
-        expect(xssSpy).toHaveBeenCalled();
+        expect(generalXssFilterProcessSpy).toHaveBeenCalled();
 
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
@@ -522,7 +523,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename3, '/renamed3', testUser2, { createRedirectPage: true },
           { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
-        expect(xssSpy).toHaveBeenCalled();
+        expect(generalXssFilterProcessSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
         expect(resultPage.path).toBe('/renamed3');
@@ -535,7 +536,7 @@ describe('PageService', () => {
         const resultPage = await crowi.pageService.renamePage(parentForRename4, '/renamed4', testUser2, { isRecursively: true },
           { ip: '::ffff:127.0.0.1', endpoint: '/_api/v3/pages/rename' });
 
-        expect(xssSpy).toHaveBeenCalled();
+        expect(generalXssFilterProcessSpy).toHaveBeenCalled();
         expect(renameDescendantsWithStreamSpy).toHaveBeenCalled();
         expect(pageEventSpy).toHaveBeenCalledWith('rename');
 
@@ -625,7 +626,7 @@ describe('PageService', () => {
       const resultPage = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicate', testUser2, false);
       const duplicatedToPageRevision = await Revision.findOne({ pageId: resultPage._id });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).not.toHaveBeenCalled();
       // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
       // expect(serializePageSecurely).toHaveBeenCalled();
@@ -646,7 +647,7 @@ describe('PageService', () => {
       const resultPageRecursivly = await crowi.pageService.duplicate(parentForDuplicate, '/newParentDuplicateRecursively', testUser2, true);
       const duplicatedRecursivelyToPageRevision = await Revision.findOne({ pageId: resultPageRecursivly._id });
 
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicateDescendantsWithStreamSpy).toHaveBeenCalled();
       // TODO https://redmine.weseek.co.jp/issues/87537 : activate outer module mockImplementation
       // expect(serializePageSecurely).toHaveBeenCalled();
