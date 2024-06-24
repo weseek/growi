@@ -4,7 +4,7 @@ import React from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import GrowiLogo from '~/components-universal/Common/GrowiLogo';
+import GrowiLogo from '~/components/Common/GrowiLogo';
 
 import { AdminNavigation } from '../Admin/Common/AdminNavigation';
 

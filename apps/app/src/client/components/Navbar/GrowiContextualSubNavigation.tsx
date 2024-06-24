@@ -15,7 +15,7 @@ import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
-import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useEditorMode } from '~/stores-universal/ui';

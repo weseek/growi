@@ -13,7 +13,7 @@ import { debounce } from 'throttle-debounce';
 
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
-import { PagePathNav } from '~/components-universal/Common/PagePathNav';
+import { PagePathNav } from '~/components/Common/PagePathNav';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -38,7 +38,7 @@ const PageControls = dynamic(() => import('../PageControls').then(mod => mod.Pag
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
 const PageContentFooter = dynamic(
-  () => import('~/components-universal/PageView/PageContentFooter').then(mod => mod.PageContentFooter),
+  () => import('~/components/PageView/PageContentFooter').then(mod => mod.PageContentFooter),
   { ssr: false },
 );
 

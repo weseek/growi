@@ -7,7 +7,7 @@ import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
-import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
+import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';

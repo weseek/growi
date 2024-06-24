@@ -20,9 +20,9 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import superjson from 'superjson';
 
-import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { PageView } from '~/components-universal/PageView/PageView';
-import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { PageView } from '~/components/PageView/PageView';
+import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
 import { SupportedAction, type SupportedActionType } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';

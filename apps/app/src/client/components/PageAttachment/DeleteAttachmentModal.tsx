@@ -12,7 +12,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import { Username } from '../../../components-universal/User/Username';
+import { Username } from '../../../components/User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
 

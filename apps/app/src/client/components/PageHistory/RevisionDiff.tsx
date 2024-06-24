@@ -12,7 +12,7 @@ import urljoin from 'url-join';
 
 import { Themes, useNextThemes } from '~/stores-universal/use-next-themes';
 
-import UserDate from '../../../components-universal/User/UserDate';
+import UserDate from '../../../components/User/UserDate';
 
 import styles from './RevisionDiff.module.scss';
 

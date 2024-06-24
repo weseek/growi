@@ -12,7 +12,7 @@ import { useIsSearchServiceReachable, useCurrentUser } from '~/stores-universal/
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const FullTextSearchManagement = dynamic(
   () => import('~/client/components/Admin/FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
 );

@@ -8,7 +8,7 @@ import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 
-import { Username } from '../../components/User/Username';
+import { Username } from './User/Username';
 
 import styles from './PageStatusAlert.module.scss';
 

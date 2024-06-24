@@ -6,8 +6,6 @@ module.exports = {
       patterns: [
         '~/client/',
         'client/',
-        '~/components/',
-        'components/',
       ],
     }],
   },

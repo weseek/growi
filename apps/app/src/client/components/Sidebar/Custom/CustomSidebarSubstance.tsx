@@ -1,6 +1,6 @@
 import React from 'react';
 
-import RevisionRenderer from '~/components-universal/PageView/RevisionRenderer';
+import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import { useSWRxPageByPath } from '~/stores/page';
 import { useCustomSidebarOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';

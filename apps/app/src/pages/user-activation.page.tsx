@@ -4,7 +4,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
