@@ -136,7 +136,7 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const [hoveredIndex, setHoveredIndex] = useState<undefined | number>(undefined);
+  const [hovereditem, setHoveredItem] = useState<undefined | number>(undefined);
 
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
@@ -164,8 +164,8 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td
-                      onMouseEnter={() => setHoveredIndex(item)}
-                      onMouseLeave={() => setHoveredIndex(undefined)}
+                      onMouseEnter={() => setHoveredItem(item)}
+                      onMouseLeave={() => setHoveredItem(undefined)}
                     >
 
 
@@ -181,7 +181,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredIndex === item ? '' : 'opacity-0'}`}>edit</span>
+                        <span className={`material-symbols-outlined px-2 py-0 ${hovereditem === item ? '' : 'opacity-0'}`}>edit</span>
                       </button>
                     </td>
                   )
