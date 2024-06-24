@@ -54,8 +54,6 @@ import { useSetupGlobalSocket, useSetupGlobalSocketForPage } from '~/stores/webs
 import { useCurrentPageYjsData, useSWRMUTxCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
-import GrowiContextualSubNavigationSubstance from '../components/Navbar/GrowiContextualSubNavigation';
-
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
 import {
@@ -68,6 +66,8 @@ declare global {
   var globalEmitter: EventEmitter;
 }
 
+
+const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
 const GrowiPluginsActivator = dynamic(() => import('~/features/growi-plugin/client/components').then(mod => mod.GrowiPluginsActivator), { ssr: false });
 

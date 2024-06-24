@@ -3,8 +3,6 @@ import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { Sidebar } from '~/components/Sidebar';
-
 import { RawLayout } from './RawLayout';
 
 
@@ -12,6 +10,8 @@ import styles from './BasicLayout.module.scss';
 
 const moduleClass = styles['grw-basic-layout'] ?? '';
 
+
+const Sidebar = dynamic(() => import('~/components/Sidebar').then(mod => mod.Sidebar), { ssr: false });
 
 const AlertSiteUrlUndefined = dynamic(() => import('~/components/AlertSiteUrlUndefined').then(mod => mod.AlertSiteUrlUndefined), { ssr: false });
 const DeleteAttachmentModal = dynamic(
