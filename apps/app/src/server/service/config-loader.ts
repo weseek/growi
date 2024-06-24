@@ -723,6 +723,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type: ValueType.NUMBER,
     default: 172800, // 2 days
   },
+  YJS_MAX_BODY_LENGTH: {
+    na: 'crowi',
+    keyof: 'app:yjsMazBodyLength',
+    type: ValueType.NUMBER,
+    default: 500000,
+  },
 };
 
 
