@@ -9,8 +9,8 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -46,10 +46,10 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
+const PersonalSettings = dynamic(() => import('~/client/components/Me/PersonalSettings'), { ssr: false });
 // const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
 const InAppNotificationPage = dynamic(
-  () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
+  () => import('~/client/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
 const MePage: NextPageWithLayout<Props> = (props: Props) => {

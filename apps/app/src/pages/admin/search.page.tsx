@@ -12,11 +12,11 @@ import { useIsSearchServiceReachable, useCurrentUser } from '~/stores-universal/
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
 const FullTextSearchManagement = dynamic(
-  () => import('~/components/Admin//FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
+  () => import('~/client/components/Admin/FullTextSearchManagement').then(mod => mod.FullTextSearchManagement), { ssr: false },
 );
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {

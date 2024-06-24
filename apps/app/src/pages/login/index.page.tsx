@@ -9,7 +9,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
@@ -24,7 +24,7 @@ import {
 import styles from './index.module.scss';
 
 
-const LoginForm = dynamic(() => import('~/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
+const LoginForm = dynamic(() => import('~/client/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
 
 type Props = CommonProps & {

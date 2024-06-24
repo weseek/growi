@@ -8,14 +8,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';
 
-const InvitedForm = dynamic(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,

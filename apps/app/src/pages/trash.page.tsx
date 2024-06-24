@@ -6,9 +6,9 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
-import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
+import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -27,8 +27,8 @@ import {
 } from './utils/commons';
 
 
-const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
 
 type Props = CommonProps & {

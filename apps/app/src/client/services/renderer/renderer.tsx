@@ -13,11 +13,11 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
-import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
-import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
-import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import { DrawioViewerWithEditButton } from '~/client/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
+import { Header } from '~/client/components/ReactMarkdownComponents/Header';
+import { LightBox } from '~/client/components/ReactMarkdownComponents/LightBox';
+import { RichAttachment } from '~/client/components/ReactMarkdownComponents/RichAttachment';
+import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';

@@ -14,9 +14,9 @@ import { useCurrentUser } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
-const G2GDataTransferPage = dynamic(() => import('~/components/Admin/G2GDataTransfer'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+const G2GDataTransferPage = dynamic(() => import('~/client/components/Admin/G2GDataTransfer'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps;

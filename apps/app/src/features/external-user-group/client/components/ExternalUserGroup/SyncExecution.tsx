@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 
+import LabeledProgressBar from '~/client/components/Admin/Common/LabeledProgressBar';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import LabeledProgressBar from '~/components/Admin/Common/LabeledProgressBar';
 import type { ExternalGroupProviderType } from '~/features/external-user-group/interfaces/external-user-group';
 import { SocketEventName } from '~/interfaces/websocket';
 import { useAdminSocket } from '~/stores/socket-io';

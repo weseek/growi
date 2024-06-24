@@ -10,7 +10,7 @@ import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, getNextI18NextConfig } from './utils/commons';
 
 
-const Maintenance = dynamic(() => import('~/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
+const Maintenance = dynamic(() => import('~/client/components/Maintenance').then(mod => mod.Maintenance), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,

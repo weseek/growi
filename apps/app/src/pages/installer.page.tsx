@@ -8,7 +8,7 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import {
   useCsrfToken, useAppTitle, useSiteUrl, useConfidential,
@@ -18,9 +18,9 @@ import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle } from './utils/commons';
 
 
-const InstallerForm = dynamic(() => import('../components/InstallerForm'), { ssr: false });
-const DataTransferForm = dynamic(() => import('../components/DataTransferForm'), { ssr: false });
-const CustomNavAndContents = dynamic(() => import('../components/CustomNavigation/CustomNavAndContents'), { ssr: false });
+const InstallerForm = dynamic(() => import('~/client/components/InstallerForm'), { ssr: false });
+const DataTransferForm = dynamic(() => import('~/client/components/DataTransferForm'), { ssr: false });
+const CustomNavAndContents = dynamic(() => import('~/client/components/CustomNavigation/CustomNavAndContents'), { ssr: false });
 
 async function injectNextI18NextConfigurations(context: GetServerSidePropsContext, props: Props, namespacesRequired?: string[] | undefined): Promise<void> {
   const nextI18NextConfig = await getNextI18NextConfig(serverSideTranslations, context, namespacesRequired, true);

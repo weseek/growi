@@ -9,8 +9,8 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { BasicLayout } from '~/components-universal/Layout/BasicLayout';
-import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
+import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
@@ -43,8 +43,8 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
-const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
+const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
+const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
 
 const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);
