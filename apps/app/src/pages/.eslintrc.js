@@ -8,8 +8,6 @@ module.exports = {
         '~/client/',
         '../components/',
         '~/components/',
-        '~/stores/',
-        'stores/',
       ],
     }],
   },
