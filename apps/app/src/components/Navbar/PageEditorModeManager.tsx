@@ -109,6 +109,7 @@ export const PageEditorModeManager = (props: Props): JSX.Element => {
         role="group"
         aria-label="page-editor-mode-manager"
         id="grw-page-editor-mode-manager"
+        data-testid="grw-page-editor-mode-manager"
       >
         {(isDeviceLargerThanMd || editorMode !== EditorMode.View) && (
           <PageEditorModeButton
