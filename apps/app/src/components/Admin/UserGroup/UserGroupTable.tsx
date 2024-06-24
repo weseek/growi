@@ -142,8 +142,6 @@ export const UserGroupTable: FC<Props> = ({
         className="btn btn-link btn-edit-groups text-secondary py-0"
         type="button"
       >
-        <span className="material-symbols-outlined pe-2 pt-2">group</span>
-        <span className="text-decoration-underline"></span>
         <span className="material-symbols-outlined px-2 py-0 ">edit</span>
       </button>
     );
