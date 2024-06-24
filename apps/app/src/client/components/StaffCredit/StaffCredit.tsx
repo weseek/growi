@@ -19,7 +19,7 @@ const logger = loggerFactory('growi:cli:StaffCredit');
 
 // define fonts
 const pressStart2P = localFont({
-  src: '../../../resource/fonts/PressStart2P-latin.woff2',
+  src: '../../../../resource/fonts/PressStart2P-latin.woff2',
   display: 'block',
 });
 
