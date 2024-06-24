@@ -14,7 +14,7 @@ import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
-import { useIsAclEnabled } from '~/stores/context';
+import { useIsAclEnabled } from '~/stores-universal/context';
 import { useSWRxUserGroupList } from '~/stores/user-group';
 
 import { useSWRxChildExternalUserGroupList, useSWRxExternalUserGroupList, useSWRxExternalUserGroupRelationList } from '../../stores/external-user-group';

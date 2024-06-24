@@ -1,9 +1,8 @@
 import { memo } from 'react';
 
-import type { IUser } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 
-import { useCurrentPathname } from '~/stores/context';
+import { useCurrentPathname } from '~/stores-universal/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useIsAbleToShowPageAuthors } from '~/stores/ui';
 

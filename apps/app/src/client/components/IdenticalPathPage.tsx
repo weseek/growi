@@ -1,9 +1,10 @@
-import React, { FC } from 'react';
+import type { FC } from 'react';
+import React from 'react';
 
 import { DevidedPagePath } from '@growi/core/dist/models';
 import { useTranslation } from 'next-i18next';
 
-import { useCurrentPathname } from '~/stores/context';
+import { useCurrentPathname } from '~/stores-universal/context';
 import { useSWRxPageInfoForList, useSWRxPagesByPath } from '~/stores/page-listing';
 
 import { PageListItemL } from './PageList/PageListItemL';

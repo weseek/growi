@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 import type { IClearable } from '~/client/interfaces/clearable';
 import { toastError } from '~/client/util/toastr';
 import type { SupportedActionType } from '~/interfaces/activity';
+import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores-universal/context';
 import { useSWRxActivity } from '~/stores/activity';
-import { useAuditLogEnabled, useAuditLogAvailableActions } from '~/stores/context';
 
 import PaginationWrapper from '../PaginationWrapper';
 

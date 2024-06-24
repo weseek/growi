@@ -11,7 +11,7 @@ import {
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 import { SkeletonItem } from './SkeletonItem';
 

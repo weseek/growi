@@ -3,10 +3,10 @@ import React, { useCallback } from 'react';
 import type { IUserHasId } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
+import { withUnstatedContainers } from '~/client/components/UnstatedUtils';
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { withUnstatedContainers } from '~/client/components/UnstatedUtils';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 
 const SuspendAlert = React.memo((): JSX.Element => {

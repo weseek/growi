@@ -18,11 +18,11 @@ import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-ope
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import { useEditorMode } from '~/stores-universal/ui';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
-} from '~/stores/context';
+} from '~/stores-universal/context';
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   usePageAccessoriesModal, PageAccessoriesModalContents, type IPageForPageDuplicateModal,
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal, usePagePresentationModal,

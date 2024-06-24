@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Collapse } from 'reactstrap';
 
 import { AllSupportedActions } from '~/interfaces/activity';
-import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores/context';
+import { useActivityExpirationSeconds, useAuditLogAvailableActions } from '~/stores-universal/context';
 
 export const AuditLogSettings: FC = () => {
   const { t } = useTranslation();

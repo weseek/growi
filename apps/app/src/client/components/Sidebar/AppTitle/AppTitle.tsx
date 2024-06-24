@@ -3,7 +3,7 @@ import React, { memo } from 'react';
 import Link from 'next/link';
 import { UncontrolledTooltip } from 'reactstrap';
 
-import { useAppTitle, useConfidential, useIsDefaultLogo } from '~/stores/context';
+import { useAppTitle, useConfidential, useIsDefaultLogo } from '~/stores-universal/context';
 
 import { SidebarBrandLogo } from '../SidebarBrandLogo';
 

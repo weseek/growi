@@ -11,7 +11,7 @@ import {
 import AdminUsersContainer from '~/client/services/AdminUsersContainer';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
+import { useIsMailerSetup } from '~/stores-universal/context';
 
 class PasswordResetModal extends React.Component {
 

@@ -8,7 +8,7 @@ import {
   Modal, ModalHeader, ModalBody,
 } from 'reactstrap';
 
-import { useIsSharedUser } from '~/stores/context';
+import { useIsSharedUser } from '~/stores-universal/context';
 import { useDescendantsPageListModal } from '~/stores/modal';
 
 import { CustomNavTab } from './CustomNavigation/CustomNav';

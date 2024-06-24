@@ -6,7 +6,7 @@ import { format } from 'date-fns/format';
 import { useTranslation } from 'react-i18next';
 
 import { useCreatePage } from '~/client/services/create-page';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 
 type UseCreateTodaysMemo = () => {

@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { addNewFolder } from '~/client/util/bookmark-utils';
-import { toastError } from '~/client/util/toastr';
 import { BookmarkFolderNameInput } from '~/client/components/Bookmarks/BookmarkFolderNameInput';
 import { BookmarkFolderTree } from '~/client/components/Bookmarks/BookmarkFolderTree';
+import { addNewFolder } from '~/client/util/bookmark-utils';
+import { toastError } from '~/client/util/toastr';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useCurrentUser } from '~/stores/context';
 
 export const BookmarkContents = (): JSX.Element => {
 

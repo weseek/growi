@@ -14,7 +14,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import {

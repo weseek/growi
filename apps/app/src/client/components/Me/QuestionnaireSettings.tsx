@@ -7,7 +7,7 @@ import { UncontrolledTooltip } from 'reactstrap';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxIsQuestionnaireEnabled } from '~/features/questionnaire/client/stores/questionnaire';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 
 export const QuestionnaireSettings = (): JSX.Element => {

@@ -6,10 +6,10 @@ import { useTranslation } from 'next-i18next';
 
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { InAppNotificationStatuses } from '~/interfaces/in-app-notification';
-import { useShowPageLimitationXL } from '~/stores/context';
+import { useShowPageLimitationXL } from '~/stores-universal/context';
+import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '~/stores/in-app-notification';
 import loggerFactory from '~/utils/logger';
 
-import { useSWRxInAppNotifications, useSWRxInAppNotificationStatus } from '../../../stores/in-app-notification';
 import CustomNavAndContents from '../CustomNavigation/CustomNavAndContents';
 import PaginationWrapper from '../PaginationWrapper';
 

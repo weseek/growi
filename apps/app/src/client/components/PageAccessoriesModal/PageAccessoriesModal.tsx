@@ -8,7 +8,7 @@ import {
 
 import {
   useDisableLinkSharing, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { usePageAccessoriesModal, PageAccessoriesModalContents } from '~/stores/modal';
 
 import { CustomNavTab } from '../CustomNavigation/CustomNav';

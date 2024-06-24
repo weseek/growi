@@ -7,7 +7,7 @@ import { useTranslation } from 'next-i18next';
 import type { ISelectableAll, ISelectableAndIndeterminatable } from '~/client/interfaces/selectable-all';
 import { useKeywordManager } from '~/client/services/search-operation';
 import type { IFormattedSearchResult } from '~/interfaces/search';
-import { useShowPageLimitationL } from '~/stores/context';
+import { useShowPageLimitationL } from '~/stores-universal/context';
 import { type ISearchConditions, type ISearchConfigurations, useSWRxSearch } from '~/stores/search';
 
 import { NotAvailableForGuest } from './NotAvailableForGuest';

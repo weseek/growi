@@ -11,7 +11,7 @@ import {
   Dropdown, DropdownToggle, DropdownMenu, Input, FormGroup,
 } from 'reactstrap';
 
-import { useIsIndentSizeForced } from '~/stores/context';
+import { useIsIndentSizeForced } from '~/stores-universal/context';
 import { useEditorSettings, useCurrentIndentSize } from '~/stores/editor';
 import {
   useIsDeviceLargerThanMd,

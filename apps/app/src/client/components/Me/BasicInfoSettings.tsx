@@ -5,7 +5,7 @@ import { useTranslation, i18n } from 'next-i18next';
 import { i18n as i18nConfig } from '^/config/next-i18next.config';
 
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useRegistrationWhitelist } from '~/stores/context';
+import { useRegistrationWhitelist } from '~/stores-universal/context';
 import { usePersonalSettings } from '~/stores/personal-settings';
 
 export const BasicInfoSettings = (): JSX.Element => {

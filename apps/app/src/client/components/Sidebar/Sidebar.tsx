@@ -9,7 +9,7 @@ import dynamic from 'next/dynamic';
 import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
-import { useIsSearchPage } from '~/stores/context';
+import { useIsSearchPage } from '~/stores-universal/context';
 import {
   useDrawerOpened,
   useCollapsedContentsOpened,

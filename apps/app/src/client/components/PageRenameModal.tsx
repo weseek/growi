@@ -12,7 +12,7 @@ import { debounce } from 'throttle-debounce';
 
 import { apiv3Get, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError } from '~/client/util/toastr';
-import { useSiteUrl, useIsSearchServiceReachable } from '~/stores/context';
+import { useSiteUrl, useIsSearchServiceReachable } from '~/stores-universal/context';
 import { usePageRenameModal } from '~/stores/modal';
 import { useSWRxPageInfo } from '~/stores/page';
 

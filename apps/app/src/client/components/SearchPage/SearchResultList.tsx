@@ -1,6 +1,6 @@
+import type { ForwardRefRenderFunction } from 'react';
 import React, {
-  forwardRef,
-  ForwardRefRenderFunction, useCallback, useImperativeHandle, useRef,
+  forwardRef, useCallback, useImperativeHandle, useRef,
 } from 'react';
 
 import {
@@ -8,14 +8,14 @@ import {
 } from '@growi/core';
 import { useTranslation } from 'next-i18next';
 
-import { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
+import type { ISelectable, ISelectableAll } from '~/client/interfaces/selectable-all';
 import { toastSuccess } from '~/client/util/toastr';
-import { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import type { IPageSearchMeta, IPageWithSearchMeta } from '~/interfaces/search';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { mutatePageTree, useSWRxPageInfoForList } from '~/stores/page-listing';
 import { mutateSearching } from '~/stores/search';
 
-import { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
+import type { ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
 import { PageListItemL } from '../PageList/PageListItemL';
 
 type Props = {

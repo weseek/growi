@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminLocalSecurityContainer from '~/client/services/AdminLocalSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
+import { useIsMailerSetup } from '~/stores-universal/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 

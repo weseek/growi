@@ -1,6 +1,6 @@
 import { useTranslation } from 'next-i18next';
 
-import { useSiteUrl } from '~/stores/context';
+import { useSiteUrl } from '~/stores-universal/context';
 
 const isValidUrl = (str: string): boolean => {
   try {

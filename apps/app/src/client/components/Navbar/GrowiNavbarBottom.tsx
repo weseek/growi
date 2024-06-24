@@ -4,7 +4,7 @@ import React, {
 
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
-import { useIsSearchPage } from '~/stores/context';
+import { useIsSearchPage } from '~/stores-universal/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useDrawerOpened } from '~/stores/ui';

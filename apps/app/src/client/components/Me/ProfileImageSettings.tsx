@@ -3,11 +3,11 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import ImageCropModal from '~/client/components/Common/ImageCropModal';
 import { apiPost, apiPostForm } from '~/client/util/apiv1-client';
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import ImageCropModal from '~/client/components/Common/ImageCropModal';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { generateGravatarSrc, GRAVATAR_DEFAULT } from '~/utils/gravatar';
 
 

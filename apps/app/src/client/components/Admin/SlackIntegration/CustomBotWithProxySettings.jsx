@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useAppTitle } from '~/stores/context';
+import { useAppTitle } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 

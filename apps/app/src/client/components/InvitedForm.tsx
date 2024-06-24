@@ -5,8 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { useRouter } from 'next/router';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
-
-import { useCurrentUser } from '../../stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 
 type InvitedFormProps = {

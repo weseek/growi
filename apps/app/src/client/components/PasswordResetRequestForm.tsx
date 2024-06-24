@@ -1,11 +1,12 @@
-import React, { FC, useState, useCallback } from 'react';
+import type { FC } from 'react';
+import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 import Link from 'next/link';
 
 import { apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useIsMailerSetup } from '~/stores/context';
+import { useIsMailerSetup } from '~/stores-universal/context';
 
 const PasswordResetRequestForm: FC = () => {
   const { t } = useTranslation();

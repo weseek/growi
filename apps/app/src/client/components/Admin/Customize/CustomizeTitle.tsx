@@ -6,7 +6,7 @@ import { Card, CardBody } from 'reactstrap';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useCustomizeTitle } from '~/stores/context';
+import { useCustomizeTitle } from '~/stores-universal/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 

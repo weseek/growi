@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 
 import { apiv3Put, apiv3Post } from '~/client/util/apiv3-client';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSiteUrl } from '~/stores/context';
+import { useSiteUrl } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import CustomCopyToClipBoard from '../../Common/CustomCopyToClipBoard';

@@ -1,7 +1,7 @@
 import React, { memo, useMemo } from 'react';
 
 import type { SidebarContentsType } from '~/interfaces/ui';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 
 import { NotAvailableForReadOnlyUser } from '../../NotAvailableForReadOnlyUser';
 import { PageCreateButton } from '../PageCreateButton';

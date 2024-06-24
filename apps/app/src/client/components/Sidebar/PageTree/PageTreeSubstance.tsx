@@ -5,7 +5,7 @@ import React, {
 import { useTranslation } from 'next-i18next';
 import { debounce } from 'throttle-debounce';
 
-import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useCurrentPagePath, useCurrentPageId } from '~/stores/page';
 import {
   mutatePageTree, useSWRxPageAncestorsChildren, useSWRxRootPage, useSWRxV5MigrationStatus,

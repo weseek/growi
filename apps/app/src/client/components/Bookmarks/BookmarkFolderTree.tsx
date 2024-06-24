@@ -9,11 +9,11 @@ import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import { toastSuccess } from '~/client/util/toastr';
 import type { OnDeletedFunction } from '~/interfaces/ui';
+import { useIsReadOnlyUser } from '~/stores-universal/context';
 import {
   useSWRxUserBookmarks, useSWRMUTxCurrentUserBookmarks,
 } from '~/stores/bookmark';
 import { useSWRxBookmarkFolderAndChild } from '~/stores/bookmark-folder';
-import { useIsReadOnlyUser } from '~/stores/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutateAllPageInfo, useSWRMUTxPageInfo, useSWRxCurrentPage } from '~/stores/page';
 

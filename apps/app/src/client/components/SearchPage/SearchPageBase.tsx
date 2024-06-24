@@ -13,7 +13,7 @@ import type { IFormattedSearchResult, IPageWithSearchMeta } from '~/interfaces/s
 import type { OnDeletedFunction } from '~/interfaces/ui';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSearchServiceConfigured, useIsSearchServiceReachable,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { usePageDeleteModal } from '~/stores/modal';
 import { mutatePageTree } from '~/stores/page-listing';
 

@@ -6,10 +6,10 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { debounce } from 'throttle-debounce';
 
+import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxPageComment } from '~/stores/comment';
 import { useIsTrashPage, useSWRMUTxPageInfo } from '~/stores/page';
 
-import { useCurrentUser } from '../../stores/context';
 
 const { isTopPage } = pagePathUtils;
 

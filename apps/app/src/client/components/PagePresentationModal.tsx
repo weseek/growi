@@ -10,8 +10,8 @@ import {
   Modal, ModalBody,
 } from 'reactstrap';
 
+import { useIsEnabledMarp } from '~/stores-universal/context';
 import { useNextThemes } from '~/stores-universal/use-next-themes';
-import { useIsEnabledMarp } from '~/stores/context';
 import { usePagePresentationModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { usePresentationViewOptions } from '~/stores/renderer';

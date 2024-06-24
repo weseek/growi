@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useGrowiVersion } from '~/stores/context';
+import { useGrowiVersion } from '~/stores-universal/context';
 import { useShortcutsModal } from '~/stores/modal';
 
 import styles from './SystemVersion.module.scss';

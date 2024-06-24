@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser } from '~/stores-universal/context';
 
 import { NotAvailable } from './NotAvailable';
 

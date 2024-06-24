@@ -2,9 +2,9 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
 

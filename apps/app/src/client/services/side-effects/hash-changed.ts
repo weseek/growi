@@ -2,8 +2,8 @@ import { useCallback, useEffect } from 'react';
 
 import { useRouter } from 'next/router';
 
+import { useIsEditable } from '~/stores-universal/context';
 import { useEditorMode, determineEditorModeByHash } from '~/stores-universal/ui';
-import { useIsEditable } from '~/stores/context';
 
 /**
  * Change editorMode by browser forward/back operation

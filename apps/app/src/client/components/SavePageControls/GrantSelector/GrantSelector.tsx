@@ -14,7 +14,7 @@ import {
 
 import type { UserRelatedGroupsData } from '~/interfaces/page';
 import { UserGroupPageGrantStatus } from '~/interfaces/page';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentGrantData } from '~/stores/page';
 import { useSelectedGrant } from '~/stores/ui';
 

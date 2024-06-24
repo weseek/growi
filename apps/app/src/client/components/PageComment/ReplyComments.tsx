@@ -4,10 +4,10 @@ import React, { useState } from 'react';
 import type { IUser } from '@growi/core';
 import { Collapse } from 'reactstrap';
 
+import type { ICommentHasId, ICommentHasIdList } from '~/interfaces/comment';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { useIsAllReplyShown } from '~/stores-universal/context';
 
-import type { ICommentHasId, ICommentHasIdList } from '../../../interfaces/comment';
-import { useIsAllReplyShown } from '../../../stores/context';
 
 import { Comment } from './Comment';
 

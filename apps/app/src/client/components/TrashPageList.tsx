@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic';
 
 import { toastSuccess } from '~/client/util/toastr';
 import type { IPagingResult } from '~/interfaces/paging-result';
-import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores/context';
+import { useIsReadOnlyUser, useShowPageLimitationXL } from '~/stores-universal/context';
 import { useEmptyTrashModal } from '~/stores/modal';
 import { useSWRxPageInfoForList, useSWRxPageList } from '~/stores/page-listing';
 

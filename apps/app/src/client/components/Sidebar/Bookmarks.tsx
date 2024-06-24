@@ -3,7 +3,7 @@ import React from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser } from '~/stores-universal/context';
 
 import { BookmarkContents } from './Bookmarks/BookmarkContents';
 

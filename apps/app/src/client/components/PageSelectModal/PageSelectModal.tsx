@@ -12,7 +12,7 @@ import {
 } from 'reactstrap';
 
 import type { IPageForItem } from '~/interfaces/page';
-import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useTargetAndAncestors, useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { usePageSelectModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 

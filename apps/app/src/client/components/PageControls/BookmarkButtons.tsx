@@ -8,8 +8,8 @@ import Popover from 'reactstrap/esm/Popover';
 import PopoverBody from 'reactstrap/esm/PopoverBody';
 import UncontrolledTooltip from 'reactstrap/esm/UncontrolledTooltip';
 
+import { useIsGuestUser } from '~/stores-universal/context';
 import { useSWRxBookmarkedUsers } from '~/stores/bookmark';
-import { useIsGuestUser } from '~/stores/context';
 
 import { BookmarkFolderMenu } from '../Bookmarks/BookmarkFolderMenu';
 import UserPictureList from '../Common/UserPictureList';

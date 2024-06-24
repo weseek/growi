@@ -11,11 +11,10 @@ import { useTranslation } from 'next-i18next';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
-} from '~/stores/context';
-
-import '@growi/remark-drawio/dist/style.css';
+} from '~/stores-universal/context';
 import { useIsRevisionOutdated } from '~/stores/page';
 
+import '@growi/remark-drawio/dist/style.css';
 import styles from './DrawioViewerWithEditButton.module.scss';
 
 

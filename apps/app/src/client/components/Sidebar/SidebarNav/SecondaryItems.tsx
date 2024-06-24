@@ -4,7 +4,7 @@ import { memo } from 'react';
 import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
-import { useIsGuestUser, useGrowiCloudUri, useIsAdmin } from '~/stores/context';
+import { useIsGuestUser, useGrowiCloudUri, useIsAdmin } from '~/stores-universal/context';
 
 import { SkeletonItem } from './SkeletonItem';
 

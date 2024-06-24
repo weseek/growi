@@ -6,7 +6,7 @@ import type { Element } from 'react-markdown/lib/rehype-filter';
 
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useIsRevisionOutdated } from '~/stores/page';
 
 import styles from './TableWithEditButton.module.scss';

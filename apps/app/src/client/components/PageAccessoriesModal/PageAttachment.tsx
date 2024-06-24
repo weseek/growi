@@ -5,8 +5,8 @@ import React, {
 import type { IAttachmentHasId } from '@growi/core';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useSWRxAttachments } from '~/stores/attachment';
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import { useSWRxCurrentPage, useCurrentPageId } from '~/stores/page';
 

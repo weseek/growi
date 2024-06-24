@@ -20,16 +20,16 @@ import { scheduleToPut } from '~/client/services/user-ui-settings';
 import type { IPageSelectedGrant } from '~/interfaces/page';
 import { SidebarContentsType, SidebarMode } from '~/interfaces/ui';
 import type { UpdateDescCountData } from '~/interfaces/websocket';
+import {
+  useIsEditable, useIsReadOnlyUser,
+  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
+} from '~/stores-universal/context';
 import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import {
   useIsNotFound, useCurrentPagePath, useIsTrashPage, useCurrentPageId,
 } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
-import {
-  useIsEditable, useIsReadOnlyUser,
-  useIsSharedUser, useIsIdenticalPath, useCurrentUser, useShareLinkId,
-} from './context';
 import { useStaticSWR } from './use-static-swr';
 
 const { isTrashTopPage, isUsersTopPage } = pagePathUtils;

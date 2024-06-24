@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { RecentCreated } from '~/client/components/RecentCreated/RecentCreated';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
 

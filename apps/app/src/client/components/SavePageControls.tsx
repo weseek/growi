@@ -10,11 +10,11 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem, Modal,
 } from 'reactstrap';
 
-import { useEditorMode } from '~/stores-universal/ui';
 import {
   useIsEditable, useIsAclEnabled,
   useIsSlackConfigured,
-} from '~/stores/context';
+} from '~/stores-universal/context';
+import { useEditorMode } from '~/stores-universal/ui';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
 import { useIsDeviceLargerThanMd } from '~/stores/ui';

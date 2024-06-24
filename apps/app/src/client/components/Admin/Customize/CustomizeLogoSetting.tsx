@@ -2,12 +2,12 @@ import React, { useCallback, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
+import ImageCropModal from '~/client/components/Common/ImageCropModal';
 import {
   apiv3Delete, apiv3PostForm, apiv3Put,
 } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import ImageCropModal from '~/client/components/Common/ImageCropModal';
-import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores/context';
+import { useIsDefaultLogo, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import AdminUpdateButtonRow from '../Common/AdminUpdateButtonRow';
 

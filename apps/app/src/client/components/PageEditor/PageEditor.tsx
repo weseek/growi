@@ -23,14 +23,14 @@ import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/serv
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
-import { EditorMode, useEditorMode } from '~/stores-universal/ui';
-import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
   useIsEditable, useIsIndentSizeForced,
   useAcceptedUploadFileType,
-} from '~/stores/context';
+} from '~/stores-universal/context';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useEditorSettings,
   useCurrentIndentSize,

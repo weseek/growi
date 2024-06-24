@@ -10,7 +10,7 @@ import urljoin from 'url-join';
 import AdminGeneralSecurityContainer from '~/client/services/AdminGeneralSecurityContainer';
 import AdminGitHubSecurityContainer from '~/client/services/AdminGitHubSecurityContainer';
 import { toastSuccess, toastError } from '~/client/util/toastr';
-import { useSiteUrl } from '~/stores/context';
+import { useSiteUrl } from '~/stores-universal/context';
 
 import { withUnstatedContainers } from '../../UnstatedUtils';
 

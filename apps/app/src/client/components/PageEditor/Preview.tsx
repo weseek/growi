@@ -2,10 +2,10 @@ import type { CSSProperties } from 'react';
 
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 
+import RevisionRenderer from '~/components/PageView/RevisionRenderer';
 import type { RendererOptions } from '~/interfaces/renderer-options';
-import { useIsEnabledMarp } from '~/stores/context';
+import { useIsEnabledMarp } from '~/stores-universal/context';
 
-import RevisionRenderer from '../../../components/PageView/RevisionRenderer';
 import { SlideRenderer } from '../Page/SlideRenderer';
 
 import styles from './Preview.module.scss';

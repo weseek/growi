@@ -6,7 +6,7 @@ import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import { scroller } from 'react-scroll';
 
-import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
+import { useIsGuestUser, useIsReadOnlyUser } from '~/stores-universal/context';
 import { useDescendantsPageListModal, useTagEditModal } from '~/stores/modal';
 import { useSWRxPageInfo, useSWRxTagsInfo } from '~/stores/page';
 import { useIsAbleToShowTagLabel } from '~/stores/ui';

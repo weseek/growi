@@ -14,7 +14,7 @@ import {
 } from 'reactstrap';
 
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/client/components/PageEditor/markdown-drawio-util-for-editor';
-import { useRendererConfig } from '~/stores/context';
+import { useRendererConfig } from '~/stores-universal/context';
 import { useDrawioModal } from '~/stores/modal';
 import { usePersonalSettings } from '~/stores/personal-settings';
 import loggerFactory from '~/utils/logger';
