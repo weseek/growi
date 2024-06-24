@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { RecentCreated } from '~/client/components/RecentCreated/RecentCreated';
-import styles from '~/components/UsersHomepageFooter.module.scss';
 import { useCurrentUser } from '~/stores/context';
 
 import { BookmarkFolderTree } from './Bookmarks/BookmarkFolderTree';
+
+import styles from './UsersHomepageFooter.module.scss';
 
 type UsersHomepageFooterProps = {
   creatorId: string;
