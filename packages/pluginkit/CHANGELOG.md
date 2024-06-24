@@ -1,5 +1,11 @@
 # @growi/pluginkit
 
+## 1.0.1
+
+### Patch Changes
+
+- [#8898](https://github.com/weseek/growi/pull/8898) [`7a50227`](https://github.com/weseek/growi/commit/7a502271b35bae4b419e54a08b2b00c7b140db46) Thanks [@yuki-takei](https://github.com/yuki-takei)! - Update tsconfig.json module setting
+
 ## 1.0.0
 
 ### Major Changes
