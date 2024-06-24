@@ -1,7 +1,6 @@
 import type { Router } from 'express';
 
 
-// import express from 'express';
 import { SupportedTargetModel, SupportedAction } from '~/interfaces/activity';
 import type { ParamsForAnnouncement } from '~/interfaces/announcement';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
