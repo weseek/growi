@@ -14,8 +14,8 @@ import deepmerge from 'ts-deepmerge';
 import type { Pluggable, PluginTuple } from 'unified';
 
 
-import { CodeBlock } from '~/client/components/ReactMarkdownComponents/CodeBlock';
-import { NextLink } from '~/client/components/ReactMarkdownComponents/NextLink';
+import { CodeBlock } from '~/components/ReactMarkdownComponents/CodeBlock';
+import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import type { RendererConfig } from '~/interfaces/services/renderer';
