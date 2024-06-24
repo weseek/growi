@@ -19,7 +19,7 @@ import {
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useCsrfToken, useIsSearchScopeChildrenAsDefault,
   useRegistrationWhitelist, useShowPageLimitationXL, useRendererConfig, useIsEnabledMarp, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 

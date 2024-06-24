@@ -2,11 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useSWRMUTxCurrentPage, useSWRxCurrentPage } from '~/stores/page';
-import { mutatePageTree } from '~/stores/page-listing';
-
-import { publish } from '../../client/services/page-operation';
 
 
 export const WipPageAlert = (): JSX.Element => {
@@ -22,12 +18,19 @@ export const WipPageAlert = (): JSX.Element => {
     }
 
     try {
+      const publish = (await import('~/client/services/page-operation')).publish;
       await publish(pageId);
+
       await mutateCurrentPage();
+
+      const mutatePageTree = (await import('~/stores/page-listing')).mutatePageTree;
       await mutatePageTree();
+
+      const toastSuccess = (await import('~/client/util/toastr')).toastSuccess;
       toastSuccess(t('wip_page.success_publish_page'));
     }
     catch {
+      const toastError = (await import('~/client/util/toastr')).toastError;
       toastError(t('wip_page.fail_publish_page'));
     }
   }, [currentPage?._id, mutateCurrentPage, t]);

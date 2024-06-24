@@ -6,8 +6,9 @@ import { useTranslation } from 'next-i18next';
 
 import { useCreatePage } from '~/client/services/create-page';
 import { toastError } from '~/client/util/toastr';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useIsNotFound } from '~/stores/page';
-import { EditorMode, useEditorMode, useIsDeviceLargerThanMd } from '~/stores/ui';
+import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import { useCurrentPageYjsData } from '~/stores/yjs';
 
 import { shouldCreateWipPage } from '../../utils/should-create-wip-page';

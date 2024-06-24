@@ -7,47 +7,45 @@ import { isUsersHomepage } from '@growi/core/dist/utils/page-path-utils';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
-import { useShouldExpandContent } from '~/client/services/layout';
+import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
 import {
   useIsForbidden, useIsIdenticalPath, useIsNotCreatable,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import { useIsMobile } from '~/stores/ui';
 
-
-import type { CommentsProps } from '../Comments';
-import { PagePathNavSticky } from '../Common/PagePathNav';
-import { PageViewLayout } from '../Common/PageViewLayout';
-import { PageAlerts } from '../PageAlert/PageAlerts';
-import { PageContentFooter } from '../PageContentFooter';
-import type { PageSideContentsProps } from '../PageSideContents';
 import { UserInfo } from '../User/UserInfo';
-import type { UsersHomepageFooterProps } from '../UsersHomepageFooter';
 
+import { PageAlerts } from './PageAlerts/PageAlerts';
+import { PageContentFooter } from './PageContentFooter';
+import { PageViewLayout } from './PageViewLayout';
 import RevisionRenderer from './RevisionRenderer';
+
 
 import styles from './PageView.module.scss';
 
 
-const NotCreatablePage = dynamic(() => import('../NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../ForbiddenPage'), { ssr: false });
-const NotFoundPage = dynamic(() => import('../NotFoundPage'), { ssr: false });
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('../PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const PageContentsUtilities = dynamic(() => import('./PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
-const Comments = dynamic<CommentsProps>(() => import('../Comments').then(mod => mod.Comments), { ssr: false });
-const UsersHomepageFooter = dynamic<UsersHomepageFooterProps>(() => import('../UsersHomepageFooter')
+const NotCreatablePage = dynamic(() => import('../../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
+const NotFoundPage = dynamic(() => import('../../components/NotFoundPage'), { ssr: false });
+const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageContentsUtilities = dynamic(() => import('../../components/Page/PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
+const Comments = dynamic(() => import('../../components/Comments').then(mod => mod.Comments), { ssr: false });
+const UsersHomepageFooter = dynamic(() => import('../../components/UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
-const IdenticalPathPage = dynamic(() => import('../IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-const SlideRenderer = dynamic(() => import('./SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const IdenticalPathPage = dynamic(() => import('../../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {
   pagePath: string,
   rendererConfig: RendererConfig,
   initialPage?: IPagePopulatedToShowRevision,
+  className?: string,
 }
 
 export const PageView = (props: Props): JSX.Element => {
@@ -57,7 +55,7 @@ export const PageView = (props: Props): JSX.Element => {
   const [isCommentsLoaded, setCommentsLoaded] = useState(false);
 
   const {
-    pagePath, initialPage, rendererConfig,
+    pagePath, initialPage, rendererConfig, className,
   } = props;
 
   const { data: isIdenticalPathPage } = useIsIdenticalPath();
@@ -96,7 +94,6 @@ export const PageView = (props: Props): JSX.Element => {
   }, [isCommentsLoaded]);
   // *******************************  end  *******************************
 
-
   const specialContents = useMemo(() => {
     if (isIdenticalPathPage) {
       return <IdenticalPathPage />;
@@ -109,9 +106,7 @@ export const PageView = (props: Props): JSX.Element => {
     }
   }, [isForbidden, isIdenticalPathPage, isNotCreatable]);
 
-  const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} isWipPage={page?.wip} />
-  );
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
 
   const sideContents = !isNotFound && !isNotCreatable
     ? (
@@ -168,6 +163,7 @@ export const PageView = (props: Props): JSX.Element => {
 
   return (
     <PageViewLayout
+      className={className}
       headerContents={headerContents}
       sideContents={sideContents}
       footerContents={footerContents}

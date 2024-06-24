@@ -6,11 +6,9 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter,
 } from 'reactstrap';
 
-import { apiv3Put } from '~/client/util/apiv3-client';
-import { toastError, toastSuccess } from '~/client/util/toastr';
 import { UserGroupPageGrantStatus, type IPageGrantData } from '~/interfaces/page';
 import type { PopulatedGrantedGroup, IRecordApplicableGrant, IResGrantData } from '~/interfaces/page-grant';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 import { useSWRxApplicableGrant, useSWRxCurrentGrantData, useSWRxCurrentPage } from '~/stores/page';
 
 type ModalProps = {
@@ -66,6 +64,7 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
     close();
 
     try {
+      const apiv3Put = (await import('~/client/util/apiv3-client')).apiv3Put;
       await apiv3Put(`/page/${pageId}/grant`, {
         grant: selectedGrant,
         userRelatedGrantedGroups: selectedGroups.length !== 0 ? selectedGroups.map((g) => {
@@ -73,9 +72,11 @@ const FixPageGrantModal = (props: ModalProps): JSX.Element => {
         }) : null,
       });
 
+      const toastSuccess = (await import('~/client/util/toastr')).toastSuccess;
       toastSuccess(t('Successfully updated'));
     }
     catch (err) {
+      const toastError = (await import('~/client/util/toastr')).toastError;
       toastError(t('Failed to update'));
     }
   };

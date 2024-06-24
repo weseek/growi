@@ -2,8 +2,6 @@ import React, { useState, useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { unlink } from '~/client/services/page-operation';
-import { toastError } from '~/client/util/toastr';
 import { useCurrentPagePath } from '~/stores/page';
 import { useRedirectFrom } from '~/stores/page-redirect';
 
@@ -19,10 +17,12 @@ export const PageRedirectedAlert = React.memo((): JSX.Element => {
       return;
     }
     try {
+      const unlink = (await import('~/client/services/page-operation')).unlink;
       await unlink(currentPagePath);
       setIsUnlinked(true);
     }
     catch (err) {
+      const toastError = (await import('~/client/util/toastr')).toastError;
       toastError(err);
     }
   }, [currentPagePath]);

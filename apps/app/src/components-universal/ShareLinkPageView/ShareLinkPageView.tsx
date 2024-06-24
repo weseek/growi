@@ -1,32 +1,31 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 import type { IPagePopulatedToShowRevision } from '@growi/core';
 import { useSlidesByFrontmatter } from '@growi/presentation/dist/services';
 import dynamic from 'next/dynamic';
 
-import { useShouldExpandContent } from '~/client/services/layout';
+import { PagePathNavTitle } from '~/components-universal/Common/PagePathNavTitle';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { IShareLinkHasId } from '~/interfaces/share-link';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { generateSSRViewOptions } from '~/services/renderer/renderer';
-import { useIsEnabledMarp } from '~/stores/context';
 import { useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
 import loggerFactory from '~/utils/logger';
 
-import { PagePathNavSticky } from './Common/PagePathNav';
-import { PageViewLayout } from './Common/PageViewLayout';
-import RevisionRenderer from './Page/RevisionRenderer';
-import ShareLinkAlert from './Page/ShareLinkAlert';
-import { PageContentFooter } from './PageContentFooter';
-import type { PageSideContentsProps } from './PageSideContents';
+import { PageContentFooter } from '../PageView/PageContentFooter';
+import { PageViewLayout } from '../PageView/PageViewLayout';
+import RevisionRenderer from '../PageView/RevisionRenderer';
+
+import ShareLinkAlert from './ShareLinkAlert';
 
 
 const logger = loggerFactory('growi:Page');
 
 
-const PageSideContents = dynamic<PageSideContentsProps>(() => import('./PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const ForbiddenPage = dynamic(() => import('./ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('./Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
+const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,
@@ -62,9 +61,7 @@ export const ShareLinkPageView = (props: Props): JSX.Element => {
     }
   }, [disableLinkSharing, props.disableLinkSharing]);
 
-  const headerContents = (
-    <PagePathNavSticky pageId={page?._id} pagePath={pagePath} />
-  );
+  const headerContents = <PagePathNavTitle pageId={page?._id} pagePath={pagePath} />;
 
   const sideContents = !isNotFound
     ? (

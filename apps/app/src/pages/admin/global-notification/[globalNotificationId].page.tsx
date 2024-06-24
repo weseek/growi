@@ -13,7 +13,7 @@ import { Provider } from 'unstated';
 
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import { useCurrentUser } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 

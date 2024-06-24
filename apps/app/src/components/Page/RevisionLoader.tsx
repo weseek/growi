@@ -9,7 +9,7 @@ import { useSWRxPageRevision } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 
 
-import RevisionRenderer from './RevisionRenderer';
+import RevisionRenderer from '../../components-universal/PageView/RevisionRenderer';
 
 export const ROOT_ELEM_ID = 'revision-loader' as const;
 

@@ -2,13 +2,13 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
+import { useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useIsGuestUser, useIsReadOnlyUser } from '~/stores/context';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { useRemoteRevisionId, useRemoteRevisionLastUpdateUser } from '~/stores/remote-latest-page';
-import { useEditorMode } from '~/stores/ui';
 
-import { Username } from './User/Username';
+import { Username } from '../components-universal/User/Username';
 
 import styles from './PageStatusAlert.module.scss';
 

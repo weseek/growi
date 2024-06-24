@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
-import { useAppTitle } from '~/stores/context';
+import { useAppTitle } from '~/stores-universal/context';
 
 import GrowiLogo from '../Common/GrowiLogo';
 

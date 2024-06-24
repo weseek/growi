@@ -10,16 +10,14 @@ import {
   DropdownToggle, DropdownMenu, DropdownItem, Modal,
 } from 'reactstrap';
 
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   useIsEditable, useIsAclEnabled,
   useIsSlackConfigured,
 } from '~/stores/context';
 import { useWaitingSaveProcessing, useSWRxSlackChannels, useIsSlackEnabled } from '~/stores/editor';
 import { useSWRxCurrentPage, useCurrentPagePath } from '~/stores/page';
-import {
-  useEditorMode, useIsDeviceLargerThanMd,
-
-} from '~/stores/ui';
+import { useIsDeviceLargerThanMd } from '~/stores/ui';
 import loggerFactory from '~/utils/logger';
 
 import { GrantSelector } from './SavePageControls/GrantSelector';

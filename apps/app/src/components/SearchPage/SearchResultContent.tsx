@@ -11,11 +11,12 @@ import { animateScroll } from 'react-scroll';
 import { DropdownItem } from 'reactstrap';
 import { debounce } from 'throttle-debounce';
 
-import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
+import { PagePathNav } from '~/components-universal/Common/PagePathNav';
 import type { IPageWithSearchMeta } from '~/interfaces/search';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useCurrentUser } from '~/stores/context';
 import {
   usePageDuplicateModal, usePageRenameModal, usePageDeleteModal,
@@ -25,9 +26,7 @@ import { useSearchResultOptions } from '~/stores/renderer';
 import { mutateSearching } from '~/stores/search';
 
 import type { AdditionalMenuItemsRendererProps, ForceHideMenuItems } from '../Common/Dropdown/PageItemControl';
-import { PagePathNav } from '../Common/PagePathNav';
-import { type RevisionLoaderProps } from '../Page/RevisionLoader';
-import type { PageContentFooterProps } from '../PageContentFooter';
+import type { RevisionLoaderProps } from '../Page/RevisionLoader';
 
 import styles from './SearchResultContent.module.scss';
 
@@ -38,7 +37,10 @@ const _fluidLayoutClass = styles['fluid-layout'];
 const PageControls = dynamic(() => import('../PageControls').then(mod => mod.PageControls), { ssr: false });
 const RevisionLoader = dynamic<RevisionLoaderProps>(() => import('../Page/RevisionLoader').then(mod => mod.RevisionLoader), { ssr: false });
 const PageComment = dynamic(() => import('../PageComment').then(mod => mod.PageComment), { ssr: false });
-const PageContentFooter = dynamic<PageContentFooterProps>(() => import('../PageContentFooter').then(mod => mod.PageContentFooter), { ssr: false });
+const PageContentFooter = dynamic(
+  () => import('~/components-universal/PageView/PageContentFooter').then(mod => mod.PageContentFooter),
+  { ssr: false },
+);
 
 type AdditionalMenuItemsProps = AdditionalMenuItemsRendererProps & {
   pageId: string,

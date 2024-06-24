@@ -10,8 +10,8 @@ import superjson from 'superjson';
 
 import { ShareLinkLayout } from '~/components-universal/Layout/ShareLinkLayout';
 import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
+import { ShareLinkPageView } from '~/components-universal/ShareLinkPageView';
 import GrowiContextualSubNavigationSubstance from '~/components/Navbar/GrowiContextualSubNavigation';
-import { ShareLinkPageView } from '~/components/ShareLinkPageView';
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction } from '~/interfaces/activity';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
@@ -22,7 +22,7 @@ import ShareLink from '~/server/models/share-link';
 import {
   useCurrentUser, useRendererConfig, useIsSearchPage, useCurrentPathname,
   useShareLinkId, useIsSearchServiceConfigured, useIsSearchServiceReachable, useIsSearchScopeChildrenAsDefault, useIsContainerFluid, useIsEnabledMarp,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useIsNotFound, useSWRMUTxCurrentPage } from '~/stores/page';
 import loggerFactory from '~/utils/logger';
 

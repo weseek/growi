@@ -12,10 +12,10 @@ import urljoin from 'url-join';
 import type { RendererOptions } from '~/interfaces/renderer-options';
 
 
+import RevisionRenderer from '../../components-universal/PageView/RevisionRenderer';
+import { Username } from '../../components-universal/User/Username';
 import type { ICommentHasId } from '../../interfaces/comment';
 import FormattedDistanceDate from '../FormattedDistanceDate';
-import RevisionRenderer from '../Page/RevisionRenderer';
-import { Username } from '../User/Username';
 
 import { CommentControl } from './CommentControl';
 import { CommentEditor } from './CommentEditor';

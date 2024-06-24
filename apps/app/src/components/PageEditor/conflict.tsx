@@ -10,11 +10,11 @@ import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { Save, SaveOptions } from '~/components/PageEditor/PageEditor';
 import { SocketEventName } from '~/interfaces/websocket';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
 export type ConflictHandler = (

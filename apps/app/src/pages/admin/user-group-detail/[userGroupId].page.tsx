@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
-import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
+import { useIsAclEnabled, useCurrentUser } from '~/stores-universal/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';

@@ -11,7 +11,7 @@ import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions, useActivityExpirationSeconds,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 

@@ -8,7 +8,7 @@ import Head from 'next/head';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { CommonProps } from '~/pages/utils/commons';
 import { generateCustomTitle } from '~/pages/utils/commons';
-import { useIsSearchServiceReachable, useCurrentUser } from '~/stores/context';
+import { useIsSearchServiceReachable, useCurrentUser } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
