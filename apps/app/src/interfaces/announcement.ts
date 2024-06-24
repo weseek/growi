@@ -2,9 +2,7 @@ import type {
   IUser, IPage, Ref, HasObjectId,
 } from '@growi/core';
 
-import { AnnouncementStatuses } from '../features/announcement/server/events/announcement-utils';
-
-type AnnouncementStatuses = typeof AnnouncementStatuses;
+import type { AnnouncementStatusesType } from '../features/announcement/server/events/announcement-utils';
 
 export interface IAnnouncement {
   sender: Ref<IUser>
@@ -12,13 +10,16 @@ export interface IAnnouncement {
   emoji?: string
   isReadReceiptTrackingEnabled: boolean
   pageId: Ref<IPage>
-  receivers: [
+  receivers:
     {
       receiver: Ref<IUser>,
       updatedAt?: Date,
-      readStatus: AnnouncementStatuses,
-    }
-  ]
+      readStatus: AnnouncementStatusesType,
+    }[]
 }
 
 export type IAnnouncementHasId = IAnnouncement & HasObjectId;
+
+export interface ParamsForAnnouncement extends Omit<IAnnouncement, 'receivers'> {
+  receivers: Ref<IUser>[]
+}
