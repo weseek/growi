@@ -136,7 +136,19 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const [hovereditem, setHoveredItem] = useState<undefined | number>(undefined);
+  const ButtonForUserGroupTable = () => {
+    return (
+      <button
+        className="btn btn-link btn-edit-groups text-secondary py-0"
+        type="button"
+      >
+        <span className="material-symbols-outlined pe-2 pt-2">group</span>
+        <span className="text-decoration-underline"></span>
+        <span className="material-symbols-outlined px-2 py-0 ">edit</span>
+      </button>
+    );
+  };
+  const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
 
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
@@ -155,7 +167,7 @@ export const UserGroupTable: FC<Props> = ({
           </tr>
         </thead>
         <tbody>
-          {userGroups.map((group, item) => {
+          {userGroups.map((group, index) => {
             const users = groupIdToUsersMap[group._id];
 
             return (
@@ -164,8 +176,8 @@ export const UserGroupTable: FC<Props> = ({
                 {isAclEnabled
                   ? (
                     <td
-                      onMouseEnter={() => setHoveredItem(item)}
-                      onMouseLeave={() => setHoveredItem(undefined)}
+                      onMouseEnter={() => setHoveredIdex(index)}
+                      onMouseLeave={() => setHoveredIdex(undefined)}
                     >
 
 
@@ -181,7 +193,7 @@ export const UserGroupTable: FC<Props> = ({
                       >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
-                        <span className={`material-symbols-outlined px-2 py-0 ${hovereditem === item ? '' : 'opacity-0'}`}>edit</span>
+                        <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
                       </button>
                     </td>
                   )
