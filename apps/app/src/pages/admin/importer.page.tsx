@@ -1,19 +1,21 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminImportContainer from '~/client/services/AdminImportContainer';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCurrentUser } from '~/stores/context';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
+import { useCurrentUser } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
 const DataImportPageContents = dynamic(() => import('~/components/Admin/ImportData/ImportDataPageContents'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
@@ -24,12 +26,16 @@ const AdminDataImportPage: NextPage<CommonProps> = (props) => {
 
   const componentTitle = t('importer_management.import_data');
   const pageTitle = generateCustomTitle(props, componentTitle);
-  const injectableContainers: Container<any>[] = [];
 
-  if (isClient()) {
-    const adminImportContainer = new AdminImportContainer();
-    injectableContainers.push(adminImportContainer);
-  }
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
+
+  useEffect(() => {
+    (async() => {
+      const AdminImportContainer = (await import('~/client/services/AdminImportContainer')).default;
+      const adminImportContainer = new AdminImportContainer();
+      injectableContainers.push(adminImportContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

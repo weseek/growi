@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
-import { Themes, useNextThemes } from '~/stores/use-next-themes';
+import { Themes, useNextThemes } from '~/stores-universal/use-next-themes';
 
 
 type ColorModeSettingsButtonProps = {

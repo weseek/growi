@@ -1,10 +1,12 @@
-import React, {
+import {
   type FC,
   memo, useCallback, useEffect, useState,
   useRef,
 } from 'react';
 
+import withLoadingProps from 'next-dynamic-loading-props';
 import dynamic from 'next/dynamic';
+import { useIsomorphicLayoutEffect } from 'usehooks-ts';
 
 import { SidebarMode } from '~/interfaces/ui';
 import { useIsSearchPage } from '~/stores/context';
@@ -20,7 +22,8 @@ import {
 import { DrawerToggler } from '../Common/DrawerToggler';
 
 import { AppTitleOnSidebarHead, AppTitleOnSubnavigation } from './AppTitle/AppTitle';
-import { ResizableArea } from './ResizableArea/ResizableArea';
+import { ResizableAreaFallback } from './ResizableArea/ResizableAreaFallback';
+import type { ResizableAreaProps } from './ResizableArea/props';
 import { SidebarHead } from './SidebarHead';
 import { SidebarNav, type SidebarNavProps } from './SidebarNav';
 
@@ -28,10 +31,31 @@ import styles from './Sidebar.module.scss';
 
 
 const SidebarContents = dynamic(() => import('./SidebarContents').then(mod => mod.SidebarContents), { ssr: false });
+const ResizableArea = withLoadingProps<ResizableAreaProps>(useLoadingProps => dynamic(
+  () => import('./ResizableArea').then(mod => mod.ResizableArea),
+  {
+    ssr: false,
+    loading: () => {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      const { children, ...rest } = useLoadingProps();
+      return <ResizableAreaFallback {...rest}>{children}</ResizableAreaFallback>;
+    },
+  },
+));
 
 
 const resizableAreaMinWidth = 348;
 const sidebarNavCollapsedWidth = 48;
+
+const getWidthByMode = (isDrawerMode: boolean, isCollapsedMode: boolean, currentProductNavWidth: number | undefined): number | undefined => {
+  if (isDrawerMode) {
+    return undefined;
+  }
+  if (isCollapsedMode) {
+    return sidebarNavCollapsedWidth;
+  }
+  return currentProductNavWidth;
+};
 
 
 type ResizableContainerProps = {
@@ -48,7 +72,10 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
   const { mutateAndSave: mutatePreferCollapsedMode } = usePreferCollapsedMode();
   const { mutate: mutateCollapsedContentsOpened } = useCollapsedContentsOpened();
 
-  const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(undefined);
+  const [isClient, setClient] = useState(false);
+  const [resizableAreaWidth, setResizableAreaWidth] = useState<number|undefined>(
+    getWidthByMode(isDrawerMode(), isCollapsedMode(), currentProductNavWidth),
+  );
 
   const resizeHandler = useCallback((newWidth: number) => {
     setResizableAreaWidth(newWidth);
@@ -63,36 +90,38 @@ const ResizableContainer = memo((props: ResizableContainerProps): JSX.Element =>
     mutateCollapsedContentsOpened(false);
   }, [mutateCollapsedContentsOpened, mutatePreferCollapsedMode]);
 
+  useIsomorphicLayoutEffect(() => {
+    setClient(true);
+  }, []);
 
   // open/close resizable container when drawer mode
   useEffect(() => {
-    if (isDrawerMode()) {
-      setResizableAreaWidth(undefined);
-    }
-    else if (isCollapsedMode()) {
-      setResizableAreaWidth(sidebarNavCollapsedWidth);
-    }
-    else {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      setResizableAreaWidth(currentProductNavWidth!);
-    }
-
+    setResizableAreaWidth(getWidthByMode(isDrawerMode(), isCollapsedMode(), currentProductNavWidth));
     mutateDrawerOpened(false);
   }, [currentProductNavWidth, isCollapsedMode, isDrawerMode, mutateDrawerOpened]);
 
-  return (
-    <ResizableArea
-      className="flex-expand-vert"
-      width={resizableAreaWidth}
-      minWidth={resizableAreaMinWidth}
-      disabled={!isDockMode()}
-      onResize={resizeHandler}
-      onResizeDone={resizeDoneHandler}
-      onCollapsed={collapsedByResizableAreaHandler}
-    >
-      {children}
-    </ResizableArea>
-  );
+  return !isClient
+    ? (
+      <ResizableAreaFallback
+        className="flex-expand-vert"
+        width={resizableAreaWidth}
+      >
+        {children}
+      </ResizableAreaFallback>
+    )
+    : (
+      <ResizableArea
+        className="flex-expand-vert"
+        width={resizableAreaWidth}
+        minWidth={resizableAreaMinWidth}
+        disabled={!isDockMode()}
+        onResize={resizeHandler}
+        onResizeDone={resizeDoneHandler}
+        onCollapsed={collapsedByResizableAreaHandler}
+      >
+        {children}
+      </ResizableArea>
+    );
 
 });
 

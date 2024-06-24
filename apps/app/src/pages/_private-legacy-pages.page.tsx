@@ -7,14 +7,14 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
@@ -22,7 +22,7 @@ import {
   getNextI18NextConfig, getServerSideCommonProps, generateCustomTitle, useInitSidebarConfig,
 } from './utils/commons';
 
-const SearchResultLayout = dynamic(() => import('~/components/Layout/SearchResultLayout'), { ssr: false });
+const SearchResultLayout = dynamic(() => import('~/components-universal/Layout/SearchResultLayout'), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,

@@ -5,9 +5,9 @@ import React, {
 } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import {
-  CodeMirrorEditorComment, useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor/dist/client';
+import { CodeMirrorEditorComment } from '@growi/editor/dist/client/components/CodeMirrorEditorComment';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
@@ -15,8 +15,10 @@ import {
   TabContent, TabPane,
 } from 'reactstrap';
 
+
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError } from '~/client/util/toastr';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 import { useSWRxPageComment } from '~/stores/comment';
 import {
   useCurrentUser, useIsSlackConfigured, useAcceptedUploadFileType,
@@ -26,7 +28,6 @@ import {
 } from '~/stores/editor';
 import { useCurrentPagePath } from '~/stores/page';
 import { useCommentEditorDirtyMap } from '~/stores/ui';
-import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 import { NotAvailableForGuest } from '../NotAvailableForGuest';

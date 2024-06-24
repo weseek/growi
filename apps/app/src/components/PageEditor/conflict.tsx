@@ -3,18 +3,18 @@ import { useCallback, useEffect } from 'react';
 import { Origin } from '@growi/core';
 import { useGlobalSocket } from '@growi/core/dist/swr';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
 import { useTranslation } from 'react-i18next';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { toastSuccess } from '~/client/util/toastr';
 import type { Save, SaveOptions } from '~/components/PageEditor/PageEditor';
 import { SocketEventName } from '~/interfaces/websocket';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { usePageStatusAlert } from '~/stores/alert';
 import { useConflictDiffModal } from '~/stores/modal';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';
-import { EditorMode, useEditorMode } from '~/stores/ui';
 
 
 export type ConflictHandler = (

@@ -10,20 +10,21 @@ import nodePath from 'path';
 import { type IPageHasId, Origin } from '@growi/core';
 import { pathUtils } from '@growi/core/dist/utils';
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import {
-  CodeMirrorEditorMain,
-  useCodeMirrorEditorIsolated, useResolvedThemeForEditor,
-} from '@growi/editor/dist/client';
+import { CodeMirrorEditorMain } from '@growi/editor/dist/client/components/CodeMirrorEditorMain';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useResolvedThemeForEditor } from '@growi/editor/dist/client/stores/use-resolved-theme';
 import { useRect } from '@growi/ui/dist/utils';
 import detectIndent from 'detect-indent';
 import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
-import { useShouldExpandContent } from '~/client/services/layout';
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
+import { useNextThemes } from '~/stores-universal/use-next-themes';
 import {
   useDefaultIndentSize, useCurrentUser,
   useCurrentPathname, useIsEnabledAttachTitleHeader,
@@ -41,12 +42,8 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
-import {
-  EditorMode,
-  useEditorMode, useIsUntitledPage, useSelectedGrant,
-} from '~/stores/ui';
+import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
-import { useNextThemes } from '~/stores/use-next-themes';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';

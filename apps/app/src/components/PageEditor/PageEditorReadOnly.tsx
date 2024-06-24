@@ -1,10 +1,10 @@
 import react, { useMemo, useRef } from 'react';
 
 import { GlobalCodeMirrorEditorKey } from '@growi/editor';
-import { CodeMirrorEditorReadOnly } from '@growi/editor/dist/client';
+import { CodeMirrorEditorReadOnly } from '@growi/editor/dist/client/components/CodeMirrorEditorReadOnly';
 import { throttle } from 'throttle-debounce';
 
-import { useShouldExpandContent } from '~/client/services/layout';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
 import { useSWRxCurrentPage, useIsLatestRevision } from '~/stores/page';
 import { usePreviewOptions } from '~/stores/renderer';
 

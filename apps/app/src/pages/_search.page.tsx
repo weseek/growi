@@ -7,15 +7,15 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import SearchResultLayout from '~/components/Layout/SearchResultLayout';
-import { DrawioViewerScript } from '~/components/Script/DrawioViewerScript';
+import SearchResultLayout from '~/components-universal/Layout/SearchResultLayout';
+import { DrawioViewerScript } from '~/components-universal/Script/DrawioViewerScript';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { NextPageWithLayout } from './_app.page';

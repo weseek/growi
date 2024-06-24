@@ -14,7 +14,7 @@ import { ValidationTarget, useInputValidator } from '~/client/util/use-input-val
 import LinkedPagePath from '~/models/linked-page-path';
 import { usePageSelectModal } from '~/stores/modal';
 
-import { PagePathHierarchicalLink } from '../Common/PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from '../../components-universal/Common/PagePathHierarchicalLink';
 import { AutosizeSubmittableInput, getAdjustedMaxWidthForAutosizeInput } from '../Common/SubmittableInput';
 import { usePagePathRenameHandler } from '../PageEditor/page-path-rename-utils';
 import { PageSelectModal } from '../PageSelectModal/PageSelectModal';

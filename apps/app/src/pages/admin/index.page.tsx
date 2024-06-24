@@ -1,23 +1,25 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminHomeContainer from '~/client/services/AdminHomeContainer';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useGrowiCloudUri, useGrowiAppIdForGrowiCloud,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
 const AdminHome = dynamic(() => import('~/components/Admin/AdminHome/AdminHome'), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
@@ -41,13 +43,15 @@ const AdminHomepage: NextPage<Props> = (props) => {
 
   const title = generateCustomTitle(props, t('wiki_management_homepage'));
 
-  const injectableContainers: Container<any>[] = [];
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-  if (isClient()) {
-    const adminHomeContainer = new AdminHomeContainer();
-
-    injectableContainers.push(adminHomeContainer);
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminHomeContainer = (await import('~/client/services/AdminHomeContainer')).default;
+      const adminHomeContainer = new AdminHomeContainer();
+      injectableContainers.push(adminHomeContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

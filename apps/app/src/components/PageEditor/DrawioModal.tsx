@@ -4,14 +4,15 @@ import React, {
   useMemo,
 } from 'react';
 
-import { useCodeMirrorEditorIsolated, useDrawioModalForEditor } from '@growi/editor/dist/client';
+import { Lang } from '@growi/core';
+import { useCodeMirrorEditorIsolated } from '@growi/editor/dist/client/stores/codemirror-editor';
+import { useDrawioModalForEditor } from '@growi/editor/dist/client/stores/use-drawio';
 import { LoadingSpinner } from '@growi/ui/dist/components';
 import {
   Modal,
   ModalBody,
 } from 'reactstrap';
 
-import { getDiagramsNetLangCode } from '~/client/util/locale-utils';
 import { replaceFocusedDrawioWithEditor, getMarkdownDrawioMxfile } from '~/components/PageEditor/markdown-drawio-util-for-editor';
 import { useRendererConfig } from '~/stores/context';
 import { useDrawioModal } from '~/stores/modal';
@@ -22,6 +23,20 @@ import loggerFactory from '~/utils/logger';
 import { type DrawioConfig, DrawioCommunicationHelper } from './DrawioCommunicationHelper';
 
 const logger = loggerFactory('growi:components:DrawioModal');
+
+
+// https://docs.google.com/spreadsheets/d/1FoYdyEraEQuWofzbYCDPKN7EdKgS_2ZrsDrOA8scgwQ
+const DIAGRAMS_NET_LANG_MAP = {
+  en_US: 'en',
+  ja_JP: 'ja',
+  zh_CN: 'zh',
+  fr_FR: 'fr',
+};
+
+export const getDiagramsNetLangCode = (lang: Lang): string => {
+  return DIAGRAMS_NET_LANG_MAP[lang];
+};
+
 
 const headerColor = '#334455';
 const fontFamily = "-apple-system, BlinkMacSystemFont, 'Hiragino Kaku Gothic ProN', Meiryo, sans-serif";
@@ -75,7 +90,7 @@ export const DrawioModal = (): JSX.Element => {
     // refs: https://desk.draw.io/support/solutions/articles/16000042546-what-url-parameters-are-supported-
     url.searchParams.append('spin', '1');
     url.searchParams.append('embed', '1');
-    url.searchParams.append('lang', getDiagramsNetLangCode(personalSettingsInfo?.lang || 'en'));
+    url.searchParams.append('lang', getDiagramsNetLangCode(personalSettingsInfo?.lang ?? Lang.en_US));
     url.searchParams.append('ui', 'atlas');
     url.searchParams.append('configure', '1');
 

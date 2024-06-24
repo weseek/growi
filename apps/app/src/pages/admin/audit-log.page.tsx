@@ -1,20 +1,21 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { SupportedActionType } from '~/interfaces/activity';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
+import type { SupportedActionType } from '~/interfaces/activity';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
 import {
   useCurrentUser, useAuditLogEnabled, useAuditLogAvailableActions, useActivityExpirationSeconds,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
-const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
+const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
 const AuditLogManagement = dynamic(() => import('~/components/Admin/AuditLogManagement').then(mod => mod.AuditLogManagement), { ssr: false });
 const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 

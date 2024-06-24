@@ -2,7 +2,6 @@ import React, {
   useCallback, useMemo, useState,
 } from 'react';
 
-import type { IUser } from '@growi/core';
 import { UserPicture, LoadingSpinner } from '@growi/ui/dist/components';
 import { useTranslation } from 'next-i18next';
 import {
@@ -13,7 +12,7 @@ import { toastSuccess, toastError } from '~/client/util/toastr';
 import { useDeleteAttachmentModal } from '~/stores/modal';
 import loggerFactory from '~/utils/logger';
 
-import { Username } from '../User/Username';
+import { Username } from '../../components-universal/User/Username';
 
 import styles from './DeleteAttachmentModal.module.scss';
 

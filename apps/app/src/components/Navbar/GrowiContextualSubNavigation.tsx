@@ -14,9 +14,11 @@ import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
-import { useShouldExpandContent } from '~/client/services/layout';
 import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
+import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
+import { useEditorMode } from '~/stores-universal/ui';
 import {
   useCurrentPathname,
   useCurrentUser, useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
@@ -30,15 +32,13 @@ import {
 } from '~/stores/page';
 import { mutatePageTree } from '~/stores/page-listing';
 import {
-  useEditorMode, useIsAbleToShowPageManagement,
+  useIsAbleToShowPageManagement,
   useIsAbleToChangeEditorMode,
   useIsDeviceLargerThanMd,
 } from '~/stores/ui';
 
 import { NotAvailable } from '../NotAvailable';
 import { Skeleton } from '../Skeleton';
-
-import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiContextualSubNavigation.module.scss';
 import PageEditorModeManagerStyles from './PageEditorModeManager.module.scss';

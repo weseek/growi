@@ -1,6 +1,6 @@
 import { useCommentPreviewOptions } from '~/stores/renderer';
 
-import RevisionRenderer from '../Page/RevisionRenderer';
+import RevisionRenderer from '../../components-universal/PageView/RevisionRenderer';
 
 
 import styles from './CommentPreview.module.scss';

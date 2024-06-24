@@ -1,6 +1,6 @@
 import { memo } from 'react';
 
-import GrowiLogo from '../Icons/GrowiLogo';
+import GrowiLogo from '../../components-universal/Common/GrowiLogo';
 
 type SidebarBrandLogoProps = {
   isDefaultLogo?: boolean

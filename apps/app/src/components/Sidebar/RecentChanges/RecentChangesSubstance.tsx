@@ -10,7 +10,7 @@ import { UserPicture } from '@growi/ui/dist/components';
 import { useTranslation } from 'react-i18next';
 
 import { useKeywordManager } from '~/client/services/search-operation';
-import { PagePathHierarchicalLink } from '~/components/Common/PagePathHierarchicalLink';
+import { PagePathHierarchicalLink } from '~/components-universal/Common/PagePathHierarchicalLink';
 import FormattedDistanceDate from '~/components/FormattedDistanceDate';
 import InfiniteScroll from '~/components/InfiniteScroll';
 import LinkedPagePath from '~/models/linked-page-path';

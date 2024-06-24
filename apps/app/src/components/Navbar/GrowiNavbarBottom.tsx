@@ -2,13 +2,12 @@ import React, {
   useCallback,
 } from 'react';
 
+import { GroundGlassBar } from '~/components-universal/Navbar/GroundGlassBar';
 import { useSearchModal } from '~/features/search/client/stores/search';
 import { useIsSearchPage } from '~/stores/context';
 import { usePageCreateModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
 import { useDrawerOpened } from '~/stores/ui';
-
-import { GroundGlassBar } from './GroundGlassBar';
 
 import styles from './GrowiNavbarBottom.module.scss';
 

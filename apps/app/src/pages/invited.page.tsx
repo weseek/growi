@@ -1,24 +1,21 @@
 import React from 'react';
 
-import type { IUserHasId, IUser } from '@growi/core';
+import type { IUser } from '@growi/core';
 import { USER_STATUS } from '@growi/core';
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { InvitedFormProps } from '~/components/InvitedForm';
-import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
+import { NoLoginLayout } from '~/components-universal/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
+import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-universal/context';
 
-import { useCsrfToken, useCurrentPathname, useCurrentUser } from '../stores/context';
+import type { CommonProps } from './utils/commons';
+import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';
 
-import {
-  CommonProps, getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig,
-} from './utils/commons';
-
-const InvitedForm = dynamic<InvitedFormProps>(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,
