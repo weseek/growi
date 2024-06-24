@@ -14,9 +14,9 @@ import { RawLayout } from './RawLayout';
 import styles from './Admin.module.scss';
 
 
-const PageCreateModal = dynamic(() => import('~/components/PageCreateModal'), { ssr: false });
-const SystemVersion = dynamic(() => import('~/components/SystemVersion'), { ssr: false });
-const HotkeysManager = dynamic(() => import('~/components/Hotkeys/HotkeysManager'), { ssr: false });
+const PageCreateModal = dynamic(() => import('~/client/components/PageCreateModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('~/client/components/SystemVersion'), { ssr: false });
+const HotkeysManager = dynamic(() => import('~/client/components/Hotkeys/HotkeysManager'), { ssr: false });
 
 
 type Props = {

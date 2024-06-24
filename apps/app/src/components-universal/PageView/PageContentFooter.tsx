@@ -3,7 +3,7 @@ import dynamic from 'next/dynamic';
 
 import styles from './PageContentFooter.module.scss';
 
-const AuthorInfo = dynamic(() => import('~/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
+const AuthorInfo = dynamic(() => import('~/client/components/AuthorInfo').then(mod => mod.AuthorInfo), { ssr: false });
 
 export type PageContentFooterProps = {
   page: IPage | IPagePopulatedToShowRevision,

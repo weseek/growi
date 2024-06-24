@@ -17,7 +17,7 @@ import {
 } from './utils/commons';
 
 
-const CompleteUserRegistrationForm = dynamic(() => import('~/components/CompleteUserRegistrationForm')
+const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')
   .then(mod => mod.CompleteUserRegistrationForm), { ssr: false });
 
 

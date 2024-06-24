@@ -6,7 +6,7 @@ import { Origin } from '@growi/core';
 import type { MarkdownTable } from '@growi/editor';
 
 import { extractRemoteRevisionDataFromErrorObj, updatePage as _updatePage } from '~/client/services/update-page';
-import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/Page/markdown-table-util-for-view';
+import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/client/components/Page/markdown-table-util-for-view';
 import { useShareLinkId } from '~/stores/context';
 import { useHandsontableModal, useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';

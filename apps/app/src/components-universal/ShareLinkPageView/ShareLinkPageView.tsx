@@ -23,9 +23,9 @@ import ShareLinkAlert from './ShareLinkAlert';
 const logger = loggerFactory('growi:Page');
 
 
-const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
-const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const PageSideContents = dynamic(() => import('~/client/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/ForbiddenPage'), { ssr: false });
+const SlideRenderer = dynamic(() => import('~/client/components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 type Props = {
   pagePath: string,

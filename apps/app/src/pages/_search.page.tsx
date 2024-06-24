@@ -25,7 +25,7 @@ import {
 } from './utils/commons';
 
 
-const SearchPage = dynamic(() => import('../components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
+const SearchPage = dynamic(() => import('../client/components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
 
 
 type Props = CommonProps & {

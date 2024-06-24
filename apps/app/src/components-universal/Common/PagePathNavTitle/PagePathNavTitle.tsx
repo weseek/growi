@@ -13,7 +13,7 @@ const moduleClass = styles['grw-page-path-nav-title'] ?? '';
 
 
 const PagePathNavSticky = withLoadingProps<PagePathNavLayoutProps>(useLoadingProps => dynamic(
-  () => import('~/components/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
+  () => import('~/client/components/PagePathNavSticky').then(mod => mod.PagePathNavSticky),
   {
     ssr: false,
     loading: () => {

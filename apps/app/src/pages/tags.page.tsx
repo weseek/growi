@@ -43,8 +43,8 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const TagList = dynamic(() => import('~/components/TagList'), { ssr: false });
-const TagCloudBox = dynamic(() => import('~/components/TagCloudBox'), { ssr: false });
+const TagList = dynamic(() => import('~/client/components/TagList'), { ssr: false });
+const TagCloudBox = dynamic(() => import('~/client/components/TagCloudBox'), { ssr: false });
 
 const TagPage: NextPageWithLayout<CommonProps> = (props: Props) => {
   const [activePage, setActivePage] = useState<number>(1);

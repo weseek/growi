@@ -16,8 +16,8 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
-const ExportArchiveDataPage = dynamic(() => import('~/components/Admin/ExportArchiveDataPage'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const ExportArchiveDataPage = dynamic(() => import('~/client/components/Admin/ExportArchiveDataPage'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminExportDataArchivePage: NextPage<CommonProps> = (props) => {

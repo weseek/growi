@@ -41,7 +41,7 @@ type Props = CommonProps & {
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
+  const PrivateLegacyPages = dynamic(() => import('~/client/components/PrivateLegacyPages'), { ssr: false });
 
   // commons
   useCsrfToken(props.csrfToken);

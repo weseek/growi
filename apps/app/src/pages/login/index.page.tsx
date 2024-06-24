@@ -24,7 +24,7 @@ import {
 import styles from './index.module.scss';
 
 
-const LoginForm = dynamic(() => import('~/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
+const LoginForm = dynamic(() => import('~/client/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
 
 type Props = CommonProps & {

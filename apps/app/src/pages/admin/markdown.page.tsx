@@ -16,8 +16,8 @@ import { useCurrentUser } from '~/stores-universal/context';
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components-universal/Layout/AdminLayout'), { ssr: false });
-const MarkDownSettingContents = dynamic(() => import('~/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const MarkDownSettingContents = dynamic(() => import('~/client/components/Admin/MarkdownSetting/MarkDownSettingContents'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 const AdminMarkdownPage: NextPage<CommonProps> = (props) => {

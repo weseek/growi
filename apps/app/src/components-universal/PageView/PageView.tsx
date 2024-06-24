@@ -29,16 +29,16 @@ import RevisionRenderer from './RevisionRenderer';
 import styles from './PageView.module.scss';
 
 
-const NotCreatablePage = dynamic(() => import('../../components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
-const ForbiddenPage = dynamic(() => import('../../components/ForbiddenPage'), { ssr: false });
-const NotFoundPage = dynamic(() => import('../../components/NotFoundPage'), { ssr: false });
-const PageSideContents = dynamic(() => import('../../components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
-const PageContentsUtilities = dynamic(() => import('../../components/Page/PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
-const Comments = dynamic(() => import('../../components/Comments').then(mod => mod.Comments), { ssr: false });
-const UsersHomepageFooter = dynamic(() => import('../../components/UsersHomepageFooter')
+const NotCreatablePage = dynamic(() => import('~/client/components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/ForbiddenPage'), { ssr: false });
+const NotFoundPage = dynamic(() => import('~/client/components/NotFoundPage'), { ssr: false });
+const PageSideContents = dynamic(() => import('~/client/components/PageSideContents').then(mod => mod.PageSideContents), { ssr: false });
+const PageContentsUtilities = dynamic(() => import('~/client/components/Page/PageContentsUtilities').then(mod => mod.PageContentsUtilities), { ssr: false });
+const Comments = dynamic(() => import('~/client/components/Comments').then(mod => mod.Comments), { ssr: false });
+const UsersHomepageFooter = dynamic(() => import('~/client/components/UsersHomepageFooter')
   .then(mod => mod.UsersHomepageFooter), { ssr: false });
-const IdenticalPathPage = dynamic(() => import('../../components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
-const SlideRenderer = dynamic(() => import('../../components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
+const IdenticalPathPage = dynamic(() => import('~/client/components/IdenticalPathPage').then(mod => mod.IdenticalPathPage), { ssr: false });
+const SlideRenderer = dynamic(() => import('~/client/components/Page/SlideRenderer').then(mod => mod.SlideRenderer), { ssr: false });
 
 
 type Props = {

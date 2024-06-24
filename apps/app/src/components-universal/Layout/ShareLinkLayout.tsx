@@ -5,10 +5,10 @@ import dynamic from 'next/dynamic';
 
 import { RawLayout } from './RawLayout';
 
-const PageCreateModal = dynamic(() => import('~/components/PageCreateModal'), { ssr: false });
-const GrowiNavbarBottom = dynamic(() => import('~/components/Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-const ShortcutsModal = dynamic(() => import('~/components/ShortcutsModal'), { ssr: false });
-const SystemVersion = dynamic(() => import('~/components/SystemVersion'), { ssr: false });
+const PageCreateModal = dynamic(() => import('~/client/components/PageCreateModal'), { ssr: false });
+const GrowiNavbarBottom = dynamic(() => import('~/client/components/Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+const ShortcutsModal = dynamic(() => import('~/client/components/ShortcutsModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('~/client/components/SystemVersion'), { ssr: false });
 
 
 type Props = {

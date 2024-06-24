@@ -46,10 +46,10 @@ type Props = CommonProps & {
   sidebarConfig: ISidebarConfig,
 };
 
-const PersonalSettings = dynamic(() => import('~/components/Me/PersonalSettings'), { ssr: false });
+const PersonalSettings = dynamic(() => import('~/client/components/Me/PersonalSettings'), { ssr: false });
 // const MyDraftList = dynamic(() => import('~/components/MyDraftList/MyDraftList'), { ssr: false });
 const InAppNotificationPage = dynamic(
-  () => import('~/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
+  () => import('~/client/components/InAppNotification/InAppNotificationPage').then(mod => mod.InAppNotificationPage), { ssr: false },
 );
 
 const MePage: NextPageWithLayout<Props> = (props: Props) => {

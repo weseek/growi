@@ -27,8 +27,8 @@ import {
 } from './utils/commons';
 
 
-const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
 
 type Props = CommonProps & {

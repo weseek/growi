@@ -15,7 +15,7 @@ import { useCsrfToken, useCurrentPathname, useCurrentUser } from '~/stores-unive
 import type { CommonProps } from './utils/commons';
 import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } from './utils/commons';
 
-const InvitedForm = dynamic(() => import('~/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
+const InvitedForm = dynamic(() => import('~/client/components/InvitedForm').then(mod => mod.InvitedForm), { ssr: false });
 
 type Props = CommonProps & {
   currentUser: IUser,

@@ -6,12 +6,12 @@ import { GroupType, getIdForRef } from '@growi/core';
 import { useTranslation } from 'react-i18next';
 import { TabContent, TabPane } from 'reactstrap';
 
+import { UserGroupDeleteModal } from '~/client/components/Admin/UserGroup/UserGroupDeleteModal';
+import { UserGroupModal } from '~/client/components/Admin/UserGroup/UserGroupModal';
+import { UserGroupTable } from '~/client/components/Admin/UserGroup/UserGroupTable';
+import CustomNav from '~/client/components/CustomNavigation/CustomNav';
 import { apiv3Delete, apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
-import { UserGroupDeleteModal } from '~/components/Admin/UserGroup/UserGroupDeleteModal';
-import { UserGroupModal } from '~/components/Admin/UserGroup/UserGroupModal';
-import { UserGroupTable } from '~/components/Admin/UserGroup/UserGroupTable';
-import CustomNav from '~/components/CustomNavigation/CustomNav';
 import type { IExternalUserGroupHasId } from '~/features/external-user-group/interfaces/external-user-group';
 import type { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { useIsAclEnabled } from '~/stores/context';

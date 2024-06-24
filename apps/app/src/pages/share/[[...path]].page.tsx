@@ -33,7 +33,7 @@ import {
 } from '../utils/commons';
 
 
-const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
+const GrowiContextualSubNavigationSubstance = dynamic(() => import('~/client/components/Navbar/GrowiContextualSubNavigation'), { ssr: false });
 
 
 const logger = loggerFactory('growi:next-page:share');
