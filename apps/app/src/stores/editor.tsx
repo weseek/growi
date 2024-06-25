@@ -12,7 +12,7 @@ import type { SlackChannels } from '~/interfaces/user-trigger-notification';
 
 import {
   useCurrentUser, useDefaultIndentSize, useIsGuestUser, useIsReadOnlyUser,
-} from './context';
+} from '~/stores-universal/context';
 // import { localStorageMiddleware } from './middlewares/sync-to-storage';
 import { useSWRxTagsInfo } from './page';
 import { useStaticSWR } from './use-static-swr';

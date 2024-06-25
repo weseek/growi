@@ -11,7 +11,7 @@ import * as nextI18nConfig from '^/config/next-i18next.config';
 import { GlobalFonts } from '~/components/FontFamily/GlobalFonts';
 import {
   useAppTitle, useConfidential, useGrowiVersion, useSiteUrl, useIsDefaultLogo, useForcedColorScheme,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { swrGlobalConfiguration } from '~/utils/swr-utils';
 
 import type { CommonProps } from './utils/commons';

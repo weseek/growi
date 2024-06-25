@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.10",
+  "version": "7.0.11-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -98,8 +98,10 @@
     "stylelint-config-recess-order": "^5.0.1",
     "stylelint-config-recommended-scss": "^14.0.0",
     "ts-node": "^10.9.2",
+    "ts-patch": "^3.2.0",
     "tsconfig-paths": "^4.2.0",
     "typescript": "~5.0.0",
+    "typescript-transform-paths": "^3.4.7",
     "vite": "^5.2.9",
     "vite-plugin-dts": "^3.8.3",
     "vite-tsconfig-paths": "^4.3.2",

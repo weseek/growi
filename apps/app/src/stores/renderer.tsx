@@ -9,7 +9,7 @@ import type { RendererOptions } from '~/interfaces/renderer-options';
 
 import {
   useRendererConfig,
-} from './context';
+} from '~/stores-universal/context';
 import { useCurrentPagePath } from './page';
 import { useCurrentPageTocNode } from './ui';
 

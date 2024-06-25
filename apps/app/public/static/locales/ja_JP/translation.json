@@ -704,10 +704,9 @@
     "Email format is invalid": "メールアドレスのフォーマットが無効です",
     "Email field is required": "メールアドレスは必須項目です",
     "Password has invalid character": "パスワードに無効な文字があります",
-    "Password minimum character should be more than 8 characters": "パスワードの最小文字数は8文字以上です",
+    "Password minimum character should be more than n characters": "パスワードの最小文字数は{{number}}文字以上です",
     "Password field is required": "パスワードの欄は必ず入力してください",
     "Username or E-mail has invalid characters": "ユーザー名または、メールアドレスに無効な文字があります",
-    "Password minimum character should be more than 6 characters": "パスワードの最小文字数は6文字以上です",
     "user_not_found": "ユーザーが見つかりません",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>エラー: DuplicatedUsernameException</strong></p><p class='mb-0'> {{ failedProviderForDuplicatedUsernameException }} 認証は成功しましたが、新しいユーザーを作成できませんでした。詳しくは<a href='https://github.com/weseek/growi/issues/193'>こちら: #193</a>.</p>"
   },

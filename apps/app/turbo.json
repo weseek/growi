@@ -7,6 +7,7 @@
       "dependsOn": ["@growi/ui#build"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "../../packages/core/scss/**"
       ],
@@ -16,12 +17,12 @@
       "dependsOn": ["^build", "styles-prebuilt"],
       "outputs": [".next/**", "!.next/cache/**", "dist/**"],
       "inputs": [
+        "next.config.js",
         "config/**",
         "public/**",
         "resource/**",
         "src/**",
-        "tsconfig*.json",
-        "vite*.ts"
+        "tsconfig*.json"
       ],
       "outputLogs": "new-only"
     },
@@ -36,6 +37,7 @@
       "dependsOn": ["@growi/ui#dev"],
       "outputs": ["src/styles/prebuilt/**"],
       "inputs": [
+        "vite.styles-prebuilt.config.ts",
         "src/styles/**/*.scss",
         "!src/styles/prebuilt/**",
         "../../packages/core/scss/**"

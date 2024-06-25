@@ -674,10 +674,9 @@
     "Email format is invalid": "电子邮件的格式是无效的",
     "Email field is required": "电子邮件字段是必需的",
     "Password has invalid character": "密码有无效字符",
-    "Password minimum character should be more than 8 characters": "密码最小字符应超过8个字符",
+    "Password minimum character should be more than n characters": "密码最小字符应超过{{number}}个字符",
     "Password field is required": "密码字段是必需的",
     "Username or E-mail has invalid characters": "用户名或电子邮件有无效的字符",
-    "Password minimum character should be more than 6 characters": "密码最小字符应超过6个字符",
     "user_not_found": "未找到用户",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>发生了重复用户名异常</strong></p><p class='mb-0'> 你的 {{ failedProviderForDuplicatedUsernameException }} 认证成功了，但不能创建新的用户。参见问题<a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
