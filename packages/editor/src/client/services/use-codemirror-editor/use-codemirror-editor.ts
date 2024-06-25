@@ -18,7 +18,6 @@ import { useInsertPrefix, type InsertPrefix } from './utils/insert-prefix';
 import { useInsertText, type InsertText } from './utils/insert-text';
 import { useReplaceText, type ReplaceText } from './utils/replace-text';
 import { useSetCaretLine, type SetCaretLine } from './utils/set-caret-line';
-import { useSetCaretLineInit, type SetCaretLineInit } from './utils/set-caret-line-init';
 
 
 type UseCodeMirrorEditorUtils = {
@@ -27,7 +26,6 @@ type UseCodeMirrorEditorUtils = {
   getDoc: GetDoc,
   focus: Focus,
   setCaretLine: SetCaretLine,
-  setCaretLineInit: SetCaretLineInit,
   insertText: InsertText,
   replaceText: ReplaceText,
   insertMarkdownElements: InsertMarkdowElements,
@@ -73,7 +71,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
   const getDoc = useGetDoc(view);
   const focus = useFocus(view);
   const setCaretLine = useSetCaretLine(view);
-  const setCaretLineInit = useSetCaretLineInit(view);
   const insertText = useInsertText(view);
   const replaceText = useReplaceText(view);
   const insertMarkdownElements = useInsertMarkdownElements(view);
@@ -88,7 +85,6 @@ export const useCodeMirrorEditor = (props?: UseCodeMirror): UseCodeMirrorEditor 
     getDoc,
     focus,
     setCaretLine,
-    setCaretLineInit,
     insertText,
     replaceText,
     insertMarkdownElements,

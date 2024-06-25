@@ -306,7 +306,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
       if (currentPageYjsData?.hasRevisionBodyDiff) {
         return;
       }
-      codeMirrorEditor?.setCaretLineInit(lineNumber);
+      codeMirrorEditor?.setCaretLine(lineNumber);
     };
     globalEmitter.on('setCaretLine', handler);
     if (globalEmitter.listenerCount('getCaretLine') >= 1 && codeMirrorEditor?.view != null) {
