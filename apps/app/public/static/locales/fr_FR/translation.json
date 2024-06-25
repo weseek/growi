@@ -702,33 +702,32 @@
     "please_enable_mailer_alert": "La réinitialisation de mot de passe est désactivée, car la configuration d'envois de courriels est incomplète."
   },
   "emoji": {
-    "title": "Choisir un émoji",
     "search": "Rechercher",
-    "clear": "Vider",
-    "notfound": "Aucun émoji trouvé",
-    "skintext": "Choisir le teint par défaut",
+    "search_no_results_1": "Oh non!",
+    "search_no_results_2": "Cet emoji ne peut être trouvé",
+    "pick": "Choisissez un emoji…",
+    "add_custom": "Ajouter un emoji personnalisé",
     "categories": {
-      "search": "Résultats de recherche",
-      "recent": "Récents",
-      "smileys": "Émotions",
-      "people": "Individus & corps",
-      "nature": "Animaux & nature",
-      "foods": "Nourriture & boisson",
       "activity": "Activités",
-      "places": "Voyage",
-      "objects": "Objets",
-      "symbols": "Symboles",
+      "custom": "Personnalisé",
       "flags": "Drapeaux",
-      "custom": "Personnalisé"
+      "foods": "Nourriture & Boissons",
+      "frequent": "Fréquemment utilisé",
+      "nature": "Animaux & Nature",
+      "objects": "Objets",
+      "people": "Smileys & Personnes",
+      "places": "Voyages & Lieux",
+      "search": "Résultats de recherche",
+      "symbols": "Symboles"
     },
-    "categorieslabel": "Catégories d'émojis",
-    "skintones": {
-      "1": "Teint par défaut",
-      "2": "Teint clair",
-      "3": "Teint moyen-clair",
-      "4": "Teint moyen",
-      "5": "Teint moyen-foncé",
-      "6": "Teint foncé"
+    "skins": {
+      "choose": "Choisissez une couleur de peau",
+      "1": "Défaut",
+      "2": "Clair",
+      "3": "Moyen-clair",
+      "4": "Moyen",
+      "5": "Moyen-foncé",
+      "6": "Foncé"
     }
   },
   "maintenance_mode": {

@@ -708,33 +708,32 @@
     "please_enable_mailer_alert": "The password reset feature is disabled because email setup has not been completed. Please ask administrator to complete the email setup."
   },
   "emoji": {
-    "title": "Pick an Emoji",
     "search": "Search",
-    "clear": "Clear",
-    "notfound": "No Emoji Found",
-    "skintext": "Choose your default skin tone",
+    "search_no_results_1": "Oh no!",
+    "search_no_results_2": "That emoji couldn’t be found",
+    "pick": "Pick an emoji…",
+    "add_custom": "Add custom emoji",
     "categories": {
-      "search": "Search Results",
-      "recent": "Frequently Used",
-      "smileys": "Smileys & Emotion",
-      "people": "People & Body",
-      "nature": "Animals & Nature",
-      "foods": "Food & Drink",
       "activity": "Activity",
-      "places": "Travel & Places",
-      "objects": "Objects",
-      "symbols": "Symbols",
+      "custom": "Custom",
       "flags": "Flags",
-      "custom": "Custom"
+      "foods": "Food & Drink",
+      "frequent": "Frequently used",
+      "nature": "Animals & Nature",
+      "objects": "Objects",
+      "people": "Smileys & People",
+      "places": "Travel & Places",
+      "search": "Search Results",
+      "symbols": "Symbols"
     },
-    "categorieslabel": "Emoji categories",
-    "skintones": {
-      "1": "Default Skin Tone",
-      "2": "Light Skin Tone",
-      "3": "Medium-Light Skin Tone",
-      "4": "Medium Skin Tone",
-      "5": "Medium-Dark Skin Tone",
-      "6": "Dark Skin Tone"
+    "skins": {
+      "choose": "Choose default skin tone",
+      "1": "Default",
+      "2": "Light",
+      "3": "Medium-Light",
+      "4": "Medium",
+      "5": "Medium-Dark",
+      "6": "Dark"
     }
   },
   "maintenance_mode": {
