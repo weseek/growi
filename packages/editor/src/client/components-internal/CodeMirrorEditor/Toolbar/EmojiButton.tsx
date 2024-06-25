@@ -3,11 +3,11 @@ import {
   type FC, type CSSProperties,
 } from 'react';
 
-import { Picker } from 'emoji-mart';
+import emojiData from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
 import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
-import 'emoji-mart/css/emoji-mart.css';
 import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
 import { useResolvedThemeForEditor } from '../../../stores/use-resolved-theme';
 
@@ -81,6 +81,7 @@ export const EmojiButton: FC<Props> = (props) => {
   const toggle = useCallback(() => setIsOpen(!isOpen), [isOpen]);
 
   const selectEmoji = useCallback((emoji: { colons: string }): void => {
+    console.log(i18n.language);
 
     if (cursorIndex == null || !isOpen) {
       return;
@@ -135,12 +136,13 @@ export const EmojiButton: FC<Props> = (props) => {
         <div className="mb-2 d-none d-md-block">
           <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
             <Picker
-              onSelect={selectEmoji}
-              i18n={translation}
+              onEmojiSelect={selectEmoji}
+              // i18n={translation}
               title={translation.title}
               emojiTooltip
               style={setStyle()}
               theme={resolvedTheme}
+              data={emojiData}
             />
           </Modal>
         </div>
