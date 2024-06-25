@@ -116,7 +116,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
-  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null && currentPageYjsData?.hasRevisionBodyDiff === true;
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null && currentPageYjsData?.hasRevisionBodyDiff === false;
 
   return (
     <>
