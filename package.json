@@ -57,7 +57,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.3",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.45.0",
     "@swc-node/register": "^1.9.1",
     "@swc/core": "^1.5.25",
     "@swc/helpers": "^0.5.11",
