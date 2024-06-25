@@ -23,7 +23,6 @@
     "msjsdiag.debugger-for-chrome",
     "firefox-devtools.vscode-firefox-debug",
     "editorconfig.editorconfig",
-    "esbenp.prettier-vscode",
     "shinnn.stylelint",
     "stylelint.vscode-stylelint",
     "vitest.explorer",
