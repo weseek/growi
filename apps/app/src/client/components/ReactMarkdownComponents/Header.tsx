@@ -9,6 +9,7 @@ import { NextLink } from '~/components/ReactMarkdownComponents/NextLink';
 import {
   useIsGuestUser, useIsReadOnlyUser, useIsSharedUser, useShareLinkId,
 } from '~/stores-universal/context';
+import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 
@@ -69,6 +70,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
   const { data: isReadOnlyUser } = useIsReadOnlyUser();
   const { data: isSharedUser } = useIsSharedUser();
   const { data: shareLinkId } = useShareLinkId();
+  const { data: currentPageYjsData } = useCurrentPageYjsData();
 
   const router = useRouter();
 
@@ -114,7 +116,7 @@ export const Header = (props: HeaderProps): JSX.Element => {
     };
   }, [activateByHash, router.events]);
 
-  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null;
+  const showEditButton = !isGuestUser && !isReadOnlyUser && !isSharedUser && shareLinkId == null && currentPageYjsData?.hasRevisionBodyDiff === true;
 
   return (
     <>
