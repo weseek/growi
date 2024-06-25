@@ -1,4 +1,4 @@
-import {
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
@@ -6,16 +6,17 @@ import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useIsAclEnabled, useCurrentUser } from '~/stores/context';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
+import { useIsAclEnabled, useCurrentUser } from '~/stores-universal/context';
 import { useIsMaintenanceMode } from '~/stores/maintenanceMode';
 
 import { retrieveServerSideProps } from '../../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const UserGroupDetailPage = dynamic(() => import('~/components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const UserGroupDetailPage = dynamic(() => import('~/client/components/Admin/UserGroupDetail/UserGroupDetailPage'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 type Props = CommonProps & {
   isAclEnabled: boolean

@@ -1,8 +1,34 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.10...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.11...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.11](https://github.com/weseek/growi/compare/v7.0.10...v7.0.11) - 2024-06-25
+
+### 💎 Features
+
+### 🚀 Improvement
+
+* imprv: New marker color (#8891) @satof3
+* imprv: SSR performance (#8916) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Vim keymap works correctly (#8901) @reiji-h
+* fix: Readonly editor prevents ctrl+v and paste. (#8902) @reiji-h
+* fix: Missing HTTP Response in SAML Login With ABLC Callback (#8879) @maeshinshin
+* fix: Set `z-0` to correct navbar and header overlap when the anchor is specified (#8905) @yuki-takei
+* fix: Minimum number of characters in password cannot be changed (#8896) @miya
+
+### 🧰 Maintenance
+
+* support: Replace tests with playwright (20-basic-features/20-basic-features--click-page-icons) (#8903) @miya
+* support: Relocate components dir (#8917) @yuki-takei
+* ci(deps): bump ws from 8.11.0 to 8.17.1 (#8906) @dependabot
+* support: Update module resolution settings (#8898) @yuki-takei
+* support: Decrease max SSR body length (#8895) @yuki-takei
+* support: Use typescript-transform-paths instead of tsconfig-paths (#8892) @yuki-takei
 
 ## [v7.0.10](https://github.com/weseek/growi/compare/v7.0.9...v7.0.10) - 2024-06-13
 

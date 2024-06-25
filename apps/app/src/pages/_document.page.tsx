@@ -1,8 +1,8 @@
 /* eslint-disable @next/next/google-font-display */
 import React from 'react';
 
+import type { DocumentContext, DocumentInitialProps } from 'next/document';
 import Document, {
-  DocumentContext, DocumentInitialProps,
   Html, Head, Main, NextScript,
 } from 'next/document';
 

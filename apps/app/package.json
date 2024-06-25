@@ -1,6 +1,6 @@
 {
   "name": "@growi/app",
-  "version": "7.0.11-RC.0",
+  "version": "7.0.12-RC.0",
   "license": "MIT",
   "private": "true",
   "scripts": {
@@ -72,6 +72,7 @@
     "@google-cloud/storage": "^5.8.5",
     "@growi/core": "link:../../packages/core",
     "@growi/pluginkit": "link:../../packages/pluginkit",
+    "@growi/presentation": "link:../../packages/presentation",
     "@growi/preset-templates": "link:../../packages/preset-templates",
     "@growi/preset-themes": "link:../../packages/preset-themes",
     "@growi/remark-attachment-refs": "link:../../packages/remark-attachment-refs",
@@ -143,6 +144,7 @@
     "multer-autoreap": "^1.0.3",
     "mustache": "^4.2.0",
     "next": "^14.1.3",
+    "next-dynamic-loading-props": "^0.1.1",
     "next-i18next": "^15.2.0",
     "next-superjson": "^0.0.4",
     "next-themes": "^0.2.1",
@@ -220,7 +222,6 @@
     "@growi/core-styles": "link:../../packages/core-styles",
     "@growi/custom-icons": "link:../../packages/custom-icons",
     "@growi/editor": "link:../../packages/editor",
-    "@growi/presentation": "link:../../packages/presentation",
     "@growi/ui": "link:../../packages/ui",
     "@handsontable/react": "=2.1.0",
     "@next/bundle-analyzer": "^14.1.3",

@@ -19,14 +19,14 @@ import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiGet } from '~/client/util/apiv1-client';
 import { apiv3Get } from '~/client/util/apiv3-client';
 import type { IRecordApplicableGrant, IResCurrentGrantData } from '~/interfaces/page-grant';
+import {
+  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
+} from '~/stores-universal/context';
 import type { AxiosResponse } from '~/utils/axios';
 
 import type { IPageTagsInfo } from '../interfaces/tag';
 
 
-import {
-  useCurrentPathname, useShareLinkId, useIsGuestUser, useIsReadOnlyUser,
-} from './context';
 import { useRemoteRevisionId } from './remote-latest-page';
 
 
