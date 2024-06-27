@@ -31,7 +31,7 @@ $grw-tag-label-font-size: 12px;
   width: 137px;
   height: calc(var(--bs-body-line-height) * 1em);
 
-  @include bs.media-breakpoint-down(md) {
+  @include bs.media-breakpoint-down(lg) {
     width: 42px;
     height: calc(var(--bs-body-line-height) * 1em + .375rem * 2);
   }
