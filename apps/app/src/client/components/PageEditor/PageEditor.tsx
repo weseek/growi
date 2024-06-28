@@ -44,7 +44,6 @@ import { mutatePageTree } from '~/stores/page-listing';
 import { usePreviewOptions } from '~/stores/renderer';
 import { useIsUntitledPage, useSelectedGrant } from '~/stores/ui';
 import { useEditingUsers } from '~/stores/use-editing-users';
-import { useCurrentPageYjsData } from '~/stores/yjs';
 import loggerFactory from '~/utils/logger';
 
 import { EditorNavbar } from './EditorNavbar';
@@ -108,7 +107,6 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: editorSettings } = useEditorSettings();
   const { mutate: mutateIsGrantNormalized } = useSWRxCurrentGrantData(currentPage?._id);
   const { data: user } = useCurrentUser();
-  const { data: currentPageYjsData } = useCurrentPageYjsData();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
 
