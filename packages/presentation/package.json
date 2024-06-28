@@ -29,8 +29,8 @@
     "build": "vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
-    "lint:js": "yarn eslint **/*.{js,jsx,ts,tsx}",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
+    "lint:js": "eslint **/*.{js,jsx,ts,tsx}",
     "lint:styles": "stylelint --allow-empty-input \"src/**/*.scss\" \"src/**/*.css\"",
     "lint:typecheck": "tsc",
     "lint": "run-p lint:*"

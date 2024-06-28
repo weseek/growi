@@ -11,9 +11,9 @@
     "build": "tsc && vite build",
     "clean": "shx rm -rf dist",
     "dev": "vite build --mode dev",
-    "watch": "yarn dev -w --emptyOutDir=false",
+    "watch": "pnpm run dev -w --emptyOutDir=false",
     "serve": "vite",
-    "lint:js": "yarn eslint **/*.{js,ts}",
+    "lint:js": "eslint **/*.{js,ts}",
     "lint:typecheck": "tsc",
     "lint": "npm-run-all -p lint:*"
   },
