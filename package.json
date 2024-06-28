@@ -20,18 +20,9 @@
   "bugs": {
     "url": "https://github.com/weseek/growi/issues"
   },
-  "packageManager": "yarn@1.22.22",
-  "workspaces": {
-    "packages": [
-      "packages/*",
-      "apps/*"
-    ],
-    "nohoist": [
-      "**/uvu/*"
-    ]
-  },
+  "packageManager": "pnpm@9.4.0",
   "scripts": {
-    "bootstrap": "yarn install",
+    "bootstrap": "pnpm install",
     "start": "yarn app:server",
     "prestart": "yarn app:build",
     "app:build": "turbo run build --filter @growi/app",
@@ -110,7 +101,7 @@
   },
   "engines": {
     "node": "^18 || ^20",
-    "npm": ">=8.5 < 9.6.6",
-    "yarn": ">=1.22 <2"
+    "npm": ">=9.6 <10",
+    "pnpm": ">=9.4 <10"
   }
 }

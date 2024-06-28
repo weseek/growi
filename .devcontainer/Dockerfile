@@ -52,8 +52,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
-RUN yarn global add turbo
-RUN yarn global add node-gyp
+RUN npm install -g pnpm && pnpm setup
+RUN npm install -g turbo
+RUN npm install -g node-gyp
 
 # Uncomment to default to non-root user
 # USER $USER_UID
