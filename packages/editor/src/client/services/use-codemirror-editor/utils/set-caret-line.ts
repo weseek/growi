@@ -9,7 +9,7 @@ export type SetCaretLine = (lineNumber?: number, schedule?: boolean) => void;
 const setCaretLine = (view?: EditorView, lineNumber?: number): void => {
   const doc = view?.state.doc;
 
-  if (doc == null || view == null) {
+  if (doc == null) {
     return;
   }
 
