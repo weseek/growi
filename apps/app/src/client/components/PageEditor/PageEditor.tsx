@@ -303,7 +303,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // set handler to set caret line
   useEffect(() => {
     const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber);
+      codeMirrorEditor?.setCaretLine(lineNumber, true);
     };
     globalEmitter.on('setCaretLine', handler);
     if (globalEmitter.listenerCount('getCaretLine') >= 1 && codeMirrorEditor?.view != null) {
