@@ -40,8 +40,8 @@
   "dependencies": {
   },
   "devDependencies": {
-    "@growi/core": "link:../core",
-    "@growi/core-styles": "link:../core-styles",
+    "@growi/core": "workspace:^",
+    "@growi/core-styles": "workspace:^",
     "date-fns": "^3.6.0",
     "reactstrap": "^9.2.2"
   },

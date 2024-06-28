@@ -33,9 +33,9 @@
     "escape-string-regexp": "5.0.0 or above exports only ESM"
   },
   "dependencies": {
-    "@growi/core": "link:../core",
-    "@growi/remark-growi-directive": "link:../remark-growi-directive",
-    "@growi/ui": "link:../ui",
+    "@growi/core": "workspace:^",
+    "@growi/remark-growi-directive": "workspace:^",
+    "@growi/ui": "workspace:^",
     "escape-string-regexp": "^4.0.0",
     "express": "^4.19.2",
     "http-errors": "^2.0.0",
@@ -43,6 +43,8 @@
     "swr": "^2.2.2"
   },
   "devDependencies": {
+    "axios": "^0.24.0",
+    "is-absolute-url": "^4.0.1",
     "eslint-plugin-regex": "^1.8.0",
     "hast-util-sanitize": "^4.1.0",
     "hast-util-select": "^5.0.5",

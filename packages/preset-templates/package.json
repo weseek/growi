@@ -9,7 +9,7 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@growi/pluginkit": "link:../pluginkit"
+    "@growi/pluginkit": "workspace:^"
   },
   "growiPlugin": {
     "schemaVersion": "4",

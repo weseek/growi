@@ -44,9 +44,9 @@
     "test": ""
   },
   "dependencies": {
-    "@growi/core": "link:../core",
-    "@growi/remark-growi-directive": "link:../remark-growi-directive",
-    "@growi/ui": "link:../ui",
+    "@growi/core": "workspace:^",
+    "@growi/remark-growi-directive": "workspace:^",
+    "@growi/ui": "workspace:^",
     "axios": "^0.24.0",
     "bunyan": "^1.8.15",
     "hast-util-select": "^5.0.5",

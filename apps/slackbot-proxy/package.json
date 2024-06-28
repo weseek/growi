@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "@godaddy/terminus": "^4.9.0",
-    "@growi/slack": "link:../../packages/slack",
+    "@growi/slack": "workspace:^",
     "@slack/oauth": "^2.0.1",
     "@slack/web-api": "^6.2.4",
     "@tsed/common": "^6.43.0",

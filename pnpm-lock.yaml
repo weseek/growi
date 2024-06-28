@@ -68,10 +68,10 @@ importers:
         version: 5.59.7(eslint@8.41.0)(typescript@5.0.4)
       '@vitejs/plugin-react':
         specifier: ^4.3.1
-        version: 4.3.1(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6))
+        version: 4.3.1(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1))
       '@vitest/coverage-v8':
         specifier: ^1.6.0
-        version: 1.6.0(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6))
+        version: 1.6.0(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1))
       '@vitest/ui':
         specifier: ^1.6.0
         version: 1.6.0(vitest@1.6.0)
@@ -170,19 +170,19 @@ importers:
         version: 3.4.7(typescript@5.0.4)
       vite:
         specifier: ^5.2.9
-        version: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
+        version: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
       vite-plugin-dts:
         specifier: ^3.8.3
-        version: 3.8.3(@types/node@20.14.0)(rollup@4.14.3)(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6))
+        version: 3.8.3(@types/node@20.14.0)(rollup@4.14.3)(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1))
       vite-tsconfig-paths:
         specifier: ^4.3.2
-        version: 4.3.2(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6))
+        version: 4.3.2(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1))
       vitest:
         specifier: ~1.6.0
-        version: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)
+        version: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1)
       vitest-mock-extended:
         specifier: ^1.3.1
-        version: 1.3.1(typescript@5.0.4)(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6))
+        version: 1.3.1(typescript@5.0.4)(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1))
 
   apps/app:
     dependencies:
@@ -217,34 +217,34 @@ importers:
         specifier: ^5.8.5
         version: 5.20.5(encoding@0.1.13)
       '@growi/core':
-        specifier: link:../../packages/core
+        specifier: workspace:^
         version: link:../../packages/core
       '@growi/pluginkit':
-        specifier: link:../../packages/pluginkit
+        specifier: workspace:^
         version: link:../../packages/pluginkit
       '@growi/presentation':
-        specifier: link:../../packages/presentation
+        specifier: workspace:^
         version: link:../../packages/presentation
       '@growi/preset-templates':
-        specifier: link:../../packages/preset-templates
+        specifier: workspace:^
         version: link:../../packages/preset-templates
       '@growi/preset-themes':
-        specifier: link:../../packages/preset-themes
+        specifier: workspace:^
         version: link:../../packages/preset-themes
       '@growi/remark-attachment-refs':
-        specifier: link:../../packages/remark-attachment-refs
+        specifier: workspace:^
         version: link:../../packages/remark-attachment-refs
       '@growi/remark-drawio':
-        specifier: link:../../packages/remark-drawio
+        specifier: workspace:^
         version: link:../../packages/remark-drawio
       '@growi/remark-growi-directive':
-        specifier: link:../../packages/remark-growi-directive
+        specifier: workspace:^
         version: link:../../packages/remark-growi-directive
       '@growi/remark-lsx':
-        specifier: link:../../packages/remark-lsx
+        specifier: workspace:^
         version: link:../../packages/remark-lsx
       '@growi/slack':
-        specifier: link:../../packages/slack
+        specifier: workspace:^
         version: link:../../packages/slack
       '@keycloak/keycloak-admin-client':
         specifier: ^18.0.0
@@ -644,16 +644,16 @@ importers:
         version: 13.6.18
     devDependencies:
       '@growi/core-styles':
-        specifier: link:../../packages/core-styles
+        specifier: workspace:^
         version: link:../../packages/core-styles
       '@growi/custom-icons':
-        specifier: link:../../packages/custom-icons
+        specifier: workspace:^
         version: link:../../packages/custom-icons
       '@growi/editor':
-        specifier: link:../../packages/editor
+        specifier: workspace:^
         version: link:../../packages/editor
       '@growi/ui':
-        specifier: link:../../packages/ui
+        specifier: workspace:^
         version: link:../../packages/ui
       '@handsontable/react':
         specifier: '=2.1.0'
@@ -830,7 +830,7 @@ importers:
         specifier: ^4.9.0
         version: 4.12.1
       '@growi/slack':
-        specifier: link:../../packages/slack
+        specifier: workspace:^
         version: link:../../packages/slack
       '@slack/oauth':
         specifier: ^2.0.1
@@ -968,6 +968,12 @@ importers:
         specifier: ^18.2.0
         version: 18.2.0(react@18.2.0)
     devDependencies:
+      '@codemirror/autocomplete':
+        specifier: ^6.16.3
+        version: 6.16.3(@codemirror/language@6.10.2)(@codemirror/state@6.4.1)(@codemirror/view@6.28.2)(@lezer/common@1.2.1)
+      '@codemirror/commands':
+        specifier: ^6.6.0
+        version: 6.6.0
       '@codemirror/lang-markdown':
         specifier: ^6.2.0
         version: 6.2.5
@@ -987,11 +993,14 @@ importers:
         specifier: ^6.15.3
         version: 6.28.2
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       '@growi/core-styles':
-        specifier: link:../core-styles
+        specifier: workspace:^
         version: link:../core-styles
+      '@lezer/highlight':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@popperjs/core':
         specifier: ^2.11.8
         version: 2.11.8
@@ -1046,6 +1055,12 @@ importers:
       eslint-plugin-react-refresh:
         specifier: ^0.4.1
         version: 0.4.7(eslint@8.41.0)
+      i18next:
+        specifier: ^23.11.5
+        version: 23.11.5
+      lib0:
+        specifier: ^0.2.94
+        version: 0.2.94
       react-dropzone:
         specifier: ^14.2.3
         version: 14.2.3(react@18.2.0)
@@ -1089,7 +1104,7 @@ importers:
   packages/presentation:
     dependencies:
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       next:
         specifier: ^14
@@ -1156,7 +1171,7 @@ importers:
   packages/preset-templates:
     devDependencies:
       '@growi/pluginkit':
-        specifier: link:../pluginkit
+        specifier: workspace:^
         version: link:../pluginkit
 
   packages/preset-themes:
@@ -1172,10 +1187,10 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       '@growi/core-styles':
-        specifier: link:../core-styles
+        specifier: workspace:^
         version: link:../core-styles
       bootstrap:
         specifier: '=5.3.2'
@@ -1187,13 +1202,13 @@ importers:
   packages/remark-attachment-refs:
     dependencies:
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       '@growi/remark-growi-directive':
-        specifier: link:../remark-growi-directive
+        specifier: workspace:^
         version: link:../remark-growi-directive
       '@growi/ui':
-        specifier: link:../ui
+        specifier: workspace:^
         version: link:../ui
       axios:
         specifier: ^0.24.0
@@ -1349,13 +1364,13 @@ importers:
   packages/remark-lsx:
     dependencies:
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       '@growi/remark-growi-directive':
-        specifier: link:../remark-growi-directive
+        specifier: workspace:^
         version: link:../remark-growi-directive
       '@growi/ui':
-        specifier: link:../ui
+        specifier: workspace:^
         version: link:../ui
       escape-string-regexp:
         specifier: ^4.0.0
@@ -1382,6 +1397,9 @@ importers:
         specifier: ^2.2.2
         version: 2.2.5(react@18.2.0)
     devDependencies:
+      axios:
+        specifier: ^0.24.0
+        version: 0.24.0
       eslint-plugin-regex:
         specifier: ^1.8.0
         version: 1.10.0(eslint@8.41.0)
@@ -1391,6 +1409,9 @@ importers:
       hast-util-select:
         specifier: ^5.0.5
         version: 5.0.5
+      is-absolute-url:
+        specifier: ^4.0.1
+        version: 4.0.1
       unified:
         specifier: ^10.1.2
         version: 10.1.2
@@ -1466,10 +1487,10 @@ importers:
         version: 18.2.0(react@18.2.0)
     devDependencies:
       '@growi/core':
-        specifier: link:../core
+        specifier: workspace:^
         version: link:../core
       '@growi/core-styles':
-        specifier: link:../core-styles
+        specifier: workspace:^
         version: link:../core-styles
       date-fns:
         specifier: ^3.6.0
@@ -16673,18 +16694,18 @@ snapshots:
 
   '@unts/get-tsconfig@4.1.1': {}
 
-  '@vitejs/plugin-react@4.3.1(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6))':
+  '@vitejs/plugin-react@4.3.1(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1))':
     dependencies:
       '@babel/core': 7.24.6
       '@babel/plugin-transform-react-jsx-self': 7.24.6(@babel/core@7.24.6)
       '@babel/plugin-transform-react-jsx-source': 7.24.6(@babel/core@7.24.6)
       '@types/babel__core': 7.20.5
       react-refresh: 0.14.2
-      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
+      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
-  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6))':
+  '@vitest/coverage-v8@1.6.0(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1))':
     dependencies:
       '@ampproject/remapping': 2.2.1
       '@bcoe/v8-coverage': 0.2.3
@@ -16699,7 +16720,7 @@ snapshots:
       std-env: 3.7.0
       strip-literal: 2.1.0
       test-exclude: 6.0.0
-      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)
+      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -16734,7 +16755,7 @@ snapshots:
       pathe: 1.1.2
       picocolors: 1.0.0
       sirv: 2.0.4
-      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)
+      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1)
 
   '@vitest/utils@1.6.0':
     dependencies:
@@ -20328,7 +20349,7 @@ snapshots:
       depd: 1.1.2
       inherits: 2.0.3
       setprototypeof: 1.1.0
-      statuses: 1.4.0
+      statuses: 1.5.0
 
   http-errors@1.7.3:
     dependencies:
@@ -25746,13 +25767,13 @@ snapshots:
       unist-util-stringify-position: 3.0.3
       vfile-message: 3.1.4
 
-  vite-node@1.6.0(@types/node@20.14.0)(sass@1.77.6):
+  vite-node@1.6.0(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1):
     dependencies:
       cac: 6.7.14
       debug: 4.3.5(supports-color@5.5.0)
       pathe: 1.1.2
       picocolors: 1.0.0
-      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
+      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - '@types/node'
       - less
@@ -25763,7 +25784,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-dts@3.8.3(@types/node@20.14.0)(rollup@4.14.3)(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)):
+  vite-plugin-dts@3.8.3(@types/node@20.14.0)(rollup@4.14.3)(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)):
     dependencies:
       '@microsoft/api-extractor': 7.43.0(@types/node@20.14.0)
       '@rollup/pluginutils': 5.1.0(rollup@4.14.3)
@@ -25774,24 +25795,24 @@ snapshots:
       typescript: 5.0.4
       vue-tsc: 1.8.27(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
+      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - '@types/node'
       - rollup
       - supports-color
 
-  vite-tsconfig-paths@4.3.2(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)):
+  vite-tsconfig-paths@4.3.2(typescript@5.0.4)(vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)):
     dependencies:
       debug: 4.3.5(supports-color@5.5.0)
       globrex: 0.1.2
       tsconfck: 3.0.3(typescript@5.0.4)
     optionalDependencies:
-      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
+      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - supports-color
       - typescript
 
-  vite@5.2.9(@types/node@20.14.0)(sass@1.77.6):
+  vite@5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1):
     dependencies:
       esbuild: 0.20.2
       postcss: 8.4.38
@@ -25800,14 +25821,15 @@ snapshots:
       '@types/node': 20.14.0
       fsevents: 2.3.3
       sass: 1.77.6
+      terser: 5.31.1
 
-  vitest-mock-extended@1.3.1(typescript@5.0.4)(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)):
+  vitest-mock-extended@1.3.1(typescript@5.0.4)(vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1)):
     dependencies:
       ts-essentials: 9.4.2(typescript@5.0.4)
       typescript: 5.0.4
-      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)
+      vitest: 1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1)
 
-  vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6):
+  vitest@1.6.0(@types/node@20.14.0)(@vitest/ui@1.6.0)(happy-dom@13.10.1)(sass@1.77.6)(terser@5.31.1):
     dependencies:
       '@vitest/expect': 1.6.0
       '@vitest/runner': 1.6.0
@@ -25826,8 +25848,8 @@ snapshots:
       strip-literal: 2.1.0
       tinybench: 2.7.0
       tinypool: 0.8.4
-      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)
-      vite-node: 1.6.0(@types/node@20.14.0)(sass@1.77.6)
+      vite: 5.2.9(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
+      vite-node: 1.6.0(@types/node@20.14.0)(sass@1.77.6)(terser@5.31.1)
       why-is-node-running: 2.2.2
     optionalDependencies:
       '@types/node': 20.14.0
