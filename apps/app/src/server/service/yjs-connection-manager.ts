@@ -25,6 +25,10 @@ class YjsConnectionManager {
     return this.ysocketio;
   }
 
+  get mdbInstance(): MongodbPersistence {
+    return this.mdb;
+  }
+
   private constructor(io: Server) {
     this.ysocketio = new YSocketIO(io);
     this.ysocketio.initialize();
