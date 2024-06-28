@@ -15,7 +15,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsContainerFluid, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useShowPageLimitationL, useGrowiCloudUri, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { NextPageWithLayout } from './_app.page';
@@ -25,7 +25,7 @@ import {
 } from './utils/commons';
 
 
-const SearchPage = dynamic(() => import('../components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
+const SearchPage = dynamic(() => import('~/client/components/SearchPage').then(mod => mod.SearchPage), { ssr: false });
 
 
 type Props = CommonProps & {

@@ -14,7 +14,7 @@ import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCsrfToken, useCurrentUser, useIsSearchPage, useIsSearchScopeChildrenAsDefault,
   useIsSearchServiceConfigured, useIsSearchServiceReachable, useRendererConfig, useGrowiCloudUri, useIsEnabledMarp, useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
 
 import type { CommonProps } from './utils/commons';
@@ -41,7 +41,7 @@ type Props = CommonProps & {
 const PrivateLegacyPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();
 
-  const PrivateLegacyPages = dynamic(() => import('~/components/PrivateLegacyPages'), { ssr: false });
+  const PrivateLegacyPages = dynamic(() => import('~/client/components/PrivateLegacyPages'), { ssr: false });
 
   // commons
   useCsrfToken(props.csrfToken);

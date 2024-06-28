@@ -5,10 +5,11 @@ import { keymap, scrollPastEnd } from '@codemirror/view';
 import type { IUserHasId } from '@growi/core/dist/interfaces';
 
 import { GlobalCodeMirrorEditorKey } from '../../consts';
+import { CodeMirrorEditor, type CodeMirrorEditorProps } from '../components-internal/CodeMirrorEditor';
 import { setDataLine } from '../services-internal';
-import { useCodeMirrorEditorIsolated, useCollaborativeEditorMode } from '../stores';
+import { useCodeMirrorEditorIsolated } from '../stores/codemirror-editor';
+import { useCollaborativeEditorMode } from '../stores/use-collaborative-editor-mode';
 
-import { CodeMirrorEditor, type CodeMirrorEditorProps } from '.';
 
 const additionalExtensions: Extension[] = [
   [

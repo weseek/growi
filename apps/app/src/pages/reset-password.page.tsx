@@ -13,7 +13,7 @@ type Props = CommonProps & {
   email: string
 };
 
-const PasswordResetExecutionForm = dynamic(() => import('~/components/PasswordResetExecutionForm'), { ssr: false });
+const PasswordResetExecutionForm = dynamic(() => import('~/client/components/PasswordResetExecutionForm'), { ssr: false });
 
 const ForgotPasswordPage: NextPage<Props> = (props: Props) => {
   const { t } = useTranslation();

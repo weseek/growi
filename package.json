@@ -1,6 +1,6 @@
 {
   "name": "growi",
-  "version": "7.0.11-RC.0",
+  "version": "7.0.12-RC.0",
   "description": "Team collaboration software using markdown",
   "license": "MIT",
   "private": "true",
@@ -57,7 +57,7 @@
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.0",
     "@changesets/cli": "^2.27.3",
-    "@playwright/test": "^1.44.1",
+    "@playwright/test": "^1.45.0",
     "@swc-node/register": "^1.9.1",
     "@swc/core": "^1.5.25",
     "@swc/helpers": "^0.5.11",
@@ -68,9 +68,9 @@
     "@types/path-browserify": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^5.59.7",
     "@typescript-eslint/parser": "^5.59.7",
-    "@vitejs/plugin-react": "^4.0.3",
-    "@vitest/coverage-v8": "^0.34.6",
-    "@vitest/ui": "^0.31.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/ui": "^1.6.0",
     "cypress": "^13.3.0",
     "cypress-wait-until": "^2.0.1",
     "eslint": "^8.41.0",
@@ -105,7 +105,7 @@
     "vite": "^5.2.9",
     "vite-plugin-dts": "^3.8.3",
     "vite-tsconfig-paths": "^4.3.2",
-    "vitest": "~1.5.3",
+    "vitest": "~1.6.0",
     "vitest-mock-extended": "^1.3.1"
   },
   "engines": {

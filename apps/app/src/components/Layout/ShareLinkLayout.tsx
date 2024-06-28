@@ -1,15 +1,14 @@
-import React, { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import React from 'react';
 
 import dynamic from 'next/dynamic';
 
-import { useEditorModeClassName } from '../../client/services/layout';
-
 import { RawLayout } from './RawLayout';
 
-const PageCreateModal = dynamic(() => import('../PageCreateModal'), { ssr: false });
-const GrowiNavbarBottom = dynamic(() => import('../Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
-const ShortcutsModal = dynamic(() => import('../ShortcutsModal'), { ssr: false });
-const SystemVersion = dynamic(() => import('../SystemVersion'), { ssr: false });
+const PageCreateModal = dynamic(() => import('~/client/components/PageCreateModal'), { ssr: false });
+const GrowiNavbarBottom = dynamic(() => import('~/client/components/Navbar/GrowiNavbarBottom').then(mod => mod.GrowiNavbarBottom), { ssr: false });
+const ShortcutsModal = dynamic(() => import('~/client/components/ShortcutsModal'), { ssr: false });
+const SystemVersion = dynamic(() => import('~/client/components/SystemVersion'), { ssr: false });
 
 
 type Props = {
@@ -17,10 +16,8 @@ type Props = {
 }
 
 export const ShareLinkLayout = ({ children }: Props): JSX.Element => {
-  const className = useEditorModeClassName();
-
   return (
-    <RawLayout className={className}>
+    <RawLayout>
 
       <div className="page-wrapper">
         {children}
