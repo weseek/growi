@@ -21,6 +21,7 @@ const setCaretLine = (view?: EditorView, lineNumber?: number): void => {
         head: posOfLineEnd,
       },
       scrollIntoView: true,
+      effects: EditorView.scrollIntoView(posOfLineEnd, { x: 'end', y: 'center' }),
     });
     // focus
     view?.focus();
