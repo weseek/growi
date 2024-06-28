@@ -13,6 +13,7 @@ ARG USERNAME=node
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
+RUN mkdir -p /workspace/growi/.pnpm-store
 RUN mkdir -p /workspace/growi/node_modules
 RUN mkdir -p /workspace/growi/apps/app/node_modules
 RUN mkdir -p /workspace/growi/apps/slackbot-proxy/node_modules
@@ -52,9 +53,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 ENV DEBIAN_FRONTEND=dialog
 
-RUN npm install -g pnpm && pnpm setup
+RUN npm install -g pnpm
 RUN npm install -g turbo
-RUN npm install -g node-gyp
+# RUN npm install -g node-gyp
 
 # Uncomment to default to non-root user
 # USER $USER_UID

@@ -19,6 +19,7 @@ services:
 
     volumes:
       - ..:/workspace/growi:delegated
+      - pnpm-store:/workspace/growi/.pnpm-store
       - node_modules:/workspace/growi/node_modules
       - node_modules_app:/workspace/growi/apps/app/node_modules
       - node_modules_slackbot-proxy:/workspace/growi/apps/slackbot-proxy/node_modules
@@ -59,6 +60,7 @@ services:
       - ../../growi-docker-compose/elasticsearch/v8/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
 
 volumes:
+  pnpm-store:
   node_modules:
   node_modules_app:
   node_modules_slackbot-proxy:
