@@ -6,9 +6,11 @@
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
  * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Token} Token
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
+ * @typedef {import('mdast-util-to-markdown').Handle} ToMarkdownHandle
+ * @typedef {import('mdast-util-to-markdown').Context} Context
+ * @typedef {import('mdast-util-to-markdown').Options} ToMarkdownExtension
+ * @typedef {import()}
+ *
  * @typedef {import('./complex-types').LeafDirective} LeafDirective
  * @typedef {import('./complex-types').TextDirective} TextDirective
  * @typedef {LeafDirective|TextDirective} Directive
