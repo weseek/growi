@@ -1,10 +1,10 @@
-import { SWRResponse } from 'swr';
+import type { SWRResponse } from 'swr';
 import useSWRImmutable from 'swr/immutable';
 
 import { apiv3Get } from '~/client/util/apiv3-client';
-import { IActivityHasId, ISearchFilter } from '~/interfaces/activity';
-import { PaginateResult } from '~/interfaces/mongoose-utils';
-import { useAuditLogEnabled } from '~/stores/context';
+import type { IActivityHasId, ISearchFilter } from '~/interfaces/activity';
+import type { PaginateResult } from '~/interfaces/mongoose-utils';
+import { useAuditLogEnabled } from '~/stores-universal/context';
 
 export const useSWRxActivity = (limit?: number, offset?: number, searchFilter?: ISearchFilter): SWRResponse<PaginateResult<IActivityHasId>, Error> => {
   const { data: auditLogEnabled } = useAuditLogEnabled();

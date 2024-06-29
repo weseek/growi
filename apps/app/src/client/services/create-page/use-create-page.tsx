@@ -6,9 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { exist, getIsNonUserRelatedGroupsGranted } from '~/client/services/page-operation';
 import { toastWarning } from '~/client/util/toastr';
 import type { IApiv3PageCreateParams } from '~/interfaces/apiv3';
+import { EditorMode, useEditorMode } from '~/stores-universal/ui';
 import { useGrantedGroupsInheritanceSelectModal } from '~/stores/modal';
 import { useCurrentPagePath } from '~/stores/page';
-import { EditorMode, useEditorMode, useIsUntitledPage } from '~/stores/ui';
+import { useIsUntitledPage } from '~/stores/ui';
 
 import { createPage } from './create-page';
 

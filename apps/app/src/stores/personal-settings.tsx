@@ -1,8 +1,9 @@
 import type { IExternalAccountHasId, IExternalAuthProviderType, IUser } from '@growi/core';
 import { useTranslation } from 'next-i18next';
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
+import type { SWRConfiguration, SWRResponse } from 'swr';
+import useSWR from 'swr';
 
-import { useIsGuestUser } from '~/stores/context';
+import { useIsGuestUser } from '~/stores-universal/context';
 import loggerFactory from '~/utils/logger';
 
 import { apiv3Get, apiv3Put } from '../client/util/apiv3-client';

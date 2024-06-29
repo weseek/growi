@@ -6,10 +6,10 @@ import type {
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
-import { LoginForm } from '~/components/LoginForm';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { IExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
 import { isExternalAccountLoginError } from '~/interfaces/errors/external-account-login-error';
@@ -19,9 +19,12 @@ import { getServerSideCommonProps, generateCustomTitle, getNextI18NextConfig } f
 import {
   useCsrfToken,
   useCurrentPathname,
-} from '~/stores/context';
+} from '~/stores-universal/context';
 
 import styles from './index.module.scss';
+
+
+const LoginForm = dynamic(() => import('~/client/components/LoginForm').then(mod => mod.LoginForm), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -36,6 +39,7 @@ type Props = CommonProps & {
   isPasswordResetEnabled: boolean,
   isEmailAuthenticationEnabled: boolean,
   externalAccountLoginError?: IExternalAccountLoginError,
+  minPasswordLength: number,
 };
 
 const LoginPage: NextPage<Props> = (props: Props) => {
@@ -66,6 +70,7 @@ const LoginPage: NextPage<Props> = (props: Props) => {
         isMailerSetup={props.isMailerSetup}
         registrationMode={props.registrationMode}
         externalAccountLoginError={props.externalAccountLoginError}
+        minPasswordLength={props.minPasswordLength}
       />
     </NoLoginLayout>
   );
@@ -117,6 +122,7 @@ async function injectServerConfigurations(context: GetServerSidePropsContext, pr
   props.registrationWhitelist = configManager.getConfig('crowi', 'security:registrationWhitelist');
   props.isEmailAuthenticationEnabled = configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
   props.registrationMode = configManager.getConfig('crowi', 'security:registrationMode');
+  props.minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
 }
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
@@ -130,10 +136,12 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
 
   const props: Props = result.props as Props;
 
-  if (context.query.externalAccountLoginError != null) {
-    const externalAccountLoginError = context.query.externalAccountLoginError;
-    if (isExternalAccountLoginError(externalAccountLoginError)) {
-      props.externalAccountLoginError = { ...externalAccountLoginError as IExternalAccountLoginError };
+  const externalAccountLoginError = (context.req as CrowiRequest).session.externalAccountLoginError;
+  if (externalAccountLoginError != null) {
+    delete (context.req as CrowiRequest).session.externalAccountLoginError;
+    const parsedError = JSON.parse(externalAccountLoginError);
+    if (isExternalAccountLoginError(parsedError)) {
+      props.externalAccountLoginError = { ...parsedError as IExternalAccountLoginError };
     }
   }
 

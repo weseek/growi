@@ -13,8 +13,6 @@ import type {
 } from '~/interfaces/ui';
 import loggerFactory from '~/utils/logger';
 
-import { useStaticSWR } from './use-static-swr';
-
 const logger = loggerFactory('growi:stores:modal');
 
 /*
@@ -32,7 +30,7 @@ type CreateModalStatusUtils = {
 
 export const usePageCreateModal = (status?: CreateModalStatus): SWRResponse<CreateModalStatus, Error> & CreateModalStatusUtils => {
   const initialData: CreateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<CreateModalStatus, Error>('pageCreateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -99,7 +97,7 @@ export const usePageDeleteModal = (status?: DeleteModalStatus): SWRResponse<Dele
     isOpened: false,
     pages: [],
   };
-  const swrResponse = useStaticSWR<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DeleteModalStatus, Error>('deleteModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -140,7 +138,7 @@ export const useEmptyTrashModal = (status?: EmptyTrashModalStatus): SWRResponse<
     isOpened: false,
     pages: [],
   };
-  const swrResponse = useStaticSWR<EmptyTrashModalStatus, Error>('emptyTrashModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<EmptyTrashModalStatus, Error>('emptyTrashModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -182,7 +180,7 @@ type DuplicateModalStatusUtils = {
 
 export const usePageDuplicateModal = (status?: DuplicateModalStatus): SWRResponse<DuplicateModalStatus, Error> & DuplicateModalStatusUtils => {
   const initialData: DuplicateModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DuplicateModalStatus, Error>('duplicateModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -218,7 +216,7 @@ type RenameModalStatusUtils = {
 
 export const usePageRenameModal = (status?: RenameModalStatus): SWRResponse<RenameModalStatus, Error> & RenameModalStatusUtils => {
   const initialData: RenameModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<RenameModalStatus, Error>('renameModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -264,7 +262,7 @@ export const usePutBackPageModal = (status?: PutBackPageModalStatus): SWRRespons
     isOpened: false,
     page: { pageId: '', path: '' },
   }), []);
-  const swrResponse = useStaticSWR<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<PutBackPageModalStatus, Error>('putBackPageModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -296,7 +294,7 @@ export const usePagePresentationModal = (
   const initialData: PresentationModalStatus = {
     isOpened: false,
   };
-  const swrResponse = useStaticSWR<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<PresentationModalStatus, Error>('presentationModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -332,7 +330,7 @@ export const usePrivateLegacyPagesMigrationModal = (
     isOpened: false,
     pages: [],
   };
-  const swrResponse = useStaticSWR<PrivateLegacyPagesMigrationModalStatus, Error>('privateLegacyPagesMigrationModal', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<PrivateLegacyPagesMigrationModalStatus, Error>('privateLegacyPagesMigrationModal', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -362,7 +360,7 @@ export const useDescendantsPageListModal = (
 ): SWRResponse<DescendantsPageListModalStatus, Error> & DescendantsPageListUtils => {
 
   const initialData: DescendantsPageListModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DescendantsPageListModalStatus, Error>('descendantsPageListModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -445,7 +443,7 @@ type UpdateUserGroupConfirmModalUtils = {
 export const useUpdateUserGroupConfirmModal = (): SWRResponse<UpdateUserGroupConfirmModalStatus, Error> & UpdateUserGroupConfirmModalUtils => {
 
   const initialStatus: UpdateUserGroupConfirmModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<UpdateUserGroupConfirmModalStatus, Error>('updateParentConfirmModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<UpdateUserGroupConfirmModalStatus, Error>('updateParentConfirmModal', undefined, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
@@ -475,7 +473,7 @@ type ShortcutsModalUtils = {
 export const useShortcutsModal = (): SWRResponse<ShortcutsModalStatus, Error> & ShortcutsModalUtils => {
 
   const initialStatus: ShortcutsModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<ShortcutsModalStatus, Error>('shortcutsModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<ShortcutsModalStatus, Error>('shortcutsModal', undefined, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
@@ -514,7 +512,7 @@ export const useDrawioModal = (status?: DrawioModalStatus): SWRResponse<DrawioMo
     isOpened: false,
     drawioMxFile: '',
   };
-  const swrResponse = useStaticSWR<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DrawioModalStatus, Error>('drawioModalStatus', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
@@ -575,7 +573,7 @@ export const useHandsontableModal = (status?: HandsontableModalStatus): SWRRespo
     autoFormatMarkdownTable: false,
   };
 
-  const swrResponse = useStaticSWR<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<HandsontableModalStatus, Error>('handsontableModalStatus', status, { fallbackData: initialData });
 
   const { mutate } = swrResponse;
 
@@ -616,16 +614,22 @@ type ConflictDiffModalUtils = {
 export const useConflictDiffModal = (): SWRResponse<ConflictDiffModalStatus, Error> & ConflictDiffModalUtils => {
 
   const initialStatus: ConflictDiffModalStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<ConflictDiffModalStatus, Error>('conflictDiffModal', undefined, { fallbackData: initialStatus });
+  const { mutate } = swrResponse;
 
-  return Object.assign(swrResponse, {
-    open: (requestRevisionBody: string, onResolve: ResolveConflictHandler) => {
-      swrResponse.mutate({ isOpened: true, requestRevisionBody, onResolve });
-    },
-    close: () => {
-      swrResponse.mutate({ isOpened: false });
-    },
-  });
+  const open = useCallback((requestRevisionBody: string, onResolve: ResolveConflictHandler) => {
+    mutate({ isOpened: true, requestRevisionBody, onResolve });
+  }, [mutate]);
+
+  const close = useCallback(() => {
+    mutate({ isOpened: false });
+  }, [mutate]);
+
+  return {
+    ...swrResponse,
+    open,
+    close,
+  };
 };
 
 /*
@@ -654,7 +658,7 @@ export const useBookmarkFolderDeleteModal = (status?: DeleteBookmarkFolderModalS
   const initialData: DeleteBookmarkFolderModalStatus = {
     isOpened: false,
   };
-  const swrResponse = useStaticSWR<DeleteBookmarkFolderModalStatus, Error>('deleteBookmarkFolderModalStatus', status, { fallbackData: initialData });
+  const swrResponse = useSWRStatic<DeleteBookmarkFolderModalStatus, Error>('deleteBookmarkFolderModalStatus', status, { fallbackData: initialData });
 
   return {
     ...swrResponse,
@@ -696,7 +700,7 @@ export const useDeleteAttachmentModal = (): SWRResponse<DeleteAttachmentModalSta
     attachment: undefined,
     remove: undefined,
   };
-  const swrResponse = useStaticSWR<DeleteAttachmentModalStatus, Error>('deleteAttachmentModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<DeleteAttachmentModalStatus, Error>('deleteAttachmentModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
   const open = useCallback((attachment: IAttachmentHasId, remove: Remove) => {
@@ -734,7 +738,7 @@ export const usePageSelectModal = (
     status?: PageSelectModalStatus,
 ): SWRResponse<PageSelectModalStatus, Error> & PageSelectModalStatusUtils => {
   const initialStatus = { isOpened: false };
-  const swrResponse = useStaticSWR<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<PageSelectModalStatus, Error>('PageSelectModal', status, { fallbackData: initialStatus });
 
   return {
     ...swrResponse,
@@ -772,7 +776,7 @@ export const useTagEditModal = (): SWRResponse<TagEditModalStatus, Error> & TagE
     };
   }, []);
 
-  const swrResponse = useStaticSWR<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
+  const swrResponse = useSWRStatic<TagEditModalStatus, Error>('TagEditModal', undefined, { fallbackData: initialStatus });
   const { mutate } = swrResponse;
 
   const open = useCallback(async(tags: string[], pageId: string, revisionId: string) => {

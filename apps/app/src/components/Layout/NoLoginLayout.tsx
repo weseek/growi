@@ -1,11 +1,12 @@
 import type { ReactNode } from 'react';
 import React from 'react';
 
-import { useAppTitle } from '~/stores/context';
+import { useAppTitle } from '~/stores-universal/context';
 
-import GrowiLogo from '../Icons/GrowiLogo';
+import GrowiLogo from '../Common/GrowiLogo';
 
 import { RawLayout } from './RawLayout';
+
 
 import commonStyles from './NoLoginLayout.module.scss';
 
