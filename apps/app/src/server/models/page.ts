@@ -77,7 +77,7 @@ export interface PageModel extends Model<PageDocument> {
   generateGrantCondition(
     user, userGroups: string[] | null, includeAnyoneWithTheLink?: boolean, showPagesRestrictedByOwner?: boolean, showPagesRestrictedByGroup?: boolean,
   ): { $or: any[] }
-  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | undefined>
+  findNonEmptyClosestAncestor(path: string): Promise<PageDocument | null>
   findNotEmptyParentByPathRecursively(path: string): Promise<PageDocument | undefined>
   removeLeafEmptyPagesRecursively(pageId: ObjectIdLike): Promise<void>
   findTemplate(path: string): Promise<{
@@ -153,6 +153,9 @@ const schema = new Schema<PageDocument, PageModel>({
   toJSON: { getters: true },
   toObject: { getters: true },
 });
+// indexes
+schema.index({ createdAt: 1 });
+schema.index({ updatedAt: 1 });
 // apply plugins
 schema.plugin(mongoosePaginate);
 schema.plugin(uniqueValidator);
@@ -1024,10 +1027,10 @@ function generateGrantConditionForSystemDeletion(): { $or: any[] } {
 
 schema.statics.generateGrantConditionForSystemDeletion = generateGrantConditionForSystemDeletion;
 
-// find ancestor page with isEmpty: false. If parameter path is '/', return undefined
-schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | undefined> {
+// find ancestor page with isEmpty: false. If parameter path is '/', return null
+schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promise<PageDocument | null> {
   if (path === '/') {
-    return;
+    return null;
   }
 
   const builderForAncestors = new PageQueryBuilder(this.find(), false); // empty page not included
@@ -1038,7 +1041,7 @@ schema.statics.findNonEmptyClosestAncestor = async function(path: string): Promi
     .query
     .exec();
 
-  return ancestors[0];
+  return ancestors[0] ?? null;
 };
 
 schema.statics.removeGroupsToDeleteFromPages = async function(pages: PageDocument[], groupsToDelete: UserGroupDocument[] | ExternalUserGroupDocument[]) {

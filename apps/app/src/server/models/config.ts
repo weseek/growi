@@ -1,8 +1,9 @@
-import { PresetThemes } from '@growi/preset-themes';
-import { Types, Schema } from 'mongoose';
+import type { Types } from 'mongoose';
+import { Schema } from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 
-import { RehypeSanitizeOption } from '../../interfaces/rehype';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
+
 import { getOrCreateModel } from '../util/mongoose-utils';
 
 
@@ -122,7 +123,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:title' : undefined,
   'customize:highlightJsStyle' : 'github',
   'customize:highlightJsStyleBorder' : false,
-  'customize:theme' : PresetThemes.DEFAULT,
+  'customize:theme' : 'default', // PresetThemes.DEFAULT
   'customize:theme:forcedColorScheme' : null,
   'customize:isContainerFluid' : false,
   'customize:isEnabledTimeline' : true,
@@ -136,6 +137,7 @@ export const defaultCrowiConfigs: { [key: string]: any } = {
   'customize:isSearchScopeChildrenAsDefault': false,
   'customize:isEnabledMarp': false,
   'customize:isSidebarCollapsedMode': false,
+  'customize:isSidebarClosedAtDockMode': false,
 
   'notification:owner-page:isEnabled': false,
   'notification:group-page:isEnabled': false,
@@ -159,7 +161,7 @@ export const defaultMarkdownConfigs: { [key: string]: any } = {
   'markdown:xss:attrWhitelist': [],
 
   'markdown:rehypeSanitize:isEnabledPrevention': true,
-  'markdown:rehypeSanitize:option': RehypeSanitizeOption.RECOMMENDED,
+  'markdown:rehypeSanitize:option': RehypeSanitizeType.RECOMMENDED,
   'markdown:rehypeSanitize:tagNames': [],
   'markdown:rehypeSanitize:attributes': '{}',
   'markdown:isEnabledLinebreaks': false,

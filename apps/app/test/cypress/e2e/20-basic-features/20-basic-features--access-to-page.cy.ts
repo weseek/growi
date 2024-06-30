@@ -21,18 +21,6 @@ context('Access to page', () => {
     });
   });
 
-  it('/Sandbox is successfully loaded', () => {
-    cy.visit('/Sandbox');
-    cy.collapseSidebar(true, true);
-
-    // for check download toc data
-    // https://redmine.weseek.co.jp/issues/111384
-    // cy.get('.toc-link').should('be.visible');
-
-    cy.waitUntilSkeletonDisappear();
-    cy.screenshot(`${ssPrefix}-sandbox`);
-  });
-
   // TODO: https://redmine.weseek.co.jp/issues/109939
   it('/Sandbox with anchor hash is successfully loaded', () => {
     cy.visit('/Sandbox#headers');
@@ -131,32 +119,6 @@ context('Access to page', () => {
 });
 
 
-context('Access to /me page', () => {
-  const ssPrefix = 'access-to-me-page-';
-
-  beforeEach(() => {
-    // login
-    cy.fixture("user-admin.json").then(user => {
-      cy.login(user.username, user.password);
-    });
-  });
-
-  it('/me is successfully loaded', () => {
-    cy.visit('/me');
-
-    cy.getByTestid('grw-user-settings').should('be.visible');
-
-    cy.collapseSidebar(true);
-    cy.screenshot(`${ssPrefix}-me`);
-  });
-
-  // it('Draft page is successfully shown', () => {
-  //   cy.visit('/me/drafts');
-  //   cy.screenshot(`${ssPrefix}-draft-page`);
-  // });
-
-});
-
 context('Access to special pages', () => {
   const ssPrefix = 'access-to-special-pages-';
 
@@ -227,7 +189,7 @@ context('Access to Template Editing Mode', () => {
       });
     });
     cy.get('@pagetreeItem').within(() => {
-      cy.getByTestid('closable-text-input').type(newPagePath).type('{enter}');
+      cy.getByTestid('autosize-submittable-input').type(newPagePath).type('{enter}');
     })
 
     cy.visit(`/${parentPagePath}/${newPagePath}`);

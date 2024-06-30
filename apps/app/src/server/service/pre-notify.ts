@@ -1,8 +1,9 @@
-import type {
-  IPage, IUser, Ref,
+import {
+  getIdForRef,
+  type IPage, type IUser, type Ref,
 } from '@growi/core';
 
-import { ActivityDocument } from '../models/activity';
+import type { ActivityDocument } from '../models/activity';
 import Subscription from '../models/subscription';
 import { getModelSafely } from '../util/mongoose-utils';
 
@@ -38,7 +39,7 @@ class PreNotifyService implements IPreNotifyService {
       const actionUser = activity.user;
       const target = activity.target;
       const subscribedUsers = await Subscription.getSubscription(target as unknown as Ref<IPage>);
-      const notificationUsers = subscribedUsers.filter(item => (item.toString() !== actionUser._id.toString()));
+      const notificationUsers = subscribedUsers.filter(item => (item.toString() !== getIdForRef(actionUser).toString()));
       const activeNotificationUsers = await User.find({
         _id: { $in: notificationUsers },
         status: User.STATUS_ACTIVE,

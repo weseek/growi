@@ -9,6 +9,8 @@ import loggerFactory from '~/utils/logger';
 
 import { configManager } from '../config-manager';
 
+import type { MultipartUploader } from './multipart-uploader';
+
 const logger = loggerFactory('growi:service:fileUploader');
 
 
@@ -39,6 +41,7 @@ export interface FileUploader {
   respond(res: Response, attachment: IAttachmentDocument, opts?: RespondOptions): void,
   findDeliveryFile(attachment: IAttachmentDocument): Promise<NodeJS.ReadableStream>,
   generateTemporaryUrl(attachment: IAttachmentDocument, opts?: RespondOptions): Promise<TemporaryUrl>,
+  createMultipartUploader: (uploadKey: string, maxPartSize: number) => MultipartUploader,
 }
 
 export abstract class AbstractFileUploader implements FileUploader {
@@ -149,6 +152,10 @@ export abstract class AbstractFileUploader implements FileUploader {
    */
   determineResponseMode(): ResponseMode {
     return ResponseMode.RELAY;
+  }
+
+  createMultipartUploader(uploadKey: string, maxPartSize: number): MultipartUploader {
+    throw new Error('Multipart upload not available for file upload type');
   }
 
   /**

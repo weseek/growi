@@ -1,13 +1,15 @@
-import { ColorScheme } from '@growi/core';
-import { DevidedPagePath } from '@growi/core/dist/models';
+import path from 'path';
+
+import type { ColorScheme } from '@growi/core';
 import { getForcedColorScheme } from '@growi/core/dist/utils';
-import { DefaultThemeMetadata, PresetThemesMetadatas } from '@growi/preset-themes';
+import { DefaultThemeMetadata, PresetThemesMetadatas, manifestPath } from '@growi/preset-themes';
 import uglifycss from 'uglifycss';
 
 import { growiPluginService } from '~/features/growi-plugin/server/services';
 import loggerFactory from '~/utils/logger';
 
 import S2sMessage from '../models/vo/s2s-message';
+
 
 import type { ConfigManager } from './config-manager';
 import type { S2sMessageHandlable } from './s2s-messaging/handlable';
@@ -27,8 +29,6 @@ class CustomizeService implements S2sMessageHandlable {
 
   appService: any;
 
-  xssService: any;
-
   lastLoadedAt?: Date;
 
   customCss?: string;
@@ -45,7 +45,6 @@ class CustomizeService implements S2sMessageHandlable {
     this.configManager = crowi.configManager;
     this.s2sMessagingService = crowi.s2sMessagingService;
     this.appService = crowi.appService;
-    this.xssService = crowi.xssService;
   }
 
   /**
@@ -124,30 +123,6 @@ class CustomizeService implements S2sMessageHandlable {
     this.lastLoadedAt = new Date();
   }
 
-  generateCustomTitle(pageOrPath) {
-    const path = pageOrPath.path || pageOrPath;
-    const dPagePath = new DevidedPagePath(path, true, true);
-
-    const customTitle = this.customTitleTemplate
-      .replace('{{sitename}}', this.appService.getAppTitle())
-      .replace('{{pagepath}}', path)
-      .replace('{{page}}', dPagePath.latter) // for backward compatibility
-      .replace('{{pagename}}', dPagePath.latter);
-
-    return this.xssService.process(customTitle);
-  }
-
-  generateCustomTitleForFixedPageName(title) {
-    // replace
-    const customTitle = this.customTitleTemplate
-      .replace('{{sitename}}', this.appService.getAppTitle())
-      .replace('{{page}}', title)
-      .replace('{{pagepath}}', title)
-      .replace('{{pagename}}', title);
-
-    return this.xssService.process(customTitle);
-  }
-
   async initGrowiTheme(): Promise<void> {
     const theme = this.configManager.getConfig('crowi', 'customize:theme');
 
@@ -162,7 +137,7 @@ class CustomizeService implements S2sMessageHandlable {
     // retrieve preset theme
     else {
       // import preset-themes manifest
-      const presetThemesManifest = await import('@growi/preset-themes/dist/themes/manifest.json').then(imported => imported.default);
+      const presetThemesManifest = await import(path.join('@growi/preset-themes', manifestPath)).then(imported => imported.default);
 
       const themeMetadata = PresetThemesMetadatas.find(p => p.name === theme);
       this.forcedColorScheme = getForcedColorScheme(themeMetadata?.schemeType);

@@ -10,6 +10,7 @@ import PageTagRelation from '../../../src/server/models/page-tag-relation';
 import Tag from '../../../src/server/models/tag';
 import UserGroup from '../../../src/server/models/user-group';
 import UserGroupRelation from '../../../src/server/models/user-group-relation';
+import { generalXssFilter } from '../../../src/services/general-xss-filter';
 import { getInstance } from '../setup-crowi';
 
 describe('PageService page operations with non-public pages', () => {
@@ -31,7 +32,7 @@ describe('PageService page operations with non-public pages', () => {
   let Page;
   let Revision;
   let User;
-  let xssSpy;
+  let generalXssFilterProcessSpy;
 
   let rootPage;
 
@@ -290,7 +291,7 @@ describe('PageService page operations with non-public pages', () => {
       },
     ]);
 
-    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
+    generalXssFilterProcessSpy = jest.spyOn(generalXssFilter, 'process');
 
     dummyUser1 = await User.findOne({ username: 'v5DummyUser1' });
     dummyUser2 = await User.findOne({ username: 'v5DummyUser2' });
@@ -357,6 +358,19 @@ describe('PageService page operations with non-public pages', () => {
         isEmpty: false,
         parent: rootPage._id,
         descendantCount: 0,
+      },
+      {
+        path: '/mc6_top',
+        grant: Page.GRANT_USER_GROUP,
+        creator: dummyUser1,
+        lastUpdateUser: dummyUser1._id,
+        isEmpty: false,
+        parent: rootPage._id,
+        descendantCount: 0,
+        grantedGroups: [
+          { item: groupIdIsolate, type: GroupType.userGroup },
+          { item: groupIdB, type: GroupType.userGroup },
+        ],
       },
     ]);
 
@@ -958,6 +972,50 @@ describe('PageService page operations with non-public pages', () => {
         expect(isGrantNormalizedSpy).toBeCalledTimes(1);
       });
     });
+    describe('Creating a page under a page with grant USER_GROUP', () => {
+      describe('When onlyInheritUserRelatedGrantedGroups is true', () => {
+        test('Only user related groups should be inherited', async() => {
+          const pathT = '/mc6_top';
+          const pageT = await Page.findOne({ path: pathT });
+          expect(pageT).toBeTruthy();
+
+          const pathN = '/mc6_top/onlyRelatedGroupsInherited'; // path to create
+          await create(pathN, 'new body', npDummyUser1, { grant: Page.GRANT_USER_GROUP, onlyInheritUserRelatedGrantedGroups: true });
+
+          const _pageT = await Page.findOne({ path: pathT });
+          const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_USER_GROUP }); // newly crated
+          expect(_pageT).toBeTruthy();
+          expect(_pageN).toBeTruthy();
+          expect(_pageN.parent).toStrictEqual(_pageT._id);
+          expect(_pageT.descendantCount).toStrictEqual(1);
+          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([
+            { item: groupIdIsolate, type: GroupType.userGroup },
+          ]);
+        });
+      });
+
+      describe('When onlyInheritUserRelatedGrantedGroups is false', () => {
+        test('All groups should be inherited', async() => {
+          const pathT = '/mc6_top';
+          const pageT = await Page.findOne({ path: pathT });
+          expect(pageT).toBeTruthy();
+
+          const pathN = '/mc6_top/allGroupsInherited'; // path to create
+          await create(pathN, 'new body', npDummyUser1, { grant: Page.GRANT_USER_GROUP, onlyInheritUserRelatedGrantedGroups: false });
+
+          const _pageT = await Page.findOne({ path: pathT });
+          const _pageN = await Page.findOne({ path: pathN, grant: Page.GRANT_USER_GROUP }); // newly crated
+          expect(_pageT).toBeTruthy();
+          expect(_pageN).toBeTruthy();
+          expect(_pageN.parent).toStrictEqual(_pageT._id);
+          expect(_pageT.descendantCount).toStrictEqual(2);
+          expect(normalizeGrantedGroups(_pageN.grantedGroups)).toStrictEqual([
+            { item: groupIdIsolate, type: GroupType.userGroup },
+            { item: groupIdB, type: GroupType.userGroup },
+          ]);
+        });
+      });
+    });
 
   });
 
@@ -1082,7 +1140,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(page3Renamed.parent).toStrictEqual(page2Renamed._id);
       expect(normalizeGrantedGroups(page2Renamed.grantedGroups)).toStrictEqual(normalizeGrantedGroups(_page2.grantedGroups));
       expect(normalizeGrantedGroups(page3Renamed.grantedGroups)).toStrictEqual(normalizeGrantedGroups(_page3.grantedGroups));
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
     });
     test('Should throw with NOT grant normalized pages', async() => {
       const _pathD = '/np_rename4_destination';
@@ -1149,7 +1207,7 @@ describe('PageService page operations with non-public pages', () => {
       expect(page2Renamed).toBeTruthy();
       expect(page3Renamed).toBeNull();
       expect(page2Renamed.parent).toBeNull();
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
     });
   });
   describe('Duplicate', () => {
@@ -1183,7 +1241,7 @@ describe('PageService page operations with non-public pages', () => {
 
       const duplicatedPage = await Page.findOne({ path: newPagePath });
       const duplicatedRevision = await Revision.findOne({ pageId: duplicatedPage._id });
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage).toBeTruthy();
       expect(duplicatedPage._id).not.toStrictEqual(_page._id);
       expect(duplicatedPage.grant).toBe(_page.grant);
@@ -1214,7 +1272,7 @@ describe('PageService page operations with non-public pages', () => {
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate2/np_duplicate3' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedRevision1 = duplicatedPage1.revision;
       const duplicatedRevision2 = duplicatedPage2.revision;
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage1).toBeTruthy();
       expect(duplicatedPage2).toBeTruthy();
       expect(duplicatedRevision1).toBeTruthy();
@@ -1259,7 +1317,7 @@ describe('PageService page operations with non-public pages', () => {
       const duplicatedPage3 = await Page.findOne({ path: '/dup_np_duplicate4/np_duplicate6' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedRevision1 = duplicatedPage1.revision;
       const duplicatedRevision3 = duplicatedPage3.revision;
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage1).toBeTruthy();
       expect(duplicatedPage2).toBeNull();
       expect(duplicatedPage3).toBeTruthy();
@@ -1295,7 +1353,7 @@ describe('PageService page operations with non-public pages', () => {
       const duplicatedPage2 = await Page.findOne({ path: '/dup_np_duplicate7/np_duplicate8' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedPage3 = await Page.findOne({ path: '/dup_np_duplicate7/np_duplicate9' }).populate({ path: 'revision', model: 'Revision' });
       const duplicatedRevision1 = duplicatedPage1.revision;
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage1).toBeTruthy();
       expect(duplicatedPage2).toBeFalsy();
       expect(duplicatedPage3).toBeFalsy();
@@ -1337,7 +1395,7 @@ describe('PageService page operations with non-public pages', () => {
       const duplicatedRevision1 = duplicatedPage1.revision;
       const duplicatedRevision2 = duplicatedPage2.revision;
       const duplicatedRevision3 = duplicatedPage3.revision;
-      expect(xssSpy).toHaveBeenCalled();
+      expect(generalXssFilterProcessSpy).toHaveBeenCalled();
       expect(duplicatedPage1).toBeTruthy();
       expect(duplicatedPage2).toBeTruthy();
       expect(duplicatedPage3).toBeTruthy();

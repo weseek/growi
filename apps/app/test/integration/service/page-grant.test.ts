@@ -26,7 +26,6 @@ describe('PageGrantService', () => {
    */
   let crowi;
   let pageGrantService: IPageGrantService;
-  let xssSpy;
 
   let user1;
   let user2;
@@ -489,8 +488,6 @@ describe('PageGrantService', () => {
 
     await createDocumentsToTestIsGrantNormalized();
     await createDocumentsToTestGetPageGroupGrantData();
-
-    xssSpy = jest.spyOn(crowi.xss, 'process').mockImplementation(path => path);
   });
 
   describe('Test isGrantNormalized method with shouldCheckDescendants false', () => {

@@ -1,18 +1,25 @@
-import { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
+import type { NextPage, GetServerSideProps, GetServerSidePropsContext } from 'next';
 import { useTranslation } from 'next-i18next';
 import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import CompleteUserRegistrationForm from '~/components/CompleteUserRegistrationForm';
 import { NoLoginLayout } from '~/components/Layout/NoLoginLayout';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { UserActivationErrorCode } from '~/interfaces/errors/user-activation';
 import type { RegistrationMode } from '~/interfaces/registration-mode';
-import { IUserRegistrationOrder } from '~/server/models/user-registration-order';
+import type { ReqWithUserRegistrationOrder } from '~/server/middlewares/inject-user-registration-order-by-token-middleware';
 
+
+import type { CommonProps } from './utils/commons';
 import {
-  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle, CommonProps,
+  getServerSideCommonProps, getNextI18NextConfig, generateCustomTitle,
 } from './utils/commons';
+
+
+const CompleteUserRegistrationForm = dynamic(() => import('~/client/components/CompleteUserRegistrationForm')
+  .then(mod => mod.CompleteUserRegistrationForm), { ssr: false });
+
 
 type Props = CommonProps & {
   token: string
@@ -56,18 +63,17 @@ async function injectNextI18NextConfigurations(context: GetServerSidePropsContex
 
 export const getServerSideProps: GetServerSideProps = async(context: GetServerSidePropsContext) => {
   const result = await getServerSideCommonProps(context);
-  const req: CrowiRequest = context.req as CrowiRequest;
+  const req = context.req as ReqWithUserRegistrationOrder & CrowiRequest;
 
   // check for presence
   // see: https://github.com/vercel/next.js/issues/19271#issuecomment-730006862
   if (!('props' in result)) {
     throw new Error('invalid getSSP result');
   }
-
   const props: Props = result.props as Props;
 
-  if (context.query.userRegistrationOrder != null) {
-    const userRegistrationOrder = context.query.userRegistrationOrder as unknown as IUserRegistrationOrder;
+  if (req.userRegistrationOrder != null) {
+    const userRegistrationOrder = req.userRegistrationOrder;
     props.email = userRegistrationOrder.email;
     props.token = userRegistrationOrder.token;
   }
@@ -75,7 +81,6 @@ export const getServerSideProps: GetServerSideProps = async(context: GetServerSi
   if (typeof context.query.errorCode === 'string') {
     props.errorCode = context.query.errorCode as UserActivationErrorCode;
   }
-
   props.registrationMode = req.crowi.configManager.getConfig('crowi', 'security:registrationMode');
   props.isEmailAuthenticationEnabled = req.crowi.configManager.getConfig('crowi', 'security:passport-local:isEmailAuthenticationEnabled');
 

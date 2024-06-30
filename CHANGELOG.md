@@ -1,8 +1,204 @@
 # Changelog
 
-## [Unreleased](https://github.com/weseek/growi/compare/v7.0.2...HEAD)
+## [Unreleased](https://github.com/weseek/growi/compare/v7.0.11...HEAD)
 
 *Please do not manually update this file. We've automated the process.*
+
+## [v7.0.11](https://github.com/weseek/growi/compare/v7.0.10...v7.0.11) - 2024-06-25
+
+### 💎 Features
+
+### 🚀 Improvement
+
+* imprv: New marker color (#8891) @satof3
+* imprv: SSR performance (#8916) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Vim keymap works correctly (#8901) @reiji-h
+* fix: Readonly editor prevents ctrl+v and paste. (#8902) @reiji-h
+* fix: Missing HTTP Response in SAML Login With ABLC Callback (#8879) @maeshinshin
+* fix: Set `z-0` to correct navbar and header overlap when the anchor is specified (#8905) @yuki-takei
+* fix: Minimum number of characters in password cannot be changed (#8896) @miya
+
+### 🧰 Maintenance
+
+* support: Replace tests with playwright (20-basic-features/20-basic-features--click-page-icons) (#8903) @miya
+* support: Relocate components dir (#8917) @yuki-takei
+* ci(deps): bump ws from 8.11.0 to 8.17.1 (#8906) @dependabot
+* support: Update module resolution settings (#8898) @yuki-takei
+* support: Decrease max SSR body length (#8895) @yuki-takei
+* support: Use typescript-transform-paths instead of tsconfig-paths (#8892) @yuki-takei
+
+## [v7.0.10](https://github.com/weseek/growi/compare/v7.0.9...v7.0.10) - 2024-06-13
+
+### 💎 Features
+
+* imprv: Autofocus on PageTitleHeader when edigin untitled page (#8813) @WNomunomu
+* imprv: Autofocus on PageTitleHeader when creating untitled page (#8813) @WNomunomu
+
+### 🚀 Improvement
+
+* imprv: DrawioViewerScript should respect the base path in DRAWIO_URI 2 (#8889) @yuki-takei
+* imprv: Styling icon on the side of header (#8833) @reiji-h
+* imprv: DrawioViewerScript should respect the base path in DRAWIO_URI (#8878) @yuki-takei
+* imprv: Behavior when clicking on a label in the dropdown (#8857) @maeshinshin
+* imprv(plugin): Support github tag in githuburl.ts (#8868) @reiji-h
+* imprv: Display selected tree item in page select modal as active (#8802) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: Match width of video tag to img tag (#8836) @TatsuyaIse
+* fix: Behaviour of input during Japanese input (#8880) @miya
+* fix: Supress warning of checkbox 2 (#8871) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Watch with nodemon (#8877) @yuki-takei
+* support: Add playwright test for installer (#8874) @yuki-takei
+* support: Upgrade turbo to v2 (#8875) @yuki-takei
+
+## [v7.0.9](https://github.com/weseek/growi/compare/v7.0.8...v7.0.9) - 2024-05-30
+
+### 🐛 Bug Fixes
+
+* fix: Supress warning of checkbox (#8865) @yuki-takei
+* fix: Editor package import/export (#8864) @yuki-takei
+
+## [v7.0.8](https://github.com/weseek/growi/compare/v7.0.7...v7.0.8) - 2024-05-30
+
+### 💎 Features
+
+* feat: Select unrelated group inheritance on child page create (#8812) @arafubeatbox
+
+### 🚀 Improvement
+
+* imprv: Design coding of search result page (#8828) @miya
+
+### 🐛 Bug Fixes
+
+* fix: Page body sometimes appears doubled up when the editor is opened (#8858) @miya
+* fix: Brackets appearance when Nord editor theme (#8852) @satof3
+* fix: Slack notification not sent on page update (#8841) @miya
+* fix: Table icon is not displayed when hovering over the table (#8830) @WNomunomu
+
+### 🧰 Maintenance
+
+* support: Reorganize editor module exports (#8846) @yuki-takei
+
+## [v7.0.7](https://github.com/weseek/growi/compare/v7.0.6...v7.0.7) - 2024-05-27
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle in groundglassbar (#8832) @maeshinshin
+* imprv: toastr location (#8831) @yuki-takei
+
+### 🐛 Bug Fixes
+
+* fix: Do not insert initial value when input is empty in editor (#8773) @miya
+
+### 🧰 Maintenance
+
+* support: Apply changesets (#8840) @yuki-takei
+* support: Upgrade yjs packages (#8839) @yuki-takei
+* support: Upgrade stylelint (#8835) @yuki-takei
+
+## [v7.0.6](https://github.com/weseek/growi/compare/v7.0.5...v7.0.6) - 2024-05-20
+
+### 🐛 Bug Fixes
+
+* fix: S3 configurations are considered invalid wrongly (#8823) @yuki-takei
+
+### 🧰 Maintenance
+
+* support: Publish @growi/core-styles package (#8819) @yuki-takei
+
+## [v7.0.5](https://github.com/weseek/growi/compare/v7.0.4...v7.0.5) - 2024-05-20
+
+### 🚀 Improvement
+
+* imprv: Behavior of dropdown toggle for WIP in 'Page Tree' sidebar (#8796) @maeshinshin
+* imprv: Hide the page creation button for users without editing permissions (#8808) @miya
+* imprv: Add config to toggle ACL between public_read and private on PutObject when using S3 with FileUploader (#8778) @ToshihitoKon
+
+### 🐛 Bug Fixes
+
+* fix: BookmarkItem occures an error when the related page has been deleted 2 (#8818) @yuki-takei
+* fix: BookmarkItem occures an error when the related page has been deleted (#8817) @yuki-takei
+* fix: Display share page date (#8809) @TatsuyaIse
+* fix: Admin layout (#8806) @satof3
+
+### 🧰 Maintenance
+
+* support: Modify env var for S3 Object-ACL (#8805) @yuki-takei
+
+## [v7.0.4](https://github.com/weseek/growi/compare/v7.0.3...v7.0.4) - 2024-05-13
+
+### 💎 Features
+
+* feat: Add a button to open PageCreateModal in the new page creation lead (#8774) @miya
+* feat: Show Yjs status indicator in SubNavigation (#8709) @miya
+* feat: Apply locale to defualt page title (#8600) @jam411
+
+### 🚀 Improvement
+
+* imprv: Behavior when creating first user fails (#8801) @miya
+* imprv: Add indexes for performance (#8800) @yuki-takei
+* imprv: Autosize Input for rename (#8795) @yuki-takei
+* imprv: behavior of dropdown toggle in 'Recent Changes' sidebar (#8782) @maeshinshin
+* imprv: Hide  personal drop down when guest user (#8786) @kazutoweseek
+
+### 🐛 Bug Fixes
+
+* fix: Drawio not available with GROWI slides (#8725) @reiji-h
+* fix: Auto-scroll to the active page in the page tree (#8772) @reiji-h
+
+### 🧰 Maintenance
+
+* ci(deps): bump ejs from 3.1.9 to 3.1.10 (#8784) @dependabot
+
+## [v7.0.3](https://github.com/weseek/growi/compare/v7.0.2...v7.0.3) - 2024-05-01
+
+### 🚀 Improvement
+
+* imprv: Rename on blur (#8777) @yuki-takei
+* imprv: Re-calculate max-width for page tile on editor (#8775) @yuki-takei
+* imprv: Truncate page path title in editor (#8726) @reiji-h
+* imprv: FootstrampIcon uses material symbols (#8699) @kazutoweseek
+* imprv: behaviour when pressing enter after numerical input (ex: 2.3.4.) (#8754) @WNomunomu
+
+### 🐛 Bug Fixes
+
+* fix: An error occurred during user activation via email (#8767) @maeshinshin
+* fix: Admin customize screen (#8765) @yuki-takei
+* fix: Editor theme active line (material, nord) (#8762) @satof3
+* fix: 500 error occur when pressing the button for opening PageSelectModal (#8761) @WNomunomu
+* fix: Admin screen min-height for body (#8764) @yuki-takei
+* fix: Behaviour of table operation by enter key in editor (#8756) @WNomunomu
+* fix: EditingUserList shows user icons even when the user is not opening the editor (#8752) @miya
+* fix: Tags are not created when space key is entered (Firefox) (#8758) @miya
+* fix: Parent group selection dropdown does not work (#8759) @miya
+* fix: Codeblock overflow (#8753) @yuki-takei
+* fix:  Nord and Original-dark theme in editor (#8748) @satof3
+* fix: Material and Eclipse colors (#8749) @satof3
+* fix: Always autofocus when moving to the Editor (#8730) @reiji-h
+* fix: CopyDropdown protrudes from the screen issue (#8734) @WNomunomu
+* fix: Error on today's memo create from hotkey when memo exists (#8746) @arafubeatbox
+* fix: Editor styles (#8742) @yuki-takei
+* fix: Close the comment editor after the post (#8741) @yuki-takei
+
+### 🧰 Maintenance
+
+* ci(deps): bump typeorm from 0.3.0 to 0.3.20 (#8745) @dependabot
+* support: Make AwsFileUploader type safe (#8780) @yuki-takei
+* support: Update modal header design (#8766) @satof3
+* support: Improve types in IPage and IRevision (#8763) @yuki-takei
+* support: Editor mobile appearance (#8760) @satof3
+* support: Localize in app tags language en change ja ch revision (#8757) @kazutoweseek
+* support: Upgrade vite and vitest (#8743) @yuki-takei
+* support: Adjust design details (#8738) @satof3
+* ci(deps): bump typeorm from 0.2.32 to 0.3.0 (#8602) @dependabot
+* support: Upgrade date-fns (#8744) @yuki-takei
 
 ## [v7.0.2](https://github.com/weseek/growi/compare/v7.0.1...v7.0.2) - 2024-04-17
 

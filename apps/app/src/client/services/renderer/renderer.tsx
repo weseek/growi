@@ -1,10 +1,8 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
-import * as slides from '@growi/presentation';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
-// eslint-disable-next-line import/extensions
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
 import katex from 'rehype-katex';
 import sanitize from 'rehype-sanitize';
@@ -15,15 +13,14 @@ import math from 'remark-math';
 import deepmerge from 'ts-deepmerge';
 import type { Pluggable } from 'unified';
 
-import { DrawioViewerWithEditButton } from '~/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
-import { Header } from '~/components/ReactMarkdownComponents/Header';
-import { LightBox } from '~/components/ReactMarkdownComponents/LightBox';
-import { RichAttachment } from '~/components/ReactMarkdownComponents/RichAttachment';
-import { SlideViewer } from '~/components/ReactMarkdownComponents/SlideViewer';
-import { TableWithEditButton } from '~/components/ReactMarkdownComponents/TableWithEditButton';
+import { DrawioViewerWithEditButton } from '~/client/components/ReactMarkdownComponents/DrawioViewerWithEditButton';
+import { Header } from '~/client/components/ReactMarkdownComponents/Header';
+import { LightBox } from '~/client/components/ReactMarkdownComponents/LightBox';
+import { RichAttachment } from '~/client/components/ReactMarkdownComponents/RichAttachment';
+import { TableWithEditButton } from '~/client/components/ReactMarkdownComponents/TableWithEditButton';
 import * as mermaid from '~/features/mermaid';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type { RendererOptions } from '~/interfaces/renderer-options';
+import { RehypeSanitizeType } from '~/interfaces/services/rehype-sanitize';
 import type { RendererConfig } from '~/interfaces/services/renderer';
 import * as addLineNumberAttribute from '~/services/renderer/rehype-plugins/add-line-number-attribute';
 import * as keywordHighlighter from '~/services/renderer/rehype-plugins/keyword-highlighter';
@@ -37,6 +34,7 @@ import {
 import loggerFactory from '~/utils/logger';
 
 // import EasyGrid from './PreProcessor/EasyGrid';
+
 
 import '@growi/remark-lsx/dist/client/style.css';
 import '@growi/remark-attachment-refs/dist/client/style.css';
@@ -68,13 +66,12 @@ export const generateViewOptions = (
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
-    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -84,7 +81,6 @@ export const generateViewOptions = (
       drawio.sanitizeOption,
       mermaid.sanitizeOption,
       attachment.sanitizeOption,
-      slides.sanitizeOption,
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
     )]
@@ -119,7 +115,6 @@ export const generateViewOptions = (
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
-    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {
@@ -137,7 +132,7 @@ export const generateTocOptions = (config: RendererConfig, tocNode: HtmlElementN
   // add remark plugins
   // remarkPlugins.push();
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -189,7 +184,7 @@ export const generateSimpleViewOptions = (
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -241,6 +236,21 @@ export const generatePresentationViewOptions = (
   // based on simple view options
   const options = generateSimpleViewOptions(config, pagePath);
 
+  const { rehypePlugins } = options;
+
+
+  const rehypeSanitizePlugin: Pluggable<any[]> | (() => void) = config.isEnabledXssPrevention
+    ? [sanitize, deepmerge(
+      addLineNumberAttribute.sanitizeOption,
+    )]
+    : () => {};
+
+  // add rehype plugins
+  rehypePlugins.push(
+    addLineNumberAttribute.rehypePlugin,
+    rehypeSanitizePlugin,
+  );
+
   if (config.isEnabledXssPrevention) {
     verifySanitizePlugin(options, false);
   }
@@ -262,13 +272,12 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     attachment.remarkPlugin,
     lsxGrowiDirective.remarkPlugin,
     refsGrowiDirective.remarkPlugin,
-    [slides.remarkPlugin, { isEnabledMarp: config.isEnabledMarp }],
   );
   if (config.isEnabledLinebreaks) {
     remarkPlugins.push(breaks);
   }
 
-  if (config.xssOption === RehypeSanitizeOption.CUSTOM) {
+  if (config.sanitizeType === RehypeSanitizeType.CUSTOM) {
     injectCustomSanitizeOption(config);
   }
 
@@ -281,7 +290,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
       lsxGrowiDirective.sanitizeOption,
       refsGrowiDirective.sanitizeOption,
       addLineNumberAttribute.sanitizeOption,
-      slides.sanitizeOption,
     )]
     : () => {};
 
@@ -306,7 +314,6 @@ export const generatePreviewOptions = (config: RendererConfig, pagePath: string)
     components.mermaid = mermaid.MermaidViewer;
     components.attachment = RichAttachment;
     components.img = LightBox;
-    components.slide = SlideViewer;
   }
 
   if (config.isEnabledXssPrevention) {

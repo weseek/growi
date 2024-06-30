@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react';
-import React from 'react';
 
 import type { IUser } from '@growi/core';
 import type { GetServerSideProps, GetServerSidePropsContext } from 'next';
@@ -7,18 +6,19 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 
-import { PagePathNavSticky } from '~/components/Common/PagePathNav';
+import { PagePathNavTitle } from '~/components/Common/PagePathNavTitle';
+import { BasicLayout } from '~/components/Layout/BasicLayout';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { CrowiRequest } from '~/interfaces/crowi-request';
 import type { RendererConfig } from '~/interfaces/services/renderer';
-import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
-
-import { BasicLayout } from '../components/Layout/BasicLayout';
+import type { ISidebarConfig } from '~/interfaces/sidebar-config';
 import {
   useCurrentUser, useCurrentPathname, useGrowiCloudUri,
   useIsSearchServiceConfigured, useIsSearchServiceReachable,
   useIsSearchScopeChildrenAsDefault, useIsSearchPage, useShowPageLimitationXL,
-} from '../stores/context';
+} from '~/stores-universal/context';
+import { useCurrentPageId, useSWRxCurrentPage } from '~/stores/page';
+
 
 import type { NextPageWithLayout } from './_app.page';
 import type { CommonProps } from './utils/commons';
@@ -26,8 +26,9 @@ import {
   getServerSideCommonProps, getNextI18NextConfig, generateCustomTitleForPage, useInitSidebarConfig,
 } from './utils/commons';
 
-const TrashPageList = dynamic(() => import('~/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
-const EmptyTrashModal = dynamic(() => import('~/components/EmptyTrashModal'), { ssr: false });
+
+const TrashPageList = dynamic(() => import('~/client/components/TrashPageList').then(mod => mod.TrashPageList), { ssr: false });
+const EmptyTrashModal = dynamic(() => import('~/client/components/EmptyTrashModal'), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -38,6 +39,8 @@ type Props = CommonProps & {
   showPageLimitationXL: number,
 
   rendererConfig: RendererConfig,
+
+  sidebarConfig: ISidebarConfig,
 };
 
 const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
@@ -74,7 +77,7 @@ const TrashPage: NextPageWithLayout<CommonProps> = (props: Props) => {
 
         <div className="main ps-sidebar">
           <div className="container-lg wide-gutter-x-lg">
-            <PagePathNavSticky pagePath="/trash" />
+            <PagePathNavTitle pagePath="/trash" />
             <TrashPageList />
           </div>
         </div>
@@ -119,6 +122,7 @@ function injectServerConfigurations(context: GetServerSidePropsContext, props: P
 
   props.sidebarConfig = {
     isSidebarCollapsedMode: configManager.getConfig('crowi', 'customize:isSidebarCollapsedMode'),
+    isSidebarClosedAtDockMode: configManager.getConfig('crowi', 'customize:isSidebarClosedAtDockMode'),
   };
 
 }

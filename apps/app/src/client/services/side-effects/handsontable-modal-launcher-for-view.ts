@@ -3,11 +3,11 @@ import { useCallback, useEffect } from 'react';
 import type EventEmitter from 'events';
 
 import { Origin } from '@growi/core';
+import type { MarkdownTable } from '@growi/editor';
 
-import type MarkdownTable from '~/client/models/MarkdownTable';
+import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/client/components/Page/markdown-table-util-for-view';
 import { extractRemoteRevisionDataFromErrorObj, updatePage as _updatePage } from '~/client/services/update-page';
-import { getMarkdownTableFromLine, replaceMarkdownTableInMarkdown } from '~/components/Page/markdown-table-util-for-view';
-import { useShareLinkId } from '~/stores/context';
+import { useShareLinkId } from '~/stores-universal/context';
 import { useHandsontableModal, useConflictDiffModal } from '~/stores/modal';
 import { useSWRxCurrentPage } from '~/stores/page';
 import { type RemoteRevisionData, useSetRemoteLatestPageData } from '~/stores/remote-latest-page';

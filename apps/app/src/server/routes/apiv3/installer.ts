@@ -1,16 +1,17 @@
 import { ErrorV3 } from '@growi/core/dist/models';
-import express, { Request, Router } from 'express';
+import type { Request, Router } from 'express';
+import express from 'express';
 
 import { SupportedAction } from '~/interfaces/activity';
+import { configManager } from '~/server/service/config-manager';
 import loggerFactory from '~/utils/logger';
 
-import Crowi from '../../crowi';
+import type Crowi from '../../crowi';
 import { generateAddActivityMiddleware } from '../../middlewares/add-activity';
-import { apiV3FormValidator } from '../../middlewares/apiv3-form-validator';
-import { registerRules } from '../../middlewares/register-form-validator';
+import { registerRules, registerValidation } from '../../middlewares/register-form-validator';
 import { InstallerService, FailedToCreateAdminUserError } from '../../service/installer';
 
-import { ApiV3Response } from './interfaces/apiv3-response';
+import type { ApiV3Response } from './interfaces/apiv3-response';
 
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -26,12 +27,20 @@ module.exports = (crowi: Crowi): Router => {
 
   const router = express.Router();
 
+  const minPasswordLength = configManager.getConfig('crowi', 'app:minPasswordLength');
+
   // eslint-disable-next-line max-len
-  router.post('/', registerRules(), apiV3FormValidator, addActivity, async(req: FormRequest, res: ApiV3Response) => {
+  router.post('/', registerRules(minPasswordLength), registerValidation, addActivity, async(req: FormRequest, res: ApiV3Response) => {
     const appService = crowi.appService;
     if (appService == null) {
       return res.apiv3Err(new ErrorV3('GROWI cannot be installed due to an internal error', 'app_service_not_setup'), 500);
     }
+
+    if (!req.form.isValid) {
+      const errors = req.form.errors;
+      return res.apiv3Err(errors, 400);
+    }
+
     const registerForm = req.body.registerForm || {};
 
     const name = registerForm.name;

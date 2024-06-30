@@ -34,9 +34,19 @@ module.exports = (crowi: Crowi): Router => {
     }
 
     const { path, format } = req.body;
+    const activityParameters = {
+      ip: req.ip,
+      endpoint: req.originalUrl,
+    };
 
-    pageBulkExportService?.bulkExportWithBasePagePath(path, format);
-    return res.apiv3({}, 204);
+    try {
+      await pageBulkExportService?.bulkExportWithBasePagePath(path, format, req.user, activityParameters);
+      return res.apiv3({}, 204);
+    }
+    catch (err) {
+      logger.error(err);
+      return res.apiv3Err(new ErrorV3('Failed to start bulk export'));
+    }
   });
 
   return router;

@@ -1,5 +1,4 @@
-import { Writable } from 'stream';
-
+import type { GetObjectCommandInput, HeadObjectCommandInput } from '@aws-sdk/client-s3';
 import {
   S3Client,
   HeadObjectCommand,
@@ -8,16 +7,14 @@ import {
   PutObjectCommand,
   DeleteObjectCommand,
   ListObjectsCommand,
-  type GetObjectCommandInput,
   ObjectCannedACL,
-  CreateMultipartUploadCommand,
-  UploadPartCommand,
-  CompleteMultipartUploadCommand,
 } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import urljoin from 'url-join';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import {
+  AttachmentType, FilePathOnStoragePrefix, ResponseMode, type RespondOptions,
+} from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -27,7 +24,7 @@ import {
 } from '../file-uploader';
 import { ContentHeaders } from '../utils';
 
-import { AwsMultipartUploader } from './multipart-upload';
+import { AwsMultipartUploader } from './multipart-uploader';
 
 
 const logger = loggerFactory('growi:service:fileUploaderAws');
@@ -41,19 +38,7 @@ interface FileMeta {
   size: number;
 }
 
-type AwsCredential = {
-  accessKeyId: string,
-  secretAccessKey: string
-}
-type AwsConfig = {
-  credentials: AwsCredential,
-  region: string,
-  endpoint: string,
-  bucket: string,
-  forcePathStyle?: boolean
-}
-
-const isFileExists = async(s3: S3Client, params) => {
+const isFileExists = async(s3: S3Client, params: HeadObjectCommandInput) => {
   try {
     await s3.send(new HeadObjectCommand(params));
   }
@@ -66,43 +51,68 @@ const isFileExists = async(s3: S3Client, params) => {
   return true;
 };
 
-const getAwsConfig = (): AwsConfig => {
-  return {
+const ObjectCannedACLs = [
+  ObjectCannedACL.authenticated_read,
+  ObjectCannedACL.aws_exec_read,
+  ObjectCannedACL.bucket_owner_full_control,
+  ObjectCannedACL.bucket_owner_read,
+  ObjectCannedACL.private,
+  ObjectCannedACL.public_read,
+  ObjectCannedACL.public_read_write,
+];
+const isValidObjectCannedACL = (acl: string | null): acl is ObjectCannedACL => {
+  return ObjectCannedACLs.includes(acl as ObjectCannedACL);
+};
+/**
+ * @see: https://dev.growi.org/5d091f611fe336003eec5bfdz
+ * @returns ObjectCannedACL
+ */
+const getS3PutObjectCannedAcl = (): ObjectCannedACL | undefined => {
+  const s3ObjectCannedACL = configManager.getConfig('crowi', 'aws:s3ObjectCannedACL');
+  if (isValidObjectCannedACL(s3ObjectCannedACL)) {
+    return s3ObjectCannedACL;
+  }
+  return undefined;
+};
+
+const getS3Bucket = (): string | undefined => {
+  return configManager.getConfig('crowi', 'aws:s3Bucket') ?? undefined; // return undefined when getConfig() returns null
+};
+
+const S3Factory = (): S3Client => {
+  return new S3Client({
     credentials: {
       accessKeyId: configManager.getConfig('crowi', 'aws:s3AccessKeyId'),
       secretAccessKey: configManager.getConfig('crowi', 'aws:s3SecretAccessKey'),
     },
     region: configManager.getConfig('crowi', 'aws:s3Region'),
     endpoint: configManager.getConfig('crowi', 'aws:s3CustomEndpoint'),
-    bucket: configManager.getConfig('crowi', 'aws:s3Bucket'),
     forcePathStyle: configManager.getConfig('crowi', 'aws:s3CustomEndpoint') != null, // s3ForcePathStyle renamed to forcePathStyle in v3
-  };
+  });
 };
 
-const S3Factory = (): S3Client => {
-  const config = getAwsConfig();
-  return new S3Client(config);
-};
-
-const getFilePathOnStorage = (attachment) => {
+const getFilePathOnStorage = (attachment: IAttachmentDocument) => {
   if (attachment.filePath != null) { // DEPRECATED: remains for backward compatibility for v3.3.x or below
     return attachment.filePath;
   }
 
-  const dirName = (attachment.page != null)
-    ? 'attachment'
-    : 'user';
+  let dirName: string;
+  if (attachment.attachmentType === AttachmentType.PAGE_BULK_EXPORT) {
+    dirName = FilePathOnStoragePrefix.pageBulkExport;
+  }
+  else if (attachment.page != null) {
+    dirName = FilePathOnStoragePrefix.attachment;
+  }
+  else {
+    dirName = FilePathOnStoragePrefix.user;
+  }
   const filePath = urljoin(dirName, attachment.fileName);
 
   return filePath;
 };
 
-export interface IAwsFileUploader {
-  createMultipartUploader: (uploadKey: string) => AwsMultipartUploader
-}
-
 // TODO: rewrite this module to be a type-safe implementation
-class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
+class AwsFileUploader extends AbstractFileUploader {
 
   /**
    * @inheritdoc
@@ -157,11 +167,10 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     }
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
 
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
     };
 
@@ -180,10 +189,8 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
       // eslint-disable-next-line no-nested-ternary
       return 'stream' in body
-        ? body.stream() // get stream from Blob
-        : !('read' in body)
-          ? body as unknown as NodeJS.ReadableStream // cast force
-          : body;
+        ? body.stream() as unknown as NodeJS.ReadableStream // get stream from Blob and cast force
+        : body as unknown as NodeJS.ReadableStream; // cast force
     }
     catch (err) {
       logger.error(err);
@@ -200,7 +207,6 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     }
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const filePath = getFilePathOnStorage(attachment);
     const lifetimeSecForTemporaryUrl = configManager.getConfig('crowi', 'aws:lifetimeSecForTemporaryUrl');
 
@@ -209,7 +215,7 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
     const isDownload = opts?.download ?? false;
     const contentHeaders = new ContentHeaders(attachment, { inline: !isDownload });
     const params: GetObjectCommandInput = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
       ResponseContentType: contentHeaders.contentType?.value.toString(),
       ResponseContentDisposition: contentHeaders.contentDisposition?.value.toString(),
@@ -225,10 +231,9 @@ class AwsFileUploader extends AbstractFileUploader implements IAwsFileUploader {
 
   }
 
-  createMultipartUploader(uploadKey: string) {
+  override createMultipartUploader(uploadKey: string, maxPartSize: number) {
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
-    return new AwsMultipartUploader(s3, awsConfig.bucket, uploadKey);
+    return new AwsMultipartUploader(s3, getS3Bucket(), uploadKey, maxPartSize);
   }
 
 }
@@ -256,14 +261,13 @@ module.exports = (crowi) => {
       throw new Error('AWS is not configured.');
     }
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const filePaths = attachments.map((attachment) => {
       return { Key: getFilePathOnStorage(attachment) };
     });
 
     const totalParams = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Delete: { Objects: filePaths },
     };
     return s3.send(new DeleteObjectsCommand(totalParams));
@@ -274,10 +278,9 @@ module.exports = (crowi) => {
       throw new Error('AWS is not configured.');
     }
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
     };
 
@@ -299,16 +302,15 @@ module.exports = (crowi) => {
     logger.debug(`File uploading: fileName=${attachment.fileName}`);
 
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     const filePath = getFilePathOnStorage(attachment);
     const contentHeaders = new ContentHeaders(attachment);
 
     return s3.send(new PutObjectCommand({
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       Key: filePath,
       Body: fileStream,
-      ACL: ObjectCannedACL.public_read,
+      ACL: getS3PutObjectCannedAcl(),
       // put type and the file name for reference information when uploading
       ContentType: contentHeaders.contentType?.value.toString(),
       ContentDisposition: contentHeaders.contentDisposition?.value.toString(),
@@ -317,14 +319,13 @@ module.exports = (crowi) => {
 
   lib.saveFile = async function({ filePath, contentType, data }) {
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
 
     return s3.send(new PutObjectCommand({
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
       ContentType: contentType,
       Key: filePath,
       Body: data,
-      ACL: ObjectCannedACL.public_read,
+      ACL: getS3PutObjectCannedAcl(),
     }));
   };
 
@@ -344,9 +345,8 @@ module.exports = (crowi) => {
 
     const files: FileMeta[] = [];
     const s3 = S3Factory();
-    const awsConfig = getAwsConfig();
     const params = {
-      Bucket: awsConfig.bucket,
+      Bucket: getS3Bucket(),
     };
     let shouldContinue = true;
     let nextMarker: string | undefined;

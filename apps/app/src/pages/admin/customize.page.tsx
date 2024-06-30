@@ -1,22 +1,24 @@
-import { isClient } from '@growi/core/dist/utils';
-import {
+import { useEffect, useMemo } from 'react';
+
+import type {
   NextPage, GetServerSideProps, GetServerSidePropsContext,
 } from 'next';
 import { useTranslation } from 'next-i18next';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import { Container, Provider } from 'unstated';
+import type { Container } from 'unstated';
+import { Provider } from 'unstated';
 
-import AdminCustomizeContainer from '~/client/services/AdminCustomizeContainer';
-import { CrowiRequest } from '~/interfaces/crowi-request';
-import { CommonProps, generateCustomTitle } from '~/pages/utils/commons';
-import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores/context';
+import type { CrowiRequest } from '~/interfaces/crowi-request';
+import type { CommonProps } from '~/pages/utils/commons';
+import { generateCustomTitle } from '~/pages/utils/commons';
+import { useCustomizeTitle, useCurrentUser, useIsCustomizedLogoUploaded } from '~/stores-universal/context';
 
 import { retrieveServerSideProps } from '../../utils/admin-page-util';
 
 const AdminLayout = dynamic(() => import('~/components/Layout/AdminLayout'), { ssr: false });
-const CustomizeSettingContents = dynamic(() => import('~/components/Admin/Customize/Customize'), { ssr: false });
-const ForbiddenPage = dynamic(() => import('~/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
+const CustomizeSettingContents = dynamic(() => import('~/client/components/Admin/Customize/Customize'), { ssr: false });
+const ForbiddenPage = dynamic(() => import('~/client/components/Admin/ForbiddenPage').then(mod => mod.ForbiddenPage), { ssr: false });
 
 
 type Props = CommonProps & {
@@ -33,13 +35,15 @@ const AdminCustomizeSettingsPage: NextPage<Props> = (props) => {
 
   const componentTitle = t('customize_settings.customize_settings');
   const pageTitle = generateCustomTitle(props, componentTitle);
-  const injectableContainers: Container<any>[] = [];
+  const injectableContainers: Container<any>[] = useMemo(() => [], []);
 
-  if (isClient()) {
-    const adminCustomizeContainer = new AdminCustomizeContainer();
-
-    injectableContainers.push(adminCustomizeContainer);
-  }
+  useEffect(() => {
+    (async() => {
+      const AdminCustomizeContainer = (await import('~/client/services/AdminCustomizeContainer')).default;
+      const adminCustomizeContainer = new AdminCustomizeContainer();
+      injectableContainers.push(adminCustomizeContainer);
+    })();
+  }, [injectableContainers]);
 
   if (props.isAccessDeniedForNonAdminUser) {
     return <ForbiddenPage />;

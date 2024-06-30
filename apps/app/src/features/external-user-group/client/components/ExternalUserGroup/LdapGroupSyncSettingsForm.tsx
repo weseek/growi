@@ -1,13 +1,13 @@
-import {
-  FC, useCallback, useEffect, useState,
-} from 'react';
+import type { FC } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import { useTranslation } from 'react-i18next';
 
 import { apiv3Put } from '~/client/util/apiv3-client';
 import { toastError, toastSuccess } from '~/client/util/toastr';
 import { useSWRxLdapGroupSyncSettings } from '~/features/external-user-group/client/stores/external-user-group';
-import { LdapGroupMembershipAttributeType, LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
+import type { LdapGroupSyncSettings } from '~/features/external-user-group/interfaces/external-user-group';
+import { LdapGroupMembershipAttributeType } from '~/features/external-user-group/interfaces/external-user-group';
 
 export const LdapGroupSyncSettingsForm: FC = () => {
   const { t } = useTranslation('admin');
@@ -49,11 +49,11 @@ export const LdapGroupSyncSettingsForm: FC = () => {
         <div className="row form-group">
           <label
             htmlFor="ldapGroupSearchBase"
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {t('external_user_group.ldap.group_search_base_DN')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               type="text"
@@ -68,10 +68,10 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="ldapGroupMembershipAttribute" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="ldapGroupMembershipAttribute" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.ldap.membership_attribute')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -90,10 +90,10 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="ldapGroupMembershipAttributeType" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="ldapGroupMembershipAttributeType" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.ldap.membership_attribute_type')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <select
               className="form-control"
               required
@@ -117,10 +117,10 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="ldapGroupChildGroupAttribute" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="ldapGroupChildGroupAttribute" className="text-left text-md-end col-md-3 col-form-label">
             {t('external_user_group.ldap.child_group_attribute')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               required
@@ -140,15 +140,15 @@ export const LdapGroupSyncSettingsForm: FC = () => {
         </div>
         <div className="row form-group">
           <label
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {/* {t('external_user_group.auto_generate_user_on_sync')} */}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="custom-control-input me-2"
                 name="autoGenerateUserOnLdapGroupSync"
                 id="autoGenerateUserOnLdapGroupSync"
                 checked={formValues.autoGenerateUserOnLdapGroupSync}
@@ -165,15 +165,15 @@ export const LdapGroupSyncSettingsForm: FC = () => {
         </div>
         <div className="row form-group">
           <label
-            className="text-left text-md-right col-md-3 col-form-label"
+            className="text-left text-md-end col-md-3 col-form-label"
           >
             {/* {t('external_user_group.ldap.preserve_deleted_ldap_groups')} */}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <div className="custom-control custom-checkbox custom-checkbox-info">
               <input
                 type="checkbox"
-                className="custom-control-input"
+                className="custom-control-input me-2"
                 name="preserveDeletedLdapGroups"
                 id="preserveDeletedLdapGroups"
                 checked={formValues.preserveDeletedLdapGroups}
@@ -188,12 +188,12 @@ export const LdapGroupSyncSettingsForm: FC = () => {
             </div>
           </div>
         </div>
-        <div className="px-5">
+        <div className="mt-5 mb-4">
           <h4 className="border-bottom mb-3">Attribute Mapping ({t('optional')})</h4>
         </div>
         <div className="row form-group">
-          <label htmlFor="ldapGroupNameAttribute" className="text-left text-md-right col-md-3 col-form-label">{t('Name')}</label>
-          <div className="col-md-6">
+          <label htmlFor="ldapGroupNameAttribute" className="text-left text-md-end col-md-3 col-form-label">{t('Name')}</label>
+          <div className="col-md-9">
             <input
               className="form-control"
               type="text"
@@ -211,10 +211,10 @@ export const LdapGroupSyncSettingsForm: FC = () => {
           </div>
         </div>
         <div className="row form-group">
-          <label htmlFor="ldapGroupDescriptionAttribute" className="text-left text-md-right col-md-3 col-form-label">
+          <label htmlFor="ldapGroupDescriptionAttribute" className="text-left text-md-end col-md-3 col-form-label">
             {t('Description')}
           </label>
-          <div className="col-md-6">
+          <div className="col-md-9">
             <input
               className="form-control"
               type="text"

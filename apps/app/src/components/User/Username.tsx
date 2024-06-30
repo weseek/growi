@@ -1,13 +1,14 @@
 import React from 'react';
 
-import type { IUser } from '@growi/core';
+import type { IUserHasId } from '@growi/core';
+import { isPopulated, type IUser, type Ref } from '@growi/core';
 import { pagePathUtils } from '@growi/core/dist/utils';
 import Link from 'next/link';
 
-export const Username: React.FC<{ user?: IUser }> = ({ user }): JSX.Element => {
+export const Username: React.FC<{ user?: IUserHasId | Ref<IUser> }> = ({ user }): JSX.Element => {
 
-  if (user == null) {
-    return <span>anyone</span>;
+  if (user == null || !isPopulated(user)) {
+    return <i>(anyone)</i>;
   }
 
   const name = user.name || '(no name)';

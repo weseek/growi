@@ -160,16 +160,20 @@
   "not_allowed_to_see_this_page": "You cannot see this page",
   "Confirm": "Confirm",
   "Successfully requested": "Successfully requested.",
-  "form_validation": {
-    "error_message": "Some values ​​are incorrect",
-    "required": "%s is required",
-    "invalid_syntax": "The syntax of %s is invalid.",
-    "title_required": "Title is required.",
-    "field_required": "{{target}} is required"
+  "input_validation": {
+    "target": {
+      "page_name": "Page name",
+      "folder_name": "Folder name",
+      "field": "field"
+    },
+    "message": {
+      "error_message": "Some values ​​are incorrect",
+      "required": "%s is required",
+      "invalid_syntax": "The syntax of %s is invalid.",
+      "title_required": "Title is required.",
+      "field_required": "{{target}} is required"
+    }
   },
-  "page_name": "Page name",
-  "folder_name": "Folder name",
-  "field": "field",
   "not_creatable_page": {
     "message": "Page contents cannot be created in this path."
   },
@@ -421,6 +425,12 @@
     }
   },
   "duplicated_pages": "{{fromPath}} has been duplicated",
+  "modal_granted_groups_inheritance_select": {
+    "select_granted_groups": "Select groups that can access page",
+    "inherit_all_granted_groups_from_parent": "Inherit all groups that can access page from parent",
+    "only_inherit_related_groups": "Only inherit groups that you belong to from parent",
+    "create_page": "Create Page"
+  },
   "modal_putback": {
     "label": {
       "Put Back Page": "Put back page",
@@ -557,6 +567,8 @@
     "delete_completely": "Delete completely",
     "include_certain_path": "Include {{pathToInclude}} path ",
     "delete_all_selected_page": "Delete All",
+    "select_all": "Select all",
+    "delete_selected_pages": "Delete selected pages",
     "currently_not_implemented": "This is not currently implemented",
     "search_again": "Search again",
     "number_of_list_to_display": "Display",
@@ -625,7 +637,8 @@
     "bulk_export_notice": "Once a download link is ready, a notification will be sent. If the number of pages is large, it may take a while for preparation.",
     "markdown": "Markdown",
     "choose_export_format": "Select export format",
-    "bulk_export_started": "Please wait a moment..."
+    "bulk_export_started": "Please wait a moment...",
+    "bulk_export_download_expired": "Download period has expired"
   },
   "message": {
     "successfully_connected": "Successfully Connected!",
@@ -664,10 +677,9 @@
     "Email format is invalid": "Email format is invalid.",
     "Email field is required": "Email field is required.",
     "Password has invalid character": "Password has invalid character.",
-    "Password minimum character should be more than 8 characters": "Password minimum character should be more than 8 characters.",
+    "Password minimum character should be more than n characters": "Password minimum character should be more than {{number}} characters.",
     "Password field is required": "Password field is required.",
     "Username or E-mail has invalid characters": "Username or E-mail has invalid characters.",
-    "Password minimum character should be more than 6 characters": "Password minimum character should be more than 6 characters.",
     "user_not_found": "User not found.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException occured</strong></p><p class='mb-0'> Your {{ failedProviderForDuplicatedUsernameException }} authentication was succeeded, but a new user could not be created. See the issue <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },
@@ -868,5 +880,8 @@
     "show_wip_page": "Show WIP",
     "size_s": "Size: S",
     "size_l": "Size: L"
+  },
+  "create_page": {
+    "untitled": "Untitled"
   }
 }

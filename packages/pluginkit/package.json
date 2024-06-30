@@ -1,6 +1,7 @@
 {
   "name": "@growi/pluginkit",
-  "version": "0.1.0",
+  "version": "1.0.1",
+  "description": "Plugin kit for GROWI",
   "license": "MIT",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -20,9 +21,8 @@
     "test": "vitest run --coverage"
   },
   "dependencies": {
-    "@growi/core": "link:../core",
+    "@growi/core": "^1.0.0",
     "extensible-custom-error": "^0.0.7"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }

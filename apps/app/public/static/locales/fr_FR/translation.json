@@ -160,16 +160,20 @@
   "not_allowed_to_see_this_page": "Vous ne pouvez pas voir cette page",
   "Confirm": "Confirmer",
   "Successfully requested": "Demande envoyée.",
-  "form_validation": {
-    "error_message": "Des champs sont invalides",
-    "required": "%s est requis",
-    "invalid_syntax": "La syntaxe de %s est invalide.",
-    "title_required": "Titre requis.",
-    "field_required": "{{target}} est requis"
+  "input_validation": {
+    "target": {
+      "page_name": "Nom de la page",
+      "folder_name": "Nom du dossier",
+      "field": "champ"
+    },
+    "message": {
+      "error_message": "Des champs sont invalides",
+      "required": "%s est requis",
+      "invalid_syntax": "La syntaxe de %s est invalide.",
+      "title_required": "Titre requis.",
+      "field_required": "{{target}} est requis"
+    }
   },
-  "page_name": "Nom de la page",
-  "folder_name": "Nom du dossier",
-  "field": "champ",
   "not_creatable_page": {
     "message": "Vous ne pouvez pas créer cette page dans ce chemin."
   },
@@ -557,6 +561,8 @@
     "delete_completely": "Supprimer définitivement",
     "include_certain_path": "Inclure le chemin {{pathToInclude}} ",
     "delete_all_selected_page": "Tout supprimer",
+    "select_all": "Tout sélectionner",
+    "delete_selected_pages": "Supprimer les pages sélectionnées",
     "currently_not_implemented": "Non implémenté",
     "search_again": "Rechercher",
     "number_of_list_to_display": "Afficher",
@@ -616,11 +622,17 @@
     "discription_heading": "Créer un compte",
     "discription": "Créer un compte avec votre adresse courriel invitée"
   },
-  "export_bulk": {
+  "page_export": {
     "failed_to_export": "Échec de l'export",
     "failed_to_count_pages": "Échec du compte des pages",
     "export_page_markdown": "Exporter la page en Markdown",
-    "export_page_pdf": "Exporter la page en PDF"
+    "export_page_pdf": "Exporter la page en PDF",
+    "bulk_export": "Exporter la page et toutes les pages enfants",
+    "bulk_export_notice": "Une fois qu'un lien de téléchargement est prêt, une notification sera envoyée. Si le nombre de pages est important, la préparation peut prendre un certain temps.",
+    "markdown": "Markdown",
+    "choose_export_format": "Sélectionnez le format d'exportation",
+    "bulk_export_started": "Patientez s'il-vous-plait...",
+    "bulk_export_download_expired": "La période de téléchargement a expiré"
   },
   "message": {
     "successfully_connected": "Connecté!",
@@ -659,10 +671,9 @@
     "Email format is invalid": "Format d'adresse courriel invalide.",
     "Email field is required": "Adresse courriel requise.",
     "Password has invalid character": "Le mot de passe contient des caractères invalides",
-    "Password minimum character should be more than 8 characters": "Le mot de passe doit contenir plus de 8 caractères.",
+    "Password minimum character should be more than n characters": "Le mot de passe doit contenir plus de {{number}} caractères.",
     "Password field is required": "Mot de passe requis.",
     "Username or E-mail has invalid characters": "Le nom d'utilisateur ou l'adresse courriel contient des caractères invalides",
-    "Password minimum character should be more than 6 characters": "Le mot de passe doit contenir au moins 6 caractères.",
     "user_not_found": "Utilisateur introuvable.",
     "provider_duplicated_username_exception": "<p><strong><span class='material-symbols-outlined me-1'>cancel</span>DuplicatedUsernameException</strong></p><p class='mb-0'> L'authentification est réussie pour {{ failedProviderForDuplicatedUsernameException }} , mais la création d'un utilisateur a échouée. Voir <a href='https://github.com/weseek/growi/issues/193'>#193</a>.</p>"
   },

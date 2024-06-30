@@ -1,4 +1,4 @@
-import { Origin, allOrigin } from '@growi/core';
+import { Origin, allOrigin, getIdForRef } from '@growi/core';
 import type {
   IPage, IRevisionHasId, IUserHasId,
 } from '@growi/core';
@@ -11,18 +11,15 @@ import mongoose from 'mongoose';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
 import { type IApiv3PageUpdateParams, PageUpdateErrorCode } from '~/interfaces/apiv3';
 import type { IOptionsForUpdate } from '~/interfaces/page';
-import { RehypeSanitizeOption } from '~/interfaces/rehype';
 import type Crowi from '~/server/crowi';
 import { generateAddActivityMiddleware } from '~/server/middlewares/add-activity';
 import {
   GlobalNotificationSettingEvent, serializePageSecurely, serializeRevisionSecurely, serializeUserSecurely,
 } from '~/server/models';
 import type { PageDocument, PageModel } from '~/server/models/page';
-import { configManager } from '~/server/service/config-manager';
 import { preNotifyService } from '~/server/service/pre-notify';
 import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
-import Xss from '~/services/xss';
-import XssOption from '~/services/xss/xssOption';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 
 import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
@@ -47,20 +44,6 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   const accessTokenParser = require('../../../middlewares/access-token-parser')(crowi);
   const loginRequiredStrictly = require('../../../middlewares/login-required')(crowi);
 
-
-  const xss = (() => {
-    const initializedConfig = {
-      isEnabledXssPrevention: configManager.getConfig('markdown', 'markdown:xss:isEnabledPrevention'),
-      tagWhitelist: crowi.xssService.getTagWhitelist(),
-      attrWhitelist: crowi.xssService.getAttrWhitelist(),
-      // TODO: Omit rehype related property from XssOptionConfig type
-      //  Server side xss implementation does not require it.
-      xssOption: RehypeSanitizeOption.CUSTOM,
-    };
-    const xssOption = new XssOption(initializedConfig);
-    return new Xss(xssOption);
-  })();
-
   // define validators for req.body
   const validator: ValidationChain[] = [
     body('pageId').exists().not().isEmpty({ ignore_whitespace: true })
@@ -69,7 +52,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       .isEmpty({ ignore_whitespace: true })
       .withMessage("'revisionId' must be specified"),
     body('body').exists().isString()
-      .withMessage("The empty value is not allowd for the 'body'"),
+      .withMessage("Empty value is not allowed for 'body'"),
     body('grant').optional().isInt({ min: 0, max: 5 }).withMessage('grant must be integer from 1 to 5'),
     body('userRelatedGrantUserGroupIds').optional().isArray().withMessage('userRelatedGrantUserGroupIds must be an array of group id'),
     body('overwriteScopesOfDescendants').optional().isBoolean().withMessage('overwriteScopesOfDescendants must be boolean'),
@@ -80,7 +63,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
   ];
 
 
-  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument) {
+  async function postAction(req: UpdatePageRequest, res: ApiV3Response, updatedPage: PageDocument, previousRevision: IRevisionHasId | null) {
     // Reflect the updates in ydoc
     const origin = req.body.origin;
     if (origin === Origin.View || origin === undefined) {
@@ -89,6 +72,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // persist activity
+    const creator = updatedPage.creator != null ? getIdForRef(updatedPage.creator) : undefined;
     const parameters = {
       targetModel: SupportedTargetModel.MODEL_PAGE,
       target: updatedPage,
@@ -97,7 +81,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     const activityEvent = crowi.event('activity');
     activityEvent.emit(
       'update', res.locals.activity._id, parameters,
-      { path: updatedPage.path, creator: updatedPage.creator._id.toString() },
+      { path: updatedPage.path, creator },
       preNotifyService.generatePreNotify,
     );
 
@@ -110,10 +94,10 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
     }
 
     // user notification
-    const { revisionId, isSlackEnabled, slackChannels } = req.body;
+    const { isSlackEnabled, slackChannels } = req.body;
     if (isSlackEnabled) {
       try {
-        const option = revisionId != null ? { previousRevision: revisionId } : undefined;
+        const option = previousRevision != null ? { previousRevision } : undefined;
         const results = await crowi.userNotificationService.fire(updatedPage, req.user, slackChannels, 'update', option);
         results.forEach((result) => {
           if (result.status === 'rejected') {
@@ -137,6 +121,8 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
         pageId, revisionId, body, origin,
       } = req.body;
 
+      const sanitizeRevisionId = revisionId == null ? undefined : generalXssFilter.process(revisionId);
+
       // check page existence
       const isExist = await Page.count({ _id: pageId }) > 0;
       if (!isExist) {
@@ -146,18 +132,19 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
       // check revision
       const currentPage = await Page.findByIdAndViewer(pageId, req.user);
 
-      if (currentPage != null && !await currentPage.isUpdatable(revisionId, origin)) {
+      if (currentPage != null && !await currentPage.isUpdatable(sanitizeRevisionId, origin)) {
         const latestRevision = await Revision.findById(currentPage.revision).populate('author');
         const returnLatestRevision = {
           revisionId: latestRevision?._id.toString(),
-          revisionBody: xss.process(latestRevision?.body),
+          revisionBody: latestRevision?.body,
           createdAt: latestRevision?.createdAt,
           user: serializeUserSecurely(latestRevision?.author),
         };
         return res.apiv3Err(new ErrorV3('Posted param "revisionId" is outdated.', PageUpdateErrorCode.CONFLICT, undefined, { returnLatestRevision }), 409);
       }
 
-      let updatedPage;
+      let updatedPage: PageDocument;
+      let previousRevision: IRevisionHasId | null;
       try {
         const {
           grant, userRelatedGrantUserGroupIds, overwriteScopesOfDescendants, wip,
@@ -167,7 +154,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
           options.grant = grant;
           options.userRelatedGrantUserGroupIds = userRelatedGrantUserGroupIds;
         }
-        const previousRevision = await Revision.findById(revisionId);
+        previousRevision = await Revision.findById(sanitizeRevisionId);
         updatedPage = await crowi.pageService.updatePage(currentPage, body, previousRevision?.body ?? null, req.user, options);
       }
       catch (err) {
@@ -182,7 +169,7 @@ export const updatePageHandlersFactory: UpdatePageHandlersFactory = (crowi) => {
 
       res.apiv3(result, 201);
 
-      postAction(req, res, updatedPage);
+      postAction(req, res, updatedPage, previousRevision);
     },
   ];
 };

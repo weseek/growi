@@ -33,6 +33,7 @@ import {
 } from '~/interfaces/page-operation';
 import { PageActionOnGroupDelete } from '~/interfaces/user-group';
 import { SocketEventName, type PageMigrationErrorData, type UpdateDescCountRawData } from '~/interfaces/websocket';
+import type { CurrentPageYjsData } from '~/interfaces/yjs';
 import type { CreateMethod } from '~/server/models/page';
 import {
   type PageModel, type PageDocument, pushRevision, PageQueryBuilder,
@@ -40,8 +41,10 @@ import {
 import type { PageTagRelationDocument } from '~/server/models/page-tag-relation';
 import PageTagRelation from '~/server/models/page-tag-relation';
 import type { UserGroupDocument } from '~/server/models/user-group';
+import { getYjsConnectionManager } from '~/server/service/yjs-connection-manager';
 import { createBatchStream } from '~/server/util/batch-stream';
 import { collectAncestorPaths } from '~/server/util/collect-ancestor-paths';
+import { generalXssFilter } from '~/services/general-xss-filter';
 import loggerFactory from '~/utils/logger';
 import { prepareDeleteConfigValuesForCalc } from '~/utils/page-delete-config';
 
@@ -263,10 +266,14 @@ class PageService implements IPageService {
     if (page.isEmpty) {
       const Page = mongoose.model<IPage, PageModel>('Page');
       const notEmptyClosestAncestor = await Page.findNonEmptyClosestAncestor(page.path);
-      return notEmptyClosestAncestor?.creator ?? null;
+      return notEmptyClosestAncestor?.creator == null
+        ? null
+        : getIdForRef(notEmptyClosestAncestor.creator);
     }
 
-    return page.creator ?? null;
+    return page.creator == null
+      ? null
+      : getIdForRef(page.creator);
   }
 
   // Use getCreatorIdForCanDelete before execution of canDelete to get creatorId.
@@ -351,13 +358,19 @@ class PageService implements IPageService {
       user: IUserHasId,
       isRecursively: boolean,
       canDeleteFunction: (
-        page: PageDocument, creatorId: ObjectIdLike, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
+        page: PageDocument, creatorId: ObjectIdLike | null, operator: any, isRecursively: boolean, userRelatedGroups: PopulatedGrantedGroup[]
       ) => boolean,
   ): Promise<PageDocument[]> {
     const userRelatedGroups = await this.pageGrantService.getUserRelatedGroups(user);
     const filteredPages = pages.filter(async(p) => {
       if (p.isEmpty) return true;
-      const canDelete = canDeleteFunction(p, p.creator, user, isRecursively, userRelatedGroups);
+      const canDelete = canDeleteFunction(
+        p,
+        p.creator == null ? null : getIdForRef(p.creator),
+        user,
+        isRecursively,
+        userRelatedGroups,
+      );
       return canDelete;
     });
 
@@ -598,7 +611,7 @@ class PageService implements IPageService {
 
     const updateMetadata = options.updateMetadata || false;
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // UserGroup & Owner validation
     // use the parent's grant when target page is an empty page
@@ -827,7 +840,7 @@ class PageService implements IPageService {
     } = options;
 
     // sanitize path
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // create descendants first
     if (isRecursively) {
@@ -1092,7 +1105,7 @@ class PageService implements IPageService {
       throw Error('Page not found.');
     }
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     // 1. Separate v4 & v5 process
     const isShouldUseV4Process = shouldUseV4Process(page);
@@ -1266,7 +1279,7 @@ class PageService implements IPageService {
     options.grantUserGroupIds = page.grantedGroups;
     options.grantedUserIds = page.grantedUsers;
 
-    newPagePath = this.crowi.xss.process(newPagePath); // eslint-disable-line no-param-reassign
+    newPagePath = generalXssFilter.process(newPagePath); // eslint-disable-line no-param-reassign
 
     const createdPage = await this.create(
       newPagePath, page.revision.body, user, options,
@@ -1857,8 +1870,7 @@ class PageService implements IPageService {
   }
 
   async deleteCompletelyOperation(pageIds, pagePaths): Promise<void> {
-    // Delete Bookmarks, Attachments, Revisions, Pages and emit delete
-    const Bookmark = this.crowi.model('Bookmark');
+    // Delete Attachments, Revisions, Pages and emit delete
     const Page = this.crowi.model('Page');
     const Revision = this.crowi.model('Revision');
 
@@ -1866,7 +1878,6 @@ class PageService implements IPageService {
     const attachments = await Attachment.find({ page: { $in: pageIds } });
 
     await Promise.all([
-      Bookmark.deleteMany({ page: { $in: pageIds } }),
       Comment.deleteMany({ page: { $in: pageIds } }),
       PageTagRelation.deleteMany({ relatedPage: { $in: pageIds } }),
       ShareLink.deleteMany({ relatedPage: { $in: pageIds } }),
@@ -1874,6 +1885,8 @@ class PageService implements IPageService {
       Page.deleteMany({ _id: { $in: pageIds } }),
       PageRedirect.deleteMany({ $or: [{ fromPath: { $in: pagePaths } }, { toPath: { $in: pagePaths } }] }),
       attachmentService.removeAllAttachments(attachments),
+
+      // Leave bookmarks without deleting -- 2024.05.17 Yuki Takei
     ]);
   }
 
@@ -3765,7 +3778,7 @@ class PageService implements IPageService {
     }
 
     // Values
-    const path: string = this.crowi.xss.process(_path); // sanitize path
+    const path: string = generalXssFilter.process(_path); // sanitize path
 
     // Retrieve closest ancestor document
     const Page = mongoose.model<PageDocument, PageModel>('Page');
@@ -3774,12 +3787,14 @@ class PageService implements IPageService {
     // Determine grantData
     const grant = options.grant ?? closestAncestor?.grant ?? PageGrant.GRANT_PUBLIC;
     const grantUserIds = grant === PageGrant.GRANT_OWNER ? [user._id] : undefined;
-    const grantUserGroupIds = options.grantUserGroupIds
-      ?? (
-        closestAncestor != null
-          ? await this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user)
-          : undefined
-      );
+    const getGrantedGroupsFromClosestAncestor = async() => {
+      if (closestAncestor == null) return undefined;
+      if (options.onlyInheritUserRelatedGrantedGroups) {
+        return this.pageGrantService.getUserRelatedGrantedGroups(closestAncestor, user);
+      }
+      return closestAncestor.grantedGroups;
+    };
+    const grantUserGroupIds = options.grantUserGroupIds ?? await getGrantedGroupsFromClosestAncestor();
     const grantData = {
       grant,
       grantUserIds,
@@ -3893,7 +3908,7 @@ class PageService implements IPageService {
     const expandContentWidth = this.crowi.configManager.getConfig('crowi', 'customize:isContainerFluid');
 
     // sanitize path
-    path = this.crowi.xss.process(path); // eslint-disable-line no-param-reassign
+    path = generalXssFilter.process(path); // eslint-disable-line no-param-reassign
 
     let grant = options.grant;
     // force public
@@ -3974,7 +3989,7 @@ class PageService implements IPageService {
 
     // Values
     // eslint-disable-next-line no-param-reassign
-    path = this.crowi.xss.process(path); // sanitize path
+    path = generalXssFilter.process(path); // sanitize path
 
     const {
       grantUserGroupIds, grantUserIds,
@@ -4382,7 +4397,6 @@ class PageService implements IPageService {
       .lean()
       .exec();
 
-    this.injectIsTargetIntoPages(pages, path);
     await this.injectProcessDataIntoPagesByActionTypes(pages, [PageActionType.Rename]);
 
     /*
@@ -4400,14 +4414,6 @@ class PageService implements IPageService {
     });
 
     return pathToChildren;
-  }
-
-  private injectIsTargetIntoPages(pages: (PageDocument & {isTarget?: boolean})[], path): void {
-    pages.forEach((page) => {
-      if (page.path === path) {
-        page.isTarget = true;
-      }
-    });
   }
 
   /**
@@ -4435,6 +4441,36 @@ class PageService implements IPageService {
         page.processData = processData;
       }
     });
+  }
+
+  async getYjsData(pageId: string): Promise<CurrentPageYjsData> {
+    const yjsConnectionManager = getYjsConnectionManager();
+
+    const currentYdoc = yjsConnectionManager.getCurrentYdoc(pageId);
+    const persistedYdoc = await yjsConnectionManager.getPersistedYdoc(pageId);
+
+    const yjsDraft = (currentYdoc ?? persistedYdoc)?.getText('codemirror').toString();
+    const hasRevisionBodyDiff = await this.hasRevisionBodyDiff(pageId, yjsDraft);
+
+    return {
+      hasRevisionBodyDiff,
+      awarenessStateSize: currentYdoc?.awareness.states.size,
+    };
+  }
+
+  async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
+    if (comparisonTarget == null) {
+      return false;
+    }
+
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
+
+    if (revision == null) {
+      return false;
+    }
+
+    return revision.body !== comparisonTarget;
   }
 
   async createTtlIndex(): Promise<void> {

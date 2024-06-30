@@ -1,4 +1,5 @@
 import type {
+  HasObjectId,
   IAttachment, IPage, IRevision, IUser, Ref,
 } from '@growi/core';
 
@@ -15,13 +16,11 @@ export interface IPageBulkExportJob {
   lastUploadedPagePath: string, // the path of page that was uploaded last
   uploadId: string, // upload ID of multipart upload of S3/GCS
   format: PageBulkExportFormat,
-  expireAt: Date, // the date at which job execution expires
+  completedAt: Date | null, // the date at which job was completed
+  attachment?: Ref<IAttachment>,
 }
 
-export interface IPageBulkExportResult {
-  attachment: Ref<IAttachment>,
-  expireAt: Date, // the date at which downloading of result expires
-}
+export interface IPageBulkExportJobHasId extends IPageBulkExportJob, HasObjectId {}
 
 // snapshot of page info to upload
 export interface IPageBulkExportPageInfo {
