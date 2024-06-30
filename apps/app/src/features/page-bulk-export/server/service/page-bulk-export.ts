@@ -69,7 +69,7 @@ class PageBulkExportService {
     const attachment = Attachment.createWithoutSave(null, currentUser, originalName, 'zip', 0, AttachmentType.PAGE_BULK_EXPORT);
     const uploadKey = `${FilePathOnStoragePrefix.pageBulkExport}/${attachment.fileName}`;
 
-    const pagesReadable = this.getPageReadable(basePagePath);
+    const pagesReadable = await this.getPageReadable(basePagePath, currentUser);
     const zipArchiver = this.setUpZipArchiver();
     const pagesWritable = this.getPageWritable(zipArchiver);
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
@@ -115,12 +115,13 @@ class PageBulkExportService {
   /**
    * Get a Readable of all the pages under the specified path, including the root page.
    */
-  private getPageReadable(basePagePath: string): Readable {
+  private async getPageReadable(basePagePath: string, currentUser): Promise<Readable> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
 
-    const builder = new PageQueryBuilder(Page.find())
-      .addConditionToListWithDescendants(basePagePath);
+    const builder = await new PageQueryBuilder(Page.find())
+      .addConditionToListWithDescendants(basePagePath)
+      .addViewerCondition(currentUser);
 
     return builder
       .query
