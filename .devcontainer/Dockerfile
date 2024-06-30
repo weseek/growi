@@ -57,3 +57,6 @@ RUN yarn global add node-gyp
 
 # Uncomment to default to non-root user
 # USER $USER_UID
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD true
+env PUPPETEER_EXECUTABLE_PATH /usr/bin/chromium

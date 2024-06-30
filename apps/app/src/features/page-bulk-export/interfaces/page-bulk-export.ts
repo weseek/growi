@@ -4,7 +4,7 @@ import type {
 } from '@growi/core';
 
 export const PageBulkExportFormat = {
-  markdown: 'markdown',
+  md: 'md',
   pdf: 'pdf',
 } as const;
 

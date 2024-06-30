@@ -9,6 +9,10 @@ import archiver from 'archiver';
 import type { QueueObject } from 'async';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
+import type { Browser } from 'puppeteer';
+import puppeteer from 'puppeteer';
+import remark from 'remark';
+import html from 'remark-html';
 
 import type { SupportedActionType } from '~/interfaces/activity';
 import { SupportedAction, SupportedTargetModel } from '~/interfaces/activity';
@@ -56,7 +60,7 @@ class PageBulkExportService {
     this.activityEvent = crowi.event('activity');
   }
 
-  async bulkExportWithBasePagePath(basePagePath: string, currentUser, activityParameters: ActivityParameters): Promise<void> {
+  async bulkExportWithBasePagePath(basePagePath: string, format: PageBulkExportFormat, currentUser, activityParameters: ActivityParameters): Promise<void> {
     const Page = mongoose.model<IPage, PageModel>('Page');
     const basePage = await Page.findByPathAndViewer(basePagePath, currentUser, null, true);
 
@@ -71,7 +75,7 @@ class PageBulkExportService {
 
     const pagesReadable = this.getPageReadable(basePagePath);
     const zipArchiver = this.setUpZipArchiver();
-    const pagesWritable = this.getPageWritable(zipArchiver);
+    const pagesWritable = await this.getPageWritable(zipArchiver, format);
     const bufferToPartSizeTransform = getBufferToFixedSizeTransform(this.maxPartSize);
 
     // init multipart upload
@@ -132,7 +136,10 @@ class PageBulkExportService {
   /**
    * Get a Writable that writes the page body to a zip file
    */
-  private getPageWritable(zipArchiver: Archiver): Writable {
+  private async getPageWritable(zipArchiver: Archiver, format: string): Promise<Writable> {
+    // Create a browser instance
+    const browser = await puppeteer.launch();
+
     return new Writable({
       objectMode: true,
       write: async(page: PageDocument, encoding, callback) => {
@@ -140,11 +147,11 @@ class PageBulkExportService {
           const revision = page.revision;
 
           if (revision != null && isPopulated(revision)) {
-            const markdownBody = revision.body;
+            const body = format === PageBulkExportFormat.pdf ? (await this.convertMdToPdf(revision.body, browser)) : revision.body;
             const pathNormalized = normalizePath(page.path);
             // Since archiver does not provide a proper way to back pressure at the moment, use the _queue property as a workaround
             // ref: https://github.com/archiverjs/node-archiver/issues/611
-            const { _queue } = zipArchiver.append(markdownBody, { name: `${pathNormalized}.md` }) as ArchiverWithQueue;
+            const { _queue } = zipArchiver.append(body, { name: `${pathNormalized}.${format}` }) as ArchiverWithQueue;
             if (_queue == null) {
               throw Error('Cannot back pressure the export pipeline. Aborting the export.');
             }
@@ -159,8 +166,9 @@ class PageBulkExportService {
         }
         callback();
       },
-      final: (callback) => {
+      final: async(callback) => {
         zipArchiver.finalize();
+        await browser.close();
         callback();
       },
     });
@@ -170,7 +178,6 @@ class PageBulkExportService {
     const zipArchiver = archiver('zip', {
       zlib: { level: 9 }, // maximum compression
     });
-
     // good practice to catch warnings (ie stat failures and other non-blocking errors)
     zipArchiver.on('warning', (err) => {
       if (err.code === 'ENOENT') logger.error(err);
@@ -224,6 +231,27 @@ class PageBulkExportService {
         callback();
       },
     });
+  }
+
+  private async convertMdToPdf(md: string, browser: Browser): Promise<Buffer> {
+    const htmlString = (await remark()
+      .use(html)
+      .process(md))
+      .toString();
+    // Create a new page
+    const page = await browser.newPage();
+
+    await page.setContent(htmlString, { waitUntil: 'domcontentloaded' });
+    await page.emulateMediaType('screen');
+    const result = await page.pdf({
+      margin: {
+        top: '100px', right: '50px', bottom: '100px', left: '50px',
+      },
+      printBackground: true,
+      format: 'A4',
+    });
+
+    return result;
   }
 
   private async notifyExportResult(
