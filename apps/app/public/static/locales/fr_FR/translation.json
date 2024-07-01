@@ -869,5 +869,8 @@
     "show_wip_page": "Voir brouillon",
     "size_s": "Taille: P",
     "size_l": "Taille: G"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?"
   }
 }

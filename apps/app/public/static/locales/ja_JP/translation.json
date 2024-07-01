@@ -911,5 +911,8 @@
   },
   "create_page": {
     "untitled": "無題のページ"
+  },
+  "sync-latest-reevision-body": {
+    "confirm": "エディターに入力中のドラフトデータを削除して最新の本文を同期します。本当に実行しますか？"
   }
 }
