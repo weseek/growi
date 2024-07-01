@@ -256,6 +256,14 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     openDeleteModal([pageWithMeta], { onDeleted: deletedHandler });
   }, [currentPathname, mutateCurrentPage, openDeleteModal, router, mutatePageInfo]);
 
+  const syncLatestRevisionBodyHandler = useCallback(async(pageId: string) => {
+    // eslint-disable-next-line no-alert
+    const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
+    if (answer) {
+      //
+    }
+  }, [t]);
+
   const switchContentWidthHandler = useCallback(async(pageId: string, value: boolean) => {
     if (!isSharedPage) {
       await updateContentWidth(pageId, value);
@@ -331,6 +339,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
                 onClickDuplicateMenuItem={duplicateItemClickedHandler}
                 onClickRenameMenuItem={renameItemClickedHandler}
                 onClickDeleteMenuItem={deleteItemClickedHandler}
+                onClickSyncLatestRevisionBodyMenuItem={syncLatestRevisionBodyHandler}
                 onClickSwitchContentWidth={switchContentWidthHandler}
               />
             )}

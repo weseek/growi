@@ -27,6 +27,7 @@ export const MenuItemType = {
   DELETE: 'delete',
   REVERT: 'revert',
   PATH_RECOVERY: 'pathRecovery',
+  SYNC_LATEST_REVISION_BODY: 'syncLatestRevisionBody',
   SWITCH_CONTENT_WIDTH: 'switch_content_width',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
@@ -220,13 +221,15 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
         ) }
 
         {/* SyncLatestRevisionBody */}
-        <DropdownItem
-          onClick={syncLatestRevisionBodyHandler}
-          className="grw-page-control-dropdown-item"
-        >
-          <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-          {t('SyncLatestRevisionBody')}
-        </DropdownItem>
+        { !forceHideMenuItems?.includes(MenuItemType.SYNC_LATEST_REVISION_BODY) && isEnableActions && !isReadOnlyUser && (
+          <DropdownItem
+            onClick={syncLatestRevisionBodyHandler}
+            className="grw-page-control-dropdown-item"
+          >
+            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+            {t('SyncLatestRevisionBody')}
+          </DropdownItem>
+        )}
 
         { AdditionalMenuItems && (
           <>
