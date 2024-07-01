@@ -121,12 +121,12 @@ const scrollEditor = (editorRootElement: HTMLElement, previewRootElement: HTMLEl
   newScrollTop += calcScrollElementToTop(previewElements[topPreviewElementIndex]);
   newScrollTop += calcScorllElementByRatio(
     {
-      start: editorElements[startEditorElementIndex].getBoundingClientRect(),
-      top: editorElements[topEditorElementIndex].getBoundingClientRect(),
+      start: editorElements[startEditorElementIndex]?.getBoundingClientRect(),
+      top: editorElements[topEditorElementIndex]?.getBoundingClientRect(),
       next: editorElements[nextEditorElementIndex]?.getBoundingClientRect(),
     },
     {
-      start: previewElements[topPreviewElementIndex].getBoundingClientRect(),
+      start: previewElements[topPreviewElementIndex]?.getBoundingClientRect(),
       next: previewElements[topPreviewElementIndex + 1]?.getBoundingClientRect(),
     },
   );
@@ -156,12 +156,12 @@ const scrollPreview = (editorRootElement: HTMLElement, previewRootElement: HTMLE
   newScrollTop += calcScrollElementToTop(editorElements[startEditorElementIndex]);
   newScrollTop += calcScorllElementByRatio(
     {
-      start: previewElements[topPreviewElementIndex].getBoundingClientRect(),
-      top: previewElements[topPreviewElementIndex].getBoundingClientRect(),
+      start: previewElements[topPreviewElementIndex]?.getBoundingClientRect(),
+      top: previewElements[topPreviewElementIndex]?.getBoundingClientRect(),
       next: previewElements[topPreviewElementIndex + 1]?.getBoundingClientRect(),
     },
     {
-      start: editorElements[startEditorElementIndex].getBoundingClientRect(),
+      start: editorElements[startEditorElementIndex]?.getBoundingClientRect(),
       next: editorElements[nextEditorElementIndex]?.getBoundingClientRect(),
     },
   );

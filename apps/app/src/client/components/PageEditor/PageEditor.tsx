@@ -301,16 +301,18 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   // set handler to set caret line
   useEffect(() => {
     const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber);
-
-      // TODO: scroll to the caret line
+      codeMirrorEditor?.setCaretLine(lineNumber, true);
     };
     globalEmitter.on('setCaretLine', handler);
+    if (globalEmitter.listenerCount('getCaretLine') >= 1 && codeMirrorEditor?.view != null) {
+      globalEmitter.emit('getCaretLine', handler);
+      globalEmitter.removeAllListeners('getCaretLine');
+    }
 
     return function cleanup() {
       globalEmitter.removeListener('setCaretLine', handler);
     };
-  }, [codeMirrorEditor]);
+  }, [codeMirrorEditor, codeMirrorEditor?.view]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
