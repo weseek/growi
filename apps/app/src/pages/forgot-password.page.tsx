@@ -5,12 +5,12 @@ import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import dynamic from 'next/dynamic';
 
 import type { CrowiRequest } from '~/interfaces/crowi-request';
-import { useIsMailerSetup } from '~/stores/context';
+import { useIsMailerSetup } from '~/stores-universal/context';
 
 import type { CommonProps } from './utils/commons';
 import { getNextI18NextConfig, getServerSideCommonProps } from './utils/commons';
 
-const PasswordResetRequestForm = dynamic(() => import('~/components/PasswordResetRequestForm'), { ssr: false });
+const PasswordResetRequestForm = dynamic(() => import('~/client/components/PasswordResetRequestForm'), { ssr: false });
 
 type Props = CommonProps & {
   isMailerSetup: boolean,
