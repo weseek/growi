@@ -260,7 +260,7 @@ const GrowiContextualSubNavigation = (props: GrowiContextualSubNavigationProps):
     // eslint-disable-next-line no-alert
     const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
     if (answer) {
-      //
+      // TODO: https://redmine.weseek.co.jp/issues/149418
     }
   }, [t]);
 
