@@ -18,6 +18,7 @@ import type {
 } from '../../interfaces/search';
 import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
+import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
@@ -496,7 +497,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+    const bulkSize: number = configManager.getConfig('crowi', 'app:elasticsearchReindexBulkSize');
+    const batchStream = createBatchStream(bulkSize);
 
     const appendBookmarkCountStream = new Transform({
       objectMode: true,
