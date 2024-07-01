@@ -394,9 +394,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let document = {
       path: page.path,
       body: page.revision.body,
-      // username: page.creator?.username, // available Node.js v14 and above
-      username: page.creator != null ? page.creator.username : null,
-      comments: page.comments,
+      username: page.creator?.username,
+      comments: page.comments?.map(comment => comment.comment),
       comment_count: page.commentCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
