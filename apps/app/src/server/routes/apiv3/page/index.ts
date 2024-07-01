@@ -19,6 +19,7 @@ import { GlobalNotificationSettingEvent } from '~/server/models';
 import type { PageModel } from '~/server/models/page';
 import Subscription from '~/server/models/subscription';
 import { configManager } from '~/server/service/config-manager';
+import { exportService } from '~/server/service/export';
 import type { IPageGrantService } from '~/server/service/page-grant';
 import { preNotifyService } from '~/server/service/pre-notify';
 import loggerFactory from '~/utils/logger';
@@ -784,7 +785,7 @@ module.exports = (crowi) => {
     let stream;
 
     try {
-      stream = exportService.getReadStreamFromRevision(revision, format);
+      stream = exportService?.getReadStreamFromRevision(revision, format);
     }
     catch (err) {
       logger.error('Failed to create readStream', err);

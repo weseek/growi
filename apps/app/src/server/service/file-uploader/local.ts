@@ -2,7 +2,7 @@ import { Readable } from 'stream';
 
 import type { Response } from 'express';
 
-import { ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
+import { FilePathOnStoragePrefix, ResponseMode, type RespondOptions } from '~/server/interfaces/attachment';
 import type { IAttachmentDocument } from '~/server/models';
 import loggerFactory from '~/utils/logger';
 
@@ -99,10 +99,10 @@ module.exports = function(crowi) {
 
   const basePath = path.posix.join(crowi.publicDir, 'uploads');
 
-  function getFilePathOnStorage(attachment) {
+  function getFilePathOnStorage(attachment: IAttachmentDocument) {
     const dirName = (attachment.page != null)
-      ? 'attachment'
-      : 'user';
+      ? FilePathOnStoragePrefix.attachment
+      : FilePathOnStoragePrefix.user;
     const filePath = path.posix.join(basePath, dirName, attachment.fileName);
 
     return filePath;
