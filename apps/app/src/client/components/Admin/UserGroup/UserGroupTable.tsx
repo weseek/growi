@@ -136,17 +136,17 @@ export const UserGroupTable: FC<Props> = ({
     setGroupIdToUsersMap(generateGroupIdToUsersMap(userGroupRelations));
     setGroupIdToChildGroupsMap(generateGroupIdToChildGroupsMap(childUserGroups));
   }, [userGroupRelations, childUserGroups]);
-  const ButtonForUserGroupTable = () => {
+  const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
+  const ButtonForUserGroupedit = (index) => {
     return (
       <button
         className="btn btn-link btn-edit-groups text-secondary py-0"
         type="button"
       >
-        <span className="material-symbols-outlined px-2 py-0 ">edit</span>
+        <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
       </button>
     );
   };
-  const [hoveredindex, setHoveredIdex] = useState<undefined | number>(undefined);
 
   return (
     <div data-testid="grw-user-group-table" className="mb-5">
