@@ -13,7 +13,7 @@ import { apiV3FormValidator } from '../../../middlewares/apiv3-form-validator';
 import type { ApiV3Response } from '../interfaces/apiv3-response';
 
 
-const logger = loggerFactory('growi:routes:apiv3:page:get-yjs-data');
+const logger = loggerFactory('growi:routes:apiv3:page:sync-latest-revision-body-to-yjs-draft');
 
 type SyncLatestRevisionBodyToYjsDraftHandlerFactory = (crowi: Crowi) => RequestHandler[];
 
