@@ -4462,9 +4462,12 @@ class PageService implements IPageService {
     const yjsConnectionManager = getYjsConnectionManager();
     await yjsConnectionManager.mdbInstance.clearDocument(pageId);
 
-    // const Revision = mongoose.model<IRevisionHasId>('Revision');
-    // const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
-    // await yjsConnectionManager.handleYDocUpdate(pageId, 'hoge');
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
+
+    if (revision != null) {
+      await yjsConnectionManager.handleYDocUpdate(pageId, revision.body);
+    }
   }
 
   async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {

@@ -59,7 +59,6 @@ class YjsConnectionManager {
     }
 
     const persistedYdoc = await this.getPersistedYdoc(pageId);
-    const persistedStateVector = Y.encodeStateVector(persistedYdoc);
 
     await this.mdb.flushDocument(pageId);
 
@@ -69,13 +68,7 @@ class YjsConnectionManager {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
-    const diff = Y.encodeStateAsUpdate(currentYdoc, persistedStateVector);
-
-    if (diff.reduce((prev, curr) => prev + curr, 0) > 0) {
-      this.mdb.storeUpdate(pageId, diff);
-    }
-
-    Y.applyUpdate(currentYdoc, Y.encodeStateAsUpdate(persistedYdoc));
+    await this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
 
     currentYdoc.on('update', async(update) => {
       await this.mdb.storeUpdate(pageId, update);
@@ -99,7 +92,17 @@ class YjsConnectionManager {
     const currentMarkdownLength = currentYdoc.getText('codemirror').length;
     currentYdoc.getText('codemirror').delete(0, currentMarkdownLength);
     currentYdoc.getText('codemirror').insert(0, newValue);
-    Y.encodeStateAsUpdate(currentYdoc);
+
+    const persistedYdoc = await this.getPersistedYdoc(pageId);
+    await this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
+  }
+
+  private async syncWithPersistedYdoc(pageId: string, currentYdoc: Ydoc, persistedYdoc: Y.Doc): Promise<void> {
+    const persistedStateVector = Y.encodeStateVector(persistedYdoc);
+    const diff = Y.encodeStateAsUpdate(currentYdoc, persistedStateVector);
+    if (diff.reduce((prev, curr) => prev + curr, 0) > 0) {
+      await this.mdb.storeUpdate(pageId, diff);
+    }
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {
