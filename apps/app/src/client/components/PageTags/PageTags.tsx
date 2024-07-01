@@ -19,7 +19,7 @@ type Props = {
 }
 
 export const PageTagsSkeleton = (): JSX.Element => {
-  return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} py-1`} />;
+  return <Skeleton additionalClass={`${styles['grw-tag-labels-skeleton']} mb-2`} />;
 };
 
 export const PageTags:FC<Props> = (props: Props) => {
@@ -40,6 +40,8 @@ export const PageTags:FC<Props> = (props: Props) => {
 
   return (
     <div className={`${styles['grw-tag-labels']} grw-tag-labels d-flex align-items-center mb-2 ${printNoneClass}`} data-testid="grw-tag-labels">
+
+      {/* for mobile */}
       <div className="d-flex d-lg-none">
         <NotAvailableForGuest>
           <NotAvailableForReadOnlyUser>
@@ -53,6 +55,8 @@ export const PageTags:FC<Props> = (props: Props) => {
           </NotAvailableForReadOnlyUser>
         </NotAvailableForGuest>
       </div>
+
+      {/* for PC */}
       <div className="d-none d-lg-flex row">
         <div className="mb-2">
           <button

@@ -18,6 +18,7 @@ import type {
 } from '../../interfaces/search';
 import type { PageModel } from '../../models/page';
 import { createBatchStream } from '../../util/batch-stream';
+import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
@@ -27,7 +28,6 @@ const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
 
 const DEFAULT_OFFSET = 0;
 const DEFAULT_LIMIT = 50;
-const BULK_REINDEX_SIZE = 100;
 
 const { RELATION_SCORE, CREATED_AT, UPDATED_AT } = SORT_AXIS;
 const { DESC, ASC } = SORT_ORDER;
@@ -68,12 +68,11 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
   esUri: string;
 
-  constructor(configManager, socketIoService) {
+  constructor(socketIoService) {
     this.name = SearchDelegatorName.DEFAULT;
-    this.configManager = configManager;
     this.socketIoService = socketIoService;
 
-    const elasticsearchVersion: number = this.configManager.getConfig('crowi', 'app:elasticsearchVersion');
+    const elasticsearchVersion: number = configManager.getConfig('crowi', 'app:elasticsearchVersion');
 
     if (elasticsearchVersion !== 7 && elasticsearchVersion !== 8) {
       throw new Error('Unsupported Elasticsearch version. Please specify a valid number to \'ELASTICSEARCH_VERSION\'');
@@ -81,7 +80,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     this.isElasticsearchV7 = elasticsearchVersion === 7;
 
-    this.isElasticsearchReindexOnBoot = this.configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
+    this.isElasticsearchReindexOnBoot = configManager.getConfig('crowi', 'app:elasticsearchReindexOnBoot');
 
     // In Elasticsearch RegExp, we don't need to used ^ and $.
     // Ref: https://www.elastic.co/guide/en/elasticsearch/reference/5.6/query-dsl-regexp-query.html#_standard_operators
@@ -117,12 +116,12 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   initClient() {
     const { host, auth, indexName } = this.getConnectionInfo();
 
-    const rejectUnauthorized = this.configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
+    const rejectUnauthorized = configManager.getConfig('crowi', 'app:elasticsearchRejectUnauthorized');
 
     const options = {
       node: host,
       auth,
-      requestTimeout: this.configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
+      requestTimeout: configManager.getConfig('crowi', 'app:elasticsearchRequestTimeout'),
     };
 
     this.client = new ElasticsearchClient(this.isElasticsearchV7, options, rejectUnauthorized);
@@ -142,7 +141,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     let host = this.esUri;
     let auth;
 
-    const elasticsearchUri = this.configManager.getConfig('crowi', 'app:elasticsearchUri');
+    const elasticsearchUri = configManager.getConfig('crowi', 'app:elasticsearchUri');
 
     const url = new URL(elasticsearchUri);
     if (url.pathname !== '/') {
@@ -496,7 +495,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     });
 
-    const batchStream = createBatchStream(BULK_REINDEX_SIZE);
+    const bulkSize: number = configManager.getConfig('crowi', 'app:elasticsearchReindexBulkSize');
+    const batchStream = createBatchStream(bulkSize);
 
     const appendBookmarkCountStream = new Transform({
       objectMode: true,
@@ -829,8 +829,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   }
 
   async filterPagesByViewer(query, user, userGroups) {
-    const showPagesRestrictedByOwner = !this.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
-    const showPagesRestrictedByGroup = !this.configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
+    const showPagesRestrictedByOwner = !configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByOwner');
+    const showPagesRestrictedByGroup = !configManager.getConfig('crowi', 'security:list-policy:hideRestrictedByGroup');
 
     query = this.initializeBoolQuery(query); // eslint-disable-line no-param-reassign
 

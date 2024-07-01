@@ -12,5 +12,8 @@ export default defineConfig({
     include: [
       '**/*.spec.{tsx,jsx}',
     ],
+    coverage: {
+      reportsDirectory: './coverage/components',
+    },
   },
 });

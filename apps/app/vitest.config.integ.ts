@@ -13,6 +13,7 @@ export default mergeConfig(
         './test-with-vite/setup/mongoms.ts',
       ],
       coverage: {
+        reportsDirectory: './coverage/integ',
         exclude: [
           '**/*{.,-}integ.ts',
         ],

@@ -12,5 +12,8 @@ export default defineConfig({
     ],
     clearMocks: true,
     globals: true,
+    coverage: {
+      reportsDirectory: './coverage/unit',
+    },
   },
 });
