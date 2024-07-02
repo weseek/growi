@@ -68,7 +68,7 @@ class YjsConnectionManager {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
-    this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
+    await this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
 
     currentYdoc.on('update', async(update) => {
       await this.mdb.storeUpdate(pageId, update);
@@ -103,8 +103,6 @@ class YjsConnectionManager {
     if (diff.reduce((prev, curr) => prev + curr, 0) > 0) {
       await this.mdb.storeUpdate(pageId, diff);
     }
-
-    Y.applyUpdate(currentYdoc, Y.encodeStateAsUpdate(persistedYdoc));
   }
 
   public getCurrentYdoc(pageId: string): Ydoc | undefined {
