@@ -1,6 +1,5 @@
 import { type CompletionContext, type Completion, autocompletion } from '@codemirror/autocomplete';
 import { syntaxTree } from '@codemirror/language';
-import type Emoji from '@emoji-mart/data';
 import emojiData from '@emoji-mart/data';
 
 
