@@ -1,4 +1,6 @@
-export type AggregatedPage = Pick<Page,
+import type { IPageHasId, PageGrant } from '@growi/core';
+
+export type AggregatedPage = Pick<IPageHasId,
   '_id'
   | 'path'
   | 'createdAt'
@@ -29,6 +31,12 @@ export type BulkWriteCommand = {
   },
 }
 
+export type BulkWriteBodyRestriction = {
+  grant: PageGrant,
+  granted_users?: string[],
+  granted_groups: string[],
+}
+
 export type BulkWriteBody = {
   path: string;
   body: string;
@@ -40,5 +48,5 @@ export type BulkWriteBody = {
   created_at: Date;
   updated_at: Date;
   tag_names?: string[];
-  commets?: string[];
-}
+  comments?: string[];
+} & BulkWriteBodyRestriction;

@@ -1,7 +1,7 @@
 import { Writable, Transform } from 'stream';
 import { URL } from 'url';
 
-import type { IPage } from '@growi/core';
+import { getIdForRef, type IPage } from '@growi/core';
 import gc from 'expose-gc/function';
 import mongoose from 'mongoose';
 import streamToPromise from 'stream-to-promise';
@@ -355,20 +355,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
   /**
    * generate object that is related to page.grant*
    */
-  generateDocContentsRelatedToRestriction(page) {
-    let grantedUserIds = null;
-    if (page.grantedUsers != null && page.grantedUsers.length > 0) {
-      grantedUserIds = page.grantedUsers.map((user) => {
-        const userId = (user._id == null) ? user : user._id;
-        return userId.toString();
-      });
-    }
-
-    let grantedGroupIds = [];
-    grantedGroupIds = page.grantedGroups.map((group) => {
-      const groupId = (group.item._id == null) ? group.item : group.item._id;
-      return groupId.toString();
-    });
+  generateDocContentsRelatedToRestriction(page: AggregatedPage) {
+    const grantedUserIds = page.grantedUsers.map(user => getIdForRef(user));
+    const grantedGroupIds = page.grantedGroups.map(group => getIdForRef(group.item));
 
     return {
       grant: page.grant,
@@ -401,9 +390,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,
+      ...this.generateDocContentsRelatedToRestriction(page),
     };
-
-    document = Object.assign(document, this.generateDocContentsRelatedToRestriction(page));
 
     return [command, document];
   }
