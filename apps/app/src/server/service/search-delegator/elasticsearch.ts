@@ -376,17 +376,15 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       },
     };
 
-    const bookmarkCount = page.bookmarkCount || 0;
-    const seenUsersCount = page.seenUsers?.length || 0;
-    let document = {
+    const document: BulkWriteBody = {
       path: page.path,
       body: page.revision.body,
       username: page.creator?.username,
       comments: page.commentsCount > 0 ? page.comments : undefined,
       comment_count: page.commentsCount,
-      bookmark_count: bookmarkCount,
-      seenUsers_count: seenUsersCount,
-      like_count: page.liker?.length || 0,
+      bookmark_count: page.bookmarksCount,
+      like_count: page.likeCount,
+      seenUsers_count: page.seenUsersCount,
       created_at: page.createdAt,
       updated_at: page.updatedAt,
       tag_names: page.tagNames,
@@ -438,8 +436,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const Page = mongoose.model<IPage, PageModel>('Page');
     const { PageQueryBuilder } = Page;
-
-    const Bookmark = mongoose.model('Bookmark') as any; // TODO: typescriptize model
 
     const socket = shouldEmitProgress ? this.socketIoService.getAdminSocket() : null;
 
@@ -516,14 +512,39 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
           },
         },
 
+        // join Bookmark
+        {
+          $lookup: {
+            from: 'bookmarks',
+            localField: '_id',
+            foreignField: 'page',
+            as: 'bookmarks',
+          },
+        },
+        {
+          $addFields: {
+            bookmarksCount: { $size: '$bookmarks' },
+          },
+        },
+
+        // add counts for embedded arrays
+        {
+          $addFields: {
+            likeCount: { $size: '$liker' },
+          },
+        },
+        {
+          $addFields: {
+            seenUsersCount: { $size: '$seenUsers' },
+          },
+        },
+
         // project
         {
           $project: {
             path: 1,
             createdAt: 1,
             updatedAt: 1,
-            liker: 1,
-            seenUsers: 1,
             grant: 1,
             grantedUsers: 1,
             grantedGroups: 1,
@@ -548,6 +569,9 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
               },
             },
             commentsCount: 1,
+            bookmarksCount: 1,
+            likeCount: 1,
+            seenUsersCount: 1,
             'creator.username': 1,
             'creator.email': 1,
           },
@@ -557,27 +581,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     const bulkSize: number = configManager.getConfig('crowi', 'app:elasticsearchReindexBulkSize');
     const batchStream = createBatchStream(bulkSize);
-
-    const appendBookmarkCountStream = new Transform({
-      objectMode: true,
-      async transform(chunk, encoding, callback) {
-        const pageIds = chunk.map(doc => doc._id);
-
-        const idToCountMap = await Bookmark.getPageIdToCountMap(pageIds);
-        const idsHavingCount = Object.keys(idToCountMap);
-
-        // append count
-        chunk
-          .filter(doc => idsHavingCount.includes(doc._id.toString()))
-          .forEach((doc: AggregatedPage) => {
-            // append count from idToCountMap
-            doc.bookmarkCount = idToCountMap[doc._id.toString()];
-          });
-
-        this.push(chunk);
-        callback();
-      },
-    });
 
     const appendTagNamesStream = new Transform({
       objectMode: true,
@@ -652,7 +655,6 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     readStream
       .pipe(batchStream)
-      .pipe(appendBookmarkCountStream)
       .pipe(appendTagNamesStream)
       .pipe(writeStream);
 

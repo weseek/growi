@@ -5,8 +5,6 @@ export type AggregatedPage = Pick<IPageHasId,
   | 'path'
   | 'createdAt'
   | 'updatedAt'
-  | 'liker'
-  | 'seenUsers'
   | 'grant'
   | 'grantedUsers'
   | 'grantedGroups'
@@ -14,12 +12,14 @@ export type AggregatedPage = Pick<IPageHasId,
   revision: { body: string },
   comments: string[],
   commentsCount: number,
+  bookmarksCount: number,
+  likeCount: number,
+  seenUsersCount: number,
   creator: {
     username: string,
     email: string,
   },
 } & {
-  bookmarkCount: number,
   tagNames: string[],
 };
 
@@ -39,14 +39,14 @@ export type BulkWriteBodyRestriction = {
 
 export type BulkWriteBody = {
   path: string;
+  created_at: Date;
+  updated_at: Date;
   body: string;
   username?: string;
+  comments?: string[];
   comment_count: number;
   bookmark_count: number;
   seenUsers_count: number;
   like_count: number;
-  created_at: Date;
-  updated_at: Date;
   tag_names?: string[];
-  comments?: string[];
 } & BulkWriteBodyRestriction;
