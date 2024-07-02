@@ -22,6 +22,7 @@ import { configManager } from '../config-manager';
 import type { UpdateOrInsertPagesOpts } from '../interfaces/search';
 
 
+import type { AggregatedPage, BulkWriteBody, BulkWriteCommand } from './bulk-write';
 import ElasticsearchClient from './elasticsearch-client';
 
 const logger = loggerFactory('growi:service:search-delegator:elasticsearch');
@@ -124,7 +125,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     this.indexName = indexName;
   }
 
-  getType() {
+  getType(): '_doc' | undefined {
     return this.isElasticsearchV7 ? '_doc' : undefined;
   }
 
@@ -376,10 +377,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     };
   }
 
-  prepareBodyForCreate(body, page) {
-    if (!Array.isArray(body)) {
-      throw new Error('Body must be an array.');
-    }
+  prepareBodyForCreate(page: AggregatedPage): [BulkWriteCommand, BulkWriteBody] {
 
     const command = {
       index: {
@@ -395,8 +393,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
       path: page.path,
       body: page.revision.body,
       username: page.creator?.username,
-      comments: page.comments?.map(comment => comment.comment),
-      comment_count: page.commentCount,
+      comments: page.commentsCount > 0 ? page.comments : undefined,
+      comment_count: page.commentsCount,
       bookmark_count: bookmarkCount,
       seenUsers_count: seenUsersCount,
       like_count: page.liker?.length || 0,
@@ -407,8 +405,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
 
     document = Object.assign(document, this.generateDocContentsRelatedToRestriction(page));
 
-    body.push(command);
-    body.push(document);
+    return [command, document];
   }
 
   prepareBodyForDelete(body, page) {
@@ -468,7 +465,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const totalCount = await countQuery.count();
 
     const readStream = Page
-      .aggregate([
+      .aggregate<AggregatedPage>([
         // filter targets
         { $match: matchQuery.getQuery() },
 
@@ -521,13 +518,13 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
                   commentLength: { $strLenCP: '$comment' },
                 },
               },
-              {
-                $match: {
-                  commentLength: { $lte: 500 },
-                },
-              },
             ],
             as: 'comments',
+          },
+        },
+        {
+          $addFields: {
+            commentsCount: { $size: '$comments' },
           },
         },
 
@@ -549,7 +546,20 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
                 else: '',
               },
             },
-            'comments.comment': 1,
+            comments: {
+              $map: {
+                input: '$comments',
+                as: 'comment',
+                in: {
+                  $cond: {
+                    if: { $lte: ['$$comment.commentLength', 100000] },
+                    then: '$$comment.comment',
+                    else: '',
+                  },
+                },
+              },
+            },
+            commentsCount: 1,
             'creator.username': 1,
             'creator.email': 1,
           },
@@ -571,7 +581,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         // append count
         chunk
           .filter(doc => idsHavingCount.includes(doc._id.toString()))
-          .forEach((doc) => {
+          .forEach((doc: AggregatedPage) => {
             // append count from idToCountMap
             doc.bookmarkCount = idToCountMap[doc._id.toString()];
           });
@@ -592,7 +602,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
         // append tagNames
         chunk
           .filter(doc => idsHavingTagNames.includes(doc._id.toString()))
-          .forEach((doc) => {
+          .forEach((doc: AggregatedPage) => {
             // append tagName from idToTagNamesMap
             doc.tagNames = idToTagNamesMap[doc._id.toString()];
           });
@@ -606,8 +616,10 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const writeStream = new Writable({
       objectMode: true,
       async write(batch, encoding, callback) {
-        const body = [];
-        batch.forEach(doc => prepareBodyForCreate(body, doc));
+        const body: (BulkWriteCommand|BulkWriteBody)[] = [];
+        batch.forEach((doc: AggregatedPage) => {
+          body.push(...prepareBodyForCreate(doc));
+        });
 
         try {
           const bulkResponse = await bulkWrite({

@@ -1,3 +1,26 @@
+export type AggregatedPage = Pick<Page,
+  '_id'
+  | 'path'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'liker'
+  | 'seenUsers'
+  | 'grant'
+  | 'grantedUsers'
+  | 'grantedGroups'
+> & {
+  revision: { body: string },
+  comments: string[],
+  commentsCount: number,
+  creator: {
+    username: string,
+    email: string,
+  },
+} & {
+  bookmarkCount: number,
+  tagNames: string[],
+};
+
 export type BulkWriteCommand = {
   index: {
     _index: string,
