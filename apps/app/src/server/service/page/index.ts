@@ -4460,7 +4460,7 @@ class PageService implements IPageService {
 
   async syncLatestRevisionBodyToYjsDraft(pageId: string): Promise<void> {
     const yjsConnectionManager = getYjsConnectionManager();
-    await yjsConnectionManager.mdbInstance.clearDocument(pageId);
+    // await yjsConnectionManager.mdbInstance.clearDocument(pageId);
 
     const Revision = mongoose.model<IRevisionHasId>('Revision');
     const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
