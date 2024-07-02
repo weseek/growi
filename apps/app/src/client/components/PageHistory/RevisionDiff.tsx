@@ -18,6 +18,8 @@ import styles from './RevisionDiff.module.scss';
 
 import 'diff2html/bundles/css/diff2html.min.css';
 
+const moduleClass = styles['revision-diff-container'];
+
 type RevisioinDiffProps = {
   currentRevision: IRevisionHasPageId,
   previousRevision: IRevisionHasPageId,
@@ -66,7 +68,7 @@ export const RevisionDiff = (props: RevisioinDiffProps): JSX.Element => {
   const diffView = { __html: diffViewHTML };
 
   return (
-    <div className={`${styles['revision-diff-container']}`}>
+    <div className={moduleClass}>
       <div className="container">
         <div className="row mt-2">
           <div className="col px-0 py-2">
