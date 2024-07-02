@@ -14,7 +14,7 @@ import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
