@@ -29,7 +29,6 @@ export const EmojiButton = (props: Props): JSX.Element => {
       return;
     }
 
-
     codeMirrorEditor?.insertText(emoji.shortcodes);
 
     toggle();
