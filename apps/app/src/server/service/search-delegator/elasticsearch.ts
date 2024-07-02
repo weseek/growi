@@ -448,6 +448,8 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
     const countQuery = new PageQueryBuilder(queryFactory()).query;
     const totalCount = await countQuery.count();
 
+    const maxBodyLengthToIndex = configManager.getConfig('crowi', 'app:elasticsearchMaxBodyLengthToIndex');
+
     const readStream = Page
       .aggregate<AggregatedPage>([
         // filter targets
@@ -550,7 +552,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
             grantedGroups: 1,
             'revision.body': {
               $cond: {
-                if: { $lte: ['$bodyLength', 100000] },
+                if: { $lte: ['$bodyLength', maxBodyLengthToIndex] },
                 then: '$revision.body',
                 else: '',
               },
@@ -561,7 +563,7 @@ class ElasticsearchDelegator implements SearchDelegator<Data, ESTermsKey, ESQuer
                 as: 'comment',
                 in: {
                   $cond: {
-                    if: { $lte: ['$$comment.commentLength', 100000] },
+                    if: { $lte: ['$$comment.commentLength', maxBodyLengthToIndex] },
                     then: '$$comment.comment',
                     else: '',
                   },
