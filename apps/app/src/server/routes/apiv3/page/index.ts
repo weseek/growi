@@ -29,6 +29,7 @@ import { checkPageExistenceHandlersFactory } from './check-page-existence';
 import { createPageHandlersFactory } from './create-page';
 import { getYjsDataHandlerFactory } from './get-yjs-data';
 import { publishPageHandlersFactory } from './publish-page';
+import { syncLatestRevisionBodyToYjsDraftHandlerFactory } from './sync-latest-revision-body-to-yjs-draft';
 import { unpublishPageHandlersFactory } from './unpublish-page';
 import { updatePageHandlersFactory } from './update-page';
 
@@ -950,6 +951,8 @@ module.exports = (crowi) => {
   router.put('/:pageId/unpublish', unpublishPageHandlersFactory(crowi));
 
   router.get('/:pageId/yjs-data', getYjsDataHandlerFactory(crowi));
+
+  router.put('/:pageId/sync-latest-revision-body-to-yjs-draft', syncLatestRevisionBodyToYjsDraftHandlerFactory(crowi));
 
   return router;
 };

@@ -4458,6 +4458,15 @@ class PageService implements IPageService {
     };
   }
 
+  async syncLatestRevisionBodyToYjsDraft(pageId: string): Promise<void> {
+    const yjsConnectionManager = getYjsConnectionManager();
+    const Revision = mongoose.model<IRevisionHasId>('Revision');
+    const revision = await Revision.findOne({ pageId }).sort({ createdAt: -1 });
+    if (revision != null) {
+      await yjsConnectionManager.handleYDocUpdate(pageId, revision.body);
+    }
+  }
+
   async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
     if (comparisonTarget == null) {
       return false;
