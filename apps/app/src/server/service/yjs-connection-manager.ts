@@ -68,7 +68,7 @@ class YjsConnectionManager {
       currentYdoc.getText('codemirror').insert(0, initialValue);
     }
 
-    this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
+    await this.syncWithPersistedYdoc(pageId, currentYdoc, persistedYdoc);
 
     currentYdoc.on('update', async(update) => {
       await this.mdb.storeUpdate(pageId, update);
