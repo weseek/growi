@@ -701,35 +701,6 @@
     "password_and_confirm_password_does_not_match": "Le mot de passe ne correspond pas",
     "please_enable_mailer_alert": "La réinitialisation de mot de passe est désactivée, car la configuration d'envois de courriels est incomplète."
   },
-  "emoji": {
-    "search": "Rechercher",
-    "search_no_results_1": "Oh non!",
-    "search_no_results_2": "Cet emoji ne peut être trouvé",
-    "pick": "Choisissez un emoji…",
-    "add_custom": "Ajouter un emoji personnalisé",
-    "categories": {
-      "activity": "Activités",
-      "custom": "Personnalisé",
-      "flags": "Drapeaux",
-      "foods": "Nourriture & Boissons",
-      "frequent": "Fréquemment utilisé",
-      "nature": "Animaux & Nature",
-      "objects": "Objets",
-      "people": "Smileys & Personnes",
-      "places": "Voyages & Lieux",
-      "search": "Résultats de recherche",
-      "symbols": "Symboles"
-    },
-    "skins": {
-      "choose": "Choisissez une couleur de peau",
-      "1": "Défaut",
-      "2": "Clair",
-      "3": "Moyen-clair",
-      "4": "Moyen",
-      "5": "Moyen-foncé",
-      "6": "Foncé"
-    }
-  },
   "maintenance_mode": {
     "maintenance_mode": "Mode maintenance",
     "growi_is_under_maintenance": "GROWI est actuellement en maintenance.",
