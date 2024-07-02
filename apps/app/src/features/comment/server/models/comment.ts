@@ -27,7 +27,6 @@ type Add = (
 type FindCommentsByPageId = (pageId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCommentsByRevisionId = (revisionId: Types.ObjectId) => Query<CommentDocument[], CommentDocument>;
 type FindCreatorsByPage = (pageId: Types.ObjectId) => Promise<IUser[]>
-type GetPageIdToCommentMap = (pageIds: Types.ObjectId[]) => Promise<Record<string, CommentDocument[]>>
 type CountCommentByPageId = (pageId: Types.ObjectId) => Promise<number>
 
 export interface CommentModel extends Model<CommentDocument> {
@@ -35,7 +34,6 @@ export interface CommentModel extends Model<CommentDocument> {
   findCommentsByPageId: FindCommentsByPageId
   findCommentsByRevisionId: FindCommentsByRevisionId
   findCreatorsByPage: FindCreatorsByPage
-  getPageIdToCommentMap: GetPageIdToCommentMap
   countCommentByPageId: CountCommentByPageId
 }
 
@@ -89,23 +87,6 @@ commentSchema.statics.findCommentsByRevisionId = function(id) {
 
 commentSchema.statics.findCreatorsByPage = async function(page) {
   return this.distinct('creator', { page }).exec();
-};
-
-/**
- * @return {object} key: page._id, value: comments
- */
-commentSchema.statics.getPageIdToCommentMap = async function(pageIds) {
-  const results = await this.aggregate()
-    .match({ page: { $in: pageIds } })
-    .group({ _id: '$page', comments: { $push: '$comment' } });
-
-  // convert to map
-  const idToCommentMap = {};
-  results.forEach((result, i) => {
-    idToCommentMap[result._id] = result.comments;
-  });
-
-  return idToCommentMap;
 };
 
 commentSchema.statics.countCommentByPageId = async function(page) {

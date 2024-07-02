@@ -282,6 +282,12 @@ const ENV_VAR_NAME_TO_CONFIG_INFO = {
     type:    ValueType.BOOLEAN,
     default: false,
   },
+  ELASTICSEARCH_MAX_BODY_LENGTH_TO_INDEX: {
+    ns:      'crowi',
+    key:     'app:elasticsearchMaxBodyLengthToIndex',
+    type:    ValueType.NUMBER,
+    default: 100000,
+  },
   ELASTICSEARCH_REINDEX_BULK_SIZE: {
     ns:      'crowi',
     key:     'app:elasticsearchReindexBulkSize',
