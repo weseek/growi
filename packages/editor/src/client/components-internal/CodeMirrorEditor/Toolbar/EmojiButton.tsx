@@ -1,11 +1,10 @@
 import {
   useState, useCallback,
-  type FC, type CSSProperties,
+  type CSSProperties,
 } from 'react';
 
 import emojiData from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import i18n from 'i18next';
 import { Modal } from 'reactstrap';
 
 import { useCodeMirrorEditorIsolated } from '../../../stores/codemirror-editor';
@@ -15,89 +14,33 @@ type Props = {
   editorKey: string,
 }
 
-type Translation = {
-  search: string
-  clear: string
-  notfound: string
-  skintext: string
-  categories: object
-  categorieslabel: string
-  skintones: object
-  title: string
-}
-
-// TODO: https://redmine.weseek.co.jp/issues/133681
-const getEmojiTranslation = (): Translation => {
-
-  const categories: { [key: string]: string } = {};
-  [
-    'search',
-    'recent',
-    'smileys',
-    'people',
-    'nature',
-    'foods',
-    'activity',
-    'places',
-    'objects',
-    'symbols',
-    'flags',
-    'custom',
-  ].forEach((category) => {
-    categories[category] = i18n.t(`emoji.categories.${category}`);
-  });
-
-  const skintones: { [key: string]: string} = {};
-  (Array.from(Array(6).keys())).forEach((tone) => {
-    skintones[tone + 1] = i18n.t(`emoji.skintones.${tone + 1}`);
-  });
-
-  const translation = {
-    search: i18n.t('emoji.search'),
-    clear: i18n.t('emoji.clear'),
-    notfound: i18n.t('emoji.notfound'),
-    skintext: i18n.t('emoji.skintext'),
-    categories,
-    categorieslabel: i18n.t('emoji.categorieslabel'),
-    skintones,
-    title: i18n.t('emoji.title'),
-  };
-
-  return translation;
-};
-
-const translation = getEmojiTranslation();
-
-export const EmojiButton: FC<Props> = (props) => {
+export const EmojiButton = (props: Props): JSX.Element => {
   const { editorKey } = props;
 
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: codeMirrorEditor } = useCodeMirrorEditorIsolated(editorKey);
   const { data: resolvedTheme } = useResolvedThemeForEditor();
-
-  const view = codeMirrorEditor?.view;
-  const cursorIndex = view?.state.selection.main.head;
   const toggle = useCallback(() => setIsOpen(!isOpen), [isOpen]);
 
-  const selectEmoji = useCallback((emoji: { colons: string }): void => {
-    console.log(i18n.language);
+  const selectEmoji = useCallback((emoji: { shortcodes: string }): void => {
 
-    if (cursorIndex == null || !isOpen) {
+    if (!isOpen) {
       return;
     }
 
-    view?.dispatch({
-      changes: {
-        from: cursorIndex,
-        insert: emoji.colons,
-      },
-    });
+
+    codeMirrorEditor?.insertText(emoji.shortcodes);
 
     toggle();
-  }, [cursorIndex, isOpen, toggle, view]);
+  }, [isOpen, toggle, codeMirrorEditor]);
+
 
   const setStyle = useCallback((): CSSProperties => {
+
+    const view = codeMirrorEditor?.view;
+    const cursorIndex = view?.state.selection.main.head;
+
     if (view == null || cursorIndex == null || !isOpen) {
       return {};
     }
@@ -124,7 +67,7 @@ export const EmojiButton: FC<Props> = (props) => {
       left: cursorRect.left + offset,
       position: 'fixed',
     };
-  }, [cursorIndex, isOpen, view]);
+  }, [isOpen, codeMirrorEditor]);
 
   return (
     <>
@@ -135,15 +78,15 @@ export const EmojiButton: FC<Props> = (props) => {
       && (
         <div className="mb-2 d-none d-md-block">
           <Modal isOpen={isOpen} toggle={toggle} backdropClassName="emoji-picker-modal" fade={false}>
-            <Picker
-              onEmojiSelect={selectEmoji}
-              // i18n={translation}
-              title={translation.title}
-              emojiTooltip
-              style={setStyle()}
-              theme={resolvedTheme}
-              data={emojiData}
-            />
+            <span style={setStyle()}>
+              <Picker
+                onEmojiSelect={selectEmoji}
+                theme={resolvedTheme?.themeData}
+                data={emojiData}
+                // TODO: https://redmine.weseek.co.jp/issues/133681
+                // i18n={}
+              />
+            </span>
           </Modal>
         </div>
       )}
