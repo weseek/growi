@@ -1,11 +1,15 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+const openPageItemControl = async(page: Page): Promise<void> => {
+  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
+  await page.getByTestId('grw-contextual-sub-nav').getByTestId('open-page-item-control-btn').click();
+};
 
 test('Page Deletion and PutBack is executed successfully', async({ page }) => {
   await page.goto('/Sandbox/Bootstrap5');
 
   // Delete
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('open-page-item-control-btn').click();
+  await openPageItemControl(page);
   await page.getByTestId('open-page-delete-modal-btn').click();
   await expect(page.getByTestId('page-delete-modal')).toBeVisible();
   await page.getByTestId('delete-page-button').click();
@@ -21,8 +25,7 @@ test('Page Deletion and PutBack is executed successfully', async({ page }) => {
 test('PageDuplicateModal is shown successfully', async({ page }) => {
   await page.goto('/Sandbox');
 
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('open-page-item-control-btn').click();
+  await openPageItemControl(page);
   await page.getByTestId('open-page-duplicate-modal-btn').click();
 
   await expect(page.getByTestId('page-duplicate-modal')).toBeVisible();
@@ -31,8 +34,7 @@ test('PageDuplicateModal is shown successfully', async({ page }) => {
 test('PageMoveRenameModal is shown successfully', async({ page }) => {
   await page.goto('/Sandbox');
 
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('open-page-item-control-btn').click();
+  await openPageItemControl(page);
   await page.getByTestId('rename-page-btn').click();
 
   await expect(page.getByTestId('page-rename-modal')).toBeVisible();
@@ -41,8 +43,7 @@ test('PageMoveRenameModal is shown successfully', async({ page }) => {
 test('PresentationModal for "/" is shown successfully', async({ page }) => {
   await page.goto('/');
 
-  await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-  await page.getByTestId('open-page-item-control-btn').click();
+  await openPageItemControl(page);
   await page.getByTestId('open-presentation-modal-btn').click();
 
   expect(page.getByTestId('page-presentation-modal')).toBeVisible();
@@ -51,9 +52,7 @@ test('PresentationModal for "/" is shown successfully', async({ page }) => {
 test.describe('Page Accessories Modal', () => {
   test.beforeEach(async({ page }) => {
     await page.goto('/');
-    await expect(page.getByTestId('grw-contextual-sub-nav')).toBeVisible();
-    await page.getByTestId('open-page-item-control-btn').click();
-    await expect(page.getByTestId('page-item-control-menu')).toBeVisible();
+    await openPageItemControl(page);
   });
 
   test('Page History is shown successfully', async({ page }) => {
