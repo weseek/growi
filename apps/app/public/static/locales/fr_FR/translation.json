@@ -321,7 +321,9 @@
       "stale": "Plus de {{count}} an est passé depuis la dernière mise à jour.",
       "stale_plural": "Plus de {{count}} années sont passées depuis la dernière mise à jour.",
       "expiration": "Ce lien expirera <strong>{{expiredAt}}</strong>.",
-      "no_deadline": "Cette page n'a pas de date d'expiration"
+      "no_deadline": "Cette page n'a pas de date d'expiration",
+      "not_indexed1": "Cette page n'est peut-être pas indexée par les moteurs de recherche Full-Text.",
+      "not_indexed2": "Le corps de la page dépasse le seuil spécifié par {{threshold}}."
     }
   },
   "page_edit": {

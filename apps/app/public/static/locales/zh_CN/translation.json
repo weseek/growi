@@ -311,7 +311,9 @@
       "restricted": "访问此页受到限制",
       "stale": "自上次更新以来，已超过{{count}年。",
       "stale_plural": "自上次更新以来已过去{{count}年以上。",
-      "no_deadline": "This page has no expiration date"
+      "no_deadline": "此页面没有到期日期",
+      "not_indexed1": "此页面可能不会被全文搜索引擎索引。",
+      "not_indexed2": "页面正文超过了{{threshold}}指定的阈值。"
 		}
 	},
 	"page_edit": {
