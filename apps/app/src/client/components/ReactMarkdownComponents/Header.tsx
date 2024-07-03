@@ -28,9 +28,6 @@ declare global {
 function setCaretLine(line?: number): void {
   if (line != null) {
     globalEmitter.emit('setCaretLine', line);
-    if (globalEmitter.listenerCount('setCaretLine') === 0) {
-      globalEmitter.on('getCaretLine', (handler: (_: number) => void) => handler(line));
-    }
   }
 }
 
