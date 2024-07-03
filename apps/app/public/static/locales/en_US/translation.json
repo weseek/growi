@@ -880,6 +880,8 @@
     "untitled": "Untitled"
   },
   "sync-latest-reevision-body": {
-    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?"
+    "confirm": "Delete the draft data being entered into the editor and synchronize the latest text. Are you sure you want to run it?",
+    "success-toaster": "Latest text synchronized",
+    "error-toaster": "Synchronization of the latest text failed"
   }
 }

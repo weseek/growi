@@ -15,6 +15,7 @@ import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
 import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -82,9 +83,10 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     if (answer) {
       try {
         await syncLatestRevisionBody(pageId);
+        toastSuccess(t('sync-latest-reevision-body.success-toaster'));
       }
-      catch (err) {
-        //
+      catch {
+        toastError(t('sync-latest-reevision-body.error-toaster'));
       }
     }
   }, [pageId, t]);
