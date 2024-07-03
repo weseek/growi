@@ -178,16 +178,10 @@ export const UserGroupTable: FC<Props> = ({
                         className="link-opacity-75-hover"
                         href={`/admin/user-group-detail/${group._id}?isExternalGroup=${isExternalGroup}`}
                       >
-                      </Link>
-                      <button
-                        className="btn btn-link btn-edit-groups text-secondary py-0"
-                        type="button"
-                        key={group._id}
-                      >
                         <span className="material-symbols-outlined pe-2 pt-2">group</span>
                         <span className="text-decoration-underline">{group.name}</span>
                         <span className={`material-symbols-outlined px-2 py-0 ${hoveredindex === index ? '' : 'opacity-0'}`}>edit</span>
-                      </button>
+                      </Link>
                     </td>
                   )
                   : (
