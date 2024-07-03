@@ -27,7 +27,6 @@ export const MenuItemType = {
   DELETE: 'delete',
   REVERT: 'revert',
   PATH_RECOVERY: 'pathRecovery',
-  SYNC_LATEST_REVISION_BODY: 'syncLatestRevisionBody',
   SWITCH_CONTENT_WIDTH: 'switch_content_width',
 } as const;
 export type MenuItemType = typeof MenuItemType[keyof typeof MenuItemType];
@@ -48,7 +47,6 @@ type CommonProps = {
   onClickDeleteMenuItem?: (pageId: string, pageInfo: IPageInfoAll | undefined) => Promise<void> | void,
   onClickRevertMenuItem?: (pageId: string) => Promise<void> | void,
   onClickPathRecoveryMenuItem?: (pageId: string) => Promise<void> | void,
-  onClickSyncLatestRevisionBodyMenuItem?: (pageId: string) => Promise<void> | void,
 
   additionalMenuItemOnTopRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
   additionalMenuItemRenderer?: React.FunctionComponent<AdditionalMenuItemsRendererProps>,
@@ -69,7 +67,7 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
   const {
     pageId, isLoading, pageInfo, isEnableActions, isReadOnlyUser, forceHideMenuItems, operationProcessData,
     onClickBookmarkMenuItem, onClickRenameMenuItem, onClickDuplicateMenuItem, onClickDeleteMenuItem,
-    onClickRevertMenuItem, onClickPathRecoveryMenuItem, onClickSyncLatestRevisionBodyMenuItem,
+    onClickRevertMenuItem, onClickPathRecoveryMenuItem,
     additionalMenuItemOnTopRenderer: AdditionalMenuItemsOnTop,
     additionalMenuItemRenderer: AdditionalMenuItems,
     isInstantRename, alignEnd,
@@ -109,14 +107,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     }
     await onClickRevertMenuItem(pageId);
   }, [onClickRevertMenuItem, pageId]);
-
-  const syncLatestRevisionBodyHandler = useCallback(async() => {
-    if (onClickSyncLatestRevisionBodyMenuItem == null) {
-      return;
-    }
-    await onClickSyncLatestRevisionBodyMenuItem(pageId);
-  }, [onClickSyncLatestRevisionBodyMenuItem, pageId]);
-
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
@@ -219,17 +209,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
             {t('modal_putback.label.Put Back Page')}
           </DropdownItem>
         ) }
-
-        {/* SyncLatestRevisionBody */}
-        { !forceHideMenuItems?.includes(MenuItemType.SYNC_LATEST_REVISION_BODY) && isEnableActions && !isReadOnlyUser && (
-          <DropdownItem
-            onClick={syncLatestRevisionBodyHandler}
-            className="grw-page-control-dropdown-item"
-          >
-            <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
-            {t('SyncLatestRevisionBody')}
-          </DropdownItem>
-        )}
 
         { AdditionalMenuItems && (
           <>

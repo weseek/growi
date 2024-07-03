@@ -113,7 +113,6 @@ type CommonProps = {
   onClickDuplicateMenuItem?: (pageToDuplicate: IPageForPageDuplicateModal) => void,
   onClickRenameMenuItem?: (pageToRename: IPageToRenameWithMeta) => void,
   onClickDeleteMenuItem?: (pageToDelete: IPageToDeleteWithMeta) => void,
-  onClickSyncLatestRevisionBodyMenuItem?: (pageId: string) => void,
   onClickSwitchContentWidth?: (pageId: string, value: boolean) => void,
 }
 
@@ -127,8 +126,7 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
     pageInfo,
     pageId, revisionId, path, shareLinkId, expandContentWidth,
     disableSeenUserInfoPopover, hideSubControls, showPageControlDropdown, forceHideMenuItems, additionalMenuItemRenderer,
-    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem,
-    onClickDeleteMenuItem, onClickSyncLatestRevisionBodyMenuItem, onClickSwitchContentWidth,
+    onClickEditTagsButton, onClickDuplicateMenuItem, onClickRenameMenuItem, onClickDeleteMenuItem, onClickSwitchContentWidth,
   } = props;
 
   const { data: isGuestUser } = useIsGuestUser();
@@ -226,14 +224,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
 
     onClickDeleteMenuItem(pageToDelete);
   }, [onClickDeleteMenuItem, pageId, pageInfo, path, revisionId]);
-
-  const syncLatestRevisionBodyMenuItemClickHandler = useCallback(async() => {
-    if (onClickSyncLatestRevisionBodyMenuItem == null || path == null) {
-      return;
-    }
-
-    onClickSyncLatestRevisionBodyMenuItem(pageId);
-  }, [onClickSyncLatestRevisionBodyMenuItem, pageId, path]);
 
   const switchContentWidthClickHandler = useCallback(() => {
 
@@ -341,7 +331,6 @@ const PageControlsSubstance = (props: PageControlsSubstanceProps): JSX.Element =
           additionalMenuItemRenderer={additionalMenuItemRenderer}
           onClickRenameMenuItem={renameMenuItemClickHandler}
           onClickDuplicateMenuItem={duplicateMenuItemClickHandler}
-          onClickSyncLatestRevisionBodyMenuItem={syncLatestRevisionBodyMenuItemClickHandler}
           onClickDeleteMenuItem={deleteMenuItemClickHandler}
         />
       )}
