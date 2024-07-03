@@ -32,12 +32,11 @@ const setCaretLine = (view?: EditorView, lineNumber?: number): void => {
 
 };
 
-const setCaretLineSchedule = (view?: EditorView, lineNumber?: number): void => {
+const setCaretLineScheduleForYjs = (view?: EditorView, lineNumber?: number): void => {
 
-  // support Yjs lazy load doc
   const compartment = new Compartment();
 
-  const initDocListenerExtension = EditorView.updateListener.of((v: ViewUpdate) => {
+  const setCaretLineOnceExtension = EditorView.updateListener.of((v: ViewUpdate) => {
 
     // TODO: use ySyncAnnotation for if statement and remove "currentPageYjsData?.hasRevisionBodyDiff === false" in Header.tsx
     // Ref: https://github.com/yjs/y-codemirror.next/pull/30
@@ -45,6 +44,7 @@ const setCaretLineSchedule = (view?: EditorView, lineNumber?: number): void => {
 
       setCaretLine(view, lineNumber);
 
+      // setCaretLineOnceExtension, which setCaretLineScheduleForYjs added, will remove itself from view.
       view?.dispatch({
         effects: compartment.reconfigure([]),
       });
@@ -53,17 +53,17 @@ const setCaretLineSchedule = (view?: EditorView, lineNumber?: number): void => {
 
   view?.dispatch({
     effects: StateEffect.appendConfig.of(
-      compartment.of(initDocListenerExtension),
+      compartment.of(setCaretLineOnceExtension),
     ),
   });
 };
 
 export const useSetCaretLine = (view?: EditorView): SetCaretLine => {
 
-  return useCallback((lineNumber?: number, schedule?: boolean) => {
+  return useCallback((lineNumber?: number, schedule = false) => {
 
     if (schedule) {
-      setCaretLineSchedule(view, lineNumber);
+      setCaretLineScheduleForYjs(view, lineNumber);
     }
     else {
       setCaretLine(view, lineNumber);
