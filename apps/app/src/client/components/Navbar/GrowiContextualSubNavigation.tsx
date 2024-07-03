@@ -80,9 +80,14 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     // eslint-disable-next-line no-alert
     const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
     if (answer) {
-      // TODO: https://redmine.weseek.co.jp/issues/149418
+      try {
+        await syncLatestRevisionBody(pageId);
+      }
+      catch (err) {
+        //
+      }
     }
-  }, [t]);
+  }, [pageId, t]);
 
   return (
     <>
