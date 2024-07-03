@@ -76,8 +76,24 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
   const { open: openPresentationModal } = usePagePresentationModal();
   const { open: openAccessoriesModal } = usePageAccessoriesModal();
 
+  const syncLatestRevisionBodyHandler = useCallback(async() => {
+    // eslint-disable-next-line no-alert
+    const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
+    if (answer) {
+      // TODO: https://redmine.weseek.co.jp/issues/149418
+    }
+  }, [t]);
+
   return (
     <>
+      <DropdownItem
+        onClick={() => syncLatestRevisionBodyHandler()}
+        className="grw-page-control-dropdown-item"
+      >
+        <span className="material-symbols-outlined me-1 grw-page-control-dropdown-icon">sync</span>
+        {t('SyncLatestRevisionBody')}
+      </DropdownItem>
+
       {/* Presentation */}
       <DropdownItem
         onClick={() => openPresentationModal()}
