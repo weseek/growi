@@ -67,6 +67,7 @@ import { preNotifyService } from '../pre-notify';
 import { BULK_REINDEX_SIZE, LIMIT_FOR_MULTIPLE_PAGE_OP } from './consts';
 import type { IPageService } from './page-service';
 import { shouldUseV4Process } from './should-use-v4-process';
+import { syncLatestRevisionBodyToYjsDraft } from './sync-latest-revision-body-to-yjs-draft';
 
 export * from './page-service';
 
@@ -4456,6 +4457,10 @@ class PageService implements IPageService {
       hasRevisionBodyDiff,
       awarenessStateSize: currentYdoc?.awareness.states.size,
     };
+  }
+
+  async syncLatestRevisionBodyToYjsDraft(pageId: string): Promise<void> {
+    await syncLatestRevisionBodyToYjsDraft(pageId);
   }
 
   async hasRevisionBodyDiff(pageId: string, comparisonTarget?: string): Promise<boolean> {
