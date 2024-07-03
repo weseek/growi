@@ -883,6 +883,8 @@
     "untitled": "Untitled"
   },
   "sync-latest-reevision-body": {
-    "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？"
+    "confirm": "删除输入编辑器的草稿数据，同步最新文本。 您真的想运行它吗？",
+    "success-toaster": "同步最新文本",
+    "error-toaster": "同步最新文本失败"
   }
 }

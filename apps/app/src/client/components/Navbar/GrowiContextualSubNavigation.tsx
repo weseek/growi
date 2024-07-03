@@ -14,7 +14,8 @@ import { useRouter } from 'next/router';
 import Sticky from 'react-stickynode';
 import { DropdownItem } from 'reactstrap';
 
-import { exportAsMarkdown, updateContentWidth } from '~/client/services/page-operation';
+import { exportAsMarkdown, updateContentWidth, syncLatestRevisionBody } from '~/client/services/page-operation';
+import { toastSuccess, toastError } from '~/client/util/toastr';
 import { GroundGlassBar } from '~/components/Navbar/GroundGlassBar';
 import type { OnDuplicatedFunction, OnRenamedFunction, OnDeletedFunction } from '~/interfaces/ui';
 import { useShouldExpandContent } from '~/services/layout/use-should-expand-content';
@@ -80,9 +81,15 @@ const PageOperationMenuItems = (props: PageOperationMenuItemsProps): JSX.Element
     // eslint-disable-next-line no-alert
     const answer = window.confirm(t('sync-latest-reevision-body.confirm'));
     if (answer) {
-      // TODO: https://redmine.weseek.co.jp/issues/149418
+      try {
+        await syncLatestRevisionBody(pageId);
+        toastSuccess(t('sync-latest-reevision-body.success-toaster'));
+      }
+      catch {
+        toastError(t('sync-latest-reevision-body.error-toaster'));
+      }
     }
-  }, [t]);
+  }, [pageId, t]);
 
   return (
     <>
