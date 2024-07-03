@@ -301,6 +301,8 @@ class PageBulkExportService {
       format: 'A4',
     });
 
+    await page.close();
+
     return result;
   }
 
