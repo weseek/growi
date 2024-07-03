@@ -18,7 +18,7 @@
     "./dist/client": {
       "import": "./dist/client/index.js"
     },
-    "./dist/client/sanitize-option": {
+    "./dist/client/services/sanitize-option": {
       "import": "./dist/client/services/sanitize-option.js"
     },
     "./dist/services": {

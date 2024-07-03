@@ -1,7 +1,7 @@
 import assert from 'assert';
 
 import { isClient } from '@growi/core/dist/utils/browser-utils';
-import * as presentation from '@growi/presentation/dist/client/sanitize-option';
+import * as presentation from '@growi/presentation/dist/client/services/sanitize-option';
 import * as refsGrowiDirective from '@growi/remark-attachment-refs/dist/client';
 import * as drawio from '@growi/remark-drawio';
 import * as lsxGrowiDirective from '@growi/remark-lsx/dist/client';
