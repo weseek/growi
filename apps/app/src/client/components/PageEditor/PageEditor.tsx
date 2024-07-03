@@ -19,6 +19,7 @@ import { useTranslation } from 'next-i18next';
 import { throttle, debounce } from 'throttle-debounce';
 
 import { useUpdateStateAfterSave } from '~/client/services/page-operation';
+import { useSaveNextCaretLine } from '~/client/services/side-effects/save-next-caret-line';
 import { updatePage, extractRemoteRevisionDataFromErrorObj } from '~/client/services/update-page';
 import { uploadAttachments } from '~/client/services/upload-attachments';
 import { toastError, toastSuccess, toastWarning } from '~/client/util/toastr';
@@ -109,6 +110,7 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
   const { data: user } = useCurrentUser();
   const { onEditorsUpdated } = useEditingUsers();
   const onConflict = useConflictResolver();
+  const { pick: pickNextCaretLine } = useSaveNextCaretLine();
 
   const { data: rendererOptions } = usePreviewOptions();
 
@@ -300,19 +302,10 @@ export const PageEditor = React.memo((props: Props): JSX.Element => {
 
   // set handler to set caret line
   useEffect(() => {
-    const handler = (lineNumber?: number) => {
-      codeMirrorEditor?.setCaretLine(lineNumber, true);
-    };
-    globalEmitter.on('setCaretLine', handler);
-    if (globalEmitter.listenerCount('getCaretLine') >= 1 && codeMirrorEditor?.view != null) {
-      globalEmitter.emit('getCaretLine', handler);
-      globalEmitter.removeAllListeners('getCaretLine');
+    if (editorMode === EditorMode.Editor) {
+      codeMirrorEditor?.setCaretLine(pickNextCaretLine() ?? 0, true);
     }
-
-    return function cleanup() {
-      globalEmitter.removeListener('setCaretLine', handler);
-    };
-  }, [codeMirrorEditor, codeMirrorEditor?.view]);
+  }, [codeMirrorEditor, editorMode, pickNextCaretLine]);
 
   // TODO: Check the reproduction conditions that made this code necessary and confirm reproduction
   // // when transitioning to a different page, if the initialValue is the same,
