@@ -16,7 +16,6 @@ import {
 } from '~/stores-universal/context';
 import { useSWRxCurrentPage, useIsNotFound } from '~/stores/page';
 import { useViewOptions } from '~/stores/renderer';
-import { useIsMobile } from '~/stores/ui';
 
 import { UserInfo } from '../User/UserInfo';
 
@@ -24,9 +23,6 @@ import { PageAlerts } from './PageAlerts/PageAlerts';
 import { PageContentFooter } from './PageContentFooter';
 import { PageViewLayout } from './PageViewLayout';
 import RevisionRenderer from './RevisionRenderer';
-
-
-import styles from './PageView.module.scss';
 
 
 const NotCreatablePage = dynamic(() => import('~/client/components/NotCreatablePage').then(mod => mod.NotCreatablePage), { ssr: false });
@@ -62,7 +58,6 @@ export const PageView = (props: Props): JSX.Element => {
   const { data: isForbidden } = useIsForbidden();
   const { data: isNotCreatable } = useIsNotCreatable();
   const { data: isNotFoundMeta } = useIsNotFound();
-  const { data: isMobile } = useIsMobile();
 
   const { data: pageBySWR } = useSWRxCurrentPage();
   const { data: viewOptions } = useViewOptions();
@@ -159,8 +154,6 @@ export const PageView = (props: Props): JSX.Element => {
     );
   };
 
-  const mobileClass = isMobile ? styles['page-mobile'] : '';
-
   return (
     <PageViewLayout
       className={className}
@@ -175,7 +168,7 @@ export const PageView = (props: Props): JSX.Element => {
       {specialContents == null && (
         <>
           {(isUsersHomepagePath && page?.creator != null) && <UserInfo author={page.creator} />}
-          <div className={`flex-expand-vert ${mobileClass}`}>
+          <div className="flex-expand-vert">
             <Contents />
           </div>
         </>

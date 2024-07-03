@@ -29,8 +29,12 @@ $grw-tag-label-font-size: 12px;
 
 .grw-tag-labels-skeleton :global {
   width: 137px;
-  height: calc(#{$grw-tag-label-font-size} + #{bs.$badge-padding-y} * 2);
-  font-size: $grw-tag-label-font-size; // set font-size to use the same em value in bs.$badge-padding-y(https://getbootstrap.jp/docs/5.0/components/badge/#variables)
+  height: calc(var(--bs-body-line-height) * 1em);
+
+  @include bs.media-breakpoint-down(lg) {
+    width: 42px;
+    height: calc(var(--bs-body-line-height) * 1em + .375rem * 2);
+  }
 }
 
 .grw-tag-icon-button {
