@@ -108,7 +108,6 @@ const PageItemControlDropdownMenu = React.memo((props: DropdownMenuProps): JSX.E
     await onClickRevertMenuItem(pageId);
   }, [onClickRevertMenuItem, pageId]);
 
-
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const deleteItemClickedHandler = useCallback(async() => {
     if (pageInfo == null || onClickDeleteMenuItem == null) {
